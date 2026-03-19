@@ -123,7 +123,11 @@ export const products: ProductRecord[] = [
   }
 ];
 
+<<<<<<< HEAD
 export const rawImportRows: RawImportRow[] = [
+=======
+export const sampleRawImportRows: RawImportRow[] = [
+>>>>>>> f2a3efe (Optimize for Vercel: server-side Magento data, PIM redesign, merge conflict fixes)
   {
     sku: ' wn-1003 ',
     name: 'Golden Mesa Reserve Cabernet',
@@ -224,3 +228,8 @@ export const excelImportSteps = [
   'Run the self-healing import preview to review auto-corrections and unresolved errors.',
   'Approve only rows with valid SKU plus acceptable confidence before database import/export.'
 ];
+
+// Magento data is now served server-side via /api/import-rows to keep the client bundle small.
+export const magentoImportRows: RawImportRow[] = [];
+
+export const rawImportRows: RawImportRow[] = sampleRawImportRows;

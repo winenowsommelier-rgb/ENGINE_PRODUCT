@@ -1,5 +1,6 @@
 # WineNow Flavor Intelligence System
 
+<<<<<<< HEAD
 WineNow is a Next.js 14 frontend for reviewing wine and liquor product intelligence across catalog, flavor DNA, taxonomy quality, and self-healing batch imports.
 
 ## Frontend access
@@ -8,10 +9,65 @@ Run the Next.js frontend directly from the repo root when package installation i
 
 ```bash
 cp .env.example .env.local
+=======
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+A Next.js 14 frontend for reviewing wine and liquor product intelligence across catalog, flavor DNA, taxonomy health, and self-healing batch imports.
+
+## Quick start
+
+```bash
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+WineNow is a Next.js 14 frontend for reviewing wine and liquor product intelligence across catalog, flavor DNA, taxonomy quality, and self-healing batch imports.
+
+## Frontend access
+
+Run the Next.js frontend directly from the repo root when package installation is available:
+
+```bash
+cp .env.example .env.local
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+>>>>>>> f2a3efe (Optimize for Vercel: server-side Magento data, PIM redesign, merge conflict fixes)
 npm install
 npm run dev
 ```
 
+<<<<<<< HEAD
 Then open <http://localhost:3000>. The default dev script now binds to `0.0.0.0:3000`, so the app is reachable from local browsers, forwarded ports, and remote workspaces.
 
 ### Beginner quick start
@@ -35,6 +91,39 @@ After you upload a file, the app will:
 3. show blocked vs library-ready rows
 4. stage clean rows for the product library before database insertion
 
+=======
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+Then open http://localhost:3000.
+
+## Key files
+
+- `app/page.tsx` – entry point
+- `components/dashboard.tsx` – main UI
+- `lib/data.ts` – sample product + import rows
+- `lib/batch-pipeline.ts` – import normalization + validation
+- `supabase/schema.sql` – database schema
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+Then open <http://localhost:3000>. The default dev script now binds to `0.0.0.0:3000`, so the app is reachable from local browsers, forwarded ports, and remote workspaces.
+
+>>>>>>> f2a3efe (Optimize for Vercel: server-side Magento data, PIM redesign, merge conflict fixes)
 If package installation is blocked in your environment, launch the dependency-free preview instead:
 
 ```bash
@@ -84,3 +173,25 @@ or the Supabase SQL editor. See `docs/supabase-setup.md` for the full flow.
 - `public/templates/winenow-import-template.csv` – starter import template.
 - `preview/` – dependency-free static frontend preview.
 - `scripts/serve_frontend.py` – local HTTP server for the preview frontend.
+<<<<<<< HEAD
+=======
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+>>>>>>> f2a3efe (Optimize for Vercel: server-side Magento data, PIM redesign, merge conflict fixes)

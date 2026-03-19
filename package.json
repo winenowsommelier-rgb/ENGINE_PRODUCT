@@ -3,7 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+<<<<<<< HEAD
     "dev": "next dev --hostname 0.0.0.0 --port 3000",
+=======
+    "dev": "next dev",
+    "dev:vscode": "next dev --hostname 0.0.0.0 --port 3000",
+>>>>>>> f2a3efe (Optimize for Vercel: server-side Magento data, PIM redesign, merge conflict fixes)
     "build": "next build",
     "start": "next start",
     "typecheck": "next build && tsc --noEmit",

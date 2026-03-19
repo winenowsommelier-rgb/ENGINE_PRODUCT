@@ -1,5 +1,6 @@
 import { buildFlavorProfile, calculateConfidence } from '@/lib/auto-mapping';
 import { type ProductRecord, type RawImportRow } from '@/lib/data';
+<<<<<<< HEAD
 import {
   knownGrapeAliases,
   knownRegionAliases,
@@ -7,6 +8,10 @@ import {
   knownStyleAliases,
   taxonomyCountries
 } from '@/lib/taxonomy';
+=======
+import { knownGrapeAliases, knownRegionAliases, knownRegionCountryMap, knownStyleAliases, taxonomyCountries } from '@/lib/taxonomy';
+import { grapeAliasMap, regionCountryMap } from '@/lib/taxonomy-mappings';
+>>>>>>> f2a3efe (Optimize for Vercel: server-side Magento data, PIM redesign, merge conflict fixes)
 
 export type PipelineStage = {
   name: string;
@@ -46,6 +51,7 @@ export type BatchProcessingResult = {
   };
 };
 
+<<<<<<< HEAD
 export type IssueSummary = {
   errors: number;
   warnings: number;
@@ -53,6 +59,8 @@ export type IssueSummary = {
   recommendation: string;
 };
 
+=======
+>>>>>>> f2a3efe (Optimize for Vercel: server-side Magento data, PIM redesign, merge conflict fixes)
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 const compact = (value: string) => value.trim().replace(/\s+/g, ' ');
 const keyify = (value: string) => compact(value).toLowerCase();
@@ -85,6 +93,37 @@ function normalizeCurrency(value: string, corrections: Correction[]): string {
   return normalized;
 }
 
+<<<<<<< HEAD
+=======
+// Merge JSON-driven aliases with hardcoded aliases for maximum coverage
+const normalizedGrapeAliases: Record<string, string> = Object.entries({
+  ...grapeAliasMap,
+  ...knownGrapeAliases
+}).reduce((acc, [key, value]) => {
+  acc[key.toLowerCase()] = value;
+  return acc;
+}, {} as Record<string, string>);
+
+const normalizedRegionAliases: Record<string, string> = Object.entries(knownRegionAliases).reduce((acc, [key, value]) => {
+  acc[key.toLowerCase()] = value;
+  return acc;
+}, {} as Record<string, string>);
+
+const normalizedStyleAliases: Record<string, string> = Object.entries(knownStyleAliases).reduce((acc, [key, value]) => {
+  acc[key.toLowerCase()] = value;
+  return acc;
+}, {} as Record<string, string>);
+
+// Merge JSON-driven region→country map with hardcoded fallbacks
+const normalizedRegionCountryMap: Record<string, string> = Object.entries({
+  ...regionCountryMap,
+  ...knownRegionCountryMap
+}).reduce((acc, [key, value]) => {
+  acc[key.toLowerCase()] = value;
+  return acc;
+}, {} as Record<string, string>);
+
+>>>>>>> f2a3efe (Optimize for Vercel: server-side Magento data, PIM redesign, merge conflict fixes)
 function normalizeAlias(value: string, aliases: Record<string, string>, field: string, corrections: Correction[]): string {
   const from = compact(value);
   const normalized = aliases[keyify(value)] ?? titleCase(from);
@@ -118,7 +157,12 @@ function parseScore(field: string, value: string, corrections: Correction[], iss
 }
 
 function inferCountry(region: string, issues: ValidationIssue[]): string | undefined {
+<<<<<<< HEAD
   const country = knownRegionCountryMap[region];
+=======
+  const key = keyify(region);
+  const country = normalizedRegionCountryMap[key] ?? normalizedRegionCountryMap[region];
+>>>>>>> f2a3efe (Optimize for Vercel: server-side Magento data, PIM redesign, merge conflict fixes)
   if (!country) {
     issues.push({ severity: 'warning', field: 'country', message: 'Unable to infer country from region. Add a taxonomy mapping before import.' });
   }
@@ -150,9 +194,15 @@ function normalizeRow(row: RawImportRow): ProcessedImportRow {
     name: compact(row.name),
     category,
     type: titleCase(row.type),
+<<<<<<< HEAD
     grape: normalizeAlias(row.grape, knownGrapeAliases, 'grape', corrections),
     region: normalizeAlias(row.region, knownRegionAliases, 'region', corrections),
     style: normalizeAlias(row.style, knownStyleAliases, 'style', corrections),
+=======
+    grape: normalizeAlias(row.grape, normalizedGrapeAliases, 'grape', corrections),
+    region: normalizeAlias(row.region, normalizedRegionAliases, 'region', corrections),
+    style: normalizeAlias(row.style, normalizedStyleAliases, 'style', corrections),
+>>>>>>> f2a3efe (Optimize for Vercel: server-side Magento data, PIM redesign, merge conflict fixes)
     price: parseMoney('price', row.price, corrections, issues),
     costPrice: parseMoney('costPrice', row.costPrice, corrections, issues),
     currency: normalizeCurrency(row.currency, corrections),
@@ -229,6 +279,7 @@ export function runBatchProcessing(rows: RawImportRow[]): BatchProcessingResult 
       blocked
     }
   };
+<<<<<<< HEAD
 }
 
 export function summarizeIssues(row: ProcessedImportRow): IssueSummary {
@@ -247,4 +298,6 @@ export function summarizeIssues(row: ProcessedImportRow): IssueSummary {
           ? 'Row can move forward, but review the warnings before final approval.'
           : 'Row is ready for import and downstream rendering.'
   };
+=======
+>>>>>>> f2a3efe (Optimize for Vercel: server-side Magento data, PIM redesign, merge conflict fixes)
 }
