@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { ChangeEvent, ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 import { buildFlavorProfile, calculateConfidence, describeConfidence } from '@/lib/auto-mapping';
 import { runBatchProcessing, summarizeIssues } from '@/lib/batch-pipeline';
@@ -16,6 +16,7 @@ import {
 import { validateRenderedProduct } from '@/lib/render-validation';
 import { taxonomyAuditIssues, taxonomyCountries, taxonomySheets } from '@/lib/taxonomy';
 import { getSupabaseReadiness, supabaseProject } from '@/lib/supabase/config';
+import { mapMagentoCsvToImportRows, uploadFieldGuide, type UploadedImportDataset } from '@/lib/taxonomy-mappings';
 
 const workspaces = [
   { id: 'overview', label: 'Overview' },
@@ -156,6 +157,8 @@ export function Dashboard() {
   const [activeWorkspace, setActiveWorkspace] = useState<WorkspaceId>('overview');
   const [selectedSku, setSelectedSku] = useState(products[0].sku);
   const [selectedImportIndex, setSelectedImportIndex] = useState(0);
+  const [uploadedDataset, setUploadedDataset] = useState<UploadedImportDataset | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const selectedProduct = useMemo(
     () => products.find((product) => product.sku === selectedSku) ?? products[0],
@@ -164,8 +167,16 @@ export function Dashboard() {
   const selectedProfile = useMemo(() => buildFlavorProfile(selectedProduct), [selectedProduct]);
   const confidenceSignals = useMemo(() => describeConfidence(selectedProduct), [selectedProduct]);
   const renderChecks = useMemo(() => validateRenderedProduct(selectedProduct, selectedProfile), [selectedProduct, selectedProfile]);
-  const selectedImportRow = batchResult.rows[selectedImportIndex] ?? batchResult.rows[0];
+  const activeBatchResult = useMemo(
+    () => (uploadedDataset ? runBatchProcessing(uploadedDataset.rows) : batchResult),
+    [uploadedDataset]
+  );
+  const selectedImportRow = activeBatchResult.rows[selectedImportIndex] ?? activeBatchResult.rows[0];
   const selectedIssueSummary = useMemo(() => summarizeIssues(selectedImportRow), [selectedImportRow]);
+  const stagedLibraryRows = useMemo(
+    () => activeBatchResult.rows.filter((row) => !row.issues.some((issue) => issue.severity === 'error')).map((row) => row.normalized),
+    [activeBatchResult]
+  );
   const radarData = [
     { label: 'Body', value: selectedProfile.body },
     { label: 'Acidity', value: selectedProfile.acidity },
@@ -174,6 +185,33 @@ export function Dashboard() {
     { label: 'Intensity', value: selectedProfile.intensity },
     { label: 'Finish', value: selectedProfile.finish }
   ];
+
+  async function handleMagentoFileUpload(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      const text = await file.text();
+      const dataset = mapMagentoCsvToImportRows(text, file.name);
+
+      if (dataset.originalRowCount === 0 || dataset.mappedRowCount === 0) {
+        throw new Error('No Magento rows could be mapped. Please confirm the file has a header row with columns like sku, name, and price.');
+      }
+
+      setUploadedDataset(dataset);
+      setUploadError(null);
+      setSelectedImportIndex(0);
+      setActiveWorkspace('import');
+    } catch (error) {
+      setUploadedDataset(null);
+      setUploadError(error instanceof Error ? error.message : 'Unable to read the uploaded file.');
+    } finally {
+      event.target.value = '';
+    }
+  }
 
   return (
     <main className="mx-auto flex min-h-screen max-w-7xl flex-col gap-6 px-6 py-8 lg:px-8">
@@ -473,17 +511,57 @@ export function Dashboard() {
           <div className="panel p-6">
             <CardHeader
               eyebrow="Import studio"
-              title="Self-healing batch processing preview"
-              body="Choose any staged row to see what the importer normalized, what still needs attention, and why a row is blocked or ready."
+              title="Upload Magento export and stage the item library"
+              body="Upload your Magento present/export file here to clean, validate, and stage rows before they are promoted into the product library and database."
             />
+            <div className="mt-6 rounded-3xl border border-dashed border-violet-400/40 bg-violet-500/10 p-5">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.22em] text-violet-200">Magento file upload</p>
+                  <p className="mt-2 max-w-2xl text-sm text-slate-200">
+                    Use a CSV export from Magento or your working product sheet. The app will map supported columns, normalize values, run self-healing validation, and stage ready rows for the full product library.
+                  </p>
+                </div>
+                <label className="inline-flex cursor-pointer items-center justify-center rounded-full border border-violet-300/40 bg-slate-950/60 px-5 py-3 text-sm font-medium text-violet-100 transition hover:border-violet-200/60 hover:text-white">
+                  Choose CSV file
+                  <input type="file" accept=".csv,text/csv" className="hidden" onChange={handleMagentoFileUpload} />
+                </label>
+              </div>
+              <div className="mt-5">
+                <DetailList items={[...uploadFieldGuide]} />
+              </div>
+              {uploadError && (
+                <div className="mt-4 rounded-2xl border border-rose-400/20 bg-rose-500/15 p-4 text-sm text-rose-100">{uploadError}</div>
+              )}
+              {uploadedDataset && (
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+                    <p className="font-medium text-white">Uploaded source</p>
+                    <p className="mt-2">{uploadedDataset.sourceFile}</p>
+                    <p className="mt-2 text-slate-400">
+                      {uploadedDataset.mappedRowCount} mapped rows from {uploadedDataset.originalRowCount} file rows.
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+                    <p className="font-medium text-white">Mapping review</p>
+                    <p className="mt-2">
+                      Missing required fields: {uploadedDataset.missingRequiredFields.length > 0 ? uploadedDataset.missingRequiredFields.join(', ') : 'None'}
+                    </p>
+                    <p className="mt-2">
+                      Unmapped headers: {uploadedDataset.unmappedHeaders.length > 0 ? uploadedDataset.unmappedHeaders.join(', ') : 'None'}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
             <div className="mt-6 grid gap-4 sm:grid-cols-4">
-              <MetricCard label="Rows previewed" value={String(batchResult.summary.totalRows)} detail="Rows currently in the sample import set." />
-              <MetricCard label="Auto-corrected" value={String(batchResult.summary.autoCorrected)} detail="Rows that received at least one automated repair." />
-              <MetricCard label="Ready to import" value={String(batchResult.summary.readyToImport)} detail="Rows with no hard validation errors." />
-              <MetricCard label="Blocked" value={String(batchResult.summary.blocked)} detail="Rows that still require spreadsheet cleanup." />
+              <MetricCard label="Rows previewed" value={String(activeBatchResult.summary.totalRows)} detail={uploadedDataset ? 'Rows currently staged from the uploaded Magento file.' : 'Rows currently in the sample import set.'} />
+              <MetricCard label="Auto-corrected" value={String(activeBatchResult.summary.autoCorrected)} detail="Rows that received at least one automated repair." />
+              <MetricCard label="Ready to import" value={String(activeBatchResult.summary.readyToImport)} detail="Rows with no hard validation errors." />
+              <MetricCard label="Blocked" value={String(activeBatchResult.summary.blocked)} detail="Rows that still require spreadsheet cleanup." />
             </div>
             <div className="mt-6 space-y-3">
-              {batchResult.rows.map((row, index) => {
+              {activeBatchResult.rows.map((row, index) => {
                 const selected = index === selectedImportIndex;
                 const hasError = row.issues.some((issue) => issue.severity === 'error');
                 return (
@@ -574,6 +652,37 @@ export function Dashboard() {
                     ))}
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Library build"
+                title="Rows staged for the full item library"
+                body="This is the set of cleaned rows that can move into your app library and then into Supabase once you approve the import flow."
+              />
+              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                <MetricCard label="Library-ready rows" value={String(stagedLibraryRows.length)} detail="Rows currently safe to stage into the product library." />
+                <MetricCard label="Needs manual cleanup" value={String(activeBatchResult.summary.blocked)} detail="Rows that should be fixed before insertion." />
+                <MetricCard label="Source mode" value={uploadedDataset ? 'Magento upload' : 'Sample data'} detail="Shows whether the current preview comes from your file or the seeded demo set." />
+              </div>
+              <div className="mt-6 space-y-3">
+                {stagedLibraryRows.slice(0, 5).map((row) => (
+                  <div key={`${row.sku}-${row.name}`} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-medium text-white">{row.name}</p>
+                        <p className="mt-1 text-sm text-slate-400">{row.sku} · {row.grape || 'Unknown grape'} · {row.region || 'Unknown region'}</p>
+                      </div>
+                      <StatusPill tone="good">Ready for library</StatusPill>
+                    </div>
+                  </div>
+                ))}
+                {stagedLibraryRows.length === 0 && (
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+                    No rows are library-ready yet. Upload a Magento CSV and fix blocking issues to populate this section.
+                  </div>
+                )}
               </div>
             </div>
 

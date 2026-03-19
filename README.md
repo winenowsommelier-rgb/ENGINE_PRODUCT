@@ -24,6 +24,17 @@ If you are brand new to the project, use this order:
 4. Open `http://localhost:3000`
 5. Start with the **Overview** workspace, then move to **Catalog workspace**, **Import studio**, and **Taxonomy control**
 
+### Magento upload flow now available in the app
+
+The **Import studio** workspace now includes a CSV upload section for Magento/product-export files.
+
+After you upload a file, the app will:
+
+1. map supported headers such as `sku`, `name`, `price`, `cost`, `product_type`, `region`, `grape`, and `style`
+2. normalize the rows into the self-healing import pipeline
+3. show blocked vs library-ready rows
+4. stage clean rows for the product library before database insertion
+
 If package installation is blocked in your environment, launch the dependency-free preview instead:
 
 ```bash
