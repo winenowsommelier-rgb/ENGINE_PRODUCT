@@ -19,6 +19,7 @@ import {
   knownStyleAliases, taxonomyAuditIssues, taxonomyCountries
 } from '@/lib/taxonomy';
 import { getSupabaseReadiness, supabaseProject } from '@/lib/supabase/config';
+import { mapMagentoCsvToImportRows } from '@/lib/taxonomy-mappings';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Section = 'overview' | 'products' | 'import' | 'taxonomy' | 'settings';
@@ -257,13 +258,15 @@ function OverviewSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
 }
 
 // ─── Products (PIM) ───────────────────────────────────────────────────────────
-function ProductsSection() {
-  const [localProducts, setLocalProducts] = useState<ProductRecord[]>([...initialProducts]);
-  const [selectedSku, setSelectedSku] = useState(initialProducts[0].sku);
+function ProductsSection({ products: localProducts, setProducts: setLocalProducts }: {
+  products: ProductRecord[];
+  setProducts: React.Dispatch<React.SetStateAction<ProductRecord[]>>;
+}) {
+  const [selectedSku, setSelectedSku] = useState(localProducts[0]?.sku ?? '');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [editMode, setEditMode] = useState(false);
-  const [editValues, setEditValues] = useState<ProductRecord>({ ...initialProducts[0] });
+  const [editValues, setEditValues] = useState<ProductRecord>({ ...(localProducts[0] ?? initialProducts[0]) });
   const [savedMsg, setSavedMsg] = useState<string | null>(null);
 
   const filtered = useMemo(() => localProducts.filter(p => {
@@ -581,18 +584,44 @@ function ProductsSection() {
 }
 
 // ─── Import queue ─────────────────────────────────────────────────────────────
-function ImportSection() {
+function ImportSection({ onCommit, onGoToProducts }: {
+  onCommit: (rows: ProductRecord[]) => void;
+  onGoToProducts: () => void;
+}) {
   // Fetch real Magento rows from the server-side API route
   const [importRows, setImportRows] = useState<RawImportRow[]>(rawImportRows);
   const [importLoading, setImportLoading] = useState(true);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [sourceName, setSourceName] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/import-rows?limit=200')
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then((data: { rows: RawImportRow[] }) => { if (data.rows?.length) setImportRows(data.rows); })
+      .then((data: { rows: RawImportRow[] }) => { if (data.rows?.length) { setImportRows(data.rows); setSourceName('Magento feed'); } })
       .catch(() => {})
       .finally(() => setImportLoading(false));
   }, []);
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const dataset = mapMagentoCsvToImportRows(text, file.name);
+      if (dataset.mappedRowCount === 0) throw new Error('No rows could be mapped. Check your file has a header row with columns like sku, name, price.');
+      setImportRows(dataset.rows);
+      setSourceName(file.name);
+      setUploadError(null);
+      setDecisions({});
+      setRowEdits({});
+      setRowOverrides({});
+      setCommitted(false);
+      setSelectedIdx(0);
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Could not parse file.');
+    }
+  }
 
   // Recompute batch result whenever importRows changes
   const batchResult = useMemo(() => runBatchProcessing(importRows), [importRows]);
@@ -664,6 +693,18 @@ function ImportSection() {
     <div className="flex h-full">
       {/* ── Queue list ── */}
       <div className="flex w-[300px] shrink-0 flex-col border-r border-white/10">
+        {/* Upload zone */}
+        <label className="group m-3 flex cursor-pointer flex-col items-center gap-1.5 rounded-2xl border border-dashed border-white/20 bg-white/3 px-4 py-4 text-center transition-colors hover:border-violet-400/50 hover:bg-violet-500/5">
+          <Upload size={16} className="text-slate-400 group-hover:text-violet-300" />
+          <span className="text-xs font-medium text-slate-300 group-hover:text-violet-200">
+            {sourceName ? `${sourceName}` : 'Upload CSV or drop here'}
+          </span>
+          <span className="text-[11px] text-slate-500">{importRows.length} rows loaded</span>
+          <input type="file" accept=".csv,.txt" className="sr-only" onChange={handleFileUpload} />
+        </label>
+        {uploadError && (
+          <p className="mx-3 -mt-2 mb-2 rounded-xl bg-rose-500/10 px-3 py-2 text-xs text-rose-300">{uploadError}</p>
+        )}
         <div className="space-y-2 border-b border-white/10 p-3">
           <div className="relative">
             <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -898,10 +939,16 @@ function ImportSection() {
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-violet-400/50 focus:outline-none resize-none"
                 />
                 <button
-                  onClick={() => setCommitted(true)}
+                  onClick={() => {
+                    const approvedRows = Object.entries(decisions)
+                      .filter(([, d]) => d === 'approved')
+                      .map(([idx]) => getResult(Number(idx)).normalized);
+                    onCommit(approvedRows);
+                    setCommitted(true);
+                  }}
                   className="mt-3 w-full rounded-xl bg-violet-500 py-2.5 text-sm font-semibold text-white hover:bg-violet-400"
                 >
-                  Commit {approvedCount} rows to import
+                  Commit {approvedCount} rows → Products
                 </button>
               </div>
             )}
@@ -913,10 +960,15 @@ function ImportSection() {
                   <p className="text-sm font-semibold text-emerald-200">{approvedCount} rows staged for import</p>
                 </div>
                 {batchNote && <p className="text-xs text-emerald-300/80 mb-3">{batchNote}</p>}
-                <p className="text-xs text-slate-400 mb-3">In production these would be written to Supabase now.</p>
+                <button
+                  onClick={onGoToProducts}
+                  className="w-full rounded-xl bg-emerald-500 py-2.5 text-sm font-semibold text-white hover:bg-emerald-400"
+                >
+                  View in Products →
+                </button>
                 <button
                   onClick={() => { setCommitted(false); setDecisions({}); setBatchNote(''); }}
-                  className="text-xs text-emerald-300 underline hover:text-emerald-200"
+                  className="mt-2 text-xs text-slate-400 underline hover:text-slate-300"
                 >
                   Reset review queue
                 </button>
@@ -1176,6 +1228,16 @@ function SettingsSection() {
 // ─── Main Dashboard ────────────────────────────────────────────────────────────
 export function Dashboard() {
   const [activeSection, setActiveSection] = useState<Section>('overview');
+  const [catalogProducts, setCatalogProducts] = useState<ProductRecord[]>([...initialProducts]);
+
+  function handleCommit(rows: ProductRecord[]) {
+    setCatalogProducts(prev => {
+      const skus = new Set(prev.map(p => p.sku));
+      const incoming = rows.filter(r => r.sku && !skus.has(r.sku));
+      return [...prev, ...incoming];
+    });
+    setActiveSection('products');
+  }
 
   const sectionTitles: Record<Section, string> = {
     overview: 'Overview',
@@ -1193,9 +1255,8 @@ export function Dashboard() {
         <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/10 bg-slate-900/50 px-6 backdrop-blur">
           <h1 className="text-sm font-semibold text-white">{sectionTitles[activeSection]}</h1>
           <div className="flex items-center gap-3 text-xs text-slate-400">
-            <span>{rawImportRows.length} import rows</span>
             <span className="h-3.5 w-px bg-white/10" />
-            <span>{initialProducts.length} products</span>
+            <span>{catalogProducts.length} products</span>
             <span className="h-3.5 w-px bg-white/10" />
             <span className={`flex items-center gap-1 ${supabaseStatus.hasUrl ? 'text-emerald-400' : 'text-amber-400'}`}>
               <span className={`h-1.5 w-1.5 rounded-full ${supabaseStatus.hasUrl ? 'bg-emerald-400' : 'bg-amber-400'}`} />
@@ -1207,8 +1268,8 @@ export function Dashboard() {
         {/* Content */}
         <main className="flex-1 overflow-hidden">
           {activeSection === 'overview' && <OverviewSection onNavigate={setActiveSection} />}
-          {activeSection === 'products' && <ProductsSection />}
-          {activeSection === 'import' && <ImportSection />}
+          {activeSection === 'products' && <ProductsSection products={catalogProducts} setProducts={setCatalogProducts} />}
+          {activeSection === 'import' && <ImportSection onCommit={handleCommit} onGoToProducts={() => setActiveSection('products')} />}
           {activeSection === 'taxonomy' && <TaxonomySection />}
           {activeSection === 'settings' && <SettingsSection />}
         </main>
