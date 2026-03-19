@@ -46,6 +46,13 @@ export type BatchProcessingResult = {
   };
 };
 
+export type IssueSummary = {
+  errors: number;
+  warnings: number;
+  infos: number;
+  recommendation: string;
+};
+
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 const compact = (value: string) => value.trim().replace(/\s+/g, ' ');
 const keyify = (value: string) => compact(value).toLowerCase();
@@ -221,5 +228,23 @@ export function runBatchProcessing(rows: RawImportRow[]): BatchProcessingResult 
       readyToImport,
       blocked
     }
+  };
+}
+
+export function summarizeIssues(row: ProcessedImportRow): IssueSummary {
+  const errors = row.issues.filter((issue) => issue.severity === 'error').length;
+  const warnings = row.issues.filter((issue) => issue.severity === 'warning').length;
+  const infos = row.issues.filter((issue) => issue.severity === 'info').length;
+
+  return {
+    errors,
+    warnings,
+    infos,
+    recommendation:
+      errors > 0
+        ? 'Fix the blocking spreadsheet fields before importing this row.'
+        : warnings > 0
+          ? 'Row can move forward, but review the warnings before final approval.'
+          : 'Row is ready for import and downstream rendering.'
   };
 }

@@ -2,6 +2,12 @@ import { grapeDNA, regionModifiers, styleDNA, type FlavorProfile, type ProductRe
 
 const clamp = (value: number) => Math.max(0, Math.min(5, Number(value.toFixed(1))));
 
+export type ConfidenceSignal = {
+  label: string;
+  detail: string;
+  status: 'strong' | 'needs-review';
+};
+
 export function buildFlavorProfile(product: ProductRecord): FlavorProfile {
   const grape = grapeDNA.find((entry) => entry.grape === product.grape);
   const style = styleDNA.find((entry) => entry.style === product.style);
@@ -41,4 +47,37 @@ export function calculateConfidence(product: ProductRecord): number {
   ].filter(Boolean).length;
 
   return clamp((matchedSources / 3) * 4.2 + (product.status === 'Ready' ? 0.8 : 0.2));
+}
+
+export function describeConfidence(product: ProductRecord): ConfidenceSignal[] {
+  return [
+    {
+      label: 'Grape DNA match',
+      detail: grapeDNA.some((entry) => entry.grape === product.grape)
+        ? `${product.grape} maps to a canonical grape profile.`
+        : `${product.grape} does not yet map to a canonical grape profile.`,
+      status: grapeDNA.some((entry) => entry.grape === product.grape) ? 'strong' : 'needs-review'
+    },
+    {
+      label: 'Style DNA match',
+      detail: styleDNA.some((entry) => entry.style === product.style)
+        ? `${product.style} contributes a structured style profile.`
+        : `${product.style} is missing from the style DNA table.`,
+      status: styleDNA.some((entry) => entry.style === product.style) ? 'strong' : 'needs-review'
+    },
+    {
+      label: 'Region modifier match',
+      detail: regionModifiers.some((entry) => entry.region === product.region)
+        ? `${product.region} contributes a supported regional modifier.`
+        : `${product.region} is missing a regional adjustment record.`,
+      status: regionModifiers.some((entry) => entry.region === product.region) ? 'strong' : 'needs-review'
+    },
+    {
+      label: 'Workflow status',
+      detail: product.status === 'Ready'
+        ? 'The product is already marked ready for downstream workflows.'
+        : 'The workflow status still indicates manual review or drafting.',
+      status: product.status === 'Ready' ? 'strong' : 'needs-review'
+    }
+  ];
 }

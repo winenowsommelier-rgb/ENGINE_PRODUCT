@@ -2,8 +2,8 @@
 
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
-import { buildFlavorProfile, calculateConfidence } from '@/lib/auto-mapping';
-import { runBatchProcessing } from '@/lib/batch-pipeline';
+import { buildFlavorProfile, calculateConfidence, describeConfidence } from '@/lib/auto-mapping';
+import { runBatchProcessing, summarizeIssues } from '@/lib/batch-pipeline';
 import {
   excelImportSteps,
   flavorWheel,
@@ -29,6 +29,35 @@ type WorkspaceId = (typeof workspaces)[number]['id'];
 
 const batchResult = runBatchProcessing(rawImportRows);
 const supabaseReadiness = getSupabaseReadiness();
+const onboardingSteps = [
+  'Copy .env.example to .env.local.',
+  'Run npm install once to install Next.js and Tailwind dependencies.',
+  'Start the app with npm run dev and open localhost:3000.',
+  'Review the catalog, import studio, taxonomy control, and launch guide workspaces.'
+];
+const workspaceHighlights = [
+  {
+    title: 'Overview',
+    detail: 'Start here for environment readiness, launch instructions, and operational guidance.'
+  },
+  {
+    title: 'Catalog workspace',
+    detail: 'Inspect product flavor structure, pricing, readiness, and confidence signals.'
+  },
+  {
+    title: 'Import studio',
+    detail: 'Review self-healing corrections, row blocking issues, and import recommendations.'
+  },
+  {
+    title: 'Taxonomy control',
+    detail: 'Audit workbook structure, country registry coverage, and cleanup rules.'
+  }
+] as const;
+const taxonomyRules = [
+  'Keep tab names machine-safe or register display labels separately from canonical keys.',
+  'Store geography level explicitly so countries and sub-national records validate predictably.',
+  'Do not promote rows to Ready until SKU, price, country inference, and confidence all pass review.'
+];
 
 function CardHeader({ eyebrow, title, body }: { eyebrow: string; title: string; body: string }) {
   return (
@@ -59,6 +88,19 @@ function MetricCard({ label, value, detail }: { label: string; value: string; de
       <p className="metric-label">{label}</p>
       <p className="metric-value mt-3">{value}</p>
       <p className="mt-2 text-sm text-slate-400">{detail}</p>
+    </div>
+  );
+}
+
+function DetailList({ items }: { items: string[] }) {
+  return (
+    <div className="space-y-3">
+      {items.map((item, index) => (
+        <div key={item} className="flex gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-violet-500/20 text-violet-100">{index + 1}</div>
+          <p>{item}</p>
+        </div>
+      ))}
     </div>
   );
 }
@@ -120,8 +162,10 @@ export function Dashboard() {
     [selectedSku]
   );
   const selectedProfile = useMemo(() => buildFlavorProfile(selectedProduct), [selectedProduct]);
+  const confidenceSignals = useMemo(() => describeConfidence(selectedProduct), [selectedProduct]);
   const renderChecks = useMemo(() => validateRenderedProduct(selectedProduct, selectedProfile), [selectedProduct, selectedProfile]);
   const selectedImportRow = batchResult.rows[selectedImportIndex] ?? batchResult.rows[0];
+  const selectedIssueSummary = useMemo(() => summarizeIssues(selectedImportRow), [selectedImportRow]);
   const radarData = [
     { label: 'Body', value: selectedProfile.body },
     { label: 'Acidity', value: selectedProfile.acidity },
@@ -191,50 +235,84 @@ export function Dashboard() {
       </section>
 
       {activeWorkspace === 'overview' && (
-        <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-          <div className="panel p-6">
-            <CardHeader
-              eyebrow="Launch right now"
-              title="Frontend access in one command"
-              body="You asked for direct frontend access, so the app now centers the launch path and keeps the rest of the setup lightweight."
-            />
-            <div className="mt-6 rounded-3xl border border-violet-400/30 bg-violet-500/10 p-5">
-              <p className="text-xs uppercase tracking-[0.22em] text-violet-200">Run from the repository root</p>
-              <code className="mt-3 block overflow-x-auto rounded-2xl bg-slate-950/70 px-4 py-3 text-sm text-violet-100">
-                npm install && npm run dev
-              </code>
-              <p className="mt-3 text-sm text-slate-300">The dev server binds to <span className="font-medium text-white">0.0.0.0:3000</span>, so you can access it from your browser, forwarded port, or remote workspace URL.</p>
+        <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+          <div className="space-y-6">
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Launch right now"
+                title="Professional setup in four simple steps"
+                body="This workspace is designed for quick onboarding: install once, run the app, verify readiness, then move into catalog or import review."
+              />
+              <div className="mt-6 rounded-3xl border border-violet-400/30 bg-violet-500/10 p-5">
+                <p className="text-xs uppercase tracking-[0.22em] text-violet-200">Recommended command</p>
+                <code className="mt-3 block overflow-x-auto rounded-2xl bg-slate-950/70 px-4 py-3 text-sm text-violet-100">
+                  npm install && npm run dev
+                </code>
+                <p className="mt-3 text-sm text-slate-300">The dev server binds to <span className="font-medium text-white">0.0.0.0:3000</span>, so you can access it locally, through a forwarded port, or in a remote workspace.</p>
+              </div>
+              <div className="mt-6">
+                <DetailList items={onboardingSteps} />
+              </div>
             </div>
-            <div className="mt-6 grid gap-4 md:grid-cols-3">
-              <MetricCard label="Ready products" value={String(products.length)} detail="Available sample rows in the catalog workspace." />
-              <MetricCard label="Import rows" value={String(batchResult.summary.totalRows)} detail="Preview rows flowing through self-healing checks." />
-              <MetricCard label="Taxonomy countries" value={String(taxonomyCountries.length)} detail="Visible country or market records loaded into the audit view." />
+
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Workspace guide"
+                title="What each area is for"
+                body="Use the navigation above as a guided workflow instead of one long dashboard."
+              />
+              <div className="mt-6 grid gap-4 md:grid-cols-2">
+                {workspaceHighlights.map((item) => (
+                  <div key={item.title} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p className="font-medium text-white">{item.title}</p>
+                    <p className="mt-2 text-sm leading-6 text-slate-400">{item.detail}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="panel p-6">
-            <CardHeader
-              eyebrow="Current system health"
-              title="What this frontend already shows"
-              body="You can inspect the sample catalog, select products, review import fixes, and see validation status before wiring live reads."
-            />
-            <div className="mt-6 space-y-4 text-sm text-slate-300">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <span className="font-medium text-white">Supabase URL</span>
-                  <StatusPill tone={supabaseReadiness.hasUrl ? 'good' : 'warn'}>{supabaseReadiness.hasUrl ? 'Configured' : 'Missing'}</StatusPill>
-                </div>
+          <div className="space-y-6">
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Current system health"
+                title="Readiness at a glance"
+                body="Before connecting live reads, you can already validate app setup, sample content, and environment coverage."
+              />
+              <div className="mt-6 grid gap-4 md:grid-cols-3 xl:grid-cols-1">
+                <MetricCard label="Ready products" value={String(products.length)} detail="Available sample rows in the catalog workspace." />
+                <MetricCard label="Import rows" value={String(batchResult.summary.totalRows)} detail="Preview rows flowing through self-healing checks." />
+                <MetricCard label="Taxonomy countries" value={String(taxonomyCountries.length)} detail="Visible country or market records loaded into the audit view." />
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <span className="font-medium text-white">Publishable key</span>
-                  <StatusPill tone={supabaseReadiness.hasPublishableKey ? 'good' : 'warn'}>{supabaseReadiness.hasPublishableKey ? 'Configured' : 'Missing'}</StatusPill>
+            </div>
+
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Environment readiness"
+                title="Connection and credential status"
+                body="These checks help a new operator understand what is already configured and what still needs local secrets."
+              />
+              <div className="mt-6 space-y-4 text-sm text-slate-300">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-medium text-white">Supabase URL</span>
+                    <StatusPill tone={supabaseReadiness.hasUrl ? 'good' : 'warn'}>{supabaseReadiness.hasUrl ? 'Configured' : 'Missing'}</StatusPill>
+                  </div>
                 </div>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <span className="font-medium text-white">Database password in env</span>
-                  <StatusPill tone={supabaseReadiness.hasDatabasePassword ? 'good' : 'warn'}>{supabaseReadiness.hasDatabasePassword ? 'Ready' : 'Template only'}</StatusPill>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-medium text-white">Publishable key</span>
+                    <StatusPill tone={supabaseReadiness.hasPublishableKey ? 'good' : 'warn'}>{supabaseReadiness.hasPublishableKey ? 'Configured' : 'Missing'}</StatusPill>
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-medium text-white">Database password in env</span>
+                    <StatusPill tone={supabaseReadiness.hasDatabasePassword ? 'good' : 'warn'}>{supabaseReadiness.hasDatabasePassword ? 'Ready' : 'Template only'}</StatusPill>
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-dashed border-violet-400/40 bg-violet-500/10 p-4 text-violet-100">
+                  Professional recommendation: keep the real database password only in <code>.env.local</code> and use the publishable key for frontend-safe reads.
                 </div>
               </div>
             </div>
@@ -348,6 +426,25 @@ export function Dashboard() {
 
               <div className="panel p-6">
                 <CardHeader
+                  eyebrow="Confidence rationale"
+                  title="Why this product scores the way it does"
+                  body="A more professional review experience should explain confidence, not just show a number."
+                />
+                <div className="mt-6 space-y-3">
+                  {confidenceSignals.map((signal) => (
+                    <div key={signal.label} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="font-medium text-white">{signal.label}</span>
+                        <StatusPill tone={signal.status === 'strong' ? 'good' : 'warn'}>{signal.status === 'strong' ? 'Matched' : 'Review'}</StatusPill>
+                      </div>
+                      <p className="mt-2">{signal.detail}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="panel p-6">
+                <CardHeader
                   eyebrow="Flavor distribution"
                   title="Taste wheel intensity"
                   body="A lightweight frontend-friendly chart alternative without extra charting dependencies."
@@ -438,6 +535,14 @@ export function Dashboard() {
                   </div>
                 ))}
               </div>
+              <div className="mt-6 rounded-2xl border border-dashed border-violet-400/40 bg-violet-500/10 p-4 text-sm text-violet-100">
+                <div className="flex flex-wrap gap-2">
+                  <StatusPill tone={selectedIssueSummary.errors > 0 ? 'bad' : 'good'}>Errors {selectedIssueSummary.errors}</StatusPill>
+                  <StatusPill tone={selectedIssueSummary.warnings > 0 ? 'warn' : 'good'}>Warnings {selectedIssueSummary.warnings}</StatusPill>
+                  <StatusPill tone="neutral">Info {selectedIssueSummary.infos}</StatusPill>
+                </div>
+                <p className="mt-3">{selectedIssueSummary.recommendation}</p>
+              </div>
               <div className="mt-6 grid gap-4 lg:grid-cols-2">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <p className="font-medium text-white">Corrections</p>
@@ -478,13 +583,8 @@ export function Dashboard() {
                 title="How to use your existing spreadsheet"
                 body="If the workbook cannot be uploaded here, this frontend still gives you the exact prep and validation flow to follow locally."
               />
-              <div className="mt-6 space-y-3">
-                {excelImportSteps.map((step, index) => (
-                  <div key={step} className="flex gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
-                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-violet-500/20 text-violet-100">{index + 1}</div>
-                    <p>{step}</p>
-                  </div>
-                ))}
+              <div className="mt-6">
+                <DetailList items={excelImportSteps} />
               </div>
             </div>
           </div>
@@ -551,61 +651,113 @@ export function Dashboard() {
                 ))}
               </div>
             </div>
+
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Standardization rules"
+                title="Professional taxonomy guardrails"
+                body="These rules make the shared workbook safer for batch automation and future integrations."
+              />
+              <div className="mt-6">
+                <DetailList items={taxonomyRules} />
+              </div>
+            </div>
           </div>
         </section>
       )}
 
       {activeWorkspace === 'launch' && (
-        <section className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-          <div className="panel p-6">
-            <CardHeader
-              eyebrow="Launch frontend"
-              title="Direct access without extra setup noise"
-              body="This section keeps the exact commands and expected URLs in one place so you can get to the frontend quickly."
-            />
-            <div className="mt-6 space-y-4 text-sm text-slate-300">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="font-medium text-white">1. Install dependencies</p>
-                <code className="mt-3 block rounded-2xl bg-slate-950/70 px-4 py-3 text-violet-100">npm install</code>
+        <section className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+          <div className="space-y-6">
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Launch frontend"
+                title="Newbie-friendly terminal setup"
+                body="Use these exact steps if you just want the app running with the least friction."
+              />
+              <div className="mt-6">
+                <DetailList
+                  items={[
+                    'Open the repository root in your terminal.',
+                    'Run cp .env.example .env.local to create your local environment file.',
+                    'Run npm install once to install dependencies.',
+                    'Run npm run dev and open http://localhost:3000.'
+                  ]}
+                />
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="font-medium text-white">2. Start the frontend</p>
-                <code className="mt-3 block rounded-2xl bg-slate-950/70 px-4 py-3 text-violet-100">npm run dev</code>
+              <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4">
+                <p className="font-medium text-white">Copy-paste command block</p>
+                <code className="mt-3 block overflow-x-auto rounded-2xl bg-slate-950/70 px-4 py-3 text-sm text-violet-100">
+                  cp .env.example .env.local{'\n'}npm install{'\n'}npm run dev
+                </code>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="font-medium text-white">3. Open the app</p>
-                <p className="mt-3">Use <span className="font-medium text-white">http://localhost:3000</span> locally, or the forwarded URL from your remote environment.</p>
+              <div className="mt-6 rounded-2xl border border-dashed border-violet-400/40 bg-violet-500/10 p-4 text-sm text-violet-100">
+                If package installation is blocked in your environment, use the fallback preview at <code>python3 scripts/serve_frontend.py</code> and open <code>/preview/</code>.
+              </div>
+            </div>
+
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="VS Code path"
+                title="Open it from tasks and Run & Debug"
+                body="If you prefer buttons instead of commands, the workspace already includes helper tasks."
+              />
+              <div className="mt-6">
+                <DetailList
+                  items={[
+                    'Run the task WineNow: install dependencies.',
+                    'Run the task WineNow: dev server.',
+                    'Open Run and Debug and choose WineNow: launch frontend.',
+                    'If you are in a remote workspace, forward port 3000.'
+                  ]}
+                />
               </div>
             </div>
           </div>
 
-          <div className="panel p-6">
-            <CardHeader
-              eyebrow="Supabase context"
-              title="Environment values already prepared"
-              body="The frontend runs on local sample data right away, and these values are ready when you want to connect real reads next."
-            />
-            <div className="mt-6 space-y-4 text-sm text-slate-300">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Project URL</p>
-                <p className="mt-2 break-all text-white">{supabaseProject.url}</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Publishable key</p>
-                <p className="mt-2 break-all text-white">{supabaseProject.publishableKey}</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Database URL template</p>
-                <p className="mt-2 break-all text-white">{supabaseProject.databaseUrl}</p>
-              </div>
-              <div className="rounded-2xl border border-dashed border-violet-400/40 bg-violet-500/10 p-4 text-violet-100">
-                You can run the frontend immediately without a live database. When you are ready, copy <code>.env.example</code> to <code>.env.local</code> and keep the password local-only.
+          <div className="space-y-6">
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Supabase context"
+                title="Environment values already prepared"
+                body="The frontend runs on local sample data right away, and these values are ready when you want to connect real reads next."
+              />
+              <div className="mt-6 space-y-4 text-sm text-slate-300">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Project URL</p>
+                  <p className="mt-2 break-all text-white">{supabaseProject.url}</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Publishable key</p>
+                  <p className="mt-2 break-all text-white">{supabaseProject.publishableKey}</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Database URL template</p>
+                  <p className="mt-2 break-all text-white">{supabaseProject.databaseUrl}</p>
+                </div>
               </div>
             </div>
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              {productLibraryStats.map((item) => (
-                <MetricCard key={item.label} label={item.label} value={item.value.toLocaleString()} detail="Current library stat placeholder." />
-              ))}
+
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Operational notes"
+                title="What makes this process more production-ready"
+                body="These reminders help the app feel more like a real operator tool instead of a demo page."
+              />
+              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                {productLibraryStats.map((item) => (
+                  <MetricCard key={item.label} label={item.label} value={item.value.toLocaleString()} detail="Current library stat placeholder." />
+                ))}
+              </div>
+              <div className="mt-6">
+                <DetailList
+                  items={[
+                    'Keep the real password only in .env.local or your deployment secret store.',
+                    'Apply the schema before wiring live product reads.',
+                    'Use the import studio to review warnings before promoting rows to Ready.'
+                  ]}
+                />
+              </div>
             </div>
           </div>
         </section>

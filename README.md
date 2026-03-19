@@ -14,6 +14,16 @@ npm run dev
 
 Then open <http://localhost:3000>. The default dev script now binds to `0.0.0.0:3000`, so the app is reachable from local browsers, forwarded ports, and remote workspaces.
 
+### Beginner quick start
+
+If you are brand new to the project, use this order:
+
+1. `cp .env.example .env.local`
+2. `npm install`
+3. `npm run dev`
+4. Open `http://localhost:3000`
+5. Start with the **Overview** workspace, then move to **Catalog workspace**, **Import studio**, and **Taxonomy control**
+
 If package installation is blocked in your environment, launch the dependency-free preview instead:
 
 ```bash
