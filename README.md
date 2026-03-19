@@ -1,18 +1,10 @@
 # WineNow Flavor Intelligence System
 
-WineNow is a Next.js 14 starter for managing wine and liquor product intelligence across taxonomy, flavor DNA, AI enrichment, and batch import workflows.
+WineNow is a Next.js 14 frontend for reviewing wine and liquor product intelligence across catalog, flavor DNA, taxonomy quality, and self-healing batch imports.
 
-## What changed in this version
+## Frontend access
 
-- global taxonomy workbook audit based on the shared sheet structure
-- self-healing batch processing preview for inconsistent import rows
-- render-safe validation checks before charting/export
-- expanded Supabase schema for taxonomy registries and import runs
-- wired the provided Supabase project URL + publishable key into safe environment-based config
-- added VS Code tasks/launch support so the frontend can be opened directly from VS Code
-- documented Excel import workflow plus a starter CSV template
-
-## Getting started
+Run the Next.js frontend directly from the repo root when package installation is available:
 
 ```bash
 cp .env.example .env.local
@@ -20,24 +12,23 @@ npm install
 npm run dev
 ```
 
-Then open <http://localhost:3000>.
+Then open <http://localhost:3000>. The default dev script now binds to `0.0.0.0:3000`, so the app is reachable from local browsers, forwarded ports, and remote workspaces.
 
-## Open the frontend from VS Code
-
-This repo now includes a VS Code-friendly frontend workflow:
+If package installation is blocked in your environment, launch the dependency-free preview instead:
 
 ```bash
-npm run dev:vscode
+python3 scripts/serve_frontend.py
 ```
 
-That script binds Next.js to `0.0.0.0:3000`, which makes port-forwarding in VS Code / remote workspaces much easier.
+Then open <http://localhost:3000/preview/>.
 
-Also included:
+## Frontend modules available now
 
-- `.vscode/tasks.json` – install + dev server tasks
-- `.vscode/launch.json` – one-click browser launch for the frontend
-- `.vscode/extensions.json` – recommended editor extensions
-- `docs/vscode-frontend-access.md` – step-by-step VS Code usage guide
+- **Overview**: immediate launch instructions plus current app readiness.
+- **Catalog workspace**: selectable product library with flavor profile radar, render checks, and pairing context.
+- **Import studio**: self-healing batch preview with row-by-row corrections, validation issues, and confidence scoring.
+- **Taxonomy control**: workbook tab review, audit findings, and visible country registry.
+- **Launch frontend**: exact commands and Supabase environment values for the next connection step.
 
 ## Supabase project setup
 
@@ -57,17 +48,18 @@ or the Supabase SQL editor. See `docs/supabase-setup.md` for the full flow.
 
 ## Core files
 
-- `app/page.tsx` – application entry point
-- `components/dashboard.tsx` – primary dashboard UI with taxonomy audit and batch validation
-- `lib/data.ts` – sample product records and raw import rows
-- `lib/taxonomy.ts` – visible global taxonomy workbook structure and audit findings
-- `lib/auto-mapping.ts` – flavor profile assembly and confidence scoring
-- `lib/batch-pipeline.ts` – self-healing normalization and import preview logic
-- `lib/render-validation.ts` – UI safety checks before rendering
-- `lib/supabase/config.ts` – environment-based Supabase project configuration
-- `lib/supabase/client.ts` – browser-safe Supabase client
-- `supabase/schema.sql` – database schema for products, taxonomy, and import run tracking
-- `docs/excel-import-process.md` – step-by-step Excel import process
-- `docs/supabase-setup.md` – project-specific Supabase setup instructions
-- `docs/vscode-frontend-access.md` – VS Code frontend launch instructions
-- `public/templates/winenow-import-template.csv` – starter import template
+- `app/page.tsx` – application entry point.
+- `components/dashboard.tsx` – frontend workspace UI and launch flow.
+- `lib/data.ts` – sample product records and raw import rows.
+- `lib/taxonomy.ts` – visible global taxonomy workbook structure and audit findings.
+- `lib/auto-mapping.ts` – flavor profile assembly and confidence scoring.
+- `lib/batch-pipeline.ts` – self-healing normalization and import preview logic.
+- `lib/render-validation.ts` – UI safety checks before rendering.
+- `lib/supabase/config.ts` – environment-based Supabase project configuration.
+- `lib/supabase/client.ts` – lightweight browser config helper for future REST reads.
+- `supabase/schema.sql` – database schema for products, taxonomy, and import run tracking.
+- `docs/excel-import-process.md` – step-by-step Excel import process.
+- `docs/supabase-setup.md` – project-specific Supabase setup instructions.
+- `public/templates/winenow-import-template.csv` – starter import template.
+- `preview/` – dependency-free static frontend preview.
+- `scripts/serve_frontend.py` – local HTTP server for the preview frontend.

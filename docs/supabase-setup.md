@@ -32,9 +32,9 @@ psql "$SUPABASE_DB_URL" -f supabase/schema.sql
 ## 3. What the app uses right now
 
 - the public project URL and publishable key are exposed to the frontend through `lib/supabase/config.ts`
-- `lib/supabase/client.ts` creates a browser-safe client using the official `@supabase/supabase-js` library
+- `lib/supabase/client.ts` returns a browser-safe config object and request headers you can use for REST calls or future client wiring
 - the direct database connection string is documented only for schema/application setup and should not be shipped with a real password committed to git
 
 ## 4. Recommended next step
 
-Create read policies for the tables you want the frontend to query with the publishable key, or route writes through a secure backend layer / edge function.
+Run the frontend first with local sample data, then add read policies or a protected backend layer before connecting live product reads.
