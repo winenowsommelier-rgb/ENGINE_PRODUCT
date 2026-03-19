@@ -1,95 +1,95 @@
 'use client';
 
-import type { ChangeEvent, ReactNode } from 'react';
-import { useMemo, useState } from 'react';
-import { buildFlavorProfile, calculateConfidence, describeConfidence } from '@/lib/auto-mapping';
-import { runBatchProcessing, summarizeIssues } from '@/lib/batch-pipeline';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
-  excelImportSteps,
-  flavorWheel,
-  productLibraryStats,
-  products,
-  rawImportRows,
-  samplePairing,
-  taxonomyMetrics
+  AlertTriangle, Check, CheckCircle, ChevronLeft,
+  ChevronRight, Edit2, Info, LayoutDashboard,
+  Package, Plus, RefreshCw, Search, Settings, Tag, Upload,
+  X, XCircle
+} from 'lucide-react';
+import { buildFlavorProfile, calculateConfidence } from '@/lib/auto-mapping';
+import { runBatchProcessing, type ProcessedImportRow } from '@/lib/batch-pipeline';
+import {
+  products as initialProducts, rawImportRows, samplePairing,
+  type ProductRecord, type RawImportRow
 } from '@/lib/data';
 import { validateRenderedProduct } from '@/lib/render-validation';
-import { taxonomyAuditIssues, taxonomyCountries, taxonomySheets } from '@/lib/taxonomy';
+import {
+  knownGrapeAliases, knownRegionAliases,
+  knownStyleAliases, taxonomyAuditIssues, taxonomyCountries
+} from '@/lib/taxonomy';
 import { getSupabaseReadiness, supabaseProject } from '@/lib/supabase/config';
-import { persistImportToSupabase } from '@/lib/supabase/client';
-import { mapMagentoCsvToImportRows, uploadFieldGuide, type UploadedImportDataset } from '@/lib/taxonomy-mappings';
+import { mapMagentoCsvToImportRows } from '@/lib/taxonomy-mappings';
 
-const workspaces = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'catalog', label: 'Catalog workspace' },
-  { id: 'import', label: 'Import studio' },
-  { id: 'taxonomy', label: 'Taxonomy control' },
-  { id: 'launch', label: 'Launch frontend' }
-] as const;
+// ─── Types ────────────────────────────────────────────────────────────────────
+type Section = 'overview' | 'products' | 'import' | 'taxonomy' | 'settings';
+type RowDecision = 'pending' | 'approved' | 'rejected';
 
-type WorkspaceId = (typeof workspaces)[number]['id'];
+// Computed once at module load (not inside render cycle)
+const initialBatchResult = runBatchProcessing(rawImportRows);
+const supabaseStatus = getSupabaseReadiness();
 
-const batchResult = runBatchProcessing(rawImportRows);
-const supabaseReadiness = getSupabaseReadiness();
-const onboardingSteps = [
-  'Copy .env.example to .env.local.',
-  'Run npm install once to install Next.js and Tailwind dependencies.',
-  'Start the app with npm run dev and open localhost:3000.',
-  'Review the catalog, import studio, taxonomy control, and launch guide workspaces.'
-];
-const workspaceHighlights = [
-  {
-    title: 'Overview',
-    detail: 'Start here for environment readiness, launch instructions, and operational guidance.'
-  },
-  {
-    title: 'Catalog workspace',
-    detail: 'Inspect product flavor structure, pricing, readiness, and confidence signals.'
-  },
-  {
-    title: 'Import studio',
-    detail: 'Review self-healing corrections, row blocking issues, and import recommendations.'
-  },
-  {
-    title: 'Taxonomy control',
-    detail: 'Audit workbook structure, country registry coverage, and cleanup rules.'
-  }
-] as const;
-const taxonomyRules = [
-  'Keep tab names machine-safe or register display labels separately from canonical keys.',
-  'Store geography level explicitly so countries and sub-national records validate predictably.',
-  'Do not promote rows to Ready until SKU, price, country inference, and confidence all pass review.'
+// ─── Sidebar ──────────────────────────────────────────────────────────────────
+const NAV_ITEMS = [
+  { id: 'overview' as Section, label: 'Overview', Icon: LayoutDashboard },
+  { id: 'products' as Section, label: 'Products', Icon: Package },
+  { id: 'import' as Section, label: 'Import queue', Icon: Upload },
+  { id: 'taxonomy' as Section, label: 'Taxonomy', Icon: Tag },
+  { id: 'settings' as Section, label: 'Settings', Icon: Settings },
 ];
 
-function CardHeader({ eyebrow, title, body }: { eyebrow: string; title: string; body: string }) {
+function Sidebar({ active, onNavigate }: { active: Section; onNavigate: (s: Section) => void }) {
   return (
-    <div className="space-y-2">
-      <p className="text-xs uppercase tracking-[0.3em] text-violet-300">{eyebrow}</p>
-      <div>
-        <h2 className="text-2xl font-semibold text-white">{title}</h2>
-        <p className="mt-2 max-w-2xl text-sm text-slate-300">{body}</p>
+    <nav className="flex w-52 shrink-0 flex-col border-r border-white/10 bg-slate-900">
+      <div className="flex h-14 items-center gap-2.5 border-b border-white/10 px-4">
+        <span className="text-xl">🍷</span>
+        <span className="text-sm font-semibold text-white">WineNow PIM</span>
       </div>
-    </div>
+      <div className="flex flex-1 flex-col gap-0.5 p-2 pt-3">
+        {NAV_ITEMS.map(({ id, label, Icon }) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => onNavigate(id)}
+            className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors ${
+              active === id
+                ? 'bg-violet-500/20 text-white'
+                : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+            }`}
+          >
+            <Icon size={15} />
+            {label}
+          </button>
+        ))}
+      </div>
+      <div className="border-t border-white/10 p-4 space-y-1">
+        <p className="text-xs text-slate-500">Import queue: {rawImportRows.length} rows</p>
+        <p className="text-xs text-slate-500">Products: {initialProducts.length} SKUs</p>
+        <div className="mt-2 flex items-center gap-1.5">
+          <span className={`h-1.5 w-1.5 rounded-full ${supabaseStatus.hasUrl ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+          <span className="text-xs text-slate-500">Supabase {supabaseStatus.hasUrl ? 'ready' : 'not configured'}</span>
+        </div>
+      </div>
+    </nav>
   );
 }
 
-function StatusPill({ tone, children }: { tone: 'neutral' | 'good' | 'warn' | 'bad'; children: ReactNode }) {
-  const styles = {
-    neutral: 'border-white/10 bg-white/5 text-slate-200',
-    good: 'border-emerald-400/20 bg-emerald-500/15 text-emerald-100',
-    warn: 'border-amber-400/20 bg-amber-500/15 text-amber-100',
-    bad: 'border-rose-400/20 bg-rose-500/15 text-rose-100'
+// ─── Shared UI components ─────────────────────────────────────────────────────
+function Pill({ tone, children }: { tone: 'neutral' | 'good' | 'warn' | 'bad'; children: ReactNode }) {
+  const s = {
+    neutral: 'bg-white/10 text-slate-300',
+    good: 'bg-emerald-500/20 text-emerald-200',
+    warn: 'bg-amber-500/20 text-amber-200',
+    bad: 'bg-rose-500/20 text-rose-200',
   };
-
-  return <span className={`rounded-full border px-3 py-1 text-xs ${styles[tone]}`}>{children}</span>;
+  return <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${s[tone]}`}>{children}</span>;
 }
 
-function MetricCard({ label, value, detail }: { label: string; value: string; detail: string }) {
+function FieldRow({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-      <p className="metric-label">{label}</p>
-      <p className="metric-value mt-3">{value}</p>
-      <p className="mt-2 text-sm text-slate-400">{detail}</p>
+    <div className="flex items-baseline justify-between gap-4 border-b border-white/5 py-2.5 last:border-0">
+      <span className="text-xs text-slate-400 shrink-0">{label}</span>
+      <span className="text-sm text-white text-right truncate max-w-[200px]">{value}</span>
     </div>
   );
 }
