@@ -9,6 +9,7 @@ WineNow is a Next.js 14 starter for managing wine and liquor product intelligenc
 - render-safe validation checks before charting/export
 - expanded Supabase schema for taxonomy registries and import runs
 - wired the provided Supabase project URL + publishable key into safe environment-based config
+- added VS Code tasks/launch support so the frontend can be opened directly from VS Code
 - documented Excel import workflow plus a starter CSV template
 
 ## Getting started
@@ -20,6 +21,23 @@ npm run dev
 ```
 
 Then open <http://localhost:3000>.
+
+## Open the frontend from VS Code
+
+This repo now includes a VS Code-friendly frontend workflow:
+
+```bash
+npm run dev:vscode
+```
+
+That script binds Next.js to `0.0.0.0:3000`, which makes port-forwarding in VS Code / remote workspaces much easier.
+
+Also included:
+
+- `.vscode/tasks.json` – install + dev server tasks
+- `.vscode/launch.json` – one-click browser launch for the frontend
+- `.vscode/extensions.json` – recommended editor extensions
+- `docs/vscode-frontend-access.md` – step-by-step VS Code usage guide
 
 ## Supabase project setup
 
@@ -51,4 +69,5 @@ or the Supabase SQL editor. See `docs/supabase-setup.md` for the full flow.
 - `supabase/schema.sql` – database schema for products, taxonomy, and import run tracking
 - `docs/excel-import-process.md` – step-by-step Excel import process
 - `docs/supabase-setup.md` – project-specific Supabase setup instructions
+- `docs/vscode-frontend-access.md` – VS Code frontend launch instructions
 - `public/templates/winenow-import-template.csv` – starter import template
