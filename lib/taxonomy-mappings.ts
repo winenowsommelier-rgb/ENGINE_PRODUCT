@@ -1,5 +1,52 @@
-<<<<<<< HEAD
 import { type RawImportRow } from '@/lib/data';
+import countriesJson from '@/data/taxonomy/countries.json';
+import regionsJson from '@/data/taxonomy/regions.json';
+import ingredientMasterJson from '@/data/taxonomy/ingredient_master.json';
+
+// ── JSON-driven taxonomy maps ────────────────────────────────────────────────
+
+export type CountryRecord = { id: number; name: string; iso: string };
+export type RegionRecord = { id: number; country_id: number; name: string; [key: string]: unknown };
+export type IngredientRecord = { ingredient_id: number; ingredient: string; synonyms?: string | null };
+
+const countries: CountryRecord[] = (countriesJson.rows ?? []) as CountryRecord[];
+const regions: RegionRecord[] = (regionsJson.rows ?? []) as RegionRecord[];
+const ingredients: IngredientRecord[] = (ingredientMasterJson.rows ?? []) as IngredientRecord[];
+
+export const countryIsoMap: Record<string, string> = countries.reduce((acc, row) => {
+  if (row.name && row.iso) acc[row.name.trim()] = row.iso.trim();
+  return acc;
+}, {} as Record<string, string>);
+
+const countryById = countries.reduce((acc, row) => {
+  if (row.id != null) acc[row.id] = row.name;
+  return acc;
+}, {} as Record<number, string>);
+
+export const regionCountryMap: Record<string, string> = regions.reduce((acc, row) => {
+  const region = String(row.name ?? '').trim();
+  const country = row.country_id != null ? countryById[row.country_id as number] : undefined;
+  if (region && country) acc[region] = country;
+  return acc;
+}, {} as Record<string, string>);
+
+export const grapeAliasMap: Record<string, string> = ingredients.reduce((acc, row) => {
+  const canonical = String(row.ingredient ?? '').trim();
+  const synonyms = String(row.synonyms ?? '').split(';').map((s) => s.trim()).filter(Boolean);
+  for (const alias of [canonical, ...synonyms]) {
+    const key = alias.toLowerCase();
+    if (key) acc[key] = canonical;
+  }
+  return acc;
+}, {} as Record<string, string>);
+
+export const taxonomyMappings = {
+  countryIsoMap,
+  regionCountryMap,
+  grapeAliasMap
+};
+
+// ── CSV upload utilities ─────────────────────────────────────────────────────
 
 export const requiredUploadFields: Array<keyof RawImportRow> = ['sku', 'name', 'price'];
 
@@ -148,49 +195,3 @@ export function mapMagentoCsvToImportRows(text: string, sourceFile: string): Upl
     mappedRowCount: mappedRows.length
   };
 }
-=======
-import countriesJson from '@/data/taxonomy/countries.json';
-import regionsJson from '@/data/taxonomy/regions.json';
-import ingredientMasterJson from '@/data/taxonomy/ingredient_master.json';
-
-export type CountryRecord = { id: number; name: string; iso: string };
-export type RegionRecord = { id: number; country_id: number; name: string; [key: string]: any };
-export type IngredientRecord = { ingredient_id: number; ingredient: string; synonyms?: string | null };
-
-const countries: CountryRecord[] = (countriesJson.rows ?? []) as any;
-const regions: RegionRecord[] = (regionsJson.rows ?? []) as any;
-const ingredients: IngredientRecord[] = (ingredientMasterJson.rows ?? []) as any;
-
-export const countryIsoMap: Record<string, string> = countries.reduce((acc, row) => {
-  if (row.name && row.iso) acc[row.name.trim()] = row.iso.trim();
-  return acc;
-}, {} as Record<string, string>);
-
-const countryById = countries.reduce((acc, row) => {
-  if (row.id != null) acc[row.id] = row.name;
-  return acc;
-}, {} as Record<number, string>);
-
-export const regionCountryMap: Record<string, string> = regions.reduce((acc, row) => {
-  const region = row.name?.trim();
-  const country = row.country_id != null ? countryById[row.country_id] : undefined;
-  if (region && country) acc[region] = country;
-  return acc;
-}, {} as Record<string, string>);
-
-export const grapeAliasMap: Record<string, string> = ingredients.reduce((acc, row) => {
-  const canonical = String(row.ingredient || '').trim();
-  const synonyms = String(row.synonyms || '').split(';').map((s) => s.trim()).filter(Boolean);
-  for (const alias of [canonical, ...synonyms]) {
-    const key = alias.toLowerCase();
-    if (key) acc[key] = canonical;
-  }
-  return acc;
-}, {} as Record<string, string>);
-
-export const taxonomyMappings = {
-  countryIsoMap,
-  regionCountryMap,
-  grapeAliasMap
-};
->>>>>>> f2a3efe (Optimize for Vercel: server-side Magento data, PIM redesign, merge conflict fixes)

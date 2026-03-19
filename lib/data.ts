@@ -123,11 +123,7 @@ export const products: ProductRecord[] = [
   }
 ];
 
-<<<<<<< HEAD
-export const rawImportRows: RawImportRow[] = [
-=======
 export const sampleRawImportRows: RawImportRow[] = [
->>>>>>> f2a3efe (Optimize for Vercel: server-side Magento data, PIM redesign, merge conflict fixes)
   {
     sku: ' wn-1003 ',
     name: 'Golden Mesa Reserve Cabernet',
