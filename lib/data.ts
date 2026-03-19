@@ -11,6 +11,7 @@ export type ProductRecord = {
   currency: string;
   status: 'Ready' | 'Needs review' | 'Draft';
   oak: number;
+  country?: string;
 };
 
 export type FlavorProfile = {
@@ -44,6 +45,21 @@ export type TaxonomyMetric = {
   trend: string;
 };
 
+export type RawImportRow = {
+  sku: string;
+  name: string;
+  category: string;
+  type: string;
+  grape: string;
+  region: string;
+  style: string;
+  price: string;
+  costPrice: string;
+  currency: string;
+  status: string;
+  oak: string;
+};
+
 export const products: ProductRecord[] = [
   {
     sku: 'WN-1001',
@@ -57,7 +73,8 @@ export const products: ProductRecord[] = [
     costPrice: 19,
     currency: 'USD',
     status: 'Ready',
-    oak: 4
+    oak: 4,
+    country: 'USA'
   },
   {
     sku: 'WN-1002',
@@ -71,7 +88,8 @@ export const products: ProductRecord[] = [
     costPrice: 10,
     currency: 'USD',
     status: 'Ready',
-    oak: 0
+    oak: 0,
+    country: 'New Zealand'
   },
   {
     sku: 'WN-2010',
@@ -85,7 +103,8 @@ export const products: ProductRecord[] = [
     costPrice: 28,
     currency: 'USD',
     status: 'Needs review',
-    oak: 3
+    oak: 3,
+    country: 'Mexico'
   },
   {
     sku: 'WN-3100',
@@ -99,14 +118,60 @@ export const products: ProductRecord[] = [
     costPrice: 16,
     currency: 'USD',
     status: 'Draft',
-    oak: 2
+    oak: 2,
+    country: 'USA'
+  }
+];
+
+export const rawImportRows: RawImportRow[] = [
+  {
+    sku: ' wn-1003 ',
+    name: 'Golden Mesa Reserve Cabernet',
+    category: 'wine',
+    type: 'red wine',
+    grape: 'cab sauv',
+    region: 'napa',
+    style: 'structured oak aged',
+    price: '42',
+    costPrice: '20',
+    currency: 'usd',
+    status: 'ready',
+    oak: '6'
+  },
+  {
+    sku: '',
+    name: 'Untitled Marlboro Blanc',
+    category: 'wine',
+    type: 'white wine',
+    grape: 'sauv blanc',
+    region: 'marlboro',
+    style: 'crisp aromatic',
+    price: '19',
+    costPrice: '8',
+    currency: 'usd',
+    status: 'draft',
+    oak: '0'
+  },
+  {
+    sku: '  wn-2011',
+    name: 'Casa Naranja Highland Reposado',
+    category: 'spirits',
+    type: 'agave spirit',
+    grape: 'agave',
+    region: 'jalisco',
+    style: 'barrel rested',
+    price: '54',
+    costPrice: '27',
+    currency: 'usd',
+    status: 'needs review',
+    oak: '3'
   }
 ];
 
 export const taxonomyMetrics: TaxonomyMetric[] = [
   { label: 'Active SKUs', count: 10482, trend: '+12.4% vs last import' },
   { label: 'Low confidence rows', count: 182, trend: '1.7% of current batch' },
-  { label: 'DNA rules', count: 96, trend: '24 style + grape + regional maps' },
+  { label: 'Taxonomy tabs', count: 10, trend: 'Loaded from the global taxonomy workbook' },
   { label: 'Exports', count: 38, trend: 'Magento-ready feeds this week' }
 ];
 
@@ -152,11 +217,10 @@ export const regionModifiers = [
   { region: 'Jalisco Highlands', bodyMod: 0.3, acidityMod: 0.1, tanninMod: 0, intensityMod: 0.4 }
 ];
 
-export const uploadPipeline = [
-  'Parse CSV or XLSX upload',
-  'Validate required schema and normalize taxonomy',
-  'Resolve known SKU collisions and delta updates',
-  'Apply flavor DNA + region modifier rules',
-  'Send incomplete records for AI enrichment',
-  'Persist clean rows, error report, and confidence score'
+export const excelImportSteps = [
+  'Download the CSV template and keep the header row unchanged.',
+  'Paste or export your Excel data into the template columns.',
+  'Normalize obvious duplicates such as cab sauv, marlboro, or lowercase currency values.',
+  'Run the self-healing import preview to review auto-corrections and unresolved errors.',
+  'Approve only rows with valid SKU plus acceptable confidence before database import/export.'
 ];

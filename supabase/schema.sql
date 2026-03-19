@@ -9,10 +9,12 @@ create table if not exists products (
   grape text not null,
   region text not null,
   style text not null,
+  country text,
   price numeric(10,2) not null,
   cost_price numeric(10,2),
   currency text not null default 'USD',
   status text not null default 'draft',
+  confidence_score numeric(3,1) check (confidence_score between 0 and 5),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -69,6 +71,42 @@ create table if not exists region_modifier (
   intensity_mod numeric(3,1) not null
 );
 
+create table if not exists taxonomy_registry (
+  id uuid primary key default gen_random_uuid(),
+  machine_name text not null unique,
+  display_name text not null,
+  source_sheet text not null,
+  record_count integer not null default 0,
+  sync_status text not null default 'draft',
+  issue_summary jsonb not null default '[]'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists import_runs (
+  id uuid primary key default gen_random_uuid(),
+  source_filename text not null,
+  source_format text not null check (source_format in ('csv', 'xlsx')),
+  status text not null default 'uploaded',
+  total_rows integer not null default 0,
+  corrected_rows integer not null default 0,
+  blocked_rows integer not null default 0,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists import_run_rows (
+  id uuid primary key default gen_random_uuid(),
+  import_run_id uuid not null references import_runs(id) on delete cascade,
+  sku text,
+  raw_payload jsonb not null,
+  normalized_payload jsonb,
+  corrections jsonb not null default '[]'::jsonb,
+  issues jsonb not null default '[]'::jsonb,
+  confidence_score numeric(3,1) check (confidence_score between 0 and 5),
+  is_render_safe boolean not null default false
+);
+
 create index if not exists products_category_idx on products(category);
 create index if not exists products_status_idx on products(status);
 create index if not exists products_region_idx on products(region);
+create index if not exists import_run_rows_import_run_id_idx on import_run_rows(import_run_id);
+create index if not exists import_runs_status_idx on import_runs(status);

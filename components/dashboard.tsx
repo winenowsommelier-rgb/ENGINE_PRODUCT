@@ -1,29 +1,34 @@
 'use client';
 
-import { DatabaseZap, FileUp, Filter, Sparkles, Tags } from 'lucide-react';
-import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts';
+import type { ReactNode } from 'react';
+import { useMemo, useState } from 'react';
 import { buildFlavorProfile, calculateConfidence } from '@/lib/auto-mapping';
+import { runBatchProcessing } from '@/lib/batch-pipeline';
 import {
+  excelImportSteps,
   flavorWheel,
   productLibraryStats,
   products,
+  rawImportRows,
   samplePairing,
-  taxonomyMetrics,
-  uploadPipeline
+  taxonomyMetrics
 } from '@/lib/data';
-import { runPipelinePreview } from '@/lib/batch-pipeline';
+import { validateRenderedProduct } from '@/lib/render-validation';
+import { taxonomyAuditIssues, taxonomyCountries, taxonomySheets } from '@/lib/taxonomy';
+import { getSupabaseReadiness, supabaseProject } from '@/lib/supabase/config';
 
-const focusProduct = products[0];
-const focusProfile = buildFlavorProfile(focusProduct);
-const radarData = [
-  { metric: 'Body', value: focusProfile.body },
-  { metric: 'Acidity', value: focusProfile.acidity },
-  { metric: 'Tannin', value: focusProfile.tannin },
-  { metric: 'Sweetness', value: focusProfile.sweetness },
-  { metric: 'Intensity', value: focusProfile.intensity },
-  { metric: 'Finish', value: focusProfile.finish }
-];
-const pipelinePreview = runPipelinePreview(products);
+const workspaces = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'catalog', label: 'Catalog workspace' },
+  { id: 'import', label: 'Import studio' },
+  { id: 'taxonomy', label: 'Taxonomy control' },
+  { id: 'launch', label: 'Launch frontend' }
+] as const;
+
+type WorkspaceId = (typeof workspaces)[number]['id'];
+
+const batchResult = runBatchProcessing(rawImportRows);
+const supabaseReadiness = getSupabaseReadiness();
 
 function CardHeader({ eyebrow, title, body }: { eyebrow: string; title: string; body: string }) {
   return (
@@ -37,26 +42,114 @@ function CardHeader({ eyebrow, title, body }: { eyebrow: string; title: string; 
   );
 }
 
+function StatusPill({ tone, children }: { tone: 'neutral' | 'good' | 'warn' | 'bad'; children: ReactNode }) {
+  const styles = {
+    neutral: 'border-white/10 bg-white/5 text-slate-200',
+    good: 'border-emerald-400/20 bg-emerald-500/15 text-emerald-100',
+    warn: 'border-amber-400/20 bg-amber-500/15 text-amber-100',
+    bad: 'border-rose-400/20 bg-rose-500/15 text-rose-100'
+  };
+
+  return <span className={`rounded-full border px-3 py-1 text-xs ${styles[tone]}`}>{children}</span>;
+}
+
+function MetricCard({ label, value, detail }: { label: string; value: string; detail: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+      <p className="metric-label">{label}</p>
+      <p className="metric-value mt-3">{value}</p>
+      <p className="mt-2 text-sm text-slate-400">{detail}</p>
+    </div>
+  );
+}
+
+function SimpleRadar({ values }: { values: Array<{ label: string; value: number }> }) {
+  const center = 110;
+  const radius = 82;
+  const levels = [0.2, 0.4, 0.6, 0.8, 1];
+  const points = values.map((item, index) => {
+    const angle = (-Math.PI / 2) + (index * Math.PI * 2) / values.length;
+    const scaledRadius = radius * (item.value / 5);
+    return {
+      ...item,
+      x: center + Math.cos(angle) * scaledRadius,
+      y: center + Math.sin(angle) * scaledRadius,
+      labelX: center + Math.cos(angle) * (radius + 24),
+      labelY: center + Math.sin(angle) * (radius + 24)
+    };
+  });
+
+  const polygon = points.map((point) => `${point.x},${point.y}`).join(' ');
+
+  return (
+    <svg viewBox="0 0 220 220" className="h-full w-full">
+      {levels.map((level) => {
+        const levelPoints = values
+          .map((_, index) => {
+            const angle = (-Math.PI / 2) + (index * Math.PI * 2) / values.length;
+            const scaledRadius = radius * level;
+            return `${center + Math.cos(angle) * scaledRadius},${center + Math.sin(angle) * scaledRadius}`;
+          })
+          .join(' ');
+
+        return <polygon key={level} points={levelPoints} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />;
+      })}
+      {points.map((point) => (
+        <line key={point.label} x1={center} y1={center} x2={point.labelX - (point.labelX - center) * 0.18} y2={point.labelY - (point.labelY - center) * 0.18} stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+      ))}
+      <polygon points={polygon} fill="rgba(124,58,237,0.32)" stroke="#A78BFA" strokeWidth="2" />
+      {points.map((point) => (
+        <g key={`${point.label}-marker`}>
+          <circle cx={point.x} cy={point.y} r="3.5" fill="#E9D5FF" />
+          <text x={point.labelX} y={point.labelY} fill="#CBD5E1" fontSize="11" textAnchor="middle">
+            {point.label}
+          </text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 export function Dashboard() {
+  const [activeWorkspace, setActiveWorkspace] = useState<WorkspaceId>('overview');
+  const [selectedSku, setSelectedSku] = useState(products[0].sku);
+  const [selectedImportIndex, setSelectedImportIndex] = useState(0);
+
+  const selectedProduct = useMemo(
+    () => products.find((product) => product.sku === selectedSku) ?? products[0],
+    [selectedSku]
+  );
+  const selectedProfile = useMemo(() => buildFlavorProfile(selectedProduct), [selectedProduct]);
+  const renderChecks = useMemo(() => validateRenderedProduct(selectedProduct, selectedProfile), [selectedProduct, selectedProfile]);
+  const selectedImportRow = batchResult.rows[selectedImportIndex] ?? batchResult.rows[0];
+  const radarData = [
+    { label: 'Body', value: selectedProfile.body },
+    { label: 'Acidity', value: selectedProfile.acidity },
+    { label: 'Tannin', value: selectedProfile.tannin },
+    { label: 'Sweetness', value: selectedProfile.sweetness },
+    { label: 'Intensity', value: selectedProfile.intensity },
+    { label: 'Finish', value: selectedProfile.finish }
+  ];
+
   return (
     <main className="mx-auto flex min-h-screen max-w-7xl flex-col gap-6 px-6 py-8 lg:px-8">
       <section className="panel overflow-hidden p-8">
         <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl space-y-6">
             <div className="inline-flex items-center gap-2 rounded-full border border-violet-400/30 bg-violet-500/10 px-4 py-2 text-sm text-violet-100">
-              <Sparkles className="h-4 w-4" />
+              <span aria-hidden="true">🍷</span>
               WineNow Flavor Intelligence System
             </div>
             <div className="space-y-4">
               <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-white md:text-6xl">
-                Premium product intelligence for 10,000+ wine and liquor SKUs.
+                Frontend workspace for catalog review, self-healing imports, and flavor intelligence.
               </h1>
               <p className="max-w-3xl text-lg text-slate-300">
-                Manage taxonomy, visualize flavor DNA, enrich missing tasting notes, and orchestrate bulk imports from a single modern control center.
+                This build focuses on a frontend you can run directly, inspect quickly, and use as the access point for product catalog, taxonomy health, import validation, and Supabase readiness.
               </p>
             </div>
             <div className="flex flex-wrap gap-3 text-sm text-slate-200">
-              {['Spreadsheet editing', 'AI enrichment', 'Flavor radar + wheel', 'Batch validation', 'Magento-ready export'].map((pill) => (
+              {['Frontend ready', 'Catalog explorer', 'Import review queue', 'Taxonomy audit', 'Supabase-aware launch guide'].map((pill) => (
                 <span key={pill} className="rounded-full border border-white/10 bg-white/5 px-4 py-2">
                   {pill}
                 </span>
@@ -66,219 +159,457 @@ export function Dashboard() {
 
           <div className="grid w-full gap-4 sm:grid-cols-2 lg:max-w-xl">
             {taxonomyMetrics.map((metric) => (
-              <div key={metric.label} className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                <p className="metric-label">{metric.label}</p>
-                <p className="metric-value mt-3">{metric.count.toLocaleString()}</p>
-                <p className="mt-2 text-sm text-slate-400">{metric.trend}</p>
-              </div>
+              <MetricCard key={metric.label} label={metric.label} value={metric.count.toLocaleString()} detail={metric.trend} />
             ))}
           </div>
         </div>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
-        <div className="panel p-6">
-          <CardHeader
-            eyebrow="Product table"
-            title="Spreadsheet-like library management"
-            body="Searchable catalog rows provide inline SKU context for pricing, taxonomy, confidence scoring, and AI enrichment readiness."
-          />
-          <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
-            <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr_100px_120px] gap-3 bg-white/10 px-4 py-3 text-xs uppercase tracking-[0.22em] text-slate-400">
-              <span>Name</span>
-              <span>Grape / base</span>
-              <span>Region</span>
-              <span>Style</span>
-              <span>Price</span>
-              <span>Status</span>
-            </div>
-            {products.map((product) => {
-              const confidence = calculateConfidence(product);
-              return (
-                <div
-                  key={product.sku}
-                  className="grid grid-cols-[1.2fr_1fr_1fr_1fr_100px_120px] gap-3 border-t border-white/10 px-4 py-4 text-sm text-slate-100"
-                >
-                  <div>
-                    <p className="font-medium text-white">{product.name}</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-500">{product.sku}</p>
-                  </div>
-                  <div className="text-slate-300">{product.grape}</div>
-                  <div className="text-slate-300">{product.region}</div>
-                  <div className="text-slate-300">{product.style}</div>
-                  <div className="text-slate-300">${product.price}</div>
-                  <div>
-                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-200">
-                      {product.status} · {confidence.toFixed(1)}/5
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+      <section className="panel p-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-sm font-medium text-white">Choose a workspace</p>
+            <p className="mt-1 text-sm text-slate-400">Open the part of the frontend you need right now.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {workspaces.map((workspace) => (
+              <button
+                key={workspace.id}
+                type="button"
+                onClick={() => setActiveWorkspace(workspace.id)}
+                className={`rounded-full border px-4 py-2 text-sm transition ${
+                  activeWorkspace === workspace.id
+                    ? 'border-violet-400/50 bg-violet-500/20 text-white'
+                    : 'border-white/10 bg-white/5 text-slate-300 hover:border-white/20 hover:text-white'
+                }`}
+              >
+                {workspace.label}
+              </button>
+            ))}
           </div>
         </div>
+      </section>
 
-        <div className="space-y-6">
+      {activeWorkspace === 'overview' && (
+        <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <div className="panel p-6">
             <CardHeader
-              eyebrow="Flavor visualization"
-              title="Radar chart + taste matrix"
-              body="Flavor attributes are generated from the DNA engine and rendered for merchandisers, sommeliers, and pricing analysts."
+              eyebrow="Launch right now"
+              title="Frontend access in one command"
+              body="You asked for direct frontend access, so the app now centers the launch path and keeps the rest of the setup lightweight."
             />
-            <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] xl:grid-cols-1">
-              <div className="h-72 rounded-3xl border border-white/10 bg-white/5 p-4">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart data={radarData} outerRadius="72%">
-                    <PolarGrid stroke="rgba(255,255,255,0.18)" />
-                    <PolarAngleAxis dataKey="metric" tick={{ fill: '#CBD5E1', fontSize: 12 }} />
-                    <PolarRadiusAxis angle={30} domain={[0, 5]} tick={false} axisLine={false} />
-                    <Radar dataKey="value" stroke="#A78BFA" fill="#7C3AED" fillOpacity={0.45} />
-                    <Tooltip />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="grid gap-3">
-                {flavorWheel.map((item) => (
-                  <div key={item.segment} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <div className="flex items-center justify-between text-sm text-slate-300">
-                      <span>{item.segment}</span>
-                      <span>{item.value.toFixed(1)}/5</span>
-                    </div>
-                    <div className="mt-3 h-2 rounded-full bg-white/10">
-                      <div className="h-2 rounded-full bg-gradient-to-r from-violet-400 to-fuchsia-500" style={{ width: `${(item.value / 5) * 100}%` }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="mt-6 rounded-3xl border border-violet-400/30 bg-violet-500/10 p-5">
+              <p className="text-xs uppercase tracking-[0.22em] text-violet-200">Run from the repository root</p>
+              <code className="mt-3 block overflow-x-auto rounded-2xl bg-slate-950/70 px-4 py-3 text-sm text-violet-100">
+                npm install && npm run dev
+              </code>
+              <p className="mt-3 text-sm text-slate-300">The dev server binds to <span className="font-medium text-white">0.0.0.0:3000</span>, so you can access it from your browser, forwarded port, or remote workspace URL.</p>
+            </div>
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              <MetricCard label="Ready products" value={String(products.length)} detail="Available sample rows in the catalog workspace." />
+              <MetricCard label="Import rows" value={String(batchResult.summary.totalRows)} detail="Preview rows flowing through self-healing checks." />
+              <MetricCard label="Taxonomy countries" value={String(taxonomyCountries.length)} detail="Visible country or market records loaded into the audit view." />
             </div>
           </div>
 
           <div className="panel p-6">
             <CardHeader
-              eyebrow="Product detail"
-              title={focusProduct.name}
-              body="Pairing guidance, structure, and similar-cluster logic stay close to the editable product record."
+              eyebrow="Current system health"
+              title="What this frontend already shows"
+              body="You can inspect the sample catalog, select products, review import fixes, and see validation status before wiring live reads."
             />
-            <div className="mt-6 grid gap-4 text-sm text-slate-300">
+            <div className="mt-6 space-y-4 text-sm text-slate-300">
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs uppercase tracking-[0.22em] text-violet-200">Recommended pairings</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {[...samplePairing.protein, ...samplePairing.cuisine].map((item) => (
-                    <span key={item} className="rounded-full bg-violet-500/15 px-3 py-1 text-xs text-violet-100">
-                      {item}
-                    </span>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-medium text-white">Supabase URL</span>
+                  <StatusPill tone={supabaseReadiness.hasUrl ? 'good' : 'warn'}>{supabaseReadiness.hasUrl ? 'Configured' : 'Missing'}</StatusPill>
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-medium text-white">Publishable key</span>
+                  <StatusPill tone={supabaseReadiness.hasPublishableKey ? 'good' : 'warn'}>{supabaseReadiness.hasPublishableKey ? 'Configured' : 'Missing'}</StatusPill>
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-medium text-white">Database password in env</span>
+                  <StatusPill tone={supabaseReadiness.hasDatabasePassword ? 'good' : 'warn'}>{supabaseReadiness.hasDatabasePassword ? 'Ready' : 'Template only'}</StatusPill>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {activeWorkspace === 'catalog' && (
+        <section className="grid gap-6 xl:grid-cols-[0.88fr_1.12fr]">
+          <div className="panel p-6">
+            <CardHeader
+              eyebrow="Catalog workspace"
+              title="Browse the product library"
+              body="Pick any row to inspect its flavor structure, validation results, and export-facing identity."
+            />
+            <div className="mt-6 space-y-3">
+              {products.map((product) => {
+                const isSelected = product.sku === selectedProduct.sku;
+                return (
+                  <button
+                    key={product.sku}
+                    type="button"
+                    onClick={() => setSelectedSku(product.sku)}
+                    className={`w-full rounded-2xl border p-4 text-left transition ${
+                      isSelected
+                        ? 'border-violet-400/40 bg-violet-500/10'
+                        : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-medium text-white">{product.name}</p>
+                        <p className="mt-1 text-sm text-slate-400">{product.grape} · {product.region} · {product.style}</p>
+                      </div>
+                      <StatusPill tone={product.status === 'Ready' ? 'good' : product.status === 'Needs review' ? 'warn' : 'neutral'}>
+                        {product.status}
+                      </StatusPill>
+                    </div>
+                    <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-300">
+                      <span className="rounded-full border border-white/10 px-3 py-1">{product.sku}</span>
+                      <span className="rounded-full border border-white/10 px-3 py-1">{product.currency} {product.price}</span>
+                      <span className="rounded-full border border-white/10 px-3 py-1">Confidence {calculateConfidence(product).toFixed(1)}/5</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Selected product"
+                title={selectedProduct.name}
+                body="This panel updates as you choose products from the library list."
+              />
+              <div className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+                <div className="rounded-3xl border border-white/10 bg-white/5 p-4">
+                  <div className="h-[280px]">
+                    <SimpleRadar values={radarData} />
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {[
+                      { label: 'Category', value: selectedProduct.category },
+                      { label: 'Type', value: selectedProduct.type },
+                      { label: 'Country', value: selectedProduct.country ?? 'Unknown' },
+                      { label: 'Oak score', value: `${selectedProduct.oak}/5` }
+                    ].map((item) => (
+                      <div key={item.label} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <p className="text-xs uppercase tracking-[0.22em] text-slate-400">{item.label}</p>
+                        <p className="mt-2 text-lg font-semibold text-white">{item.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p className="font-medium text-white">Pairing logic</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {[...samplePairing.protein, ...samplePairing.cuisine].map((item) => (
+                        <span key={item} className="rounded-full bg-violet-500/15 px-3 py-1 text-xs text-violet-100">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="mt-4 text-sm leading-6 text-slate-300">{samplePairing.logic}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+              <div className="panel p-6">
+                <CardHeader
+                  eyebrow="Render safety"
+                  title="Validation before UI and export"
+                  body="These checks confirm the selected product will render safely and remain usable downstream."
+                />
+                <div className="mt-6 space-y-3">
+                  {renderChecks.map((check) => (
+                    <div key={check.label} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="font-medium text-white">{check.label}</span>
+                        <StatusPill tone={check.status === 'pass' ? 'good' : 'warn'}>{check.status}</StatusPill>
+                      </div>
+                      <p className="mt-2">{check.detail}</p>
+                    </div>
                   ))}
                 </div>
-                <p className="mt-4 leading-6">{samplePairing.logic}</p>
               </div>
-              <div className="grid gap-3 sm:grid-cols-3">
+
+              <div className="panel p-6">
+                <CardHeader
+                  eyebrow="Flavor distribution"
+                  title="Taste wheel intensity"
+                  body="A lightweight frontend-friendly chart alternative without extra charting dependencies."
+                />
+                <div className="mt-6 space-y-4">
+                  {flavorWheel.map((item) => (
+                    <div key={item.segment}>
+                      <div className="flex items-center justify-between text-sm text-slate-300">
+                        <span>{item.segment}</span>
+                        <span>{item.value.toFixed(1)}/5</span>
+                      </div>
+                      <div className="mt-2 h-3 overflow-hidden rounded-full bg-white/10">
+                        <div className="h-full rounded-full bg-gradient-to-r from-violet-400 via-fuchsia-500 to-cyan-400" style={{ width: `${(item.value / 5) * 100}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {activeWorkspace === 'import' && (
+        <section className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+          <div className="panel p-6">
+            <CardHeader
+              eyebrow="Import studio"
+              title="Self-healing batch processing preview"
+              body="Choose any staged row to see what the importer normalized, what still needs attention, and why a row is blocked or ready."
+            />
+            <div className="mt-6 grid gap-4 sm:grid-cols-4">
+              <MetricCard label="Rows previewed" value={String(batchResult.summary.totalRows)} detail="Rows currently in the sample import set." />
+              <MetricCard label="Auto-corrected" value={String(batchResult.summary.autoCorrected)} detail="Rows that received at least one automated repair." />
+              <MetricCard label="Ready to import" value={String(batchResult.summary.readyToImport)} detail="Rows with no hard validation errors." />
+              <MetricCard label="Blocked" value={String(batchResult.summary.blocked)} detail="Rows that still require spreadsheet cleanup." />
+            </div>
+            <div className="mt-6 space-y-3">
+              {batchResult.rows.map((row, index) => {
+                const selected = index === selectedImportIndex;
+                const hasError = row.issues.some((issue) => issue.severity === 'error');
+                return (
+                  <button
+                    key={`${row.original.name}-${index}`}
+                    type="button"
+                    onClick={() => setSelectedImportIndex(index)}
+                    className={`w-full rounded-2xl border p-4 text-left transition ${
+                      selected
+                        ? 'border-violet-400/40 bg-violet-500/10'
+                        : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-medium text-white">{row.normalized.name || 'Unnamed row'}</p>
+                        <p className="mt-1 text-sm text-slate-400">{row.normalized.sku || 'Missing SKU'} · {row.normalized.region || 'Unknown region'} · {row.normalized.style || 'Unknown style'}</p>
+                      </div>
+                      <StatusPill tone={hasError ? 'bad' : 'good'}>{hasError ? 'Blocked' : 'Ready'}</StatusPill>
+                    </div>
+                    <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-300">
+                      <span className="rounded-full border border-white/10 px-3 py-1">Corrections {row.corrections.length}</span>
+                      <span className="rounded-full border border-white/10 px-3 py-1">Issues {row.issues.length}</span>
+                      <span className="rounded-full border border-white/10 px-3 py-1">Confidence {row.confidence.toFixed(1)}/5</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Selected row detail"
+                title={selectedImportRow.normalized.name || 'Import row review'}
+                body="Review the exact self-healing output before you approve or fix the original spreadsheet row."
+              />
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 {[
-                  { label: 'Body', value: focusProfile.body },
-                  { label: 'Acidity', value: focusProfile.acidity },
-                  { label: 'Intensity', value: focusProfile.intensity }
-                ].map((metric) => (
-                  <div key={metric.label} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <p className="text-xs uppercase tracking-[0.22em] text-slate-400">{metric.label}</p>
-                    <p className="mt-2 text-2xl font-semibold text-white">{metric.value.toFixed(1)}</p>
+                  { label: 'Normalized SKU', value: selectedImportRow.normalized.sku || 'Missing' },
+                  { label: 'Country', value: selectedImportRow.normalized.country ?? 'Unmapped' },
+                  { label: 'Currency', value: selectedImportRow.normalized.currency },
+                  { label: 'Confidence', value: `${selectedImportRow.confidence.toFixed(1)}/5` }
+                ].map((item) => (
+                  <div key={item.label} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p className="text-xs uppercase tracking-[0.22em] text-slate-400">{item.label}</p>
+                    <p className="mt-2 text-lg font-semibold text-white">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 grid gap-4 lg:grid-cols-2">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="font-medium text-white">Corrections</p>
+                  <div className="mt-3 space-y-2">
+                    {selectedImportRow.corrections.map((correction) => (
+                      <div key={`${correction.field}-${correction.to}`} className="rounded-2xl bg-violet-500/10 px-3 py-3 text-sm text-violet-100">
+                        <p><span className="font-medium">{correction.field}:</span> {correction.from || '∅'} → {correction.to}</p>
+                        <p className="mt-1 text-xs text-violet-200/80">{correction.reason}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="font-medium text-white">Issues</p>
+                  <div className="mt-3 space-y-2">
+                    {selectedImportRow.issues.map((issue, issueIndex) => (
+                      <div
+                        key={`${issue.field}-${issueIndex}`}
+                        className={`rounded-2xl px-3 py-3 text-sm ${
+                          issue.severity === 'error'
+                            ? 'bg-rose-500/15 text-rose-100'
+                            : issue.severity === 'warning'
+                              ? 'bg-amber-500/15 text-amber-100'
+                              : 'bg-emerald-500/15 text-emerald-100'
+                        }`}
+                      >
+                        <p><span className="font-medium">{issue.field}:</span> {issue.message}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Excel process"
+                title="How to use your existing spreadsheet"
+                body="If the workbook cannot be uploaded here, this frontend still gives you the exact prep and validation flow to follow locally."
+              />
+              <div className="mt-6 space-y-3">
+                {excelImportSteps.map((step, index) => (
+                  <div key={step} className="flex gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-violet-500/20 text-violet-100">{index + 1}</div>
+                    <p>{step}</p>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="panel p-6">
-          <CardHeader
-            eyebrow="Upload center"
-            title="Batch ingestion pipeline"
-            body="Bulk CSV/XLSX imports are validated, normalized, enriched, and exported with confidence tracking before publishing."
-          />
-          <div className="mt-6 grid gap-4">
-            <div className="rounded-3xl border border-dashed border-violet-400/40 bg-violet-500/10 p-5 text-sm text-violet-100">
-              <div className="flex items-center gap-3 font-medium text-white">
-                <FileUp className="h-5 w-5 text-violet-300" />
-                Drag and drop batch files for preview
-              </div>
-              <p className="mt-2 text-violet-100/80">
-                Expected columns: SKU, name, category, grape, style, region, status, price, cost price, currency, and 0–5 sensory fields.
-              </p>
+      {activeWorkspace === 'taxonomy' && (
+        <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+          <div className="panel p-6">
+            <CardHeader
+              eyebrow="Taxonomy control"
+              title="Workbook and registry review"
+              body="Track the spreadsheet structure, surface issues, and keep geography / naming rules visible to operators before import."
+            />
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              {taxonomySheets.map((sheet) => (
+                <div key={sheet.name} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="font-medium text-white">{sheet.name}</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">{sheet.purpose}</p>
+                </div>
+              ))}
             </div>
-            <div className="grid gap-3">
-              {pipelinePreview.map((stage) => (
-                <div key={stage.name} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="font-medium text-white">{stage.name}</p>
-                      <p className="mt-1 text-sm text-slate-400">{stage.outcome}</p>
+          </div>
+
+          <div className="space-y-6">
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Audit findings"
+                title="Cleanup recommendations"
+                body="These are the specific consistency issues already identified from the visible workbook structure."
+              />
+              <div className="mt-6 space-y-3">
+                {taxonomyAuditIssues.map((issue) => (
+                  <div key={issue.area} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-medium text-white">{issue.area}</span>
+                      <StatusPill tone={issue.severity === 'warning' ? 'warn' : 'good'}>{issue.severity}</StatusPill>
                     </div>
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs uppercase tracking-[0.18em] ${
-                        stage.status === 'complete'
-                          ? 'bg-emerald-500/15 text-emerald-200'
-                          : stage.status === 'attention'
-                            ? 'bg-amber-500/15 text-amber-200'
-                            : 'bg-slate-500/15 text-slate-300'
-                      }`}
-                    >
-                      {stage.status}
-                    </span>
+                    <p className="mt-2">{issue.message}</p>
+                    <p className="mt-2 text-slate-400">{issue.recommendation}</p>
                   </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="panel p-6">
+              <CardHeader
+                eyebrow="Country registry"
+                title="Visible countries and markets"
+                body="Use this as the current canonical list until the full workbook is imported directly."
+              />
+              <div className="mt-6 max-h-[420px] overflow-auto rounded-2xl border border-white/10 bg-white/5">
+                <div className="grid grid-cols-[70px_1fr_100px] border-b border-white/10 px-4 py-3 text-xs uppercase tracking-[0.22em] text-slate-400">
+                  <span>ID</span>
+                  <span>Name</span>
+                  <span>ISO</span>
                 </div>
-              ))}
+                {taxonomyCountries.map((country) => (
+                  <div key={country.id} className="grid grid-cols-[70px_1fr_100px] border-b border-white/10 px-4 py-3 text-sm text-slate-300 last:border-b-0">
+                    <span>{country.id}</span>
+                    <span>{country.name}</span>
+                    <span>{country.iso}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        </section>
+      )}
 
-        <div className="space-y-6">
+      {activeWorkspace === 'launch' && (
+        <section className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
           <div className="panel p-6">
             <CardHeader
-              eyebrow="Config panel"
-              title="Taxonomy and mapping control"
-              body="Centralized configuration keeps grape DNA, regional modifiers, and scoring logic consistent across every imported row."
+              eyebrow="Launch frontend"
+              title="Direct access without extra setup noise"
+              body="This section keeps the exact commands and expected URLs in one place so you can get to the frontend quickly."
             />
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              {[
-                { icon: Tags, title: 'Grape DNA', text: 'Base body, acidity, tannin, and fruit structure by variety.' },
-                { icon: Filter, title: 'Style DNA', text: 'Override structural logic with finish, sweetness, and intensity tendencies.' },
-                { icon: DatabaseZap, title: 'Region modifiers', text: 'Terroir adjustments calibrate style outputs before AI enrichment.' }
-              ].map((item) => (
-                <div key={item.title} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <item.icon className="h-5 w-5 text-violet-300" />
-                  <p className="mt-3 font-medium text-white">{item.title}</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-400">{item.text}</p>
-                </div>
-              ))}
+            <div className="mt-6 space-y-4 text-sm text-slate-300">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <p className="font-medium text-white">1. Install dependencies</p>
+                <code className="mt-3 block rounded-2xl bg-slate-950/70 px-4 py-3 text-violet-100">npm install</code>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <p className="font-medium text-white">2. Start the frontend</p>
+                <code className="mt-3 block rounded-2xl bg-slate-950/70 px-4 py-3 text-violet-100">npm run dev</code>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <p className="font-medium text-white">3. Open the app</p>
+                <p className="mt-3">Use <span className="font-medium text-white">http://localhost:3000</span> locally, or the forwarded URL from your remote environment.</p>
+              </div>
             </div>
           </div>
 
           <div className="panel p-6">
             <CardHeader
-              eyebrow="Library + export"
-              title="Search, segment, and distribute"
-              body="Merchandisers can locate product families quickly, apply filters, and push approved subsets into CSV or XLSX exports."
+              eyebrow="Supabase context"
+              title="Environment values already prepared"
+              body="The frontend runs on local sample data right away, and these values are ready when you want to connect real reads next."
             />
+            <div className="mt-6 space-y-4 text-sm text-slate-300">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Project URL</p>
+                <p className="mt-2 break-all text-white">{supabaseProject.url}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Publishable key</p>
+                <p className="mt-2 break-all text-white">{supabaseProject.publishableKey}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Database URL template</p>
+                <p className="mt-2 break-all text-white">{supabaseProject.databaseUrl}</p>
+              </div>
+              <div className="rounded-2xl border border-dashed border-violet-400/40 bg-violet-500/10 p-4 text-violet-100">
+                You can run the frontend immediately without a live database. When you are ready, copy <code>.env.example</code> to <code>.env.local</code> and keep the password local-only.
+              </div>
+            </div>
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
               {productLibraryStats.map((item) => (
-                <div key={item.label} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <p className="text-sm text-slate-400">{item.label}</p>
-                  <p className="mt-2 text-3xl font-semibold text-white">{item.value.toLocaleString()}</p>
-                </div>
+                <MetricCard key={item.label} label={item.label} value={item.value.toLocaleString()} detail="Current library stat placeholder." />
               ))}
             </div>
-            <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div className="flex flex-wrap items-center gap-3 text-sm text-slate-300">
-                {uploadPipeline.map((step) => (
-                  <span key={step} className="rounded-full border border-white/10 px-3 py-1">
-                    {step}
-                  </span>
-                ))}
-              </div>
-            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </main>
   );
 }
