@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(124, 58, 237, 0.18), transparent 30%),
+    linear-gradient(180deg, #0f172a 0%, #020617 100%);
+  color: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.panel {
+  @apply rounded-3xl border border-white/10 bg-glass bg-card/75 shadow-panel backdrop-blur-xl;
+}
+
+.metric-value {
+  @apply text-3xl font-semibold tracking-tight text-white;
+}
+
+.metric-label {
+  @apply text-sm uppercase tracking-[0.22em] text-muted;
+}
