@@ -9,9 +9,9 @@ export type CountryRecord = { id: number; name: string; iso: string };
 export type RegionRecord = { id: number; country_id: number; name: string; [key: string]: unknown };
 export type IngredientRecord = { ingredient_id: number; ingredient: string; synonyms?: string | null };
 
-const countries: CountryRecord[] = (countriesJson.rows ?? []) as CountryRecord[];
-const regions: RegionRecord[] = (regionsJson.rows ?? []) as RegionRecord[];
-const ingredients: IngredientRecord[] = (ingredientMasterJson.rows ?? []) as IngredientRecord[];
+const countries: CountryRecord[] = (countriesJson.data ?? []) as CountryRecord[];
+const regions: RegionRecord[] = (regionsJson.data ?? []) as RegionRecord[];
+const ingredients: IngredientRecord[] = (ingredientMasterJson.data ?? []) as IngredientRecord[];
 
 export const countryIsoMap: Record<string, string> = countries.reduce((acc, row) => {
   if (row.name && row.iso) acc[row.name.trim()] = row.iso.trim();

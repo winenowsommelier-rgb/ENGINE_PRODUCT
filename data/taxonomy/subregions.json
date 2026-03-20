@@ -1,1060 +1,776 @@
 {
-  "sheet": "subregions",
-  "headers": [
-    "id",
-    "region_id",
-    "name",
-    "subregion_type"
-  ],
-  "rowCount": 175,
-  "rows": [
+  "data": [
     {
-      "id": 1.0,
-      "region_id": 1.0,
-      "name": "M\u00e9doc",
+      "id": 1,
+      "region_id": 1,
+      "name": "Médoc",
       "subregion_type": "subregion"
     },
     {
-      "id": 2.0,
-      "region_id": 1.0,
+      "id": 2,
+      "region_id": 1,
       "name": "Graves",
       "subregion_type": "subregion"
     },
     {
-      "id": 3.0,
-      "region_id": 1.0,
+      "id": 3,
+      "region_id": 1,
       "name": "Libournais",
       "subregion_type": "subregion"
     },
     {
-      "id": 4.0,
-      "region_id": 1.0,
+      "id": 4,
+      "region_id": 1,
       "name": "Entre-Deux-Mers",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 5.0,
-      "region_id": 2.0,
-      "name": "C\u00f4te de Nuits",
+      "id": 5,
+      "region_id": 2,
+      "name": "Côte de Nuits",
       "subregion_type": "subregion"
     },
     {
-      "id": 6.0,
-      "region_id": 2.0,
-      "name": "C\u00f4te de Beaune",
+      "id": 6,
+      "region_id": 2,
+      "name": "Côte de Beaune",
       "subregion_type": "subregion"
     },
     {
-      "id": 7.0,
-      "region_id": 2.0,
+      "id": 7,
+      "region_id": 2,
       "name": "Chablis",
       "subregion_type": "subregion"
     },
     {
-      "id": 8.0,
-      "region_id": 2.0,
-      "name": "C\u00f4te Chalonnaise",
+      "id": 8,
+      "region_id": 2,
+      "name": "Côte Chalonnaise",
       "subregion_type": "subregion"
     },
     {
-      "id": 9.0,
-      "region_id": 2.0,
-      "name": "M\u00e2connais",
+      "id": 9,
+      "region_id": 2,
+      "name": "Mâconnais",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 10.0,
-      "region_id": 3.0,
+      "id": 10,
+      "region_id": 3,
       "name": "Montagne de Reims",
       "subregion_type": "subregion"
     },
     {
-      "id": 11.0,
-      "region_id": 3.0,
-      "name": "Vall\u00e9e de la Marne",
+      "id": 11,
+      "region_id": 3,
+      "name": "Vallée de la Marne",
       "subregion_type": "subregion"
     },
     {
-      "id": 12.0,
-      "region_id": 3.0,
-      "name": "C\u00f4te des Blancs",
+      "id": 12,
+      "region_id": 3,
+      "name": "Côte des Blancs",
       "subregion_type": "subregion"
     },
     {
-      "id": 13.0,
-      "region_id": 3.0,
-      "name": "C\u00f4te de S\u00e9zanne",
+      "id": 13,
+      "region_id": 3,
+      "name": "Côte de Sézanne",
       "subregion_type": "subregion"
     },
     {
-      "id": 14.0,
-      "region_id": 3.0,
+      "id": 14,
+      "region_id": 3,
       "name": "Aube",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 15.0,
-      "region_id": 4.0,
-      "name": "Northern Rh\u00f4ne",
+      "id": 15,
+      "region_id": 4,
+      "name": "Northern Rhône",
       "subregion_type": "subregion"
     },
     {
-      "id": 16.0,
-      "region_id": 4.0,
-      "name": "Southern Rh\u00f4ne",
+      "id": 16,
+      "region_id": 4,
+      "name": "Southern Rhône",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 17.0,
-      "region_id": 5.0,
+      "id": 17,
+      "region_id": 5,
       "name": "Touraine",
       "subregion_type": "subregion"
     },
     {
-      "id": 18.0,
-      "region_id": 5.0,
+      "id": 18,
+      "region_id": 5,
       "name": "Anjou-Saumur",
       "subregion_type": "subregion"
     },
     {
-      "id": 19.0,
-      "region_id": 5.0,
+      "id": 19,
+      "region_id": 5,
       "name": "Central Loire",
       "subregion_type": "subregion"
     },
     {
-      "id": 20.0,
-      "region_id": 5.0,
+      "id": 20,
+      "region_id": 5,
       "name": "Muscadet",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 21.0,
-      "region_id": 6.0,
-      "name": "C\u00f4tes de Provence",
+      "id": 21,
+      "region_id": 6,
+      "name": "Côtes de Provence",
       "subregion_type": "subregion"
     },
     {
-      "id": 22.0,
-      "region_id": 6.0,
+      "id": 22,
+      "region_id": 6,
       "name": "Bandol",
       "subregion_type": "subregion"
     },
     {
-      "id": 23.0,
-      "region_id": 6.0,
+      "id": 23,
+      "region_id": 6,
       "name": "Cassis",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 24.0,
-      "region_id": 7.0,
-      "name": "Corbi\u00e8res",
+      "id": 24,
+      "region_id": 7,
+      "name": "Corbières",
       "subregion_type": "subregion"
     },
     {
-      "id": 25.0,
-      "region_id": 7.0,
+      "id": 25,
+      "region_id": 7,
       "name": "Minervois",
       "subregion_type": "subregion"
     },
     {
-      "id": 26.0,
-      "region_id": 7.0,
+      "id": 26,
+      "region_id": 7,
       "name": "Pays d'Oc",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 27.0,
-      "region_id": 10.0,
+      "id": 27,
+      "region_id": 10,
       "name": "Cahors",
       "subregion_type": "subregion"
     },
     {
-      "id": 28.0,
-      "region_id": 10.0,
+      "id": 28,
+      "region_id": 10,
       "name": "Madiran",
       "subregion_type": "subregion"
     },
     {
-      "id": 29.0,
-      "region_id": 10.0,
-      "name": "Juran\u00e7on",
+      "id": 29,
+      "region_id": 10,
+      "name": "Jurançon",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 30.0,
-      "region_id": 11.0,
+      "id": 30,
+      "region_id": 11,
       "name": "Chianti",
       "subregion_type": "subregion"
     },
     {
-      "id": 31.0,
-      "region_id": 11.0,
+      "id": 31,
+      "region_id": 11,
       "name": "Montalcino",
       "subregion_type": "subregion"
     },
     {
-      "id": 32.0,
-      "region_id": 11.0,
+      "id": 32,
+      "region_id": 11,
       "name": "Montepulciano",
       "subregion_type": "subregion"
     },
     {
-      "id": 33.0,
-      "region_id": 11.0,
+      "id": 33,
+      "region_id": 11,
       "name": "Bolgheri",
       "subregion_type": "subregion"
     },
     {
-      "id": 34.0,
-      "region_id": 11.0,
+      "id": 34,
+      "region_id": 11,
       "name": "Maremma",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 35.0,
-      "region_id": 12.0,
+      "id": 35,
+      "region_id": 12,
       "name": "Langhe",
       "subregion_type": "subregion"
     },
     {
-      "id": 36.0,
-      "region_id": 12.0,
+      "id": 36,
+      "region_id": 12,
       "name": "Roero",
       "subregion_type": "subregion"
     },
     {
-      "id": 37.0,
-      "region_id": 12.0,
+      "id": 37,
+      "region_id": 12,
       "name": "Monferrato",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 38.0,
-      "region_id": 13.0,
+      "id": 38,
+      "region_id": 13,
       "name": "Valpolicella",
       "subregion_type": "subregion"
     },
     {
-      "id": 39.0,
-      "region_id": 13.0,
+      "id": 39,
+      "region_id": 13,
       "name": "Soave",
       "subregion_type": "subregion"
     },
     {
-      "id": 40.0,
-      "region_id": 13.0,
+      "id": 40,
+      "region_id": 13,
       "name": "Conegliano-Valdobbiadene",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 41.0,
-      "region_id": 14.0,
+      "id": 41,
+      "region_id": 14,
       "name": "Etna",
       "subregion_type": "subregion"
     },
     {
-      "id": 42.0,
-      "region_id": 14.0,
+      "id": 42,
+      "region_id": 14,
       "name": "Vittoria",
       "subregion_type": "subregion"
     },
     {
-      "id": 43.0,
-      "region_id": 14.0,
+      "id": 43,
+      "region_id": 14,
       "name": "Marsala",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 44.0,
-      "region_id": 15.0,
+      "id": 44,
+      "region_id": 15,
       "name": "Manduria",
       "subregion_type": "subregion"
     },
     {
-      "id": 45.0,
-      "region_id": 15.0,
+      "id": 45,
+      "region_id": 15,
       "name": "Salento",
       "subregion_type": "subregion"
     },
     {
-      "id": 46.0,
-      "region_id": 15.0,
+      "id": 46,
+      "region_id": 15,
       "name": "Castel del Monte",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 47.0,
-      "region_id": 16.0,
+      "id": 47,
+      "region_id": 16,
       "name": "Adige Valley",
       "subregion_type": "subregion"
     },
     {
-      "id": 48.0,
-      "region_id": 16.0,
+      "id": 48,
+      "region_id": 16,
       "name": "Alto Adige",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 49.0,
-      "region_id": 17.0,
+      "id": 49,
+      "region_id": 17,
       "name": "Collio",
       "subregion_type": "subregion"
     },
     {
-      "id": 50.0,
-      "region_id": 17.0,
+      "id": 50,
+      "region_id": 17,
       "name": "Colli Orientali del Friuli",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 51.0,
-      "region_id": 18.0,
+      "id": 51,
+      "region_id": 18,
       "name": "Lambrusco Zones",
       "subregion_type": "subregion"
     },
     {
-      "id": 52.0,
-      "region_id": 18.0,
+      "id": 52,
+      "region_id": 18,
       "name": "Romagna",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 53.0,
-      "region_id": 19.0,
+      "id": 53,
+      "region_id": 19,
       "name": "Rioja Alta",
       "subregion_type": "subregion"
     },
     {
-      "id": 54.0,
-      "region_id": 19.0,
+      "id": 54,
+      "region_id": 19,
       "name": "Rioja Alavesa",
       "subregion_type": "subregion"
     },
     {
-      "id": 55.0,
-      "region_id": 19.0,
+      "id": 55,
+      "region_id": 19,
       "name": "Rioja Oriental",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 56.0,
-      "region_id": 24.0,
-      "name": "Pened\u00e8s",
+      "id": 56,
+      "region_id": 24,
+      "name": "Penedès",
       "subregion_type": "subregion"
     },
     {
-      "id": 57.0,
-      "region_id": 24.0,
+      "id": 57,
+      "region_id": 24,
       "name": "Montsant",
       "subregion_type": "subregion"
     },
     {
-      "id": 58.0,
-      "region_id": 24.0,
+      "id": 58,
+      "region_id": 24,
       "name": "Cava DO Area",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 59.0,
-      "region_id": 31.0,
+      "id": 59,
+      "region_id": 31,
       "name": "Napa Valley",
       "subregion_type": "subregion"
     },
     {
-      "id": 60.0,
-      "region_id": 31.0,
+      "id": 60,
+      "region_id": 31,
       "name": "Sonoma County",
       "subregion_type": "subregion"
     },
     {
-      "id": 61.0,
-      "region_id": 31.0,
+      "id": 61,
+      "region_id": 31,
       "name": "Central Coast",
       "subregion_type": "subregion"
     },
     {
-      "id": 62.0,
-      "region_id": 31.0,
+      "id": 62,
+      "region_id": 31,
       "name": "Sierra Foothills",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 63.0,
-      "region_id": 32.0,
+      "id": 63,
+      "region_id": 32,
       "name": "Willamette Valley",
       "subregion_type": "subregion"
     },
     {
-      "id": 64.0,
-      "region_id": 32.0,
+      "id": 64,
+      "region_id": 32,
       "name": "Umpqua Valley",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 65.0,
-      "region_id": 33.0,
+      "id": 65,
+      "region_id": 33,
       "name": "Columbia Valley",
       "subregion_type": "subregion"
     },
     {
-      "id": 66.0,
-      "region_id": 33.0,
+      "id": 66,
+      "region_id": 33,
       "name": "Walla Walla Valley",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 67.0,
-      "region_id": 35.0,
+      "id": 67,
+      "region_id": 35,
       "name": "Alto Maipo",
       "subregion_type": "subregion"
     },
     {
-      "id": 68.0,
-      "region_id": 35.0,
+      "id": 68,
+      "region_id": 35,
       "name": "Maipo Andes",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 69.0,
-      "region_id": 36.0,
+      "id": 69,
+      "region_id": 36,
       "name": "Apalta",
       "subregion_type": "subregion"
     },
     {
-      "id": 70.0,
-      "region_id": 36.0,
-      "name": "Marchig\u00fce",
+      "id": 70,
+      "region_id": 36,
+      "name": "Marchigüe",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 71.0,
-      "region_id": 37.0,
+      "id": 71,
+      "region_id": 37,
       "name": "Casablanca Valley Costa",
       "subregion_type": "subregion"
     },
     {
-      "id": 72.0,
-      "region_id": 37.0,
+      "id": 72,
+      "region_id": 37,
       "name": "San Antonio / Leyda",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 73.0,
-      "region_id": 38.0,
-      "name": "Luj\u00e1n de Cuyo",
+      "id": 73,
+      "region_id": 38,
+      "name": "Luján de Cuyo",
       "subregion_type": "subregion"
     },
     {
-      "id": 74.0,
-      "region_id": 38.0,
+      "id": 74,
+      "region_id": 38,
       "name": "Uco Valley",
       "subregion_type": "subregion"
     },
     {
-      "id": 75.0,
-      "region_id": 38.0,
-      "name": "Maip\u00fa",
+      "id": 75,
+      "region_id": 38,
+      "name": "Maipú",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 76.0,
-      "region_id": 39.0,
+      "id": 76,
+      "region_id": 39,
       "name": "Cafayate",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 77.0,
-      "region_id": 40.0,
+      "id": 77,
+      "region_id": 40,
       "name": "Barossa Valley",
       "subregion_type": "subregion"
     },
     {
-      "id": 78.0,
-      "region_id": 40.0,
+      "id": 78,
+      "region_id": 40,
       "name": "Eden Valley",
       "subregion_type": "subregion"
     },
     {
-      "id": 79.0,
-      "region_id": 40.0,
+      "id": 79,
+      "region_id": 40,
       "name": "McLaren Vale",
       "subregion_type": "subregion"
     },
     {
-      "id": 80.0,
-      "region_id": 40.0,
+      "id": 80,
+      "region_id": 40,
       "name": "Adelaide Hills",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 81.0,
-      "region_id": 41.0,
+      "id": 81,
+      "region_id": 41,
       "name": "Yarra Valley Upper",
       "subregion_type": "subregion"
     },
     {
-      "id": 82.0,
-      "region_id": 41.0,
+      "id": 82,
+      "region_id": 41,
       "name": "Yarra Valley Lower",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 83.0,
-      "region_id": 42.0,
+      "id": 83,
+      "region_id": 42,
       "name": "Wilyabrup",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 84.0,
-      "region_id": 43.0,
+      "id": 84,
+      "region_id": 43,
       "name": "Wairau Valley",
       "subregion_type": "subregion"
     },
     {
-      "id": 85.0,
-      "region_id": 43.0,
+      "id": 85,
+      "region_id": 43,
       "name": "Awatere Valley",
       "subregion_type": "subregion"
     },
     {
-      "id": 86.0,
-      "region_id": 43.0,
+      "id": 86,
+      "region_id": 43,
       "name": "Southern Valleys",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 87.0,
-      "region_id": 44.0,
+      "id": 87,
+      "region_id": 44,
       "name": "Gibbston",
       "subregion_type": "subregion"
     },
     {
-      "id": 88.0,
-      "region_id": 44.0,
+      "id": 88,
+      "region_id": 44,
       "name": "Bannockburn",
       "subregion_type": "subregion"
     },
     {
-      "id": 89.0,
-      "region_id": 44.0,
+      "id": 89,
+      "region_id": 44,
       "name": "Alexandra",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 90.0,
-      "region_id": 45.0,
+      "id": 90,
+      "region_id": 45,
       "name": "Gimblett Gravels",
       "subregion_type": "subregion"
     },
     {
-      "id": 91.0,
-      "region_id": 45.0,
+      "id": 91,
+      "region_id": 45,
       "name": "Bridge Pa",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 92.0,
-      "region_id": 46.0,
+      "id": 92,
+      "region_id": 46,
       "name": "Simonsberg",
       "subregion_type": "subregion"
     },
     {
-      "id": 93.0,
-      "region_id": 46.0,
+      "id": 93,
+      "region_id": 46,
       "name": "Helderberg",
       "subregion_type": "subregion"
     },
     {
-      "id": 94.0,
-      "region_id": 46.0,
+      "id": 94,
+      "region_id": 46,
       "name": "Bottelary Hills",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 95.0,
-      "region_id": 47.0,
+      "id": 95,
+      "region_id": 47,
       "name": "Paarl Mountain",
       "subregion_type": "subregion"
     },
     {
-      "id": 96.0,
-      "region_id": 47.0,
+      "id": 96,
+      "region_id": 47,
       "name": "Simonsberg-Paarl",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 97.0,
-      "region_id": 48.0,
+      "id": 97,
+      "region_id": 48,
       "name": "Paardeberg",
       "subregion_type": "subregion"
     },
     {
-      "id": 98.0,
-      "region_id": 48.0,
+      "id": 98,
+      "region_id": 48,
       "name": "Riebeek Valley",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 99.0,
-      "region_id": 49.0,
+      "id": 99,
+      "region_id": 49,
       "name": "Loiben",
       "subregion_type": "subregion"
     },
     {
-      "id": 100.0,
-      "region_id": 49.0,
+      "id": 100,
+      "region_id": 49,
       "name": "Spitz",
       "subregion_type": "subregion"
     },
     {
-      "id": 101.0,
-      "region_id": 49.0,
-      "name": "D\u00fcrnstein",
+      "id": 101,
+      "region_id": 49,
+      "name": "Dürnstein",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 102.0,
-      "region_id": 50.0,
+      "id": 102,
+      "region_id": 50,
       "name": "Langenlois",
       "subregion_type": "subregion"
     },
     {
-      "id": 103.0,
-      "region_id": 50.0,
+      "id": 103,
+      "region_id": 50,
       "name": "Heiligenstein",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 104.0,
-      "region_id": 51.0,
+      "id": 104,
+      "region_id": 51,
       "name": "Krems",
       "subregion_type": "subregion"
     },
     {
-      "id": 105.0,
-      "region_id": 51.0,
+      "id": 105,
+      "region_id": 51,
       "name": "Senftenberg",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 106.0,
-      "region_id": 57.0,
+      "id": 106,
+      "region_id": 57,
       "name": "Koshu Valley",
       "subregion_type": "subregion"
     },
     {
-      "id": 107.0,
-      "region_id": 57.0,
+      "id": 107,
+      "region_id": 57,
       "name": "Kofu Basin",
       "subregion_type": "subregion"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 108.0,
-      "region_id": 60.0,
+      "id": 108,
+      "region_id": 60,
       "name": "Los Altos",
       "subregion_type": "subzone"
     },
     {
-      "id": 109.0,
-      "region_id": 60.0,
+      "id": 109,
+      "region_id": 60,
       "name": "El Valle",
       "subregion_type": "subzone"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 110.0,
-      "region_id": 61.0,
+      "id": 110,
+      "region_id": 61,
       "name": "Speyside Central Area",
       "subregion_type": "subzone"
     },
     {
-      "id": 111.0,
-      "region_id": 61.0,
+      "id": 111,
+      "region_id": 61,
       "name": "Fiddich Valley",
       "subregion_type": "subzone"
     },
     {
-      "id": 112.0,
-      "region_id": 61.0,
+      "id": 112,
+      "region_id": 61,
       "name": "Liveth Valley",
       "subregion_type": "subzone"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 113.0,
-      "region_id": 62.0,
+      "id": 113,
+      "region_id": 62,
       "name": "South Shore",
       "subregion_type": "subzone"
     },
     {
-      "id": 114.0,
-      "region_id": 62.0,
+      "id": 114,
+      "region_id": 62,
       "name": "Rhinns of Islay",
       "subregion_type": "subzone"
     },
     {
-      "id": 115.0,
-      "region_id": 62.0,
+      "id": 115,
+      "region_id": 62,
       "name": "North-East Coast",
       "subregion_type": "subzone"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 116.0,
-      "region_id": 63.0,
+      "id": 116,
+      "region_id": 63,
       "name": "Northern Highlands",
       "subregion_type": "subzone"
     },
     {
-      "id": 117.0,
-      "region_id": 63.0,
+      "id": 117,
+      "region_id": 63,
       "name": "Western Highlands",
       "subregion_type": "subzone"
     },
     {
-      "id": 118.0,
-      "region_id": 63.0,
+      "id": 118,
+      "region_id": 63,
       "name": "Eastern Highlands",
       "subregion_type": "subzone"
     },
     {
-      "id": 119.0,
-      "region_id": 63.0,
+      "id": 119,
+      "region_id": 63,
       "name": "Southern Highlands",
       "subregion_type": "subzone"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 120.0,
-      "region_id": 64.0,
+      "id": 120,
+      "region_id": 64,
       "name": "Ayrshire",
       "subregion_type": "subzone"
     },
     {
-      "id": 121.0,
-      "region_id": 64.0,
+      "id": 121,
+      "region_id": 64,
       "name": "Lothian",
       "subregion_type": "subzone"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 122.0,
-      "region_id": 65.0,
+      "id": 122,
+      "region_id": 65,
       "name": "Campbeltown Area",
       "subregion_type": "subzone"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 123.0,
-      "region_id": 76.0,
+      "id": 123,
+      "region_id": 76,
       "name": "Grande Champagne",
       "subregion_type": "subzone"
     },
     {
-      "id": 124.0,
-      "region_id": 76.0,
+      "id": 124,
+      "region_id": 76,
       "name": "Petite Champagne",
       "subregion_type": "subzone"
     },
     {
-      "id": 125.0,
-      "region_id": 76.0,
+      "id": 125,
+      "region_id": 76,
       "name": "Borderies",
       "subregion_type": "subzone"
     },
     {
-      "id": 126.0,
-      "region_id": 76.0,
+      "id": 126,
+      "region_id": 76,
       "name": "Fins Bois",
       "subregion_type": "subzone"
     },
     {
-      "id": null,
-      "region_id": null,
-      "name": null,
-      "subregion_type": null
-    },
-    {
-      "id": 127.0,
-      "region_id": 77.0,
+      "id": 127,
+      "region_id": 77,
       "name": "Bas-Armagnac",
       "subregion_type": "subzone"
     },
     {
-      "id": 128.0,
-      "region_id": 77.0,
-      "name": "T\u00e9nar\u00e8ze",
+      "id": 128,
+      "region_id": 77,
+      "name": "Ténarèze",
       "subregion_type": "subzone"
     },
     {
-      "id": 129.0,
-      "region_id": 77.0,
+      "id": 129,
+      "region_id": 77,
       "name": "Haut-Armagnac",
       "subregion_type": "subzone"
     }

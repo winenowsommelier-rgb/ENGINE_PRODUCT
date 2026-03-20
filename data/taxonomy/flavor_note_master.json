@@ -1,559 +1,550 @@
 {
-  "sheet": "flavor_note_master",
-  "headers": [
-    "note_id",
-    "note",
-    "note_slug",
-    "note_family",
-    "is_active"
-  ],
-  "rowCount": 78,
-  "rows": [
+  "data": [
     {
-      "note_id": 1.0,
+      "note_id": 1,
       "note": "Green Apple",
       "note_slug": "green-apple",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 2.0,
+      "note_id": 2,
       "note": "Apple",
       "note_slug": "apple",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 3.0,
+      "note_id": 3,
       "note": "Pear",
       "note_slug": "pear",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 4.0,
+      "note_id": 4,
       "note": "Citrus",
       "note_slug": "citrus",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 5.0,
+      "note_id": 5,
       "note": "Lemon",
       "note_slug": "lemon",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 6.0,
+      "note_id": 6,
       "note": "Lime",
       "note_slug": "lime",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 7.0,
+      "note_id": 7,
       "note": "Orange",
       "note_slug": "orange",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 8.0,
+      "note_id": 8,
       "note": "Peach",
       "note_slug": "peach",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 9.0,
+      "note_id": 9,
       "note": "Apricot",
       "note_slug": "apricot",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 10.0,
+      "note_id": 10,
       "note": "Pineapple",
       "note_slug": "pineapple",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 11.0,
+      "note_id": 11,
       "note": "Mango",
       "note_slug": "mango",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 12.0,
+      "note_id": 12,
       "note": "Red Cherry",
       "note_slug": "red-cherry",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 13.0,
+      "note_id": 13,
       "note": "Strawberry",
       "note_slug": "strawberry",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 14.0,
+      "note_id": 14,
       "note": "Raspberry",
       "note_slug": "raspberry",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 15.0,
+      "note_id": 15,
       "note": "Plum",
       "note_slug": "plum",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 16.0,
+      "note_id": 16,
       "note": "Blackberry",
       "note_slug": "blackberry",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 17.0,
+      "note_id": 17,
       "note": "Blackcurrant",
       "note_slug": "blackcurrant",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 18.0,
+      "note_id": 18,
       "note": "Fig",
       "note_slug": "fig",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 19.0,
+      "note_id": 19,
       "note": "Date",
       "note_slug": "date",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 20.0,
+      "note_id": 20,
       "note": "Raisin",
       "note_slug": "raisin",
       "note_family": "fruit",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 21.0,
+      "note_id": 21,
       "note": "White Flowers",
       "note_slug": "white-flowers",
       "note_family": "floral",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 22.0,
+      "note_id": 22,
       "note": "Rose",
       "note_slug": "rose",
       "note_family": "floral",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 23.0,
+      "note_id": 23,
       "note": "Violet",
       "note_slug": "violet",
       "note_family": "floral",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 24.0,
+      "note_id": 24,
       "note": "Orange Blossom",
       "note_slug": "orange-blossom",
       "note_family": "floral",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 25.0,
+      "note_id": 25,
       "note": "Lavender",
       "note_slug": "lavender",
       "note_family": "floral",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 26.0,
+      "note_id": 26,
       "note": "Grass",
       "note_slug": "grass",
       "note_family": "herbal",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 27.0,
+      "note_id": 27,
       "note": "Mint",
       "note_slug": "mint",
       "note_family": "herbal",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 28.0,
+      "note_id": 28,
       "note": "Thyme",
       "note_slug": "thyme",
       "note_family": "herbal",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 29.0,
+      "note_id": 29,
       "note": "Eucalyptus",
       "note_slug": "eucalyptus",
       "note_family": "herbal",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 30.0,
+      "note_id": 30,
       "note": "Bell Pepper",
       "note_slug": "bell-pepper",
       "note_family": "herbal",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 31.0,
+      "note_id": 31,
       "note": "Tomato Leaf",
       "note_slug": "tomato-leaf",
       "note_family": "herbal",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 32.0,
+      "note_id": 32,
       "note": "Herbal",
       "note_slug": "herbal",
       "note_family": "herbal",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 33.0,
+      "note_id": 33,
       "note": "Black Pepper",
       "note_slug": "black-pepper",
       "note_family": "spice",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 34.0,
+      "note_id": 34,
       "note": "White Pepper",
       "note_slug": "white-pepper",
       "note_family": "spice",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 35.0,
+      "note_id": 35,
       "note": "Clove",
       "note_slug": "clove",
       "note_family": "spice",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 36.0,
+      "note_id": 36,
       "note": "Cinnamon",
       "note_slug": "cinnamon",
       "note_family": "spice",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 37.0,
+      "note_id": 37,
       "note": "Nutmeg",
       "note_slug": "nutmeg",
       "note_family": "spice",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 38.0,
+      "note_id": 38,
       "note": "Anise",
       "note_slug": "anise",
       "note_family": "spice",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 39.0,
+      "note_id": 39,
       "note": "Ginger",
       "note_slug": "ginger",
       "note_family": "spice",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 40.0,
+      "note_id": 40,
       "note": "Spice",
       "note_slug": "spice",
       "note_family": "spice",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 41.0,
+      "note_id": 41,
       "note": "Vanilla",
       "note_slug": "vanilla",
       "note_family": "oak_wood",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 42.0,
+      "note_id": 42,
       "note": "Toast",
       "note_slug": "toast",
       "note_family": "oak_wood",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 43.0,
+      "note_id": 43,
       "note": "Cedar",
       "note_slug": "cedar",
       "note_family": "oak_wood",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 44.0,
+      "note_id": 44,
       "note": "Oak",
       "note_slug": "oak",
       "note_family": "oak_wood",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 45.0,
+      "note_id": 45,
       "note": "Coffee",
       "note_slug": "coffee",
       "note_family": "oak_wood",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 46.0,
+      "note_id": 46,
       "note": "Cocoa",
       "note_slug": "cocoa",
       "note_family": "oak_wood",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 47.0,
+      "note_id": 47,
       "note": "Mocha",
       "note_slug": "mocha",
       "note_family": "oak_wood",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 48.0,
+      "note_id": 48,
       "note": "Leather",
       "note_slug": "leather",
       "note_family": "earth_savory",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 49.0,
+      "note_id": 49,
       "note": "Tobacco",
       "note_slug": "tobacco",
       "note_family": "earth_savory",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 50.0,
+      "note_id": 50,
       "note": "Forest Floor",
       "note_slug": "forest-floor",
       "note_family": "earth_savory",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 51.0,
+      "note_id": 51,
       "note": "Mushroom",
       "note_slug": "mushroom",
       "note_family": "earth_savory",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 52.0,
+      "note_id": 52,
       "note": "Earth",
       "note_slug": "earth",
       "note_family": "earth_savory",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 53.0,
+      "note_id": 53,
       "note": "Truffle",
       "note_slug": "truffle",
       "note_family": "earth_savory",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 54.0,
+      "note_id": 54,
       "note": "Savory",
       "note_slug": "savory",
       "note_family": "earth_savory",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 55.0,
+      "note_id": 55,
       "note": "Flint",
       "note_slug": "flint",
       "note_family": "mineral_saline",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 56.0,
+      "note_id": 56,
       "note": "Chalk",
       "note_slug": "chalk",
       "note_family": "mineral_saline",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 57.0,
+      "note_id": 57,
       "note": "Saline",
       "note_slug": "saline",
       "note_family": "mineral_saline",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 58.0,
+      "note_id": 58,
       "note": "Mineral",
       "note_slug": "mineral",
       "note_family": "mineral_saline",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 59.0,
+      "note_id": 59,
       "note": "Stone",
       "note_slug": "stone",
       "note_family": "mineral_saline",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 60.0,
+      "note_id": 60,
       "note": "Almond",
       "note_slug": "almond",
       "note_family": "nutty",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 61.0,
+      "note_id": 61,
       "note": "Hazelnut",
       "note_slug": "hazelnut",
       "note_family": "nutty",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 62.0,
+      "note_id": 62,
       "note": "Honey",
       "note_slug": "honey",
       "note_family": "sweet",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 63.0,
+      "note_id": 63,
       "note": "Caramel",
       "note_slug": "caramel",
       "note_family": "sweet",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 64.0,
+      "note_id": 64,
       "note": "Toffee",
       "note_slug": "toffee",
       "note_family": "sweet",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 65.0,
+      "note_id": 65,
       "note": "Butterscotch",
       "note_slug": "butterscotch",
       "note_family": "sweet",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 66.0,
+      "note_id": 66,
       "note": "Chocolate",
       "note_slug": "chocolate",
       "note_family": "sweet",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 67.0,
+      "note_id": 67,
       "note": "Jam",
       "note_slug": "jam",
       "note_family": "sweet",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 68.0,
+      "note_id": 68,
       "note": "Candied Fruit",
       "note_slug": "candied-fruit",
       "note_family": "sweet",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 69.0,
+      "note_id": 69,
       "note": "Smoke",
       "note_slug": "smoke",
       "note_family": "smoky",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 70.0,
+      "note_id": 70,
       "note": "Peat",
       "note_slug": "peat",
       "note_family": "smoky",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 71.0,
+      "note_id": 71,
       "note": "Ash",
       "note_slug": "ash",
       "note_family": "smoky",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 72.0,
+      "note_id": 72,
       "note": "Char",
       "note_slug": "char",
       "note_family": "smoky",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 73.0,
+      "note_id": 73,
       "note": "Umami",
       "note_slug": "umami",
       "note_family": "umami",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 74.0,
+      "note_id": 74,
       "note": "Rice Cream",
       "note_slug": "rice-cream",
       "note_family": "umami",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 75.0,
+      "note_id": 75,
       "note": "Broth",
       "note_slug": "broth",
       "note_family": "umami",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 76.0,
+      "note_id": 76,
       "note": "Zesty",
       "note_slug": "zesty",
       "note_family": "fresh",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 77.0,
+      "note_id": 77,
       "note": "Bright",
       "note_slug": "bright",
       "note_family": "fresh",
-      "is_active": 1.0
+      "is_active": 1
     },
     {
-      "note_id": 78.0,
+      "note_id": 78,
       "note": "Lively",
       "note_slug": "lively",
       "note_family": "fresh",
-      "is_active": 1.0
+      "is_active": 1
     }
   ]
 }

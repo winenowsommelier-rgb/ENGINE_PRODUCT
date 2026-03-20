@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
   AlertTriangle, Check, CheckCircle, ChevronLeft,
-  ChevronRight, Edit2, Info, LayoutDashboard,
+  ChevronRight, Database, Edit2, Info, LayoutDashboard,
   Package, Plus, RefreshCw, Search, Settings, Tag, Upload,
   X, XCircle
 } from 'lucide-react';
@@ -20,9 +20,10 @@ import {
 } from '@/lib/taxonomy';
 import { getSupabaseReadiness, supabaseProject } from '@/lib/supabase/config';
 import { mapMagentoCsvToImportRows } from '@/lib/taxonomy-mappings';
+import { BatchProcessor } from '@/components/batch-processor-ui';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-type Section = 'overview' | 'products' | 'import' | 'taxonomy' | 'settings';
+type Section = 'overview' | 'products' | 'import' | 'taxonomy' | 'data_hub' | 'settings';
 type RowDecision = 'pending' | 'approved' | 'rejected';
 
 // Computed once at module load (not inside render cycle)
@@ -32,6 +33,7 @@ const supabaseStatus = getSupabaseReadiness();
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
   { id: 'overview' as Section, label: 'Overview', Icon: LayoutDashboard },
+  { id: 'data_hub' as Section, label: 'Data Hub', Icon: Database },
   { id: 'products' as Section, label: 'Products', Icon: Package },
   { id: 'import' as Section, label: 'Import queue', Icon: Upload },
   { id: 'taxonomy' as Section, label: 'Taxonomy', Icon: Tag },
@@ -1241,6 +1243,7 @@ export function Dashboard() {
 
   const sectionTitles: Record<Section, string> = {
     overview: 'Overview',
+    data_hub: 'Data Hub - Batch Processor',
     products: 'Product catalog',
     import: 'Import queue',
     taxonomy: 'Taxonomy editor',
@@ -1268,6 +1271,7 @@ export function Dashboard() {
         {/* Content */}
         <main className="flex-1 overflow-hidden">
           {activeSection === 'overview' && <OverviewSection onNavigate={setActiveSection} />}
+          {activeSection === 'data_hub' && <BatchProcessor />}
           {activeSection === 'products' && <ProductsSection products={catalogProducts} setProducts={setCatalogProducts} />}
           {activeSection === 'import' && <ImportSection onCommit={handleCommit} onGoToProducts={() => setActiveSection('products')} />}
           {activeSection === 'taxonomy' && <TaxonomySection />}
