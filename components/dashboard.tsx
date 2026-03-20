@@ -21,6 +21,8 @@ import {
 import { getSupabaseReadiness, supabaseProject } from '@/lib/supabase/config';
 import { mapMagentoCsvToImportRows } from '@/lib/taxonomy-mappings';
 import { BatchProcessor } from '@/components/batch-processor-ui';
+import { TaxonomyEditor } from '@/components/taxonomy-editor';
+import { PIMProductForm, emptyPIMProduct, pimProductToProductRecord } from '@/components/pim-product-form';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Section = 'overview' | 'products' | 'import' | 'taxonomy' | 'data_hub' | 'settings';
@@ -270,6 +272,7 @@ function ProductsSection({ products: localProducts, setProducts: setLocalProduct
   const [editMode, setEditMode] = useState(false);
   const [editValues, setEditValues] = useState<ProductRecord>({ ...(localProducts[0] ?? initialProducts[0]) });
   const [savedMsg, setSavedMsg] = useState<string | null>(null);
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const filtered = useMemo(() => localProducts.filter(p => {
     const q = search.toLowerCase();
@@ -305,7 +308,7 @@ function ProductsSection({ products: localProducts, setProducts: setLocalProduct
   }
 
   return (
-    <div className="flex h-full">
+    <div className="relative flex h-full">
       {/* ── Product list ── */}
       <div className="flex w-[280px] shrink-0 flex-col border-r border-white/10">
         <div className="space-y-2 border-b border-white/10 p-3">
@@ -362,11 +365,35 @@ function ProductsSection({ products: localProducts, setProducts: setLocalProduct
         </div>
 
         <div className="border-t border-white/10 p-3">
-          <button type="button" className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-white/15 py-2 text-xs text-slate-400 hover:border-violet-400/40 hover:text-violet-300 transition-colors">
+          <button type="button" onClick={() => setShowAddForm(true)} className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-white/15 py-2 text-xs text-slate-400 hover:border-violet-400/40 hover:text-violet-300 transition-colors">
             <Plus size={13} /> Add product
           </button>
         </div>
       </div>
+
+      {/* ── Add product overlay ── */}
+      {showAddForm && (
+        <div className="absolute inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/80 p-6 backdrop-blur">
+          <div className="w-full max-w-4xl rounded-2xl border border-white/10 bg-slate-900 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+              <h2 className="text-base font-semibold text-white">New product</h2>
+              <button onClick={() => setShowAddForm(false)} className="rounded-lg p-1 text-slate-400 hover:text-white"><X size={16} /></button>
+            </div>
+            <div className="p-6">
+              <PIMProductForm
+                initial={emptyPIMProduct()}
+                onSave={pimProduct => {
+                  const record = pimProductToProductRecord(pimProduct);
+                  setLocalProducts(prev => [...prev, record]);
+                  setSelectedSku(record.sku);
+                  setShowAddForm(false);
+                }}
+                onCancel={() => setShowAddForm(false)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Detail / Edit panel ── */}
       <div className="flex-1 overflow-y-auto p-6">
@@ -1274,7 +1301,7 @@ export function Dashboard() {
           {activeSection === 'data_hub' && <BatchProcessor />}
           {activeSection === 'products' && <ProductsSection products={catalogProducts} setProducts={setCatalogProducts} />}
           {activeSection === 'import' && <ImportSection onCommit={handleCommit} onGoToProducts={() => setActiveSection('products')} />}
-          {activeSection === 'taxonomy' && <TaxonomySection />}
+          {activeSection === 'taxonomy' && <TaxonomyEditor />}
           {activeSection === 'settings' && <SettingsSection />}
         </main>
       </div>
