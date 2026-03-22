@@ -160,6 +160,28 @@ export function suggestIngredient(value: string, maps: TaxonomyMap): FieldSugges
   return { field: 'ingredient', originalValue: value, confidence: partial.length ? 0.65 : 0, suggestions: partial.map((i: any) => i.ingredient) };
 }
 
+export function suggestSubregion(value: string, maps: TaxonomyMap): FieldSuggestion {
+  const norm = value.trim().toLowerCase();
+  if (!norm) return { field: 'subregion', originalValue: value, confidence: 0, suggestions: [] };
+
+  if (maps.subregionMap.has(norm)) {
+    return { field: 'subregion', originalValue: value, confidence: 1, suggestions: [maps.subregionMap.get(norm)!] };
+  }
+  const partial = [...maps.subregionMap.entries()].filter(([k]) => k.includes(norm) || norm.includes(k)).map(([, v]) => v);
+  return { field: 'subregion', originalValue: value, confidence: partial.length ? 0.7 : 0, suggestions: [...new Set(partial)].slice(0, 3) };
+}
+
+export function suggestOrigin(value: string, maps: TaxonomyMap): FieldSuggestion {
+  const norm = value.trim().toLowerCase();
+  if (!norm) return { field: 'origin', originalValue: value, confidence: 0, suggestions: [] };
+
+  if (maps.originMap.has(norm)) {
+    return { field: 'origin', originalValue: value, confidence: 1, suggestions: [maps.originMap.get(norm)!] };
+  }
+  const partial = [...maps.originMap.entries()].filter(([k]) => k.includes(norm) || norm.includes(k)).map(([, v]) => v);
+  return { field: 'origin', originalValue: value, confidence: partial.length ? 0.7 : 0, suggestions: [...new Set(partial)].slice(0, 3) };
+}
+
 export function suggestFlavors(value: string, category: string, maps: TaxonomyMap): string[] {
   // Return relevant flavor notes based on category/type
   const catKey = category.toLowerCase().replace(/\s+/g, '_');

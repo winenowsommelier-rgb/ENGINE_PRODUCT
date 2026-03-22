@@ -25,7 +25,7 @@ import { TaxonomyEditor } from '@/components/taxonomy-editor';
 import { PIMProductForm, emptyPIMProduct, pimProductToProductRecord } from '@/components/pim-product-form';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-type Section = 'overview' | 'products' | 'import' | 'taxonomy' | 'data_hub' | 'settings';
+type Section = 'overview' | 'products' | 'import' | 'taxonomy' | 'data_hub' | 'catalog' | 'processing' | 'settings';
 type RowDecision = 'pending' | 'approved' | 'rejected';
 
 // Computed once at module load (not inside render cycle)
@@ -36,6 +36,8 @@ const supabaseStatus = getSupabaseReadiness();
 const NAV_ITEMS = [
   { id: 'overview' as Section, label: 'Overview', Icon: LayoutDashboard },
   { id: 'data_hub' as Section, label: 'Data Hub', Icon: Database },
+  { id: 'catalog' as Section, label: 'Data Catalog', Icon: Package },
+  { id: 'processing' as Section, label: 'Processing Review', Icon: RefreshCw },
   { id: 'products' as Section, label: 'Products', Icon: Package },
   { id: 'import' as Section, label: 'Import queue', Icon: Upload },
   { id: 'taxonomy' as Section, label: 'Taxonomy', Icon: Tag },
@@ -1254,6 +1256,168 @@ function SettingsSection() {
   );
 }
 
+// ─── Processing Review ─────────────────────────────────────────────────────────
+function ProcessingSection() {
+  const [stats, setStats] = useState<any>(null);
+  const [logs, setLogs] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        // Fetch processing statistics
+        const statsRes = await fetch('/api/batch-process-db?action=stats');
+        const statsData = await statsRes.json();
+        setStats(statsData);
+
+        // Fetch recent batch logs
+        const logsRes = await fetch('/api/batch-process-db?action=logs');
+        const logsData = await logsRes.json();
+        setLogs(logsData.logs?.slice(0, 10) || []);
+
+        // Fetch products that need review
+        const productsRes = await fetch('/api/batch-process-db?action=products&status=needs_review&limit=20');
+        const productsData = await productsRes.json();
+        setProducts(productsData.products || []);
+
+      } catch (error) {
+        console.error('Failed to fetch processing data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="text-center">
+          <RefreshCw size={24} className="mx-auto mb-4 animate-spin text-violet-400" />
+          <p className="text-slate-400">Loading processing data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-full overflow-y-auto p-6 space-y-6">
+      {/* Processing Statistics */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {stats && [
+          { label: 'Total Processed', value: stats.total?.toLocaleString() || '0', detail: 'Total items processed', color: 'violet' },
+          { label: 'Ready', value: stats.validated?.toLocaleString() || '0', detail: 'Validated and ready', color: 'emerald' },
+          { label: 'Needs Review', value: stats.needs_review?.toLocaleString() || '0', detail: 'Awaiting manual review', color: 'amber' },
+          { label: 'Blocked', value: stats.blocked?.toLocaleString() || '0', detail: 'Processing errors', color: 'rose' },
+        ].map(({ label, value, detail, color }) => {
+          const colors: Record<string, string> = {
+            violet: 'bg-violet-500/10 text-violet-300',
+            emerald: 'bg-emerald-500/10 text-emerald-300',
+            amber: 'bg-amber-500/10 text-amber-300',
+            rose: 'bg-rose-500/10 text-rose-300',
+          };
+          return (
+            <div key={label} className="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div className={`inline-flex rounded-xl p-2 ${colors[color]}`}>
+                <Package size={16} />
+              </div>
+              <p className="mt-3 text-2xl font-semibold text-white">{value}</p>
+              <p className="mt-0.5 text-sm font-medium text-white">{label}</p>
+              <p className="mt-0.5 text-xs text-slate-400">{detail}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        {/* Recent Batch Logs */}
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <p className="text-xs uppercase tracking-widest text-violet-300">Batch Processing History</p>
+            <h2 className="text-2xl font-semibold text-white">Recent Runs</h2>
+            <p className="text-sm text-slate-400">Latest batch processing operations and results</p>
+          </div>
+
+          {logs.length > 0 ? logs.map((log: any) => (
+            <div key={log.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div>
+                  <p className="text-sm font-medium text-white">{log.source_file}</p>
+                  <p className="mt-1 text-xs text-slate-400">
+                    {new Date(log.timestamp).toLocaleString()}
+                  </p>
+                </div>
+                <Pill tone={
+                  log.status === 'completed' ? 'good' :
+                  log.status === 'failed' ? 'bad' : 'neutral'
+                }>
+                  {log.status}
+                </Pill>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div className="text-center">
+                  <p className="text-slate-400">Processed</p>
+                  <p className="text-white font-semibold">{log.processed_rows || 0}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-slate-400">Ready</p>
+                  <p className="text-emerald-400 font-semibold">{log.ready_rows || 0}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-slate-400">Issues</p>
+                  <p className="text-amber-400 font-semibold">{log.review_rows || 0}</p>
+                </div>
+              </div>
+              {log.notes && (
+                <p className="mt-2 text-xs text-slate-400">{log.notes}</p>
+              )}
+            </div>
+          )) : (
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
+              <Package size={24} className="mx-auto mb-3 text-slate-500" />
+              <p className="text-slate-400">No batch logs found</p>
+            </div>
+          )}
+        </div>
+
+        {/* Products Needing Review */}
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <p className="text-xs uppercase tracking-widest text-violet-300">Review Queue</p>
+            <h2 className="text-2xl font-semibold text-white">Pending Review</h2>
+            <p className="text-sm text-slate-400">Items requiring manual attention before approval</p>
+          </div>
+
+          {products.length > 0 ? products.slice(0, 10).map((product: any) => (
+            <div key={product.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div className="flex items-start justify-between gap-3 mb-2">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-white truncate">{product.name}</p>
+                  <p className="mt-1 text-xs text-slate-400">
+                    {product.sku} • {product.country} • {product.region}
+                  </p>
+                </div>
+                <Pill tone="warn">Review</Pill>
+              </div>
+              <div className="text-xs text-slate-400">
+                <p>Overall: <span className="text-emerald-400">{Math.round((product.overall_confidence || 0) * 100)}%</span></p>
+              </div>
+            </div>
+          )) : (
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
+              <CheckCircle size={24} className="mx-auto mb-3 text-emerald-500" />
+              <p className="text-emerald-400">All clear!</p>
+              <p className="text-xs text-slate-500 mt-1">No items need review</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Dashboard ────────────────────────────────────────────────────────────
 export function Dashboard() {
   const [activeSection, setActiveSection] = useState<Section>('overview');
@@ -1271,6 +1435,8 @@ export function Dashboard() {
   const sectionTitles: Record<Section, string> = {
     overview: 'Overview',
     data_hub: 'Data Hub - Batch Processor',
+    catalog: 'Data Catalog - Cleaned Products',
+    processing: 'Processing Review',
     products: 'Product catalog',
     import: 'Import queue',
     taxonomy: 'Taxonomy editor',
@@ -1299,6 +1465,8 @@ export function Dashboard() {
         <main className="flex-1 overflow-hidden">
           {activeSection === 'overview' && <OverviewSection onNavigate={setActiveSection} />}
           {activeSection === 'data_hub' && <BatchProcessor />}
+          {activeSection === 'catalog' && <BatchProcessor />}
+          {activeSection === 'processing' && <ProcessingSection />}
           {activeSection === 'products' && <ProductsSection products={catalogProducts} setProducts={setCatalogProducts} />}
           {activeSection === 'import' && <ImportSection onCommit={handleCommit} onGoToProducts={() => setActiveSection('products')} />}
           {activeSection === 'taxonomy' && <TaxonomyEditor />}

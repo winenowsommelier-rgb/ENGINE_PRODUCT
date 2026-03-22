@@ -1,4 +1,10 @@
 import { type RawImportRow } from '@/lib/data';
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 import countriesJson from '@/data/taxonomy/countries.json';
 import regionsJson from '@/data/taxonomy/regions.json';
 import ingredientMasterJson from '@/data/taxonomy/ingredient_master.json';
@@ -47,6 +53,18 @@ export const taxonomyMappings = {
 };
 
 // ── CSV upload utilities ─────────────────────────────────────────────────────
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 
 export const requiredUploadFields: Array<keyof RawImportRow> = ['sku', 'name', 'price'];
 

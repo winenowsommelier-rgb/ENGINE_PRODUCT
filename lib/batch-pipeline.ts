@@ -1,7 +1,47 @@
 import { buildFlavorProfile, calculateConfidence } from '@/lib/auto-mapping';
 import { type ProductRecord, type RawImportRow } from '@/lib/data';
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 import { knownGrapeAliases, knownRegionAliases, knownRegionCountryMap, knownStyleAliases, taxonomyCountries } from '@/lib/taxonomy';
 import { grapeAliasMap, regionCountryMap } from '@/lib/taxonomy-mappings';
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+import {
+  knownGrapeAliases,
+  knownRegionAliases,
+  knownRegionCountryMap,
+  knownStyleAliases,
+  taxonomyCountries
+} from '@/lib/taxonomy';
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 
 export type PipelineStage = {
   name: string;
@@ -80,6 +120,12 @@ function normalizeCurrency(value: string, corrections: Correction[]): string {
   return normalized;
 }
 
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 // Merge JSON-driven aliases with hardcoded aliases for maximum coverage
 const normalizedGrapeAliases: Record<string, string> = Object.entries({
   ...grapeAliasMap,
@@ -108,6 +154,18 @@ const normalizedRegionCountryMap: Record<string, string> = Object.entries({
   return acc;
 }, {} as Record<string, string>);
 
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 function normalizeAlias(value: string, aliases: Record<string, string>, field: string, corrections: Correction[]): string {
   const from = compact(value);
   const normalized = aliases[keyify(value)] ?? titleCase(from);
@@ -141,8 +199,32 @@ function parseScore(field: string, value: string, corrections: Correction[], iss
 }
 
 function inferCountry(region: string, issues: ValidationIssue[]): string | undefined {
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
   const key = keyify(region);
   const country = normalizedRegionCountryMap[key] ?? normalizedRegionCountryMap[region];
+=======
+  const country = knownRegionCountryMap[region];
+>>>>>>> theirs
+=======
+  const country = knownRegionCountryMap[region];
+>>>>>>> theirs
+=======
+  const country = knownRegionCountryMap[region];
+>>>>>>> theirs
+=======
+  const country = knownRegionCountryMap[region];
+>>>>>>> theirs
+=======
+  const country = knownRegionCountryMap[region];
+>>>>>>> theirs
+=======
+  const country = knownRegionCountryMap[region];
+>>>>>>> theirs
   if (!country) {
     issues.push({ severity: 'warning', field: 'country', message: 'Unable to infer country from region. Add a taxonomy mapping before import.' });
   }
@@ -174,9 +256,45 @@ function normalizeRow(row: RawImportRow): ProcessedImportRow {
     name: compact(row.name),
     category,
     type: titleCase(row.type),
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
     grape: normalizeAlias(row.grape, normalizedGrapeAliases, 'grape', corrections),
     region: normalizeAlias(row.region, normalizedRegionAliases, 'region', corrections),
     style: normalizeAlias(row.style, normalizedStyleAliases, 'style', corrections),
+=======
+    grape: normalizeAlias(row.grape, knownGrapeAliases, 'grape', corrections),
+    region: normalizeAlias(row.region, knownRegionAliases, 'region', corrections),
+    style: normalizeAlias(row.style, knownStyleAliases, 'style', corrections),
+>>>>>>> theirs
+=======
+    grape: normalizeAlias(row.grape, knownGrapeAliases, 'grape', corrections),
+    region: normalizeAlias(row.region, knownRegionAliases, 'region', corrections),
+    style: normalizeAlias(row.style, knownStyleAliases, 'style', corrections),
+>>>>>>> theirs
+=======
+    grape: normalizeAlias(row.grape, knownGrapeAliases, 'grape', corrections),
+    region: normalizeAlias(row.region, knownRegionAliases, 'region', corrections),
+    style: normalizeAlias(row.style, knownStyleAliases, 'style', corrections),
+>>>>>>> theirs
+=======
+    grape: normalizeAlias(row.grape, knownGrapeAliases, 'grape', corrections),
+    region: normalizeAlias(row.region, knownRegionAliases, 'region', corrections),
+    style: normalizeAlias(row.style, knownStyleAliases, 'style', corrections),
+>>>>>>> theirs
+=======
+    grape: normalizeAlias(row.grape, knownGrapeAliases, 'grape', corrections),
+    region: normalizeAlias(row.region, knownRegionAliases, 'region', corrections),
+    style: normalizeAlias(row.style, knownStyleAliases, 'style', corrections),
+>>>>>>> theirs
+=======
+    grape: normalizeAlias(row.grape, knownGrapeAliases, 'grape', corrections),
+    region: normalizeAlias(row.region, knownRegionAliases, 'region', corrections),
+    style: normalizeAlias(row.style, knownStyleAliases, 'style', corrections),
+>>>>>>> theirs
     price: parseMoney('price', row.price, corrections, issues),
     costPrice: parseMoney('costPrice', row.costPrice, corrections, issues),
     currency: normalizeCurrency(row.currency, corrections),

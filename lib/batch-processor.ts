@@ -1,4 +1,4 @@
-import { taxonomyMaps, suggestCountry, suggestRegion, suggestIngredient, suggestFlavors, type FieldSuggestion } from '@/lib/taxonomy-loader';
+import { taxonomyMaps, suggestCountry, suggestRegion, suggestSubregion, suggestOrigin, suggestIngredient, suggestFlavors, type FieldSuggestion } from '@/lib/taxonomy-loader';
 
 export type { FieldSuggestion };
 
@@ -22,6 +22,8 @@ export type NormalizedRow = {
   grape_class: string;
   grape_variety: string;
   classification: string;
+  origin_source: string;
+  classification_source: string;
   vintage: string;
   bottle_size: string;
   alcohol: string;
@@ -118,6 +120,7 @@ export function normalizeRow(rawRow: Record<string, any>, index: number): Normal
     score(cs.confidence >= 0.7, 2);
   } else {
     if (mainCategory === 'wine') warnings.push('Country not provided for wine product');
+    errors.push('Country is required');
     score(false, 2);
   }
 
@@ -127,11 +130,40 @@ export function normalizeRow(rawRow: Record<string, any>, index: number): Normal
   if (region) {
     const rs = suggestRegion(region, taxonomyMaps);
     fieldSuggestions['region'] = rs;
-    if (rs.confidence >= 0.9 && rs.suggestions[0]) { region = rs.suggestions[0]; }
+    if (rs.confidence >= 0.9 && rs.suggestions[0]) { appliedCorrections['region'] = rs.suggestions[0]; region = rs.suggestions[0]; }
     else if (rs.confidence >= 0.7 && rs.suggestions[0]) { warnings.push(`Region "${region}" → "${rs.suggestions[0]}"`); region = rs.suggestions[0]; }
     if (!country && rs.metadata?.country) { inferredCountry = rs.metadata.country; appliedCorrections['country'] = inferredCountry; }
-    score(rs.confidence >= 0.7);
-  } else score(false);
+    score(rs.confidence >= 0.7, 2);
+  } else {
+    warnings.push('Region not provided');
+    score(false, 2);
+  }
+
+  // Subregion
+  let subregion = String(rawRow.subregion || rawRow.region_wine_2 || '').trim();
+  if (subregion) {
+    const ss = suggestSubregion(subregion, taxonomyMaps);
+    fieldSuggestions['subregion'] = ss;
+    if (ss.confidence >= 0.9 && ss.suggestions[0]) { appliedCorrections['subregion'] = ss.suggestions[0]; subregion = ss.suggestions[0]; }
+    else if (ss.confidence >= 0.7 && ss.suggestions[0]) { warnings.push(`Subregion "${subregion}" → "${ss.suggestions[0]}"`); subregion = ss.suggestions[0]; }
+    else if (!ss.suggestions.length) warnings.push(`Subregion "${subregion}" not found in taxonomy`);
+    score(ss.confidence >= 0.7);
+  } else {
+    score(false);
+  }
+
+  // Origin
+  let origin = String(rawRow.origin || '').trim();
+  if (origin) {
+    const os = suggestOrigin(origin, taxonomyMaps);
+    fieldSuggestions['origin'] = os;
+    if (os.confidence >= 0.9 && os.suggestions[0]) { appliedCorrections['origin'] = os.suggestions[0]; origin = os.suggestions[0]; }
+    else if (os.confidence >= 0.7 && os.suggestions[0]) { warnings.push(`Origin "${origin}" → "${os.suggestions[0]}"`); origin = os.suggestions[0]; }
+    else if (!os.suggestions.length) warnings.push(`Origin "${origin}" not found in taxonomy`);
+    score(os.confidence >= 0.7);
+  } else {
+    score(false);
+  }
 
   // Grape / ingredient
   const grapeRaw = String(rawRow.grape_variety || rawRow.grape_class || rawRow.grape || '').trim();
@@ -146,7 +178,16 @@ export function normalizeRow(rawRow: Record<string, any>, index: number): Normal
   } else score(false);
 
   // Classification
-  const classification = String(rawRow.classification || '').trim();
+  let classification = String(rawRow.classification || '').trim();
+  let classificationSource = 'input';
+  if (!classification) {
+    // Try to derive from category / name heuristics
+    classification = mainCategory !== 'unknown' ? `${mainCategory.charAt(0).toUpperCase()}${mainCategory.slice(1)} product` : '';
+    classificationSource = classification ? 'derived' : 'unknown';
+  }
+  if (!classification) {
+    errors.push('Classification is required');
+  }
 
   // Price / cost
   const price = parseFloat(String(rawRow.price || '0').replace(/[^0-9.]/g, '')) || 0;
@@ -167,9 +208,14 @@ export function normalizeRow(rawRow: Record<string, any>, index: number): Normal
   return {
     id: `row-${index}-${Date.now()}`,
     sku, name, brand, mainCategory, wine_type, liquor_main_type,
-    whisky_type, other_type, country: inferredCountry, region,
-    subregion: '', origin: '', grape_class, grape_variety,
-    classification, vintage, bottle_size, alcohol,
+    whisky_type, other_type,
+    country: inferredCountry, region,
+    subregion, origin,
+    grape_class, grape_variety,
+    classification,
+    origin_source: rawRow.origin ? 'input' : 'derived',
+    classification_source: classificationSource,
+    vintage, bottle_size, alcohol,
     price, cost, currency: String(rawRow.currency || 'THB').trim(),
     is_in_stock, flavorNotes, flavorFamilies,
     confidence, fieldSuggestions, appliedCorrections,

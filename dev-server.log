@@ -1,0 +1,7 @@
+npm warn "0.0.0.0" is being parsed as a normal command line argument.
+npm warn Unknown cli config "--host". This will stop working in the next major version of npm.
+
+> winenow-flavor-intelligence-system@0.1.0 dev:vscode
+> next dev --hostname 0.0.0.0 --port 3000 0.0.0.0
+
+ ⨯ Invalid project directory provided, no such directory: /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/0.0.0.0

@@ -53,6 +53,7 @@ export function BatchProcessor({ rows: _unused }: { rows?: any[] }) {
 
   // ── selection / filter / view state
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [lastSelectedId, setLastSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
@@ -62,6 +63,9 @@ export function BatchProcessor({ rows: _unused }: { rows?: any[] }) {
   const [page, setPage] = useState(0);
   const [detailRow, setDetailRow] = useState<NormalizedRow | null>(null);
   const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [processing, setProcessing] = useState(false);
+  const [processedCollection, setProcessedCollection] = useState<NormalizedRow[]>([]);
+  const [collectionStats, setCollectionStats] = useState({ total: 0, ready: 0, review: 0, blocked: 0, timestamp: '' });
   const PAGE = 50;
 
   const fileRef = useRef<HTMLInputElement>(null);
@@ -132,6 +136,95 @@ export function BatchProcessor({ rows: _unused }: { rows?: any[] }) {
       });
       return { ...prev, rows, readyRows: rows.filter(r => r.status === 'ready').length, blockedRows: rows.filter(r => r.status === 'blocked').length };
     });
+  }
+
+  // ── Shift+click range selection
+  function handleRowSelection(rowId: string, shiftKey: boolean, ctrlKey: boolean) {
+    if (shiftKey && lastSelectedId && batch) {
+      // Range selection: select all rows between lastSelectedId and current rowId
+      const ids = batch.rows.map(r => r.id);
+      const lastIdx = ids.indexOf(lastSelectedId);
+      const currIdx = ids.indexOf(rowId);
+      if (lastIdx !== -1 && currIdx !== -1) {
+        const start = Math.min(lastIdx, currIdx);
+        const end = Math.max(lastIdx, currIdx);
+        const newSelected = new Set(selected);
+        for (let i = start; i <= end; i++) {
+          newSelected.add(ids[i]);
+        }
+        setSelected(newSelected);
+      }
+    } else if (ctrlKey || ctrlKey) {
+      // Toggle selection
+      const s = new Set(selected);
+      s.has(rowId) ? s.delete(rowId) : s.add(rowId);
+      setSelected(s);
+    } else {
+      // Single selection
+      setSelected(new Set([rowId]));
+    }
+    setLastSelectedId(rowId);
+  }
+
+  // ── Process and store selected rows to collection
+  async function processAndStore() {
+    if (!batch) return;
+    setProcessing(true);
+    try {
+      const rows = selected.size > 0 ? batch.rows.filter(r => selected.has(r.id)) : batch.rows;
+      
+      // Send to database API for persistence
+      const response = await fetch('/api/batch-process-db', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          rows: rows,
+          batch_id: `batch-${Date.now()}`,
+          source_file: sourceName,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Database save failed: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      
+      const stats = {
+        total: rows.length,
+        ready: rows.filter(r => r.status === 'ready').length,
+        review: rows.filter(r => r.status === 'review').length,
+        blocked: rows.filter(r => r.status === 'blocked').length,
+        timestamp: new Date().toISOString(),
+      };
+      
+      setProcessedCollection(rows);
+      setCollectionStats(stats);
+      
+      // Show success notification
+      setLogs(prev => [{
+        id: `log-${Date.now()}`,
+        ts: new Date().toISOString(),
+        file: `Saved to database: ${result.saved} products`,
+        rows: rows.length,
+        ready: stats.ready,
+        format: 'database'
+      }, ...prev].slice(0, 20));
+      
+      setDetailRow(null);
+    } catch (error) {
+      console.error('Processing error:', error);
+      setLogs(prev => [{
+        id: `log-${Date.now()}`,
+        ts: new Date().toISOString(),
+        file: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        rows: 0,
+        ready: 0,
+        format: 'error'
+      }, ...prev].slice(0, 20));
+    } finally {
+      setProcessing(false);
+    }
   }
 
   // ── Filters
@@ -262,6 +355,17 @@ export function BatchProcessor({ rows: _unused }: { rows?: any[] }) {
           <span className="text-xs font-medium text-amber-400">{batch.reviewRows} review</span>
           <span className="text-xs font-medium text-rose-400">{batch.blockedRows} blocked</span>
           <span className="h-3 w-px bg-white/10" />
+          
+          {/* Process & Store button */}
+          <button 
+            onClick={processAndStore}
+            disabled={processing}
+            className="flex items-center gap-1.5 rounded-xl bg-cyan-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-wait"
+          >
+            <Upload size={12} /> {processing ? 'Processing...' : `Process ${selected.size > 0 ? `${selected.size} selected` : `all ${batch.totalRows}`}`}
+          </button>
+          
+          {/* Export buttons */}
           <button onClick={() => doExport('magento')} className="flex items-center gap-1.5 rounded-xl bg-violet-500 px-4 py-1.5 text-xs font-medium text-white hover:bg-violet-400">
             <Download size={12} /> Export Magento CSV {selRows.length > 0 ? `(${selRows.length} selected)` : '(all ready)'}
           </button>
@@ -314,6 +418,10 @@ export function BatchProcessor({ rows: _unused }: { rows?: any[] }) {
                 className="rounded-lg border border-white/10 bg-slate-800 px-2 py-1 text-xs text-white hover:bg-white/10">
                 {sortDir === 'desc' ? '↓' : '↑'}
               </button>
+              <button onClick={() => setSelected(new Set(filtered.map(r => r.id)))}
+                className="rounded-lg border border-white/10 bg-slate-800 px-2 py-1 text-xs text-white hover:bg-white/10">
+                ✓ All {filtered.length}
+              </button>
               <button onClick={() => setSelected(new Set(paged.map(r => r.id)))}
                 className="rounded-lg border border-white/10 bg-slate-800 px-2 py-1 text-xs text-white hover:bg-white/10">
                 ✓ Page
@@ -337,16 +445,29 @@ export function BatchProcessor({ rows: _unused }: { rows?: any[] }) {
               <button
                 key={row.id}
                 type="button"
-                onClick={() => setDetailRow(detailRow?.id === row.id ? null : row)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (e.shiftKey || e.ctrlKey || e.metaKey) {
+                    e.stopPropagation();
+                    handleRowSelection(row.id, e.shiftKey, e.ctrlKey || e.metaKey);
+                  } else {
+                    setDetailRow(detailRow?.id === row.id ? null : row);
+                    setLastSelectedId(row.id);
+                  }
+                }}
                 className={`w-full border-b border-white/5 px-3 py-2.5 text-left transition-colors ${detailRow?.id === row.id ? 'bg-violet-500/10' : 'hover:bg-white/5'}`}
               >
                 <div className="flex items-start gap-2">
-                  <input type="checkbox" checked={selected.has(row.id)} onChange={e => {
-                    e.stopPropagation();
-                    const s = new Set(selected);
-                    s.has(row.id) ? s.delete(row.id) : s.add(row.id);
-                    setSelected(s);
-                  }} onClick={e => e.stopPropagation()} className="mt-0.5 accent-violet-400 shrink-0" />
+                  <input 
+                    type="checkbox" 
+                    checked={selected.has(row.id)} 
+                    onChange={e => {
+                      e.stopPropagation();
+                      handleRowSelection(row.id, false, false);
+                    }} 
+                    onClick={e => e.stopPropagation()} 
+                    className="mt-0.5 accent-violet-400 shrink-0" 
+                  />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                       <p className="text-xs font-mono text-slate-400 truncate">{row.sku}</p>
@@ -391,6 +512,44 @@ export function BatchProcessor({ rows: _unused }: { rows?: any[] }) {
           {!detailRow ? (
             <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
               <p className="text-slate-400">Select a row to view details, suggestions, and flavor profile.</p>
+              
+              {/* Processed collection summary */}
+              {processedCollection.length > 0 && (
+                <div className="w-full max-w-md mt-6 rounded-2xl border border-cyan-400/30 bg-cyan-500/10 p-6">
+                  <h3 className="text-sm font-semibold text-cyan-200 mb-4">Processed Collection</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-slate-400">Processed at:</span>
+                      <span className="text-xs font-mono text-white">{new Date(collectionStats.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="rounded-lg bg-white/5 p-2">
+                        <p className="text-[10px] text-slate-500">Total rows</p>
+                        <p className="text-lg font-bold text-cyan-300">{collectionStats.total}</p>
+                      </div>
+                      <div className="rounded-lg bg-white/5 p-2">
+                        <p className="text-[10px] text-slate-500">Ready</p>
+                        <p className="text-lg font-bold text-emerald-400">{collectionStats.ready}</p>
+                      </div>
+                      <div className="rounded-lg bg-white/5 p-2">
+                        <p className="text-[10px] text-slate-500">Review</p>
+                        <p className="text-lg font-bold text-amber-400">{collectionStats.review}</p>
+                      </div>
+                      <div className="rounded-lg bg-white/5 p-2">
+                        <p className="text-[10px] text-slate-500">Blocked</p>
+                        <p className="text-lg font-bold text-rose-400">{collectionStats.blocked}</p>
+                      </div>
+                    </div>
+                    <button onClick={() => {
+                      const jsonStr = JSON.stringify(processedCollection, null, 2);
+                      download(jsonStr, `processed-collection-${Date.now()}.json`, 'application/json;charset=utf-8;');
+                    }} className="w-full mt-4 rounded-lg bg-cyan-600 px-3 py-2 text-xs font-medium text-white hover:bg-cyan-500">
+                      ↓ Download Collection JSON
+                    </button>
+                  </div>
+                </div>
+              )}
+              
               <div className="grid grid-cols-3 gap-4 mt-4 w-full max-w-md">
                 {[
                   { label: 'Total', value: batch.totalRows, color: 'text-white' },
@@ -410,7 +569,7 @@ export function BatchProcessor({ rows: _unused }: { rows?: any[] }) {
               {/* Export history */}
               {logs.length > 0 && (
                 <div className="mt-6 w-full max-w-md space-y-2">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 text-left">Export history</p>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 text-left">Recent activity log</p>
                   {logs.map(l => (
                     <div key={l.id} className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs">
                       <span className="text-white">{l.file}</span>

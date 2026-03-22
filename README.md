@@ -14,6 +14,66 @@ npm run dev
 
 Then open <http://localhost:3000>. The default dev script now binds to `0.0.0.0:3000`, so the app is reachable from local browsers, forwarded ports, and remote workspaces.
 
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+### Beginner quick start
+
+If you are brand new to the project, use this order:
+
+1. `cp .env.example .env.local`
+2. `npm install`
+3. `npm run dev`
+4. Open `http://localhost:3000`
+5. Start with the **Overview** workspace, then move to **Catalog workspace**, **Import studio**, and **Taxonomy control**
+
+### Magento upload flow now available in the app
+
+The **Import studio** workspace now includes a CSV upload section for Magento/product-export files.
+
+After you upload a file, the app will:
+
+1. map supported headers such as `sku`, `name`, `price`, `cost`, `product_type`, `region`, `grape`, and `style`
+2. normalize the rows into the self-healing import pipeline
+3. show blocked vs library-ready rows
+4. stage clean rows for the product library before database insertion
+
+The Import Studio now also includes a **Save ready rows to database** action. For that button to work, you need:
+
+- `supabase/schema.sql` applied
+- the correct `.env.local` values
+- insert/upsert policies that allow the publishable key to write to `import_runs`, `import_run_rows`, `products`, and `flavor_profile`
+
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 If package installation is blocked in your environment, launch the dependency-free preview instead:
 
 ```bash

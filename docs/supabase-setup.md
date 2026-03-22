@@ -38,3 +38,44 @@ psql "$SUPABASE_DB_URL" -f supabase/schema.sql
 ## 4. Recommended next step
 
 Run the frontend first with local sample data, then add read policies or a protected backend layer before connecting live product reads.
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+
+## 5. For import saves from the frontend
+
+If you want the Import Studio to persist validated rows from the browser:
+
+- apply `supabase/schema.sql`
+- enable insert access for the publishable key on `import_runs`, `import_run_rows`, `products`, and `flavor_profile`
+- keep RLS strict for everything else, or route sensitive writes through a backend / Edge Function later
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs

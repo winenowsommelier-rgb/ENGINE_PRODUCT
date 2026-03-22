@@ -110,3 +110,103 @@ create index if not exists products_status_idx on products(status);
 create index if not exists products_region_idx on products(region);
 create index if not exists import_run_rows_import_run_id_idx on import_run_rows(import_run_id);
 create index if not exists import_runs_status_idx on import_runs(status);
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+
+alter table products enable row level security;
+alter table flavor_profile enable row level security;
+alter table import_runs enable row level security;
+alter table import_run_rows enable row level security;
+
+drop policy if exists "prototype products select" on products;
+create policy "prototype products select"
+  on products for select
+  to anon
+  using (true);
+
+drop policy if exists "prototype products write" on products;
+create policy "prototype products write"
+  on products for insert
+  to anon
+  with check (true);
+
+drop policy if exists "prototype products update" on products;
+create policy "prototype products update"
+  on products for update
+  to anon
+  using (true)
+  with check (true);
+
+drop policy if exists "prototype flavor profile select" on flavor_profile;
+create policy "prototype flavor profile select"
+  on flavor_profile for select
+  to anon
+  using (true);
+
+drop policy if exists "prototype flavor profile write" on flavor_profile;
+create policy "prototype flavor profile write"
+  on flavor_profile for insert
+  to anon
+  with check (true);
+
+drop policy if exists "prototype flavor profile update" on flavor_profile;
+create policy "prototype flavor profile update"
+  on flavor_profile for update
+  to anon
+  using (true)
+  with check (true);
+
+drop policy if exists "prototype import runs select" on import_runs;
+create policy "prototype import runs select"
+  on import_runs for select
+  to anon
+  using (true);
+
+drop policy if exists "prototype import runs write" on import_runs;
+create policy "prototype import runs write"
+  on import_runs for insert
+  to anon
+  with check (true);
+
+drop policy if exists "prototype import run rows select" on import_run_rows;
+create policy "prototype import run rows select"
+  on import_run_rows for select
+  to anon
+  using (true);
+
+drop policy if exists "prototype import run rows write" on import_run_rows;
+create policy "prototype import run rows write"
+  on import_run_rows for insert
+  to anon
+  with check (true);
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs

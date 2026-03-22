@@ -3,20 +3,66 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
     "dev": "next dev",
     "dev:vscode": "next dev --hostname 0.0.0.0 --port 3000",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "verify": "npm run typecheck"
+    "verify": "npm run typecheck",
+    "bulk-process": "tsx scripts/bulk-process-magento.ts"
   },
   "dependencies": {
+    "better-sqlite3": "^11.0.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.469.0",
     "next": "14.2.30",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "recharts": "^2.15.0"
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+    "dev": "next dev --hostname 0.0.0.0 --port 3000",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "next build && tsc --noEmit",
+    "dev:vscode": "next dev --hostname 0.0.0.0 --port 3000",
+    "verify": "npm run typecheck"
+  },
+  "dependencies": {
+    "next": "14.2.30",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
@@ -25,6 +71,25 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+    "tsx": "^4.21.0",
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
     "typescript": "^5.7.2"
   }
 }
