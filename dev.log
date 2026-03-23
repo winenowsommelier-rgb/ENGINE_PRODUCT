@@ -1,10 +1,311 @@
 
 > winenow-flavor-intelligence-system@0.1.0 dev
-> next dev --port 3000
+> next dev
 
   ▲ Next.js 14.2.30
   - Local:        http://localhost:3000
   - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 1528ms
+ ✓ Ready in 1704ms
+ ✓ Compiled /api/summary in 429ms (56 modules)
+ ○ Compiling /api/ga4 ...
+ ✓ Compiled /api/ga4 in 9.6s (1155 modules)
+ ✓ Compiled (1157 modules)
+ GET /api/gsc?days=30&site=liq9 200 in 12101ms
+ GET /api/gsc?days=30&site=winenow 200 in 13146ms
+ GET /api/ga4?days=30&site=liq9 200 in 13153ms
+ GET /api/ga4?days=30&site=winenow 200 in 13168ms
+ GET /api/summary?days=30 200 in 13888ms
+ ○ Compiling / ...
+ ✓ Compiled / in 7.4s (1636 modules)
+ GET / 200 in 7803ms
+ ✓ Compiled /api/ga4 in 346ms (1936 modules)
+ ✓ Compiled (1995 modules)
+ GET /api/competitors?site=winenow 200 in 3055ms
+ GET /api/competitors?site=winenow 200 in 4ms
+ GET /api/site-health?site=winenow 200 in 4338ms
+ GET /api/ga4?days=90&site=winenow 200 in 4924ms
+ GET /api/site-health?site=winenow 200 in 783ms
+ GET /api/gsc?days=90&site=winenow 200 in 5442ms
+ GET /api/ga4?days=90&site=winenow 200 in 1548ms
+ GET /api/gsc?days=90&site=winenow 200 in 1750ms
+ GET / 200 in 419ms
+ GET /api/competitors?site=winenow 200 in 70ms
+ GET /api/competitors?site=winenow 200 in 16ms
+ GET /api/gsc?days=90&site=winenow 200 in 1087ms
+ GET /api/site-health?site=winenow 200 in 1177ms
+ GET /api/ga4?days=90&site=winenow 200 in 1456ms
+ GET /api/site-health?site=winenow 200 in 541ms
+ GET /api/gsc?days=90&site=winenow 200 in 1332ms
+ GET /api/ga4?days=90&site=winenow 200 in 1263ms
+ GET / 200 in 337ms
+ ○ Compiling /api/batch-process-db ...
+ ✓ Compiled /api/batch-process-db in 2.7s (855 modules)
+✓ Database initialized at /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/db
+✓ Taxonomy preloaded from JSON files
+✓ Database initialized
+Error reading products: SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at readProducts (webpack-internal:///(rsc)/./lib/db/client.ts:51:25)
+    at async getProductStats (webpack-internal:///(rsc)/./lib/db/client.ts:121:22)
+    at async GET (webpack-internal:///(rsc)/./app/api/batch-process-db/route.ts:170:27)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:57228
+    at async eT.execute (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:46851)
+    at async eT.handle (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:58760)
+    at async doRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1496:28)
+    at async DevServer.renderPageComponent (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1962:32)
+    at async DevServer.pipeImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:818:17)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:359:24)
+    at async requestHandlerImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/start-server.js:141:13)
+ GET /api/batch-process-db?action=stats 200 in 2993ms
+Error reading products: SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at readProducts (webpack-internal:///(rsc)/./lib/db/client.ts:51:25)
+    at async getProductStats (webpack-internal:///(rsc)/./lib/db/client.ts:121:22)
+    at async GET (webpack-internal:///(rsc)/./app/api/batch-process-db/route.ts:170:27)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:57228
+    at async eT.execute (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:46851)
+    at async eT.handle (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:58760)
+    at async doRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1496:28)
+    at async DevServer.renderPageComponent (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1962:32)
+    at async DevServer.pipeImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:818:17)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:359:24)
+    at async requestHandlerImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/start-server.js:141:13)
+ GET /api/batch-process-db?action=stats 200 in 18ms
+ GET /api/batch-process-db?action=logs 200 in 6ms
+ GET /api/batch-process-db?action=logs 200 in 15ms
+Error reading products: SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at readProducts (webpack-internal:///(rsc)/./lib/db/client.ts:51:25)
+    at async getCleanedProducts (webpack-internal:///(rsc)/./lib/db/client.ts:104:20)
+    at async GET (webpack-internal:///(rsc)/./app/api/batch-process-db/route.ts:180:30)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:57228
+    at async eT.execute (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:46851)
+    at async eT.handle (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:58760)
+    at async doRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1496:28)
+    at async DevServer.renderPageComponent (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1962:32)
+    at async DevServer.pipeImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:818:17)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:359:24)
+    at async requestHandlerImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/start-server.js:141:13)
+ GET /api/batch-process-db?action=products&status=needs_review&limit=20 200 in 27ms
+Error reading products: SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at readProducts (webpack-internal:///(rsc)/./lib/db/client.ts:51:25)
+    at async getCleanedProducts (webpack-internal:///(rsc)/./lib/db/client.ts:104:20)
+    at async GET (webpack-internal:///(rsc)/./app/api/batch-process-db/route.ts:180:30)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:57228
+    at async eT.execute (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:46851)
+    at async eT.handle (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:58760)
+    at async doRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1496:28)
+    at async DevServer.renderPageComponent (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1962:32)
+    at async DevServer.pipeImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:818:17)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:359:24)
+    at async requestHandlerImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/start-server.js:141:13)
+ GET /api/batch-process-db?action=products&status=needs_review&limit=20 200 in 59ms
+ ✓ Compiled /api/import-rows in 296ms (857 modules)
+ GET /api/import-rows?limit=200 200 in 469ms
+ GET /api/import-rows?limit=200 200 in 22ms
+✓ Database initialized at /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/db
+✓ Taxonomy preloaded from JSON files
+✓ Database initialized
+Error reading products: SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at readProducts (webpack-internal:///(rsc)/./lib/db/client.ts:51:25)
+    at async getProductStats (webpack-internal:///(rsc)/./lib/db/client.ts:121:22)
+    at async GET (webpack-internal:///(rsc)/./app/api/batch-process-db/route.ts:170:27)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:57228
+    at async eT.execute (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:46851)
+    at async eT.handle (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:58760)
+    at async doRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1496:28)
+    at async DevServer.renderPageComponent (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1962:32)
+    at async DevServer.pipeImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:818:17)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:359:24)
+    at async requestHandlerImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/start-server.js:141:13)
+ GET /api/batch-process-db?action=stats 200 in 311ms
+ GET /api/batch-process-db?action=logs 200 in 22ms
+Error reading products: SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at readProducts (webpack-internal:///(rsc)/./lib/db/client.ts:51:25)
+    at async getProductStats (webpack-internal:///(rsc)/./lib/db/client.ts:121:22)
+    at async GET (webpack-internal:///(rsc)/./app/api/batch-process-db/route.ts:170:27)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:57228
+    at async eT.execute (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:46851)
+    at async eT.handle (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:58760)
+    at async doRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1496:28)
+    at async DevServer.renderPageComponent (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1962:32)
+    at async DevServer.pipeImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:818:17)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:359:24)
+    at async requestHandlerImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/start-server.js:141:13)
+ GET /api/batch-process-db?action=stats 200 in 535ms
+ GET /api/batch-process-db?action=logs 200 in 130ms
+Error reading products: SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at readProducts (webpack-internal:///(rsc)/./lib/db/client.ts:51:25)
+    at async getCleanedProducts (webpack-internal:///(rsc)/./lib/db/client.ts:104:20)
+    at async GET (webpack-internal:///(rsc)/./app/api/batch-process-db/route.ts:180:30)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:57228
+    at async eT.execute (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:46851)
+    at async eT.handle (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:58760)
+    at async doRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1496:28)
+    at async DevServer.renderPageComponent (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1962:32)
+    at async DevServer.pipeImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:818:17)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:359:24)
+    at async requestHandlerImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/start-server.js:141:13)
+ GET /api/batch-process-db?action=products&status=needs_review&limit=20 200 in 446ms
+Error reading products: SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at readProducts (webpack-internal:///(rsc)/./lib/db/client.ts:51:25)
+    at async getCleanedProducts (webpack-internal:///(rsc)/./lib/db/client.ts:104:20)
+    at async GET (webpack-internal:///(rsc)/./app/api/batch-process-db/route.ts:180:30)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:57228
+    at async eT.execute (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:46851)
+    at async eT.handle (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:58760)
+    at async doRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1496:28)
+    at async DevServer.renderPageComponent (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1962:32)
+    at async DevServer.pipeImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:818:17)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:359:24)
+    at async requestHandlerImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/start-server.js:141:13)
+ GET /api/batch-process-db?action=products&status=needs_review&limit=20 200 in 172ms
+ GET /api/import-rows?limit=200&offset=0 200 in 144ms
+Error reading products: SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at readProducts (webpack-internal:///(rsc)/./lib/db/client.ts:51:25)
+    at async saveCleanedProduct (webpack-internal:///(rsc)/./lib/db/client.ts:82:22)
+    at async POST (webpack-internal:///(rsc)/./app/api/batch-process-db/route.ts:58:17)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:57228
+    at async eT.execute (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:46851)
+    at async eT.handle (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:58760)
+    at async doRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1496:28)
+    at async DevServer.renderPageComponent (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:1962:32)
+    at async DevServer.pipeImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/base-server.js:818:17)
+    at async /Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:359:24)
+    at async requestHandlerImpl (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/node_modules/next/dist/server/lib/start-server.js:141:13)
+ POST /api/batch-process-db 200 in 9442ms
+ GET /api/import-rows?limit=200&offset=200 200 in 148ms
+ POST /api/batch-process-db 200 in 11108ms
+ ○ Compiling /api/gsc ...
+ ✓ Compiled /api/gsc in 719ms (1952 modules)
+ ✓ Compiled (2011 modules)
+ GET /api/competitors?site=winenow 200 in 4943ms
+ GET /api/competitors?site=winenow 200 in 55ms
+ POST /api/batch-process-db 200 in 14736ms
+ GET /api/competitors?site=liq9 200 in 22ms
+ GET /api/gsc?days=90&site=liq9 200 in 1235ms
+ GET /api/site-health?site=winenow 200 in 6714ms
+ GET /api/gsc?days=90&site=winenow 200 in 6846ms
+ GET /api/competitors?site=winenow 200 in 5ms
+ GET /api/ga4?days=90&site=liq9 200 in 1706ms
+ GET /api/site-health?site=liq9 200 in 648ms
+ GET /api/ga4?days=90&site=winenow 200 in 7187ms
+ GET /api/site-health?site=winenow 200 in 720ms
+ GET /api/competitors?site=liq9 200 in 15ms
+ GET /api/site-health?site=winenow 200 in 1311ms
+ GET /api/site-health?site=liq9 200 in 454ms
+ GET /api/gsc?days=90&site=winenow 200 in 2028ms
+ GET /api/gsc?days=90&site=liq9 200 in 640ms
+ GET /api/ga4?days=90&site=winenow 200 in 1944ms
+ GET /api/ga4?days=90&site=liq9 200 in 1216ms
+ GET /api/ga4?days=90&site=winenow 200 in 1241ms
+ GET /api/gsc?days=90&site=winenow 200 in 1613ms
+ GET /api/competitors?site=winenow 200 in 27ms
+ GET /api/site-health?site=winenow 200 in 964ms
+ GET /api/gsc?days=90&site=winenow 200 in 1571ms
+ GET /api/ga4?days=90&site=winenow 200 in 1885ms
+ GET /api/import-rows?limit=200 200 in 176ms
+ GET /api/import-rows?limit=200 200 in 83ms
+ GET / 200 in 499ms
+ ✓ Compiled in 5.4s (564 modules)
+ ✓ Compiled in 1577ms (526 modules)
+ ✓ Compiled in 2.5s (528 modules)
+ ✓ Compiled in 2.6s (1602 modules)

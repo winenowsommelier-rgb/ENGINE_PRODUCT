@@ -1,5 +1,57 @@
 [
   {
+    "id": "batch-1774264187063",
+    "source_file": "DATA_ WNLQ9 Performance - MReport 2025 Masterfile.csv",
+    "source_type": "api",
+    "total_rows": 6003,
+    "processed_rows": 6003,
+    "ready_rows": 0,
+    "review_rows": 0,
+    "blocked_rows": 6003,
+    "status": "completed",
+    "notes": "Processed 6003 products with 6003 issues identified",
+    "timestamp": "2026-03-23T11:09:47.069Z"
+  },
+  {
+    "id": "batch-1774261346098",
+    "source_file": "Magento feed",
+    "source_type": "api",
+    "total_rows": 200,
+    "processed_rows": 200,
+    "ready_rows": 126,
+    "review_rows": 72,
+    "blocked_rows": 2,
+    "status": "completed",
+    "notes": "Processed 200 products with 2 issues identified",
+    "timestamp": "2026-03-23T10:22:40.918Z"
+  },
+  {
+    "id": "batch-1774261327613",
+    "source_file": "Magento feed",
+    "source_type": "api",
+    "total_rows": 200,
+    "processed_rows": 200,
+    "ready_rows": 126,
+    "review_rows": 72,
+    "blocked_rows": 2,
+    "status": "completed",
+    "notes": "Processed 200 products with 2 issues identified",
+    "timestamp": "2026-03-23T10:22:18.734Z"
+  },
+  {
+    "id": "batch-1774261307341",
+    "source_file": "Magento feed",
+    "source_type": "api",
+    "total_rows": 200,
+    "processed_rows": 200,
+    "ready_rows": 122,
+    "review_rows": 78,
+    "blocked_rows": 0,
+    "status": "completed",
+    "notes": "Processed 200 products with 0 issues identified",
+    "timestamp": "2026-03-23T10:21:56.799Z"
+  },
+  {
     "id": "bulk-batch-5",
     "source_file": "magento-bulk-import",
     "source_type": "bulk",
