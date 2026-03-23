@@ -1,29 +1,43 @@
 import { NextResponse } from 'next/server';
-import { getCleanedProducts } from '@/lib/db/client';
+import { getCleanedProducts, batchUpdateEnrichment, getSyncStatus, saveSyncStatus } from '@/lib/db/client';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 
 export const runtime = 'nodejs';
 
+export async function GET() {
+  const s = await getSyncStatus();
+  return NextResponse.json(s);
+}
+
 export async function POST() {
   try {
     const products = await getCleanedProducts({ validation_status: 'validated' });
-    if (products.length === 0) return NextResponse.json({ synced: 0 });
+    if (products.length === 0) {
+      return NextResponse.json({ synced: 0, message: 'No validated products to sync' });
+    }
 
     const client = createSupabaseBrowserClient();
     const rows = products.map(p => ({
       sku: p.sku,
       name: p.name,
-      category: p.category,
-      type: p.type,
-      grape: p.grape,
-      region: p.region,
-      style: p.style,
-      price: p.price,
-      cost_price: p.cost ?? p.costPrice,
-      currency: p.currency,
-      status: p.status,
-      oak: p.oak,
       country: p.country,
+      region: p.region,
+      subregion: p.subregion,
+      classification: p.classification,
+      grape_variety: p.grape_variety,
+      wine_type: p.wine_type,
+      liquor_main_type: p.liquor_main_type,
+      price: p.price,
+      cost_price: p.cost,
+      currency: p.currency,
+      overall_confidence: p.overall_confidence,
+      validation_status: p.validation_status,
+      flavor_profile: p.flavor_profile,
+      brand: p.brand,
+      vintage: p.vintage,
+      alcohol: p.alcohol,
+      bottle_size: p.bottle_size,
+      enrichment_source: p.enrichment_source,
     }));
 
     const response = await fetch(`${client.url}/rest/v1/products`, {
@@ -41,8 +55,16 @@ export async function POST() {
       throw new Error(msg || `Supabase error ${response.status}`);
     }
 
-    return NextResponse.json({ synced: rows.length });
+    // Mark synced_at on all synced products
+    const now = new Date().toISOString();
+    await batchUpdateEnrichment(products.map(p => ({ id: String(p.id), synced_at: now })));
+    await saveSyncStatus({ last_synced_at: now, last_synced_count: rows.length });
+
+    return NextResponse.json({ synced: rows.length, timestamp: now });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Sync failed' }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Sync failed' },
+      { status: 500 }
+    );
   }
 }

@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 
 type Brand = { id: string; name: string };
+type SyncStatus = { last_synced_at: string | null; last_synced_count: number };
 
 export function SettingsPage() {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [newBrand, setNewBrand] = useState('');
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(null);
 
   async function loadBrands() {
     const res = await fetch('/api/settings/brands');
@@ -16,7 +18,10 @@ export function SettingsPage() {
     setBrands(json.brands ?? []);
   }
 
-  useEffect(() => { loadBrands(); }, []);
+  useEffect(() => {
+    loadBrands();
+    fetch('/api/settings/sync').then(r => r.json()).then(setSyncStatus).catch(() => {});
+  }, []);
 
   async function addBrand() {
     if (!newBrand.trim()) return;
@@ -42,6 +47,7 @@ export function SettingsPage() {
       const json = await res.json();
       if (json.error) throw new Error(json.error);
       setSyncMsg(`Synced ${json.synced} validated products to Supabase.`);
+      setSyncStatus({ last_synced_at: json.timestamp, last_synced_count: json.synced });
     } catch (err) {
       setSyncMsg(err instanceof Error ? err.message : 'Sync failed');
     }
@@ -90,6 +96,13 @@ export function SettingsPage() {
           {syncing ? 'Syncing…' : 'Sync validated products to Supabase'}
         </button>
         {syncMsg && <p className="mt-2 text-xs text-slate-400">{syncMsg}</p>}
+        {syncStatus && (
+          <p className="mt-1 text-xs text-slate-600">
+            Last synced: {syncStatus.last_synced_at
+              ? `${new Date(syncStatus.last_synced_at).toLocaleString()} — ${syncStatus.last_synced_count} products`
+              : 'Never'}
+          </p>
+        )}
       </section>
     </div>
   );
