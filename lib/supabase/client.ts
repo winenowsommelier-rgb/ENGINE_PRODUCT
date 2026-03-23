@@ -1,7 +1,17 @@
 import { supabaseProject } from '@/lib/supabase/config';
 import { buildFlavorProfile } from '@/lib/auto-mapping';
-import { type BatchProcessingResult } from '@/lib/batch-pipeline';
 import { validateRenderedProduct } from '@/lib/render-validation';
+
+type BatchProcessingResult = {
+  rows: Array<{
+    original: Record<string, any>;
+    normalized: Record<string, any>;
+    corrections: Record<string, any>[];
+    issues: Array<{ severity: 'error' | 'warning'; [key: string]: any }>;
+    confidence: number;
+  }>;
+  summary: { totalRows: number; autoCorrected: number; blocked: number; readyToImport?: number };
+};
 
 export type SupabaseBrowserClientConfig = {
   url: string;
@@ -89,7 +99,7 @@ export async function persistImportToSupabase({ sourceFilename, batchResult }: P
         corrections: row.corrections,
         issues: row.issues,
         confidence_score: row.confidence,
-        is_render_safe: validateRenderedProduct(row.normalized, buildFlavorProfile(row.normalized)).every((check) => check.status === 'pass')
+        is_render_safe: validateRenderedProduct(row.normalized as any, buildFlavorProfile(row.normalized as any)).every((check) => check.status === 'pass')
       }))
     )
   });
@@ -132,15 +142,5 @@ export async function persistImportToSupabase({ sourceFilename, batchResult }: P
     stagedRows: batchResult.rows.length,
     blockedRows: batchResult.summary.blocked,
     savedProducts: Array.isArray(savedProducts) ? savedProducts.length : readyRows.length
-  };
-}
-    )
-  });
-
-  return {
-    importRunId,
-    stagedRows: batchResult.summary.readyToImport,
-    blockedRows: batchResult.summary.blocked,
-    savedProducts: readyRows.length
   };
 }
