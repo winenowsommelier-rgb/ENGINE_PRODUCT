@@ -68,7 +68,7 @@ const countries = [
   [1, 'France', 'FR'], [2, 'Italy', 'IT'], [3, 'Spain', 'ES'], [4, 'Germany', 'DE'], [5, 'Portugal', 'PT'], [6, 'USA', 'US'], [7, 'Chile', 'CL'], [8, 'Argentina', 'AR'], [9, 'Australia', 'AU'], [10, 'New Zealand', 'NZ'], [11, 'South Africa', 'ZA'], [12, 'Austria', 'AT'], [13, 'Greece', 'GR'], [14, 'Hungary', 'HU'], [15, 'Canada', 'CA'], [16, 'Japan', 'JP'], [17, 'Mexico', 'MX'], [18, 'Scotland', 'GB-SCT'], [19, 'Ireland', 'IE'], [20, 'China', 'CN'], [21, 'England', 'GB-ENG'], [22, 'Brazil', 'BR'], [23, 'Uruguay', 'UY'], [24, 'Lebanon', 'LB'], [25, 'Israel', 'IL'], [26, 'Georgia', 'GE'], [27, 'Thailand', 'TH'], [28, 'Other (N/A)', 'NA']
 ];
 
-const workspaces = ['Overview', 'Catalog workspace', 'Import studio', 'Taxonomy control'];
+const workspaces = ['Overview', 'Catalog workspace', 'Processing Review', 'Import studio', 'Taxonomy control'];
 let activeWorkspace = 'Overview';
 let activeProduct = 0;
 let activeImport = 0;
@@ -271,6 +271,79 @@ function renderTaxonomy() {
   `;
 }
 
+function renderProcessing() {
+  return `
+    <div class="workspace-layout">
+      <section class="card stack">
+        <div>
+          <div class="section-label">Processing Review</div>
+          <h2>Real-time Processing Dashboard</h2>
+          <p>Monitor bulk data processing operations, review batch logs, and manage items requiring manual attention.</p>
+        </div>
+        <div class="grid-4">
+          <article class="metric"><div class="metric-label">Total Processed</div><div class="metric-value">11,187</div><div class="metric-detail">Items processed</div></article>
+          <article class="metric"><div class="metric-label">Ready</div><div class="metric-value">10,482</div><div class="metric-detail">Validated and ready</div></article>
+          <article class="metric"><div class="metric-label">Needs Review</div><div class="metric-value">182</div><div class="metric-detail">Awaiting manual review</div></article>
+          <article class="metric"><div class="metric-label">Blocked</div><div class="metric-value">523</div><div class="metric-detail">Processing errors</div></article>
+        </div>
+      </section>
+
+      <div class="stack">
+        <section class="card stack">
+          <div><div class="section-label">Recent Batch Logs</div><h2>Latest Processing Operations</h2></div>
+          <div class="list-card">
+            <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
+              <div><strong>bulk-import-2026-03-21.csv</strong><p class="small-copy">March 21, 2026 at 2:15 PM</p></div>
+              ${pill('completed', 'good')}
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;">
+              <div><span class="small-copy">Processed:</span> <strong>500</strong></div>
+              <div><span class="small-copy">Ready:</span> <strong>450</strong></div>
+              <div><span class="small-copy">Issues:</span> <strong>50</strong></div>
+            </div>
+          </div>
+          <div class="list-card">
+            <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
+              <div><strong>magento-sync-batch-001.json</strong><p class="small-copy">March 21, 2026 at 1:45 PM</p></div>
+              ${pill('completed', 'good')}
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;">
+              <div><span class="small-copy">Processed:</span> <strong>1,000</strong></div>
+              <div><span class="small-copy">Ready:</span> <strong>950</strong></div>
+              <div><span class="small-copy">Issues:</span> <strong>50</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card stack">
+          <div><div class="section-label">Review Queue</div><h2>Items Needing Attention</h2></div>
+          <div class="list-card">
+            <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
+              <div><strong>WN-2010</strong><p class="small-copy">Casa Naranja Tequila Reposado • Mexico • Jalisco Highlands</p></div>
+              ${pill('Review', 'warn')}
+            </div>
+            <p class="small-copy" style="margin-top:8px;">Overall: <strong>87%</strong> • Taxonomy: <strong>92%</strong> • Description: <strong>82%</strong></p>
+          </div>
+          <div class="list-card">
+            <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
+              <div><strong>WN-3100</strong><p class="small-copy">Velvet Ember Willamette Pinot Noir • USA • Willamette Valley</p></div>
+              ${pill('Review', 'warn')}
+            </div>
+            <p class="small-copy" style="margin-top:8px;">Overall: <strong>84%</strong> • Taxonomy: <strong>88%</strong> • Description: <strong>80%</strong></p>
+          </div>
+          <div class="list-card" style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);">
+            <div style="text-align:center;padding:16px;">
+              <div style="color:#22c55e;font-size:18px;margin-bottom:8px;">✓</div>
+              <strong style="color:#22c55e;">All items reviewed!</strong>
+              <p class="small-copy" style="color:#22c55e;margin-top:4px;">No items currently need manual review</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  `;
+}
+
 function renderNav() {
   navEl.innerHTML = workspaces.map(workspace => `
     <button class="workspace-button ${workspace === activeWorkspace ? 'active' : ''}" onclick="setWorkspace('${workspace}')">${workspace}</button>
@@ -280,6 +353,7 @@ function renderNav() {
 function renderWorkspace() {
   renderNav();
   if (activeWorkspace === 'Catalog workspace') contentEl.innerHTML = renderCatalog();
+  else if (activeWorkspace === 'Processing Review') contentEl.innerHTML = renderProcessing();
   else if (activeWorkspace === 'Import studio') contentEl.innerHTML = renderImportStudio();
   else if (activeWorkspace === 'Taxonomy control') contentEl.innerHTML = renderTaxonomy();
   else contentEl.innerHTML = renderOverview();
