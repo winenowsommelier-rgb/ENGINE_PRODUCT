@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
           taxonomy_confidence: row.confidence,
           description_confidence: 0,
           overall_confidence: row.confidence,
-          validation_status: row.status === 'ready' ? 'validated' : row.status === 'blocked' ? 'blocked' : 'needs_review',
+          validation_status: 'needs_review',
           full_description: row.name, // Will be populated by scraping
           flavor_profile: JSON.stringify(row.flavorNotes || []),
           character_traits: JSON.stringify(row.flavorFamilies || []),
@@ -156,13 +156,19 @@ export async function POST(req: NextRequest) {
       notes: `Processed ${successCount} products with ${issueCount} issues identified`,
     });
 
+    // Fire enrichment pipeline in background
+    import('@/lib/enrichment/pipeline').then(({ runEnrichmentPipeline }) => {
+      runEnrichmentPipeline().catch(console.error);
+    });
+
     return NextResponse.json({
       success: true,
       batch_id: logId,
       stats,
       saved: successCount,
       issues: issueCount,
-      message: `Successfully processed and saved ${successCount} products to database`,
+      enrichmentStarted: true,
+      message: `Saved ${successCount} products. Enrichment pipeline started in background.`,
     });
   } catch (error) {
     console.error('Batch processing error:', error);
