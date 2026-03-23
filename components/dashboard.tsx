@@ -1,14 +1,15 @@
 'use client';
 import { useState } from 'react';
-import { Database, LayoutDashboard, Package, RefreshCw, Settings, Upload, type LucideIcon } from 'lucide-react';
+import { Database, LayoutDashboard, Package, RefreshCw, Settings, TrendingUp, Upload, type LucideIcon } from 'lucide-react';
 import { ImportPage } from '@/components/pages/ImportPage';
 import { ProcessingReviewPage } from '@/components/pages/ProcessingReviewPage';
 import { TaxonomyQueuePage } from '@/components/pages/TaxonomyQueuePage';
 import { ProductsPage } from '@/components/pages/ProductsPage';
 import { OverrideImportPage } from '@/components/pages/OverrideImportPage';
 import { SettingsPage } from '@/components/pages/SettingsPage';
+import { SeoCommandCenter } from '@/components/seo-command-center';
 
-type Section = 'import' | 'processing' | 'taxonomy_queue' | 'products' | 'override_import' | 'settings';
+type Section = 'import' | 'processing' | 'taxonomy_queue' | 'products' | 'override_import' | 'settings' | 'seo';
 
 const NAV_ITEMS: Array<{ id: Section; label: string; Icon: LucideIcon }> = [
   { id: 'import', label: 'Import', Icon: Upload },
@@ -16,6 +17,7 @@ const NAV_ITEMS: Array<{ id: Section; label: string; Icon: LucideIcon }> = [
   { id: 'taxonomy_queue', label: 'Taxonomy Queue', Icon: Database },
   { id: 'products', label: 'Products', Icon: Package },
   { id: 'override_import', label: 'Override Import', Icon: LayoutDashboard },
+  { id: 'seo', label: 'SEO Command Center', Icon: TrendingUp },
   { id: 'settings', label: 'Settings', Icon: Settings },
 ];
 
@@ -56,6 +58,7 @@ export function Dashboard() {
     taxonomy_queue: <TaxonomyQueuePage />,
     products: <ProductsPage />,
     override_import: <OverrideImportPage />,
+    seo: <SeoCommandCenter />,
     settings: <SettingsPage />,
   };
 
