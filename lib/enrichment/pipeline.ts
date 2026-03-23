@@ -1,5 +1,7 @@
 import { enrichWithRules } from './rules';
-import { enrichBatchWithClaude, type ClaudeEnrichmentProgress } from './claude';
+// Claude batch enrichment disabled in dev to avoid API costs.
+// Re-enable by uncommenting the import and the Pass 2 block below.
+// import { enrichBatchWithClaude, type ClaudeEnrichmentProgress } from './claude';
 import {
   readProducts,
   batchUpdateEnrichment,
@@ -104,63 +106,18 @@ export async function runEnrichmentPipeline(options: PipelineOptions = {}): Prom
     // Batch write rule results (one write)
     if (ruleUpdates.length > 0) await batchUpdateEnrichment(ruleUpdates);
 
-    // Pass 2: Claude enrichment for unresolved products
-    const needsClaudeProducts = targets.filter(p => needsClaudeIds.has(String(p.id)));
-
-    const progress: ClaudeEnrichmentProgress = { tokensUsed: 0, budgetExceeded: false };
+    // Pass 2: Route unresolved products by confidence (Claude batch disabled — use Ask Claude in queue instead)
+    const now = new Date().toISOString();
     const claudeUpdates: EnrichmentUpdate[] = [];
 
-    await savePipelineStatus({
-      current_step: 'claude_enrichment',
-      progress: { done: 0, total: needsClaudeProducts.length },
-    });
-
-    const claudeResults = await enrichBatchWithClaude(
-      needsClaudeProducts,
-      progress,
-      (done, total) => {
-        savePipelineStatus({
-          progress: { done, total },
-          tokens_used: progress.tokensUsed,
-        }).catch(console.error);
-      }
-    );
-
-    const now = new Date().toISOString();
-    for (const p of needsClaudeProducts) {
-      const cr = claudeResults.get(String(p.sku));
-      if (!cr) continue;
-
-      const existingConf = parseFloat(String(p.overall_confidence ?? 0));
-      const maxConf = Math.max(cr.confidence, existingConf);
-
-      const update: EnrichmentUpdate = {
+    for (const p of targets.filter(p => needsClaudeIds.has(String(p.id)))) {
+      const conf = parseFloat(String(p.overall_confidence ?? 0));
+      claudeUpdates.push({
         id: String(p.id),
-        enrichment_source: cr.confidence > existingConf ? 'claude' : (p.enrichment_source ?? 'rules'),
-        enrichment_note: cr.note,
-        claude_enriched_at: now,
-        overall_confidence: maxConf,
-        taxonomy_confidence: maxConf,
-      };
-
-      if (cr.country && (!p.country || p.country === '')) update.country = cr.country;
-      if (cr.region && !p.region) update.region = cr.region;
-      if (cr.subregion && !p.subregion) update.subregion = cr.subregion;
-      if (cr.classification && !p.classification) update.classification = cr.classification;
-      if (cr.grape_variety && !p.grape_variety) update.grape_variety = cr.grape_variety;
-
-      if (maxConf >= AUTO_VALIDATE_THRESHOLD) {
-        update.validation_status = 'validated';
-      } else if (maxConf >= NEEDS_ATTENTION_THRESHOLD) {
-        update.validation_status = 'needs_review';
-      } else {
-        update.validation_status = 'needs_attention';
-      }
-
-      claudeUpdates.push(update);
+        validation_status: conf >= NEEDS_ATTENTION_THRESHOLD ? 'needs_review' : 'needs_attention',
+      });
     }
 
-    // Batch write Claude results (one write)
     if (claudeUpdates.length > 0) await batchUpdateEnrichment(claudeUpdates);
 
     // Build summary
@@ -170,7 +127,7 @@ export async function runEnrichmentPipeline(options: PipelineOptions = {}): Prom
       autoValidated: finalProducts.filter(p => p.validation_status === 'validated').length,
       sentToQueue: finalProducts.filter(p => p.validation_status === 'needs_review').length,
       needsAttention: finalProducts.filter(p => p.validation_status === 'needs_attention').length,
-      tokensUsed: progress.tokensUsed,
+      tokensUsed: 0,
       errors: 0,
     };
 
@@ -179,7 +136,7 @@ export async function runEnrichmentPipeline(options: PipelineOptions = {}): Prom
       migration_done: true,
       current_step: null,
       progress: { done: targets.length, total: targets.length },
-      tokens_used: progress.tokensUsed,
+      tokens_used: 0,
       last_run: now,
       last_summary: summary,
     });
