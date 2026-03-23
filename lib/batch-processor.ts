@@ -1,4 +1,4 @@
-import { taxonomyMaps, suggestCountry, suggestRegion, suggestSubregion, suggestOrigin, suggestIngredient, suggestFlavors, type FieldSuggestion } from '@/lib/taxonomy-loader';
+import { taxonomyMaps, suggestCountry, suggestRegion, suggestSubregion, suggestOrigin, suggestIngredient, suggestFlavors, type FieldSuggestion } from '@/lib/taxonomy/service';
 
 export type { FieldSuggestion };
 
@@ -223,8 +223,34 @@ export function normalizeRow(rawRow: Record<string, any>, index: number): Normal
   };
 }
 
+const CHANGELOG_FIELDS = ['country', 'region', 'classification', 'grape_variety',
+  'subregion', 'origin', 'wine_type', 'liquor_main_type'];
+
 export function processBatch(rows: Record<string, any>[], sourceName = 'upload'): BatchProcessing {
   const normalized = rows.map((r, i) => normalizeRow(r, i));
+
+  // Write changelog entries server-side only (dynamic import avoids fs errors in client bundles)
+  if (typeof window === 'undefined') {
+    const allEntries = normalized.flatMap((row) =>
+      CHANGELOG_FIELDS
+        .filter(f => (row as any)[f])
+        .map(f => ({
+          product_id: row.id,
+          sku: row.sku,
+          source: 'batch_process' as const,
+          field: f,
+          old_value: null as string | null,
+          new_value: String((row as any)[f]),
+          note: null as string | null,
+        }))
+    );
+    if (allEntries.length > 0) {
+      import('@/lib/db/client').then(({ addChangelogEntries }) => {
+        addChangelogEntries(allEntries).catch(console.error);
+      });
+    }
+  }
+
   return {
     id: `batch-${Date.now()}`,
     sourceName,

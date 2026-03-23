@@ -1,67 +1,22 @@
 import { supabaseProject } from '@/lib/supabase/config';
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-=======
 import { buildFlavorProfile } from '@/lib/auto-mapping';
-import { type BatchProcessingResult } from '@/lib/batch-pipeline';
 import { validateRenderedProduct } from '@/lib/render-validation';
->>>>>>> theirs
-=======
-import { buildFlavorProfile } from '@/lib/auto-mapping';
-import { type BatchProcessingResult } from '@/lib/batch-pipeline';
-import { validateRenderedProduct } from '@/lib/render-validation';
->>>>>>> theirs
-=======
-import { buildFlavorProfile } from '@/lib/auto-mapping';
-import { type BatchProcessingResult } from '@/lib/batch-pipeline';
-import { validateRenderedProduct } from '@/lib/render-validation';
->>>>>>> theirs
-=======
-import { buildFlavorProfile } from '@/lib/auto-mapping';
-import { type BatchProcessingResult } from '@/lib/batch-pipeline';
-import { validateRenderedProduct } from '@/lib/render-validation';
->>>>>>> theirs
-=======
-import { buildFlavorProfile } from '@/lib/auto-mapping';
-import { type BatchProcessingResult } from '@/lib/batch-pipeline';
-import { validateRenderedProduct } from '@/lib/render-validation';
->>>>>>> theirs
-=======
-import { buildFlavorProfile } from '@/lib/auto-mapping';
-import { type BatchProcessingResult } from '@/lib/batch-pipeline';
-import { validateRenderedProduct } from '@/lib/render-validation';
->>>>>>> theirs
+
+type BatchProcessingResult = {
+  rows: Array<{
+    original: Record<string, any>;
+    normalized: Record<string, any>;
+    corrections: Record<string, any>[];
+    issues: Array<{ severity: 'error' | 'warning'; [key: string]: any }>;
+    confidence: number;
+  }>;
+  summary: { totalRows: number; autoCorrected: number; blocked: number; readyToImport?: number };
+};
 
 export type SupabaseBrowserClientConfig = {
   url: string;
   publishableKey: string;
   headers: Record<string, string>;
-};
-
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-=======
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-export type PersistImportPayload = {
-  sourceFilename: string;
-  batchResult: BatchProcessingResult;
 };
 
 export type PersistImportResult = {
@@ -71,22 +26,11 @@ export type PersistImportResult = {
   savedProducts: number;
 };
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
+export type PersistImportPayload = {
+  sourceFilename: string;
+  batchResult: BatchProcessingResult;
+};
+
 export function createSupabaseBrowserClient(): SupabaseBrowserClientConfig {
   return {
     url: supabaseProject.url,
@@ -98,23 +42,6 @@ export function createSupabaseBrowserClient(): SupabaseBrowserClientConfig {
     }
   };
 }
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-=======
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 
 async function supabaseFetch(path: string, init: RequestInit = {}) {
   const client = createSupabaseBrowserClient();
@@ -172,7 +99,7 @@ export async function persistImportToSupabase({ sourceFilename, batchResult }: P
         corrections: row.corrections,
         issues: row.issues,
         confidence_score: row.confidence,
-        is_render_safe: validateRenderedProduct(row.normalized, buildFlavorProfile(row.normalized)).every((check) => check.status === 'pass')
+        is_render_safe: validateRenderedProduct(row.normalized as any, buildFlavorProfile(row.normalized as any)).every((check) => check.status === 'pass')
       }))
     )
   });
@@ -182,17 +109,14 @@ export async function persistImportToSupabase({ sourceFilename, batchResult }: P
   if (readyRows.length === 0) {
     return {
       importRunId,
-      stagedRows: batchResult.summary.readyToImport,
+      stagedRows: batchResult.rows.length,
       blockedRows: batchResult.summary.blocked,
       savedProducts: 0
     };
   }
 
-  const savedProducts = await supabaseFetch('products?on_conflict=sku', {
+  const savedProducts = await supabaseFetch('products', {
     method: 'POST',
-    headers: {
-      Prefer: 'resolution=merge-duplicates,return=representation'
-    },
     body: JSON.stringify(
       readyRows.map((row) => ({
         sku: row.normalized.sku,
@@ -202,75 +126,21 @@ export async function persistImportToSupabase({ sourceFilename, batchResult }: P
         grape: row.normalized.grape,
         region: row.normalized.region,
         style: row.normalized.style,
-        country: row.normalized.country ?? null,
         price: row.normalized.price,
         cost_price: row.normalized.costPrice,
         currency: row.normalized.currency,
         status: row.normalized.status,
-        confidence_score: row.confidence
+        oak: row.normalized.oak,
+        country: row.normalized.country,
+        import_run_id: importRunId
       }))
-    )
-  });
-
-  const productIdBySku = new Map<string, string>(savedProducts.map((product: { id: string; sku: string }) => [product.sku, product.id]));
-
-  await supabaseFetch('flavor_profile?on_conflict=product_id', {
-    method: 'POST',
-    headers: {
-      Prefer: 'resolution=merge-duplicates'
-    },
-    body: JSON.stringify(
-      readyRows
-        .map((row) => {
-          const productId = productIdBySku.get(row.normalized.sku);
-          if (!productId) {
-            return null;
-          }
-          const flavorProfile = buildFlavorProfile(row.normalized);
-
-          return {
-            product_id: productId,
-            body: flavorProfile.body,
-            acidity: flavorProfile.acidity,
-            tannin: flavorProfile.tannin,
-            sweetness: flavorProfile.sweetness,
-            alcohol: flavorProfile.alcohol,
-            intensity: flavorProfile.intensity,
-            finish: flavorProfile.finish,
-            texture: flavorProfile.texture,
-            oak: flavorProfile.oak,
-            fruit_profile: flavorProfile.fruit,
-            floral: flavorProfile.floral,
-            herbal: flavorProfile.herbal,
-            spice: flavorProfile.spice,
-            earth: flavorProfile.earth,
-            mineral: flavorProfile.mineral
-          };
-        })
-        .filter(Boolean)
     )
   });
 
   return {
     importRunId,
-    stagedRows: batchResult.summary.readyToImport,
+    stagedRows: batchResult.rows.length,
     blockedRows: batchResult.summary.blocked,
-    savedProducts: readyRows.length
+    savedProducts: Array.isArray(savedProducts) ? savedProducts.length : readyRows.length
   };
 }
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs

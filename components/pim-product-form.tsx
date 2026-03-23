@@ -12,7 +12,7 @@ import {
   countries, getRegionsByCountry, getSubregionsByRegion, getOriginsBySubregion,
   getIngredientsByScope, getClassificationsByScope, getFlavourFamilies, getFlavoursByFamily,
   categoryConfigs, type TaxIngredient, type TaxFlavour,
-} from '@/lib/taxonomy-service';
+} from '@/lib/taxonomy/service';
 import { buildFlavorProfile, calculateConfidence } from '@/lib/auto-mapping';
 import type { ProductRecord } from '@/lib/data';
 

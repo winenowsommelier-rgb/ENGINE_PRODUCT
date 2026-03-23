@@ -13,7 +13,7 @@ import {
   getFlavourFamilies, getIngredientGroups, ingredients,
   type TaxClassification, type TaxFlavour, type TaxIngredient,
   type TaxOrigin, type TaxRegion, type TaxSubregion, type GeographyTree,
-} from '@/lib/taxonomy-service';
+} from '@/lib/taxonomy/service';
 
 // ── shared inline edit ────────────────────────────────────────────────────────
 function InlineEdit({ value, onSave, onCancel }: { value: string; onSave: (v: string) => void; onCancel: () => void }) {

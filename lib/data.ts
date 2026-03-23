@@ -123,31 +123,7 @@ export const products: ProductRecord[] = [
   }
 ];
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 export const sampleRawImportRows: RawImportRow[] = [
-=======
-export const rawImportRows: RawImportRow[] = [
->>>>>>> theirs
-=======
-export const rawImportRows: RawImportRow[] = [
->>>>>>> theirs
-=======
-export const rawImportRows: RawImportRow[] = [
->>>>>>> theirs
-=======
-export const rawImportRows: RawImportRow[] = [
->>>>>>> theirs
-=======
-export const rawImportRows: RawImportRow[] = [
->>>>>>> theirs
-=======
-export const rawImportRows: RawImportRow[] = [
->>>>>>> theirs
   {
     sku: ' wn-1003 ',
     name: 'Golden Mesa Reserve Cabernet',
@@ -248,26 +224,8 @@ export const excelImportSteps = [
   'Run the self-healing import preview to review auto-corrections and unresolved errors.',
   'Approve only rows with valid SKU plus acceptable confidence before database import/export.'
 ];
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 
 // Magento data is now served server-side via /api/import-rows to keep the client bundle small.
 export const magentoImportRows: RawImportRow[] = [];
 
 export const rawImportRows: RawImportRow[] = sampleRawImportRows;
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
