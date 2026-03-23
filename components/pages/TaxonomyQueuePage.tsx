@@ -11,10 +11,20 @@ type TaxOptions = {
   grapeVarieties: string[];
   flavorNotes: string[];
 };
+type ClaudeSuggestions = {
+  country?: string;
+  region?: string;
+  subregion?: string;
+  classification?: string;
+  grape_variety?: string;
+  confidence?: number;
+  note?: string;
+};
 
 const WINE_TYPE_OPTIONS = ['Red Wine', 'White Wine', 'Rosé', 'Sparkling', 'Dessert'];
 const LIQUOR_TYPE_OPTIONS = ['Whisky', 'Rum', 'Tequila', 'Gin', 'Vodka', 'Brandy', 'Other'];
 const ALL_PANEL_FIELDS = ['country', 'region', 'subregion', 'origin', 'classification', 'grape_variety', 'wine_type', 'liquor_main_type', 'flavor_profile'];
+const CLAUDE_SUGGESTION_FIELDS = ['country', 'region', 'subregion', 'classification', 'grape_variety'] as const;
 
 export function TaxonomyQueuePage() {
   const [data, setData] = useState<{ items: Product[]; total: number; totalPages: number; page: number } | null>(null);
@@ -27,6 +37,9 @@ export function TaxonomyQueuePage() {
   const [working, setWorking] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [claudeSuggestions, setClaudeSuggestions] = useState<ClaudeSuggestions | null>(null);
+  const [claudeLoading, setClaudeLoading] = useState(false);
+  const [claudeNote, setClaudeNote] = useState<string>('');
 
   useEffect(() => {
     fetch('/api/taxonomy-options').then(r => r.json()).then(setTaxOptions);
@@ -44,9 +57,16 @@ export function TaxonomyQueuePage() {
     ALL_PANEL_FIELDS.forEach(f => { fields[f] = String(p[f] ?? ''); });
     setLocalFields(fields);
     setPanelProduct(p);
+    setClaudeSuggestions(null);
+    setClaudeNote('');
   }
 
-  function closePanel() { setPanelProduct(null); setLocalFields({}); }
+  function closePanel() {
+    setPanelProduct(null);
+    setLocalFields({});
+    setClaudeSuggestions(null);
+    setClaudeNote('');
+  }
 
   async function handleBatchValidate() {
     setWorking(true);
@@ -86,8 +106,55 @@ export function TaxonomyQueuePage() {
     load();
   }
 
-  const isWine = (p: Product) => String(p.category ?? '').toLowerCase().includes('wine');
+  async function handleAskClaude() {
+    if (!panelProduct) return;
+    setClaudeLoading(true);
+    setClaudeSuggestions(null);
+    setClaudeNote('');
+    try {
+      const res = await fetch('/api/enrich/claude-single', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sku: panelProduct.sku,
+          name: panelProduct.name,
+          wine_type: panelProduct.wine_type,
+          liquor_main_type: panelProduct.liquor_main_type,
+          country: panelProduct.country,
+          region: panelProduct.region,
+        }),
+      });
+      const json = await res.json();
+      if (json.error) {
+        setClaudeNote(`Error: ${json.error}`);
+      } else {
+        setClaudeSuggestions(json.suggestions);
+        setClaudeNote(json.suggestions?.note ?? '');
+      }
+    } catch {
+      setClaudeNote('Claude API unavailable. Try again.');
+    } finally {
+      setClaudeLoading(false);
+    }
+  }
 
+  function acceptSuggestion(field: string, value: string) {
+    setLocalFields(prev => ({ ...prev, [field]: value }));
+    setClaudeSuggestions(prev => prev ? { ...prev, [field]: undefined } : null);
+  }
+
+  function acceptAllSuggestions() {
+    if (!claudeSuggestions) return;
+    const fields: Record<string, string> = {};
+    for (const f of CLAUDE_SUGGESTION_FIELDS) {
+      if (claudeSuggestions[f]) fields[f] = claudeSuggestions[f] as string;
+    }
+    setLocalFields(prev => ({ ...prev, ...fields }));
+    setClaudeSuggestions(null);
+    setClaudeNote(claudeNote ? `✓ Applied — ${claudeNote}` : '✓ All suggestions applied');
+  }
+
+  const isWine = (p: Product) => String(p.wine_type ?? p.category ?? '').toLowerCase().includes('wine');
   const filteredRegions = taxOptions?.regions.filter(r => !localFields['country'] || r.country === localFields['country']) ?? [];
 
   const sel = (field: string, opts: string[]) => (
@@ -110,9 +177,17 @@ export function TaxonomyQueuePage() {
     />
   );
 
+  const confidenceBadge = (conf: number) => {
+    const pct = Math.round(conf * 100);
+    const cls = conf >= 0.75 ? 'bg-emerald-500/20 text-emerald-300' : conf >= 0.4 ? 'bg-amber-500/20 text-amber-300' : 'bg-rose-500/20 text-rose-300';
+    return <span className={`rounded-full px-2 py-0.5 text-xs ${cls}`}>{pct}%</span>;
+  };
+
   const statusColors: Record<string, string> = {
-    unvalidated: 'bg-amber-500/20 text-amber-200',
+    needs_review: 'bg-amber-500/20 text-amber-200',
+    needs_attention: 'bg-rose-500/20 text-rose-200',
     validated: 'bg-emerald-500/20 text-emerald-200',
+    unvalidated: 'bg-amber-500/20 text-amber-200',
   };
 
   return (
@@ -123,6 +198,8 @@ export function TaxonomyQueuePage() {
           <select value={filter} onChange={e => { setFilter(e.target.value); setPage(1); }}
             className="bg-white/10 text-slate-200 text-sm rounded-lg px-3 py-1.5 border border-white/10">
             <option value="unvalidated">Unvalidated</option>
+            <option value="needs_review">Needs review</option>
+            <option value="needs_attention">Needs attention</option>
             <option value="validated">Validated</option>
           </select>
           <input type="number" min={1} max={500} value={batchN}
@@ -146,7 +223,7 @@ export function TaxonomyQueuePage() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-white/10">
-              {['SKU', 'Name', 'Country', 'Region', 'Confidence', 'Priority', 'Status', ''].map(h => (
+              {['SKU', 'Name', 'Country', 'Confidence', 'Source', 'Status', ''].map(h => (
                 <th key={h} className="text-left px-4 py-3 text-xs text-slate-400 font-medium">{h}</th>
               ))}
             </tr>
@@ -154,18 +231,19 @@ export function TaxonomyQueuePage() {
           <tbody>
             {(data?.items ?? []).map((p: Product) => {
               const isOpen = panelProduct?.id === p.id;
+              const conf = parseFloat(String(p.overall_confidence ?? p.taxonomy_confidence ?? 0));
               return (
-                <tr key={p.id} className={`border-b border-white/5 hover:bg-white/5 ${isOpen ? 'bg-blue-500/5' : ''}`}>
+                <tr key={p.id}
+                  className={`border-b border-white/5 hover:bg-white/5 ${isOpen ? 'bg-blue-500/5' : ''} ${p.validation_status === 'needs_attention' ? 'border-l-2 border-l-rose-500/50' : ''}`}>
                   <td className="px-4 py-3 text-slate-300 font-mono text-xs">{p.sku}</td>
                   <td className="px-4 py-3 text-white max-w-xs truncate">{p.name}</td>
-                  <td className="px-4 py-3 text-slate-300">{p.country}</td>
-                  <td className="px-4 py-3 text-slate-300">{p.region}</td>
-                  <td className="px-4 py-3 text-slate-300">{(p.overall_confidence ?? p.taxonomy_confidence ?? 0).toFixed(1)}</td>
-                  <td className="px-4 py-3 text-slate-300">{p.queue_priority ?? 0}</td>
+                  <td className="px-4 py-3 text-slate-300">{p.country || <span className="text-slate-600 italic">unknown</span>}</td>
+                  <td className="px-4 py-3">{confidenceBadge(conf)}</td>
+                  <td className="px-4 py-3 text-xs text-slate-500">{p.enrichment_source ?? '—'}</td>
                   <td className="px-4 py-3">
                     {isOpen
                       ? <span className="rounded-full px-2 py-0.5 text-xs bg-blue-500/20 text-blue-200">In review</span>
-                      : <span className={`rounded-full px-2 py-0.5 text-xs ${statusColors[p.validation_status ?? 'unvalidated'] ?? ''}`}>{p.validation_status ?? 'unvalidated'}</span>
+                      : <span className={`rounded-full px-2 py-0.5 text-xs ${statusColors[p.validation_status ?? 'unvalidated'] ?? 'bg-slate-500/20 text-slate-300'}`}>{p.validation_status ?? 'unvalidated'}</span>
                     }
                   </td>
                   <td className="px-4 py-3">
@@ -191,26 +269,72 @@ export function TaxonomyQueuePage() {
 
       {panelProduct && (
         <div className="fixed inset-y-0 right-0 w-96 bg-slate-900 border-l border-white/10 p-6 overflow-y-auto z-50">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-white">Validate product</h2>
             <button onClick={closePanel}><X size={16} className="text-slate-400" /></button>
           </div>
+
           <div className="space-y-1 mb-4">
             <p className="text-xs text-slate-400">SKU</p>
             <p className="text-sm text-white font-mono">{panelProduct.sku}</p>
             <p className="text-xs text-slate-400 mt-2">Name</p>
             <p className="text-sm text-white">{panelProduct.name}</p>
+            {panelProduct.enrichment_note && (
+              <p className="text-xs text-slate-500 mt-1 italic">
+                {panelProduct.enrichment_source === 'claude' ? '✦ ' : ''}{panelProduct.enrichment_note}
+              </p>
+            )}
+          </div>
+
+          {/* Ask Claude section */}
+          <div className="border border-white/10 rounded-xl p-4 mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs font-medium text-slate-300">Claude AI Assist</p>
+              <button
+                onClick={handleAskClaude}
+                disabled={claudeLoading}
+                className="text-xs bg-violet-600/30 hover:bg-violet-600/50 disabled:opacity-50 text-violet-300 px-3 py-1 rounded-lg transition-colors"
+              >
+                {claudeLoading ? 'Asking…' : '✦ Ask Claude'}
+              </button>
+            </div>
+
+            {claudeNote && (
+              <p className="text-xs text-slate-500 mb-2 italic">{claudeNote}</p>
+            )}
+
+            {claudeSuggestions && (
+              <div className="space-y-2">
+                {CLAUDE_SUGGESTION_FIELDS.map(field => {
+                  const val = claudeSuggestions[field];
+                  if (!val) return null;
+                  return (
+                    <div key={field} className="flex items-center justify-between text-xs">
+                      <span className="text-slate-400">
+                        {field}: <span className="text-white">{val}</span>
+                      </span>
+                      <button
+                        onClick={() => acceptSuggestion(field, val)}
+                        className="text-emerald-400 hover:text-emerald-300 ml-2 shrink-0"
+                      >
+                        Accept
+                      </button>
+                    </div>
+                  );
+                })}
+                <button
+                  onClick={acceptAllSuggestions}
+                  className="w-full text-xs bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 py-1.5 rounded-lg transition-colors mt-1"
+                >
+                  Accept all
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="space-y-3 mb-6">
-            <div>
-              <label className="text-xs text-slate-400 block mb-1">country</label>
-              {sel('country', taxOptions?.countries ?? [])}
-            </div>
-            <div>
-              <label className="text-xs text-slate-400 block mb-1">region</label>
-              {sel('region', filteredRegions.map(r => r.name))}
-            </div>
+            <div><label className="text-xs text-slate-400 block mb-1">country</label>{sel('country', taxOptions?.countries ?? [])}</div>
+            <div><label className="text-xs text-slate-400 block mb-1">region</label>{sel('region', filteredRegions.map(r => r.name))}</div>
             <div>
               <label className="text-xs text-slate-400 block mb-1">subregion</label>
               <input
@@ -223,32 +347,17 @@ export function TaxonomyQueuePage() {
                 {(taxOptions?.subregions ?? []).map(s => <option key={s} value={s} />)}
               </datalist>
             </div>
-            <div>
-              <label className="text-xs text-slate-400 block mb-1">origin</label>
-              {txt('origin')}
-            </div>
-            <div>
-              <label className="text-xs text-slate-400 block mb-1">classification</label>
-              {sel('classification', taxOptions?.classifications ?? [])}
-            </div>
-            <div>
-              <label className="text-xs text-slate-400 block mb-1">grape_variety</label>
-              {sel('grape_variety', taxOptions?.grapeVarieties ?? [])}
-            </div>
+            <div><label className="text-xs text-slate-400 block mb-1">origin</label>{txt('origin')}</div>
+            <div><label className="text-xs text-slate-400 block mb-1">classification</label>{sel('classification', taxOptions?.classifications ?? [])}</div>
+            <div><label className="text-xs text-slate-400 block mb-1">grape_variety</label>{sel('grape_variety', taxOptions?.grapeVarieties ?? [])}</div>
             {isWine(panelProduct) && (
-              <div>
-                <label className="text-xs text-slate-400 block mb-1">wine_type</label>
-                {sel('wine_type', WINE_TYPE_OPTIONS)}
-              </div>
+              <div><label className="text-xs text-slate-400 block mb-1">wine_type</label>{sel('wine_type', WINE_TYPE_OPTIONS)}</div>
             )}
             {!isWine(panelProduct) && (
-              <div>
-                <label className="text-xs text-slate-400 block mb-1">liquor_main_type</label>
-                {sel('liquor_main_type', LIQUOR_TYPE_OPTIONS)}
-              </div>
+              <div><label className="text-xs text-slate-400 block mb-1">liquor_main_type</label>{sel('liquor_main_type', LIQUOR_TYPE_OPTIONS)}</div>
             )}
             <div>
-              <label className="text-xs text-slate-400 block mb-1">flavor_profile <span className="text-slate-600">(hold Ctrl/⌘ to select multiple)</span></label>
+              <label className="text-xs text-slate-400 block mb-1">flavor_profile <span className="text-slate-600">(hold Ctrl/⌘ for multiple)</span></label>
               <select
                 multiple
                 value={(localFields['flavor_profile'] ?? '').split(',').map(s => s.trim()).filter(Boolean)}
@@ -256,7 +365,7 @@ export function TaxonomyQueuePage() {
                   const selected = Array.from(e.target.selectedOptions).map(o => o.value);
                   setLocalFields(prev => ({ ...prev, flavor_profile: selected.join(', ') }));
                 }}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white h-32"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white h-28"
               >
                 {(taxOptions?.flavorNotes ?? []).map(f => <option key={f} value={f}>{f}</option>)}
               </select>
