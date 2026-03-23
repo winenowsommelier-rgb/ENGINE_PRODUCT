@@ -1,46 +1,58 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { Play } from 'lucide-react';
+import { AlertTriangle, Play, RefreshCw, RotateCcw } from 'lucide-react';
 
-type Stats = { total: number; validated: number; needs_review: number; needs_attention: number; blocked: number };
+type Stats = {
+  total: number;
+  validated: number;
+  needs_review: number;
+  needs_attention: number;
+  blocked: number;
+  avg_confidence: number;
+};
+
 type PipelineStatus = {
   status: 'idle' | 'running' | 'error';
+  migration_done: boolean;
   current_step: string | null;
   progress: { done: number; total: number };
   tokens_used: number;
   last_run: string | null;
   last_summary: Record<string, any> | null;
+  stats?: Stats;
+};
+
+const STATUS_META: Record<string, { label: string; color: string; bg: string }> = {
+  validated:       { label: 'Validated',       color: 'text-emerald-300', bg: 'bg-emerald-500/10 border-emerald-500/30' },
+  needs_review:    { label: 'Needs review',     color: 'text-amber-300',   bg: 'bg-amber-500/10 border-amber-500/30' },
+  needs_attention: { label: 'Needs attention',  color: 'text-rose-300',    bg: 'bg-rose-500/10 border-rose-500/30' },
+  blocked:         { label: 'Blocked (legacy)', color: 'text-slate-400',   bg: 'bg-white/5 border-white/10' },
 };
 
 export function ProcessingReviewPage() {
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [logs, setLogs] = useState<any[]>([]);
   const [pipeline, setPipeline] = useState<PipelineStatus | null>(null);
+  const [logs, setLogs] = useState<any[]>([]);
   const [running, setRunning] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  async function loadAll() {
-    const [s, l, p] = await Promise.all([
-      fetch('/api/batch-process-db?action=stats').then(r => r.json()),
-      fetch('/api/batch-process-db?action=logs').then(r => r.json()),
-      fetch('/api/enrich/status').then(r => r.json()),
-    ]);
-    setStats(s);
-    setLogs(l.logs ?? []);
+  async function fetchStatus(): Promise<PipelineStatus> {
+    const p = await fetch('/api/enrich/status').then(r => r.json()) as PipelineStatus;
     setPipeline(p);
-    return p as PipelineStatus;
+    return p;
+  }
+
+  async function fetchLogs() {
+    const l = await fetch('/api/batch-process-db?action=logs').then(r => r.json());
+    setLogs(l.logs ?? []);
   }
 
   function startPolling() {
     if (pollRef.current) return;
     pollRef.current = setInterval(async () => {
-      const p = await fetch('/api/enrich/status').then(r => r.json()) as PipelineStatus;
-      setPipeline(p);
+      const p = await fetchStatus();
       if (p.status !== 'running') {
         stopPolling();
         setRunning(false);
-        const s = await fetch('/api/batch-process-db?action=stats').then(r => r.json());
-        setStats(s);
       }
     }, 3000);
   }
@@ -50,88 +62,155 @@ export function ProcessingReviewPage() {
   }
 
   useEffect(() => {
-    loadAll().then(p => { if (p.status === 'running') { setRunning(true); startPolling(); } });
+    fetchStatus().then(p => {
+      if (p.status === 'running') { setRunning(true); startPolling(); }
+    });
+    fetchLogs();
     return stopPolling;
   }, []);
 
-  async function handleRunPipeline() {
+  async function handleRun() {
     setRunning(true);
     await fetch('/api/enrich/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+    await fetchStatus();
     startPolling();
   }
 
+  async function handleResume() {
+    // Reset stuck status then re-run (pipeline will skip already-enriched products)
+    await fetch('/api/enrich/status', { method: 'DELETE' });
+    await handleRun();
+  }
+
+  async function handleRefresh() {
+    await fetchStatus();
+    await fetchLogs();
+  }
+
+  const stats = pipeline?.stats;
   const pct = pipeline && pipeline.progress.total > 0
     ? Math.round((pipeline.progress.done / pipeline.progress.total) * 100)
     : 0;
 
+  const pendingCount = (stats?.needs_review ?? 0) + (stats?.needs_attention ?? 0) + (stats?.blocked ?? 0);
+
   return (
     <div className="p-8">
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-semibold text-white">Processing Review</h1>
-        <button
-          onClick={handleRunPipeline}
-          disabled={running}
-          className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm px-4 py-2 rounded-lg transition-colors"
-        >
-          <Play size={14} />
-          {running ? 'Running…' : 'Run Enrichment'}
-        </button>
+        <div>
+          <h1 className="text-xl font-semibold text-white">Processing Review</h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            {pipeline?.migration_done ? 'Initial migration complete' : 'Initial migration pending'}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={handleRefresh} className="text-slate-400 hover:text-slate-200 p-2 rounded-lg hover:bg-white/5 transition-colors">
+            <RefreshCw size={15} />
+          </button>
+          {pipeline?.status === 'error' ? (
+            <button onClick={handleResume}
+              className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 text-white text-sm px-4 py-2 rounded-lg transition-colors">
+              <RotateCcw size={14} /> Resume
+            </button>
+          ) : (
+            <button onClick={handleRun} disabled={running}
+              className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm px-4 py-2 rounded-lg transition-colors">
+              <Play size={14} />
+              {running ? 'Running…' : pendingCount > 0 ? `Process ${pendingCount} remaining` : 'Run Enrichment'}
+            </button>
+          )}
+        </div>
       </div>
 
-      {pipeline?.status === 'running' && (
-        <div className="mb-6 bg-violet-500/10 border border-violet-500/30 rounded-xl p-4">
-          <div className="flex justify-between text-sm mb-2">
-            <span className="text-violet-300">{pipeline.current_step?.replace(/_/g, ' ') ?? 'Processing…'}</span>
-            <span className="text-violet-300">{pipeline.progress.done} / {pipeline.progress.total}</span>
+      {/* Error / stuck state */}
+      {pipeline?.status === 'error' && (
+        <div className="mb-6 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-start gap-3">
+          <AlertTriangle size={16} className="text-amber-400 mt-0.5 shrink-0" />
+          <div>
+            <p className="text-amber-300 text-sm font-medium">Pipeline stopped</p>
+            <p className="text-amber-400/70 text-xs mt-0.5">{pipeline.current_step}</p>
+            <p className="text-slate-500 text-xs mt-1">Click Resume — it will continue from where it left off.</p>
           </div>
-          <div className="w-full bg-white/10 rounded-full h-2">
-            <div className="bg-violet-500 h-2 rounded-full transition-all" style={{ width: `${pct}%` }} />
-          </div>
-          {pipeline.tokens_used > 0 && (
-            <p className="text-xs text-slate-500 mt-2">Tokens used: {pipeline.tokens_used.toLocaleString()}</p>
-          )}
         </div>
       )}
 
+      {/* Active progress bar */}
+      {pipeline?.status === 'running' && (
+        <div className="mb-6 bg-violet-500/10 border border-violet-500/30 rounded-xl p-5">
+          <div className="flex justify-between text-sm mb-3">
+            <span className="text-violet-300 font-medium">{pipeline.current_step ?? 'Processing…'}</span>
+            <span className="text-violet-300 tabular-nums">{pipeline.progress.done.toLocaleString()} / {pipeline.progress.total.toLocaleString()}</span>
+          </div>
+          <div className="w-full bg-white/10 rounded-full h-3">
+            <div
+              className="bg-violet-500 h-3 rounded-full transition-all duration-500"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+          <p className="text-xs text-slate-500 mt-2">{pct}% complete — saves every 200 products, safe to restart anytime</p>
+        </div>
+      )}
+
+      {/* Last run summary */}
       {pipeline?.last_summary && pipeline.status !== 'running' && (
         <div className="mb-6 bg-white/5 border border-white/10 rounded-xl p-4">
-          <p className="text-xs text-slate-400 mb-2">
-            Last enrichment — {pipeline.last_run ? new Date(pipeline.last_run).toLocaleString() : '—'}
+          <p className="text-xs text-slate-400 mb-3">
+            Last run — {pipeline.last_run ? new Date(pipeline.last_run).toLocaleString() : '—'}
           </p>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {[
-              { label: 'Auto-validated', value: pipeline.last_summary.autoValidated },
-              { label: 'In queue', value: pipeline.last_summary.sentToQueue },
-              { label: 'Needs attention', value: pipeline.last_summary.needsAttention },
-              { label: 'Tokens used', value: (pipeline.last_summary.tokensUsed ?? 0).toLocaleString() },
-            ].map(({ label, value }) => (
-              <div key={label}>
-                <p className="text-xs text-slate-500">{label}</p>
-                <p className="text-lg font-semibold text-white">{value}</p>
+              { label: 'Auto-validated', value: pipeline.last_summary.autoValidated, color: 'text-emerald-300' },
+              { label: 'Sent to queue', value: pipeline.last_summary.sentToQueue, color: 'text-amber-300' },
+              { label: 'Needs attention', value: pipeline.last_summary.needsAttention, color: 'text-rose-300' },
+            ].map(({ label, value, color }) => (
+              <div key={label} className="text-center">
+                <p className={`text-2xl font-semibold ${color}`}>{(value ?? 0).toLocaleString()}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{label}</p>
               </div>
             ))}
           </div>
         </div>
       )}
 
+      {/* Live database status */}
       {stats && (
-        <div className="grid grid-cols-5 gap-4 mb-8">
-          {[
-            { label: 'Total', value: stats.total },
-            { label: 'Validated', value: stats.validated },
-            { label: 'Needs review', value: stats.needs_review },
-            { label: 'Needs attention', value: stats.needs_attention },
-            { label: 'Blocked (legacy)', value: stats.blocked },
-          ].map(({ label, value }) => (
-            <div key={label} className="bg-white/5 rounded-xl p-4">
-              <p className="text-xs text-slate-400">{label}</p>
-              <p className="text-2xl font-semibold text-white mt-1">{value ?? 0}</p>
+        <div className="mb-8">
+          <h2 className="text-sm font-medium text-slate-300 mb-3">Database status</h2>
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4 col-span-2 flex items-center justify-between">
+              <div>
+                <p className="text-xs text-slate-400">Total products</p>
+                <p className="text-3xl font-semibold text-white mt-0.5">{stats.total.toLocaleString()}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-slate-400">Avg confidence</p>
+                <p className="text-2xl font-semibold text-white mt-0.5">{Math.round((stats.avg_confidence ?? 0) * 100)}%</p>
+              </div>
             </div>
-          ))}
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {Object.entries(STATUS_META).map(([key, meta]) => {
+              const count = stats[key as keyof Stats] as number ?? 0;
+              return (
+                <div key={key} className={`border rounded-xl p-4 ${meta.bg}`}>
+                  <p className={`text-2xl font-semibold ${meta.color}`}>{count.toLocaleString()}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{meta.label}</p>
+                  {stats.total > 0 && (
+                    <div className="w-full bg-white/10 rounded-full h-1 mt-2">
+                      <div className={`h-1 rounded-full ${meta.color.replace('text-', 'bg-').replace('-300', '-500')}`}
+                        style={{ width: `${Math.round((count / stats.total) * 100)}%` }} />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 
-      <h2 className="text-sm font-medium text-slate-300 mb-3">Recent batch logs</h2>
+      {/* Batch logs */}
+      <h2 className="text-sm font-medium text-slate-300 mb-3">Recent imports</h2>
       <div className="space-y-2">
         {logs.length === 0 && <p className="text-slate-500 text-sm">No batch logs yet.</p>}
         {logs.map((log: any, i: number) => (
@@ -141,7 +220,7 @@ export function ProcessingReviewPage() {
               <p className="text-xs text-slate-400 mt-0.5">{log.timestamp}</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-slate-300">{log.processed_rows} / {log.total_rows} rows</p>
+              <p className="text-xs text-slate-300">{(log.processed_rows ?? 0).toLocaleString()} / {(log.total_rows ?? 0).toLocaleString()} rows</p>
               <p className="text-xs text-slate-500 mt-0.5">{log.status}</p>
             </div>
           </div>

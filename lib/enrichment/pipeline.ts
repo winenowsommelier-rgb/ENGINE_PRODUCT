@@ -1,6 +1,5 @@
 import { enrichWithRules } from './rules';
-// Claude batch enrichment disabled in dev to avoid API costs.
-// Re-enable by uncommenting the import and the Pass 2 block below.
+// Claude batch enrichment disabled — use "Ask Claude" button per product in the queue.
 // import { enrichBatchWithClaude, type ClaudeEnrichmentProgress } from './claude';
 import {
   readProducts,
@@ -12,6 +11,7 @@ import {
 
 export const AUTO_VALIDATE_THRESHOLD = 0.75;
 export const NEEDS_ATTENTION_THRESHOLD = 0.40;
+const CHUNK_SIZE = 200; // Save to disk after every N products — keeps work safe across restarts
 
 export type PipelineSummary = {
   enriched: number;
@@ -41,9 +41,10 @@ export async function runEnrichmentPipeline(options: PipelineOptions = {}): Prom
     const pipelineStatus = await getPipelineStatus();
     const includeBlocked = !pipelineStatus.migration_done;
 
-    // Load products to process
-    let allProducts = await readProducts();
+    const allProducts = await readProducts();
 
+    // Determine targets
+    // Resumability: skip products already enriched (enrichment_source set) unless forceReEnrich
     let targets = productIds
       ? allProducts.filter(p => productIds.includes(String(p.id)))
       : allProducts.filter(p => {
@@ -52,78 +53,84 @@ export async function runEnrichmentPipeline(options: PipelineOptions = {}): Prom
           return vs === 'needs_review' || vs === 'needs_attention' || !vs;
         });
 
-    // Skip already Claude-enriched unless forceReEnrich
     if (!forceReEnrich) {
-      targets = targets.filter(p => !p.claude_enriched_at);
+      // Skip products already rule-enriched — safe to resume from interruption
+      targets = targets.filter(p => !p.enrichment_source || p.validation_status === 'blocked');
     }
+
+    const total = targets.length;
 
     await savePipelineStatus({
-      current_step: 'rule_enrichment',
-      progress: { done: 0, total: targets.length },
+      current_step: 'enriching',
+      progress: { done: 0, total },
     });
 
-    // Pass 1: Rule enrichment (in memory, batch write at end)
-    const ruleUpdates: EnrichmentUpdate[] = [];
-    const needsClaudeIds = new Set<string>();
+    let done = 0;
+    let totalEnriched = 0;
 
-    for (const p of targets) {
-      const existingConf = parseFloat(String(p.overall_confidence ?? 0));
+    // Process in chunks of CHUNK_SIZE — write after each chunk so restarts skip completed work
+    for (let i = 0; i < targets.length; i += CHUNK_SIZE) {
+      const chunk = targets.slice(i, i + CHUNK_SIZE);
+      const updates: EnrichmentUpdate[] = [];
 
-      // Already high confidence — just route it
-      if (existingConf >= AUTO_VALIDATE_THRESHOLD && p.country && !forceReEnrich) {
-        ruleUpdates.push({
+      for (const p of chunk) {
+        const existingConf = parseFloat(String(p.overall_confidence ?? 0));
+
+        // Already confident enough — just validate
+        if (existingConf >= AUTO_VALIDATE_THRESHOLD && p.country && !forceReEnrich) {
+          updates.push({
+            id: String(p.id),
+            validation_status: 'validated',
+            enrichment_source: p.enrichment_source ?? 'rules',
+            enrichment_note: p.enrichment_note ?? 'Pre-existing high confidence',
+          });
+          continue;
+        }
+
+        const result = enrichWithRules(p);
+        const maxConf = Math.max(result.confidence, existingConf);
+
+        const update: EnrichmentUpdate = {
           id: String(p.id),
-          validation_status: 'validated',
-          enrichment_source: p.enrichment_source ?? 'rules',
-        });
-        continue;
+          enrichment_source: result.confidence > existingConf ? result.source : (p.enrichment_source ?? 'rules'),
+          enrichment_note: result.note,
+          overall_confidence: maxConf,
+          taxonomy_confidence: maxConf,
+        };
+
+        // Only overwrite empty fields
+        if (result.country && (!p.country || p.country === '')) update.country = result.country;
+        if (result.classification && !p.classification) update.classification = result.classification;
+
+        // Route by confidence
+        if (maxConf >= AUTO_VALIDATE_THRESHOLD) {
+          update.validation_status = 'validated';
+        } else if (maxConf >= NEEDS_ATTENTION_THRESHOLD) {
+          update.validation_status = 'needs_review';
+        } else {
+          update.validation_status = 'needs_attention';
+        }
+
+        updates.push(update);
       }
 
-      const result = enrichWithRules(p);
-      const maxConf = Math.max(result.confidence, existingConf);
+      // Write chunk to disk immediately — safe point for restart
+      if (updates.length > 0) await batchUpdateEnrichment(updates);
+      totalEnriched += updates.length;
+      done += chunk.length;
 
-      const update: EnrichmentUpdate = {
-        id: String(p.id),
-        enrichment_source: result.confidence > existingConf ? result.source : (p.enrichment_source ?? 'rules'),
-        enrichment_note: result.note,
-        overall_confidence: maxConf,
-        taxonomy_confidence: maxConf,
-      };
-
-      if (result.country && (!p.country || p.country === '')) update.country = result.country;
-      if (result.classification && !p.classification) update.classification = result.classification;
-
-      if (maxConf >= AUTO_VALIDATE_THRESHOLD) {
-        update.validation_status = 'validated';
-      } else {
-        update.validation_status = 'needs_review'; // will be refined by Claude
-        needsClaudeIds.add(String(p.id));
-      }
-
-      ruleUpdates.push(update);
-    }
-
-    // Batch write rule results (one write)
-    if (ruleUpdates.length > 0) await batchUpdateEnrichment(ruleUpdates);
-
-    // Pass 2: Route unresolved products by confidence (Claude batch disabled — use Ask Claude in queue instead)
-    const now = new Date().toISOString();
-    const claudeUpdates: EnrichmentUpdate[] = [];
-
-    for (const p of targets.filter(p => needsClaudeIds.has(String(p.id)))) {
-      const conf = parseFloat(String(p.overall_confidence ?? 0));
-      claudeUpdates.push({
-        id: String(p.id),
-        validation_status: conf >= NEEDS_ATTENTION_THRESHOLD ? 'needs_review' : 'needs_attention',
+      // Update progress after each chunk
+      await savePipelineStatus({
+        progress: { done, total },
+        current_step: `enriching (${done}/${total})`,
       });
     }
 
-    if (claudeUpdates.length > 0) await batchUpdateEnrichment(claudeUpdates);
-
-    // Build summary
+    // Final summary from live DB
+    const now = new Date().toISOString();
     const finalProducts = await readProducts();
     const summary: PipelineSummary = {
-      enriched: ruleUpdates.length + claudeUpdates.length,
+      enriched: totalEnriched,
       autoValidated: finalProducts.filter(p => p.validation_status === 'validated').length,
       sentToQueue: finalProducts.filter(p => p.validation_status === 'needs_review').length,
       needsAttention: finalProducts.filter(p => p.validation_status === 'needs_attention').length,
@@ -135,7 +142,7 @@ export async function runEnrichmentPipeline(options: PipelineOptions = {}): Prom
       status: 'idle',
       migration_done: true,
       current_step: null,
-      progress: { done: targets.length, total: targets.length },
+      progress: { done: total, total },
       tokens_used: 0,
       last_run: now,
       last_summary: summary,
@@ -143,7 +150,7 @@ export async function runEnrichmentPipeline(options: PipelineOptions = {}): Prom
 
     return summary;
   } catch (err) {
-    await savePipelineStatus({ status: 'error', current_step: null });
+    await savePipelineStatus({ status: 'error', current_step: String(err) });
     throw err;
   }
 }
