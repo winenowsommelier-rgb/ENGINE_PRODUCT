@@ -21,9 +21,9 @@ import { validateRenderedProduct } from '@/lib/render-validation';
 import {
   knownGrapeAliases, knownRegionAliases,
   knownStyleAliases, taxonomyAuditIssues, taxonomyCountries
-} from '@/lib/taxonomy';
+} from '@/lib/taxonomy/maps';
 import { getSupabaseReadiness, supabaseProject } from '@/lib/supabase/config';
-import { mapMagentoCsvToImportRows } from '@/lib/taxonomy-mappings';
+import { mapMagentoCsvToImportRows } from '@/lib/taxonomy/maps';
 import { BatchProcessor } from '@/components/batch-processor-ui';
 import { TaxonomyEditor } from '@/components/taxonomy-editor';
 import { PIMProductForm, emptyPIMProduct, pimProductToProductRecord } from '@/components/pim-product-form';

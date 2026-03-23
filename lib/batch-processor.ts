@@ -1,4 +1,4 @@
-import { taxonomyMaps, suggestCountry, suggestRegion, suggestSubregion, suggestOrigin, suggestIngredient, suggestFlavors, type FieldSuggestion } from '@/lib/taxonomy-loader';
+import { taxonomyMaps, suggestCountry, suggestRegion, suggestSubregion, suggestOrigin, suggestIngredient, suggestFlavors, type FieldSuggestion } from '@/lib/taxonomy/service';
 
 export type { FieldSuggestion };
 

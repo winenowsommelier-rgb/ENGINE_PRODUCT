@@ -7,7 +7,7 @@ import { processBatch } from '@/lib/batch-processor';
 const runBatchProcessing = (rows: Record<string, any>[]): any => processBatch(rows) as any;
 import { downloadFile, toCsv } from '@/lib/export';
 import { magentoImportRows } from '@/lib/data';
-import { countryIsoMap, grapeAliasMap, regionCountryMap } from '@/lib/taxonomy-mappings';
+import { countryIsoMap, grapeAliasMap, regionCountryMap } from '@/lib/taxonomy/maps';
 
 export type ImportLogEntry = {
   id: string;

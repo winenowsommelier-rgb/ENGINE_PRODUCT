@@ -5,7 +5,7 @@ import {
   CheckCircle, ChevronLeft,
   Download, FileUp, Search, Upload, X,
 } from 'lucide-react';
-import { parseCsvText } from '@/lib/taxonomy-mappings';
+import { parseCsvText } from '@/lib/taxonomy/maps';
 import { processBatch, exportToMagentoCSV, exportToReviewCSV, type BatchProcessing, type NormalizedRow } from '@/lib/batch-processor';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
