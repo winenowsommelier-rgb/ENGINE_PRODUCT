@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { CheckCircle, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { CheckCircle, ChevronLeft, ChevronRight, X, Wine, Droplets, Star, Tag, MapPin, Layers } from 'lucide-react';
 
 type Product = Record<string, any>;
 type TaxOptions = {
@@ -12,19 +12,60 @@ type TaxOptions = {
   flavorNotes: string[];
 };
 type ClaudeSuggestions = {
-  country?: string;
-  region?: string;
-  subregion?: string;
-  classification?: string;
-  grape_variety?: string;
-  confidence?: number;
-  note?: string;
+  country?: string; region?: string; subregion?: string;
+  classification?: string; grape_variety?: string;
+  confidence?: number; note?: string;
 };
 
 const WINE_TYPE_OPTIONS = ['Red Wine', 'White Wine', 'Rosé', 'Sparkling', 'Dessert'];
 const LIQUOR_TYPE_OPTIONS = ['Whisky', 'Rum', 'Tequila', 'Gin', 'Vodka', 'Brandy', 'Other'];
 const ALL_PANEL_FIELDS = ['country', 'region', 'subregion', 'origin', 'classification', 'grape_variety', 'wine_type', 'liquor_main_type', 'flavor_profile'];
 const CLAUDE_SUGGESTION_FIELDS = ['country', 'region', 'subregion', 'classification', 'grape_variety'] as const;
+
+// Flavor category color map
+const FLAVOR_COLORS: Record<string, string> = {
+  fruit: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
+  spice: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+  herbal: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+  earth: 'bg-stone-500/20 text-stone-300 border-stone-500/30',
+  oak: 'bg-orange-500/20 text-orange-300 border-orange-500/30',
+  floral: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+  mineral: 'bg-slate-400/20 text-slate-300 border-slate-400/30',
+  sweet: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+};
+const DEFAULT_FLAVOR_COLOR = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+
+// Guess flavor category from name
+function guessFlavorCategory(flavor: string): string {
+  const f = flavor.toLowerCase();
+  if (/apple|pear|cherry|plum|berry|fig|peach|citrus|lemon|lime|orange|grape|melon|tropical|mango|pineapple|passion/.test(f)) return 'fruit';
+  if (/pepper|spice|clove|cinnamon|ginger|nutmeg|cardamom|vanilla/.test(f)) return 'spice';
+  if (/grass|mint|herb|eucalyptus|thyme|bay|sage|green/.test(f)) return 'herbal';
+  if (/earth|soil|mushroom|truffle|leather|tobacco/.test(f)) return 'earth';
+  if (/oak|cedar|wood|smoke|toast/.test(f)) return 'oak';
+  if (/floral|rose|violet|jasmine|blossom|flower/.test(f)) return 'floral';
+  if (/mineral|chalk|flint|stone|slate/.test(f)) return 'mineral';
+  if (/honey|caramel|chocolate|cream|butter|sweet/.test(f)) return 'sweet';
+  return 'other';
+}
+
+function parseTags(raw: string | string[] | null | undefined): string[] {
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw.filter(Boolean);
+  try { const p = JSON.parse(raw); return Array.isArray(p) ? p.filter(Boolean) : []; } catch { return []; }
+}
+
+function fmt(v: any): string {
+  if (v === null || v === undefined || v === '') return '—';
+  return String(v);
+}
+
+function fmtCurrency(v: any, currency = 'USD'): string {
+  if (!v && v !== 0) return '—';
+  const num = parseFloat(String(v));
+  if (isNaN(num)) return '—';
+  return (num / 100).toLocaleString('en-US', { style: 'currency', currency: currency.toUpperCase() });
+}
 
 export function TaxonomyQueuePage() {
   const [data, setData] = useState<{ items: Product[]; total: number; totalPages: number; page: number } | null>(null);
@@ -40,6 +81,7 @@ export function TaxonomyQueuePage() {
   const [claudeSuggestions, setClaudeSuggestions] = useState<ClaudeSuggestions | null>(null);
   const [claudeLoading, setClaudeLoading] = useState(false);
   const [claudeNote, setClaudeNote] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<'info' | 'edit'>('info');
 
   useEffect(() => {
     fetch('/api/taxonomy-options').then(r => r.json()).then(setTaxOptions);
@@ -59,6 +101,7 @@ export function TaxonomyQueuePage() {
     setPanelProduct(p);
     setClaudeSuggestions(null);
     setClaudeNote('');
+    setActiveTab('info');
   }
 
   function closePanel() {
@@ -116,31 +159,22 @@ export function TaxonomyQueuePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sku: panelProduct.sku,
-          name: panelProduct.name,
-          wine_type: panelProduct.wine_type,
-          liquor_main_type: panelProduct.liquor_main_type,
-          country: panelProduct.country,
-          region: panelProduct.region,
+          sku: panelProduct.sku, name: panelProduct.name,
+          wine_type: panelProduct.wine_type, liquor_main_type: panelProduct.liquor_main_type,
+          country: panelProduct.country, region: panelProduct.region,
         }),
       });
       const json = await res.json();
-      if (json.error) {
-        setClaudeNote(`Error: ${json.error}`);
-      } else {
-        setClaudeSuggestions(json.suggestions);
-        setClaudeNote(json.suggestions?.note ?? '');
-      }
-    } catch {
-      setClaudeNote('Claude API unavailable. Try again.');
-    } finally {
-      setClaudeLoading(false);
-    }
+      if (json.error) { setClaudeNote(`Error: ${json.error}`); }
+      else { setClaudeSuggestions(json.suggestions); setClaudeNote(json.suggestions?.note ?? ''); }
+    } catch { setClaudeNote('Claude API unavailable. Try again.'); }
+    finally { setClaudeLoading(false); }
   }
 
   function acceptSuggestion(field: string, value: string) {
     setLocalFields(prev => ({ ...prev, [field]: value }));
     setClaudeSuggestions(prev => prev ? { ...prev, [field]: undefined } : null);
+    setActiveTab('edit');
   }
 
   function acceptAllSuggestions() {
@@ -152,29 +186,23 @@ export function TaxonomyQueuePage() {
     setLocalFields(prev => ({ ...prev, ...fields }));
     setClaudeSuggestions(null);
     setClaudeNote(claudeNote ? `✓ Applied — ${claudeNote}` : '✓ All suggestions applied');
+    setActiveTab('edit');
   }
 
-  const isWine = (p: Product) => String(p.wine_type ?? p.category ?? '').toLowerCase().includes('wine');
+  const isWine = (p: Product) => String(p.wine_type ?? p.category ?? '').toLowerCase().includes('wine') || !String(p.liquor_main_type ?? '').trim();
   const filteredRegions = taxOptions?.regions.filter(r => !localFields['country'] || r.country === localFields['country']) ?? [];
 
   const sel = (field: string, opts: string[]) => (
-    <select
-      value={localFields[field] ?? ''}
-      onChange={e => setLocalFields(prev => ({ ...prev, [field]: e.target.value }))}
-      className="w-full bg-slate-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
-    >
+    <select value={localFields[field] ?? ''} onChange={e => setLocalFields(prev => ({ ...prev, [field]: e.target.value }))}
+      className="w-full bg-slate-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white">
       <option value="">— select —</option>
       {opts.map(o => <option key={o} value={o}>{o}</option>)}
     </select>
   );
 
   const txt = (field: string, placeholder?: string) => (
-    <input
-      value={localFields[field] ?? ''}
-      onChange={e => setLocalFields(prev => ({ ...prev, [field]: e.target.value }))}
-      placeholder={placeholder}
-      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-600"
-    />
+    <input value={localFields[field] ?? ''} onChange={e => setLocalFields(prev => ({ ...prev, [field]: e.target.value }))}
+      placeholder={placeholder} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-600" />
   );
 
   const confidenceBadge = (conf: number) => {
@@ -202,8 +230,7 @@ export function TaxonomyQueuePage() {
             <option value="needs_attention">Needs attention</option>
             <option value="validated">Validated</option>
           </select>
-          <input type="number" min={1} max={500} value={batchN}
-            onChange={e => setBatchN(parseInt(e.target.value) || 50)}
+          <input type="number" min={1} max={500} value={batchN} onChange={e => setBatchN(parseInt(e.target.value) || 50)}
             className="w-20 bg-white/10 text-slate-200 text-sm rounded-lg px-3 py-1.5 border border-white/10" />
           <button onClick={handleBatchValidate} disabled={working}
             className="bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm px-4 py-1.5 rounded-lg transition-colors">
@@ -233,8 +260,8 @@ export function TaxonomyQueuePage() {
               const isOpen = panelProduct?.id === p.id;
               const conf = parseFloat(String(p.overall_confidence ?? p.taxonomy_confidence ?? 0));
               return (
-                <tr key={p.id}
-                  className={`border-b border-white/5 hover:bg-white/5 ${isOpen ? 'bg-blue-500/5' : ''} ${p.validation_status === 'needs_attention' ? 'border-l-2 border-l-rose-500/50' : ''}`}>
+                <tr key={p.id} className={`border-b border-white/5 hover:bg-white/5 cursor-pointer ${isOpen ? 'bg-violet-500/5' : ''} ${p.validation_status === 'needs_attention' ? 'border-l-2 border-l-rose-500/50' : ''}`}
+                  onClick={() => openPanel(p)}>
                   <td className="px-4 py-3 text-slate-300 font-mono text-xs">{p.sku}</td>
                   <td className="px-4 py-3 text-white max-w-xs truncate">{p.name}</td>
                   <td className="px-4 py-3 text-slate-300">{p.country || <span className="text-slate-600 italic">unknown</span>}</td>
@@ -242,12 +269,11 @@ export function TaxonomyQueuePage() {
                   <td className="px-4 py-3 text-xs text-slate-500">{p.enrichment_source ?? '—'}</td>
                   <td className="px-4 py-3">
                     {isOpen
-                      ? <span className="rounded-full px-2 py-0.5 text-xs bg-blue-500/20 text-blue-200">In review</span>
-                      : <span className={`rounded-full px-2 py-0.5 text-xs ${statusColors[p.validation_status ?? 'unvalidated'] ?? 'bg-slate-500/20 text-slate-300'}`}>{p.validation_status ?? 'unvalidated'}</span>
-                    }
+                      ? <span className="rounded-full px-2 py-0.5 text-xs bg-violet-500/20 text-violet-200">In review</span>
+                      : <span className={`rounded-full px-2 py-0.5 text-xs ${statusColors[p.validation_status ?? 'unvalidated'] ?? 'bg-slate-500/20 text-slate-300'}`}>{p.validation_status ?? 'unvalidated'}</span>}
                   </td>
                   <td className="px-4 py-3">
-                    <button onClick={() => openPanel(p)} className="text-violet-400 hover:text-violet-300 text-xs">Validate</button>
+                    <button onClick={e => { e.stopPropagation(); openPanel(p); }} className="text-violet-400 hover:text-violet-300 text-xs">Validate →</button>
                   </td>
                 </tr>
               );
@@ -267,115 +293,266 @@ export function TaxonomyQueuePage() {
         </div>
       )}
 
+      {/* Product Detail Panel */}
       {panelProduct && (
-        <div className="fixed inset-y-0 right-0 w-96 bg-slate-900 border-l border-white/10 p-6 overflow-y-auto z-50">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-white">Validate product</h2>
-            <button onClick={closePanel}><X size={16} className="text-slate-400" /></button>
-          </div>
+        <div className="fixed inset-y-0 right-0 w-[480px] bg-slate-950 border-l border-white/10 overflow-y-auto z-50 flex flex-col">
 
-          <div className="space-y-1 mb-4">
-            <p className="text-xs text-slate-400">SKU</p>
-            <p className="text-sm text-white font-mono">{panelProduct.sku}</p>
-            <p className="text-xs text-slate-400 mt-2">Name</p>
-            <p className="text-sm text-white">{panelProduct.name}</p>
-            {panelProduct.enrichment_note && (
-              <p className="text-xs text-slate-500 mt-1 italic">
-                {panelProduct.enrichment_source === 'claude' ? '✦ ' : ''}{panelProduct.enrichment_note}
-              </p>
-            )}
-          </div>
-
-          {/* Ask Claude section */}
-          <div className="border border-white/10 rounded-xl p-4 mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-xs font-medium text-slate-300">Claude AI Assist</p>
-              <button
-                onClick={handleAskClaude}
-                disabled={claudeLoading}
-                className="text-xs bg-violet-600/30 hover:bg-violet-600/50 disabled:opacity-50 text-violet-300 px-3 py-1 rounded-lg transition-colors"
-              >
-                {claudeLoading ? 'Asking…' : '✦ Ask Claude'}
+          {/* Panel Header */}
+          <div className="px-6 pt-5 pb-4 border-b border-white/10 shrink-0">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-xs font-mono text-slate-500">{panelProduct.sku}</p>
+                <h2 className="text-base font-semibold text-white mt-0.5 leading-tight">{panelProduct.name}</h2>
+                {panelProduct.brand && <p className="text-xs text-slate-400 mt-0.5">{panelProduct.brand}</p>}
+              </div>
+              <button onClick={closePanel} className="text-slate-400 hover:text-white shrink-0 mt-0.5">
+                <X size={16} />
               </button>
             </div>
 
-            {claudeNote && (
-              <p className="text-xs text-slate-500 mb-2 italic">{claudeNote}</p>
-            )}
+            {/* Status + Confidence row */}
+            <div className="flex items-center gap-2 mt-3 flex-wrap">
+              <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[panelProduct.validation_status ?? 'unvalidated'] ?? 'bg-slate-500/20 text-slate-300'}`}>
+                {panelProduct.validation_status ?? 'unvalidated'}
+              </span>
+              {(() => {
+                const conf = parseFloat(String(panelProduct.overall_confidence ?? panelProduct.taxonomy_confidence ?? 0));
+                return confidenceBadge(conf);
+              })()}
+              {panelProduct.enrichment_source && (
+                <span className="text-xs text-slate-500">via {panelProduct.enrichment_source}</span>
+              )}
+              {panelProduct.vintage && <span className="text-xs text-slate-400 bg-white/5 rounded px-2 py-0.5">Vintage {panelProduct.vintage}</span>}
+            </div>
 
-            {claudeSuggestions && (
-              <div className="space-y-2">
-                {CLAUDE_SUGGESTION_FIELDS.map(field => {
-                  const val = claudeSuggestions[field];
-                  if (!val) return null;
+            {/* Tabs */}
+            <div className="flex gap-1 mt-4">
+              {(['info', 'edit'] as const).map(tab => (
+                <button key={tab} onClick={() => setActiveTab(tab)}
+                  className={`text-xs px-3 py-1.5 rounded-lg transition-colors capitalize ${activeTab === tab ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-slate-200'}`}>
+                  {tab === 'info' ? 'Product Info' : 'Edit & Validate'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+
+            {activeTab === 'info' && (
+              <>
+                {/* Quick specs */}
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { label: 'Price', value: fmtCurrency(panelProduct.price, panelProduct.currency) },
+                    { label: 'Alcohol', value: panelProduct.alcohol ? `${panelProduct.alcohol}%` : '—' },
+                    { label: 'Bottle', value: fmt(panelProduct.bottle_size) },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="bg-white/5 rounded-xl p-3 text-center">
+                      <p className="text-xs text-slate-500 mb-0.5">{label}</p>
+                      <p className="text-sm font-medium text-white">{value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Taxonomy card */}
+                <div className="bg-white/5 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Layers size={13} className="text-violet-400" />
+                    <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Taxonomy</h3>
+                  </div>
+                  <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm">
+                    {[
+                      { label: 'Type', value: panelProduct.wine_type || panelProduct.liquor_main_type },
+                      { label: 'Classification', value: panelProduct.classification },
+                      { label: 'Grape / Variety', value: panelProduct.grape_variety },
+                      { label: 'Origin', value: panelProduct.origin },
+                    ].map(({ label, value }) => (
+                      <div key={label}>
+                        <p className="text-xs text-slate-500">{label}</p>
+                        <p className="text-white mt-0.5">{fmt(value)}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Origin / Geography card */}
+                <div className="bg-white/5 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <MapPin size={13} className="text-violet-400" />
+                    <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Geography</h3>
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {[panelProduct.country, panelProduct.region, panelProduct.subregion]
+                      .filter(Boolean)
+                      .map((loc, i, arr) => (
+                        <span key={i} className="flex items-center gap-1.5 text-sm text-white">
+                          {loc}{i < arr.length - 1 && <span className="text-slate-600">›</span>}
+                        </span>
+                      ))}
+                    {!panelProduct.country && !panelProduct.region && (
+                      <span className="text-sm text-slate-500 italic">Origin unknown</span>
+                    )}
+                  </div>
+                  {panelProduct.enrichment_note && (
+                    <p className="text-xs text-slate-500 mt-2 italic">{panelProduct.enrichment_note}</p>
+                  )}
+                </div>
+
+                {/* Character traits */}
+                {(() => {
+                  const traits = parseTags(panelProduct.character_traits);
+                  if (!traits.length) return null;
                   return (
-                    <div key={field} className="flex items-center justify-between text-xs">
-                      <span className="text-slate-400">
-                        {field}: <span className="text-white">{val}</span>
-                      </span>
-                      <button
-                        onClick={() => acceptSuggestion(field, val)}
-                        className="text-emerald-400 hover:text-emerald-300 ml-2 shrink-0"
-                      >
-                        Accept
-                      </button>
+                    <div className="bg-white/5 rounded-xl p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Star size={13} className="text-violet-400" />
+                        <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Character</h3>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {traits.map(trait => (
+                          <span key={trait} className="px-3 py-1 rounded-full text-xs font-medium bg-violet-500/15 text-violet-300 border border-violet-500/25 capitalize">
+                            {trait}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   );
-                })}
-                <button
-                  onClick={acceptAllSuggestions}
-                  className="w-full text-xs bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 py-1.5 rounded-lg transition-colors mt-1"
-                >
-                  Accept all
+                })()}
+
+                {/* Flavor profile */}
+                {(() => {
+                  const flavors = parseTags(panelProduct.flavor_profile);
+                  if (!flavors.length) return null;
+                  const grouped = flavors.reduce<Record<string, string[]>>((acc, f) => {
+                    const cat = guessFlavorCategory(f);
+                    if (!acc[cat]) acc[cat] = [];
+                    acc[cat].push(f);
+                    return acc;
+                  }, {});
+                  return (
+                    <div className="bg-white/5 rounded-xl p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Droplets size={13} className="text-violet-400" />
+                        <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Flavour Profile</h3>
+                      </div>
+                      {Object.entries(grouped).map(([cat, items]) => (
+                        <div key={cat} className="mb-3 last:mb-0">
+                          <p className="text-xs text-slate-500 mb-1.5 capitalize">{cat}</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {items.map(f => {
+                              const colorClass = FLAVOR_COLORS[cat] ?? DEFAULT_FLAVOR_COLOR;
+                              return (
+                                <span key={f} className={`px-2.5 py-1 rounded-full text-xs border ${colorClass}`}>{f}</span>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
+
+                {/* Confidence breakdown */}
+                <div className="bg-white/5 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Tag size={13} className="text-violet-400" />
+                    <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Confidence</h3>
+                  </div>
+                  {[
+                    { label: 'Overall', value: parseFloat(String(panelProduct.overall_confidence ?? 0)) },
+                    { label: 'Taxonomy', value: parseFloat(String(panelProduct.taxonomy_confidence ?? 0)) },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="mb-2.5 last:mb-0">
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-slate-400">{label}</span>
+                        <span className={value >= 0.75 ? 'text-emerald-400' : value >= 0.4 ? 'text-amber-400' : 'text-rose-400'}>
+                          {Math.round(value * 100)}%
+                        </span>
+                      </div>
+                      <div className="h-1.5 bg-white/10 rounded-full">
+                        <div className={`h-1.5 rounded-full transition-all ${value >= 0.75 ? 'bg-emerald-500' : value >= 0.4 ? 'bg-amber-500' : 'bg-rose-500'}`}
+                          style={{ width: `${Math.round(value * 100)}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <button onClick={() => setActiveTab('edit')}
+                  className="w-full bg-violet-600/20 hover:bg-violet-600/30 border border-violet-500/30 text-violet-300 text-sm py-2.5 rounded-xl transition-colors">
+                  Edit taxonomy fields →
                 </button>
-              </div>
+              </>
+            )}
+
+            {activeTab === 'edit' && (
+              <>
+                {/* Ask Claude */}
+                <div className="border border-white/10 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-medium text-slate-300">Claude AI Assist</p>
+                    <button onClick={handleAskClaude} disabled={claudeLoading}
+                      className="text-xs bg-violet-600/30 hover:bg-violet-600/50 disabled:opacity-50 text-violet-300 px-3 py-1 rounded-lg transition-colors">
+                      {claudeLoading ? 'Asking…' : '✦ Ask Claude'}
+                    </button>
+                  </div>
+                  {claudeNote && <p className="text-xs text-slate-500 mb-2 italic">{claudeNote}</p>}
+                  {claudeSuggestions && (
+                    <div className="space-y-2">
+                      {CLAUDE_SUGGESTION_FIELDS.map(field => {
+                        const val = claudeSuggestions[field];
+                        if (!val) return null;
+                        return (
+                          <div key={field} className="flex items-center justify-between text-xs">
+                            <span className="text-slate-400">{field}: <span className="text-white">{val}</span></span>
+                            <button onClick={() => acceptSuggestion(field, val)} className="text-emerald-400 hover:text-emerald-300 ml-2 shrink-0">Accept</button>
+                          </div>
+                        );
+                      })}
+                      <button onClick={acceptAllSuggestions}
+                        className="w-full text-xs bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 py-1.5 rounded-lg transition-colors mt-1">
+                        Accept all
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Taxonomy fields */}
+                <div className="space-y-3">
+                  <div><label className="text-xs text-slate-400 block mb-1">Country</label>{sel('country', taxOptions?.countries ?? [])}</div>
+                  <div><label className="text-xs text-slate-400 block mb-1">Region</label>{sel('region', filteredRegions.map(r => r.name))}</div>
+                  <div>
+                    <label className="text-xs text-slate-400 block mb-1">Subregion</label>
+                    <input list="subregion-options" value={localFields['subregion'] ?? ''}
+                      onChange={e => setLocalFields(prev => ({ ...prev, subregion: e.target.value }))}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white" />
+                    <datalist id="subregion-options">{(taxOptions?.subregions ?? []).map(s => <option key={s} value={s} />)}</datalist>
+                  </div>
+                  <div><label className="text-xs text-slate-400 block mb-1">Origin</label>{txt('origin')}</div>
+                  <div><label className="text-xs text-slate-400 block mb-1">Classification</label>{sel('classification', taxOptions?.classifications ?? [])}</div>
+                  <div><label className="text-xs text-slate-400 block mb-1">Grape / Variety</label>{sel('grape_variety', taxOptions?.grapeVarieties ?? [])}</div>
+                  {isWine(panelProduct)
+                    ? <div><label className="text-xs text-slate-400 block mb-1">Wine type</label>{sel('wine_type', WINE_TYPE_OPTIONS)}</div>
+                    : <div><label className="text-xs text-slate-400 block mb-1">Liquor type</label>{sel('liquor_main_type', LIQUOR_TYPE_OPTIONS)}</div>}
+                  <div>
+                    <label className="text-xs text-slate-400 block mb-1">Flavour profile <span className="text-slate-600">(hold Ctrl/⌘ for multiple)</span></label>
+                    <select multiple value={(localFields['flavor_profile'] ?? '').split(',').map(s => s.trim()).filter(Boolean)}
+                      onChange={e => { const selected = Array.from(e.target.selectedOptions).map(o => o.value); setLocalFields(prev => ({ ...prev, flavor_profile: selected.join(', ') })); }}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white h-28">
+                      {(taxOptions?.flavorNotes ?? []).map(f => <option key={f} value={f}>{f}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </>
             )}
           </div>
 
-          <div className="space-y-3 mb-6">
-            <div><label className="text-xs text-slate-400 block mb-1">country</label>{sel('country', taxOptions?.countries ?? [])}</div>
-            <div><label className="text-xs text-slate-400 block mb-1">region</label>{sel('region', filteredRegions.map(r => r.name))}</div>
-            <div>
-              <label className="text-xs text-slate-400 block mb-1">subregion</label>
-              <input
-                list="subregion-options"
-                value={localFields['subregion'] ?? ''}
-                onChange={e => setLocalFields(prev => ({ ...prev, subregion: e.target.value }))}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
-              />
-              <datalist id="subregion-options">
-                {(taxOptions?.subregions ?? []).map(s => <option key={s} value={s} />)}
-              </datalist>
-            </div>
-            <div><label className="text-xs text-slate-400 block mb-1">origin</label>{txt('origin')}</div>
-            <div><label className="text-xs text-slate-400 block mb-1">classification</label>{sel('classification', taxOptions?.classifications ?? [])}</div>
-            <div><label className="text-xs text-slate-400 block mb-1">grape_variety</label>{sel('grape_variety', taxOptions?.grapeVarieties ?? [])}</div>
-            {isWine(panelProduct) && (
-              <div><label className="text-xs text-slate-400 block mb-1">wine_type</label>{sel('wine_type', WINE_TYPE_OPTIONS)}</div>
-            )}
-            {!isWine(panelProduct) && (
-              <div><label className="text-xs text-slate-400 block mb-1">liquor_main_type</label>{sel('liquor_main_type', LIQUOR_TYPE_OPTIONS)}</div>
-            )}
-            <div>
-              <label className="text-xs text-slate-400 block mb-1">flavor_profile <span className="text-slate-600">(hold Ctrl/⌘ for multiple)</span></label>
-              <select
-                multiple
-                value={(localFields['flavor_profile'] ?? '').split(',').map(s => s.trim()).filter(Boolean)}
-                onChange={e => {
-                  const selected = Array.from(e.target.selectedOptions).map(o => o.value);
-                  setLocalFields(prev => ({ ...prev, flavor_profile: selected.join(', ') }));
-                }}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white h-28"
-              >
-                {(taxOptions?.flavorNotes ?? []).map(f => <option key={f} value={f}>{f}</option>)}
-              </select>
-            </div>
+          {/* Sticky save button */}
+          <div className="px-6 py-4 border-t border-white/10 shrink-0">
+            <button onClick={handleValidateOne} disabled={saving}
+              className="w-full bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors font-medium">
+              <CheckCircle size={15} /> {saving ? 'Saving…' : 'Save & mark as validated'}
+            </button>
           </div>
-
-          <button onClick={handleValidateOne} disabled={saving}
-            className="w-full bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
-            <CheckCircle size={15} /> {saving ? 'Saving…' : 'Save & mark as validated'}
-          </button>
         </div>
       )}
     </div>
