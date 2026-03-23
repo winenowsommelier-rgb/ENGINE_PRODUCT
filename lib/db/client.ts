@@ -91,7 +91,7 @@ async function ensureDbDir() {
 }
 
 // Read all products
-async function readProducts(): Promise<CleanedProduct[]> {
+export async function readProducts(): Promise<CleanedProduct[]> {
   await ensureDbDir();
   try {
     if (fs.existsSync(productsFile)) {
@@ -179,6 +179,7 @@ export async function getProductStats() {
     validated: products.filter(p => p.validation_status === 'validated').length,
     pending: products.filter(p => p.validation_status === 'pending').length,
     needs_review: products.filter(p => p.validation_status === 'needs_review').length,
+    needs_attention: products.filter(p => p.validation_status === 'needs_attention').length,
     blocked: products.filter(p => p.validation_status === 'blocked').length,
     avg_confidence: products.length > 0
       ? products.reduce((sum, p) => sum + (p.overall_confidence || 0), 0) / products.length
@@ -595,4 +596,82 @@ export function initializeDatabase() {
   // Ensure database directory exists
   ensureDbDir().catch(console.error);
   console.log(`✓ Database initialized at ${dbDir}`);
+}
+
+// ── Pipeline status ────────────────────────────────────────────────────────────
+
+const pipelineStatusFile = path.join(dbDir, 'pipeline-status.json');
+const syncStatusFile = path.join(dbDir, 'sync-status.json');
+
+export type PipelineStatus = {
+  status: 'idle' | 'running' | 'error';
+  migration_done: boolean;
+  current_step: string | null;
+  progress: { done: number; total: number };
+  tokens_used: number;
+  last_run: string | null;
+  last_summary: Record<string, any> | null;
+};
+
+export async function getPipelineStatus(): Promise<PipelineStatus> {
+  try {
+    if (fs.existsSync(pipelineStatusFile)) {
+      return JSON.parse(await readFile(pipelineStatusFile, 'utf-8'));
+    }
+  } catch {}
+  return { status: 'idle', migration_done: false, current_step: null, progress: { done: 0, total: 0 }, tokens_used: 0, last_run: null, last_summary: null };
+}
+
+export async function savePipelineStatus(update: Partial<PipelineStatus>): Promise<void> {
+  const current = await getPipelineStatus();
+  const next = { ...current, ...update };
+  const tmp = pipelineStatusFile + '.tmp';
+  await writeFile(tmp, JSON.stringify(next, null, 2), 'utf-8');
+  fs.renameSync(tmp, pipelineStatusFile);
+}
+
+export type SyncStatus = { last_synced_at: string | null; last_synced_count: number };
+
+export async function getSyncStatus(): Promise<SyncStatus> {
+  try {
+    if (fs.existsSync(syncStatusFile)) {
+      return JSON.parse(await readFile(syncStatusFile, 'utf-8'));
+    }
+  } catch {}
+  return { last_synced_at: null, last_synced_count: 0 };
+}
+
+export async function saveSyncStatus(s: SyncStatus): Promise<void> {
+  await writeFile(syncStatusFile, JSON.stringify(s, null, 2), 'utf-8');
+}
+
+export type EnrichmentUpdate = {
+  id: string;
+  enrichment_source?: string;
+  enrichment_note?: string;
+  claude_enriched_at?: string;
+  synced_at?: string;
+  country?: string;
+  region?: string;
+  subregion?: string;
+  classification?: string;
+  grape_variety?: string;
+  overall_confidence?: number;
+  taxonomy_confidence?: number;
+  validation_status?: string;
+};
+
+export async function batchUpdateEnrichment(updates: EnrichmentUpdate[]): Promise<void> {
+  if (updates.length === 0) return;
+  const products = await readProducts();
+  const map = new Map(products.map(p => [p.id, p]));
+  for (const u of updates) {
+    const existing = map.get(u.id);
+    if (!existing) continue;
+    map.set(u.id, { ...existing, ...u, updated_at: new Date().toISOString() });
+  }
+  const next = Array.from(map.values());
+  const tmp = productsFile + '.tmp';
+  await writeFile(tmp, JSON.stringify(next, null, 2), 'utf-8');
+  fs.renameSync(tmp, productsFile);
 }
