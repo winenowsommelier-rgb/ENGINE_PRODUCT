@@ -10,10 +10,11 @@ function parseTags(raw: string | string[] | null | undefined): string[] {
   try { const p = JSON.parse(raw); return Array.isArray(p) ? p.filter(Boolean) : []; } catch { return []; }
 }
 function fmt(v: any) { return v === null || v === undefined || v === '' ? '—' : String(v); }
-function fmtPrice(v: any, currency = 'usd') {
+function fmtPrice(v: any, currency = 'THB') {
   if (!v && v !== 0) return '—';
   const n = parseFloat(String(v)); if (isNaN(n)) return '—';
-  return (n / 100).toLocaleString('en-US', { style: 'currency', currency: currency.toUpperCase() });
+  const cur = (currency || 'THB').toUpperCase();
+  return (n / 100).toLocaleString('th-TH', { style: 'currency', currency: cur });
 }
 const FLAVOR_COLORS: Record<string, string> = {
   fruit: 'bg-pink-500/20 text-pink-300 border-pink-500/30', spice: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
@@ -168,7 +169,7 @@ export function ProductsPage() {
                     {p.country||<span className="text-slate-600 italic">unknown</span>}
                     {p.region&&<span className="text-slate-500"> · {p.region}</span>}
                   </td>
-                  <td className="px-4 py-3 text-slate-300 text-xs">{fmtPrice(p.price,p.currency)}</td>
+                  <td className="px-4 py-3 text-slate-300 text-xs">{fmtPrice(p.price)}</td>
                   <td className="px-4 py-3">{confBadge(conf)}</td>
                   <td className="px-4 py-3">
                     <span className={`rounded-full px-2 py-0.5 text-xs ${STATUS_COLORS[p.validation_status??'']??'bg-slate-500/20 text-slate-300'}`}>{p.validation_status??'—'}</span>
@@ -224,7 +225,7 @@ export function ProductsPage() {
             {panelTab==='info'&&(
               <>
                 <div className="grid grid-cols-3 gap-2">
-                  {[{label:'Price',value:fmtPrice(selected.price,selected.currency)},{label:'Alcohol',value:selected.alcohol?`${selected.alcohol}%`:'—'},{label:'Bottle',value:fmt(selected.bottle_size)}].map(({label,value})=>(
+                  {[{label:'Price',value:fmtPrice(selected.price)},{label:'Alcohol',value:selected.alcohol?`${selected.alcohol}%`:'—'},{label:'Bottle',value:fmt(selected.bottle_size)}].map(({label,value})=>(
                     <div key={label} className="bg-white/5 rounded-xl p-3 text-center">
                       <p className="text-xs text-slate-500 mb-0.5">{label}</p>
                       <p className="text-sm font-medium text-white">{value}</p>

@@ -66174,5 +66174,49 @@
     "note": null,
     "id": "1774271961557-xwivro8",
     "changed_at": "2026-03-23T13:19:21.557Z"
+  },
+  {
+    "product_id": "row-2396-1774263062964",
+    "sku": "WRW1855AE",
+    "source": "manual_edit",
+    "field": "country",
+    "old_value": "",
+    "new_value": "Italy",
+    "note": null,
+    "id": "1774325908738-n331qa6",
+    "changed_at": "2026-03-24T04:18:28.738Z"
+  },
+  {
+    "product_id": "row-2396-1774263062964",
+    "sku": "WRW1855AE",
+    "source": "manual_edit",
+    "field": "region",
+    "old_value": "",
+    "new_value": "Tuscany",
+    "note": null,
+    "id": "1774325908739-hec0fkm",
+    "changed_at": "2026-03-24T04:18:28.738Z"
+  },
+  {
+    "product_id": "row-2396-1774263062964",
+    "sku": "WRW1855AE",
+    "source": "manual_edit",
+    "field": "wine_type",
+    "old_value": null,
+    "new_value": "Red Wine",
+    "note": null,
+    "id": "1774325908739-17r4zr0",
+    "changed_at": "2026-03-24T04:18:28.738Z"
+  },
+  {
+    "product_id": "row-2396-1774263062964",
+    "sku": "WRW1855AE",
+    "source": "taxonomy_queue",
+    "field": "validation_status",
+    "old_value": "needs_review",
+    "new_value": "validated",
+    "note": null,
+    "id": "1774325908838-yysbyh4",
+    "changed_at": "2026-03-24T04:18:28.838Z"
   }
 ]

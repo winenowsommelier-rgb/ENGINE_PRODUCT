@@ -71,7 +71,7 @@ export const products: ProductRecord[] = [
     style: 'Structured & Oak-Aged',
     price: 39,
     costPrice: 19,
-    currency: 'USD',
+    currency: 'THB',
     status: 'Ready',
     oak: 4,
     country: 'USA'
@@ -86,7 +86,7 @@ export const products: ProductRecord[] = [
     style: 'Crisp & Aromatic',
     price: 23,
     costPrice: 10,
-    currency: 'USD',
+    currency: 'THB',
     status: 'Ready',
     oak: 0,
     country: 'New Zealand'
@@ -101,7 +101,7 @@ export const products: ProductRecord[] = [
     style: 'Barrel Rested',
     price: 52,
     costPrice: 28,
-    currency: 'USD',
+    currency: 'THB',
     status: 'Needs review',
     oak: 3,
     country: 'Mexico'
@@ -116,7 +116,7 @@ export const products: ProductRecord[] = [
     style: 'Elegant & Earthy',
     price: 31,
     costPrice: 16,
-    currency: 'USD',
+    currency: 'THB',
     status: 'Draft',
     oak: 2,
     country: 'USA'
@@ -134,7 +134,7 @@ export const sampleRawImportRows: RawImportRow[] = [
     style: 'structured oak aged',
     price: '42',
     costPrice: '20',
-    currency: 'usd',
+    currency: 'THB',
     status: 'ready',
     oak: '6'
   },
@@ -148,7 +148,7 @@ export const sampleRawImportRows: RawImportRow[] = [
     style: 'crisp aromatic',
     price: '19',
     costPrice: '8',
-    currency: 'usd',
+    currency: 'THB',
     status: 'draft',
     oak: '0'
   },
@@ -162,7 +162,7 @@ export const sampleRawImportRows: RawImportRow[] = [
     style: 'barrel rested',
     price: '54',
     costPrice: '27',
-    currency: 'usd',
+    currency: 'THB',
     status: 'needs review',
     oak: '3'
   }

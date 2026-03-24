@@ -60,11 +60,12 @@ function fmt(v: any): string {
   return String(v);
 }
 
-function fmtCurrency(v: any, currency = 'USD'): string {
+function fmtCurrency(v: any, currency = 'THB'): string {
   if (!v && v !== 0) return '—';
   const num = parseFloat(String(v));
   if (isNaN(num)) return '—';
-  return (num / 100).toLocaleString('en-US', { style: 'currency', currency: currency.toUpperCase() });
+  const cur = (currency || 'THB').toUpperCase();
+  return (num / 100).toLocaleString('th-TH', { style: 'currency', currency: cur });
 }
 
 export function TaxonomyQueuePage() {
@@ -343,7 +344,7 @@ export function TaxonomyQueuePage() {
                 {/* Quick specs */}
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { label: 'Price', value: fmtCurrency(panelProduct.price, panelProduct.currency) },
+                    { label: 'Price', value: fmtCurrency(panelProduct.price) },
                     { label: 'Alcohol', value: panelProduct.alcohol ? `${panelProduct.alcohol}%` : '—' },
                     { label: 'Bottle', value: fmt(panelProduct.bottle_size) },
                   ].map(({ label, value }) => (
