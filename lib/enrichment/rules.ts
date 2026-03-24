@@ -36,7 +36,7 @@ const BRAND_MAP: Array<{ patterns: string[]; country: string; region?: string; c
   { patterns: ['louislatour', 'louislatour'], country: 'France', region: 'Burgundy', confidence: 0.90 },
   { patterns: ['mfrichter', 'maxferd', 'maxferdrichter'], country: 'Germany', region: 'Mosel', confidence: 0.90 },
   { patterns: ['eeguigal', 'guigal'], country: 'France', region: 'Rhône', confidence: 0.90 },
-  { patterns: ['domaindelamordoree', 'mordoree'], country: 'France', region: 'Rhône', confidence: 0.90 },
+  { patterns: ['domaindelamordore', 'mordoree', 'mordore'], country: 'France', region: 'Rhône', confidence: 0.90 },
   { patterns: ['lacourdes', 'lacourdesdames'], country: 'France', confidence: 0.85 },
   { patterns: ['chateau', 'chateaumargaux'], country: 'France', region: 'Bordeaux', confidence: 0.85 },
 
@@ -65,7 +65,7 @@ const BRAND_MAP: Array<{ patterns: string[]; country: string; region?: string; c
   { patterns: ['jermann'], country: 'Italy', region: 'Friuli', confidence: 0.90 },
   { patterns: ['liviofelluga', 'livofelluga'], country: 'Italy', region: 'Friuli', confidence: 0.90 },
   { patterns: ['eugenicocollavini', 'collavini'], country: 'Italy', region: 'Friuli', confidence: 0.90 },
-  { patterns: ['elenawlch', 'elenawelch', 'elenawelch'], country: 'Italy', region: 'Alto Adige', confidence: 0.90 },
+  { patterns: ['elenawalch'], country: 'Italy', region: 'Alto Adige', confidence: 0.90 },
   { patterns: ['cantinaterlano', 'terlano'], country: 'Italy', region: 'Alto Adige', confidence: 0.90 },
   { patterns: ['alaoislageder', 'aloislageder'], country: 'Italy', region: 'Alto Adige', confidence: 0.90 },
   { patterns: ['pietradolce'], country: 'Italy', region: 'Sicily', confidence: 0.90 },
@@ -355,8 +355,31 @@ const BRAND_MAP: Array<{ patterns: string[]; country: string; region?: string; c
   { patterns: ['mathilde'], country: 'France', confidence: 0.85 },
 
   // === GREECE ===
-  { patterns: ['tselepos', 'domaine tselepos'], country: 'Greece', confidence: 0.88 },
+  { patterns: ['tselepos', 'domainetselepos'], country: 'Greece', confidence: 0.88 },
   { patterns: ['monemvasia'], country: 'Greece', confidence: 0.90 },
+
+  // === FINAL PASS — remaining unmatched ===
+  { patterns: ['tenutasanguido', 'sassicaia'], country: 'Italy', region: 'Tuscany', confidence: 0.95 },
+  { patterns: ['fantinel'], country: 'Italy', region: 'Friuli', confidence: 0.90 },
+  { patterns: ['edisimcic', 'simcic'], country: 'Slovenia', confidence: 0.90 },
+  { patterns: ['2naturkinder', 'naturkinder'], country: 'Germany', region: 'Franken', confidence: 0.90 },
+  { patterns: ['daou'], country: 'USA', region: 'Paso Robles', confidence: 0.90 },
+  { patterns: ['drycreek', 'dry creek'], country: 'USA', region: 'Sonoma', confidence: 0.90 },
+  { patterns: ['drycreekv'], country: 'USA', region: 'Sonoma', confidence: 0.90 },
+  { patterns: ['bretbrother', 'bret brothers'], country: 'France', region: 'Burgundy', confidence: 0.90 },
+  { patterns: ['lasoufrandiere', 'soufrandiere'], country: 'France', region: 'Burgundy', confidence: 0.90 },
+  { patterns: ['ferratonpere', 'ferraton'], country: 'France', region: 'Rhône', confidence: 0.90 },
+  { patterns: ['saintjames'], country: 'Martinique', confidence: 0.92 },
+  { patterns: ['casco', 'cascoviejo'], country: 'Mexico', confidence: 0.88 },
+  { patterns: ['kikumasamune', 'kiku'], country: 'Japan', confidence: 0.90 },
+  { patterns: ['frenchbloom'], country: 'France', confidence: 0.90 },
+  { patterns: ['artero'], country: 'Spain', confidence: 0.88 },
+  { patterns: ['victoriaparkwine', 'victoriapark'], country: 'Australia', confidence: 0.85 },
+  { patterns: ['aguasanta'], country: 'Chile', confidence: 0.85 },
+  { patterns: ['askur'], country: 'Iceland', confidence: 0.85 },
+  { patterns: ['kai'], country: 'New Zealand', region: 'Marlborough', confidence: 0.85 },
+  { patterns: ['soberspirits', 'sober spirits'], country: '', confidence: 0.75 },
+  { patterns: ['rochestercordials', 'rochestercabernet'], country: 'England', confidence: 0.82 },
 ];
 
 // ─── REGION KEYWORD MAP ────────────────────────────────────────────────────
