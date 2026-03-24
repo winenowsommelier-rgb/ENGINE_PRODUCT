@@ -168,7 +168,7 @@ export async function getCleanedProducts(filters?: Record<string, any>) {
     products = products.filter(p => (p.overall_confidence || 0) >= filters.confidence_min);
   }
   
-  return products.slice(0, 1000); // Paginate
+  return products;
 }
 
 export async function getProductStats() {

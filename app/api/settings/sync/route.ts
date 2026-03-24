@@ -17,9 +17,15 @@ export async function POST() {
     }
 
     const client = createSupabaseBrowserClient();
+    const CHUNK = 500;
     const rows = products.map(p => ({
+      id: String(p.id),
       sku: p.sku,
       name: p.name,
+      brand: p.brand,
+      vintage: p.vintage,
+      alcohol: p.alcohol,
+      bottle_size: p.bottle_size,
       country: p.country,
       region: p.region,
       subregion: p.subregion,
@@ -31,28 +37,33 @@ export async function POST() {
       cost_price: p.cost,
       currency: p.currency,
       overall_confidence: p.overall_confidence,
+      taxonomy_confidence: p.taxonomy_confidence,
       validation_status: p.validation_status,
-      flavor_profile: p.flavor_profile,
-      brand: p.brand,
-      vintage: p.vintage,
-      alcohol: p.alcohol,
-      bottle_size: p.bottle_size,
       enrichment_source: p.enrichment_source,
+      enrichment_note: p.enrichment_note,
+      flavor_profile: p.flavor_profile,
+      character_traits: p.character_traits,
+      image_url: p.image_url,
+      image_alt_text: p.image_alt_text,
+      source_file: p.source_file,
     }));
 
-    const response = await fetch(`${client.url}/rest/v1/products`, {
-      method: 'POST',
-      headers: {
-        ...client.headers,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates,return=minimal',
-      },
-      body: JSON.stringify(rows),
-    });
-
-    if (!response.ok) {
-      const msg = await response.text();
-      throw new Error(msg || `Supabase error ${response.status}`);
+    // Push in chunks of 500 to stay within Supabase row limits
+    for (let i = 0; i < rows.length; i += CHUNK) {
+      const chunk = rows.slice(i, i + CHUNK);
+      const response = await fetch(`${client.url}/rest/v1/products`, {
+        method: 'POST',
+        headers: {
+          ...client.headers,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates,return=minimal',
+        },
+        body: JSON.stringify(chunk),
+      });
+      if (!response.ok) {
+        const msg = await response.text();
+        throw new Error(msg || `Supabase error ${response.status}`);
+      }
     }
 
     // Mark synced_at on all synced products
