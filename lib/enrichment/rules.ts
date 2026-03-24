@@ -380,6 +380,340 @@ const BRAND_MAP: Array<{ patterns: string[]; country: string; region?: string; c
   { patterns: ['kai'], country: 'New Zealand', region: 'Marlborough', confidence: 0.85 },
   { patterns: ['soberspirits', 'sober spirits'], country: '', confidence: 0.75 },
   { patterns: ['rochestercordials', 'rochestercabernet'], country: 'England', confidence: 0.82 },
+
+  // === PASS 4 — BRAND EXPANSION ===
+
+  // Australia
+  { patterns: ['jipjiprocks', 'jipjip'], country: 'Australia', region: 'Padthaway', confidence: 0.90 },
+  { patterns: ['mtmonster', 'mountmonster'], country: 'Australia', region: 'Coonawarra', confidence: 0.90 },
+  { patterns: ['morambrocreek', 'morambro'], country: 'Australia', region: 'Padthaway', confidence: 0.90 },
+  { patterns: ['capementelle'], country: 'Australia', region: 'Margaret River', confidence: 0.92 },
+  { patterns: ['glaetzer'], country: 'Australia', region: 'Barossa Valley', confidence: 0.92 },
+  { patterns: ['mountlangi', 'langhiran'], country: 'Australia', region: 'Grampians', confidence: 0.90 },
+  { patterns: ['tournon'], country: 'Australia', region: 'Victoria', confidence: 0.88 },
+  { patterns: ['inspiredcompany'], country: 'Australia', confidence: 0.85 },
+  { patterns: ['aldridge'], country: 'Australia', confidence: 0.82 },
+  { patterns: ['stagnez', 'sagnez', 'stagnes'], country: 'Australia', confidence: 0.82 },
+  { patterns: ['pinnical', 'pinicalest'], country: 'Australia', confidence: 0.82 },
+
+  // New Zealand
+  { patterns: ['cloudybay'], country: 'New Zealand', region: 'Marlborough', confidence: 0.95 },
+  { patterns: ['witherhills', 'wither hills'], country: 'New Zealand', region: 'Marlborough', confidence: 0.92 },
+  { patterns: ['mudhouse'], country: 'New Zealand', region: 'Marlborough', confidence: 0.90 },
+  { patterns: ['wairauriver', 'wairau'], country: 'New Zealand', region: 'Marlborough', confidence: 0.92 },
+  { patterns: ['matua'], country: 'New Zealand', confidence: 0.90 },
+  { patterns: ['villamaria'], country: 'New Zealand', confidence: 0.92 },
+  { patterns: ['cablebay'], country: 'New Zealand', region: 'Waiheke Island', confidence: 0.90 },
+  { patterns: ['astrolabe'], country: 'New Zealand', region: 'Marlborough', confidence: 0.90 },
+
+  // South Africa
+  { patterns: ['anura'], country: 'South Africa', confidence: 0.90 },
+  { patterns: ['delheim'], country: 'South Africa', region: 'Stellenbosch', confidence: 0.92 },
+  { patterns: ['rochestermerlot', 'rochesterpinotage', 'rochesterchardonnay', 'rochestershiraz'], country: 'South Africa', confidence: 0.85 },
+
+  // France — Champagne
+  { patterns: ['armanddebrignac'], country: 'France', region: 'Champagne', confidence: 0.95 },
+  { patterns: ['ghmumm', 'mumm'], country: 'France', region: 'Champagne', confidence: 0.92 },
+  { patterns: ['polroger'], country: 'France', region: 'Champagne', confidence: 0.95 },
+  { patterns: ['veuveduvern', 'veuvduvern'], country: 'France', region: 'Champagne', confidence: 0.88 },
+
+  // France — Burgundy
+  { patterns: ['maisonjaffelin', 'jaffelin'], country: 'France', region: 'Burgundy', confidence: 0.90 },
+  { patterns: ['domaineligerbelair', 'ligerbelair', 'thibaultligerbelair'], country: 'France', region: 'Burgundy', confidence: 0.92 },
+  { patterns: ['domainepoussedor', 'poussedor'], country: 'France', region: 'Burgundy', confidence: 0.92 },
+  { patterns: ['domainejeamfery', 'domaineferyfils', 'jeanfery'], country: 'France', region: 'Burgundy', confidence: 0.90 },
+  { patterns: ['domainederochebin', 'rochebin'], country: 'France', region: 'Burgundy', confidence: 0.90 },
+  { patterns: ['maison1838', 'maison jaffelin'], country: 'France', region: 'Burgundy', confidence: 0.88 },
+
+  // France — Loire
+  { patterns: ['josephmellot'], country: 'France', region: 'Loire Valley', confidence: 0.92 },
+  { patterns: ['domainehuet'], country: 'France', region: 'Loire Valley', confidence: 0.92 },
+
+  // France — Rhône
+  { patterns: ['brotte'], country: 'France', region: 'Rhône', confidence: 0.90 },
+
+  // France — Alsace
+  { patterns: ['domainealbertmann', 'albertmann'], country: 'France', region: 'Alsace', confidence: 0.92 },
+  { patterns: ['schieferkopf'], country: 'France', region: 'Alsace', confidence: 0.88 },
+
+  // France — Languedoc / Roussillon
+  { patterns: ['laurentmiquel'], country: 'France', region: 'Languedoc', confidence: 0.90 },
+  { patterns: ['gallician'], country: 'France', region: 'Languedoc', confidence: 0.88 },
+  { patterns: ['antech'], country: 'France', region: 'Languedoc', confidence: 0.88 },
+  { patterns: ['reservestmartin', 'reserve st martin', 'stmartin'], country: 'France', region: 'Languedoc', confidence: 0.88 },
+  { patterns: ['labelleangele', 'belleangele'], country: 'France', region: 'Languedoc', confidence: 0.85 },
+  { patterns: ['lesvolets'], country: 'France', region: 'Languedoc', confidence: 0.85 },
+  { patterns: ['lacollectionboutinot', 'boutinot'], country: 'France', region: 'Languedoc', confidence: 0.85 },
+  { patterns: ['domainelafage', 'lafage'], country: 'France', region: 'Roussillon', confidence: 0.90 },
+
+  // France — Provence
+  { patterns: ['domainesott', 'domainesott'], country: 'France', region: 'Provence', confidence: 0.92 },
+  { patterns: ['mirabeau'], country: 'France', region: 'Provence', confidence: 0.90 },
+  { patterns: ['domainehouchart', 'houchart'], country: 'France', region: 'Provence', confidence: 0.90 },
+
+  // France — Bordeaux
+  { patterns: ['michellynch', 'michel lynch'], country: 'France', region: 'Bordeaux', confidence: 0.90 },
+
+  // France — Cognac
+  { patterns: ['camus'], country: 'France', region: 'Cognac', confidence: 0.92 },
+
+  // Spain
+  { patterns: ['cune'], country: 'Spain', region: 'Rioja', confidence: 0.90 },
+  { patterns: ['solarviejo'], country: 'Spain', region: 'Rioja', confidence: 0.90 },
+  { patterns: ['codorniu', 'bodegascodorniu'], country: 'Spain', region: 'Cava', confidence: 0.90 },
+  { patterns: ['donluciano'], country: 'Spain', confidence: 0.85 },
+
+  // Italy — Tuscany
+  { patterns: ['poggioaltesoro'], country: 'Italy', region: 'Tuscany', confidence: 0.92 },
+  { patterns: ['tenutadivalgiano', 'valgiano'], country: 'Italy', region: 'Tuscany', confidence: 0.92 },
+  { patterns: ['tenutadibiserno', 'biserno'], country: 'Italy', region: 'Tuscany', confidence: 0.92 },
+  { patterns: ['roccadimontegrossi', 'montegrossi'], country: 'Italy', region: 'Tuscany', confidence: 0.90 },
+  { patterns: ['poderecarnasciale', 'carnasciale'], country: 'Italy', region: 'Tuscany', confidence: 0.90 },
+  { patterns: ['tenutasetteponti', 'setteponti'], country: 'Italy', region: 'Tuscany', confidence: 0.90 },
+  { patterns: ['poggioallupo'], country: 'Italy', region: 'Tuscany', confidence: 0.88 },
+
+  // Italy — Piedmont
+  { patterns: ['marchesidigresy', 'digresy'], country: 'Italy', region: 'Piedmont', confidence: 0.92 },
+
+  // Italy — Campania
+  { patterns: ['mastroberardino'], country: 'Italy', region: 'Campania', confidence: 0.92 },
+  { patterns: ['feudidisangregorio', 'feudisangregorio', 'feudosangregorio'], country: 'Italy', region: 'Campania', confidence: 0.92 },
+
+  // Italy — Sicily
+  { patterns: ['cantinepellegrino', 'pellegrino'], country: 'Italy', region: 'Sicily', confidence: 0.90 },
+  { patterns: ['planeta'], country: 'Italy', region: 'Sicily', confidence: 0.92 },
+
+  // Italy — Abruzzo
+  { patterns: ['fantini'], country: 'Italy', region: 'Abruzzo', confidence: 0.88 },
+
+  // Italy — Puglia
+  { patterns: ['luccarelli'], country: 'Italy', region: 'Puglia', confidence: 0.88 },
+  { patterns: ['masseriaborgodt', 'borgodeitrulli'], country: 'Italy', region: 'Puglia', confidence: 0.88 },
+
+  // Italy — Veneto
+  { patterns: ['follador'], country: 'Italy', region: 'Veneto', confidence: 0.90 },
+  { patterns: ['corteviola'], country: 'Italy', region: 'Veneto', confidence: 0.85 },
+  { patterns: ['pitars'], country: 'Italy', region: 'Veneto', confidence: 0.85 },
+  { patterns: ['tavernello'], country: 'Italy', confidence: 0.85 },
+
+  // Italy — Lombardy (Franciacorta)
+  { patterns: ['contadicastaldi'], country: 'Italy', region: 'Lombardy', confidence: 0.92 },
+
+  // Italy — Trentino
+  { patterns: ['tenutulunelli', 'lunelli'], country: 'Italy', region: 'Trentino', confidence: 0.90 },
+
+  // Italy — Umbria
+  { patterns: ['lacarraia', 'carraia'], country: 'Italy', region: 'Umbria', confidence: 0.90 },
+
+  // Italy — Sparkling / Brandy
+  { patterns: ['vecchiaromagna'], country: 'Italy', confidence: 0.90 },
+  { patterns: ['bohem'], country: 'Italy', confidence: 0.85 },
+
+  // Austria
+  { patterns: ['judithbeck'], country: 'Austria', region: 'Burgenland', confidence: 0.92 },
+  { patterns: ['jurisgolser', 'jurisst', 'golserst'], country: 'Austria', region: 'Burgenland', confidence: 0.90 },
+
+  // Germany
+  { patterns: ['biankadanielschmitt', 'biankaanddan', 'biankaschmitt'], country: 'Germany', region: 'Rheinhessen', confidence: 0.90 },
+
+  // Chile
+  { patterns: ['vinaelprincipal', 'elprincipal'], country: 'Chile', region: 'Maipo Valley', confidence: 0.90 },
+  { patterns: ['odfjell'], country: 'Chile', confidence: 0.90 },
+  { patterns: ['maturana'], country: 'Chile', confidence: 0.85 },
+  { patterns: ['latue'], country: 'Chile', confidence: 0.85 },
+  { patterns: ['herdadedesaomiguel', 'herdadesaomiguel'], country: 'Portugal', region: 'Alentejo', confidence: 0.90 },
+
+  // Argentina
+  { patterns: ['zuccardi'], country: 'Argentina', region: 'Mendoza', confidence: 0.92 },
+  { patterns: ['santajulia'], country: 'Argentina', region: 'Mendoza', confidence: 0.90 },
+  { patterns: ['chevaldesandes'], country: 'Argentina', region: 'Mendoza', confidence: 0.93 },
+  { patterns: ['terrazas'], country: 'Argentina', region: 'Mendoza', confidence: 0.90 },
+
+  // Ireland
+  { patterns: ['teeling'], country: 'Ireland', confidence: 0.92 },
+  { patterns: ['thequietman', 'quietman'], country: 'Ireland', confidence: 0.92 },
+
+  // Scotland
+  { patterns: ['dalmore', 'thedalmore'], country: 'Scotland', region: 'Highlands', confidence: 0.95 },
+  { patterns: ['glenmoray'], country: 'Scotland', region: 'Speyside', confidence: 0.95 },
+  { patterns: ['aberlour'], country: 'Scotland', region: 'Speyside', confidence: 0.95 },
+  { patterns: ['glengrant'], country: 'Scotland', region: 'Speyside', confidence: 0.93 },
+  { patterns: ['jura'], country: 'Scotland', region: 'Isle of Jura', confidence: 0.90 },
+  { patterns: ['springbank'], country: 'Scotland', region: 'Campbeltown', confidence: 0.93 },
+  { patterns: ['bruichladdich'], country: 'Scotland', region: 'Islay', confidence: 0.95 },
+  { patterns: ['bowmore'], country: 'Scotland', region: 'Islay', confidence: 0.95 },
+  { patterns: ['bunnahabhain'], country: 'Scotland', region: 'Islay', confidence: 0.95 },
+
+  // USA
+  { patterns: ['spottswoode'], country: 'USA', region: 'Napa Valley', confidence: 0.93 },
+  { patterns: ['starmont'], country: 'USA', region: 'Carneros', confidence: 0.90 },
+  { patterns: ['districtseriesalexander', 'alexandervalley'], country: 'USA', region: 'Sonoma', confidence: 0.90 },
+  { patterns: ['districtseriesrussian', 'russianriverchardonnay'], country: 'USA', region: 'Sonoma', confidence: 0.90 },
+  { patterns: ['flyby', 'fly by'], country: 'USA', confidence: 0.82 },
+
+  // Japan — Gin / Additional Sake
+  { patterns: ['kinobi'], country: 'Japan', confidence: 0.93 },
+  { patterns: ['sesshu'], country: 'Japan', confidence: 0.90 },
+  { patterns: ['houkinoindama', 'houki'], country: 'Japan', confidence: 0.90 },
+
+  // Thailand
+  { patterns: ['ironballs'], country: 'Thailand', confidence: 0.92 },
+  { patterns: ['siamlanna'], country: 'Thailand', confidence: 0.88 },
+  { patterns: ['phraya'], country: 'Thailand', confidence: 0.90 },
+  { patterns: ['prakaan'], country: 'Thailand', confidence: 0.88 },
+  { patterns: ['kosapan'], country: 'Thailand', confidence: 0.88 },
+
+  // India
+  { patterns: ['sikkim'], country: 'India', confidence: 0.90 },
+
+  // Norway
+  { patterns: ['harahorn'], country: 'Norway', confidence: 0.92 },
+
+  // Poland / Netherlands / Caribbean
+  { patterns: ['belvedere'], country: 'Poland', confidence: 0.92 },
+  { patterns: ['ketelone'], country: 'Netherlands', confidence: 0.92 },
+  { patterns: ['captainmorgan'], country: 'Caribbean', confidence: 0.92 },
+  { patterns: ['ciroc'], country: 'France', confidence: 0.90 },
+  { patterns: ['bulleit'], country: 'USA', confidence: 0.92 },
+  { patterns: ['baileys'], country: 'Ireland', confidence: 0.92 },
+
+  // === PASS 5 — REMAINING IDENTIFIABLE BRANDS ===
+
+  // France — Champagne
+  { patterns: ['delamotte'], country: 'France', region: 'Champagne', confidence: 0.95 },
+  { patterns: ['allartfils', 'allartandfils'], country: 'France', region: 'Champagne', confidence: 0.90 },
+  { patterns: ['davidoff'], country: 'France', region: 'Cognac', confidence: 0.90 },
+
+  // France — Burgundy
+  { patterns: ['domaineleflaive', 'leflaive'], country: 'France', region: 'Burgundy', confidence: 0.95 },
+  { patterns: ['fontainegagnard', 'domaineontainegagnard'], country: 'France', region: 'Burgundy', confidence: 0.92 },
+
+  // France — Rhône
+  { patterns: ['pauljaboulet', 'jaboulet'], country: 'France', region: 'Rhône', confidence: 0.92 },
+
+  // Italy — Tuscany
+  { patterns: ['argiano'], country: 'Italy', region: 'Tuscany', confidence: 0.92 },
+  { patterns: ['brancaia'], country: 'Italy', region: 'Tuscany', confidence: 0.92 },
+
+  // Italy — Piedmont
+  { patterns: ['ceretto'], country: 'Italy', region: 'Piedmont', confidence: 0.92 },
+  { patterns: ['contratto'], country: 'Italy', region: 'Piedmont', confidence: 0.90 },
+
+  // Italy — Emilia-Romagna (Lambrusco)
+  { patterns: ['cavicchioli'], country: 'Italy', region: 'Emilia-Romagna', confidence: 0.90 },
+
+  // Italy — Misc
+  { patterns: ['pallini'], country: 'Italy', confidence: 0.88 },
+  { patterns: ['terredelvulcano', 'terredelvulcano'], country: 'Italy', region: 'Sicily', confidence: 0.88 },
+  { patterns: ['cristiani'], country: 'Italy', confidence: 0.85 },
+
+  // Spain
+  { patterns: ['cuevadelviento'], country: 'Spain', confidence: 0.88 },
+
+  // Chile
+  { patterns: ['sena'], country: 'Chile', region: 'Aconcagua Valley', confidence: 0.93 },
+
+  // USA
+  { patterns: ['sterlingvineyards', 'sterlingvintner', 'sterling'], country: 'USA', region: 'Napa Valley', confidence: 0.90 },
+  { patterns: ['cornerstone'], country: 'USA', region: 'Napa Valley', confidence: 0.88 },
+  { patterns: ['theblindpig', 'blindpig'], country: 'USA', region: 'Napa Valley', confidence: 0.88 },
+  { patterns: ['elijah', 'elijahcraig'], country: 'USA', confidence: 0.92 },
+  { patterns: ['evanwilliams'], country: 'USA', confidence: 0.92 },
+
+  // New Zealand
+  { patterns: ['frommwinery', 'fromm'], country: 'New Zealand', region: 'Marlborough', confidence: 0.90 },
+  { patterns: ['russianjack'], country: 'New Zealand', region: 'Marlborough', confidence: 0.88 },
+  { patterns: ['satellite'], country: 'New Zealand', region: 'Marlborough', confidence: 0.88 },
+
+  // Australia
+  { patterns: ['mrriggs', 'mr riggs'], country: 'Australia', region: 'McLaren Vale', confidence: 0.92 },
+  { patterns: ['heartland'], country: 'Australia', confidence: 0.85 },
+
+  // England
+  { patterns: ['langleys'], country: 'England', confidence: 0.90 },
+
+  // Canada
+  { patterns: ['gibsons'], country: 'Canada', confidence: 0.88 },
+
+  // Indonesia
+  { patterns: ['nusacana'], country: 'Indonesia', confidence: 0.90 },
+
+  // China
+  { patterns: ['peddlers'], country: 'China', confidence: 0.88 },
+
+  // Chile
+  { patterns: ['vikwinery', 'vikmillahue', 'vikmillacala'], country: 'Chile', region: 'Cachapoal Valley', confidence: 0.92 },
+
+  // === PASS 6 ===
+
+  // Italy — Alto Adige
+  { patterns: ['stpauls'], country: 'Italy', region: 'Alto Adige', confidence: 0.90 },
+
+  // Italy — Friuli
+  { patterns: ['pighin'], country: 'Italy', region: 'Friuli', confidence: 0.90 },
+
+  // Italy — Tuscany
+  { patterns: ['carpineto'], country: 'Italy', region: 'Tuscany', confidence: 0.90 },
+
+  // Italy — Marche
+  { patterns: ['garofoli'], country: 'Italy', region: 'Marche', confidence: 0.90 },
+
+  // Italy — Basilicata
+  { patterns: ['vignetidelvulture'], country: 'Italy', region: 'Basilicata', confidence: 0.90 },
+
+  // Italy — Misc
+  { patterns: ['disaronno'], country: 'Italy', confidence: 0.95 },
+
+  // France — Alsace
+  { patterns: ['trimbach'], country: 'France', region: 'Alsace', confidence: 0.95 },
+  { patterns: ['heim'], country: 'France', region: 'Alsace', confidence: 0.88 },
+
+  // France — Burgundy
+  { patterns: ['chansonpere', 'chansonperefilss', 'chansonfils'], country: 'France', region: 'Burgundy', confidence: 0.90 },
+
+  // France — Rhône / Languedoc
+  { patterns: ['moulindegassac', 'moulingassac'], country: 'France', region: 'Languedoc', confidence: 0.90 },
+  { patterns: ['ostalcazes', 'lostalcazes'], country: 'France', region: 'Languedoc', confidence: 0.90 },
+
+  // France — Provence
+  { patterns: ['minuty', 'chateauminuty'], country: 'France', region: 'Provence', confidence: 0.92 },
+
+  // France — Armagnac
+  { patterns: ['chabotarmagnac', 'chabot'], country: 'France', region: 'Armagnac', confidence: 0.92 },
+
+  // Australia — Barossa
+  { patterns: ['sthallett', 'st hallett'], country: 'Australia', region: 'Barossa Valley', confidence: 0.92 },
+  { patterns: ['headlineacts'], country: 'Australia', confidence: 0.85 },
+
+  // New Zealand — Martinborough
+  { patterns: ['escarpment'], country: 'New Zealand', region: 'Martinborough', confidence: 0.92 },
+
+  // Argentina
+  { patterns: ['argento'], country: 'Argentina', region: 'Mendoza', confidence: 0.90 },
+
+  // Chile
+  { patterns: ['colina'], country: 'Chile', confidence: 0.85 },
+  { patterns: ['sena'], country: 'Chile', region: 'Aconcagua Valley', confidence: 0.93 },
+
+  // USA — Napa/Carneros
+  { patterns: ['cuvaison'], country: 'USA', region: 'Carneros', confidence: 0.92 },
+
+  // Mexico — Tequila
+  { patterns: ['sierratequila', 'sierrablanco', 'sierrareposado'], country: 'Mexico', confidence: 0.92 },
+
+  // England
+  { patterns: ['chasegin', 'chasedistillery', 'chasevod'], country: 'England', confidence: 0.92 },
+  { patterns: ['brokers', 'brokersgin'], country: 'England', confidence: 0.92 },
+  { patterns: ['rivogin', 'rivosloe', 'rivoforaged', 'rivomediterranean'], country: 'England', confidence: 0.88 },
+
+  // Ireland
+  { patterns: ['theirishman', 'irishman'], country: 'Ireland', confidence: 0.92 },
+
+  // Belgium
+  { patterns: ['1836gin', '1836organic'], country: 'Belgium', confidence: 0.90 },
+
+  // USA — spirits
+  { patterns: ['mccormick'], country: 'USA', confidence: 0.88 },
 ];
 
 // ─── REGION KEYWORD MAP ────────────────────────────────────────────────────
@@ -502,11 +836,30 @@ const REGION_MAP: RegionRule[] = [
   { keyword: 'cabernetsauvignon', country: '',                                   classification: 'Red Wine',       confidence: 0.70 },
   { keyword: 'sauvignonblanc', country: '',                                      classification: 'White Wine',     confidence: 0.70 },
   { keyword: 'chardonnay',     country: '',                                      classification: 'White Wine',     confidence: 0.70 },
+
+  // Additional appellations
+  { keyword: 'bolgheri',       country: 'Italy', region: 'Tuscany', subregion: 'Bolgheri', classification: 'Red Wine', confidence: 0.92 },
+  { keyword: 'vouvray',        country: 'France', region: 'Loire Valley', subregion: 'Vouvray', classification: 'White Wine', confidence: 0.92 },
+  { keyword: 'limoux',         country: 'France', region: 'Languedoc', classification: 'Sparkling Wine', confidence: 0.90 },
+  { keyword: 'bandol',         country: 'France', region: 'Provence', classification: 'Wine', confidence: 0.90 },
+  { keyword: 'provence',       country: 'France', region: 'Provence', classification: 'Wine', confidence: 0.88 },
+  { keyword: 'roussillon',     country: 'France', region: 'Roussillon', classification: 'Wine', confidence: 0.88 },
+  { keyword: 'pfalz',          country: 'Germany', region: 'Pfalz', classification: 'White Wine', confidence: 0.88 },
+  { keyword: 'alentejo',       country: 'Portugal', region: 'Alentejo', classification: 'Wine', confidence: 0.90 },
+  { keyword: 'primitivo',      country: 'Italy', region: 'Puglia', classification: 'Red Wine', confidence: 0.88 },
+  { keyword: 'franciacorta',   country: 'Italy', region: 'Lombardy', classification: 'Sparkling Wine', confidence: 0.92 },
+  { keyword: 'trentino',       country: 'Italy', region: 'Trentino', classification: 'Wine', confidence: 0.88 },
+  { keyword: 'campania',       country: 'Italy', region: 'Campania', classification: 'Wine', confidence: 0.88 },
+  { keyword: 'maremma',        country: 'Italy', region: 'Tuscany', classification: 'Wine', confidence: 0.88 },
+  { keyword: 'orvieto',        country: 'Italy', region: 'Umbria', classification: 'White Wine', confidence: 0.88 },
+  { keyword: 'carmenere',      country: 'Chile', classification: 'Red Wine', confidence: 0.82 },
+  { keyword: 'pinotage',       country: 'South Africa', classification: 'Red Wine', confidence: 0.88 },
+  { keyword: 'vinhoverdeale',  country: 'Portugal', classification: 'White Wine', confidence: 0.88 },
 ];
 
 // ─── ACCESSORY SKU PREFIXES ──────────────────────────────────────────────────
 // Products with these SKU prefixes are bar/wine accessories — no country needed.
-const ACCESSORY_PREFIXES = new Set(['ABA', 'AWC', 'GWN', 'GLQ', 'GBE', 'GNB', 'GAC']);
+const ACCESSORY_PREFIXES = new Set(['ABA', 'AWC', 'GWN', 'GLQ', 'GBE', 'GNB', 'GAC', 'GDC', 'GDE']);
 
 // ─── MAIN ENRICHMENT FUNCTION ────────────────────────────────────────────────
 export function enrichWithRules(product: Record<string, any>): EnrichmentResult {
