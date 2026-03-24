@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { AlertTriangle, Play, RefreshCw, RotateCcw } from 'lucide-react';
+import { AlertTriangle, Play, RefreshCw, RotateCcw, Sparkles } from 'lucide-react';
 
 type Stats = {
   total: number;
@@ -77,9 +77,15 @@ export function ProcessingReviewPage() {
   }
 
   async function handleResume() {
-    // Reset stuck status then re-run (pipeline will skip already-enriched products)
     await fetch('/api/enrich/status', { method: 'DELETE' });
     await handleRun();
+  }
+
+  async function handleClaudeRun() {
+    setRunning(true);
+    await fetch('/api/enrich/claude-run', { method: 'POST' });
+    await fetchStatus();
+    startPolling();
   }
 
   async function handleRefresh() {
@@ -114,11 +120,20 @@ export function ProcessingReviewPage() {
               <RotateCcw size={14} /> Resume
             </button>
           ) : (
-            <button onClick={handleRun} disabled={running}
-              className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm px-4 py-2 rounded-lg transition-colors">
-              <Play size={14} />
-              {running ? 'Running…' : pendingCount > 0 ? `Process ${pendingCount} remaining` : 'Run Enrichment'}
-            </button>
+            <>
+              {(stats?.needs_review ?? 0) > 0 && !running && (
+                <button onClick={handleClaudeRun} disabled={running}
+                  className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm px-4 py-2 rounded-lg transition-colors">
+                  <Sparkles size={14} />
+                  ✦ Claude {stats!.needs_review} remaining
+                </button>
+              )}
+              <button onClick={handleRun} disabled={running}
+                className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm px-4 py-2 rounded-lg transition-colors">
+                <Play size={14} />
+                {running ? 'Running…' : pendingCount > 0 ? `Re-run rules` : 'Run Enrichment'}
+              </button>
+            </>
           )}
         </div>
       </div>
