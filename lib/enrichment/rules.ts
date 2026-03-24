@@ -249,8 +249,114 @@ const BRAND_MAP: Array<{ patterns: string[]; country: string; region?: string; c
   { patterns: ['rochesterw', 'rochesters'], country: 'England', confidence: 0.80 },
   { patterns: ['monemvasia'], country: 'Greece', confidence: 0.90 },
 
+  // === FRANCE — ADDITIONAL ===
+  { patterns: ['baronphilippederothschild', 'baronphilippe', 'baronphilipped'], country: 'France', region: 'Bordeaux', confidence: 0.92 },
+  { patterns: ['rothschild'], country: 'France', region: 'Bordeaux', confidence: 0.88 },
+  { patterns: ['clarendelle'], country: 'France', region: 'Bordeaux', confidence: 0.90 },
+  { patterns: ['jeffcarrel'], country: 'France', region: 'Languedoc', confidence: 0.88 },
+  { patterns: ['leclosduserres', 'closduserres'], country: 'France', region: 'Languedoc', confidence: 0.88 },
+  { patterns: ['pierrevallet'], country: 'France', confidence: 0.85 },
+
+  // === ITALY — ADDITIONAL ===
+  { patterns: ['tenutaornellaia', 'ornellaia'], country: 'Italy', region: 'Tuscany', confidence: 0.95 },
+  { patterns: ['tuarita', 'tua rita'], country: 'Italy', region: 'Tuscany', confidence: 0.93 },
+  { patterns: ['roccadifrasinello', 'roccadifrassinello'], country: 'Italy', region: 'Tuscany', confidence: 0.92 },
+  { patterns: ['tascadalmerita', 'tasca'], country: 'Italy', region: 'Sicily', confidence: 0.92 },
+  { patterns: ['vignetidizabu', 'zabu'], country: 'Italy', region: 'Sicily', confidence: 0.90 },
+  { patterns: ['masserialiveli', 'liveli'], country: 'Italy', region: 'Puglia', confidence: 0.90 },
+  { patterns: ['primosic'], country: 'Italy', region: 'Friuli', confidence: 0.90 },
+  { patterns: ['destefani'], country: 'Italy', region: 'Veneto', confidence: 0.88 },
+  { patterns: ['malfy'], country: 'Italy', confidence: 0.92 },
+  { patterns: ['mancino'], country: 'Italy', confidence: 0.90 },
+  { patterns: ['delp', 'delprofessore'], country: 'Italy', confidence: 0.88 },
+
+  // === SPAIN — ADDITIONAL ===
+  { patterns: ['marquesdecaceres', 'marquesdecaceres'], country: 'Spain', region: 'Rioja', confidence: 0.92 },
+
+  // === AUSTRALIA — ADDITIONAL ===
+  { patterns: ['torbreck'], country: 'Australia', region: 'Barossa Valley', confidence: 0.93 },
+  { patterns: ['voyagerestate', 'voyager'], country: 'Australia', region: 'Margaret River', confidence: 0.92 },
+  { patterns: ['langmeil'], country: 'Australia', region: 'Barossa Valley', confidence: 0.92 },
+  { patterns: ['fermoy', 'fermoyestate'], country: 'Australia', region: 'Margaret River', confidence: 0.90 },
+  { patterns: ['sunnycliff'], country: 'Australia', confidence: 0.88 },
+  { patterns: ['georgewyndham', 'wyndham'], country: 'Australia', confidence: 0.88 },
+  { patterns: ['twooceans'], country: 'South Africa', confidence: 0.88 },
+
+  // === NEW ZEALAND — ADDITIONAL ===
+  { patterns: ['greywacke'], country: 'New Zealand', region: 'Marlborough', confidence: 0.92 },
+  { patterns: ['dogpoint', 'dog point'], country: 'New Zealand', region: 'Marlborough', confidence: 0.92 },
+  { patterns: ['framingham'], country: 'New Zealand', region: 'Marlborough', confidence: 0.92 },
+  { patterns: ['spyvalley', 'spy valley'], country: 'New Zealand', region: 'Marlborough', confidence: 0.92 },
+  { patterns: ['brancottestate', 'brancott'], country: 'New Zealand', confidence: 0.90 },
+
+  // === USA — ADDITIONAL ===
+  { patterns: ['kendalljackson', 'kendall'], country: 'USA', region: 'California', confidence: 0.90 },
+  { patterns: ['wentevineyards', 'wente'], country: 'USA', region: 'California', confidence: 0.90 },
+  { patterns: ['opusone', 'opus one'], country: 'USA', region: 'Napa Valley', confidence: 0.95 },
+  { patterns: ['phelpcreek', 'phelps'], country: 'USA', region: 'Oregon', confidence: 0.88 },
+  { patterns: ['layercake'], country: 'USA', confidence: 0.85 },
+  { patterns: ['gallofamily', 'gallo'], country: 'USA', confidence: 0.88 },
+
+  // === SOUTH AFRICA ===
+  { patterns: ['kanonkop'], country: 'South Africa', region: 'Stellenbosch', confidence: 0.93 },
+  { patterns: ['nederburg'], country: 'South Africa', confidence: 0.90 },
+  { patterns: ['noblehill', 'noble hill'], country: 'South Africa', confidence: 0.88 },
+  { patterns: ['expresion'], country: 'South Africa', confidence: 0.85 },
+
+  // === SCOTLAND — ADDITIONAL ===
+  { patterns: ['ardbeg'], country: 'Scotland', region: 'Islay', confidence: 0.95 },
+  { patterns: ['oldpulteney', 'pulteney'], country: 'Scotland', region: 'Highlands', confidence: 0.93 },
+  { patterns: ['balblair'], country: 'Scotland', region: 'Highlands', confidence: 0.93 },
+  { patterns: ['ballantines', 'ballantin'], country: 'Scotland', confidence: 0.92 },
+  { patterns: ['cragganmore'], country: 'Scotland', region: 'Speyside', confidence: 0.95 },
+  { patterns: ['glenkinchie'], country: 'Scotland', region: 'Lowlands', confidence: 0.95 },
+  { patterns: ['royalsalute'], country: 'Scotland', confidence: 0.95 },
+
+  // === IRELAND — ADDITIONAL ===
+  { patterns: ['glendalough'], country: 'Ireland', confidence: 0.92 },
+
+  // === ENGLAND — ADDITIONAL ===
+  { patterns: ['fuller', 'fullers'], country: 'England', region: 'London', confidence: 0.90 },
+  { patterns: ['hoxton'], country: 'England', confidence: 0.90 },
+  { patterns: ['gilbeys', 'gilbey'], country: 'England', confidence: 0.85 },
+
+  // === PORTUGAL ===
+  { patterns: ['grahams', 'graham'], country: 'Portugal', region: 'Douro', confidence: 0.90 },
+  { patterns: ['dows', 'dow'], country: 'Portugal', region: 'Douro', confidence: 0.90 },
+
+  // === CHILE — ADDITIONAL ===
+  { patterns: ['caliterra'], country: 'Chile', confidence: 0.90 },
+  { patterns: ['santaema', 'santa ema'], country: 'Chile', confidence: 0.90 },
+  { patterns: ['laplaya', 'la playa'], country: 'Chile', confidence: 0.88 },
+  { patterns: ['torrodepiedra', 'torodepiedra'], country: 'Chile', confidence: 0.88 },
+  { patterns: ['santahelena', 'santa helena'], country: 'Chile', confidence: 0.88 },
+  { patterns: ['signus'], country: 'Chile', region: 'Maipo', confidence: 0.88 },
+
+  // === JAPAN — SAKE ADDITIONAL ===
+  { patterns: ['dewazakura'], country: 'Japan', confidence: 0.93 },
+  { patterns: ['suminoe'], country: 'Japan', confidence: 0.90 },
+  { patterns: ['mansaku', 'mansakunohana'], country: 'Japan', confidence: 0.90 },
+  { patterns: ['kunizakari'], country: 'Japan', confidence: 0.90 },
+  { patterns: ['inatahime', 'inata'], country: 'Japan', confidence: 0.90 },
+  { patterns: ['shirayuki'], country: 'Japan', confidence: 0.90 },
+  { patterns: ['kobewine', 'kobe wine'], country: 'Japan', confidence: 0.90 },
+
+  // === MEXICO — ADDITIONAL ===
+  { patterns: ['komos'], country: 'Mexico', confidence: 0.90 },
+
+  // === THAILAND — ADDITIONAL ===
+  { patterns: ['silverlake'], country: 'Thailand', confidence: 0.88 },
+
+  // === CARIBBEAN / RUM — ADDITIONAL ===
+  { patterns: ['rumcane', 'rumandcane'], country: 'Caribbean', confidence: 0.85 },
+  { patterns: ['shackrum', 'shack rum'], country: 'Caribbean', confidence: 0.85 },
+  { patterns: ['ronzacapa', 'zacapa'], country: 'Guatemala', confidence: 0.92 },
+  { patterns: ['nasan'], country: 'Thailand', confidence: 0.85 },
+  { patterns: ['mathilde'], country: 'France', confidence: 0.85 },
+
   // === GREECE ===
   { patterns: ['tselepos', 'domaine tselepos'], country: 'Greece', confidence: 0.88 },
+  { patterns: ['monemvasia'], country: 'Greece', confidence: 0.90 },
 ];
 
 // ─── REGION KEYWORD MAP ────────────────────────────────────────────────────
@@ -375,8 +481,24 @@ const REGION_MAP: RegionRule[] = [
   { keyword: 'chardonnay',     country: '',                                      classification: 'White Wine',     confidence: 0.70 },
 ];
 
+// ─── ACCESSORY SKU PREFIXES ──────────────────────────────────────────────────
+// Products with these SKU prefixes are bar/wine accessories — no country needed.
+const ACCESSORY_PREFIXES = new Set(['ABA', 'AWC', 'GWN', 'GLQ', 'GBE', 'GNB', 'GAC']);
+
 // ─── MAIN ENRICHMENT FUNCTION ────────────────────────────────────────────────
 export function enrichWithRules(product: Record<string, any>): EnrichmentResult {
+  const sku = String(product.sku ?? '').substring(0, 3).toUpperCase();
+
+  // 0. Accessories — auto-validate, no country needed
+  if (ACCESSORY_PREFIXES.has(sku)) {
+    return {
+      classification: 'Accessory',
+      confidence: 0.90,
+      source: 'rules',
+      note: `SKU prefix ${sku} → Accessory (bar/wine equipment)`,
+    };
+  }
+
   const name = norm(String(product.name ?? ''));
   const brand = norm(String(product.brand ?? ''));
 
