@@ -14,7 +14,11 @@ function fmtPrice(v: any, currency = 'THB') {
   if (!v && v !== 0) return '—';
   const n = parseFloat(String(v)); if (isNaN(n)) return '—';
   const cur = (currency || 'THB').toUpperCase();
-  return (n / 100).toLocaleString('th-TH', { style: 'currency', currency: cur });
+  try {
+    return n.toLocaleString('th-TH', { style: 'currency', currency: cur, maximumFractionDigits: 0 });
+  } catch {
+    return `${cur} ${n.toLocaleString()}`;
+  }
 }
 const FLAVOR_COLORS: Record<string, string> = {
   fruit: 'bg-pink-500/20 text-pink-300 border-pink-500/30', spice: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
@@ -43,9 +47,10 @@ const SKU_TYPES: Record<string, string> = {
 };
 function skuType(sku: string) { return SKU_TYPES[(sku??'').substring(0,3)]??'Other'; }
 const STATUS_COLORS: Record<string,string> = {
-  validated:'bg-emerald-500/20 text-emerald-300',
-  needs_review:'bg-amber-500/20 text-amber-300',
+  validated:      'bg-emerald-500/20 text-emerald-300',
+  needs_review:   'bg-amber-500/20 text-amber-300',
   needs_attention:'bg-rose-500/20 text-rose-300',
+  raw:            'bg-slate-500/20 text-slate-400',
 };
 const COUNTRIES = ['France','Italy','Australia','Scotland','Chile','Japan','USA','Spain','Mexico','England','New Zealand','Germany','Argentina','Thailand','South Africa'];
 const EDITABLE = ['name','sku','brand','vintage','country','region','subregion','classification','grape_variety','wine_type','liquor_main_type','price','cost','currency','alcohol','bottle_size','validation_status'];
@@ -74,11 +79,10 @@ export function ProductsPage() {
   }
 
   useEffect(() => {
-    fetch('/api/enrich/status').then(r=>r.json()).then(d => {
-      const s = d.stats;
-      if (s) setStatsLine(`${s.total.toLocaleString()} products · ${s.validated.toLocaleString()} validated · ${s.needs_review.toLocaleString()} in queue`);
-    }).catch(()=>{});
-  }, []);
+    if (data) {
+      setStatsLine(`${data.total.toLocaleString()} products`);
+    }
+  }, [data]);
 
   useEffect(() => { load(page,search,country,status); }, [page,search,country,status]);
 
@@ -143,6 +147,8 @@ export function ProductsPage() {
             <option value="">All statuses</option>
             <option value="validated">Validated</option>
             <option value="needs_review">Needs review</option>
+            <option value="needs_attention">Needs attention</option>
+            <option value="raw">Raw (unprocessed)</option>
           </select>
           {(country||status) && <button onClick={()=>{setCountry('');setStatus('');setPage(1);}} className="text-xs text-slate-400 hover:text-white px-2">Clear ×</button>}
         </div>
@@ -279,6 +285,29 @@ export function ProductsPage() {
                     </div>
                   ))}
                 </div>
+                {(selected.short_description_en||selected.wine_color||selected.wine_aroma||selected.wine_palate)&&(
+                  <div className="bg-white/5 rounded-xl p-4 space-y-3">
+                    <div className="flex items-center gap-2 mb-1"><Droplets size={13} className="text-violet-400"/><h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Tasting Notes</h3></div>
+                    {selected.short_description_en&&<p className="text-xs text-slate-300 leading-relaxed">{selected.short_description_en}</p>}
+                    {(selected.wine_color||selected.wine_aroma||selected.wine_palate)&&(
+                      <div className="grid grid-cols-1 gap-2 pt-1">
+                        {[{label:'Color',val:selected.wine_color},{label:'Aroma',val:selected.wine_aroma},{label:'Palate',val:selected.wine_palate}].filter(x=>x.val).map(({label,val})=>(
+                          <div key={label}><p className="text-xs text-slate-500">{label}</p><p className="text-xs text-slate-300 mt-0.5">{val}</p></div>
+                        ))}
+                      </div>
+                    )}
+                    {(selected.wine_body||selected.wine_acidity||selected.wine_tannin)&&(
+                      <div className="flex gap-3 pt-1">
+                        {[{label:'Body',val:selected.wine_body},{label:'Acidity',val:selected.wine_acidity},{label:'Tannin',val:selected.wine_tannin}].filter(x=>x.val).map(({label,val})=>(
+                          <div key={label} className="bg-white/5 rounded-lg px-2.5 py-1.5 text-center">
+                            <p className="text-xs text-slate-500">{label}</p><p className="text-xs text-white mt-0.5">{val}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {selected.food_matching&&<p className="text-xs text-slate-400 italic">Pairs with: {selected.food_matching}</p>}
+                  </div>
+                )}
               </>
             )}
             {panelTab==='edit'&&(
