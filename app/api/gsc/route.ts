@@ -70,7 +70,6 @@ export async function GET(request: Request) {
           endDate,
           dimensions: ['query'],
           rowLimit: 25,
-          orderBy: [{ fieldName: 'clicks', sortOrder: 'DESCENDING' }],
         },
       }),
       // Top pages
@@ -81,7 +80,6 @@ export async function GET(request: Request) {
           endDate,
           dimensions: ['page'],
           rowLimit: 10,
-          orderBy: [{ fieldName: 'clicks', sortOrder: 'DESCENDING' }],
         },
       }),
     ]);

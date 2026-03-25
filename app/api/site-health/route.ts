@@ -118,7 +118,6 @@ export async function GET(request: Request) {
           endDate,
           dimensions: ['page'],
           rowLimit: 50,
-          orderBy: [{ fieldName: 'impressions', sortOrder: 'DESCENDING' }],
         },
       }),
       // Queries — we'll filter for position 11-30 quick wins
@@ -129,7 +128,6 @@ export async function GET(request: Request) {
           endDate,
           dimensions: ['query'],
           rowLimit: 50,
-          orderBy: [{ fieldName: 'impressions', sortOrder: 'DESCENDING' }],
         },
       }),
     ]);
