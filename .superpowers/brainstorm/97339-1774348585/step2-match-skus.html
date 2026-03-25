@@ -1,0 +1,94 @@
+<h2>Step 2 — Match SKUs Preview</h2>
+<p class="subtitle">After upload, the system shows a match report before any processing begins. Does this give you enough visibility?</p>
+
+<div class="mockup">
+  <div class="mockup-header">Description Manager › Step 2: Match SKUs</div>
+  <div class="mockup-body" style="padding:0">
+
+    <!-- Summary bar -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-bottom:1px solid #1e293b">
+      <div style="padding:14px 20px;border-right:1px solid #1e293b;text-align:center">
+        <div style="font-size:20px;font-weight:700;color:white">312</div>
+        <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.05em">Total rows</div>
+      </div>
+      <div style="padding:14px 20px;border-right:1px solid #1e293b;text-align:center">
+        <div style="font-size:20px;font-weight:700;color:#34d399">289</div>
+        <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.05em">Matched existing</div>
+      </div>
+      <div style="padding:14px 20px;border-right:1px solid #1e293b;text-align:center">
+        <div style="font-size:20px;font-weight:700;color:#fbbf24">18</div>
+        <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.05em">New SKUs</div>
+      </div>
+      <div style="padding:14px 20px;text-align:center">
+        <div style="font-size:20px;font-weight:700;color:#f87171">5</div>
+        <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.05em">Unrecognised</div>
+      </div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div style="display:flex;gap:0;border-bottom:1px solid #1e293b;background:#0f172a">
+      <button style="padding:8px 16px;font-size:11px;border:none;background:transparent;color:#a5b4fc;border-bottom:2px solid #6366f1;cursor:pointer">All (312)</button>
+      <button style="padding:8px 16px;font-size:11px;border:none;background:transparent;color:#64748b;cursor:pointer">✓ Matched (289)</button>
+      <button style="padding:8px 16px;font-size:11px;border:none;background:transparent;color:#64748b;cursor:pointer">★ New SKUs (18)</button>
+      <button style="padding:8px 16px;font-size:11px;border:none;background:transparent;color:#64748b;cursor:pointer">⚠ Unrecognised (5)</button>
+    </div>
+
+    <!-- Table -->
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead>
+        <tr style="background:#0f172a;border-bottom:1px solid #1e293b">
+          <th style="padding:8px 16px;text-align:left;color:#64748b;font-weight:600;text-transform:uppercase;font-size:10px">SKU</th>
+          <th style="padding:8px 16px;text-align:left;color:#64748b;font-weight:600;text-transform:uppercase;font-size:10px">Product name</th>
+          <th style="padding:8px 16px;text-align:left;color:#64748b;font-weight:600;text-transform:uppercase;font-size:10px">Status</th>
+          <th style="padding:8px 16px;text-align:left;color:#64748b;font-weight:600;text-transform:uppercase;font-size:10px">EN short</th>
+          <th style="padding:8px 16px;text-align:left;color:#64748b;font-weight:600;text-transform:uppercase;font-size:10px">TH short</th>
+          <th style="padding:8px 16px;text-align:left;color:#64748b;font-weight:600;text-transform:uppercase;font-size:10px">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #1e293b">
+          <td style="padding:9px 16px;font-family:monospace;color:#a5b4fc">WRW001FR</td>
+          <td style="padding:9px 16px;color:#e2e8f0">Château Margaux 2018</td>
+          <td style="padding:9px 16px"><span style="background:#064e3b;color:#34d399;border-radius:999px;padding:2px 8px;font-size:10px">matched</span></td>
+          <td style="padding:9px 16px;color:#94a3b8;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Elegant Bordeaux with rich dark fruit…</td>
+          <td style="padding:9px 16px;color:#94a3b8;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">บอร์โดซ์คลาสสิก มีกลิ่น…</td>
+          <td style="padding:9px 16px"><span style="color:#6366f1;cursor:pointer">preview</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #1e293b">
+          <td style="padding:9px 16px;font-family:monospace;color:#a5b4fc">LGN045EN</td>
+          <td style="padding:9px 16px;color:#e2e8f0">Hendrick's Gin</td>
+          <td style="padding:9px 16px"><span style="background:#064e3b;color:#34d399;border-radius:999px;padding:2px 8px;font-size:10px">matched</span></td>
+          <td style="padding:9px 16px;color:#94a3b8;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Scottish gin with rose and cucumber…</td>
+          <td style="padding:9px 16px;color:#475569;font-style:italic">—</td>
+          <td style="padding:9px 16px"><span style="color:#6366f1;cursor:pointer">preview</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #1e293b;background:#1a1200">
+          <td style="padding:9px 16px;font-family:monospace;color:#fbbf24">WRW999TH</td>
+          <td style="padding:9px 16px;color:#fbbf24;font-style:italic">New product</td>
+          <td style="padding:9px 16px"><span style="background:#451a03;color:#fbbf24;border-radius:999px;padding:2px 8px;font-size:10px">★ new SKU</span></td>
+          <td style="padding:9px 16px;color:#94a3b8;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Premium Thai fruit wine…</td>
+          <td style="padding:9px 16px;color:#94a3b8;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">ไวน์ผลไม้ไทยพรีเมียม…</td>
+          <td style="padding:9px 16px"><span style="color:#fbbf24;cursor:pointer">will create</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #1e293b;background:#1a0a0a">
+          <td style="padding:9px 16px;font-family:monospace;color:#f87171">XYZ-UNKNOWN</td>
+          <td style="padding:9px 16px;color:#f87171;font-style:italic">Cannot resolve</td>
+          <td style="padding:9px 16px"><span style="background:#450a0a;color:#f87171;border-radius:999px;padding:2px 8px;font-size:10px">⚠ unrecognised</span></td>
+          <td style="padding:9px 16px;color:#94a3b8">Some description…</td>
+          <td style="padding:9px 16px;color:#475569;font-style:italic">—</td>
+          <td style="padding:9px 16px"><span style="color:#f87171;cursor:pointer">skip</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Actions -->
+    <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #1e293b;background:#0f172a">
+      <div style="font-size:11px;color:#64748b">18 new SKUs will be created and queued for enrichment after AI processing</div>
+      <div style="display:flex;gap:8px">
+        <button class="mock-button" style="background:#1e293b;color:#94a3b8;padding:8px 16px;font-size:12px">← Back</button>
+        <button class="mock-button" style="padding:8px 20px;font-size:12px">Continue to AI Process →</button>
+      </div>
+    </div>
+
+  </div>
+</div>

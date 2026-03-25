@@ -1,0 +1,97 @@
+<h2>Step 3 — AI Processing</h2>
+<p class="subtitle">Claude rewrites descriptions and extracts structured data per product. Does this output structure cover what you need?</p>
+
+<div class="mockup">
+  <div class="mockup-header">Description Manager › Step 3: AI Process</div>
+  <div class="mockup-body" style="padding:0">
+
+    <!-- Progress bar -->
+    <div style="padding:16px 20px;border-bottom:1px solid #1e293b;background:#0f172a">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:12px;color:#a5b4fc;font-weight:600">Processing 307 products…</span>
+        <span style="font-size:11px;color:#64748b">142 / 307 done</span>
+      </div>
+      <div style="height:6px;background:#1e293b;border-radius:999px;overflow:hidden">
+        <div style="width:46%;height:100%;background:linear-gradient(90deg,#6366f1,#a78bfa);border-radius:999px"></div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:8px;font-size:10px;color:#475569">
+        <span style="color:#34d399">✓ 142 completed</span>
+        <span style="color:#6366f1">⟳ 1 processing</span>
+        <span>165 queued</span>
+        <span style="color:#f87171">0 errors</span>
+      </div>
+    </div>
+
+    <!-- Live feed -->
+    <div style="padding:12px 20px;border-bottom:1px solid #1e293b;background:#080f1a;max-height:120px;overflow:hidden">
+      <div style="font-size:10px;color:#475569;font-family:monospace;line-height:1.8">
+        <div><span style="color:#34d399">✓</span> <span style="color:#6366f1">WRW001FR</span> Château Margaux 2018 — rewrote EN+TH, extracted 6 flavour notes, 4 taste traits</div>
+        <div><span style="color:#34d399">✓</span> <span style="color:#6366f1">LGN045EN</span> Hendrick's Gin — rewrote EN only, extracted 5 flavour notes, 3 taste traits</div>
+        <div><span style="color:#34d399">✓</span> <span style="color:#6366f1">WWW089NZ</span> Cloudy Bay Sauvignon Blanc — rewrote EN+TH, extracted 7 flavour notes</div>
+        <div style="color:#fbbf24"><span>⟳</span> <span style="color:#fbbf24">WRS022FR</span> Mirabeau Provence Rosé — processing…</div>
+      </div>
+    </div>
+
+    <!-- Expanded result card -->
+    <div style="padding:20px">
+      <div style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Sample output — WRW001FR · Château Margaux 2018</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <!-- EN descriptions -->
+        <div style="background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:12px">
+          <div style="font-size:10px;font-weight:600;color:#34d399;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">🇬🇧 English</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">Short</div>
+          <div style="font-size:12px;color:#e2e8f0;margin-bottom:10px;line-height:1.5">An iconic Bordeaux of extraordinary elegance, with layers of dark cherry, cedar, and violet.</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">Full</div>
+          <div style="font-size:12px;color:#94a3b8;line-height:1.5">Château Margaux 2018 expresses the finest of Margaux's terroir — silky tannins, a precise structure, and a finish that lingers for minutes. Perfect for cellaring or a special occasion.</div>
+        </div>
+        <!-- TH descriptions -->
+        <div style="background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:12px">
+          <div style="font-size:10px;font-weight:600;color:#fbbf24;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">🇹🇭 Thai</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">Short</div>
+          <div style="font-size:12px;color:#e2e8f0;margin-bottom:10px;line-height:1.5">บอร์โดซ์คลาสสิกที่เปี่ยมด้วยความสง่างาม กลิ่นเชอร์รีดำ ซีดาร์ และดอกไวโอเล็ต</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">Full</div>
+          <div style="font-size:12px;color:#94a3b8;line-height:1.5">ไวน์ชาโตมาร์โกซ์ 2018 สะท้อนถึงแหล่งผลิตที่ยอดเยี่ยม ด้วยแทนนินที่นุ่มนวล โครงสร้างที่แม่นยำ…</div>
+        </div>
+      </div>
+
+      <!-- Extracted structured data -->
+      <div style="background:#0f172a;border:1px solid #312e81;border-radius:8px;padding:12px">
+        <div style="font-size:10px;font-weight:600;color:#a78bfa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">⚡ Extracted by AI</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-size:11px">
+          <div>
+            <div style="color:#64748b;margin-bottom:5px">Flavour notes</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span style="background:#1e1b4b;color:#a5b4fc;border-radius:4px;padding:2px 7px">dark cherry</span>
+              <span style="background:#1e1b4b;color:#a5b4fc;border-radius:4px;padding:2px 7px">cedar</span>
+              <span style="background:#1e1b4b;color:#a5b4fc;border-radius:4px;padding:2px 7px">violet</span>
+              <span style="background:#1e1b4b;color:#a5b4fc;border-radius:4px;padding:2px 7px">tobacco</span>
+              <span style="background:#1e1b4b;color:#a5b4fc;border-radius:4px;padding:2px 7px">graphite</span>
+            </div>
+          </div>
+          <div>
+            <div style="color:#64748b;margin-bottom:5px">Taste profile</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span style="background:#0d2e1a;color:#34d399;border-radius:4px;padding:2px 7px">silky tannins</span>
+              <span style="background:#0d2e1a;color:#34d399;border-radius:4px;padding:2px 7px">long finish</span>
+              <span style="background:#0d2e1a;color:#34d399;border-radius:4px;padding:2px 7px">elegant</span>
+              <span style="background:#0d2e1a;color:#34d399;border-radius:4px;padding:2px 7px">structured</span>
+            </div>
+          </div>
+          <div>
+            <div style="color:#64748b;margin-bottom:5px">Visualisation cues</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span style="background:#1a0a2e;color:#c4b5fd;border-radius:4px;padding:2px 7px">deep ruby</span>
+              <span style="background:#1a0a2e;color:#c4b5fd;border-radius:4px;padding:2px 7px">château estate</span>
+              <span style="background:#1a0a2e;color:#c4b5fd;border-radius:4px;padding:2px 7px">cellar-worthy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:12px 20px;border-top:1px solid #1e293b;background:#0f172a;display:flex;justify-content:flex-end">
+      <button class="mock-button" style="opacity:0.4;padding:8px 20px;font-size:12px" disabled>Review & Publish → (available when done)</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,60 @@
+<h2>Description Import Pipeline — 3 Approaches</h2>
+<p class="subtitle">How should the CSV upload + AI processing flow work? Pick the approach that feels right.</p>
+
+<div class="options">
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Inline Tab on Products Page</h3>
+      <p>Add an "Import Descriptions" tab directly on the existing Products page. Upload CSV, preview SKU matches, trigger AI processing — all without leaving the product browser.</p>
+      <div style="margin-top:12px;font-size:12px;color:#94a3b8">
+        <strong style="color:#a78bfa">Flow:</strong> Products page → Import tab → Upload CSV → Match preview → Process ✓
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>Pros</h4><ul><li>Stays in context of product list</li><li>Quick to access</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Cramped for a multi-step workflow</li><li>Mixes browsing + bulk operations</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Dedicated Description Manager Page ✦ Recommended</h3>
+      <p>New page in the sidebar: <strong>Description Manager</strong>. A full 4-step wizard: Upload → Match & Preview → AI Rewrite & Validate → Publish to Products.</p>
+      <div style="margin-top:12px;font-size:12px;color:#94a3b8">
+        <strong style="color:#a78bfa">Flow:</strong>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px">
+          <span style="background:#1e1b4b;border:1px solid #4f46e5;border-radius:6px;padding:3px 8px;color:#a5b4fc">1. Upload CSV</span>
+          <span style="color:#6366f1">→</span>
+          <span style="background:#1e1b4b;border:1px solid #4f46e5;border-radius:6px;padding:3px 8px;color:#a5b4fc">2. Match SKUs</span>
+          <span style="color:#6366f1">→</span>
+          <span style="background:#1e1b4b;border:1px solid #4f46e5;border-radius:6px;padding:3px 8px;color:#a5b4fc">3. AI Process</span>
+          <span style="color:#6366f1">→</span>
+          <span style="background:#1e1b4b;border:1px solid #4f46e5;border-radius:6px;padding:3px 8px;color:#a5b4fc">4. Review & Publish</span>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>Pros</h4><ul><li>Clean space for multi-step workflow</li><li>New SKUs handled naturally in step 2</li><li>Full review before committing changes</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Extra nav item in sidebar</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Extend Existing Import Page</h3>
+      <p>Add a "Description Mode" toggle to the current Import page. Reuse the existing batch pipeline — new CSV column mapping for EN/TH descriptions, feeds into the same processing queue.</p>
+      <div style="margin-top:12px;font-size:12px;color:#94a3b8">
+        <strong style="color:#a78bfa">Flow:</strong> Import page → Toggle "Description Mode" → Upload CSV → Batch process (same pipeline)
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>Pros</h4><ul><li>Reuses existing infrastructure</li><li>Fewer new files/pages</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Import page already complex</li><li>AI rewrite step doesn't fit current model</li><li>Less visibility into per-product status</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>
