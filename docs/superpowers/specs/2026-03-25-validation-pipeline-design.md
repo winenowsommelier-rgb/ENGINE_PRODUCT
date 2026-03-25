@@ -342,14 +342,14 @@ CREATE TABLE IF NOT EXISTS taxonomy_proposals (
   id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   type           TEXT NOT NULL,        -- country | region | sub_region | appellation | classification_tier
   proposed_value TEXT NOT NULL,
-  parent_path    TEXT,                 -- e.g. "France > Burgundy"
+  parent_path    TEXT NOT NULL DEFAULT '',  -- e.g. "France > Burgundy"; empty string when no parent
   source_sku     TEXT,
   occurrences    INT DEFAULT 1,
   status         TEXT NOT NULL DEFAULT 'pending',  -- pending | approved | rejected
   created_at     TIMESTAMPTZ DEFAULT NOW(),
   reviewed_at    TIMESTAMPTZ,
   reviewed_by    TEXT,
-  UNIQUE(type, proposed_value, parent_path)
+  UNIQUE(type, proposed_value, parent_path)  -- reliable because parent_path is NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_taxonomy_proposals_status ON taxonomy_proposals(status);
