@@ -83,6 +83,9 @@ export function TaxonomyQueuePage() {
   const [claudeLoading, setClaudeLoading] = useState(false);
   const [claudeNote, setClaudeNote] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'info' | 'edit'>('info');
+  const [pageTab, setPageTab] = useState<'queue' | 'proposals'>('queue');
+  const [proposals, setProposals] = useState<Array<Record<string, any>>>([]);
+  const [proposalsLoading, setProposalsLoading] = useState(false);
 
   useEffect(() => {
     fetch('/api/taxonomy-options').then(r => r.json()).then(setTaxOptions);
@@ -94,6 +97,28 @@ export function TaxonomyQueuePage() {
   }
 
   useEffect(() => { load(); }, [page, filter]);
+
+  async function loadProposals() {
+    setProposalsLoading(true);
+    try {
+      const res = await fetch('/api/taxonomy-proposals?status=pending');
+      const json = await res.json();
+      setProposals(Array.isArray(json) ? json : (json.items ?? []));
+    } finally {
+      setProposalsLoading(false);
+    }
+  }
+
+  useEffect(() => { if (pageTab === 'proposals') loadProposals(); }, [pageTab]);
+
+  async function handleProposalAction(id: string, action: 'approve' | 'reject') {
+    await fetch('/api/taxonomy-proposals', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, action }),
+    });
+    loadProposals();
+  }
 
   function openPanel(p: Product) {
     const fields: Record<string, string> = {};
@@ -219,10 +244,23 @@ export function TaxonomyQueuePage() {
     unvalidated: 'bg-amber-500/20 text-amber-200',
   };
 
+  const PROPOSAL_TYPES = ['appellation', 'sub_region', 'region', 'country', 'classification_tier'];
+
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-semibold text-white">Taxonomy Queue</h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-xl font-semibold text-white">Taxonomy Queue</h1>
+          <div className="flex gap-1">
+            {(['queue', 'proposals'] as const).map(tab => (
+              <button key={tab} onClick={() => setPageTab(tab)}
+                className={`text-xs px-3 py-1.5 rounded-lg transition-colors capitalize ${pageTab === tab ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-slate-200'}`}>
+                {tab === 'queue' ? 'Queue' : 'Proposals'}
+              </button>
+            ))}
+          </div>
+        </div>
+        {pageTab === 'queue' && (
         <div className="flex items-center gap-3">
           <select value={filter} onChange={e => { setFilter(e.target.value); setPage(1); }}
             className="bg-white/10 text-slate-200 text-sm rounded-lg px-3 py-1.5 border border-white/10">
@@ -238,6 +276,7 @@ export function TaxonomyQueuePage() {
             Batch validate top {batchN}
           </button>
         </div>
+        )}
       </div>
 
       {message && (
@@ -247,6 +286,8 @@ export function TaxonomyQueuePage() {
         </div>
       )}
 
+      {pageTab === 'queue' && (
+      <>
       <div className="bg-white/5 rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead>
@@ -291,6 +332,66 @@ export function TaxonomyQueuePage() {
             <span className="text-xs text-slate-300">Page {data.page} / {data.totalPages}</span>
             <button onClick={() => setPage(p => Math.min(data.totalPages, p + 1))} disabled={page === data.totalPages} className="text-slate-400 disabled:opacity-30"><ChevronRight size={16} /></button>
           </div>
+        </div>
+      )}
+      </>
+      )}
+
+      {pageTab === 'proposals' && (
+        <div>
+          {proposalsLoading ? (
+            <p className="text-slate-400 text-sm py-8 text-center">Loading proposals…</p>
+          ) : proposals.length === 0 ? (
+            <div className="bg-white/5 rounded-xl p-12 text-center">
+              <p className="text-slate-400 text-sm">No pending proposals</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {PROPOSAL_TYPES.map(type => {
+                const group = proposals.filter(pr => pr.type === type);
+                if (!group.length) return null;
+                return (
+                  <div key={type} className="bg-white/5 rounded-xl overflow-hidden">
+                    <div className="px-4 py-2.5 border-b border-white/10">
+                      <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">{type.replace('_', ' ')}</span>
+                      <span className="ml-2 text-xs text-slate-500">{group.length} proposal{group.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-white/5">
+                          {['Proposed Value', 'Parent Path', 'Occurrences', 'Source SKU', ''].map(h => (
+                            <th key={h} className="text-left px-4 py-2.5 text-xs text-slate-400 font-medium">{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {group.map(pr => (
+                          <tr key={pr.id} className="border-b border-white/5 hover:bg-white/5">
+                            <td className="px-4 py-3 text-white font-medium">{pr.proposed_value ?? '—'}</td>
+                            <td className="px-4 py-3 text-slate-300">{pr.parent_path ?? '—'}</td>
+                            <td className="px-4 py-3 text-slate-300">{pr.occurrences ?? '—'}</td>
+                            <td className="px-4 py-3 font-mono text-xs text-slate-400">{pr.source_sku ?? '—'}</td>
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-2">
+                                <button onClick={() => handleProposalAction(pr.id, 'approve')}
+                                  className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1 rounded-lg transition-colors">
+                                  Approve
+                                </button>
+                                <button onClick={() => handleProposalAction(pr.id, 'reject')}
+                                  className="bg-rose-600 hover:bg-rose-500 text-white text-xs px-3 py-1 rounded-lg transition-colors">
+                                  Reject
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
