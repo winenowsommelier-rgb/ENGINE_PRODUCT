@@ -35,8 +35,11 @@ export function runPipeline(product: Product): PipelineResult {
   accumulated = { ...accumulated, ...s5.patch };
 
   // Null-only protection: remove keys where product already has a non-null value
+  // `segment` is internal to the pipeline (used for scoring) — not a DB column
+  const neverWrite = ['segment'];
   const safePatch: EnrichmentPatch = {};
   for (const [key, value] of Object.entries(accumulated)) {
+    if (neverWrite.includes(key)) continue;
     const existing = product[key];
     // Always write confidence + status + enrichment_note (these are always updated)
     const alwaysWrite = ['overall_confidence', 'taxonomy_confidence', 'validation_status', 'enrichment_note'];
