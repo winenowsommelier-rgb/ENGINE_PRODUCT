@@ -466,6 +466,11 @@ export function ProductsPage() {
               <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[selected.validation_status ?? ''] ?? 'bg-slate-500/20 text-slate-300'}`}>
                 {selected.validation_status ?? 'unvalidated'}
               </span>
+              {selected.wine_classification && (
+                <span className="rounded-full px-2.5 py-0.5 text-xs font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  {selected.wine_classification}
+                </span>
+              )}
               {confBadge(parseFloat(String(selected.overall_confidence ?? 0)))}
               {selected.vintage && <span className="text-xs bg-white/5 text-slate-400 rounded px-2 py-0.5">Vintage {selected.vintage}</span>}
             </div>
@@ -502,7 +507,7 @@ export function ProductsPage() {
                 <div className="bg-white/5 rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-3"><MapPin size={13} className="text-violet-400" /><h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Geography</h3></div>
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    {[selected.country, selected.region, selected.subregion].filter(Boolean).map((loc, i, arr) => (
+                    {[selected.country, selected.region, selected.subregion, selected.appellation].filter(Boolean).map((loc, i, arr) => (
                       <span key={i} className="flex items-center gap-1.5 text-sm text-white">
                         {loc}{i < arr.length - 1 && <span className="text-slate-600">›</span>}
                       </span>
@@ -653,6 +658,24 @@ export function ProductsPage() {
                             </div>
                           ))}
                         </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Flavor Tags — from flavor_tags JSON string field */}
+                {(() => {
+                  let tags: string[] = [];
+                  try { const p = JSON.parse(selected.flavor_tags ?? ''); tags = Array.isArray(p) ? p.filter(Boolean) : []; } catch { tags = []; }
+                  if (!tags.length) return null;
+                  return (
+                    <div className="bg-white/5 rounded-xl p-4">
+                      <div className="flex items-center gap-2 mb-3"><Tag size={13} className="text-violet-400" /><h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Flavor Tags</h3></div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {tags.map(t => {
+                          const cat = guessFlavorCat(t);
+                          return <span key={t} className={`px-2.5 py-1 rounded-full text-xs border capitalize ${FLAVOR_COLORS[cat] ?? DEFAULT_FLAVOR}`}>{t}</span>;
+                        })}
                       </div>
                     </div>
                   );
