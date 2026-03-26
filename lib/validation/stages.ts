@@ -276,9 +276,9 @@ export function stage5Score(
     } else if (score >= 0.40) {
       patch.validation_status = 'needs_review'; // includes upgrade of needs_attention
     } else {
-      // score < 0.40 — stay raw, but don't downgrade needs_attention or needs_review
-      if (current !== 'needs_attention' && current !== 'needs_review') {
-        // keep raw / null unchanged — do not write validation_status
+      // score < 0.40 — set raw for null/raw products; never downgrade needs_attention or needs_review
+      if (current === null || current === undefined || current === 'raw') {
+        patch.validation_status = 'raw';
       }
     }
   }

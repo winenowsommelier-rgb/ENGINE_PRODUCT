@@ -54,7 +54,7 @@ export async function PATCH(req: NextRequest) {
       const proposals = await sbFetch(`taxonomy_proposals?id=eq.${id}&select=proposed_value`);
       const val = proposals?.[0]?.proposed_value;
       if (val) {
-        await sbFetch(`products?enrichment_note=like.*${val}*&validation_status=neq.validated`, {
+        await sbFetch(`products?enrichment_note=like.*${encodeURIComponent(val)}*&validation_status=neq.validated`, {
           method: 'PATCH',
           body: JSON.stringify({ validation_status: 'raw', enrichment_note: null }),
         });
