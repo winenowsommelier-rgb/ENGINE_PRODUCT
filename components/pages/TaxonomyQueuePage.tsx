@@ -103,7 +103,7 @@ export function TaxonomyQueuePage() {
     try {
       const res = await fetch('/api/taxonomy-proposals?status=pending');
       const json = await res.json();
-      setProposals(Array.isArray(json) ? json : (json.items ?? []));
+      setProposals(Array.isArray(json) ? json : (json.proposals ?? []));
     } finally {
       setProposalsLoading(false);
     }
