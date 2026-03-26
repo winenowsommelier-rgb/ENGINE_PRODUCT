@@ -1,0 +1,9 @@
+{
+  "fruit":   ["cherry", "plum", "berry", "blackcurrant", "raspberry", "strawberry", "peach", "apricot", "citrus", "apple", "pear", "fig", "mango", "tropical", "blueberry", "blackberry", "pomegranate", "lychee", "passionfruit", "melon", "watermelon", "redcurrant"],
+  "spice":   ["pepper", "black pepper", "spice", "clove", "cinnamon", "nutmeg", "vanilla", "anise", "licorice", "cardamom", "ginger", "bay leaf"],
+  "herbal":  ["herb", "herbal", "mint", "eucalyptus", "thyme", "grass", "green", "sage", "rosemary", "bay", "dried herbs"],
+  "earth":   ["earth", "earthy", "soil", "mushroom", "truffle", "leather", "tobacco", "forest floor", "undergrowth", "wet leaves"],
+  "oak":     ["oak", "cedar", "wood", "smoke", "smoky", "toast", "toasty", "charcoal", "coffee", "cocoa", "chocolate"],
+  "floral":  ["floral", "rose", "violet", "jasmine", "blossom", "flower", "lavender", "acacia", "elderflower"],
+  "mineral": ["mineral", "minerality", "chalk", "flint", "stone", "slate", "wet stone", "gravel", "iodine", "saline"]
+}

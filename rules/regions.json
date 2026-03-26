@@ -1,0 +1,80 @@
+{
+  "France": {
+    "Bordeaux":  { "aliases": ["Bx"], "sub_regions": ["Médoc", "Haut-Médoc", "Pomerol", "Saint-Émilion", "Graves", "Sauternes", "Margaux", "Pauillac", "Saint-Julien", "Saint-Estèphe", "Pessac-Léognan", "Fronsac", "Côtes de Bourg", "Blaye"] },
+    "Burgundy":  { "aliases": ["Bourgogne"], "sub_regions": ["Côte de Nuits", "Côte de Beaune", "Côte Chalonnaise", "Mâconnais", "Chablis", "Beaujolais"] },
+    "Champagne": { "aliases": [], "sub_regions": ["Montagne de Reims", "Vallée de la Marne", "Côte des Blancs", "Aube"] },
+    "Rhône":     { "aliases": ["Rhone", "Côtes du Rhône", "Cotes du Rhone"], "sub_regions": ["Northern Rhône", "Southern Rhône", "Châteauneuf-du-Pape", "Gigondas", "Vacqueyras", "Crozes-Hermitage", "Hermitage", "Côte-Rôtie", "Condrieu"] },
+    "Alsace":    { "aliases": [], "sub_regions": [] },
+    "Loire":     { "aliases": ["Loire Valley"], "sub_regions": ["Sancerre", "Pouilly-Fumé", "Muscadet", "Anjou", "Touraine", "Chinon", "Bourgueil", "Vouvray", "Montlouis"] },
+    "Provence":  { "aliases": [], "sub_regions": ["Bandol", "Cassis", "Les Baux de Provence"] },
+    "Languedoc": { "aliases": ["Languedoc-Roussillon", "Pays d'Oc", "IGP Pays d OC"], "sub_regions": ["Faugères", "Saint-Chinian", "Corbières", "Minervois", "Limoux"] },
+    "Southwest": { "aliases": ["Sud-Ouest"], "sub_regions": ["Cahors", "Madiran", "Bergerac"] }
+  },
+  "Italy": {
+    "Tuscany":   { "aliases": ["Toscana"], "sub_regions": ["Chianti", "Chianti Classico", "Montalcino", "Montepulciano", "Bolgheri", "Maremma", "Brunello", "Vino Nobile"] },
+    "Piedmont":  { "aliases": ["Piemonte"], "sub_regions": ["Barolo", "Barbaresco", "Asti", "Langhe", "Monferrato", "Moscato d'Asti"] },
+    "Veneto":    { "aliases": [], "sub_regions": ["Amarone", "Valpolicella", "Soave", "Prosecco", "Bardolino"] },
+    "Sicily":    { "aliases": ["Sicilia"], "sub_regions": ["Etna", "Marsala", "Nero d'Avola"] },
+    "Campania":  { "aliases": [], "sub_regions": ["Taurasi", "Fiano di Avellino", "Greco di Tufo"] },
+    "Friuli":    { "aliases": ["Friuli-Venezia Giulia"], "sub_regions": ["Collio", "Friuli Colli Orientali"] }
+  },
+  "Spain": {
+    "Rioja":             { "aliases": ["La Rioja"], "sub_regions": ["Rioja Alta", "Rioja Alavesa", "Rioja Oriental"] },
+    "Ribera del Duero":  { "aliases": [], "sub_regions": [] },
+    "Priorat":           { "aliases": ["Priorat DOCa"], "sub_regions": [] },
+    "Rías Baixas":       { "aliases": ["Rias Baixas"], "sub_regions": [] },
+    "Jerez":             { "aliases": ["Sherry", "Xerez"], "sub_regions": [] },
+    "Penedès":           { "aliases": ["Penedes"], "sub_regions": [] },
+    "Rueda":             { "aliases": [], "sub_regions": [] }
+  },
+  "Germany": {
+    "Mosel":       { "aliases": ["Moselle"], "sub_regions": ["Bernkastel", "Piesport", "Wehlen", "Brauneberg", "Saar", "Ruwer"] },
+    "Rheingau":    { "aliases": [], "sub_regions": ["Rüdesheim", "Johannisberg", "Hochheim", "Eltville"] },
+    "Rheinhessen": { "aliases": [], "sub_regions": ["Nierstein", "Oppenheim", "Alzey"] },
+    "Pfalz":       { "aliases": [], "sub_regions": ["Forst", "Deidesheim", "Ruppertsberg", "Wachenheim"] },
+    "Baden":       { "aliases": [], "sub_regions": ["Kaiserstuhl", "Breisgau"] },
+    "Franken":     { "aliases": ["Franconia"], "sub_regions": [] }
+  },
+  "Portugal": {
+    "Douro":       { "aliases": [], "sub_regions": ["Cima Corgo", "Baixo Corgo", "Douro Superior"] },
+    "Alentejo":    { "aliases": [], "sub_regions": [] },
+    "Dão":         { "aliases": ["Dao"], "sub_regions": [] },
+    "Vinho Verde": { "aliases": [], "sub_regions": [] },
+    "Setúbal":     { "aliases": ["Setubal"], "sub_regions": [] }
+  },
+  "Argentina": {
+    "Mendoza":     { "aliases": [], "sub_regions": ["Luján de Cuyo", "Maipú", "Valle de Uco"] },
+    "Salta":       { "aliases": [], "sub_regions": ["Cafayate"] },
+    "Patagonia":   { "aliases": [], "sub_regions": [] }
+  },
+  "Chile": {
+    "Maipo":       { "aliases": ["Maipo Valley"], "sub_regions": [] },
+    "Colchagua":   { "aliases": ["Colchagua Valley"], "sub_regions": [] },
+    "Casablanca":  { "aliases": ["Casablanca Valley"], "sub_regions": [] },
+    "Maule":       { "aliases": ["Maule Valley"], "sub_regions": [] }
+  },
+  "Australia": {
+    "Barossa":     { "aliases": ["Barossa Valley"], "sub_regions": ["Eden Valley"] },
+    "Clare":       { "aliases": ["Clare Valley"], "sub_regions": [] },
+    "Hunter":      { "aliases": ["Hunter Valley"], "sub_regions": [] },
+    "Yarra":       { "aliases": ["Yarra Valley"], "sub_regions": [] },
+    "Coonawarra":  { "aliases": [], "sub_regions": [] },
+    "Margaret River": { "aliases": [], "sub_regions": [] }
+  },
+  "New Zealand": {
+    "Marlborough":  { "aliases": [], "sub_regions": [] },
+    "Hawke's Bay":  { "aliases": ["Hawkes Bay"], "sub_regions": [] },
+    "Central Otago":{ "aliases": [], "sub_regions": [] }
+  },
+  "USA": {
+    "Napa":         { "aliases": ["Napa Valley"], "sub_regions": ["Stags Leap", "Rutherford", "Oakville", "St. Helena", "Calistoga"] },
+    "Sonoma":       { "aliases": ["Sonoma County"], "sub_regions": ["Russian River Valley", "Alexander Valley", "Dry Creek Valley"] },
+    "Willamette":   { "aliases": ["Willamette Valley"], "sub_regions": [] },
+    "Washington":   { "aliases": ["Columbia Valley"], "sub_regions": [] }
+  },
+  "South Africa": {
+    "Stellenbosch": { "aliases": [], "sub_regions": [] },
+    "Franschhoek":  { "aliases": [], "sub_regions": [] },
+    "Swartland":    { "aliases": [], "sub_regions": [] }
+  }
+}

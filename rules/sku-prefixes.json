@@ -1,0 +1,23 @@
+[
+  { "prefix": "WRW", "classification": "Red Wine",      "segment": "wine" },
+  { "prefix": "WWW", "classification": "White Wine",    "segment": "wine" },
+  { "prefix": "WSP", "classification": "Sparkling Wine","segment": "wine" },
+  { "prefix": "WRS", "classification": "Rosé Wine",     "segment": "wine" },
+  { "prefix": "WDW", "classification": "Dessert Wine",  "segment": "wine" },
+  { "prefix": "LBE", "classification": "Beer",          "segment": "beer" },
+  { "prefix": "LWH", "classification": "Whisky",        "segment": "spirits" },
+  { "prefix": "LGN", "classification": "Gin",           "segment": "spirits" },
+  { "prefix": "LRM", "classification": "Rum",           "segment": "spirits" },
+  { "prefix": "LTQ", "classification": "Tequila",       "segment": "spirits" },
+  { "prefix": "LVK", "classification": "Vodka",         "segment": "spirits" },
+  { "prefix": "LLQ", "classification": "Liqueur",       "segment": "spirits" },
+  { "prefix": "LBD", "classification": "Brandy",        "segment": "spirits" },
+  { "prefix": "LSK", "classification": "Sake",          "segment": "spirits" },
+  { "prefix": "LOT", "classification": "Other Spirit",  "segment": "spirits" },
+  { "prefix": "ABA", "classification": "Accessory",     "segment": "accessories" },
+  { "prefix": "AWC", "classification": "Accessory",     "segment": "accessories" },
+  { "prefix": "GWN", "classification": "Glassware",     "segment": "accessories" },
+  { "prefix": "GLQ", "classification": "Glassware",     "segment": "accessories" },
+  { "prefix": "GBE", "classification": "Glassware",     "segment": "accessories" },
+  { "prefix": "NNA", "classification": "Non-Alcoholic", "segment": "other" }
+]

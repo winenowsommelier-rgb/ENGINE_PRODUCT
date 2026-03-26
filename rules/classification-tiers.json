@@ -1,0 +1,20 @@
+{
+  "France": {
+    "Bordeaux": ["Grand Cru Classé", "Premier Grand Cru Classé", "Premier Cru Classé", "Deuxième Cru Classé", "Troisième Cru Classé", "Quatrième Cru Classé", "Cinquième Cru Classé", "Cru Bourgeois Exceptionnel", "Cru Bourgeois Supérieur", "Cru Bourgeois", "Cru Artisan"],
+    "Burgundy": ["Grand Cru", "Premier Cru", "1er Cru", "Village", "Régionale"],
+    "Champagne": ["Grand Cru", "Premier Cru"],
+    "Alsace": ["Grand Cru"]
+  },
+  "Italy": {
+    "_any": ["DOCG", "DOC", "IGT", "IGP"]
+  },
+  "Spain": {
+    "_any": ["DOCa", "DO", "Gran Reserva", "Reserva", "Crianza", "Joven", "Vino de Pago"]
+  },
+  "Germany": {
+    "_any": ["Große Lage", "GG", "Grosses Gewächs", "Erste Lage", "Ortswein", "Gutswein", "Trockenbeerenauslese", "TBA", "Beerenauslese", "BA", "Eiswein", "Auslese", "Spätlese", "Kabinett", "QbA"]
+  },
+  "Portugal": {
+    "_any": ["DOC", "VR", "Vintage", "LBV", "Late Bottled Vintage", "Colheita", "Tawny", "Ruby"]
+  }
+}

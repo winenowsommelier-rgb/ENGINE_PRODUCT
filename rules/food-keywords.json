@@ -1,0 +1,12 @@
+{
+  "Red Meat":    ["beef", "steak", "lamb", "venison", "red meat", "grilled meat", "roast beef", "hock", "veal"],
+  "Poultry":     ["chicken", "turkey", "duck", "poultry", "game bird"],
+  "Seafood":     ["fish", "seafood", "salmon", "tuna", "shellfish", "oyster", "lobster", "prawn", "crab", "sea bass"],
+  "Cheese":      ["cheese", "fromage", "charcuterie", "terrines", "blue cheese"],
+  "Pork":        ["pork", "ham", "bacon", "sausage", "charcuterie", "smoked pork"],
+  "Dessert":     ["dessert", "chocolate", "cake", "sweet", "pastry", "ice cream", "fruit tart"],
+  "Pasta":       ["pasta", "risotto", "pizza", "italian food"],
+  "Vegetables":  ["vegetables", "salad", "vegetarian", "mushroom", "grilled vegetables"],
+  "Spicy Food":  ["spicy", "thai food", "indian food", "curry", "asian food"],
+  "Aperitif":    ["aperitif", "aperitivo", "starter", "canapé", "nibbles"]
+}

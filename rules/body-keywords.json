@@ -1,0 +1,17 @@
+{
+  "wine_body": {
+    "light":  ["light-bodied", "light body", "delicate", "lightweight", "ethereal", "light and fresh"],
+    "medium": ["medium-bodied", "medium body", "medium weight", "balanced body"],
+    "full":   ["full-bodied", "full body", "rich and full", "powerful", "robust", "weighty", "opulent", "concentrated"]
+  },
+  "wine_acidity": {
+    "low":    ["low acidity", "soft acidity", "round", "supple", "low acid"],
+    "medium": ["medium acidity", "fresh", "lively", "balanced acidity", "moderate acidity"],
+    "high":   ["high acidity", "crisp", "vibrant", "zesty", "sharp", "racy", "bright acidity", "steely"]
+  },
+  "wine_tannin": {
+    "low":    ["soft tannins", "silky", "smooth", "velvety", "low tannin", "gentle tannins", "fine tannins"],
+    "medium": ["medium tannins", "firm tannins", "structured", "moderate tannins"],
+    "high":   ["grippy", "tannic", "astringent", "tight tannins", "chewy", "powerful tannins", "robust tannins"]
+  }
+}
