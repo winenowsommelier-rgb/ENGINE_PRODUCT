@@ -117,7 +117,7 @@ export function TaxonomyQueuePage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, action }),
     });
-    loadProposals();
+    await loadProposals();
   }
 
   function openPanel(p: Product) {
