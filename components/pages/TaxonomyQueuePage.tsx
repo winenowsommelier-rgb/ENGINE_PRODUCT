@@ -3,6 +3,15 @@ import { useEffect, useState } from 'react';
 import { CheckCircle, ChevronLeft, ChevronRight, X, Wine, Droplets, Star, Tag, MapPin, Layers } from 'lucide-react';
 
 type Product = Record<string, any>;
+type TaxonomyProposal = {
+  id: string;
+  type: string;
+  proposed_value: string;
+  parent_path: string;
+  source_sku: string | null;
+  occurrences: number;
+  status: string;
+};
 type TaxOptions = {
   countries: string[];
   regions: Array<{ name: string; country: string }>;
@@ -84,8 +93,9 @@ export function TaxonomyQueuePage() {
   const [claudeNote, setClaudeNote] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'info' | 'edit'>('info');
   const [pageTab, setPageTab] = useState<'queue' | 'proposals'>('queue');
-  const [proposals, setProposals] = useState<Array<Record<string, any>>>([]);
+  const [proposals, setProposals] = useState<TaxonomyProposal[]>([]);
   const [proposalsLoading, setProposalsLoading] = useState(false);
+  const [proposalActionId, setProposalActionId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/taxonomy-options').then(r => r.json()).then(setTaxOptions);
@@ -112,12 +122,25 @@ export function TaxonomyQueuePage() {
   useEffect(() => { if (pageTab === 'proposals') loadProposals(); }, [pageTab]);
 
   async function handleProposalAction(id: string, action: 'approve' | 'reject') {
-    await fetch('/api/taxonomy-proposals', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, action }),
-    });
-    await loadProposals();
+    if (proposalActionId) return;
+    setProposalActionId(id);
+    try {
+      const res = await fetch('/api/taxonomy-proposals', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, action }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Request failed' }));
+        setMessage(`Error: ${err.error ?? 'Request failed'}`);
+        return;
+      }
+      await loadProposals();
+    } catch {
+      setMessage('Error: could not reach server');
+    } finally {
+      setProposalActionId(null);
+    }
   }
 
   function openPanel(p: Product) {
@@ -351,7 +374,7 @@ export function TaxonomyQueuePage() {
                 return (
                   <div key={type} className="bg-white/5 rounded-xl overflow-hidden">
                     <div className="px-4 py-2.5 border-b border-white/10">
-                      <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">{type.replace('_', ' ')}</span>
+                      <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">{type.replaceAll('_', ' ')}</span>
                       <span className="ml-2 text-xs text-slate-500">{group.length} proposal{group.length !== 1 ? 's' : ''}</span>
                     </div>
                     <table className="w-full text-sm">
@@ -373,11 +396,13 @@ export function TaxonomyQueuePage() {
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-2">
                                 <button onClick={() => handleProposalAction(pr.id, 'approve')}
-                                  className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1 rounded-lg transition-colors">
+                                  disabled={!!proposalActionId}
+                                  className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs px-3 py-1 rounded-lg transition-colors">
                                   Approve
                                 </button>
                                 <button onClick={() => handleProposalAction(pr.id, 'reject')}
-                                  className="bg-rose-600 hover:bg-rose-500 text-white text-xs px-3 py-1 rounded-lg transition-colors">
+                                  disabled={!!proposalActionId}
+                                  className="bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white text-xs px-3 py-1 rounded-lg transition-colors">
                                   Reject
                                 </button>
                               </div>
