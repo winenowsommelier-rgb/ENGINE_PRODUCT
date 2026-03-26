@@ -665,8 +665,7 @@ export function ProductsPage() {
 
                 {/* Flavor Tags — from flavor_tags JSON string field */}
                 {(() => {
-                  let tags: string[] = [];
-                  try { const p = JSON.parse(selected.flavor_tags ?? ''); tags = Array.isArray(p) ? p.filter(Boolean) : []; } catch { tags = []; }
+                  const tags = parseTags(selected.flavor_tags);
                   if (!tags.length) return null;
                   return (
                     <div className="bg-white/5 rounded-xl p-4">
