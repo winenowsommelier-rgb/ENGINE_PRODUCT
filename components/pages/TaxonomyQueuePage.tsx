@@ -244,8 +244,6 @@ export function TaxonomyQueuePage() {
     unvalidated: 'bg-amber-500/20 text-amber-200',
   };
 
-  const PROPOSAL_TYPES = ['appellation', 'sub_region', 'region', 'country', 'classification_tier'];
-
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
@@ -347,7 +345,7 @@ export function TaxonomyQueuePage() {
             </div>
           ) : (
             <div className="space-y-6">
-              {PROPOSAL_TYPES.map(type => {
+              {Array.from(new Set(proposals.map(pr => pr.type))).map(type => {
                 const group = proposals.filter(pr => pr.type === type);
                 if (!group.length) return null;
                 return (
@@ -359,7 +357,7 @@ export function TaxonomyQueuePage() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-white/5">
-                          {['Proposed Value', 'Parent Path', 'Occurrences', 'Source SKU', ''].map(h => (
+                          {['Proposed Value', 'Type', 'Parent Path', 'Occurrences', 'Source SKU', ''].map(h => (
                             <th key={h} className="text-left px-4 py-2.5 text-xs text-slate-400 font-medium">{h}</th>
                           ))}
                         </tr>
@@ -368,7 +366,8 @@ export function TaxonomyQueuePage() {
                         {group.map(pr => (
                           <tr key={pr.id} className="border-b border-white/5 hover:bg-white/5">
                             <td className="px-4 py-3 text-white font-medium">{pr.proposed_value ?? '—'}</td>
-                            <td className="px-4 py-3 text-slate-300">{pr.parent_path ?? '—'}</td>
+                            <td className="px-4 py-3 text-slate-400 text-xs">{pr.type ?? '—'}</td>
+                            <td className="px-4 py-3 text-slate-300">{pr.parent_path || '—'}</td>
                             <td className="px-4 py-3 text-slate-300">{pr.occurrences ?? '—'}</td>
                             <td className="px-4 py-3 font-mono text-xs text-slate-400">{pr.source_sku ?? '—'}</td>
                             <td className="px-4 py-3">
