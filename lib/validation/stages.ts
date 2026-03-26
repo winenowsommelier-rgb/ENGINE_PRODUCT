@@ -135,10 +135,22 @@ export function stage4Geography(product: Product, rules: RuleSet, priorPatch: St
   const patch: StageResult['patch'] = {};
   const proposals: TaxonomyProposal[] = [];
 
-  const country = product.country || priorPatch.country;
+  let country = product.country || priorPatch.country;
   const nameAndDesc = `${product.name ?? ''} ${product.description_en_text ?? ''}`;
   const text = nameAndDesc.toLowerCase();
   const sku = (product.sku ?? '').toUpperCase();
+
+  // Country detection (resolve early so region/appellation/tier lookups can use it)
+  if (!country) {
+    const knownCountries = Object.keys(rules.regions);
+    for (const c of knownCountries) {
+      if (text.includes(c.toLowerCase())) {
+        country = c;
+        patch.country = c;
+        break;
+      }
+    }
+  }
 
   // Region + Sub-region extraction
   if (country && rules.regions[country]) {
@@ -184,7 +196,7 @@ export function stage4Geography(product: Product, rules: RuleSet, priorPatch: St
         ...(countryTiers['_any'] ?? []),
       ];
       for (const tier of tiersToCheck) {
-        if (text.includes(tier.toLowerCase()) || nameAndDesc.includes(tier)) {
+        if (text.includes(tier.toLowerCase())) {
           patch.wine_classification = tier;
           break;
         }
@@ -194,18 +206,7 @@ export function stage4Geography(product: Product, rules: RuleSet, priorPatch: St
 
   // ── Proposal generation: detect unknown values via text patterns ─────────────
 
-  // 1. Country detection (if still unknown after prior stages)
-  const knownCountries = Object.keys(rules.regions);
-  if (isEmpty(product.country) && !patch.country) {
-    for (const c of knownCountries) {
-      if (text.includes(c.toLowerCase())) {
-        patch.country = c;
-        break;
-      }
-    }
-  }
-
-  // 2. Unknown appellation: regex scan for AOC/AOP/DOC/DOCG/DOCa/DO/GI/AVA/QbA markers
+  // Unknown appellation: regex scan for AOC/AOP/DOC/DOCG/DOCa/DO/GI/AVA/QbA markers
   if (isEmpty(product.appellation) && !patch.appellation) {
     const appellationRe = /\b([\w\s'\u00C0-\u024F-]{2,40}?)\s+(AOC|AOP|DOC|DOCG|DOCa|DO|GI|AVA|QbA|PDO)\b/gi;
     const knownApps = new Set(
