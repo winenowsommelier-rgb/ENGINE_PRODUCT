@@ -160,15 +160,14 @@ export function stage4Geography(product: Product, rules: RuleSet, priorPatch: St
       const regionMatched = regionTerms.some(t => text.includes(t));
 
       if (regionMatched) {
-        if (isEmpty(product.region)) patch.region = regionName;
+        // Always write canonical taxonomy value (normalises non-standard Magento import data)
+        patch.region = regionName;
 
-        // Sub-region
-        if (isEmpty(product.subregion)) {
-          for (const sub of regionData.sub_regions) {
-            if (text.includes(sub.toLowerCase())) {
-              patch.subregion = sub;
-              break;
-            }
+        // Sub-region — always write canonical value when matched
+        for (const sub of regionData.sub_regions) {
+          if (text.includes(sub.toLowerCase())) {
+            patch.subregion = sub;
+            break;
           }
         }
         break;
@@ -176,8 +175,8 @@ export function stage4Geography(product: Product, rules: RuleSet, priorPatch: St
     }
   }
 
-  // Appellation
-  if (isEmpty(product.appellation) && country && rules.appellations[country]) {
+  // Appellation — always write canonical value when matched
+  if (country && rules.appellations[country]) {
     for (const app of rules.appellations[country]) {
       if (text.includes(app.toLowerCase())) {
         patch.appellation = app;
@@ -186,8 +185,8 @@ export function stage4Geography(product: Product, rules: RuleSet, priorPatch: St
     }
   }
 
-  // Classification tier (country-aware)
-  if (isEmpty(product.wine_classification) && country) {
+  // Classification tier (country-aware) — always write canonical value when matched
+  if (country) {
     const countryTiers = rules.classificationTiers[country];
     if (countryTiers) {
       const effectiveRegion = patch.region || product.region;

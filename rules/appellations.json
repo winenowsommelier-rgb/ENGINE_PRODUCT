@@ -1,9 +1,75 @@
 {
-  "France": ["AOC", "AOP", "Saint-Émilion Grand Cru", "Pomerol", "Pauillac", "Margaux", "Saint-Julien", "Saint-Estèphe", "Gevrey-Chambertin", "Chambolle-Musigny", "Vosne-Romanée", "Nuits-Saint-Georges", "Puligny-Montrachet", "Meursault", "Chassagne-Montrachet", "Chablis Premier Cru", "Chablis Grand Cru", "Châteauneuf-du-Pape", "Hermitage", "Côte-Rôtie", "Sancerre", "Pouilly-Fumé", "Vouvray", "Muscadet"],
-  "Italy": ["DOC", "DOCG", "Barolo", "Barbaresco", "Brunello di Montalcino", "Vino Nobile di Montepulciano", "Chianti Classico", "Amarone della Valpolicella", "Prosecco", "Franciacorta", "Soave Classico", "Taurasi"],
-  "Spain": ["DOCa", "DO", "Rioja DOCa", "Priorat DOCa", "Rías Baixas DO", "Ribera del Duero DO", "Penedès DO"],
-  "Germany": ["QbA", "Prädikatswein", "Kabinett", "Spätlese", "Auslese", "Beerenauslese", "Trockenbeerenauslese", "Eiswein", "Sekt"],
-  "Portugal": ["DOC", "Porto", "Douro DOC", "Vinho Verde DOC", "Dão DOC", "Alentejo DOC"],
-  "USA": ["AVA", "Napa Valley AVA", "Sonoma Coast AVA", "Russian River Valley AVA", "Willamette Valley AVA"],
-  "Australia": ["GI", "Barossa Valley GI", "Clare Valley GI", "Coonawarra GI", "Margaret River GI"]
+  "France": [
+    "Saint-Émilion Grand Cru",
+    "Pomerol",
+    "Pauillac",
+    "Margaux",
+    "Saint-Julien",
+    "Saint-Estèphe",
+    "Gevrey-Chambertin",
+    "Chambolle-Musigny",
+    "Vosne-Romanée",
+    "Nuits-Saint-Georges",
+    "Puligny-Montrachet",
+    "Meursault",
+    "Chassagne-Montrachet",
+    "Chablis Premier Cru",
+    "Chablis Grand Cru",
+    "Châteauneuf-du-Pape",
+    "Hermitage",
+    "Côte-Rôtie",
+    "Sancerre",
+    "Pouilly-Fumé",
+    "Vouvray",
+    "Muscadet"
+  ],
+  "Italy": [
+    "Barolo",
+    "Barbaresco",
+    "Brunello di Montalcino",
+    "Vino Nobile di Montepulciano",
+    "Chianti Classico",
+    "Amarone della Valpolicella",
+    "Prosecco",
+    "Franciacorta",
+    "Soave Classico",
+    "Taurasi"
+  ],
+  "Spain": [
+    "DOCa",
+    "Rioja DOCa",
+    "Priorat DOCa",
+    "Rías Baixas DO",
+    "Ribera del Duero DO",
+    "Penedès DO"
+  ],
+  "Germany": [
+    "Prädikatswein",
+    "Kabinett",
+    "Spätlese",
+    "Auslese",
+    "Beerenauslese",
+    "Trockenbeerenauslese",
+    "Eiswein",
+    "Sekt"
+  ],
+  "Portugal": [
+    "Porto",
+    "Douro DOC",
+    "Vinho Verde DOC",
+    "Dão DOC",
+    "Alentejo DOC"
+  ],
+  "USA": [
+    "Napa Valley AVA",
+    "Sonoma Coast AVA",
+    "Russian River Valley AVA",
+    "Willamette Valley AVA"
+  ],
+  "Australia": [
+    "Barossa Valley GI",
+    "Clare Valley GI",
+    "Coonawarra GI",
+    "Margaret River GI"
+  ]
 }

@@ -42,7 +42,9 @@ export function runPipeline(product: Product): PipelineResult {
     if (neverWrite.includes(key)) continue;
     const existing = product[key];
     // Always write confidence + status + enrichment_note (these are always updated)
-    const alwaysWrite = ['overall_confidence', 'taxonomy_confidence', 'validation_status', 'enrichment_note'];
+    // Taxonomy geography fields always write canonical values (normalises Magento import data)
+    const alwaysWrite = ['overall_confidence', 'taxonomy_confidence', 'validation_status', 'enrichment_note',
+                         'country', 'region', 'subregion', 'appellation', 'wine_classification'];
     if (alwaysWrite.includes(key) || existing === null || existing === undefined || existing === '') {
       (safePatch as any)[key] = value;
     }
