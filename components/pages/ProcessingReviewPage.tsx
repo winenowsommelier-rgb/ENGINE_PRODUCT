@@ -2,6 +2,105 @@
 import { useEffect, useRef, useState } from 'react';
 import { AlertTriangle, Play, RefreshCw, RotateCcw, Sparkles } from 'lucide-react';
 
+// ---------------------------------------------------------------------------
+// Run Validation Pipeline card
+// ---------------------------------------------------------------------------
+
+type RunStatus = 'idle' | 'running' | 'done';
+type FilterOption = 'all' | 'raw' | 'validated';
+
+const FILTER_OPTIONS: { value: FilterOption; label: string }[] = [
+  { value: 'all',       label: 'All' },
+  { value: 'raw',       label: 'Raw only' },
+  { value: 'validated', label: 'Validated only' },
+];
+
+function RunPipelineCard() {
+  const [filter, setFilter]     = useState<FilterOption>('all');
+  const [runStatus, setRunStatus] = useState<RunStatus>('idle');
+  const [output, setOutput]     = useState<string>('');
+
+  async function handleRunPipeline() {
+    setRunStatus('running');
+    setOutput('');
+    const body: Record<string, string> = {};
+    if (filter === 'raw')       body.status = 'raw';
+    if (filter === 'validated') body.status = 'validated';
+
+    try {
+      const res = await fetch('/api/run-pipeline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      setOutput(data.output ?? '');
+    } catch (err) {
+      setOutput(String(err));
+    } finally {
+      setRunStatus('done');
+    }
+  }
+
+  const statusLabel: Record<RunStatus, string> = {
+    idle:    'Idle',
+    running: 'Running…',
+    done:    'Done',
+  };
+  const statusColor: Record<RunStatus, string> = {
+    idle:    'text-slate-500',
+    running: 'text-violet-300',
+    done:    'text-emerald-300',
+  };
+
+  return (
+    <div className="mb-8 bg-white/5 border border-white/10 rounded-xl p-5">
+      <h2 className="text-sm font-medium text-slate-300 mb-4">Run Validation Pipeline</h2>
+
+      {/* Filter radio group */}
+      <div className="flex items-center gap-4 mb-4">
+        {FILTER_OPTIONS.map(opt => (
+          <label key={opt.value} className="flex items-center gap-1.5 cursor-pointer">
+            <input
+              type="radio"
+              name="pipeline-filter"
+              value={opt.value}
+              checked={filter === opt.value}
+              onChange={() => setFilter(opt.value)}
+              className="accent-violet-500"
+            />
+            <span className="text-xs text-slate-300">{opt.label}</span>
+          </label>
+        ))}
+      </div>
+
+      {/* Run button + status indicator */}
+      <div className="flex items-center gap-3 mb-4">
+        <button
+          onClick={handleRunPipeline}
+          disabled={runStatus === 'running'}
+          className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm px-4 py-2 rounded-lg transition-colors"
+        >
+          <Play size={14} />
+          {runStatus === 'running' ? 'Running…' : 'Run Pipeline'}
+        </button>
+        <span className={`text-xs font-medium ${statusColor[runStatus]}`}>
+          {statusLabel[runStatus]}
+        </span>
+      </div>
+
+      {/* Output log */}
+      {output && (
+        <textarea
+          readOnly
+          value={output}
+          className="w-full h-48 bg-black/40 border border-white/10 rounded-lg p-3 text-xs font-mono text-slate-300 resize-y"
+        />
+      )}
+    </div>
+  );
+}
+
 type Stats = {
   total: number;
   validated: number;
@@ -102,6 +201,9 @@ export function ProcessingReviewPage() {
 
   return (
     <div className="p-8">
+      {/* Run Validation Pipeline card */}
+      <RunPipelineCard />
+
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
