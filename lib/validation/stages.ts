@@ -152,26 +152,88 @@ export function stage4Geography(product: Product, rules: RuleSet, priorPatch: St
     }
   }
 
-  // Region + Sub-region extraction
+  // ── Parse Magento pipe-separated region field: "Region | Sub-region" ──────────
+  // Magento stores curated data like "Bordeaux | Saint-Émilion" in the region field.
+  // Extract both parts so nothing is discarded.
+  let pipeRegionCandidate: string | null = null;
+  let pipeSubregionCandidate: string | null = null;
+  if (product.region && String(product.region).includes('|')) {
+    const parts = String(product.region).split('|').map(s => s.trim()).filter(Boolean);
+    // Last segment that contains a space or is longer likely the sub-region/appellation
+    // First clean segment is the region
+    const cleaned = parts.filter(p => p.length > 1);
+    // Handle "Burgundy|Burgundy | Côte de Nuits" → deduplicate then take first/last
+    const unique = [...new Set(cleaned.map(p => p.toLowerCase()))];
+    if (unique.length >= 2) {
+      pipeRegionCandidate = cleaned[0];
+      pipeSubregionCandidate = cleaned[cleaned.length - 1];
+    } else if (unique.length === 1) {
+      pipeRegionCandidate = cleaned[0];
+    }
+  }
+
+  // ── Region + Sub-region extraction ────────────────────────────────────────────
+  // Search text AND the pipe-parsed region candidate for a taxonomy match.
+  const regionSearchText = [text, pipeRegionCandidate?.toLowerCase() ?? '', pipeSubregionCandidate?.toLowerCase() ?? ''].join(' ');
+
   if (country && rules.regions[country]) {
     const countryRegions = rules.regions[country];
     for (const [regionName, regionData] of Object.entries(countryRegions)) {
       const regionTerms = [regionName, ...(regionData.aliases ?? [])].map(s => s.toLowerCase());
-      const regionMatched = regionTerms.some(t => text.includes(t));
+      const regionMatched = regionTerms.some(t => regionSearchText.includes(t));
 
       if (regionMatched) {
         // Always write canonical taxonomy value (normalises non-standard Magento import data)
         patch.region = regionName;
 
-        // Sub-region — always write canonical value when matched
+        // Sub-region: check text first, then the pipe-extracted candidate
+        const subSearchText = [text, pipeSubregionCandidate?.toLowerCase() ?? ''].join(' ');
         for (const sub of regionData.sub_regions) {
-          if (text.includes(sub.toLowerCase())) {
+          if (subSearchText.includes(sub.toLowerCase())) {
             patch.subregion = sub;
             break;
           }
         }
+
+        // If no taxonomy subregion matched but we have a pipe candidate, write it directly
+        // (Magento's curated data is trustworthy) and flag as a proposal for taxonomy review
+        if (!patch.subregion && pipeSubregionCandidate) {
+          const subLower = pipeSubregionCandidate.toLowerCase();
+          const allKnownSubs = regionData.sub_regions.map(s => s.toLowerCase());
+          if (!allKnownSubs.includes(subLower)) {
+            patch.subregion = pipeSubregionCandidate;
+            proposals.push({
+              type:           'sub_region',
+              proposed_value: pipeSubregionCandidate,
+              parent_path:    `${country} > ${regionName}`,
+              source_sku:     sku,
+            });
+          }
+        }
         break;
       }
+    }
+  }
+
+  // ── Fallback: if no taxonomy region matched, write pipe-parsed values directly ──
+  // Covers regions not yet in our taxonomy (e.g. Abruzzo, Priorat, Alsace sub-regions).
+  // Magento's curated pipe data is trustworthy — write it and flag for taxonomy review.
+  if (!patch.region && pipeRegionCandidate) {
+    patch.region = pipeRegionCandidate;
+    proposals.push({
+      type:           'region',
+      proposed_value: pipeRegionCandidate,
+      parent_path:    country ?? '',
+      source_sku:     sku,
+    });
+    if (pipeSubregionCandidate) {
+      patch.subregion = pipeSubregionCandidate;
+      proposals.push({
+        type:           'sub_region',
+        proposed_value: pipeSubregionCandidate,
+        parent_path:    `${country ?? ''} > ${pipeRegionCandidate}`,
+        source_sku:     sku,
+      });
     }
   }
 
