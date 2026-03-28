@@ -269,7 +269,9 @@ export function stage4Geography(product: Product, rules: RuleSet, priorPatch: St
 
   // Unknown appellation: regex scan for AOC/AOP/DOC/DOCG/DOCa/DO/GI/AVA/QbA markers
   if (isEmpty(product.appellation) && !patch.appellation) {
-    const appellationRe = /\b([\w\s'\u00C0-\u024F-]{2,40}?)\s+(AOC|AOP|DOC|DOCG|DOCa|DO|GI|AVA|QbA|PDO)\b/gi;
+    // No 'i' flag — designation markers must be uppercase in the source text
+    // to avoid matching English words like "do", "so", "gi" etc.
+    const appellationRe = /\b([\w\s'\u00C0-\u024F-]{2,40}?)\s+(AOC|AOP|DOC|DOCG|DOCa|DO|GI|AVA|QbA|PDO)\b/g;
     const knownApps = new Set(
       Object.values(rules.appellations).flat().map(s => s.toLowerCase())
     );
