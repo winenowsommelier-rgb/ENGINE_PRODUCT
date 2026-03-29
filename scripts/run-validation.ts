@@ -36,15 +36,24 @@ const PATCH_BATCH = 50;
 
 // ── Supabase helpers ──────────────────────────────────────────────────────────
 
-async function sbFetch(path: string, init: RequestInit = {}): Promise<any> {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-    ...init,
-    headers: { ...HEADERS, ...(init.headers as Record<string, string> ?? {}) },
-  });
-  if (!res.ok) throw new Error(`[${res.status}] ${path} → ${await res.text()}`);
-  if (res.status === 204 || res.status === 201) return null;
-  const text = await res.text();
-  return text ? JSON.parse(text) : null;
+async function sbFetch(path: string, init: RequestInit = {}, retries = 3): Promise<any> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+        ...init,
+        headers: { ...HEADERS, ...(init.headers as Record<string, string> ?? {}) },
+      });
+      if (!res.ok) throw new Error(`[${res.status}] ${path} → ${await res.text()}`);
+      if (res.status === 204 || res.status === 201) return null;
+      const text = await res.text();
+      return text ? JSON.parse(text) : null;
+    } catch (err: any) {
+      if (attempt === retries) throw err;
+      const delay = attempt * 2000;
+      process.stderr.write(`\n  ⚠ ${err.message} — retry ${attempt}/${retries - 1} in ${delay / 1000}s\n`);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
 }
 
 async function patchProducts(ids: string[], fields: Record<string, any>): Promise<void> {
