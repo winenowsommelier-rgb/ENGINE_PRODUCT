@@ -267,18 +267,19 @@ export function stage4Geography(product: Product, rules: RuleSet, priorPatch: St
 
   // ── Proposal generation: detect unknown values via text patterns ─────────────
 
-  // Unknown appellation: regex scan for AOC/AOP/DOC/DOCG/DOCa/DO/GI/AVA/QbA markers
+  // Unknown appellation: scan product NAME only (not description — descriptions contain
+  // marketing prose that generates false positives). No 'i' flag — designation markers
+  // must be uppercase. Capture only the last 1-3 proper-noun words before the marker.
   if (isEmpty(product.appellation) && !patch.appellation) {
-    // No 'i' flag — designation markers must be uppercase in the source text
-    // to avoid matching English words like "do", "so", "gi" etc.
-    const appellationRe = /\b([\w\s'\u00C0-\u024F-]{2,40}?)\s+(AOC|AOP|DOC|DOCG|DOCa|DO|GI|AVA|QbA|PDO)\b/g;
+    const nameOnly = product.name ?? '';
+    const appellationRe = /\b([A-Z][A-Za-z'\u00C0-\u024F-]+(?:\s+[A-Z][A-Za-z'\u00C0-\u024F-]+){0,3})\s+(AOC|AOP|DOC|DOCG|DOCa|DOCG|DO|GI|AVA|QbA|PDO)\b/g;
     const knownApps = new Set(
       Object.values(rules.appellations).flat().map(s => s.toLowerCase())
     );
     let m: RegExpExecArray | null;
-    while ((m = appellationRe.exec(nameAndDesc)) !== null) {
+    while ((m = appellationRe.exec(nameOnly)) !== null) {
       const candidate = `${m[1].trim()} ${m[2]}`.trim();
-      if (candidate.length > 2 && !knownApps.has(candidate.toLowerCase())) {
+      if (candidate.length > 4 && !knownApps.has(candidate.toLowerCase())) {
         proposals.push({
           type:           'appellation',
           proposed_value: candidate,
