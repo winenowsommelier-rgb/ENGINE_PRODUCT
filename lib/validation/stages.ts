@@ -269,25 +269,33 @@ export function stage4Geography(product: Product, rules: RuleSet, priorPatch: St
 
   // Unknown appellation: scan product NAME only (not description — descriptions contain
   // marketing prose that generates false positives). No 'i' flag — designation markers
-  // must be uppercase. Capture only the last 1-3 proper-noun words before the marker.
+  // must be uppercase. Limit capture to 1-2 proper-noun words immediately before the
+  // marker so producer/brand words earlier in the name are excluded.
+  // We collect ALL non-overlapping matches and take the LAST one (rightmost = most
+  // specific appellation, closest to the designation marker).
   if (isEmpty(product.appellation) && !patch.appellation) {
     const nameOnly = product.name ?? '';
-    const appellationRe = /\b([A-Z][A-Za-z'\u00C0-\u024F-]+(?:\s+[A-Z][A-Za-z'\u00C0-\u024F-]+){0,3})\s+(AOC|AOP|DOC|DOCG|DOCa|DOCG|DO|GI|AVA|QbA|PDO)\b/g;
+    const appellationRe = /\b([A-Z][A-Za-z'\u00C0-\u024F-]+(?:\s+[A-Z][A-Za-z'\u00C0-\u024F-]+)?)\s+(AOC|AOP|DOC|DOCG|DOCa|DO|GI|AVA|QbA|PDO)\b/g;
     const knownApps = new Set(
       Object.values(rules.appellations).flat().map(s => s.toLowerCase())
     );
+    const allCandidates: string[] = [];
     let m: RegExpExecArray | null;
     while ((m = appellationRe.exec(nameOnly)) !== null) {
       const candidate = `${m[1].trim()} ${m[2]}`.trim();
       if (candidate.length > 4 && !knownApps.has(candidate.toLowerCase())) {
-        proposals.push({
-          type:           'appellation',
-          proposed_value: candidate,
-          parent_path:    (patch.country || product.country) ?? '',
-          source_sku:     sku,
-        });
-        break; // one appellation proposal per product per run
+        allCandidates.push(candidate);
       }
+    }
+    // Take last (rightmost) match — closest to designation marker, fewest producer words.
+    // Normalise internal whitespace (product names sometimes have double spaces).
+    if (allCandidates.length > 0) {
+      proposals.push({
+        type:           'appellation',
+        proposed_value: allCandidates[allCandidates.length - 1].replace(/\s+/g, ' '),
+        parent_path:    (patch.country || product.country) ?? '',
+        source_sku:     sku,
+      });
     }
   }
 
