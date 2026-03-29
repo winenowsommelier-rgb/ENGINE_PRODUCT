@@ -2,11 +2,16 @@
 import { useEffect, useState } from 'react';
 import {
   ChevronLeft, ChevronRight, Edit2, X, Search,
-  SlidersHorizontal, Layers, MapPin, Star, Droplets, Tag, Wine, Code2, Eye, FileText
+  SlidersHorizontal, Layers, MapPin, Star, Droplets, Tag, Wine, Code2, Eye, FileText,
+  ArrowUpDown, ChevronDown
 } from 'lucide-react';
 
 type Product = Record<string, any>;
 type Facet = { value: string; count: number };
+type Facets = {
+  categories: Facet[]; countries: Facet[]; statuses: Facet[];
+  regions: Facet[]; appellations: Facet[]; wineClasses: Facet[];
+};
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -266,9 +271,14 @@ export function ProductsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [country, setCountry] = useState('');
+  const [region, setRegion] = useState('');
+  const [appellation, setAppellation] = useState('');
   const [status, setStatus] = useState('');
   const [classification, setClassification] = useState('');
+  const [wineClass, setWineClass] = useState('');
   const [segment, setSegment] = useState('');
+  const [sortBy, setSortBy] = useState('created');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [showFilters, setShowFilters] = useState(false);
   const [selected, setSelected] = useState<Product | null>(null);
   const [panelTab, setPanelTab] = useState<'info' | 'tasting' | 'edit'>('info');
@@ -276,25 +286,36 @@ export function ProductsPage() {
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
-  const [facets, setFacets] = useState<{ classifications: Facet[]; countries: Facet[]; statuses: Facet[] } | null>(null);
+  const [facets, setFacets] = useState<Facets | null>(null);
 
   // Load facets once
   useEffect(() => {
     fetch('/api/products/facets').then(r => r.json()).then(setFacets).catch(() => {});
   }, []);
 
-  async function load(p = page, q = search, c = country, s = status, cl = classification, sg = segment) {
+  async function load(
+    p = page, q = search, c = country, r = region, ap = appellation,
+    s = status, cl = classification, wc = wineClass, sg = segment,
+    sb = sortBy, sd = sortDir,
+  ) {
     const params = new URLSearchParams({ page: String(p) });
-    if (q) params.set('search', q);
-    if (c) params.set('country', c);
-    if (s) params.set('validation_status', s);
+    if (q)  params.set('search', q);
+    if (c)  params.set('country', c);
+    if (r)  params.set('region', r);
+    if (ap) params.set('appellation', ap);
+    if (s)  params.set('validation_status', s);
     if (cl) params.set('classification', cl);
+    if (wc) params.set('wine_classification', wc);
     if (sg) params.set('segment', sg);
+    params.set('sort', sb);
+    params.set('sortDir', sd);
     const res = await fetch(`/api/products?${params}`);
     setData(await res.json());
   }
 
-  useEffect(() => { load(page, search, country, status, classification, segment); }, [page, search, country, status, classification, segment]);
+  useEffect(() => {
+    load(page, search, country, region, appellation, status, classification, wineClass, segment, sortBy, sortDir);
+  }, [page, search, country, region, appellation, status, classification, wineClass, segment, sortBy, sortDir]);
 
   async function openProduct(p: Product) {
     setSelected(p);
@@ -324,7 +345,19 @@ export function ProductsPage() {
     return <span className={`rounded-full px-2 py-0.5 text-xs ${cls}`}>{pct}%</span>;
   };
 
-  const activeFilters = [country, status, classification].filter(Boolean).length;
+  const activeFilters = [country, region, appellation, status, classification, wineClass].filter(Boolean).length;
+
+  function clearFilters() {
+    setCountry(''); setRegion(''); setAppellation('');
+    setStatus(''); setClassification(''); setWineClass('');
+    setPage(1);
+  }
+
+  function toggleSort(col: string) {
+    if (sortBy === col) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    else { setSortBy(col); setSortDir('desc'); }
+    setPage(1);
+  }
 
   return (
     <div className="p-6">
@@ -363,34 +396,82 @@ export function ProductsPage() {
         ))}
       </div>
 
-      {/* Filter row */}
+      {/* Filter + Sort row */}
       {showFilters && (
-        <div className="flex flex-wrap gap-2 mb-4 p-4 bg-white/5 rounded-xl border border-white/10">
-          <select value={country} onChange={e => { setCountry(e.target.value); setPage(1); }}
-            className="bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white min-w-[140px]">
-            <option value="">All countries</option>
-            {(facets?.countries ?? []).slice(0, 40).map(f => (
-              <option key={f.value} value={f.value}>{f.value} ({f.count})</option>
+        <div className="mb-4 p-4 bg-white/5 rounded-xl border border-white/10 space-y-3">
+          {/* Taxonomy drilldown: Country → Region → Appellation */}
+          <div className="flex flex-wrap gap-2">
+            <select value={country} onChange={e => { setCountry(e.target.value); setRegion(''); setAppellation(''); setPage(1); }}
+              className="bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white min-w-[150px]">
+              <option value="">All countries</option>
+              {(facets?.countries ?? []).map(f => (
+                <option key={f.value} value={f.value}>{f.value} ({f.count})</option>
+              ))}
+            </select>
+            <select value={region} onChange={e => { setRegion(e.target.value); setAppellation(''); setPage(1); }}
+              className="bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white min-w-[150px]">
+              <option value="">All regions</option>
+              {(facets?.regions ?? [])
+                .filter(f => !country || true) // server already filters; show all region options
+                .map(f => <option key={f.value} value={f.value}>{f.value} ({f.count})</option>)}
+            </select>
+            <select value={appellation} onChange={e => { setAppellation(e.target.value); setPage(1); }}
+              className="bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white min-w-[160px]">
+              <option value="">All appellations</option>
+              {(facets?.appellations ?? []).map(f => (
+                <option key={f.value} value={f.value}>{f.value} ({f.count})</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Product category + Wine classification + Status */}
+          <div className="flex flex-wrap gap-2">
+            <select value={classification} onChange={e => { setClassification(e.target.value); setPage(1); }}
+              className="bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white min-w-[175px]">
+              <option value="">All product categories</option>
+              {(facets?.categories ?? []).map(f => (
+                <option key={f.value} value={f.value}>{f.value} ({f.count})</option>
+              ))}
+            </select>
+            <select value={wineClass} onChange={e => { setWineClass(e.target.value); setPage(1); }}
+              className="bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white min-w-[175px]">
+              <option value="">All classifications</option>
+              {(facets?.wineClasses ?? []).map(f => (
+                <option key={f.value} value={f.value}>{f.value} ({f.count})</option>
+              ))}
+            </select>
+            <select value={status} onChange={e => { setStatus(e.target.value); setPage(1); }}
+              className="bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white min-w-[155px]">
+              <option value="">All statuses</option>
+              {(facets?.statuses ?? []).map(f => (
+                <option key={f.value} value={f.value}>{f.value} ({f.count})</option>
+              ))}
+            </select>
+            {activeFilters > 0 && (
+              <button onClick={clearFilters} className="text-xs text-slate-400 hover:text-rose-300 px-2 transition-colors">
+                Clear all ×
+              </button>
+            )}
+          </div>
+
+          {/* Sort controls */}
+          <div className="flex items-center gap-2 pt-1 border-t border-white/5">
+            <ArrowUpDown size={12} className="text-slate-500" />
+            <span className="text-xs text-slate-500">Sort by:</span>
+            {[
+              { id: 'created', label: 'Added' },
+              { id: 'name',    label: 'Name' },
+              { id: 'price',   label: 'Price' },
+              { id: 'vintage', label: 'Vintage' },
+              { id: 'confidence', label: 'Confidence' },
+            ].map(opt => (
+              <button key={opt.id} onClick={() => toggleSort(opt.id)}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs transition-colors ${sortBy === opt.id ? 'bg-violet-500/20 text-violet-300' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>
+                {opt.label}
+                {sortBy === opt.id && <ChevronDown size={10} className={`transition-transform ${sortDir === 'asc' ? 'rotate-180' : ''}`} />}
+              </button>
             ))}
-          </select>
-          <select value={classification} onChange={e => { setClassification(e.target.value); setPage(1); }}
-            className="bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white min-w-[160px]">
-            <option value="">All classifications</option>
-            {(facets?.classifications ?? []).slice(0, 50).map(f => (
-              <option key={f.value} value={f.value}>{f.value} ({f.count})</option>
-            ))}
-          </select>
-          <select value={status} onChange={e => { setStatus(e.target.value); setPage(1); }}
-            className="bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white">
-            <option value="">All statuses</option>
-            {(facets?.statuses ?? []).map(f => (
-              <option key={f.value} value={f.value}>{f.value} ({f.count})</option>
-            ))}
-          </select>
-          {activeFilters > 0 && (
-            <button onClick={() => { setCountry(''); setStatus(''); setClassification(''); setPage(1); }}
-              className="text-xs text-slate-400 hover:text-white px-2">Clear ×</button>
-          )}
+          </div>
         </div>
       )}
 
@@ -399,8 +480,25 @@ export function ProductsPage() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-white/10">
-              {['SKU', 'Name', 'Type', 'Country · Region', 'Price', 'Confidence', 'Status', ''].map(h => (
-                <th key={h} className="text-left px-4 py-3 text-xs text-slate-400 font-medium">{h}</th>
+              {[
+                { label: 'SKU',             col: 'sku' },
+                { label: 'Name',            col: 'name' },
+                { label: 'Category',        col: null },
+                { label: 'Country · Region',col: null },
+                { label: 'Price',           col: 'price' },
+                { label: 'Confidence',      col: 'confidence' },
+                { label: 'Status',          col: null },
+                { label: '',                col: null },
+              ].map(({ label, col }) => (
+                <th key={label} onClick={col ? () => toggleSort(col) : undefined}
+                  className={`text-left px-4 py-3 text-xs text-slate-400 font-medium ${col ? 'cursor-pointer hover:text-white select-none' : ''}`}>
+                  <span className="flex items-center gap-1">
+                    {label}
+                    {col && sortBy === col && (
+                      <ChevronDown size={10} className={`transition-transform ${sortDir === 'asc' ? 'rotate-180' : ''}`} />
+                    )}
+                  </span>
+                </th>
               ))}
             </tr>
           </thead>
@@ -522,10 +620,12 @@ export function ProductsPage() {
                   <div className="flex items-center gap-2 mb-3"><Layers size={13} className="text-violet-400" /><h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Taxonomy</h3></div>
                   <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm">
                     {[
-                      { label: 'Classification', value: selected.classification },
-                      { label: 'Grape / Variety', value: selected.grape_variety },
-                      { label: 'Wine Type', value: selected.wine_type },
-                      { label: 'Origin', value: selected.origin },
+                      { label: 'Product Category', value: selected.classification },
+                      { label: 'Classification',   value: selected.wine_classification },
+                      { label: 'Grape / Variety',  value: selected.grape_variety },
+                      { label: 'Wine Type',        value: selected.wine_type },
+                      { label: 'Appellation',      value: selected.appellation },
+                      { label: 'Origin',           value: selected.origin },
                     ].map(({ label, value }) => (
                       <div key={label}><p className="text-xs text-slate-500">{label}</p><p className="text-white mt-0.5 text-sm">{fmt(value)}</p></div>
                     ))}

@@ -20,6 +20,15 @@ const SEGMENT_FILTERS: Record<string, string> = {
   accessories: 'or=(sku.like.A*,sku.like.G*,sku.like.N*)',
 };
 
+const SORT_COLS: Record<string, string> = {
+  name:       'name',
+  price:      'price',
+  confidence: 'overall_confidence',
+  vintage:    'vintage',
+  created:    'created_at',
+  sku:        'sku',
+};
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -27,22 +36,30 @@ export async function GET(req: NextRequest) {
     const country           = searchParams.get('country') ?? '';
     const validation_status = searchParams.get('validation_status') ?? '';
     const classification    = searchParams.get('classification') ?? '';
+    const region            = searchParams.get('region') ?? '';
+    const appellation       = searchParams.get('appellation') ?? '';
+    const wine_classification = searchParams.get('wine_classification') ?? '';
     const segment           = searchParams.get('segment') ?? '';
+    const sortBy            = SORT_COLS[searchParams.get('sort') ?? ''] ?? 'created_at';
+    const sortDir           = searchParams.get('sortDir') === 'asc' ? 'asc' : 'desc';
     const page              = Math.max(1, parseInt(searchParams.get('page') ?? '1'));
     const offset            = (page - 1) * PAGE_SIZE;
 
     const filters: string[] = [];
-    if (country)           filters.push(`country=eq.${encodeURIComponent(country)}`);
-    if (validation_status) filters.push(`validation_status=eq.${encodeURIComponent(validation_status)}`);
-    if (classification)    filters.push(`classification=eq.${encodeURIComponent(classification)}`);
+    if (country)            filters.push(`country=eq.${encodeURIComponent(country)}`);
+    if (validation_status)  filters.push(`validation_status=eq.${encodeURIComponent(validation_status)}`);
+    if (classification)     filters.push(`classification=eq.${encodeURIComponent(classification)}`);
+    if (region)             filters.push(`region=eq.${encodeURIComponent(region)}`);
+    if (appellation)        filters.push(`appellation=eq.${encodeURIComponent(appellation)}`);
+    if (wine_classification) filters.push(`wine_classification=eq.${encodeURIComponent(wine_classification)}`);
     if (segment && SEGMENT_FILTERS[segment]) filters.push(SEGMENT_FILTERS[segment]);
     if (search) {
-      filters.push(`or=(name.ilike.*${encodeURIComponent(search)}*,sku.ilike.*${encodeURIComponent(search)}*)`);
+      filters.push(`or=(name.ilike.*${encodeURIComponent(search)}*,sku.ilike.*${encodeURIComponent(search)}*,brand.ilike.*${encodeURIComponent(search)}*)`);
     }
 
     const qs = [
       ...filters,
-      `order=created_at.desc`,
+      `order=${sortBy}.${sortDir}.nullslast`,
       `limit=${PAGE_SIZE}`,
       `offset=${offset}`,
     ].join('&');
