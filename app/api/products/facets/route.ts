@@ -4,22 +4,35 @@ export const runtime = 'nodejs';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
-const HEADERS = {
+const BASE_HEADERS = {
   apikey: SUPABASE_KEY,
   Authorization: `Bearer ${SUPABASE_KEY}`,
   'Content-Type': 'application/json',
-  // Bypass Supabase's 1000-row default to get accurate counts
-  Range: '0-99999',
-  'Range-Unit': 'items',
 };
 
-async function sb(path: string) {
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: HEADERS });
-  if (!r.ok) return [];
-  return r.json();
+const PAGE = 1000;
+
+/**
+ * Paginate through ALL rows — Supabase's server-side max-rows cap (default: 1000)
+ * cannot be bypassed with the Range header alone, so we page through every batch
+ * until we have the full dataset.
+ */
+async function sbAll(select: string): Promise<Record<string, any>[]> {
+  const all: Record<string, any>[] = [];
+  let offset = 0;
+  while (true) {
+    const url = `${SUPABASE_URL}/rest/v1/products?select=${select}&limit=${PAGE}&offset=${offset}`;
+    const r = await fetch(url, { headers: BASE_HEADERS });
+    if (!r.ok) break;
+    const batch: Record<string, any>[] = await r.json();
+    all.push(...batch);
+    if (batch.length < PAGE) break;
+    offset += PAGE;
+  }
+  return all;
 }
 
-function countBy<T>(rows: T[], key: keyof T): { value: string; count: number }[] {
+function countBy(rows: Record<string, any>[], key: string): { value: string; count: number }[] {
   const map: Record<string, number> = {};
   for (const row of rows) {
     const v = row[key];
@@ -30,22 +43,18 @@ function countBy<T>(rows: T[], key: keyof T): { value: string; count: number }[]
 
 export async function GET() {
   try {
-    const [categories, countries, statuses, regions, appellations, wineClasses] = await Promise.all([
-      sb('products?select=classification&classification=not.is.null'),
-      sb('products?select=country&country=not.is.null'),
-      sb('products?select=validation_status&validation_status=not.is.null'),
-      sb('products?select=region&region=not.is.null'),
-      sb('products?select=appellation&appellation=not.is.null'),
-      sb('products?select=wine_classification&wine_classification=not.is.null'),
-    ]);
+    // Fetch all facet columns in one paginated sweep — no repeated round-trips per field
+    const rows = await sbAll(
+      'classification,country,validation_status,region,appellation,wine_classification'
+    );
 
     return NextResponse.json({
-      categories:       countBy(categories,  'classification'),
-      countries:        countBy(countries,   'country'),
-      statuses:         countBy(statuses,    'validation_status'),
-      regions:          countBy(regions,     'region'),
-      appellations:     countBy(appellations,'appellation'),
-      wineClasses:      countBy(wineClasses, 'wine_classification'),
+      categories:   countBy(rows, 'classification'),
+      countries:    countBy(rows, 'country'),
+      statuses:     countBy(rows, 'validation_status'),
+      regions:      countBy(rows, 'region'),
+      appellations: countBy(rows, 'appellation'),
+      wineClasses:  countBy(rows, 'wine_classification'),
     });
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });

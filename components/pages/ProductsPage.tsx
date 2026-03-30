@@ -185,6 +185,40 @@ function ConfBar({ label, value }: { label: string; value: number }) {
   );
 }
 
+// ── Item Profile helpers ──────────────────────────────────────────────────────
+
+function ProfileAttrs({ attrs }: { attrs: { label: string; val: string | null | undefined }[] }) {
+  const filled = attrs.filter(a => a.val);
+  if (!filled.length) return null;
+  return (
+    <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm mb-2">
+      {filled.map(({ label, val }) => (
+        <div key={label}>
+          <p className="text-xs text-slate-500">{label}</p>
+          <p className="text-white mt-0.5 text-sm">{val}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ProfilePlaceholder({ category, attrs }: { category: string; attrs: string[] }) {
+  return (
+    <div className="border border-dashed border-white/10 rounded-lg px-3 py-3 mt-1">
+      <p className="text-xs text-slate-500 italic mb-2">
+        Full profile attributes for <span className="text-slate-400 not-italic font-medium">{category}</span> are being validated and will be enriched.
+      </p>
+      {attrs.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {attrs.map(a => (
+            <span key={a} className="text-[10px] px-2 py-0.5 rounded border border-white/8 text-slate-600">{a}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const EDITABLE = ['name','sku','brand','vintage','country','region','subregion','classification','grape_variety','wine_type','liquor_main_type','price','cost_price','currency','alcohol','bottle_size','validation_status'];
 
 const SEGMENTS = [
@@ -701,40 +735,106 @@ export function ProductsPage() {
                   ))}
                 </div>
 
-                {/* Wine Profile Radar — always visible */}
-                <div className="bg-white/5 rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-3"><Wine size={13} className="text-violet-400" /><h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Wine Profile</h3></div>
-                  {(selected.wine_body || selected.wine_acidity || selected.wine_tannin) ? (
-                    <div className="flex items-center gap-6">
-                      <RadarChart axes={[
-                        { label: 'Body',      value: scaleTier(selected.wine_body),     max: 3 },
-                        { label: 'Acidity',   value: scaleTier(selected.wine_acidity),  max: 3 },
-                        { label: 'Tannin',    value: scaleTier(selected.wine_tannin),   max: 3 },
-                        { label: 'Sweetness', value: selected.classification?.toLowerCase().includes('dessert') ? 3 : 1, max: 3 },
-                        { label: 'Intensity', value: 2, max: 3 },
-                      ]} />
-                      <div className="space-y-2.5">
-                        {[
-                          { label: 'Body',    val: selected.wine_body },
-                          { label: 'Acidity', val: selected.wine_acidity },
-                          { label: 'Tannin',  val: selected.wine_tannin },
-                        ].map(({ label, val }) => (
-                          <div key={label} className="flex items-center gap-3">
-                            <span className="text-xs text-slate-500 w-14">{label}</span>
-                            <div className="flex gap-1">
-                              {[1, 2, 3].map(dot => (
-                                <div key={dot} className={`w-2.5 h-2.5 rounded-full ${val && dot <= scaleTier(val) ? 'bg-violet-500' : 'bg-white/10'}`} />
+                {/* Item Profile — category-aware */}
+                {(() => {
+                  const cat = (selected.classification ?? '').toLowerCase();
+                  const isWine = cat.includes('wine') || cat.includes('champagne') || cat.includes('sparkling') || cat.includes('rosé') || cat.includes('rose');
+                  const isSpirit = cat.includes('whisky') || cat.includes('whiskey') || cat.includes('gin') || cat.includes('rum') || cat.includes('vodka') || cat.includes('tequila') || cat.includes('brandy') || cat.includes('liqueur') || cat.includes('spirit');
+                  const isBeer = cat.includes('beer') || cat.includes('ale') || cat.includes('lager');
+                  const isSake = cat.includes('sake') || cat.includes('shochu');
+
+                  const hasWineProfile = selected.wine_body || selected.wine_acidity || selected.wine_tannin;
+
+                  return (
+                    <div className="bg-white/5 rounded-xl p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <Wine size={13} className="text-violet-400" />
+                          <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Item Profile</h3>
+                        </div>
+                        {selected.classification && (
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-400 border border-violet-500/20">
+                            {selected.classification}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* ── Wine profile ── */}
+                      {isWine && (
+                        hasWineProfile ? (
+                          <div className="flex items-center gap-6">
+                            <RadarChart axes={[
+                              { label: 'Body',      value: scaleTier(selected.wine_body),     max: 3 },
+                              { label: 'Acidity',   value: scaleTier(selected.wine_acidity),  max: 3 },
+                              { label: 'Tannin',    value: scaleTier(selected.wine_tannin),   max: 3 },
+                              { label: 'Sweetness', value: cat.includes('dessert') ? 3 : 1,   max: 3 },
+                              { label: 'Intensity', value: 2, max: 3 },
+                            ]} />
+                            <div className="space-y-2.5">
+                              {[
+                                { label: 'Body',    val: selected.wine_body },
+                                { label: 'Acidity', val: selected.wine_acidity },
+                                { label: 'Tannin',  val: selected.wine_tannin },
+                              ].map(({ label, val }) => (
+                                <div key={label} className="flex items-center gap-3">
+                                  <span className="text-xs text-slate-500 w-14">{label}</span>
+                                  <div className="flex gap-1">
+                                    {[1, 2, 3].map(dot => (
+                                      <div key={dot} className={`w-2.5 h-2.5 rounded-full ${val && dot <= scaleTier(val) ? 'bg-violet-500' : 'bg-white/10'}`} />
+                                    ))}
+                                  </div>
+                                  <span className={`text-xs capitalize ${val ? 'text-slate-300' : 'text-slate-600 italic'}`}>{val || '—'}</span>
+                                </div>
                               ))}
                             </div>
-                            <span className={`text-xs capitalize ${val ? 'text-slate-300' : 'text-slate-600 italic'}`}>{val || '—'}</span>
                           </div>
-                        ))}
-                      </div>
+                        ) : (
+                          <ProfilePlaceholder category={selected.classification} attrs={['Body', 'Acidity', 'Tannin', 'Sweetness', 'Grape Variety', 'Vintage']} />
+                        )
+                      )}
+
+                      {/* ── Spirit profile ── */}
+                      {isSpirit && (
+                        <div className="space-y-2">
+                          <ProfileAttrs attrs={[
+                            { label: 'ABV',          val: selected.alcohol ? `${selected.alcohol}%` : null },
+                            { label: 'Style / Type', val: selected.liquor_main_type ?? selected.wine_type },
+                            { label: 'Age / Vintage',val: selected.vintage ? String(selected.vintage) : null },
+                            { label: 'Region',       val: selected.region },
+                          ]} />
+                          <ProfilePlaceholder category={selected.classification} attrs={['Malt / Grain type', 'Cask type', 'Distillery character', 'Smokiness', 'Sweetness']} />
+                        </div>
+                      )}
+
+                      {/* ── Beer profile ── */}
+                      {isBeer && (
+                        <div className="space-y-2">
+                          <ProfileAttrs attrs={[
+                            { label: 'ABV',   val: selected.alcohol ? `${selected.alcohol}%` : null },
+                            { label: 'Style', val: selected.liquor_main_type ?? selected.wine_type },
+                          ]} />
+                          <ProfilePlaceholder category={selected.classification} attrs={['IBU', 'Colour (EBC)', 'Malt', 'Hops', 'Body']} />
+                        </div>
+                      )}
+
+                      {/* ── Sake / Shochu ── */}
+                      {isSake && (
+                        <div className="space-y-2">
+                          <ProfileAttrs attrs={[
+                            { label: 'ABV',    val: selected.alcohol ? `${selected.alcohol}%` : null },
+                            { label: 'Region', val: selected.region },
+                          ]} />
+                          <ProfilePlaceholder category={selected.classification} attrs={['Polishing ratio', 'SMV', 'Acidity', 'Grade']} />
+                        </div>
+                      )}
+
+                      {/* ── Fallback for accessories / non-alcoholic / unknown ── */}
+                      {!isWine && !isSpirit && !isBeer && !isSake && (
+                        <ProfilePlaceholder category={selected.classification ?? 'this category'} attrs={[]} />
+                      )}
                     </div>
-                  ) : (
-                    <p className="text-sm text-slate-600 italic text-center py-3">Profile data not yet available</p>
-                  )}
-                </div>
+                  );
+                })()}
 
                 {/* Flavour Wheel — only when flavor_profile data exists */}
                 {(() => {

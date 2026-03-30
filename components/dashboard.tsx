@@ -1,6 +1,6 @@
 'use client';
 import React, { Suspense, useState } from 'react';
-import { BookOpen, Database, LayoutDashboard, Package, RefreshCw, Settings, TrendingUp, Upload, type LucideIcon } from 'lucide-react';
+import { BookOpen, Database, Grid3X3, LayoutDashboard, Package, RefreshCw, Settings, TrendingUp, Upload, type LucideIcon } from 'lucide-react';
 
 // Lazy imports — each page loads independently, crashes are isolated
 const ImportPage        = React.lazy(() => import('@/components/pages/ImportPage').then(m => ({ default: m.ImportPage })));
@@ -9,10 +9,11 @@ const TaxonomyQueuePage = React.lazy(() => import('@/components/pages/TaxonomyQu
 const TaxonomyManagerPage = React.lazy(() => import('@/components/pages/TaxonomyManagerPage').then(m => ({ default: m.TaxonomyManagerPage })));
 const ProductsPage      = React.lazy(() => import('@/components/pages/ProductsPage').then(m => ({ default: m.ProductsPage })));
 const OverrideImportPage = React.lazy(() => import('@/components/pages/OverrideImportPage').then(m => ({ default: m.OverrideImportPage })));
+const ProductMatrixPage = React.lazy(() => import('@/components/pages/ProductMatrixPage').then(m => ({ default: m.ProductMatrixPage })));
 const SeoCommandCenter  = React.lazy(() => import('@/components/seo-command-center').then(m => ({ default: m.SeoCommandCenter })));
 const SettingsPage      = React.lazy(() => import('@/components/pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
 
-type Section = 'import' | 'processing' | 'taxonomy_queue' | 'taxonomy_manager' | 'products' | 'override_import' | 'settings' | 'seo';
+type Section = 'import' | 'processing' | 'taxonomy_queue' | 'taxonomy_manager' | 'products' | 'override_import' | 'matrix' | 'settings' | 'seo';
 
 const NAV_ITEMS: Array<{ id: Section; label: string; Icon: LucideIcon }> = [
   { id: 'import',           label: 'Import',             Icon: Upload },
@@ -21,6 +22,7 @@ const NAV_ITEMS: Array<{ id: Section; label: string; Icon: LucideIcon }> = [
   { id: 'taxonomy_manager', label: 'Taxonomy Manager',   Icon: BookOpen },
   { id: 'products',         label: 'Products',           Icon: Package },
   { id: 'override_import',  label: 'Override Import',    Icon: LayoutDashboard },
+  { id: 'matrix',           label: 'Product Matrix',     Icon: Grid3X3 },
   { id: 'seo',              label: 'SEO Command Center', Icon: TrendingUp },
   { id: 'settings',         label: 'Settings',           Icon: Settings },
 ];
@@ -91,6 +93,7 @@ export function Dashboard() {
     taxonomy_manager: <TaxonomyManagerPage />,
     products:         <ProductsPage />,
     override_import:  <OverrideImportPage />,
+    matrix:           <ProductMatrixPage />,
     seo:              <SeoCommandCenter />,
     settings:         <SettingsPage />,
   };
