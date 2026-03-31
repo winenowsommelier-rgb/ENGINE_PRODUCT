@@ -115,10 +115,15 @@ function TriageScanCard() {
     try {
       const res = await fetch('/api/triage', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
       const data = await res.json();
-      setOutput(data.output ?? '');
-      // Load summary
-      const s = await fetch('/api/triage').then(r => r.json());
-      if (s.ok) setSummary(s.summary);
+      setOutput(res.ok ? (data.output ?? '') : `Error ${res.status}: ${data.error ?? 'Triage scan failed'}`);
+      // Only load summary if POST succeeded
+      if (res.ok) {
+        const triageRes = await fetch('/api/triage');
+        if (triageRes.ok) {
+          const s = await triageRes.json();
+          setSummary(s);  // store full response; JSX accesses summary.summary and summary.generated_at
+        }
+      }
     } catch (err) {
       setOutput(String(err));
     } finally {
@@ -206,7 +211,7 @@ function AIEnrichmentCard({ onNavigateToReview }: { onNavigateToReview: () => vo
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      setOutput(data.output ?? '');
+      setOutput(res.ok ? (data.output ?? '') : `Error ${res.status}: ${data.error ?? 'Enrichment failed'}`);
     } catch (err) {
       setOutput(String(err));
     } finally {
