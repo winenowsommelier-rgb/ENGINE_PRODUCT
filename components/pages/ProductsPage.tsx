@@ -388,7 +388,7 @@ export function ProductsPage() {
     const items = data?.items ?? [];
     const map = new Map<string, Product[]>();
     for (const p of items) {
-      const base = p.sku_base ?? p.sku?.substring(0, 7) ?? p.sku;
+      const base = p.sku_base ?? p.sku?.substring(0, 7) ?? p.sku ?? 'unknown';
       if (!map.has(base)) map.set(base, []);
       map.get(base)!.push(p);
     }
@@ -562,11 +562,11 @@ export function ProductsPage() {
             {groupedProducts.map((group: Product[]) => {
               const p = group[0];
               const conf = parseFloat(String(p.overall_confidence ?? 0));
-              const base = p.sku_base ?? p.sku?.substring(0, 7) ?? p.sku;
+              const base = p.sku_base ?? p.sku?.substring(0, 7) ?? p.sku ?? 'unknown';
               const isExpanded = expandedGroups.has(base);
               return (
                 <React.Fragment key={p.id}>
-                  <tr key={p.id} onClick={() => openProduct(p)} className="border-b border-white/5 hover:bg-white/5 cursor-pointer">
+                  <tr onClick={() => openProduct(p)} className="border-b border-white/5 hover:bg-white/5 cursor-pointer">
                     <td className="px-4 py-3 text-slate-400 font-mono text-xs">{p.sku}</td>
                     <td className="px-4 py-3 text-white max-w-[200px] truncate">
                       {p.name}
