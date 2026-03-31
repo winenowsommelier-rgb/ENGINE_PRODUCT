@@ -84,6 +84,13 @@ export async function POST(req: NextRequest) {
   };
 
   for (const productId of productIds) {
+    // Guard against path traversal — only accept UUID-shaped IDs
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!UUID_RE.test(productId)) {
+      results.primaryFailed.push(productId);
+      continue;
+    }
+
     // Load enrichment result from disk
     const resultPath = path.join(RESULTS_DIR, `${productId}.json`);
     if (!fs.existsSync(resultPath)) {
@@ -91,7 +98,13 @@ export async function POST(req: NextRequest) {
       continue;
     }
 
-    const enrichment = JSON.parse(fs.readFileSync(resultPath, 'utf-8'));
+    let enrichment: Record<string, any>;
+    try {
+      enrichment = JSON.parse(fs.readFileSync(resultPath, 'utf-8'));
+    } catch {
+      results.primaryFailed.push(productId);
+      continue;
+    }
     const aiResult: Record<string, any> = enrichment.result ?? {};
     const isManual = enrichment.manual_edited === true;
 
@@ -102,9 +115,10 @@ export async function POST(req: NextRequest) {
     // Compute new overall_confidence
     const prevConf = parseFloat(String(current.overall_confidence ?? 0));
     const descConf = parseFloat(String(aiResult.desc_confidence ?? 0));
-    const newConf = prevConf > 0
-      ? Math.max(0, Math.min(1, prevConf * 0.4 + descConf * 0.6))
+    const rawConf = prevConf > 0
+      ? prevConf * 0.4 + descConf * 0.6
       : descConf;
+    const newConf = Math.max(0, Math.min(1, rawConf));
 
     const now = new Date().toISOString();
     const primaryPayload: Record<string, any> = {
@@ -146,7 +160,11 @@ export async function POST(req: NextRequest) {
     // Mark result as published
     enrichment.status = 'published';
     enrichment.published_at = now;
-    fs.writeFileSync(resultPath, JSON.stringify(enrichment, null, 2));
+    try {
+      fs.writeFileSync(resultPath, JSON.stringify(enrichment, null, 2));
+    } catch (e: any) {
+      console.error(`  WARNING: failed to mark ${productId} as published on disk: ${e.message}`);
+    }
   }
 
   return NextResponse.json({
