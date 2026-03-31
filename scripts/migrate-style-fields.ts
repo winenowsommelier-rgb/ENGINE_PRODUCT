@@ -130,7 +130,7 @@ async function main() {
         style = toTitleCase(primary);
         style_detail = raw.trim();
       } else {
-        style = raw.trim();
+        style = toTitleCase(raw.trim());
       }
 
       // Check against wine taxonomy (only wines have grape varieties)
