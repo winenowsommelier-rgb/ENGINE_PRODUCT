@@ -90,17 +90,25 @@ async function fetchPrimaryBatch(offset: number, limit: number): Promise<any[]> 
   return res.json();
 }
 
-async function patchBatch(rows: TriageRow[]): Promise<void> {
-  if (DRY_RUN || rows.length === 0) return;
-  await Promise.all(rows.map(async (r) => {
-    const body: Record<string, any> = { triage_flags: r.triage_flags };
-    if (r.desc_source !== undefined) body.desc_source = r.desc_source;
-    const res = await sbFetch(`${BASE_URL}/rest/v1/products?id=eq.${r.id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) console.error(`  PATCH failed for ${r.id}: ${res.status}`);
-  }));
+async function patchBatch(rows: TriageRow[]): Promise<number> {
+  if (DRY_RUN || rows.length === 0) return 0;
+  let failCount = 0;
+  for (let i = 0; i < rows.length; i += PATCH_BATCH) {
+    const chunk = rows.slice(i, i + PATCH_BATCH);
+    await Promise.all(chunk.map(async (r) => {
+      const body: Record<string, any> = { triage_flags: r.triage_flags };
+      if (r.desc_source !== undefined) body.desc_source = r.desc_source;
+      const res = await sbFetch(`${BASE_URL}/rest/v1/products?id=eq.${r.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        console.error(`  PATCH failed for ${r.id}: ${res.status}`);
+        failCount++;
+      }
+    }));
+  }
+  return failCount;
 }
 
 async function main() {
@@ -110,6 +118,7 @@ async function main() {
   const summary: Record<string, Record<string, number>> = {};
   let offset = 0;
   let total = 0;
+  let totalFails = 0;
 
   while (true) {
     const limit = LIMIT > 0 ? Math.min(PAGE, LIMIT - offset) : PAGE;
@@ -137,7 +146,7 @@ async function main() {
       }
     }
 
-    await patchBatch(patches);
+    totalFails += await patchBatch(patches);
     total += rows.length;
     offset += rows.length;
     process.stdout.write(`  Scanned ${total} primaries...\r`);
@@ -145,6 +154,10 @@ async function main() {
   }
 
   console.log(`\n  Done. Scanned ${total} primary variants.`);
+  if (totalFails > 0) {
+    console.error(`  WARNING: ${totalFails} PATCH(es) failed.`);
+    process.exit(1);
+  }
   console.log('\nTriage summary:');
   console.log('  Classification          | desc_missing | desc_short_only | desc_brand_voice | desc_html | desc_ok | taxonomy_incomplete');
   console.log('  ' + '-'.repeat(110));

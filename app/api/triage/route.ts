@@ -12,8 +12,12 @@ export async function GET() {
   if (!fs.existsSync(summaryPath)) {
     return NextResponse.json({ ok: false, summary: null }, { status: 200 });
   }
-  const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf-8'));
-  return NextResponse.json({ ok: true, summary });
+  try {
+    const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf-8'));
+    return NextResponse.json({ ok: true, summary });
+  } catch {
+    return NextResponse.json({ ok: false, summary: null, error: 'corrupt_summary' }, { status: 200 });
+  }
 }
 
 // POST — trigger triage scan
@@ -30,9 +34,19 @@ export async function POST(req: NextRequest) {
   const lines: string[] = [];
   child.stdout.on('data', (d: Buffer) => lines.push(d.toString()));
   child.stderr.on('data', (d: Buffer) => lines.push(d.toString()));
-  child.on('error', (err) => lines.push(`[spawn error] ${err.message}`));
 
-  const code = await new Promise<number>(res => child.on('close', res));
+  const TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
+
+  const code = await new Promise<number>((res) => {
+    const timer = setTimeout(() => {
+      child.kill();
+      lines.push('[timeout] process killed after 10 minutes');
+      res(1);
+    }, TIMEOUT_MS);
+    child.on('close', (c) => { clearTimeout(timer); res(c ?? 1); });
+    child.on('error', (err) => { clearTimeout(timer); lines.push(`[spawn error] ${err.message}`); res(1); });
+  });
+
   const ok = code === 0;
   return NextResponse.json({ ok, output: lines.join('') }, { status: ok ? 200 : 500 });
 }
