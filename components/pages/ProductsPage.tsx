@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ChevronLeft, ChevronRight, Edit2, X, Search,
   SlidersHorizontal, Layers, MapPin, Star, Droplets, Tag, Wine, Code2, Eye, FileText,
@@ -381,6 +381,28 @@ export function ProductsPage() {
 
   const activeFilters = [country, region, appellation, status, classification, wineClass].filter(Boolean).length;
 
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+
+  // Group products by sku_base — show one card per base product
+  const groupedProducts = useMemo(() => {
+    const items = data?.items ?? [];
+    const map = new Map<string, Product[]>();
+    for (const p of items) {
+      const base = p.sku_base ?? p.sku?.substring(0, 7) ?? p.sku;
+      if (!map.has(base)) map.set(base, []);
+      map.get(base)!.push(p);
+    }
+    // Sort variants: primary first
+    for (const variants of map.values()) {
+      variants.sort((a, b) => {
+        if (a.is_primary_variant) return -1;
+        if (b.is_primary_variant) return 1;
+        return (a.sku ?? '').localeCompare(b.sku ?? '');
+      });
+    }
+    return Array.from(map.values());
+  }, [data?.items]);
+
   function clearFilters() {
     setCountry(''); setRegion(''); setAppellation('');
     setStatus(''); setClassification(''); setWineClass('');
@@ -537,26 +559,67 @@ export function ProductsPage() {
             </tr>
           </thead>
           <tbody>
-            {(data?.items ?? []).map((p: Product) => {
+            {groupedProducts.map((group: Product[]) => {
+              const p = group[0];
               const conf = parseFloat(String(p.overall_confidence ?? 0));
+              const base = p.sku_base ?? p.sku?.substring(0, 7) ?? p.sku;
+              const isExpanded = expandedGroups.has(base);
               return (
-                <tr key={p.id} onClick={() => openProduct(p)} className="border-b border-white/5 hover:bg-white/5 cursor-pointer">
-                  <td className="px-4 py-3 text-slate-400 font-mono text-xs">{p.sku}</td>
-                  <td className="px-4 py-3 text-white max-w-[200px] truncate">{p.name}</td>
-                  <td className="px-4 py-3 text-xs text-slate-500">{p.classification || skuType(p.sku)}</td>
-                  <td className="px-4 py-3 text-slate-300 text-xs">
-                    {p.country || <span className="text-slate-600 italic">unknown</span>}
-                    {p.region && <span className="text-slate-500"> · {p.region}</span>}
-                  </td>
-                  <td className="px-4 py-3 text-slate-300 text-xs">{fmtPrice(p.price, p.currency)}</td>
-                  <td className="px-4 py-3">{confBadge(conf)}</td>
-                  <td className="px-4 py-3">
-                    <span className={`rounded-full px-2 py-0.5 text-xs ${STATUS_COLORS[p.validation_status ?? ''] ?? 'bg-slate-500/20 text-slate-300'}`}>
-                      {p.validation_status ?? '—'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2"><Edit2 size={12} className="text-slate-600" /></td>
-                </tr>
+                <React.Fragment key={p.id}>
+                  <tr key={p.id} onClick={() => openProduct(p)} className="border-b border-white/5 hover:bg-white/5 cursor-pointer">
+                    <td className="px-4 py-3 text-slate-400 font-mono text-xs">{p.sku}</td>
+                    <td className="px-4 py-3 text-white max-w-[200px] truncate">
+                      {p.name}
+                      {group.length > 1 && (
+                        <span
+                          className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-violet-500/20 text-violet-300 font-medium cursor-pointer hover:bg-violet-500/30"
+                          onClick={e => {
+                            e.stopPropagation();
+                            setExpandedGroups(prev => {
+                              const next = new Set(prev);
+                              if (next.has(base)) next.delete(base); else next.add(base);
+                              return next;
+                            });
+                          }}
+                        >
+                          {group.length} suppliers {isExpanded ? '▲' : '▼'}
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{p.classification || skuType(p.sku)}</td>
+                    <td className="px-4 py-3 text-slate-300 text-xs">
+                      {p.country || <span className="text-slate-600 italic">unknown</span>}
+                      {p.region && <span className="text-slate-500"> · {p.region}</span>}
+                    </td>
+                    <td className="px-4 py-3 text-slate-300 text-xs">{fmtPrice(p.price, p.currency)}</td>
+                    <td className="px-4 py-3">{confBadge(conf)}</td>
+                    <td className="px-4 py-3">
+                      <span className={`rounded-full px-2 py-0.5 text-xs ${STATUS_COLORS[p.validation_status ?? ''] ?? 'bg-slate-500/20 text-slate-300'}`}>
+                        {p.validation_status ?? '—'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2"><Edit2 size={12} className="text-slate-600" /></td>
+                  </tr>
+                  {isExpanded && group.slice(1).map(variant => (
+                    <tr key={variant.id} onClick={() => openProduct(variant)} className="border-b border-white/5 bg-white/2 hover:bg-white/5 cursor-pointer">
+                      <td className="px-4 py-2 text-slate-500 font-mono text-xs pl-8">{variant.sku}</td>
+                      <td className="px-4 py-2 text-slate-400 text-xs max-w-[200px] truncate">{variant.name}</td>
+                      <td className="px-4 py-2 text-xs text-slate-600">{variant.classification || skuType(variant.sku)}</td>
+                      <td className="px-4 py-2 text-slate-500 text-xs">
+                        {variant.country || <span className="text-slate-600 italic">unknown</span>}
+                        {variant.region && <span className="text-slate-600"> · {variant.region}</span>}
+                      </td>
+                      <td className="px-4 py-2 text-slate-500 text-xs">{fmtPrice(variant.price, variant.currency)}</td>
+                      <td className="px-4 py-2">{confBadge(parseFloat(String(variant.overall_confidence ?? 0)))}</td>
+                      <td className="px-4 py-2">
+                        <span className={`rounded-full px-2 py-0.5 text-xs ${STATUS_COLORS[variant.validation_status ?? ''] ?? 'bg-slate-500/20 text-slate-300'}`}>
+                          {variant.validation_status ?? '—'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2"><Edit2 size={12} className="text-slate-600" /></td>
+                    </tr>
+                  ))}
+                </React.Fragment>
               );
             })}
             {data?.items.length === 0 && (
@@ -656,7 +719,7 @@ export function ProductsPage() {
                     {[
                       { label: 'Product Category', value: selected.classification },
                       { label: 'Classification',   value: selected.wine_classification },
-                      { label: 'Grape / Variety',  value: selected.grape_variety },
+                      { label: 'Style',            value: selected.style ?? selected.grape_variety },
                       { label: 'Wine Type',        value: selected.wine_type },
                       { label: 'Appellation',      value: selected.appellation },
                       { label: 'Origin',           value: selected.origin },

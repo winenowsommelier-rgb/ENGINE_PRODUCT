@@ -1,6 +1,6 @@
 'use client';
 import React, { Suspense, useState } from 'react';
-import { BookOpen, Database, Grid3X3, LayoutDashboard, Package, RefreshCw, Settings, TrendingUp, Upload, type LucideIcon } from 'lucide-react';
+import { BookOpen, Database, Grid3X3, LayoutDashboard, Package, RefreshCw, Settings, Sparkles, TrendingUp, Upload, type LucideIcon } from 'lucide-react';
 
 // Lazy imports — each page loads independently, crashes are isolated
 const ImportPage        = React.lazy(() => import('@/components/pages/ImportPage').then(m => ({ default: m.ImportPage })));
@@ -12,12 +12,14 @@ const OverrideImportPage = React.lazy(() => import('@/components/pages/OverrideI
 const ProductMatrixPage = React.lazy(() => import('@/components/pages/ProductMatrixPage').then(m => ({ default: m.ProductMatrixPage })));
 const SeoCommandCenter  = React.lazy(() => import('@/components/seo-command-center').then(m => ({ default: m.SeoCommandCenter })));
 const SettingsPage      = React.lazy(() => import('@/components/pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
+const AIReviewQueuePage = React.lazy(() => import('@/components/pages/AIReviewQueuePage').then(m => ({ default: m.AIReviewQueuePage })));
 
-type Section = 'import' | 'processing' | 'taxonomy_queue' | 'taxonomy_manager' | 'products' | 'override_import' | 'matrix' | 'settings' | 'seo';
+type Section = 'import' | 'processing' | 'taxonomy_queue' | 'taxonomy_manager' | 'products' | 'override_import' | 'matrix' | 'settings' | 'seo' | 'ai_review_queue';
 
 const NAV_ITEMS: Array<{ id: Section; label: string; Icon: LucideIcon }> = [
   { id: 'import',           label: 'Import',             Icon: Upload },
   { id: 'processing',       label: 'Processing Review',  Icon: RefreshCw },
+  { id: 'ai_review_queue', label: 'AI Review Queue',    Icon: Sparkles },
   { id: 'taxonomy_queue',   label: 'Taxonomy Queue',     Icon: Database },
   { id: 'taxonomy_manager', label: 'Taxonomy Manager',   Icon: BookOpen },
   { id: 'products',         label: 'Products',           Icon: Package },
@@ -88,7 +90,7 @@ export function Dashboard() {
 
   const pages: Record<Section, React.ReactNode> = {
     import:           <ImportPage />,
-    processing:       <ProcessingReviewPage />,
+    processing:       <ProcessingReviewPage onNavigateToReview={() => setSection('ai_review_queue')} />,
     taxonomy_queue:   <TaxonomyQueuePage />,
     taxonomy_manager: <TaxonomyManagerPage />,
     products:         <ProductsPage />,
@@ -96,6 +98,7 @@ export function Dashboard() {
     matrix:           <ProductMatrixPage />,
     seo:              <SeoCommandCenter />,
     settings:         <SettingsPage />,
+    ai_review_queue:  <AIReviewQueuePage />,
   };
 
   return (
