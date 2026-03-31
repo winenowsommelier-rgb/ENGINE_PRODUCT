@@ -18,7 +18,6 @@ const BATCH_N  = (() => { const m = process.argv.find(a => a.startsWith('--batch
 
 const CONCURRENCY = 5;
 const PAGE        = 500;
-const PATCH_BATCH = 50;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const API_KEY  = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
@@ -135,10 +134,19 @@ async function callClaude(row: Record<string, any>): Promise<Record<string, any>
     messages: [{ role: 'user', content: buildUserPrompt(row) }],
   });
   const text = msg.content[0].type === 'text' ? msg.content[0].text : '';
-  // Extract JSON block
-  const match = text.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error(`No JSON in response for ${row.sku}`);
-  return JSON.parse(match[0]);
+  // Find the last top-level JSON object (handles prose before/after JSON)
+  const matches = [...text.matchAll(/\{[\s\S]*?\}/g)];
+  // Try each match from largest to smallest to find valid JSON
+  const sorted = matches.sort((a, b) => b[0].length - a[0].length);
+  for (const m of sorted) {
+    try { return JSON.parse(m[0]); } catch { continue; }
+  }
+  // Fallback: try greedy match as last resort
+  const greedy = text.match(/\{[\s\S]*\}/);
+  if (greedy) {
+    try { return JSON.parse(greedy[0]); } catch { /* fall through */ }
+  }
+  throw new Error(`No valid JSON in response for ${row.sku}`);
 }
 
 function validateResponse(ai: Record<string, any>, row: Record<string, any>): Record<string, any> {
@@ -220,7 +228,22 @@ async function processProduct(row: Record<string, any>, stats: { processed: numb
       stats.processed++;
       return;
     }
-    const ai = await callClaude(row);
+    let ai: Record<string, any> | null = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        ai = await callClaude(row);
+        break;
+      } catch (e: any) {
+        if ((e.message?.includes('rate_limit') || e.status === 429) && attempt < 2) {
+          const wait = 10000 * (attempt + 1); // 10s, 20s
+          console.warn(`  RATE LIMIT ${row.sku}, retrying in ${wait/1000}s...`);
+          await new Promise(r => setTimeout(r, wait));
+        } else {
+          throw e;
+        }
+      }
+    }
+    if (!ai) throw new Error(`callClaude returned null for ${row.sku}`);
     const validated = validateResponse(ai, row);
     await saveResult(row.id, {
       product_id: row.id,

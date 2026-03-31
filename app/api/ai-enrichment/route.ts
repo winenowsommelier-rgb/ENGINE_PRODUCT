@@ -25,13 +25,23 @@ export async function POST(req: NextRequest) {
     args.push('--dry-run');
   }
 
+  const TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes (batch runs are longer than triage)
+
   const child = spawn('npx', args, { cwd: process.cwd(), env: { ...process.env } });
   const lines: string[] = [];
   child.stdout.on('data', (d: Buffer) => lines.push(d.toString()));
   child.stderr.on('data', (d: Buffer) => lines.push(d.toString()));
-  child.on('error', (err) => lines.push(`[spawn error] ${err.message}`));
 
-  const code = await new Promise<number>(res => child.on('close', res));
+  const code = await new Promise<number>((res) => {
+    const timer = setTimeout(() => {
+      child.kill();
+      lines.push('[timeout] process killed after 30 minutes');
+      res(1);
+    }, TIMEOUT_MS);
+    child.on('close', (c) => { clearTimeout(timer); res(c ?? 1); });
+    child.on('error', (err) => { clearTimeout(timer); lines.push(`[spawn error] ${err.message}`); res(1); });
+  });
+
   const ok = code === 0;
   return NextResponse.json({ ok, output: lines.join('') }, { status: ok ? 200 : 500 });
 }
