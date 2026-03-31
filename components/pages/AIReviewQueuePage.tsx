@@ -195,17 +195,22 @@ export function AIReviewQueuePage() {
   const [filter, setFilter] = useState<FilterState>({ category: 'all', confidence: 'all' });
   const [publishing, setPublishing] = useState(false);
   const [publishOutput, setPublishOutput] = useState('');
+  const [loadError, setLoadError] = useState('');
 
   async function loadResults() {
     setLoading(true);
+    setLoadError('');
     try {
       const res = await fetch('/api/ai-enrichment/results');
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
       const data = await res.json();
       // Sort by confidence ascending (lowest confidence first)
       const sorted = (data.records ?? []).sort((a: EnrichmentRecord, b: EnrichmentRecord) =>
         a.desc_confidence - b.desc_confidence
       );
       setRecords(sorted);
+    } catch (e: any) {
+      setLoadError(e.message ?? 'Failed to load results');
     } finally {
       setLoading(false);
     }
@@ -293,6 +298,13 @@ export function AIReviewQueuePage() {
   if (loading) return (
     <div className="flex items-center justify-center h-64">
       <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
+  if (loadError) return (
+    <div className="p-6 text-rose-400 text-sm">
+      Failed to load enrichment results: {loadError}
+      <button onClick={loadResults} className="ml-3 text-xs underline text-slate-400 hover:text-slate-200">Retry</button>
     </div>
   );
 
