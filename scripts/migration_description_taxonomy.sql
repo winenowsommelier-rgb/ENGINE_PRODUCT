@@ -14,6 +14,8 @@ ALTER TABLE products
   ADD COLUMN IF NOT EXISTS desc_processed_at    TIMESTAMPTZ,
   ADD COLUMN IF NOT EXISTS triage_flags         TEXT;
 
+BEGIN;
+
 -- Backfill sku_base from first 7 chars of sku
 UPDATE products SET sku_base = LEFT(sku, 7) WHERE sku_base IS NULL;
 
@@ -29,6 +31,8 @@ WHERE sku = (
   ORDER BY sku ASC
   LIMIT 1
 );
+
+COMMIT;
 
 CREATE INDEX IF NOT EXISTS idx_products_sku_base ON products(sku_base);
 CREATE INDEX IF NOT EXISTS idx_products_primary  ON products(sku_base, is_primary_variant);
