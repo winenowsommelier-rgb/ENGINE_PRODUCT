@@ -101,6 +101,162 @@ function RunPipelineCard() {
   );
 }
 
+// Triage Scan Card
+function TriageScanCard() {
+  const [runStatus, setRunStatus] = useState<RunStatus>('idle');
+  const [output, setOutput] = useState('');
+  const [summary, setSummary] = useState<Record<string, any> | null>(null);
+
+  const FLAGS = ['desc_missing','desc_short_only','desc_brand_voice','desc_html','desc_ok','taxonomy_incomplete'];
+
+  async function handleRun() {
+    setRunStatus('running');
+    setOutput('');
+    try {
+      const res = await fetch('/api/triage', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
+      const data = await res.json();
+      setOutput(data.output ?? '');
+      // Load summary
+      const s = await fetch('/api/triage').then(r => r.json());
+      if (s.ok) setSummary(s.summary);
+    } catch (err) {
+      setOutput(String(err));
+    } finally {
+      setRunStatus('done');
+    }
+  }
+
+  return (
+    <div className="mb-8 bg-white/5 border border-white/10 rounded-xl p-5">
+      <h2 className="text-sm font-medium text-slate-300 mb-4">Stage 2 — Triage Scan</h2>
+      <p className="text-xs text-slate-500 mb-4">Scans all primary variants, writes quality flags (desc_missing, brand_voice, taxonomy_incomplete, etc.). No AI credits used.</p>
+      <div className="flex items-center gap-3 mb-4">
+        <button
+          onClick={handleRun}
+          disabled={runStatus === 'running'}
+          className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm px-4 py-2 rounded-lg transition-colors"
+        >
+          <RefreshCw size={14} className={runStatus === 'running' ? 'animate-spin' : ''} />
+          {runStatus === 'running' ? 'Scanning…' : 'Run Triage Scan'}
+        </button>
+        <span className={`text-xs font-medium ${runStatus === 'running' ? 'text-violet-300' : runStatus === 'done' ? 'text-emerald-300' : 'text-slate-500'}`}>
+          {runStatus === 'idle' ? 'Idle' : runStatus === 'running' ? 'Running…' : 'Done'}
+        </span>
+      </div>
+      {output && (
+        <textarea readOnly value={output} className="w-full h-32 bg-black/40 border border-white/10 rounded-lg p-3 text-xs font-mono text-slate-300 resize-y mb-4" />
+      )}
+      {summary && (
+        <div className="overflow-x-auto">
+          <table className="text-xs text-slate-300 w-full border-collapse">
+            <thead>
+              <tr className="border-b border-white/10">
+                <th className="text-left py-1.5 pr-4 text-slate-400 font-normal">Category</th>
+                {FLAGS.map(f => <th key={f} className="text-right py-1.5 px-2 text-slate-400 font-normal whitespace-nowrap">{f}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(summary.summary ?? {}).sort((a, b) => String(a[0]).localeCompare(String(b[0]))).map(([cls, counts]: [string, any]) => (
+                <tr key={cls} className="border-b border-white/5">
+                  <td className="py-1.5 pr-4 text-slate-300 whitespace-nowrap">{cls}</td>
+                  {FLAGS.map(f => <td key={f} className="text-right py-1.5 px-2 text-slate-400">{counts[f] ?? 0}</td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="text-xs text-slate-500 mt-2">Last scan: {summary.generated_at ? new Date(summary.generated_at).toLocaleString() : '—'}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// AI Enrichment Card
+function AIEnrichmentCard({ onNavigateToReview }: { onNavigateToReview: () => void }) {
+  const [runStatus, setRunStatus] = useState<RunStatus>('idle');
+  const [output, setOutput]   = useState('');
+  const [batch, setBatch]     = useState('0');     // 0 = all batches
+  const [limit, setLimit]     = useState('');
+
+  const BATCH_OPTIONS = [
+    { value: '0', label: 'All batches' },
+    { value: '1', label: 'Batch 1 — Red Wine' },
+    { value: '2', label: 'Batch 2 — White Wine' },
+    { value: '3', label: 'Batch 3 — Rosé / Dessert Wine' },
+    { value: '4', label: 'Batch 4 — Sparkling Wine' },
+    { value: '5', label: 'Batch 5 — Whisky' },
+    { value: '6', label: 'Batch 6 — Other Spirits' },
+    { value: '7', label: 'Batch 7 — Beer' },
+    { value: '8', label: 'Batch 8 — Sake' },
+    { value: '9', label: 'Batch 9 — Accessories / Other' },
+  ];
+
+  async function handleRun() {
+    setRunStatus('running');
+    setOutput('');
+    const body: Record<string, any> = {};
+    if (batch !== '0') body.batch = batch;
+    const l = parseInt(limit);
+    if (!isNaN(l) && l > 0) body.limit = l;
+
+    try {
+      const res = await fetch('/api/ai-enrichment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      setOutput(data.output ?? '');
+    } catch (err) {
+      setOutput(String(err));
+    } finally {
+      setRunStatus('done');
+    }
+  }
+
+  return (
+    <div className="mb-8 bg-white/5 border border-white/10 rounded-xl p-5">
+      <h2 className="text-sm font-medium text-slate-300 mb-1">Stage 3 — AI Enrichment</h2>
+      <p className="text-xs text-slate-500 mb-4">Calls Claude for each primary variant — rewrites descriptions and fills taxonomy gaps. Results saved locally for review before publishing.</p>
+
+      <div className="flex items-center gap-3 mb-4 flex-wrap">
+        <select value={batch} onChange={e => setBatch(e.target.value)}
+          className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-slate-300">
+          {BATCH_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+        <input
+          type="number"
+          placeholder="Limit (test only)"
+          value={limit}
+          onChange={e => setLimit(e.target.value)}
+          className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-slate-300 w-36"
+        />
+      </div>
+
+      <div className="flex items-center gap-3 mb-4">
+        <button
+          onClick={handleRun}
+          disabled={runStatus === 'running'}
+          className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm px-4 py-2 rounded-lg transition-colors"
+        >
+          <Sparkles size={14} />
+          {runStatus === 'running' ? 'Running…' : 'Start AI Enrichment'}
+        </button>
+        {runStatus === 'done' && (
+          <button onClick={onNavigateToReview}
+            className="text-xs bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-500/30 px-3 py-1.5 rounded-lg transition-colors">
+            Review &amp; Publish →
+          </button>
+        )}
+      </div>
+
+      {output && (
+        <textarea readOnly value={output} className="w-full h-48 bg-black/40 border border-white/10 rounded-lg p-3 text-xs font-mono text-slate-300 resize-y" />
+      )}
+    </div>
+  );
+}
+
 type Stats = {
   total: number;
   validated: number;
@@ -128,7 +284,7 @@ const STATUS_META: Record<string, { label: string; color: string; bg: string }> 
   blocked:         { label: 'Blocked (legacy)', color: 'text-slate-400',   bg: 'bg-white/5 border-white/10' },
 };
 
-export function ProcessingReviewPage() {
+export function ProcessingReviewPage({ onNavigateToReview }: { onNavigateToReview?: () => void } = {}) {
   const [pipeline, setPipeline] = useState<PipelineStatus | null>(null);
   const [logs, setLogs] = useState<any[]>([]);
   const [running, setRunning] = useState(false);
@@ -203,6 +359,12 @@ export function ProcessingReviewPage() {
     <div className="p-8">
       {/* Run Validation Pipeline card */}
       <RunPipelineCard />
+
+      {/* Triage Scan card */}
+      <TriageScanCard />
+
+      {/* AI Enrichment card */}
+      <AIEnrichmentCard onNavigateToReview={onNavigateToReview ?? (() => {})} />
 
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
