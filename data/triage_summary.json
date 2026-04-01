@@ -1,0 +1,202 @@
+{
+  "total": 11387,
+  "summary": {
+    "Wine product": {
+      "desc_html": 1329,
+      "taxonomy_incomplete": 3804,
+      "desc_ok": 1372,
+      "desc_missing": 183,
+      "desc_brand_voice": 614,
+      "desc_short_only": 650
+    },
+    "Brandy": {
+      "desc_html": 67,
+      "taxonomy_incomplete": 132,
+      "desc_ok": 52,
+      "desc_short_only": 6,
+      "desc_brand_voice": 14
+    },
+    "Red Wine": {
+      "desc_short_only": 680,
+      "taxonomy_incomplete": 234,
+      "desc_html": 512,
+      "desc_ok": 1133,
+      "desc_brand_voice": 375,
+      "desc_missing": 39
+    },
+    "Whisky": {
+      "desc_html": 358,
+      "taxonomy_incomplete": 626,
+      "desc_short_only": 42,
+      "desc_brand_voice": 230,
+      "desc_ok": 140,
+      "desc_missing": 1
+    },
+    "White Wine": {
+      "desc_short_only": 195,
+      "desc_ok": 563,
+      "desc_brand_voice": 149,
+      "desc_html": 148,
+      "taxonomy_incomplete": 126,
+      "desc_missing": 32
+    },
+    "Gin": {
+      "desc_html": 133,
+      "taxonomy_incomplete": 203,
+      "desc_ok": 42,
+      "desc_brand_voice": 64,
+      "desc_short_only": 15
+    },
+    "Unknown": {
+      "desc_brand_voice": 92,
+      "desc_html": 244,
+      "taxonomy_incomplete": 469,
+      "desc_short_only": 27,
+      "desc_ok": 162,
+      "desc_missing": 1
+    },
+    "Liqueur": {
+      "desc_html": 106,
+      "taxonomy_incomplete": 298,
+      "desc_ok": 153,
+      "desc_short_only": 13,
+      "desc_brand_voice": 40
+    },
+    "Sake/Shochu": {
+      "desc_short_only": 185,
+      "taxonomy_incomplete": 413,
+      "desc_brand_voice": 27,
+      "desc_html": 56,
+      "desc_ok": 150
+    },
+    "Sparkling Wine": {
+      "desc_brand_voice": 55,
+      "desc_ok": 137,
+      "desc_html": 69,
+      "taxonomy_incomplete": 45,
+      "desc_short_only": 52,
+      "desc_missing": 2
+    },
+    "Tequila": {
+      "desc_short_only": 15,
+      "taxonomy_incomplete": 136,
+      "desc_html": 61,
+      "desc_ok": 49,
+      "desc_brand_voice": 36
+    },
+    "Champagne": {
+      "desc_short_only": 101,
+      "taxonomy_incomplete": 81,
+      "desc_html": 62,
+      "desc_brand_voice": 36,
+      "desc_ok": 142,
+      "desc_missing": 10
+    },
+    "Orange Wine": {
+      "desc_ok": 9,
+      "desc_brand_voice": 4,
+      "desc_html": 2
+    },
+    "Others": {
+      "desc_ok": 155,
+      "taxonomy_incomplete": 272,
+      "desc_brand_voice": 50,
+      "desc_html": 70,
+      "desc_short_only": 19,
+      "desc_missing": 2
+    },
+    "Beer": {
+      "desc_ok": 156,
+      "taxonomy_incomplete": 214,
+      "desc_html": 19,
+      "desc_brand_voice": 42
+    },
+    "Rum": {
+      "desc_html": 45,
+      "taxonomy_incomplete": 117,
+      "desc_ok": 52,
+      "desc_brand_voice": 21,
+      "desc_short_only": 8,
+      "desc_missing": 2
+    },
+    "Mineral Water": {
+      "desc_brand_voice": 1,
+      "desc_html": 1,
+      "taxonomy_incomplete": 1
+    },
+    "Fruit Wine": {
+      "desc_short_only": 2,
+      "desc_html": 14,
+      "taxonomy_incomplete": 2,
+      "desc_brand_voice": 1
+    },
+    "Vodka": {
+      "desc_brand_voice": 28,
+      "desc_html": 54,
+      "taxonomy_incomplete": 152,
+      "desc_ok": 79,
+      "desc_short_only": 3,
+      "desc_missing": 1
+    },
+    "Rose Wine": {
+      "desc_brand_voice": 12,
+      "desc_short_only": 17,
+      "taxonomy_incomplete": 13,
+      "desc_html": 28,
+      "desc_ok": 53,
+      "desc_missing": 5
+    },
+    "Sparkling Wine|Fruit Wine": {
+      "desc_brand_voice": 1,
+      "desc_html": 3,
+      "desc_short_only": 1
+    },
+    "Dessert Wine": {
+      "desc_ok": 28,
+      "taxonomy_incomplete": 17,
+      "desc_brand_voice": 6,
+      "desc_html": 5,
+      "desc_short_only": 2
+    },
+    "White Wine|Fruit Wine": {
+      "desc_missing": 3,
+      "taxonomy_incomplete": 3,
+      "desc_short_only": 1,
+      "desc_html": 1
+    },
+    "Port Wine": {
+      "desc_ok": 8,
+      "desc_short_only": 1,
+      "desc_html": 3
+    },
+    "Thai White Spirits": {
+      "desc_html": 9,
+      "taxonomy_incomplete": 9,
+      "desc_brand_voice": 8
+    },
+    "Liqueur|Whisky": {
+      "desc_brand_voice": 1,
+      "taxonomy_incomplete": 1
+    },
+    "Wine": {
+      "desc_ok": 3,
+      "taxonomy_incomplete": 3
+    },
+    "Rose Wine|Fruit Wine": {
+      "desc_short_only": 1,
+      "desc_brand_voice": 1,
+      "desc_missing": 1,
+      "taxonomy_incomplete": 1
+    },
+    "Red Wine|Fruit Wine": {
+      "desc_short_only": 1,
+      "desc_missing": 3,
+      "taxonomy_incomplete": 3
+    },
+    "Rosé Wine": {
+      "desc_missing": 1,
+      "taxonomy_incomplete": 1
+    }
+  },
+  "generated_at": "2026-04-01T01:04:37.010Z"
+}

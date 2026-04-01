@@ -5,7 +5,11 @@
 //   npx tsx scripts/run-ai-enrichment.ts
 //   npx tsx scripts/run-ai-enrichment.ts --dry-run
 //   npx tsx scripts/run-ai-enrichment.ts --category="Red Wine" --limit=10
-//   npx tsx scripts/run-ai-enrichment.ts --batch=1   (batch numbers from spec Section 8)
+//   npx tsx scripts/run-ai-enrichment.ts --batch=1        (single batch by number)
+//   npx tsx scripts/run-ai-enrichment.ts --tier=1         (all batches, T1 stars only)
+//   npx tsx scripts/run-ai-enrichment.ts --tier=2         (all batches, T2 regular only)
+//   npx tsx scripts/run-ai-enrichment.ts --tier=3         (all batches, T3 occasional only)
+//   npx tsx scripts/run-ai-enrichment.ts --tier=5         (all batches, no-sales only)
 
 import Anthropic from '@anthropic-ai/sdk';
 import fs from 'fs';
@@ -15,6 +19,7 @@ const DRY_RUN  = process.argv.includes('--dry-run');
 const LIMIT    = (() => { const m = process.argv.find(a => a.startsWith('--limit=')); return m ? parseInt(m.split('=')[1]) : 0; })();
 const CATEGORY = (() => { const m = process.argv.find(a => a.startsWith('--category=')); return m ? m.split('=').slice(1).join('=') : null; })();
 const BATCH_N  = (() => { const m = process.argv.find(a => a.startsWith('--batch=')); return m ? parseInt(m.split('=')[1]) : 0; })();
+const TIER     = (() => { const m = process.argv.find(a => a.startsWith('--tier=')); return m ? parseInt(m.split('=')[1]) : 0; })();
 
 const CONCURRENCY = 5;
 const PAGE        = 500;
@@ -28,29 +33,31 @@ if (!process.env.ANTHROPIC_API_KEY) { console.error('Missing ANTHROPIC_API_KEY')
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 // Batch definitions: number → [classifications]
+// Priority order: highest revenue / most important first
 const BATCHES: Record<number, string[]> = {
   1: ['Red Wine'],
   2: ['White Wine'],
-  3: ['Rosé Wine', 'Rosé', 'Rose Wine', 'Dessert Wine'],
-  4: ['Sparkling Wine', 'Champagne', 'Prosecco', 'Cava', 'Crémant'],
-  5: ['Whisky', 'Whiskey'],
-  6: ['Gin', 'Rum', 'Tequila', 'Vodka', 'Brandy', 'Liqueur', 'Other Spirit'],
-  7: ['Beer'],
-  8: ['Sake'],
-  9: ['Accessory', 'Glassware', 'Non-Alcoholic', 'Other'],
+  3: ['Rose Wine', 'Dessert Wine', 'Port Wine', 'Orange Wine', 'Fruit Wine'],
+  4: ['Sparkling Wine', 'Champagne'],
+  5: ['Whisky'],
+  6: ['Gin', 'Rum', 'Tequila', 'Vodka', 'Brandy', 'Liqueur', 'White Spirits', 'Thai White Spirits', 'Chinese Spirits', 'Ready to Drink'],
+  7: ['Beer', 'Non-Alcoholic'],
+  8: ['Sake/Shochu', 'Korean Wine'],
+  9: ['Accessories', 'Glassware', 'Others'],
+  // Cigar, Events, Mineral Water intentionally excluded — no useful AI description needed
 };
 
 const TEMPLATE_MAP: Record<string, string> = {
-  'red wine': 'wine', 'white wine': 'wine', 'rosé wine': 'wine', 'rosé': 'wine',
-  'rose wine': 'wine', 'dessert wine': 'wine',
-  'sparkling wine': 'sparkling', 'champagne': 'sparkling', 'prosecco': 'sparkling',
-  'cava': 'sparkling', 'crémant': 'sparkling',
+  'red wine': 'wine', 'white wine': 'wine', 'rose wine': 'wine',
+  'dessert wine': 'wine', 'port wine': 'wine', 'orange wine': 'wine', 'fruit wine': 'wine',
+  'sparkling wine': 'sparkling', 'champagne': 'sparkling',
   'whisky': 'whisky', 'whiskey': 'whisky',
   'gin': 'spirits', 'rum': 'spirits', 'tequila': 'spirits', 'vodka': 'spirits',
-  'brandy': 'spirits', 'liqueur': 'spirits', 'other spirit': 'spirits',
-  'beer': 'beer', 'sake': 'sake',
-  'accessory': 'accessories', 'glassware': 'accessories',
-  'non-alcoholic': 'accessories', 'other': 'accessories',
+  'brandy': 'spirits', 'liqueur': 'spirits', 'white spirits': 'spirits',
+  'thai white spirits': 'spirits', 'chinese spirits': 'spirits', 'ready to drink': 'spirits',
+  'beer': 'beer', 'non-alcoholic': 'beer',
+  'sake/shochu': 'sake', 'korean wine': 'sake',
+  'accessories': 'accessories', 'glassware': 'accessories', 'others': 'accessories',
 };
 
 function getTemplate(classification: string): string {
@@ -208,7 +215,10 @@ function validateResponse(ai: Record<string, any>, row: Record<string, any>): Re
 async function fetchProductBatch(classifications: string[], offset: number, limit: number): Promise<any[]> {
   // Build OR filter for classifications
   const clsFilter = classifications.map(c => `classification.eq.${encodeURIComponent(c)}`).join(',');
-  const url = `${BASE_URL}/rest/v1/products?select=id,sku,sku_base,name,classification,country,region,subregion,appellation,style,style_detail,vintage,brand,wine_body,wine_acidity,wine_tannin,wine_classification,flavor_tags,food_matching,short_description_en,description_en_text,desc_source&is_primary_variant=eq.true&or=(${clsFilter})&offset=${offset}&limit=${limit}`;
+  // Optional tier filter: --tier=N restricts to exact enrichment_priority value
+  const tierFilter = TIER > 0 ? `&enrichment_priority=eq.${TIER}` : '';
+  // Order by enrichment_priority ASC so T1 stars are processed before T2/T3/T5 (no sales)
+  const url = `${BASE_URL}/rest/v1/products?select=id,sku,sku_base,name,classification,country,region,subregion,appellation,style,style_detail,vintage,brand,wine_body,wine_acidity,wine_tannin,wine_classification,flavor_tags,food_matching,short_description_en,description_en_text,desc_source&is_primary_variant=eq.true&desc_en_short=is.null${tierFilter}&or=(${clsFilter})&order=enrichment_priority.asc&offset=${offset}&limit=${limit}`;
   const res = await sbFetch(url, { method: 'GET', headers: { Prefer: 'count=none' } });
   if (!res.ok) throw new Error(`Fetch failed: ${res.status} ${await res.text()}`);
   return res.json();
