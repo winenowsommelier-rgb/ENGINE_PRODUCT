@@ -41,9 +41,9 @@ async function sbFetch(url: string, opts: RequestInit = {}, retries = 3): Promis
   throw new Error('sbFetch exhausted retries');
 }
 
-async function fetchProduct(id: string): Promise<Record<string, any> | null> {
+async function fetchProductBySku(sku: string): Promise<Record<string, any> | null> {
   const res = await sbFetch(
-    `${BASE_URL}/rest/v1/products?id=eq.${id}&select=id,sku,sku_base,overall_confidence`,
+    `${BASE_URL}/rest/v1/products?sku=eq.${encodeURIComponent(sku)}&select=id,sku,sku_base,overall_confidence`,
     { method: 'GET', headers: { Prefer: 'count=none' } }
   );
   if (!res.ok) return null;
@@ -84,9 +84,9 @@ export async function POST(req: NextRequest) {
   };
 
   for (const productId of productIds) {
-    // Guard against path traversal — only accept UUID-shaped IDs
-    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!UUID_RE.test(productId)) {
+    // Guard against path traversal — accept UUIDs and row-{number}-{timestamp} IDs
+    const SAFE_ID_RE = /^[a-zA-Z0-9_-]+$/;
+    if (!SAFE_ID_RE.test(productId)) {
       results.primaryFailed.push(productId);
       continue;
     }
@@ -108,8 +108,10 @@ export async function POST(req: NextRequest) {
     const aiResult: Record<string, any> = enrichment.result ?? {};
     const isManual = enrichment.manual_edited === true;
 
-    // Fetch current product to get overall_confidence for weighted average
-    const current = await fetchProduct(productId);
+    // Fetch current product by SKU (enrichment files use row-{n}-{ts} IDs, not Supabase UUIDs)
+    const sku = enrichment.sku;
+    if (!sku) { results.primaryFailed.push(productId); continue; }
+    const current = await fetchProductBySku(sku);
     if (!current) { results.primaryFailed.push(productId); continue; }
 
     // Compute new overall_confidence
@@ -130,8 +132,9 @@ export async function POST(req: NextRequest) {
     // Remove desc_confidence from the DB payload (not a DB column)
     delete primaryPayload.desc_confidence;
 
-    // Write primary
-    const primaryOk = await patchProduct(productId, primaryPayload);
+    // Write primary using real Supabase UUID
+    const realId = current.id;
+    const primaryOk = await patchProduct(realId, primaryPayload);
     if (!primaryOk) {
       results.primaryFailed.push(productId);
       continue;
@@ -139,11 +142,20 @@ export async function POST(req: NextRequest) {
 
     results.published++;
 
+    // Mark result as published on disk immediately after successful DB write
+    enrichment.status = 'published';
+    enrichment.published_at = now;
+    try {
+      fs.writeFileSync(resultPath, JSON.stringify(enrichment, null, 2));
+    } catch (e: any) {
+      console.error(`  WARNING: failed to mark ${productId} as published on disk: ${e.message}`);
+    }
+
     // Sync shared fields to all variants
     const skuBase = current.sku_base ?? enrichment.sku_base;
     if (!skuBase) continue;
 
-    const variantIds = await fetchVariants(skuBase, productId);
+    const variantIds = await fetchVariants(skuBase, realId);
     if (variantIds.length === 0) continue;
 
     // Build variant payload: shared fields only, from the primary payload
@@ -155,15 +167,6 @@ export async function POST(req: NextRequest) {
     for (const varId of variantIds) {
       const ok = await patchProduct(varId, variantPayload);
       if (!ok) results.variantSyncFailed.push(varId);
-    }
-
-    // Mark result as published
-    enrichment.status = 'published';
-    enrichment.published_at = now;
-    try {
-      fs.writeFileSync(resultPath, JSON.stringify(enrichment, null, 2));
-    } catch (e: any) {
-      console.error(`  WARNING: failed to mark ${productId} as published on disk: ${e.message}`);
     }
   }
 

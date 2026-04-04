@@ -1,11 +1,9 @@
-.next/
-node_modules/
-.env.local
-tsconfig.tsbuildinfo
-.worktrees/
-.vercel
 data/enrichment_results/
+data/db/
+data/backups/
 data/needs_ai_review.json
+data/triage_summary.json
 data/t1_t2_product_library.*
-data/products.db
+scripts/
 supabase/.temp/
+*.py

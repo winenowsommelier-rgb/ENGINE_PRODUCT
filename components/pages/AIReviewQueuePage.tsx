@@ -254,33 +254,52 @@ export function AIReviewQueuePage() {
     ));
   }
 
-  async function handlePublish() {
-    const approvedIds = records.filter(r => r.status === 'approved').map(r => r.product_id);
-    if (approvedIds.length === 0) { setPublishOutput('No approved records to publish.'); return; }
-
+  async function publishIds(ids: string[]) {
+    if (ids.length === 0) { setPublishOutput('No records to publish.'); return; }
     setPublishing(true);
-    setPublishOutput('Publishing…');
+    setPublishOutput(`Publishing ${ids.length} records…`);
     try {
       const res = await fetch('/api/ai-enrichment/publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productIds: approvedIds }),
+        body: JSON.stringify({ productIds: ids }),
       });
       const data = await res.json();
       const msg = [
-        `Published: ${data.published}`,
-        data.primaryFailed.length > 0 ? `Primary failures: ${data.primaryFailed.length}` : '',
-        data.variantSyncFailed.length > 0 ? `Variant sync failures: ${data.variantSyncFailed.length}` : '',
+        `✓ Published: ${data.published}`,
+        data.primaryFailed?.length > 0 ? `✗ Failed: ${data.primaryFailed.length}` : '',
+        data.variantSyncFailed?.length > 0 ? `⚠ Variant sync failed: ${data.variantSyncFailed.length}` : '',
       ].filter(Boolean).join(' | ');
       setPublishOutput(msg);
       if (data.ok) {
-        setRecords(rs => rs.map(r => approvedIds.includes(r.product_id) ? { ...r, status: 'published' } : r));
+        setRecords(rs => rs.map(r => ids.includes(r.product_id) ? { ...r, status: 'published' } : r));
       }
     } catch (e) {
       setPublishOutput(String(e));
     } finally {
       setPublishing(false);
     }
+  }
+
+  async function handlePublish() {
+    const approvedIds = records.filter(r => r.status === 'approved').map(r => r.product_id);
+    await publishIds(approvedIds);
+  }
+
+  async function handleApproveAllAndPublish() {
+    const ids = records
+      .filter(r => r.status === 'pending_review' && !isManuallyProtected(r))
+      .map(r => r.product_id);
+    setRecords(rs => rs.map(r => ids.includes(r.product_id) ? { ...r, status: 'approved' } : r));
+    await publishIds(ids);
+  }
+
+  async function handleApproveHighConfidenceAndPublish() {
+    const ids = records
+      .filter(r => r.status === 'pending_review' && confBand(r.desc_confidence) === 'high' && !isManuallyProtected(r))
+      .map(r => r.product_id);
+    setRecords(rs => rs.map(r => ids.includes(r.product_id) ? { ...r, status: 'approved' } : r));
+    await publishIds(ids);
   }
 
   // ── Filtering ──
@@ -330,19 +349,36 @@ export function AIReviewQueuePage() {
       </div>
 
       {/* Bulk actions */}
-      <div className="flex items-center gap-3 mb-5 flex-wrap">
-        <button onClick={handleApproveHighConfidence} className="text-xs bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-500/30 px-3 py-1.5 rounded-lg transition-colors">
-          Approve all high-confidence (≥85%)
+      <div className="flex items-center gap-3 mb-2 flex-wrap">
+        <button
+          onClick={handleApproveHighConfidenceAndPublish}
+          disabled={publishing}
+          className="text-xs bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white px-3 py-1.5 rounded-lg transition-colors font-medium"
+        >
+          {publishing ? 'Publishing…' : `✓ Approve & Publish high-confidence (≥85%)`}
         </button>
-        <button onClick={handleApproveAll} className="text-xs bg-white/10 hover:bg-white/15 text-slate-300 px-3 py-1.5 rounded-lg transition-colors">
-          Approve all
+        <button
+          onClick={handleApproveAllAndPublish}
+          disabled={publishing}
+          className="text-xs bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white px-3 py-1.5 rounded-lg transition-colors font-medium"
+        >
+          {publishing ? 'Publishing…' : `✓ Approve all & Publish (${pendingCount})`}
+        </button>
+      </div>
+      <div className="flex items-center gap-3 mb-5 flex-wrap">
+        <span className="text-xs text-slate-500">Or manually approve below, then:</span>
+        <button onClick={handleApproveHighConfidence} className="text-xs bg-white/5 hover:bg-white/10 text-slate-400 border border-white/10 px-3 py-1 rounded-lg transition-colors">
+          Mark high-confidence approved
+        </button>
+        <button onClick={handleApproveAll} className="text-xs bg-white/5 hover:bg-white/10 text-slate-400 border border-white/10 px-3 py-1 rounded-lg transition-colors">
+          Mark all approved
         </button>
         <button
           onClick={handlePublish}
           disabled={publishing || approvedCount === 0}
-          className="text-xs bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white px-4 py-1.5 rounded-lg transition-colors ml-auto"
+          className="text-xs bg-violet-600/50 hover:bg-violet-600 disabled:opacity-40 text-white px-4 py-1 rounded-lg transition-colors ml-auto border border-violet-500/30"
         >
-          {publishing ? 'Publishing…' : `Publish ${approvedCount} approved`}
+          {publishing ? 'Publishing…' : `Publish ${approvedCount} approved →`}
         </button>
       </div>
 

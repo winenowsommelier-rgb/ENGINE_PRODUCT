@@ -12,6 +12,7 @@ import {
 import { processBatch } from '@/lib/batch-processor';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 // Initialize database on first request
 let dbInitialized = false;
