@@ -11,16 +11,44 @@ const HEADERS = {
   'Content-Type': 'application/json',
 };
 
+async function sbGet(path: string) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: HEADERS });
+  if (!res.ok) return [];
+  return res.json();
+}
+
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/products?id=eq.${encodeURIComponent(params.id)}&select=*&limit=1`,
-      { headers: HEADERS },
-    );
-    if (!res.ok) throw new Error(await res.text());
-    const rows = await res.json();
+    const rows = await sbGet(`products?id=eq.${encodeURIComponent(params.id)}&select=*&limit=1`);
     if (!rows.length) return NextResponse.json({ error: 'Product not found' }, { status: 404 });
-    return NextResponse.json({ product: rows[0], changelog: [] });
+    const product = rows[0];
+
+    // Resolve scope via classification_scope_map → character_dimensions
+    let characterDimensions: Record<string, unknown>[] = [];
+    const classification = product.classification;
+    if (classification) {
+      const scopeMaps = await sbGet(
+        `classification_scope_map?classification=eq.${encodeURIComponent(classification)}&select=scope_id&limit=1`
+      );
+      const scopeId = scopeMaps?.[0]?.scope_id;
+      if (scopeId) {
+        characterDimensions = await sbGet(
+          `character_dimensions?scope_id=eq.${encodeURIComponent(scopeId)}&select=dimension_key,label,description&order=sort_order.asc.nullslast`
+        );
+      }
+    }
+
+    // Fetch taxonomy_contexts for country and region
+    let taxonomyContexts: Record<string, unknown>[] = [];
+    const taxTerms = [product.country, product.region].filter(Boolean);
+    if (taxTerms.length) {
+      const orFilter = taxTerms.map(t => `term.eq.${encodeURIComponent(t)}`).join(',');
+      taxonomyContexts = await sbGet(
+        `taxonomy_contexts?or=(${orFilter})&select=term,description_short&limit=10`
+      );
+    }
+
+    return NextResponse.json({ product, characterDimensions, taxonomyContexts, changelog: [] });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Request failed' }, { status: 500 });
   }
