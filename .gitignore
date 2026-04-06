@@ -8,4 +8,7 @@ data/enrichment_results/
 data/needs_ai_review.json
 data/t1_t2_product_library.*
 data/products.db
+data/taxonomy.db
+data/taxonomy.db-wal
+data/taxonomy.db-shm
 supabase/.temp/
