@@ -1,6 +1,6 @@
 'use client';
 import React, { Suspense, useState } from 'react';
-import { BookOpen, Database, Grid3X3, LayoutDashboard, Library, Package, RefreshCw, Settings, Sparkles, TrendingUp, Upload, type LucideIcon } from 'lucide-react';
+import { BookOpen, ClipboardCheck, Database, Grid3X3, LayoutDashboard, Library, Package, RefreshCw, Settings, Sparkles, TrendingUp, Upload, type LucideIcon } from 'lucide-react';
 
 // Lazy imports — each page loads independently, crashes are isolated
 const ImportPage        = React.lazy(() => import('@/components/pages/ImportPage').then(m => ({ default: m.ImportPage })));
@@ -14,8 +14,9 @@ const SeoCommandCenter  = React.lazy(() => import('@/components/seo-command-cent
 const SettingsPage      = React.lazy(() => import('@/components/pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
 const AIReviewQueuePage = React.lazy(() => import('@/components/pages/AIReviewQueuePage').then(m => ({ default: m.AIReviewQueuePage })));
 const KnowledgeLibraryPage = React.lazy(() => import('@/components/pages/KnowledgeLibraryPage').then(m => ({ default: m.KnowledgeLibraryPage })));
+const ValidationDashboardPage = React.lazy(() => import('@/components/pages/ValidationDashboardPage').then(m => ({ default: m.ValidationDashboardPage })));
 
-type Section = 'import' | 'processing' | 'taxonomy_queue' | 'taxonomy_manager' | 'knowledge_library' | 'products' | 'override_import' | 'matrix' | 'settings' | 'seo' | 'ai_review_queue';
+type Section = 'import' | 'processing' | 'taxonomy_queue' | 'taxonomy_manager' | 'knowledge_library' | 'products' | 'override_import' | 'matrix' | 'settings' | 'seo' | 'ai_review_queue' | 'validation';
 
 const NAV_ITEMS: Array<{ id: Section; label: string; Icon: LucideIcon }> = [
   { id: 'import',           label: 'Import',             Icon: Upload },
@@ -26,6 +27,7 @@ const NAV_ITEMS: Array<{ id: Section; label: string; Icon: LucideIcon }> = [
   { id: 'knowledge_library', label: 'Knowledge Library', Icon: Library },
   { id: 'products',         label: 'Products',           Icon: Package },
   { id: 'override_import',  label: 'Override Import',    Icon: LayoutDashboard },
+  { id: 'validation',       label: 'Data Validation',    Icon: ClipboardCheck },
   { id: 'matrix',           label: 'Product Matrix',     Icon: Grid3X3 },
   { id: 'seo',              label: 'SEO Command Center', Icon: TrendingUp },
   { id: 'settings',         label: 'Settings',           Icon: Settings },
@@ -102,6 +104,7 @@ export function Dashboard() {
     seo:              <SeoCommandCenter />,
     settings:         <SettingsPage />,
     ai_review_queue:  <AIReviewQueuePage />,
+    validation:       <ValidationDashboardPage />,
   };
 
   return (

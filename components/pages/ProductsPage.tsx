@@ -2,13 +2,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ChevronLeft, ChevronRight, Edit2, X, Search,
-  SlidersHorizontal, Layers, MapPin, Star, Droplets, Tag, Wine, Code2, Eye, FileText,
-  ArrowUpDown, ChevronDown, AlertTriangle, CheckCircle2, Info, Utensils, BarChart3
+  SlidersHorizontal, Layers, MapPin, Star, Tag, Wine, Code2, Eye, FileText,
+  ArrowUpDown, ChevronDown, CheckCircle2, Utensils, BarChart3
 } from 'lucide-react';
 import {
-  RadarChart as RechartsRadar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
-  Radar, ResponsiveContainer, Tooltip,
-} from 'recharts';
+  CharacterRadarChart, FlavorWheel, BodySweetnessMatrix,
+  FoodPairingGrid, DataQualityGauge, VintageTimeline,
+} from '@/components/product-visualizations';
 
 type Product = Record<string, unknown>;
 type Facet = { value: string; count: number };
@@ -37,45 +37,12 @@ function fmtPrice(v: unknown, currency = 'THB') {
   catch { return `${cur} ${n.toLocaleString()}`; }
 }
 
-const FLAVOR_COLORS: Record<string, string> = {
-  fruit:   'bg-pink-500/20 text-pink-300 border-pink-500/30',
-  spice:   'bg-amber-500/20 text-amber-300 border-amber-500/30',
-  herbal:  'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-  earth:   'bg-stone-500/20 text-stone-300 border-stone-500/30',
-  oak:     'bg-orange-500/20 text-orange-300 border-orange-500/30',
-  floral:  'bg-purple-500/20 text-purple-300 border-purple-500/30',
-  mineral: 'bg-slate-400/20 text-slate-300 border-slate-400/30',
-  sweet:   'bg-rose-500/20 text-rose-300 border-rose-500/30',
-};
-const DEFAULT_FLAVOR = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
-
-function guessFlavorCat(f: string) {
-  const s = f.toLowerCase();
-  if (/apple|pear|cherry|plum|berry|fig|peach|citrus|lemon|lime|orange|mango|tropical|melon/.test(s)) return 'fruit';
-  if (/pepper|spice|clove|cinnamon|ginger|nutmeg|vanilla/.test(s)) return 'spice';
-  if (/grass|mint|herb|eucalyptus|thyme|sage|green/.test(s)) return 'herbal';
-  if (/earth|soil|mushroom|truffle|leather|tobacco/.test(s)) return 'earth';
-  if (/oak|cedar|wood|smoke|toast/.test(s)) return 'oak';
-  if (/floral|rose|violet|jasmine|blossom|flower/.test(s)) return 'floral';
-  if (/mineral|chalk|flint|stone|slate/.test(s)) return 'mineral';
-  if (/honey|caramel|chocolate|cream|butter|sweet/.test(s)) return 'sweet';
-  return 'other';
-}
-
 const STATUS_COLORS: Record<string, string> = {
   validated:       'bg-emerald-500/20 text-emerald-300',
   needs_review:    'bg-amber-500/20 text-amber-300',
   needs_attention: 'bg-rose-500/20 text-rose-300',
   raw:             'bg-slate-500/20 text-slate-400',
 };
-
-const TIER_SCALE: Record<string, number> = {
-  low: 1, medium: 2, high: 3, full: 3, light: 1,
-};
-function scaleTier(v: string | null | undefined): number {
-  if (!v) return 0;
-  return TIER_SCALE[String(v).toLowerCase().trim()] ?? 2;
-}
 
 const CLASSIFICATION_COLORS: Record<string, string> = {
   'Red Wine':       'bg-red-500/20 text-red-300 border-red-500/30',
@@ -95,56 +62,6 @@ function classificationBadge(cls: string | null | undefined) {
   const colors = CLASSIFICATION_COLORS[c] ?? 'bg-slate-500/20 text-slate-300 border-slate-500/30';
   return <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium border ${colors}`}>{c || 'Uncategorized'}</span>;
 }
-
-// Map dimension keys to product fields
-const DIMENSION_FIELD_MAP: Record<string, string> = {
-  body: 'wine_body',
-  acidity: 'wine_acidity',
-  tannin: 'wine_tannin',
-  sweetness: 'wine_sweetness',
-  alcohol: 'alcohol',
-  intensity: 'wine_intensity',
-  complexity: 'wine_complexity',
-  finish: 'wine_finish',
-  smoke: 'spirit_smoke',
-  spice: 'spirit_spice',
-  oak: 'spirit_oak',
-  fruit: 'spirit_fruit',
-  umami: 'sake_umami',
-  fragrance: 'sake_fragrance',
-};
-
-function dimensionValue(product: Product, dimKey: string): number {
-  const field = DIMENSION_FIELD_MAP[dimKey];
-  if (field && product[field] != null) {
-    const raw = product[field];
-    const num = parseFloat(String(raw));
-    if (!isNaN(num)) return Math.min(num, 5);
-    return scaleTier(String(raw));
-  }
-  // fallback: try direct key
-  if (product[dimKey] != null) {
-    const num = parseFloat(String(product[dimKey]));
-    if (!isNaN(num)) return Math.min(num, 5);
-    return scaleTier(String(product[dimKey]));
-  }
-  return 0;
-}
-
-const IMPORTANT_FIELDS = [
-  { key: 'classification', label: 'Classification' },
-  { key: 'country', label: 'Country' },
-  { key: 'region', label: 'Region' },
-  { key: 'grape_variety', label: 'Grape Variety' },
-  { key: 'vintage', label: 'Vintage' },
-  { key: 'wine_body', label: 'Body' },
-  { key: 'wine_acidity', label: 'Acidity' },
-  { key: 'flavor_tags', label: 'Flavor Tags' },
-  { key: 'food_matching', label: 'Food Matching' },
-  { key: 'desc_en_short', label: 'Short Description (EN)' },
-  { key: 'desc_en_full', label: 'Full Description (EN)' },
-  { key: 'price', label: 'Price' },
-];
 
 // ── Description block ─────────────────────────────────────────────────────────
 
@@ -395,34 +312,6 @@ export function ProductsPage() {
     else { setSortBy(col); setSortDir('desc'); }
     setPage(1);
   }
-
-  // Radar data from dynamic character dimensions
-  const radarData = useMemo(() => {
-    if (!selected || !charDimensions.length) return [];
-    return charDimensions
-      .map(d => ({
-        dimension: d.label,
-        value: dimensionValue(selected, d.dimension_key),
-        fullMark: 3,
-      }))
-      .filter(d => d.value > 0);
-  }, [selected, charDimensions]);
-
-  // Missing fields analysis
-  const missingFields = useMemo(() => {
-    if (!selected) return [];
-    return IMPORTANT_FIELDS
-      .filter(f => {
-        const v = selected[f.key];
-        if (v === null || v === undefined || v === '') return true;
-        if (typeof v === 'string' && v.trim() === '') return true;
-        return false;
-      })
-      .map(f => ({
-        label: f.label,
-        severity: ['classification', 'country', 'price'].includes(f.key) ? 'high' as const : 'medium' as const,
-      }));
-  }, [selected]);
 
   const taxContextMap = useMemo(() => {
     const m = new Map<string, string>();
@@ -728,151 +617,44 @@ export function ProductsPage() {
                       <span className="text-[10px] text-slate-600 ml-auto">{charDimensions.length} dimensions</span>
                     )}
                   </div>
+                  <CharacterRadarChart product={selected} charDimensions={charDimensions} />
+                </div>
 
-                  {radarData.length >= 3 ? (
-                    <div className="flex flex-col sm:flex-row items-center gap-4">
-                      <div className="w-[260px] h-[220px] shrink-0">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <RechartsRadar cx="50%" cy="50%" outerRadius="75%" data={radarData}>
-                            <PolarGrid stroke="rgba(255,255,255,0.08)" />
-                            <PolarAngleAxis
-                              dataKey="dimension"
-                              tick={{ fill: 'rgba(148,163,184,0.8)', fontSize: 11 }}
-                            />
-                            <PolarRadiusAxis
-                              angle={90}
-                              domain={[0, 3]}
-                              tick={false}
-                              axisLine={false}
-                            />
-                            <Radar
-                              name="Profile"
-                              dataKey="value"
-                              stroke="rgba(139,92,246,0.8)"
-                              fill="rgba(139,92,246,0.25)"
-                              strokeWidth={2}
-                            />
-                            <Tooltip
-                              contentStyle={{
-                                background: 'rgba(15,23,42,0.95)',
-                                border: '1px solid rgba(255,255,255,0.1)',
-                                borderRadius: '8px',
-                                fontSize: '12px',
-                                color: '#e2e8f0',
-                              }}
-                            />
-                          </RechartsRadar>
-                        </ResponsiveContainer>
-                      </div>
-                      <div className="flex-1 space-y-2">
-                        {charDimensions.map(d => {
-                          const val = dimensionValue(selected, d.dimension_key);
-                          return (
-                            <div key={d.dimension_key} className="flex items-center gap-3">
-                              <span className="text-xs text-slate-400 w-20 shrink-0">{d.label}</span>
-                              <div className="flex gap-1">
-                                {[1, 2, 3].map(dot => (
-                                  <div key={dot} className={`w-2 h-2 rounded-full transition-colors ${val >= dot ? 'bg-violet-500' : 'bg-white/10'}`} />
-                                ))}
-                              </div>
-                              <span className="text-[11px] text-slate-500">
-                                {val > 0 ? val.toFixed(0) : '--'}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ) : radarData.length > 0 ? (
-                    /* Fewer than 3 data points -- show as simple bars */
-                    <div className="space-y-2">
-                      {charDimensions.map(d => {
-                        const val = dimensionValue(selected, d.dimension_key);
-                        return (
-                          <div key={d.dimension_key} className="flex items-center gap-3">
-                            <span className="text-xs text-slate-400 w-20">{d.label}</span>
-                            <div className="flex-1 h-1.5 bg-white/10 rounded-full">
-                              <div className="h-1.5 bg-violet-500 rounded-full" style={{ width: `${(val / 3) * 100}%` }} />
-                            </div>
-                            <span className="text-[11px] text-slate-500 w-6 text-right">
-                              {val > 0 ? val.toFixed(0) : '--'}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : charDimensions.length > 0 ? (
+                {/* ── Card 3b: Body/Sweetness Matrix ── */}
+                <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Layers size={14} className="text-violet-400" />
+                    <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Style Position</h3>
+                  </div>
+                  <BodySweetnessMatrix product={selected} />
+                </div>
+
+                {/* ── Card 4a: Flavor Wheel ── */}
+                <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Tag size={14} className="text-violet-400" />
+                    <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Flavor Profile</h3>
+                  </div>
+                  <FlavorWheel product={selected} />
+                  {!parseTags(selected.flavor_tags as string).length && (
                     <div className="border border-dashed border-white/10 rounded-lg px-4 py-4">
-                      <p className="text-xs text-slate-500 italic">
-                        Character dimensions defined but no values yet. Available:
-                      </p>
-                      <div className="flex flex-wrap gap-1.5 mt-2">
-                        {charDimensions.map(d => (
-                          <span key={d.dimension_key} className="text-[10px] px-2 py-0.5 rounded border border-white/10 text-slate-600">{d.label}</span>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="border border-dashed border-white/10 rounded-lg px-4 py-4">
-                      <p className="text-xs text-slate-500 italic">
-                        No character dimensions available for this product scope. Dimensions are loaded from the character_dimensions table based on the product classification.
-                      </p>
+                      <p className="text-xs text-slate-500 italic">No flavor data yet</p>
                     </div>
                   )}
                 </div>
 
-                {/* ── Card 4: Flavor & Pairing ── */}
+                {/* ── Card 4b: Food Pairing Grid ── */}
                 <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5">
                   <div className="flex items-center gap-2 mb-3">
                     <Utensils size={14} className="text-violet-400" />
-                    <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Flavor & Pairing</h3>
+                    <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Food Pairing</h3>
                   </div>
-
-                  {(() => {
-                    const flavorTags = parseTags(selected.flavor_tags as string);
-                    const foodMatching = parseTags(selected.food_matching as string);
-                    const hasAny = flavorTags.length > 0 || foodMatching.length > 0;
-
-                    if (!hasAny) {
-                      return (
-                        <div className="border border-dashed border-white/10 rounded-lg px-4 py-4">
-                          <p className="text-xs text-slate-500 italic">Not yet enriched</p>
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <div className="space-y-4">
-                        {flavorTags.length > 0 && (
-                          <div>
-                            <p className="text-[10px] text-slate-500 uppercase tracking-wide font-semibold mb-2">Flavor Tags</p>
-                            <div className="flex flex-wrap gap-1.5">
-                              {flavorTags.map(t => {
-                                const cat = guessFlavorCat(t);
-                                return (
-                                  <span key={t} className={`px-2.5 py-1 rounded-full text-xs border capitalize ${FLAVOR_COLORS[cat] ?? DEFAULT_FLAVOR}`}>
-                                    {t}
-                                  </span>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
-                        {foodMatching.length > 0 && (
-                          <div>
-                            <p className="text-[10px] text-slate-500 uppercase tracking-wide font-semibold mb-2">Food Pairing</p>
-                            <div className="flex flex-wrap gap-1.5">
-                              {foodMatching.map(f => (
-                                <span key={f} className="px-2.5 py-1 rounded-full text-xs border bg-emerald-500/15 text-emerald-300 border-emerald-500/25 capitalize">
-                                  {f}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
+                  <FoodPairingGrid product={selected} />
+                  {!parseTags(selected.food_matching as string).length && (
+                    <div className="border border-dashed border-white/10 rounded-lg px-4 py-4">
+                      <p className="text-xs text-slate-500 italic">No pairing data yet</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* ── Card 5: Description ── */}
@@ -932,61 +714,29 @@ export function ProductsPage() {
                   })()}
                 </div>
 
+                {/* ── Card 5b: Vintage Timeline ── */}
+                {!!selected.vintage && (
+                  <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Star size={14} className="text-violet-400" />
+                      <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Vintage</h3>
+                    </div>
+                    <VintageTimeline product={selected} />
+                  </div>
+                )}
+
                 {/* ── Card 6: Data Quality ── */}
                 <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5">
                   <div className="flex items-center gap-2 mb-3">
                     <CheckCircle2 size={14} className="text-violet-400" />
                     <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Data Quality</h3>
-                  </div>
-
-                  {/* Overall confidence */}
-                  <div className="mb-4">
-                    <ConfBar label="Overall Confidence" value={confValue(selected)} />
-                    {selected.taxonomy_confidence != null && (
-                      <ConfBar label="Taxonomy Confidence" value={parseFloat(String(selected.taxonomy_confidence ?? 0))} />
-                    )}
-                  </div>
-
-                  {/* Validation status */}
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[String(selected.validation_status ?? '')] ?? 'bg-slate-500/20 text-slate-300'}`}>
-                      {String(selected.validation_status ?? 'raw')}
-                    </span>
-                    {!!selected.updated_at && (
-                      <span className="text-[10px] text-slate-600">
-                        Updated {new Date(String(selected.updated_at)).toLocaleDateString()}
+                    {!!selected.validation_status && (
+                      <span className={`ml-auto rounded-full px-2 py-0.5 text-[10px] font-medium ${STATUS_COLORS[String(selected.validation_status)] ?? 'bg-slate-500/20 text-slate-300'}`}>
+                        {String(selected.validation_status)}
                       </span>
                     )}
                   </div>
-
-                  {/* Missing fields */}
-                  {missingFields.length > 0 && (
-                    <div>
-                      <p className="text-[10px] text-slate-500 uppercase tracking-wide font-semibold mb-2">
-                        Missing Fields ({missingFields.length})
-                      </p>
-                      <div className="space-y-1">
-                        {missingFields.map(f => (
-                          <div key={f.label} className="flex items-center gap-2">
-                            {f.severity === 'high' ? (
-                              <AlertTriangle size={11} className="text-rose-400 shrink-0" />
-                            ) : (
-                              <Info size={11} className="text-amber-400 shrink-0" />
-                            )}
-                            <span className={`text-xs ${f.severity === 'high' ? 'text-rose-300' : 'text-amber-300'}`}>
-                              {f.label}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {missingFields.length === 0 && (
-                    <div className="flex items-center gap-2 text-emerald-400">
-                      <CheckCircle2 size={13} />
-                      <span className="text-xs">All important fields populated</span>
-                    </div>
-                  )}
+                  <DataQualityGauge product={selected} />
                 </div>
 
                 {/* ── Inline Edit Panel ── */}
