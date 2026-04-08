@@ -192,8 +192,12 @@ function scoreDataConsistency(product: any): { score: number; issues: string[] }
   if (vintage) {
     const vintageStr = String(vintage).trim();
     const isCleanYear = /^\d{4}$/.test(vintageStr);
+    const isNV = /^N\.?V\.?$/i.test(vintageStr);
     const hasMayChange = /MAY\s*CHANGE/i.test(vintageStr);
     if (isCleanYear && !hasMayChange) {
+      score += 5;
+    } else if (isNV) {
+      // NV is a legitimate vintage designation for Champagne, sparkling, fortified, spirits
       score += 5;
     } else {
       issues.push(hasMayChange ? 'Vintage contains "MAY CHANGE"' : `Vintage not clean 4-digit year: "${vintageStr}"`);
