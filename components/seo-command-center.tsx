@@ -154,7 +154,7 @@ const AI_SOV_HISTORY = [
 
 function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`rounded-2xl border border-white/8 bg-slate-800/60 backdrop-blur-sm ${className}`}>
+    <div className={`rounded-2xl border border-white/10 bg-slate-800/60 backdrop-blur-sm ${className}`}>
       {children}
     </div>
   );
@@ -304,7 +304,7 @@ function TopKeywordsPanel({ data, loading }: {
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/8">
+              <tr className="border-b border-white/10">
                 {['Keyword', 'Clicks', 'Impr.', 'CTR', 'Position', '△ Pos'].map(h => (
                   <th key={h} className="px-5 py-2.5 text-left text-xs font-medium text-slate-400 whitespace-nowrap">
                     {h}
@@ -347,7 +347,7 @@ function TopPagesPanel({ data, loading }: {
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/8">
+              <tr className="border-b border-white/10">
                 {['Page', 'Clicks', 'Impr.', 'CTR', 'Avg. Pos'].map(h => (
                   <th key={h} className="px-5 py-2.5 text-left text-xs font-medium text-slate-400 whitespace-nowrap">
                     {h}
@@ -494,7 +494,7 @@ function AiVisibilityPanel({ data, loading, error, onRun, running }: {
       {data && !loading && (
         <div className="px-5 pb-5 space-y-5">
           {/* Mention rate hero */}
-          <div className="flex items-center gap-6 rounded-xl border border-white/8 bg-slate-900/60 p-4">
+          <div className="flex items-center gap-6 rounded-xl border border-white/10 bg-slate-900/60 p-4">
             <div className="text-center">
               <p className="text-4xl font-bold text-white">{data.mentionRate.toFixed(0)}%</p>
               <p className="text-xs text-slate-400 mt-1">mention rate</p>
@@ -594,7 +594,7 @@ function CompetitorsPanel({ data, loading, error }: {
             <p className="mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Tier 1 — Direct competitors</p>
             <div className="space-y-2">
               {tier1.map(c => (
-                <div key={c.id} className="rounded-xl border border-white/8 bg-slate-900/40 overflow-hidden">
+                <div key={c.id} className="rounded-xl border border-white/10 bg-slate-900/40 overflow-hidden">
                   <button
                     className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-white/3 transition-colors"
                     onClick={() => setExpanded(expanded === c.id ? null : c.id)}
@@ -648,7 +648,7 @@ function CompetitorsPanel({ data, loading, error }: {
             <p className="mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Tier 2–4 — Indirect competitors</p>
             <div className="flex flex-wrap gap-2">
               {tier2plus.map(c => (
-                <div key={c.id} className="flex items-center gap-2 rounded-xl border border-white/8 bg-slate-900/40 px-3 py-2">
+                <div key={c.id} className="flex items-center gap-2 rounded-xl border border-white/10 bg-slate-900/40 px-3 py-2">
                   <span className={`h-1.5 w-1.5 rounded-full ${c.tier === 2 ? 'bg-amber-400' : 'bg-slate-500'}`} />
                   <span className="text-xs text-slate-300">{c.name}</span>
                 </div>
@@ -693,12 +693,12 @@ function SiteHealthPanel({ data, loading, error }: {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-white/8 bg-slate-900/40 p-3 text-center">
+              <div className="rounded-xl border border-white/10 bg-slate-900/40 p-3 text-center">
                 <p className="text-2xl font-bold text-amber-300">{data.summary.lowCtrCount}</p>
                 <p className="text-xs text-slate-400 mt-1">Low CTR pages</p>
                 <p className="text-[10px] text-slate-600">Need meta improvements</p>
               </div>
-              <div className="rounded-xl border border-white/8 bg-slate-900/40 p-3 text-center">
+              <div className="rounded-xl border border-white/10 bg-slate-900/40 p-3 text-center">
                 <p className="text-2xl font-bold text-emerald-300">{data.summary.quickWinCount}</p>
                 <p className="text-xs text-slate-400 mt-1">Quick-win keywords</p>
                 <p className="text-[10px] text-slate-600">Position 11–30, high impressions</p>
@@ -1084,7 +1084,7 @@ export function SeoCommandCenter() {
             { name: 'Google Ads',            status: 'not configured' },
           ].map(ds => (
             <div key={ds.name}
-              className="flex items-center gap-2 rounded-xl border border-white/8 bg-slate-900/50 px-3 py-2">
+              className="flex items-center gap-2 rounded-xl border border-white/10 bg-slate-900/50 px-3 py-2">
               <span className={`h-1.5 w-1.5 rounded-full ${
                 ds.status === 'live' || ds.status === 'ready' ? 'bg-emerald-400' :
                 ds.status === 'error' ? 'bg-rose-400' :

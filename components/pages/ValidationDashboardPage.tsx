@@ -67,7 +67,7 @@ function StatCard({ icon: Icon, label, value, sub, color }: {
   icon: any; label: string; value: string | number; sub?: string; color?: string;
 }) {
   return (
-    <div className="bg-white/5 rounded-2xl p-5 flex flex-col gap-3 border border-white/8">
+    <div className="bg-white/5 rounded-2xl p-5 flex flex-col gap-3 border border-white/10">
       <div className="flex items-center gap-2">
         <Icon size={14} style={{ color: color ?? '#8b5cf6' }} />
         <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">{label}</span>
@@ -396,7 +396,7 @@ export function ValidationDashboardPage() {
               sub={tier ? `Tier ${tier}` : 'All tiers'}
               color="#8b5cf6"
             />
-            <div className="bg-white/5 rounded-2xl p-5 border border-white/8 flex flex-col items-center justify-center">
+            <div className="bg-white/5 rounded-2xl p-5 border border-white/10 flex flex-col items-center justify-center">
               <ScoreGauge score={data.summary.avg_score} />
             </div>
             <StatCard
@@ -419,7 +419,7 @@ export function ValidationDashboardPage() {
 
           {/* Distribution chart + Export controls */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="lg:col-span-2 bg-white/5 rounded-2xl p-5 border border-white/8">
+            <div className="lg:col-span-2 bg-white/5 rounded-2xl p-5 border border-white/10">
               <h2 className="text-sm font-medium text-slate-300 mb-4">Quality Score Distribution</h2>
               <div className="h-56">
                 <ResponsiveContainer width="100%" height="100%">
@@ -442,7 +442,7 @@ export function ValidationDashboardPage() {
               </div>
             </div>
 
-            <div className="bg-white/5 rounded-2xl p-5 border border-white/8 flex flex-col gap-4">
+            <div className="bg-white/5 rounded-2xl p-5 border border-white/10 flex flex-col gap-4">
               <h2 className="text-sm font-medium text-slate-300">Export</h2>
               <button
                 onClick={() => handleExport('masterfile')}
@@ -476,7 +476,7 @@ export function ValidationDashboardPage() {
           </div>
 
           {/* Field completeness table */}
-          <div className="bg-white/5 rounded-2xl p-5 border border-white/8">
+          <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
             <h2 className="text-sm font-medium text-slate-300 mb-4">Field Completeness</h2>
             {data.top_issues.length > 0
               ? <FieldCompletenessTable issues={data.top_issues} total={data.summary.total} />
@@ -485,13 +485,13 @@ export function ValidationDashboardPage() {
           </div>
 
           {/* Issues list */}
-          <div className="bg-white/5 rounded-2xl p-5 border border-white/8">
+          <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
             <h2 className="text-sm font-medium text-slate-300 mb-4">Known Issues</h2>
             <IssuesList products={data.products} />
           </div>
 
           {/* Product table */}
-          <div className="bg-white/5 rounded-2xl p-5 border border-white/8">
+          <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
             <h2 className="text-sm font-medium text-slate-300 mb-4">All Products (sorted by score, worst first)</h2>
             <ProductTable products={data.products} />
           </div>

@@ -61,7 +61,7 @@ function StatCard({ icon: Icon, label, value, sub, color }: {
   icon: any; label: string; value: string | number; sub?: string; color?: string;
 }) {
   return (
-    <div className="bg-white/5 rounded-2xl p-5 flex flex-col gap-3 border border-white/8">
+    <div className="bg-white/5 rounded-2xl p-5 flex flex-col gap-3 border border-white/10">
       <div className="flex items-center gap-2">
         <Icon size={14} style={{ color: color ?? '#8b5cf6' }} />
         <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">{label}</span>
@@ -302,7 +302,7 @@ export function ProductMatrixPage() {
       {/* Data quality ring + Category breakdown side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Confidence donut */}
-        <div className="bg-white/5 rounded-2xl p-6 border border-white/8">
+        <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
           <div className="flex items-center gap-2 mb-5">
             <Tag size={13} className="text-violet-400" />
             <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Data Quality Distribution</h3>
@@ -312,7 +312,7 @@ export function ProductMatrixPage() {
         </div>
 
         {/* Classification tiers */}
-        <div className="bg-white/5 rounded-2xl p-6 border border-white/8">
+        <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
           <div className="flex items-center gap-2 mb-5">
             <Layers size={13} className="text-violet-400" />
             <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Classification Tiers</h3>
@@ -330,7 +330,7 @@ export function ProductMatrixPage() {
       </div>
 
       {/* Category bars */}
-      <div className="bg-white/5 rounded-2xl p-6 border border-white/8">
+      <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
         <div className="flex items-center gap-2 mb-5">
           <Tag size={13} className="text-violet-400" />
           <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Product Categories</h3>
@@ -345,7 +345,7 @@ export function ProductMatrixPage() {
       {/* Country + Price tier side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Country */}
-        <div className="bg-white/5 rounded-2xl p-6 border border-white/8">
+        <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
           <div className="flex items-center gap-2 mb-5">
             <Globe size={13} className="text-violet-400" />
             <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">By Country of Origin</h3>
@@ -358,7 +358,7 @@ export function ProductMatrixPage() {
         </div>
 
         {/* Price tiers */}
-        <div className="bg-white/5 rounded-2xl p-6 border border-white/8">
+        <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
           <div className="flex items-center gap-2 mb-5">
             <BarChart2 size={13} className="text-violet-400" />
             <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Price Tier Distribution (THB)</h3>
@@ -377,7 +377,7 @@ export function ProductMatrixPage() {
       </div>
 
       {/* Category × Country cross matrix */}
-      <div className="bg-white/5 rounded-2xl p-6 border border-white/8">
+      <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
         <div className="flex items-center gap-2 mb-2">
           <Grid3x3 size={13} className="text-violet-400" />
           <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Category × Country Portfolio Matrix</h3>

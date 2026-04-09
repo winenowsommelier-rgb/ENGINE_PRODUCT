@@ -324,7 +324,7 @@ export function ProductsPage() {
   // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex h-[calc(100vh-64px)]">
+    <div className="flex h-full">
       {/* ═══ LEFT PANEL: Product List ═══ */}
       <div className={`${selected ? 'hidden lg:flex' : 'flex'} flex-col w-full lg:w-[400px] lg:min-w-[400px] lg:max-w-[400px] border-r border-white/10 bg-slate-950`}>
         {/* Header */}
