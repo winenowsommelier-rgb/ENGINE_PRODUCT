@@ -1,0 +1,1609 @@
+[
+  {
+    "sku": "WSP1541CH",
+    "name": "Monsoon Valley  Brut Prestige Sparkling Wine",
+    "classification": "Sparkling Wine",
+    "country": "Thailand",
+    "region": "Khao Yai",
+    "brand": "Wine",
+    "needs": [
+      "grape",
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LTQ0001AD",
+    "name": "Tequila Rose  Strawberry Cream (750 ml)",
+    "classification": "Rose Wine",
+    "country": "Mexico",
+    "region": "Baja California",
+    "brand": "Tequila Rose",
+    "needs": [
+      "grape"
+    ]
+  },
+  {
+    "sku": "WDW0032AB",
+    "name": "Donnafugata  Ben Rye' Passito Di Pantelleria (375 ml)",
+    "classification": "Dessert Wine",
+    "country": "Italy",
+    "region": "Sicily",
+    "brand": "Donnafugata",
+    "needs": [
+      "grape"
+    ]
+  },
+  {
+    "sku": "WDW0518AA",
+    "name": "Baron Philippe de Rothschild  Baronne Paulinne AOC Sauternes",
+    "classification": "Dessert Wine",
+    "country": "France",
+    "region": "Bordeaux",
+    "brand": "Baron Philippe de Rothschild",
+    "needs": [
+      "grape"
+    ]
+  },
+  {
+    "sku": "WOW0018AB",
+    "name": "Shumi  Kisi Dry Amber",
+    "classification": "Orange Wine",
+    "country": "Georgia",
+    "region": "Others region",
+    "brand": "Shumi",
+    "needs": [
+      "grape"
+    ]
+  },
+  {
+    "sku": "WRS0165AD",
+    "name": "De Bortoli  DB Family Selection Rose",
+    "classification": "Rose Wine",
+    "country": "Australia",
+    "region": "South Eastern Australia",
+    "brand": "De Bortoli",
+    "needs": [
+      "grape"
+    ]
+  },
+  {
+    "sku": "WRS0217FX",
+    "name": "Granmonte  Sakuna Rose",
+    "classification": "Rose Wine",
+    "country": "Thailand",
+    "region": "Khao Yai",
+    "brand": "Granmonte",
+    "needs": [
+      "grape"
+    ]
+  },
+  {
+    "sku": "WSP2624FR",
+    "name": "Domaine Cold River  Cuvee Tradition Brut (Black Label)",
+    "classification": "Sparkling Wine",
+    "country": "Australia",
+    "region": "South Eastern Australia",
+    "brand": "Domaine Cold River",
+    "needs": [
+      "grape"
+    ]
+  },
+  {
+    "sku": "WSP5657FX",
+    "name": "Granmonte  Sparkling Rose Méthode Traditionnelle Brut",
+    "classification": "Sparkling Wine",
+    "country": "Thailand",
+    "region": "Khao Yai",
+    "brand": "Granmonte",
+    "needs": [
+      "grape"
+    ]
+  },
+  {
+    "sku": "WSP5681DD",
+    "name": "Expresion  Premium Sparkling Mojito",
+    "classification": "Sparkling Wine",
+    "country": "South Africa",
+    "region": "Western Cape",
+    "brand": "Expresion",
+    "needs": [
+      "grape"
+    ]
+  },
+  {
+    "sku": "WSP5682DD",
+    "name": "Expresion  Premium Sparkling Mimosa",
+    "classification": "Sparkling Wine",
+    "country": "South Africa",
+    "region": "Western Cape",
+    "brand": "Expresion",
+    "needs": [
+      "grape"
+    ]
+  },
+  {
+    "sku": "WSP5790AD",
+    "name": "Chandon  Garden Spritz",
+    "classification": "Sparkling Wine",
+    "country": "Australia",
+    "region": "Victoria",
+    "brand": "Chandon",
+    "needs": [
+      "grape"
+    ]
+  },
+  {
+    "sku": "CIG0375BT",
+    "name": "Romeo Y Julieta  Mini (20 Sticks per Box)",
+    "classification": "Cigar",
+    "country": "Cuba",
+    "region": "",
+    "brand": "Romeo Y Julieta",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "GDC0048AB",
+    "name": "Riedel  Decanter Ultra Magnum",
+    "classification": "Glassware",
+    "country": "Austria",
+    "region": "",
+    "brand": "Riedel",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "GLQ0023BR",
+    "name": "Glencairn  Official Whisky Glass (Set of 6)",
+    "classification": "Glassware",
+    "country": "",
+    "region": "",
+    "brand": "Glencairn",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "GWN0161AB",
+    "name": "Riedel  Sommeliers Black Series ( R ) : Bordeaux Grand Cru",
+    "classification": "Glassware",
+    "country": "Austria",
+    "region": "Bordeaux",
+    "brand": "Riedel",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "GWN0406AB",
+    "name": "Riedel  Veloce Cabernet/Merlot (Pack 2 piece)",
+    "classification": "Glassware",
+    "country": "Austria",
+    "region": "",
+    "brand": "Riedel",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LBD0007CN",
+    "name": "St-Rémy  V.S.O.P (700 ml)",
+    "classification": "Brandy",
+    "country": "France",
+    "region": "",
+    "brand": "St-Rémy",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LBD0011CN",
+    "name": "Remy Martin  V.S.O.P (700 ml)",
+    "classification": "Brandy",
+    "country": "France",
+    "region": "Champagne",
+    "brand": "Remy Martin",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LGN0003AD",
+    "name": "McCormick  Gin Extra Dry (750 ml)",
+    "classification": "Gin",
+    "country": "USA",
+    "region": "Caribbean",
+    "brand": "McCormick",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LGN0026BU",
+    "name": "Monkey 47  Dry Gin (500 ml)",
+    "classification": "Gin",
+    "country": "Germany",
+    "region": "",
+    "brand": "Monkey 47",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LGN0118EQ",
+    "name": "Harahorn  Norwegian Small Batch Gin (750 ml)",
+    "classification": "Gin",
+    "country": "Norway",
+    "region": "",
+    "brand": "Harahorn",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LLQ0058CN",
+    "name": "Cointreau  Orange Liqueur (700 ml)",
+    "classification": "Liqueur",
+    "country": "France",
+    "region": "",
+    "brand": "Cointreau",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LLQ0066AD",
+    "name": "De Kuyper  Blue Curacao (700 ml)",
+    "classification": "Liqueur",
+    "country": "Netherlands",
+    "region": "Cognac",
+    "brand": "De Kuyper",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LLQ0072AT",
+    "name": "Luxardo  Limoncello (750 ml)",
+    "classification": "Liqueur",
+    "country": "Italy",
+    "region": "",
+    "brand": "Luxardo",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LLQ0167AH",
+    "name": "Mr.Boston  Triple Sec (1 L)",
+    "classification": "Liqueur",
+    "country": "USA",
+    "region": "Islands",
+    "brand": "Mr.Boston",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LLQ0432CN",
+    "name": "Ancho Reyes Originale Chili Liqueur (700 ml)",
+    "classification": "Liqueur",
+    "country": "Mexico",
+    "region": "",
+    "brand": "Ancho Reyes",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LLQ0488CN",
+    "name": "Passoa Passion fruit liqueur (700 ml)",
+    "classification": "Liqueur",
+    "country": "France",
+    "region": "",
+    "brand": "Passoa",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LOT0174GR",
+    "name": "Inchon  Plum Umeshu (750 ml)",
+    "classification": "Others",
+    "country": "Thailand",
+    "region": "",
+    "brand": "Inchon",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LRM0035BU",
+    "name": "Captain Morgan  Jamaica Rum (700 ml)",
+    "classification": "Rum",
+    "country": "Caribbean",
+    "region": "Jamaica",
+    "brand": "Captain Morgan",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LTQ0177CN",
+    "name": "Montelobos  Espadin Joven Mezcal (700 ml)",
+    "classification": "Tequila",
+    "country": "Mexico",
+    "region": "Oaxaca",
+    "brand": "Montelobos",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LVK0047BU",
+    "name": "Smirnoff  Vodka (1 L)",
+    "classification": "Vodka",
+    "country": "Russia",
+    "region": "Islands",
+    "brand": "Smirnoff",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LVK0048BU",
+    "name": "Smirnoff  Vodka (700 ml)",
+    "classification": "Vodka",
+    "country": "Russia",
+    "region": "Islands",
+    "brand": "Smirnoff",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LVK0647BU",
+    "name": "Gilbey's  Vodka (1 L)",
+    "classification": "Vodka",
+    "country": "England",
+    "region": "",
+    "brand": "Gilbey's",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LWH0205AD",
+    "name": "Evan Williams Bourbon Black (750 ml)",
+    "classification": "Whisky",
+    "country": "USA",
+    "region": "Kentucky",
+    "brand": "Evan Williams",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LWH0217BU",
+    "name": "Jack Daniel's  Single Barrel Tennessee Whiskey (750 ml)",
+    "classification": "Whisky",
+    "country": "USA",
+    "region": "Tennessee",
+    "brand": "Jack Daniel's",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LWH0251AA",
+    "name": "Suntory Whisky  Chita (700 ml)",
+    "classification": "Whisky",
+    "country": "Japan",
+    "region": "Japan",
+    "brand": "Suntory",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LWH0980DG",
+    "name": "Nikka  Taketsuru Pure Malt Whisky (700 ml)",
+    "classification": "Whisky",
+    "country": "Japan",
+    "region": "Japan",
+    "brand": "Nikka",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "LWH1051DG",
+    "name": "Nikka  Days Whisky (700 ml)",
+    "classification": "Whisky",
+    "country": "Japan",
+    "region": "Japan",
+    "brand": "Nikka",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WDW0516AB",
+    "name": "Maison Castel  Medium Sweet Muscat Pays d'Oc",
+    "classification": "Dessert Wine",
+    "country": "France",
+    "region": "Languedoc",
+    "brand": "Maison Castel",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRS0047AB",
+    "name": "Chamdeville  Pinot Noir Rose",
+    "classification": "Rose Wine",
+    "country": "France",
+    "region": "Others region",
+    "brand": "Chamdeville",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW0035AD",
+    "name": "Rawson's Retreat  Cabernet Sauvignon",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Eastern Australia",
+    "brand": "Rawson's Retreat",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW0114AD",
+    "name": "Michel Lynch  Bordeaux Rouge",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Bordeaux",
+    "brand": "Michel Lynch",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW0202AH",
+    "name": "Hardys  Varietal Range Merlot",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Eastern Australia",
+    "brand": "Hardys",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW0204AH",
+    "name": "Hardys  Varietal Range Shiraz",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Eastern Australia",
+    "brand": "Hardys",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW0207AH",
+    "name": "Hardys  Stamp Shiraz/Cabernet Sauvignon",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Eastern Australia",
+    "brand": "Hardys",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW0232AH",
+    "name": "Montes  Alpha Cabernet Sauvignon",
+    "classification": "Red Wine",
+    "country": "Chile",
+    "region": "Maipo",
+    "brand": "Montes",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW0255AA",
+    "name": "Baron Philippe de Rothschild  Mouton Cadet Bordeaux Rouge",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Bordeaux",
+    "brand": "Baron Philippe de Rothschild",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW0288AD",
+    "name": "Concha Y Toro  Frontera Cabernet Sauvignon",
+    "classification": "Red Wine",
+    "country": "Chile",
+    "region": "Central Valley",
+    "brand": "Concha y Toro",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW0338AD",
+    "name": "Catena Zapata  Catena Cabernet Sauvignon",
+    "classification": "Red Wine",
+    "country": "Argentina",
+    "region": "Mendoza",
+    "brand": "Catena Zapata",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW0464AD",
+    "name": "Vigneti del Salento  \"ZOLLA\" Primitivo Merlot Puglia IGP",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Puglia",
+    "brand": "Vigneti Del Salento",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW0574AA",
+    "name": "Velenosi  Montepulciano D' Abruzzo The Year of the Rabbit",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Abruzzo",
+    "brand": "Velenosi",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW0617AA",
+    "name": "Allegrini  Palazzo della Torre IGT",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Veneto",
+    "brand": "Allegrini",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW1024AB",
+    "name": "Springfield Estate  The Work of Time",
+    "classification": "Red Wine",
+    "country": "South Africa",
+    "region": "Western Cape",
+    "brand": "Springfield Estate",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW1039AD",
+    "name": "Wolf Blass  Eaglehawk Shiraz",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Australia",
+    "brand": "Wolf Blass",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW1089AH",
+    "name": "Piccini  Chianti Arancio DOCG",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Tuscany",
+    "brand": "Piccini",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW1288AF",
+    "name": "Masi  Amarone \"Costasera\" Classico DOC",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Veneto",
+    "brand": "Masi",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW1608BS",
+    "name": "Castellare Di Castellina  Chianti Classico Riserva DOCG",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Tuscany",
+    "brand": "Castellare Di Castellina",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW1830GC",
+    "name": "Tedeschi  Amarone Della Valpolicella Classico Riserva Capitel Monte Olmi",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Veneto",
+    "brand": "Tedeschi",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW1852AE",
+    "name": "Zenato  Amarone della Valpolicella Classico DOC",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Veneto",
+    "brand": "Zenato",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW2358BN",
+    "name": "Glaetzer  Bishop",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "Barossa",
+    "brand": "Glaetzer",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW3064BN",
+    "name": "Castello di Fonterutoli  Castello Fonterutoli Chianti Classico Gran Selezione DOCG",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Tuscany",
+    "brand": "Castello di Fonterutoli",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW3065BS",
+    "name": "Luccarelli  Negroamaro Puglia IGP",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Puglia",
+    "brand": "Luccarelli",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW3122CH",
+    "name": "Mcguigan  Black Label Red",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Eastern Australia",
+    "brand": "McGuigan",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW3123CH",
+    "name": "Mcguigan  Black Label Merlot",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Eastern Australia",
+    "brand": "McGuigan",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW3191AD",
+    "name": "Vigneti del Salento  \"ZOLLA\" Primitivo Di Manduria DOC",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Puglia",
+    "brand": "Vigneti Del Salento",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW3272AB",
+    "name": "San Marzano  Santoro Primitivo Puglia IGP",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Puglia",
+    "brand": "San Marzano",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW3294AE",
+    "name": "Casanova di Neri  Brunello di Montalcino Tenuta Nuova DOCG 2017",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Tuscany",
+    "brand": "Casanova di Neri",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW3305DD",
+    "name": "Viu Manent  Estate Collection Reserva Merlot",
+    "classification": "Red Wine",
+    "country": "Chile",
+    "region": "Colchagua",
+    "brand": "Viu Manent",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW3471AH",
+    "name": "Montes Winemaker's Choice  Cabernet Sauvignon",
+    "classification": "Red Wine",
+    "country": "Chile",
+    "region": "Maipo",
+    "brand": "Montes",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4287CH",
+    "name": "Monsoon Valley Signature Red",
+    "classification": "Red Wine",
+    "country": "Thailand",
+    "region": "Hua Hin Hills",
+    "brand": "Monsoon Valley",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4291BU",
+    "name": "Jacob's Creek  Classic Cabernet Sauvignon (750 ml)",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Australia",
+    "brand": "Jacob's Creek",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4300BU",
+    "name": "George Wyndham  Bin 555 Shiraz (750 ml)",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Eastern Australia",
+    "brand": "George Wyndham",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4303BU",
+    "name": "Campo Viejo  Tempranillo (750 ml)",
+    "classification": "Red Wine",
+    "country": "Spain",
+    "region": "Rioja",
+    "brand": "Campo Viejo",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4305BU",
+    "name": "Brancott Estate  Pinot Noir (750 ml)",
+    "classification": "Red Wine",
+    "country": "New Zealand",
+    "region": "Marlborough",
+    "brand": "Brancott Estate",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4577DD",
+    "name": "Angove  Long Row Cabernet Sauvignon (187 ml)",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Australia",
+    "brand": "Angove",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4679AD",
+    "name": "Penfolds  Bin 2",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "Barossa",
+    "brand": "Penfolds",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4683AD",
+    "name": "Penfolds  Bin 389 Cabernet Sauvignon/Shiraz",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Australia",
+    "brand": "Penfolds",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4688AD",
+    "name": "Penfolds  Koonunga Hill Shiraz",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Australia",
+    "brand": "Penfolds",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4689AD",
+    "name": "Penfolds  Koonunga Hill Cabernet Sauvignon",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Australia",
+    "brand": "Penfolds",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4692AD",
+    "name": "Penfolds  Max's Shiraz / Cabernet Sauvignon",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Australia",
+    "brand": "Penfolds",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4693AD",
+    "name": "Penfolds  Max's Cabernet Sauvignon",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Australia",
+    "brand": "Penfolds",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4696AD",
+    "name": "Beringer  Main & Vine Cabernet Sauvignon",
+    "classification": "Red Wine",
+    "country": "USA",
+    "region": "California",
+    "brand": "Beringer",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW4703AD",
+    "name": "19 Crimes  Cabernet Sauvignon",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Eastern Australia",
+    "brand": "19 Crimes",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5047AC",
+    "name": "Shafer  TD-9",
+    "classification": "Red Wine",
+    "country": "USA",
+    "region": "Napa",
+    "brand": "Shafer",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5186FC",
+    "name": "Castello Di Ama  Chianti Classico DOCG",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Tuscany",
+    "brand": "Castello Di Ama",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5284AA",
+    "name": "Cantine Leonardo Da Vinci   1502 Da Vinci in Romagna Sangiovese Appassimento",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Tuscany",
+    "brand": "Cantine Leonardo Da Vinci",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5285AA",
+    "name": "Brancaia  Rosso \"Tre\" IGT",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Tuscany",
+    "brand": "Brancaia",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5286AA",
+    "name": "Brancaia  Chianti Classico DOCG",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Tuscany",
+    "brand": "Brancaia",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5333AA",
+    "name": "Velenosi  Montepulciano D' Abruzzo DOC Circum",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Abruzzo",
+    "brand": "Velenosi",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5406BN",
+    "name": "Castello di Fonterutoli  Badiola",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Tuscany",
+    "brand": "Castello di Fonterutoli",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5408BN",
+    "name": "Tenuta Belguardo  Maremma Toscana DOC",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Tuscany",
+    "brand": "Tenuta Belguardo",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5457BN",
+    "name": "Domaine Du Pegau  Cotes du Rhone Cuvee Setier Villages Rouge",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Rhône",
+    "brand": "Domaine Du Pegau",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5463FJ",
+    "name": "Messenez Family  Chateau M Gran Reserva Cabernet Merlot",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Languedoc",
+    "brand": "Messenez Family",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5470FJ",
+    "name": "Pinical Estate  Cabernet Merlot",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Eastern Australia",
+    "brand": "Pinical Estate",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5479BS",
+    "name": "Villa di Corlo  Lambrusco Grasparossa di Castelvetro Corleto DOC",
+    "classification": "Sparkling Wine",
+    "country": "Italy",
+    "region": "Emilia-Romagna",
+    "brand": "Villa di Corlo",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5530FJ",
+    "name": "Georges Duboeuf  Pinot Noir (VDF D'OC)",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Beaujolais",
+    "brand": "Georges Duboeuf",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5676DJ",
+    "name": "Domaine de La Pousse d’Or  Volnay 1er Cru \"Clos des 60 Ouvrees\" - Monopole",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Burgundy",
+    "brand": "Domaine de La Pousse d’Or",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5763FJ",
+    "name": "CUNE  Gran Reserva",
+    "classification": "Red Wine",
+    "country": "Spain",
+    "region": "Rioja",
+    "brand": "CUNE",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5852AD",
+    "name": "Penfolds  Bin 389 Magnum-Lunar New Year 2023 (limited Edition)  (1.5L)",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "South Australia",
+    "brand": "Penfolds",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5861AD",
+    "name": "Langmeil  Barossa Valley Floor Shiraz",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "Barossa",
+    "brand": "The Barossa",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5908FJ",
+    "name": "Reserve St Martin  Pinot Noir",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Languedoc",
+    "brand": "Reserve St Martin",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5962FS",
+    "name": "Santa Helena  Gran Vino (Red Blend)",
+    "classification": "Red Wine",
+    "country": "Chile",
+    "region": "Central Valley",
+    "brand": "Santa Helena",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW5997AD",
+    "name": "Bell' Agio  Chianti DOCG Fiasco",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Tuscany",
+    "brand": "Bell' Agio",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW6105AB",
+    "name": "Alpaca  Organic Red",
+    "classification": "Red Wine",
+    "country": "Chile",
+    "region": "Central Valley",
+    "brand": "Alpaca",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW6186WN",
+    "name": "Chateau de la Vieille Tour  Bordeaux Supérieur AOP",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Bordeaux",
+    "brand": "Chateau de la Vieille Tour",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW6187WN",
+    "name": "Vinum Terra  Bordeaux AOP (No Sulfites)",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Bordeaux",
+    "brand": "Vinum Terra",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW6188WN",
+    "name": "Reserve Tradition du Chateau de la Vieille Tour Bordeaux Supérieur AOP",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Bordeaux",
+    "brand": "Chateau de la Vieille Tour",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW6251FJ",
+    "name": "CUNE  Crianza",
+    "classification": "Red Wine",
+    "country": "Spain",
+    "region": "Bordeaux",
+    "brand": "CUNE",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW6278DJ",
+    "name": "Ferraton Pere & Fils  Hermitage “les Miaux” Rouge",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Rhône Valley",
+    "brand": "Ferraton Pere & Fils",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW6363FC",
+    "name": "Two Hands  Gnarly Dudes Shiraz Barossa",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "Barossa",
+    "brand": "Two Hands",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW6428AB",
+    "name": "Shumi  Kindzmarauli",
+    "classification": "Red Wine",
+    "country": "Georgia",
+    "region": "Others region",
+    "brand": "Shumi",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW6501FS",
+    "name": "Chateau Leoville Poyferre Saint-Julien Grand Cru Classé 2017",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Bordeaux",
+    "brand": "Chateau Leoville Poyferre",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW6598GX",
+    "name": "VIK  Milla Cala",
+    "classification": "Red Wine",
+    "country": "Chile",
+    "region": "Central Valley",
+    "brand": "Vik",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WRW6742DJ",
+    "name": "Domaine Pierre Girardin Volnay Premier Cru Les Taillepieds",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Burgundy",
+    "brand": "Domaine Pierre Girardin",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP0062EG",
+    "name": "Bollinger  Special Cuvee",
+    "classification": "White Wine",
+    "country": "France",
+    "region": "Champagne",
+    "brand": "Bollinger",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP1095AD",
+    "name": "Veuve Clicquot  Brut Yellow Label (375 ml)",
+    "classification": "White Wine",
+    "country": "France",
+    "region": "Champagne",
+    "brand": "Veuve Clicquot",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP1096AD",
+    "name": "Veuve Clicquot  Brut Yellow Label (750 ml)",
+    "classification": "White Wine",
+    "country": "France",
+    "region": "Champagne",
+    "brand": "Veuve Clicquot",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP1117AD",
+    "name": "Chandon  Brut",
+    "classification": "Sparkling Wine",
+    "country": "Australia",
+    "region": "Victoria",
+    "brand": "Chandon",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP1235FC",
+    "name": "Laurent Perrier  La Cuvée (750 ml)",
+    "classification": "White Wine",
+    "country": "France",
+    "region": "Champagne",
+    "brand": "Laurent Perrier",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP1296EG",
+    "name": "Piper-Heidsieck  Cuvee Brut (750 ml)",
+    "classification": "White Wine",
+    "country": "France",
+    "region": "Champagne",
+    "brand": "Piper-Heidsieck",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP1297EG",
+    "name": "Piper-Heidsieck  Cuvee Brut (375 ml)",
+    "classification": "White Wine",
+    "country": "France",
+    "region": "Champagne",
+    "brand": "Piper-Heidsieck",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP1490BU",
+    "name": "Jacob's Creek  Sparkling Chardonnay Pinot Noir (750 ml)",
+    "classification": "Sparkling Wine",
+    "country": "Australia",
+    "region": "South Australia",
+    "brand": "Jacob's Creek",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP2440BN",
+    "name": "Zardetto  Prosecco Brut",
+    "classification": "Sparkling Wine",
+    "country": "Italy",
+    "region": "Veneto",
+    "brand": "Zardetto",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP2509EG",
+    "name": "Charles Heidsieck  The Brut Reserve (750 ml)",
+    "classification": "White Wine",
+    "country": "France",
+    "region": "Champagne",
+    "brand": "Charles Heidsieck",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP2523AD",
+    "name": "Veuve du Vernay  Brut Rose",
+    "classification": "Rose Wine",
+    "country": "France",
+    "region": "Bordeaux",
+    "brand": "Veuve du Vernay",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP5686AD",
+    "name": "Pares Balta  Cava Brut Organic",
+    "classification": "Sparkling Wine",
+    "country": "Spain",
+    "region": "Penedès",
+    "brand": "Pares Balta",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP5723FJ",
+    "name": "Botter Prosecco DOC Extra Dry",
+    "classification": "Sparkling Wine",
+    "country": "Italy",
+    "region": "Veneto",
+    "brand": "Botter",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP5768AB",
+    "name": "Otello Ceci 1813 Nero di Lambrusco Emilia IGT Frizzante",
+    "classification": "Sparkling Wine",
+    "country": "Italy",
+    "region": "Emilia-Romagna",
+    "brand": "Ceci",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WSP5786BN",
+    "name": "Louis Roederer  Collection 245",
+    "classification": "White Wine",
+    "country": "France",
+    "region": "Champagne",
+    "brand": "Louis Roederer",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW0047AC",
+    "name": "Sunnycliff  Chardonnay",
+    "classification": "White Wine",
+    "country": "Australia",
+    "region": "Murray Darling",
+    "brand": "Sunnycliff",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW0080AH",
+    "name": "Banrock Station  Moscato",
+    "classification": "White Wine",
+    "country": "Australia",
+    "region": "South Australia",
+    "brand": "Banrock Station",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW0196AD",
+    "name": "Concha Y Toro  Casillero del Diablo Reserva Sauvignon Blanc",
+    "classification": "White Wine",
+    "country": "Chile",
+    "region": "Central Valley",
+    "brand": "Concha y Toro",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW1231AE",
+    "name": "Feudo Maccari  Grillo IGT",
+    "classification": "White Wine",
+    "country": "Italy",
+    "region": "Islands",
+    "brand": "Feudo Maccari",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW1789AD",
+    "name": "Trimbach  Pinot Blanc",
+    "classification": "White Wine",
+    "country": "France",
+    "region": "Alsace",
+    "brand": "Trimbach",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW2216BU",
+    "name": "Brancott Estate  Sauvignon Blanc (750 ml)",
+    "classification": "White Wine",
+    "country": "New Zealand",
+    "region": "Marlborough",
+    "brand": "Brancott Estate",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW2217BU",
+    "name": "Brancott Estate  Letter Series \"B\" Sauvignon Blanc (750 ml)",
+    "classification": "White Wine",
+    "country": "New Zealand",
+    "region": "Marlborough",
+    "brand": "Brancott Estate",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW2311AB",
+    "name": "Louis Jadot  Chablis",
+    "classification": "White Wine",
+    "country": "France",
+    "region": "Burgundy",
+    "brand": "Louis Jadot",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW2411DD",
+    "name": "Mount Riley  Riesling",
+    "classification": "White Wine",
+    "country": "New Zealand",
+    "region": "Marlborough",
+    "brand": "Mount Riley",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW2412DD",
+    "name": "Mount Riley  Sauvignon Blanc",
+    "classification": "White Wine",
+    "country": "New Zealand",
+    "region": "Marlborough",
+    "brand": "Mount Riley",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW2417DD",
+    "name": "Mount Riley  Gewurztraminer",
+    "classification": "White Wine",
+    "country": "New Zealand",
+    "region": "Marlborough",
+    "brand": "Mount Riley",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW4887BS",
+    "name": "Alta Mora  Etna Bianco",
+    "classification": "White Wine",
+    "country": "Italy",
+    "region": "Sicily",
+    "brand": "Cusumano",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW5113FJ",
+    "name": "Pinical Estate  Chardonnay",
+    "classification": "White Wine",
+    "country": "Australia",
+    "region": "South Eastern Australia",
+    "brand": "Pinical Estate",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW5368BN",
+    "name": "Weingut Robert Weil  Riesling Rheingau Tradition",
+    "classification": "White Wine",
+    "country": "Germany",
+    "region": "Rheingau",
+    "brand": "Weingut Robert Weil",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW5373AB",
+    "name": "Nollen Erben\t Rheinhessen Gewürztraminer Kabinett",
+    "classification": "White Wine",
+    "country": "Germany",
+    "region": "Rheinhessen",
+    "brand": "Nollen Erben",
+    "needs": [
+      "flavor_tags"
+    ]
+  },
+  {
+    "sku": "WWW5443EI",
+    "name": "Chavin Zero Non-Alcoholic Chardonnay (750 ml)",
+    "classification": "White Wine",
+    "country": "France",
+    "region": "Others region",
+    "brand": "Chavin",
+    "needs": [
+      "flavor_tags"
+    ]
+  }
+]

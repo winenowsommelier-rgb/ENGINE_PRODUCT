@@ -1,0 +1,1047 @@
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.blog-faq-question').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var item = this.parentElement;
+      var answer = item.querySelector('.blog-faq-answer');
+      var isActive = item.classList.contains('active');
+      document.querySelectorAll('.blog-faq-item').forEach(function(el) {
+        el.classList.remove('active');
+        el.querySelector('.blog-faq-answer').style.maxHeight = null;
+      });
+      if (!isActive) {
+        item.classList.add('active');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    });
+  });
+});
+</script>
+
+<style>
+/* ── Base ── */
+body {
+  font-family: 'Kanit', 'Gotham', Arial, sans-serif;
+  line-height: 1.8;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  color: #333;
+  font-size: 18px;
+}
+.blog-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.blog-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #ccc, transparent);
+  margin: 40px 0;
+}
+
+/* ── Hero ── */
+.blog-hero-image {
+  width: 100%;
+  max-height: 480px;
+  overflow: hidden;
+  border-radius: 0 0 16px 16px;
+}
+.blog-hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.blog-hero-title {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px 0 20px;
+}
+.blog-hero-title h1 {
+  color: #8B0000;
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+.blog-hero-meta {
+  color: #999;
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 30px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Author ── */
+.blog-author {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0;
+  margin: 30px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+.blog-author-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #f5efe8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.blog-author-info { flex: 1; }
+.blog-author-name { font-size: 16px; font-weight: 600; color: #333; margin: 0; }
+.blog-author-role { font-size: 14px; color: #999; margin: 0; }
+
+/* ── Intro ── */
+.blog-intro {
+  font-size: 20px;
+  color: #555;
+  line-height: 2;
+  max-width: 900px;
+  margin: 0 auto 40px auto;
+  text-align: center;
+  padding: 0 20px;
+}
+
+/* ── TOC ── */
+.blog-toc {
+  background: #faf8f5;
+  border: 1px solid #ede8e2;
+  border-radius: 12px;
+  padding: 24px 30px;
+  margin: 20px auto 40px auto;
+  max-width: 700px;
+}
+.blog-toc-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #8B0000;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.blog-toc ol { margin: 0; padding-left: 20px; }
+.blog-toc li { margin-bottom: 8px; font-size: 16px; line-height: 1.5; }
+.blog-toc a { color: #555; text-decoration: none; transition: color 0.2s ease; }
+.blog-toc a:hover { color: #8B0000; text-decoration: underline; }
+
+/* ── Answer Box (new — for featured snippet) ── */
+.blog-answer-box {
+  background: #fff8f8;
+  border: 2px solid #8B0000;
+  border-radius: 12px;
+  padding: 28px 32px;
+  margin: 0 0 40px 0;
+}
+.blog-answer-box-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #8B0000;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+.blog-answer-box p {
+  font-size: 18px;
+  color: #333;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ── Sections ── */
+.blog-section { padding: 40px 0; }
+.blog-section-alt {
+  background-color: #f9f6f2;
+  padding: 40px 0;
+  margin: 30px 0;
+  border-radius: 12px;
+}
+.blog-section-alt .blog-container { padding: 0 30px; }
+
+/* ── Headings ── */
+h2.blog-heading {
+  color: #8B0000;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid #8B0000;
+  display: inline-block;
+}
+h3.blog-subheading {
+  color: #8B0000;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.blog-section p, .blog-section li,
+.blog-section-alt p, .blog-section-alt li {
+  margin-bottom: 16px;
+  line-height: 1.8;
+}
+.blog-section ul, .blog-section-alt ul {
+  padding-left: 20px;
+  margin-bottom: 30px;
+}
+
+/* ── Image ── */
+.blog-image-wrap { margin: 24px 0; }
+.blog-image-wrap img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  display: block;
+}
+.blog-image-caption {
+  text-align: center;
+  font-size: 14px;
+  color: #999;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* ── Highlight Cards ── */
+.blog-highlights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin: 30px 0;
+}
+.blog-highlight-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.blog-highlight-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+.blog-highlight-icon { font-size: 36px; margin-bottom: 12px; }
+.blog-highlight-card h4 {
+  color: #8B0000;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+.blog-highlight-card p {
+  font-size: 15px;
+  color: #666;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Comparison Table ── */
+.blog-table-wrap {
+  overflow-x: auto;
+  margin: 30px 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.blog-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  min-width: 580px;
+}
+.blog-table thead th {
+  background: #8B0000;
+  color: #fff;
+  padding: 14px 18px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.blog-table thead th:first-child { border-radius: 12px 0 0 0; }
+.blog-table thead th:last-child { border-radius: 0 12px 0 0; }
+.blog-table tbody td {
+  padding: 13px 18px;
+  border-bottom: 1px solid #f0ebe5;
+  color: #444;
+  vertical-align: top;
+}
+.blog-table tbody tr:nth-child(even) { background: #faf8f5; }
+.blog-table tbody tr:hover { background: #f5efe8; }
+.blog-table tbody tr:last-child td { border-bottom: none; }
+.blog-table tbody tr:last-child td:first-child { border-radius: 0 0 0 12px; }
+.blog-table tbody tr:last-child td:last-child { border-radius: 0 0 12px 0; }
+
+/* ── Callout ── */
+.blog-callout {
+  background: linear-gradient(135deg, #fdf6f0, #fff5f5);
+  border-left: 4px solid #8B0000;
+  border-radius: 0 12px 12px 0;
+  padding: 24px 30px;
+  margin: 30px 0;
+}
+.blog-callout-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #8B0000;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.blog-callout p { margin-bottom: 8px; color: #444; }
+
+/* ── Quote ── */
+.blog-quote {
+  text-align: center;
+  padding: 30px 40px;
+  margin: 40px 0;
+  position: relative;
+}
+.blog-quote::before {
+  content: '\201C';
+  font-size: 80px;
+  color: #8B0000;
+  opacity: 0.2;
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: Georgia, serif;
+}
+.blog-quote p {
+  font-size: 22px;
+  font-style: italic;
+  color: #555;
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* ── Sparkling types grid ── */
+.blog-sparkling-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin: 30px 0;
+}
+.blog-sparkling-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 3px 16px rgba(0,0,0,0.07);
+  background: #fff;
+}
+.blog-sparkling-card-header {
+  background: #8B0000;
+  color: #fff;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.blog-sparkling-card-header .flag { font-size: 28px; }
+.blog-sparkling-card-header h4 { margin: 0; font-size: 20px; font-weight: 700; }
+.blog-sparkling-card-header span { font-size: 13px; opacity: 0.8; font-weight: 400; }
+.blog-sparkling-card-body { padding: 20px 24px; }
+.blog-sparkling-card-body p { font-size: 15px; color: #555; margin: 0 0 10px; line-height: 1.7; }
+.blog-sparkling-card-body .blog-sparkling-tag {
+  display: inline-block;
+  background: #f5efe8;
+  color: #8B0000;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+
+/* ── Price badge ── */
+.blog-price-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #8B0000;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-top: 8px;
+}
+
+/* ── FAQ ── */
+.blog-faq { margin: 30px 0; }
+.blog-faq-item {
+  border: 1px solid #ede8e2;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+.blog-faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 18px 24px;
+  font-family: 'Kanit', 'Gotham', Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #333;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s ease;
+}
+.blog-faq-question:hover { background: #faf8f5; }
+.blog-faq-question::after {
+  content: '+';
+  font-size: 22px;
+  color: #8B0000;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+.blog-faq-item.active .blog-faq-question::after { content: '\2212'; }
+.blog-faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+.blog-faq-answer-inner {
+  padding: 0 24px 18px 24px;
+  color: #555;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+/* ── LINE CTA ── */
+.blog-line-cta {
+  background: linear-gradient(135deg, #f0f7ef, #e8f5e6);
+  border-radius: 16px;
+  padding: 36px 40px;
+  margin: 40px 0;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+.blog-line-cta-text { flex: 1; min-width: 250px; }
+.blog-line-cta-text h3 {
+  color: #06C755;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+.blog-line-cta-text p { color: #555; margin: 0; font-size: 16px; }
+.blog-line-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #06C755;
+  color: #fff;
+  padding: 14px 32px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 17px;
+  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 15px rgba(6,199,85,0.3);
+}
+.blog-line-btn:hover { background: #05a647; transform: translateY(-2px); }
+.blog-line-btn svg { width: 24px; height: 24px; fill: #fff; }
+
+/* ── CTA Button ── */
+.blog-cta { text-align: center; padding: 40px 0; }
+.blog-btn {
+  background-color: #8B0000;
+  color: #fff;
+  padding: 14px 36px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 17px;
+  display: inline-block;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 15px rgba(139,0,0,0.3);
+}
+.blog-btn:hover { background-color: #6d0000; transform: translateY(-2px); }
+
+/* ── Related Articles ── */
+.blog-related { padding: 40px 0; }
+.blog-related-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #8B0000;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.blog-related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+.blog-related-card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  background: #fff;
+}
+.blog-related-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+.blog-related-card img { width: 100%; height: 180px; object-fit: cover; display: block; }
+.blog-related-card-body { padding: 16px 20px; }
+.blog-related-card-tag {
+  font-size: 12px;
+  color: #8B0000;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.blog-related-card-body h4 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 6px 0;
+  color: #333;
+  line-height: 1.4;
+}
+.blog-related-card-body p { font-size: 14px; color: #888; margin: 0; }
+
+/* ── Footer Note ── */
+.blog-footer-note {
+  text-align: center;
+  padding: 30px 20px;
+  color: #777;
+  font-size: 15px;
+  font-style: italic;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .blog-hero-image { max-height: 260px; border-radius: 0; }
+  .blog-hero-title h1 { font-size: 26px; }
+  .blog-intro { font-size: 17px; text-align: left; }
+  .blog-toc { padding: 20px; }
+  .blog-section-alt .blog-container { padding: 0 20px; }
+  h2.blog-heading { font-size: 24px; }
+  h3.blog-subheading { font-size: 20px; }
+  .blog-highlights { grid-template-columns: 1fr; }
+  .blog-sparkling-grid { grid-template-columns: 1fr; }
+  .blog-table { font-size: 14px; }
+  .blog-callout { padding: 20px; }
+  .blog-quote p { font-size: 18px; }
+  .blog-faq-question { font-size: 15px; padding: 14px 18px; }
+  .blog-line-cta { padding: 24px; flex-direction: column; text-align: center; }
+  .blog-related-grid { grid-template-columns: 1fr; }
+  .blog-author { flex-direction: column; text-align: center; }
+}
+</style>
+
+<!-- HERO IMAGE -->
+<!-- Replace with your actual uploaded image. Suggested: a beautiful shot of both Champagne flutes and Prosecco bottles side by side -->
+<div class="blog-hero-image">
+  <img src="https://th.wine-now.com/media/wysiwyg/blog/champagne-vs-sparkling-wine-hero.jpg" alt="แชมเปญ vs สปาร์คลิ้งไวน์ ต่างกันอย่างไร">
+</div>
+
+<div class="blog-hero-title">
+  <h1>แชมเปญ vs สปาร์คลิ้งไวน์: ต่างกันอย่างไร? คู่มือฉบับสมบูรณ์ 2025</h1>
+  <div class="blog-hero-meta">ความรู้เรื่องไวน์ &nbsp;|&nbsp; 8 นาที อ่าน</div>
+</div>
+
+<!-- AUTHOR -->
+<div class="blog-container">
+  <div class="blog-author">
+    <div class="blog-author-avatar">🍷</div>
+    <div class="blog-author-info">
+      <p class="blog-author-name">Wine-Now Sommelier Team</p>
+      <p class="blog-author-role">Certified Sommelier &nbsp;|&nbsp; อัปเดต: เมษายน 2025</p>
+    </div>
+  </div>
+</div>
+
+<!-- INTRO -->
+<div class="blog-container">
+  <p class="blog-intro">
+    แชมเปญ (Champagne) และสปาร์คลิ้งไวน์ (Sparkling Wine) ต่างกันอย่างไร? คำถามนี้เกิดขึ้นทุกครั้งที่เราหยิบขวดฟองขึ้นมาฉลอง วันนี้เราจะไขข้อสงสัยให้ครบ — ตั้งแต่แหล่งผลิต วิธีทำ รสชาติ ราคา ไปจนถึงว่าควรเลือกซื้ออะไรในแต่ละโอกาส
+  </p>
+</div>
+
+<!-- ANSWER BOX — optimised for Google featured snippet -->
+<div class="blog-container">
+  <div class="blog-answer-box">
+    <div class="blog-answer-box-label">คำตอบสั้น ๆ</div>
+    <p><strong>แชมเปญ</strong>คือสปาร์คลิ้งไวน์ประเภทหนึ่ง แต่ไม่ใช่สปาร์คลิ้งไวน์ทุกขวดคือแชมเปญ แชมเปญต้องผลิตในแคว้น Champagne ประเทศฝรั่งเศสเท่านั้น และใช้กระบวนการหมักฟองในขวดแบบ <em>Méthode Champenoise</em> ส่วนสปาร์คลิ้งไวน์คือชื่อเรียกรวมของไวน์มีฟองทุกชนิดจากทั่วโลก เช่น Prosecco (อิตาลี) Cava (สเปน) และ Crémant (ฝรั่งเศส)</p>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="blog-container">
+  <div class="blog-toc">
+    <div class="blog-toc-title">สารบัญ</div>
+    <ol>
+      <li><a href="#what-is-champagne">แชมเปญ คืออะไร และมาจากไหน?</a></li>
+      <li><a href="#what-is-sparkling">สปาร์คลิ้งไวน์ คืออะไร?</a></li>
+      <li><a href="#comparison-table">ตารางเปรียบเทียบ: แชมเปญ vs สปาร์คลิ้งไวน์</a></li>
+      <li><a href="#types">สปาร์คลิ้งไวน์ที่ควรรู้จัก 5 ชนิด</a></li>
+      <li><a href="#how-to-choose">ควรเลือกอะไร? คู่มือเลือกซื้อตามโอกาส</a></li>
+      <li><a href="#food-pairing">จับคู่อาหารกับแชมเปญและสปาร์คลิ้งไวน์</a></li>
+      <li><a href="#faq">FAQ — คำถามที่พบบ่อย</a></li>
+    </ol>
+  </div>
+</div>
+
+<!-- SECTION 1: WHAT IS CHAMPAGNE -->
+<div class="blog-section" id="what-is-champagne">
+  <div class="blog-container">
+    <h2 class="blog-heading">แชมเปญ คืออะไร และมาจากไหน?</h2>
+    <p>
+      <strong>แชมเปญ (Champagne)</strong> คือสปาร์คลิ้งไวน์ที่ผลิตในแคว้น <em>Champagne</em> ทางตะวันออกเฉียงเหนือของฝรั่งเศส ห่างจากปารีสประมาณ 150 กิโลเมตร ชื่อ "Champagne" ได้รับการคุ้มครองโดยกฎหมาย AOC (Appellation d'Origine Contrôlée) ซึ่งหมายความว่าไวน์จากที่อื่นไม่สามารถเรียกตัวเองว่า "แชมเปญ" ได้ไม่ว่าจะใช้วิธีผลิตแบบเดียวกันก็ตาม
+    </p>
+
+    <div class="blog-highlights">
+      <div class="blog-highlight-card">
+        <div class="blog-highlight-icon">📍</div>
+        <h4>แหล่งผลิต</h4>
+        <p>แคว้น Champagne ฝรั่งเศส เท่านั้น ไม่อนุญาตให้ผลิตที่อื่น</p>
+      </div>
+      <div class="blog-highlight-card">
+        <div class="blog-highlight-icon">🍇</div>
+        <h4>พันธุ์องุ่นหลัก</h4>
+        <p>Chardonnay, Pinot Noir, Pinot Meunier — มักผสมกันหลายปี (Non-Vintage)</p>
+      </div>
+      <div class="blog-highlight-card">
+        <div class="blog-highlight-icon">🔬</div>
+        <h4>วิธีผลิต</h4>
+        <p>Méthode Champenoise — หมักฟองครั้งที่สองในขวด บ่มอย่างน้อย 15 เดือน</p>
+      </div>
+    </div>
+
+    <p>
+      กระบวนการ <strong>Méthode Champenoise</strong> (หรือเรียกว่า Traditional Method) คือสิ่งที่ทำให้แชมเปญมีฟองละเอียดและต่อเนื่องเป็นพิเศษ โดยการหมักรอบสองเกิดขึ้นภายในขวดโดยตรง ทำให้ CO₂ ละลายในไวน์อย่างช้า ๆ เป็นเวลาหลายเดือน ก่อนที่จะผ่านกระบวนการ Riddling (หมุนขวด) และ Disgorgement (นำตะกอนออก)
+    </p>
+
+    <div class="blog-callout">
+      <div class="blog-callout-title">🍷 คำแนะนำจาก Sommelier</div>
+      <p>Non-Vintage (NV) Champagne คือแชมเปญที่ผสมไวน์จากหลายปีเพื่อรักษา "House Style" ให้สม่ำเสมอ ในขณะที่ Vintage Champagne ทำจากองุ่นปีเดียวในปีที่ฤดูกาลดีเยี่ยม — มักราคาสูงกว่าและมีความซับซ้อนมากกว่า</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2: WHAT IS SPARKLING -->
+<div class="blog-section-alt" id="what-is-sparkling">
+  <div class="blog-container">
+    <h2 class="blog-heading">สปาร์คลิ้งไวน์ คืออะไร?</h2>
+    <p>
+      <strong>สปาร์คลิ้งไวน์ (Sparkling Wine)</strong> คือชื่อเรียกรวมของไวน์มีฟองทุกชนิด ไม่จำกัดแหล่งผลิตหรือวิธีทำ แชมเปญก็เป็นสปาร์คลิ้งไวน์ชนิดหนึ่ง แต่สปาร์คลิ้งไวน์มีหลากหลายแบบและหลากหลายระดับราคา ตั้งแต่ไม่ถึง 500 บาท ไปจนถึงหลักแสน
+    </p>
+    <p>
+      วิธีผลิตสปาร์คลิ้งไวน์มีหลายแบบ ซึ่งส่งผลต่อขนาดฟอง ความละเอียด และรสชาติโดยตรง:
+    </p>
+    <ul>
+      <li><strong>Traditional Method</strong> — หมักฟองในขวด (ใช้ใน Champagne, Cava, Crémant) ฟองละเอียด ซับซ้อนที่สุด</li>
+      <li><strong>Charmat / Tank Method</strong> — หมักฟองในถัง (ใช้ใน Prosecco) ฟองใหญ่กว่าเล็กน้อย สดชื่น ผลไม้ชัด</li>
+      <li><strong>Carbonation Method</strong> — อัดก๊าซ CO₂ เหมือนน้ำอัดลม พบในไวน์ราคาถูก ฟองใหญ่และหายเร็ว</li>
+      <li><strong>Ancestral Method (Pétillant Naturel)</strong> — หมักฟองเองตามธรรมชาติ นิยมในหมู่ไวน์ Natural Wine</li>
+    </ul>
+
+    <div class="blog-image-wrap">
+      <!-- Replace with actual image: suggested a side-by-side of Champagne vs Prosecco bubbles under light -->
+      <img src="https://th.wine-now.com/media/wysiwyg/blog/champagne-prosecco-bubbles-comparison.jpg" alt="เปรียบเทียบฟองแชมเปญและโปรเซกโก">
+      <p class="blog-image-caption">ฟองของแชมเปญ (Traditional Method) จะละเอียดและต่อเนื่องกว่า ในขณะที่ Prosecco (Charmat Method) มีฟองใหญ่และสดชื่นกว่า</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3: COMPARISON TABLE -->
+<div class="blog-section" id="comparison-table">
+  <div class="blog-container">
+    <h2 class="blog-heading">ตารางเปรียบเทียบ: แชมเปญ vs สปาร์คลิ้งไวน์</h2>
+    <p>นี่คือความแตกต่างสำคัญที่ควรรู้ก่อนตัดสินใจซื้อ:</p>
+
+    <div class="blog-table-wrap">
+      <table class="blog-table">
+        <thead>
+          <tr>
+            <th>ลักษณะ</th>
+            <th>🥂 แชมเปญ</th>
+            <th>✨ สปาร์คลิ้งไวน์</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>แหล่งผลิต</strong></td>
+            <td>แคว้น Champagne ฝรั่งเศสเท่านั้น</td>
+            <td>ทั่วโลก (อิตาลี สเปน ออสเตรเลีย ฯลฯ)</td>
+          </tr>
+          <tr>
+            <td><strong>พันธุ์องุ่น</strong></td>
+            <td>Chardonnay, Pinot Noir, Pinot Meunier</td>
+            <td>ขึ้นอยู่กับแต่ละชนิดและแหล่งผลิต</td>
+          </tr>
+          <tr>
+            <td><strong>วิธีผลิต</strong></td>
+            <td>Méthode Champenoise (หมักในขวด)</td>
+            <td>หลากหลายวิธี ขึ้นอยู่กับชนิด</td>
+          </tr>
+          <tr>
+            <td><strong>ลักษณะฟอง</strong></td>
+            <td>ละเอียดมาก ต่อเนื่องยาว</td>
+            <td>ตั้งแต่ละเอียดจนถึงใหญ่ ขึ้นอยู่กับวิธีทำ</td>
+          </tr>
+          <tr>
+            <td><strong>รสชาติ</strong></td>
+            <td>ซับซ้อน บิสกิต ยีสต์ ผลไม้ ดอกไม้</td>
+            <td>หลากหลาย ตั้งแต่สดชื่นผลไม้จนถึงซับซ้อน</td>
+          </tr>
+          <tr>
+            <td><strong>ระยะบ่ม</strong></td>
+            <td>NV: ≥15 เดือน / Vintage: ≥36 เดือน</td>
+            <td>แตกต่างกันมาก บางชนิดไม่บ่ม</td>
+          </tr>
+          <tr>
+            <td><strong>ราคาในไทย</strong></td>
+            <td>~2,000 – 20,000+ บาท</td>
+            <td>~500 – 5,000 บาท (Prosecco, Cava ฯลฯ)</td>
+          </tr>
+          <tr>
+            <td><strong>โอกาสใช้</strong></td>
+            <td>งานฉลองพิเศษ ของขวัญ วันสำคัญ</td>
+            <td>ดื่มทุกวัน งานสังสรรค์ งานแต่งงาน</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="blog-callout">
+      <div class="blog-callout-title">💡 สรุปง่าย ๆ</div>
+      <p><strong>แชมเปญทุกขวดคือสปาร์คลิ้งไวน์ แต่สปาร์คลิ้งไวน์ไม่ใช่แชมเปญทุกขวด</strong> เหมือนกับ "ก๊วยเตี๋ยวเส้นใหญ่ก็คือก๊วยเตี๋ยว แต่ก๊วยเตี๋ยวไม่ใช่เส้นใหญ่ทั้งหมด" — คำว่า Champagne คือ Protected Designation of Origin (PDO) ที่คุ้มครองโดยกฎหมายยุโรป</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4: TYPES -->
+<div class="blog-section-alt" id="types">
+  <div class="blog-container">
+    <h2 class="blog-heading">สปาร์คลิ้งไวน์ที่ควรรู้จัก 5 ชนิด</h2>
+    <p>นอกจากแชมเปญ ยังมีสปาร์คลิ้งไวน์คุณภาพดีอีกมากมายจากทั่วโลกที่คุ้มค่ากว่าในหลาย ๆ โอกาส:</p>
+
+    <div class="blog-sparkling-grid">
+
+      <div class="blog-sparkling-card">
+        <div class="blog-sparkling-card-header">
+          <span class="flag">🇫🇷</span>
+          <div>
+            <h4>Champagne</h4>
+            <span>แคว้น Champagne, ฝรั่งเศส</span>
+          </div>
+        </div>
+        <div class="blog-sparkling-card-body">
+          <p>ราชาของสปาร์คลิ้งไวน์ ผลิตโดย Méthode Champenoise ฟองละเอียดสุด รสซับซ้อน มีกลิ่นบิสกิต ยีสต์ และผลไม้แห้ง เหมาะกับโอกาสพิเศษและเป็นของขวัญหรูหรา</p>
+          <span class="blog-sparkling-tag">บิสกิต</span>
+          <span class="blog-sparkling-tag">ยีสต์</span>
+          <span class="blog-sparkling-tag">แอปเปิ้ลเขียว</span>
+          <div class="blog-price-badge">💰 ~2,000 – 20,000+ บาท</div>
+        </div>
+      </div>
+
+      <div class="blog-sparkling-card">
+        <div class="blog-sparkling-card-header">
+          <span class="flag">🇮🇹</span>
+          <div>
+            <h4>Prosecco</h4>
+            <span>Veneto & Friuli, อิตาลี</span>
+          </div>
+        </div>
+        <div class="blog-sparkling-card-body">
+          <p>ผลิตจากองุ่น Glera โดยวิธี Charmat (หมักในถัง) รสชาติสดชื่น ผลไม้ชัด ดอกไม้หอม ดื่มง่าย คุ้มราคา เหมาะกับ Aperitivo และงานสังสรรค์ทั่วไป</p>
+          <span class="blog-sparkling-tag">แพร์</span>
+          <span class="blog-sparkling-tag">พีช</span>
+          <span class="blog-sparkling-tag">ดอกไม้</span>
+          <div class="blog-price-badge">💰 ~600 – 1,800 บาท</div>
+        </div>
+      </div>
+
+      <div class="blog-sparkling-card">
+        <div class="blog-sparkling-card-header">
+          <span class="flag">🇪🇸</span>
+          <div>
+            <h4>Cava</h4>
+            <span>Catalonia, สเปน</span>
+          </div>
+        </div>
+        <div class="blog-sparkling-card-body">
+          <p>ใช้วิธีเดียวกับแชมเปญ (Traditional Method) แต่ราคาถูกกว่ามาก ผลิตจากองุ่นพื้นเมืองสเปน ได้แก่ Macabeo, Parellada, Xarel-lo มีรสดิน แอปเปิ้ล และเลมอน</p>
+          <span class="blog-sparkling-tag">แอปเปิ้ล</span>
+          <span class="blog-sparkling-tag">เลมอน</span>
+          <span class="blog-sparkling-tag">อัลมอนด์</span>
+          <div class="blog-price-badge">💰 ~600 – 1,500 บาท</div>
+        </div>
+      </div>
+
+      <div class="blog-sparkling-card">
+        <div class="blog-sparkling-card-header">
+          <span class="flag">🇫🇷</span>
+          <div>
+            <h4>Crémant</h4>
+            <span>Alsace, Burgundy, Loire ฯลฯ</span>
+          </div>
+        </div>
+        <div class="blog-sparkling-card-body">
+          <p>สปาร์คลิ้งไวน์ฝรั่งเศสที่ไม่ใช่แชมเปญ ใช้ Traditional Method เช่นกัน แต่มาจากภูมิภาคอื่น เช่น Alsace, Burgundy คุณภาพสูงในราคาที่เข้าถึงง่ายกว่า — "Champagne ราคาแชมป์"</p>
+          <span class="blog-sparkling-tag">พลัม</span>
+          <span class="blog-sparkling-tag">ขนมปัง</span>
+          <span class="blog-sparkling-tag">ดอกไม้</span>
+          <div class="blog-price-badge">💰 ~900 – 2,500 บาท</div>
+        </div>
+      </div>
+
+      <div class="blog-sparkling-card">
+        <div class="blog-sparkling-card-header">
+          <span class="flag">🌍</span>
+          <div>
+            <h4>New World Sparkling</h4>
+            <span>ออสเตรเลีย นิวซีแลนด์ สหรัฐฯ</span>
+          </div>
+        </div>
+        <div class="blog-sparkling-card-body">
+          <p>สปาร์คลิ้งไวน์จากโลกใหม่ที่ค่อย ๆ ได้รับความนิยมมากขึ้น บางแบรนด์ใช้ Traditional Method และมีคุณภาพทัดเทียมแชมเปญ ในราคาที่เข้าถึงง่ายกว่า เช่น Jansz จากออสเตรเลีย</p>
+          <span class="blog-sparkling-tag">ผลไม้เขตร้อน</span>
+          <span class="blog-sparkling-tag">ซิตรัส</span>
+          <span class="blog-sparkling-tag">ครีม</span>
+          <div class="blog-price-badge">💰 ~700 – 3,000 บาท</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: HOW TO CHOOSE -->
+<div class="blog-section" id="how-to-choose">
+  <div class="blog-container">
+    <h2 class="blog-heading">ควรเลือกอะไร? คู่มือเลือกซื้อตามโอกาส</h2>
+    <p>ไม่มีคำตอบว่าอะไร "ดีกว่า" — มีแค่ว่าอะไรเหมาะกับโอกาสไหน:</p>
+
+    <div class="blog-table-wrap">
+      <table class="blog-table">
+        <thead>
+          <tr>
+            <th>โอกาส</th>
+            <th>แนะนำ</th>
+            <th>เหตุผล</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>🎂 วันเกิด / วันครบรอบ</strong></td>
+            <td>Champagne NV หรือ Vintage</td>
+            <td>ความหรูหราและความพิเศษที่ให้ความรู้สึกได้รับการยกย่อง</td>
+          </tr>
+          <tr>
+            <td><strong>💒 งานแต่งงาน (เปิดหลายขวด)</strong></td>
+            <td>Prosecco หรือ Cava</td>
+            <td>คุณภาพดี คุ้มค่า เปิดได้จำนวนมากโดยไม่เกินงบ</td>
+          </tr>
+          <tr>
+            <td><strong>🎁 ของขวัญผู้ใหญ่</strong></td>
+            <td>Champagne หรือ Crémant คุณภาพดี</td>
+            <td>บรรจุภัณฑ์สวย มีน้ำหนักเชิงสัญลักษณ์</td>
+          </tr>
+          <tr>
+            <td><strong>🍽️ ดื่มคู่อาหารทุกวัน</strong></td>
+            <td>Prosecco, Cava, Crémant</td>
+            <td>สดชื่น จับคู่ง่าย ไม่แพงจนเกินไปสำหรับมื้อปกติ</td>
+          </tr>
+          <tr>
+            <td><strong>🎉 งานปาร์ตี้ / สังสรรค์</strong></td>
+            <td>Prosecco หรือ New World Sparkling</td>
+            <td>ดื่มง่าย รสชาติเข้าถึงทุกคน ราคาเหมาะสม</td>
+          </tr>
+          <tr>
+            <td><strong>🥂 ดื่มคนเดียวเย็นนี้</strong></td>
+            <td>Prosecco Piccolo (187ml) หรือ Cava</td>
+            <td>ขนาดเล็ก คุ้มค่า ไม่เสียถ้าดื่มไม่หมด</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="blog-callout">
+      <div class="blog-callout-title">🍷 เคล็ดลับ Sommelier</div>
+      <p>ถ้างบจำกัดแต่อยากได้รสชาติใกล้เคียงแชมเปญ ให้เลือก <strong>Crémant d'Alsace</strong> หรือ <strong>Cava Reserva</strong> ทั้งคู่ใช้ Traditional Method เหมือนกัน แต่ราคาแค่ครึ่งถึงหนึ่งในสามของแชมเปญเกรดเดียวกัน นักชิมไวน์มืออาชีพหลายคนก็เลือกสองตัวนี้ในชีวิตประจำวัน</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 6: FOOD PAIRING -->
+<div class="blog-section-alt" id="food-pairing">
+  <div class="blog-container">
+    <h2 class="blog-heading">จับคู่อาหารกับแชมเปญและสปาร์คลิ้งไวน์</h2>
+    <p>ฟองของสปาร์คลิ้งไวน์ช่วยล้างไขมันในปากและกระตุ้นความอยากอาหาร ทำให้จับคู่กับอาหารได้หลากหลายมาก:</p>
+
+    <div class="blog-highlights">
+      <div class="blog-highlight-card">
+        <div class="blog-highlight-icon">🦪</div>
+        <h4>Brut Champagne</h4>
+        <p>ซีฟู้ดดิบ หอย นางรม คาเวียร์ ซูชิ ปลาดิบ — กรดสูงตัดความมันของซีฟู้ดได้สมบูรณ์แบบ</p>
+      </div>
+      <div class="blog-highlight-card">
+        <div class="blog-highlight-icon">🍕</div>
+        <h4>Prosecco</h4>
+        <p>พิซซ่า พาสต้าครีม ริซอตโต้ ผักดอง แชร์คูเทอรี่ — ความหวานเล็กน้อยและฟองสดชื่นเข้ากันดีกับอาหารอิตาลี</p>
+      </div>
+      <div class="blog-highlight-card">
+        <div class="blog-highlight-icon">🥘</div>
+        <h4>อาหารไทย</h4>
+        <p>ยำ ส้มตำ ลาบ — ฟองและกรดของสปาร์คลิ้งไวน์ช่วยสยบความเผ็ดได้ดีกว่าไวน์แดง เลือก Demi-Sec หากอาหารเผ็ดมาก</p>
+      </div>
+    </div>
+
+    <div class="blog-quote">
+      <p>"ถ้าคุณไม่รู้จะจับคู่ไวน์อะไรกับอาหาร ให้เลือกสปาร์คลิ้งไวน์เสมอ มันแทบไม่เคยผิดพลาด"</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 7: FAQ -->
+<div class="blog-section" id="faq">
+  <div class="blog-container">
+    <h2 class="blog-heading">FAQ — คำถามที่พบบ่อย</h2>
+
+    <div class="blog-faq">
+
+      <div class="blog-faq-item">
+        <button class="blog-faq-question">แชมเปญ คือ อะไร?</button>
+        <div class="blog-faq-answer">
+          <div class="blog-faq-answer-inner">
+            แชมเปญ (Champagne) คือสปาร์คลิ้งไวน์ที่ผลิตในแคว้น Champagne ทางตะวันออกเฉียงเหนือของฝรั่งเศสเท่านั้น โดยใช้กระบวนการ Méthode Champenoise ซึ่งหมักฟองครั้งที่สองภายในขวดและบ่มอย่างน้อย 15 เดือน ไวน์จากที่อื่นไม่สามารถเรียกว่าแชมเปญได้ แม้จะใช้วิธีผลิตเดียวกัน
+          </div>
+        </div>
+      </div>
+
+      <div class="blog-faq-item">
+        <button class="blog-faq-question">สปาร์คลิ้งไวน์ คือ อะไร?</button>
+        <div class="blog-faq-answer">
+          <div class="blog-faq-answer-inner">
+            สปาร์คลิ้งไวน์ (Sparkling Wine) คือชื่อเรียกรวมของไวน์ที่มีฟองก๊าซทุกชนิด ไม่จำกัดแหล่งผลิตหรือวิธีทำ ครอบคลุมทั้ง Champagne, Prosecco, Cava, Crémant, Sekt และสปาร์คลิ้งไวน์จากทั่วโลก แชมเปญก็คือสปาร์คลิ้งไวน์ประเภทหนึ่ง
+          </div>
+        </div>
+      </div>
+
+      <div class="blog-faq-item">
+        <button class="blog-faq-question">Prosecco กับ Champagne ต่างกันอย่างไร?</button>
+        <div class="blog-faq-answer">
+          <div class="blog-faq-answer-inner">
+            ต่างกันหลัก 3 เรื่อง: (1) <strong>แหล่งผลิต</strong> — Prosecco มาจากอิตาลี แชมเปญมาจากฝรั่งเศส (2) <strong>วิธีผลิต</strong> — Prosecco ใช้ Charmat Method (หมักในถัง) แชมเปญใช้ Méthode Champenoise (หมักในขวด) (3) <strong>รสชาติ</strong> — Prosecco สดชื่น ผลไม้ชัด ดื่มง่ายกว่า แชมเปญซับซ้อนกว่า มีกลิ่นยีสต์และบิสกิต ราคาก็ต่างกันมาก Prosecco เริ่มต้นที่ ~600 บาท ส่วนแชมเปญ ~2,000 บาทขึ้นไป
+          </div>
+        </div>
+      </div>
+
+      <div class="blog-faq-item">
+        <button class="blog-faq-question">Brut แปลว่าอะไร? หวานหรือแห้ง?</button>
+        <div class="blog-faq-answer">
+          <div class="blog-faq-answer-inner">
+            Brut หมายถึงสปาร์คลิ้งไวน์ที่มีความหวานน้อยมาก (น้ำตาลต่ำกว่า 12 กรัม/ลิตร) เป็นสไตล์ที่นิยมที่สุดในแชมเปญและ Cava ถ้าอยากได้แห้งที่สุดให้เลือก Extra Brut หรือ Brut Nature ถ้าอยากได้หวานขึ้นเล็กน้อยให้เลือก Extra Dry หรือ Demi-Sec
+          </div>
+        </div>
+      </div>
+
+      <div class="blog-faq-item">
+        <button class="blog-faq-question">เปิดแล้วเก็บได้กี่วัน?</button>
+        <div class="blog-faq-answer">
+          <div class="blog-faq-answer-inner">
+            สปาร์คลิ้งไวน์ที่เปิดแล้วควรดื่มให้หมดภายใน <strong>1–3 วัน</strong> โดยปิดจุกให้แน่นและแช่ตู้เย็น ยิ่งแช่เย็นฟองยิ่งอยู่นาน ถ้ามีจุกอัดฟอง (Champagne Stopper) จะช่วยให้เก็บได้นานขึ้นเป็น 3–5 วัน แต่ฟองก็จะลดลงตามเวลาอยู่ดี ไวน์ที่หมดฟองแล้วยังดื่มได้และอาจนำมาทำอาหารได้ด้วย
+          </div>
+        </div>
+      </div>
+
+      <div class="blog-faq-item">
+        <button class="blog-faq-question">ควรดื่มที่อุณหภูมิเท่าไหร่?</button>
+        <div class="blog-faq-answer">
+          <div class="blog-faq-answer-inner">
+            อุณหภูมิที่เหมาะสมสำหรับสปาร์คลิ้งไวน์ทุกชนิดคือ <strong>6–10°C</strong> อุณหภูมิเย็นช่วยรักษาฟองและทำให้รสชาติสดชื่นที่สุด ห้ามแช่แข็งเพราะจะทำให้ฟองหายเร็วและรสเปลี่ยน วิธีแช่เร็วที่สุดคือแช่ในถังน้ำผสมน้ำแข็ง 20–30 นาที ดีกว่าแช่ตู้เย็นนาน 3–4 ชั่วโมง
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- LINE CTA -->
+<div class="blog-container">
+  <div class="blog-line-cta">
+    <div class="blog-line-cta-text">
+      <h3>Add LINE @wine-now</h3>
+      <p>สงสัยเรื่องแชมเปญหรือสปาร์คลิ้งไวน์ขวดไหนเหมาะกับโอกาสของคุณ? Sommelier พร้อมแนะนำฟรีทุกวัน</p>
+    </div>
+    <a href="https://lin.ee/winenow" class="blog-line-btn">
+      <svg viewBox="0 0 24 24"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.630 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.630 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+      แชทกับ Sommelier
+    </a>
+  </div>
+</div>
+
+<!-- CTA BUTTON -->
+<div class="blog-cta">
+  <a class="blog-btn" href="https://th.wine-now.com/wine/sparkling-wine.html">ดูสปาร์คลิ้งไวน์และแชมเปญทั้งหมด →</a>
+</div>
+
+<!-- RELATED ARTICLES -->
+<div class="blog-related">
+  <div class="blog-container">
+    <div class="blog-related-title">บทความที่เกี่ยวข้อง</div>
+    <div class="blog-related-grid">
+
+      <a href="https://th.wine-now.com/blog/10-recommend-prosecco.html" class="blog-related-card">
+        <!-- Replace image -->
+        <img src="https://th.wine-now.com/media/wysiwyg/blog/10-recommend-prosecco-thumb.jpg" alt="10 Prosecco แนะนำ">
+        <div class="blog-related-card-body">
+          <div class="blog-related-card-tag">Sparkling Wine</div>
+          <h4>10 Prosecco แนะนำ ยี่ห้อไหนดีที่สุด?</h4>
+          <p>5 นาที อ่าน</p>
+        </div>
+      </a>
+
+      <a href="https://th.wine-now.com/blog/how-sweet-is-brut.html" class="blog-related-card">
+        <!-- Replace image -->
+        <img src="https://th.wine-now.com/media/wysiwyg/blog/how-sweet-is-brut-thumb.jpg" alt="Brut คืออะไร">
+        <div class="blog-related-card-body">
+          <div class="blog-related-card-tag">ความรู้เรื่องไวน์</div>
+          <h4>Brut คืออะไร? หวานหรือแห้ง อธิบายแบบเข้าใจง่าย</h4>
+          <p>4 นาที อ่าน</p>
+        </div>
+      </a>
+
+      <a href="https://th.wine-now.com/blog/7-wedding-sparkling-wine-on-the-budget.html" class="blog-related-card">
+        <!-- Replace image -->
+        <img src="https://th.wine-now.com/media/wysiwyg/blog/wedding-sparkling-wine-thumb.jpg" alt="สปาร์คลิ้งไวน์งานแต่ง">
+        <div class="blog-related-card-body">
+          <div class="blog-related-card-tag">งานแต่งงาน</div>
+          <h4>7 สปาร์คลิ้งไวน์งานแต่งงาน คุ้มราคา ไม่แพงแต่ดูดี</h4>
+          <p>5 นาที อ่าน</p>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER NOTE -->
+<div class="blog-container">
+  <p class="blog-footer-note">
+    บทความนี้เขียนโดยทีม Sommelier ของ Wine-Now อ้างอิงข้อมูลจาก Comité Champagne, DOCG Italia และ Wine & Spirit Education Trust (WSET) ราคาที่แสดงเป็นราคาประมาณการ ณ เดือนเมษายน 2025 อาจเปลี่ยนแปลงได้ตามสต็อกและฤดูกาล
+  </p>
+</div>

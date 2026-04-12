@@ -1,0 +1,19 @@
+# T2 GRAPE VARIETY — 16 wines missing grape
+# Format: SKU|name|classification|country|region
+
+LGN0119ER|Rock Rose  Original Edition Gin (700 ml)|Rose Wine|Scotland|Highland
+LGN0122ER|Rock Rose  Summer Edition Gin (700 ml)|Rose Wine|Scotland|Highland
+WRS0186AD|Matua  Rose|Rose Wine|New Zealand|Marlborough
+WRS0203AH|San Pedro  Gato Negro Rose|Rose Wine|Chile|Maipo Valley
+WRS0234AB|Alpaca  Rosé|Rose Wine|Chile|Central Valley
+WRS0238AH|Belena  Rose|Rose Wine|Australia|South Australia
+WRW4700DD|The Old Town  South African Dry Red (Fruit wine blend)|Fruit Wine|South Africa|Western Cape
+WSP1588CH|Yellow Tail  Pink Bubbles|Rose Wine|Australia|South Eastern Australia
+WSP5678DD|Expresion  Premium Sparkling Brut|Sparkling Wine|South Africa|Western Cape
+WSP5679DD|Expresion  Premium Sparkling Pink Rose|Sparkling Wine|South Africa|Western Cape
+WSP5696FJ|Elmfield  Sparkling Rose|Sparkling Wine|Australia|South Eastern Australia
+WSP5698AB|Alpaca  Sparkling Brut|Sparkling Wine|Chile|Central Valley
+WSP5756AD|19 Crimes  Blanc De Blancs|Sparkling Wine|Australia|South Eastern Australia
+WWW5149AA|Baron Philippe de Rothschild  Mouton Cadet Reserve Sauternes|Dessert Wine|France|Bordeaux
+WWW5303GI|Batonis Kari  Tsinandali White Dry|White Wine|Georgia|Others region
+WWW5962GW|Askaneli Tsinandali|White Wine|Georgia|Others region

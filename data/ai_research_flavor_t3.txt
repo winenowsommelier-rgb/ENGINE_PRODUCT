@@ -1,0 +1,186 @@
+# T3 FLAVOR TAGS — 183 products
+# Format: SKU|name|classification|country|region|grape|style
+
+LBD0053BU|Hennessy  X.O (700 ml)|Brandy|France|Cognac||Brandy
+LBD0220BU|Hennessy  X.O.  Jean-Michel (Limited Edition) (700 ml)|Brandy|France|Cognac||Brandy
+LBE0011AI|Erdinger  Weissbier (500 ml) x 12|Beer|Germany|||Lager
+LBE0244AI|Peroni  Nastro Azzurro (330 ml) x 24|Beer|Italy|Lombardy||Lager
+LBE0260AX|Fuller's  India Pale Ale  500ml x 12|Beer|England|||IPA
+LBE0267AX|Paulaner  Original Munchner Hell  330ml x 24|Beer|Germany|||Lager
+LBE0302AX|Paulaner  Original Munchner Hell  5L x 1|Beer|Germany|||Lager
+LBE0519AB|Paulaner  Oktoberfest Bier  500ml x 20|Beer|Germany|||Lager
+LGN0265AA|Yomeishu  Kanoshizuku Craft Gin (300 ml)|Gin|Japan|||Dry Gin
+LGN0279FK|Askur  Yggdrasil Gin (Alc. Volume 45%) (1 L)|Gin|Iceland|||Dry Gin
+LGN0280CN|Lady Trieu  Contemporary Vietnam Gin (700 ml)|Gin|Vietnam|||Dry Gin
+LGN0294EQ|Zafiro Classic Gin (700 ml)|Gin|Spain|||Dry Gin
+LGN0296EQ|Zafiro Strawberry Gin (700 ml)|Gin|Spain|||Dry Gin
+LGP0091FX|Granmonte  Red Jungle Grappa (330 ml)|Brandy|Thailand|Khao Yai||Grappa
+LLQ0245DG|Mancino  Vermouth Rosso (750 ml)|Liqueur|Italy|Piedmont||Liqueur
+LLQ0300CN|Cinzano  Vermouth Di Torino Rosso 1757 (1 L)|Liqueur|Italy|Piedmont||Liqueur
+LLQ0372DB|Suntory  Crème de Kyoho / Murasaki (700 ml)|Liqueur|Japan|Japan||Liqueur
+LLQ0454AV|The Japanese   Hinoki Bitter (200 ml)|Liqueur|Japan|||Herbal Liqueur
+LLQ0489ER|Bandwgon  Manhatton Cocktail (Ready to drink) (700 ml)|Liqueur|USA|||Liqueur
+LLQ0503GW|Strega  Limoncello Di Sorrento (700 ml)|Liqueur|Italy|||Fruit Liqueur
+LOT0066AB|Nakano BC  Kishu Hassaku Umeshu (720 ml)|Others|Japan|||
+LOT0089AR|Komasa Jyozo  Komasa no Umeshu (700 ml)|Others|Japan|||
+LSK0013AR|Fukuju  Awasaki Sparkling Sake (300 ml)|Sparkling Wine|Japan|Champagne||Sparkling Sake
+LSK0016AR|Fukuju  Junmai ginjo (720 ml)|Sake/Shochu|Japan|||
+LSK0022AR|Kamotsuru  Kuranama (720 ml)|Sake/Shochu|Japan|||
+LSK0046AR|Sesshu  Otokoyama (720 ml)|Sake/Shochu|Japan|||
+LSK0047AR|Sesshu  Otokoyama (300 ml)|Sake/Shochu|Japan|||
+LSK0062AR|Houki No Indama  Honjo Dry (1.8 L)|Sake/Shochu|Japan|||
+LSK0063AR|Houki No Indama  Honjo Dry (720 ml)|Sake/Shochu|Japan|||
+LSK0064AR|Houki No Indama  Honjo Dry (300 ml)|Sake/Shochu|Japan|||
+LSK0124AB|Bijofu  Junmai Ginjo Junrei TAMA Label (720 ml)|Sake/Shochu|Japan|||
+LSK0127AB|Bijofu  Tokubetsu Honjozo (720 ml)|Sake/Shochu|Japan|||
+LSK0137AB|Masumi  Junmai Okuden Kanzukuri (720 ml)|Sake/Shochu|Japan|||
+LSK0144AB|Masumi  Karakuchi Gold (1.8 L)|Sake/Shochu|Japan|||
+LSK0226DB|TANIGAWADAKE  Junmai-Daiginjo (720 ml)|Sake/Shochu|Japan|||
+LSK0265DB|BORN  Junmai-Daiginjo Non-filter Nama-Genshu (720 ml)|Sake/Shochu|Japan|||
+LSK0316AR|Kamotsuru  Junmai (720 ml)|Sake/Shochu|Japan|||
+LSK0336DB|Shichiken  Furinbizan Junmai (720 ml)|Sake/Shochu|Japan|||
+LSK0340DB|Shichiken  Nama Nama Junmai Nama-sake (720 ml)|Sake/Shochu|Japan|||
+LSK0344DB|Shichiken  Sora no irodori Sparkling-Sake (720 ml)|Sake/Shochu|Japan|||
+LSK0435FS|Hakutsuru  Junmai Ginjo (300 ml)|Sake/Shochu|Japan|||
+LSK0437FS|Hakutsuru  Standard Jyosen (1.8 L)|Sake/Shochu|Japan|||
+LSK0438FS|Hakutsuru  Karakuchi Jyosen (1.8 L)|Sake/Shochu|Japan|||
+LSK0440FS|Hakutsuru  Nama Sake (Draft Sake) (300 ml)|Sake/Shochu|Japan|||
+LSK0441FS|Kunizakari  Tanrei Yuzu Sake (1 L)|Sake/Shochu|Japan|||
+LSK0455AB|Azakura Junmai Genshu (300 ml)|Sake/Shochu|Japan|||
+LSK0456AB|Azakura Junmai Genshu (720 ml)|Sake/Shochu|Japan|||
+LSK0473AB|Chiyomusubi Junmai Daiginjo Goriki 40 (720 ml)|Sake/Shochu|Japan|||
+LSK0479AB|Chiyomusubi Junmai Goriki 60 Muroka Nama Genshu (720 ml)|Sake/Shochu|Japan|||
+LSK0490AB|Chiyomusubi Sparkling Sake Sorah (720 ml)|Sake/Shochu|Japan|||
+LSK0494AB|Dassai Sparkling 45 (360 ml)|Sake/Shochu|Japan|||
+LSK0497AB|Eikofuji Banryu (720 ml)|Sake/Shochu|Japan|||
+LSK0522AB|Kirinzan Shooting Star (300 ml)|Sake/Shochu|Japan|||
+LSK0529AB|Kirinzan Extra Dry (300 ml)|Sake/Shochu|Japan|||
+LSK0547AB|Manaturu Junmai Daiginjo Summer Goddess (720 ml)|Sake/Shochu|Japan|||
+LSK0549AB|Manaturu Junmai Daiginjo Sow (720 ml)|Sake/Shochu|Japan|||
+LSK0564AB|Masumi Junmai Kaya Brown (1.8 L)|Sake/Shochu|Japan|Nagano||
+LSK0574AB|Sakunohana Junmai Daiginjo (720 ml)|Sake/Shochu|Japan|Nagano||
+LSK0581AB|Sakunohana Karakuchi Ginjo (1.8 L)|Sake/Shochu|Japan|||
+LSK0598AB|Takasago Yamahai Junmai Ginjo (720 ml)|Sake/Shochu|Japan|||
+LSK0603AB|Takasago Tokubetsu Junmai Karakuchi (1.8 L)|Sake/Shochu|Japan|||
+LSK0623DB|Ohmine  Junmai Yuki-Onna (720 ml)|Sake/Shochu|Japan|||
+LTQ0127CN|Jose Cuervo  Tradicional Silver (700 ml)|Tequila|Mexico|Cognac||Blanco Tequila
+LTQ0215BU|Sierra  Silver Limited Edition (700 ml)|Tequila|Mexico|Jalisco||Blanco Tequila
+LVK0164BU|Absolut  Elyx (750 ml)|Vodka|Sweden|||Plain Vodka
+LVK0179AE|Russian Standard  Vodka (700 ml)|Vodka|Russia|||Plain Vodka
+LVK0208AH|Svedka  Cherry Vodka (750 ml)|Vodka|Sweden|||Flavored Vodka
+LVK0210AA|Stolichnaya  Cucumber (700 ml)|Vodka|Russia|||Flavored Vodka
+LVK0637CN|Skyy  Vodka (1 L)|Vodka|USA|||Plain Vodka
+LVK0650AE|Short Story  Grain Vodka (750 ml)|Vodka|India|||Plain Vodka
+LVK0653ER|Publik Vodka Raw (700 ml)|Vodka|Belgium|||Plain Vodka
+LWH0412BU|Johnnie Walker  Aged 18 Years (750 ml)|Whisky|Scotland|Highland||Blended Scotch Whisky
+LWH0452BU|Chivas Regal  XV (700 ml)|Whisky|Scotland|Champagne||Blended Scotch Whisky
+LWH0985CN|Kyoto Whisky  Murasaki-Obi (700 ml) (Premium Gift Set) (Limited Stock)|Whisky|Japan|||Japanese Whisky
+LWH1031BU|Chivas Regal  13 Years Tequila Cask Selection Blended Whisky (700 ml)|Whisky|Scotland|Champagne||Blended Scotch Whisky
+LWH1087AB|Matsui  The Daisen Wine Cask Blended Whisky (700 ml)|Whisky|Japan|||Blended Whisky
+LWH1107ER|Moonshine Runners  Irish Whiskey (700 ml)|Whisky|Ireland|Highland||Irish Whiskey
+LWH1116AE|Arran  Lochranza Reserve Malt (700 ml)|Whisky|Scotland|Islands||Blended Scotch Whisky
+LWH1163EQ|Douglas Laing's Provenance Teaninich 8 Years (700 ml)|Whisky|Scotland|Highland||Blended Scotch Whisky
+LWH1166EQ|Douglas Laing's Provenance Glenrothes 9 Years (700 ml)|Whisky|Scotland|Speyside||Blended Scotch Whisky
+WDW0018AA|Cantine Pellegrino  Zibibbo Vino Liquoroso IGT|Dessert Wine|Italy|Sicily|Muscat|Muscat
+WDW0517AA|Cantine Pellegrino  Zibibbo Vino Liquoroso IGT (500 ml)|White Wine|Italy|Sicily|Muscat|Medium-bodied White
+WRS0148AB|Rockford  Alicante Bouchet|Rose Wine|Australia|Barossa|Alicante Bouschet, Grenache|Alicante Bouschet
+WRS0149DD|Mount Riley  The Bonnie Pinot Noir Rose|Rose Wine|New Zealand|Marlborough|Pinot Noir|Pinot Noir
+WRS0204FR|Les Pins D'Aubane Rose De France (Fruit Wine)|Rose Wine|France|Others region|Grenache, Cinsault|Rosé
+WRS0207FR|Love By Leoube  Cotes De Provence|Rose Wine|France|Provence|Grenache, Cinsault|Rosé
+WRS0230AB|Monfort  Pinot Grigio Ramato Vigneti Dolomiti IGT|Rose Wine|Italy|Trentino-Alto Adige|Pinot Grigio|Pinot Grigio
+WRW0118AD|Ogier  Chateauneuf du Pape Clos de l'Oratoire des Papes|Red Wine|France|Languedoc-Roussillon|Grenache, Syrah, Mourvèdre|Medium-bodied Red
+WRW0296AD|Ogier  Cotes du Rhone Gentilhomme Red|Red Wine|France|Rhône|Grenache, Syrah, Mourvèdre|Medium-bodied Red
+WRW0308AD|Wente Vineyards  Hayes Ranch Cabernet Sauvignon|Red Wine|USA|California|Cabernet Sauvignon|Cabernet Sauvignon
+WRW0510AD|Pio Cesare  Dolcetto D'Alba|Red Wine|Italy|Piedmont|Dolcetto|Medium-bodied Red
+WRW1005FS|Alter Ego de Palmer, Margaux 2019|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW1112AB|Pala  Essentija Isola Dei Nuraghi IGT|Red Wine|Italy|Sardinia|Cannonau|Bovale 100%.
+WRW1114AB|Pala  Silenzi Rosso Isola Dei Nuraghi IGT|Red Wine|Italy|Tuscany|Sangiovese|Carignano, Monica, Sangiovese
+WRW1155AB|Gerard Bertrand  Naturalys Merlot|Red Wine|France|Languedoc|Merlot|Merlot
+WRW1362AB|Agricola Querciabella  Mongrana Maremma Toscana IGT|Red Wine|Italy|Tuscany|Sangiovese, Merlot, Cabernet Sauvignon|Sangiovese (50%) Merlot (25%) Cabernet Sauvignon (25%).
+WRW1596BS|Castello Di Bolgheri  Varvara DOC|Red Wine|Italy|Tuscany|Cabernet Sauvignon, Cabernet Franc, Merlot, Syrah, Petit Verdot|Medium-bodied Red
+WRW1620BS|Castello Di Bolgheri  Bolgheri Superiore DOC|Red Wine|Italy|Tuscany|Sangiovese|Medium-bodied Red
+WRW1758AE|Casanova di Neri  Brunello di Montalcino DOCG|Red Wine|Italy|Tuscany|Sangiovese|Sangiovese
+WRW1809AE|Massolino  Dolcetto D’Alba DOC|Red Wine|Italy|Piedmont|Dolcetto|Medium-bodied Red
+WRW1946AH|Dourthe  Grands Terroirs  Bordeaux Superieur|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Merlot, 15% Cabernet Sauvignon, 10% Cabernet Franc
+WRW2444BN|Chateau Haut Bailly  Grand Cru Classe 2016|Red Wine|France||Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW3009BN|Felton Road  Pinot Noir Calvert|Red Wine|New Zealand|Central Otago|Pinot Noir|Pinot Noir
+WRW3265DD|Chateau Vircoulon  Bordeaux Superieur|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW3349DD|Chateau Du Corneau  Margaux|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Cabernet Sauvignon, Merlot, Petit Verdit, Cabernet Franc
+WRW3610AD|Pio Cesare  Barbaresco il Bricco DOCG|Red Wine|Italy|Piedmont|Nebbiolo|Medium-bodied Red
+WRW3647DJ|Domaine Lafarge-Vial  Fleurie|Red Wine|France|Burgundy|Pinot Noir|Gamay
+WRW4697AD|Beringer  Napa Valley Cabernet sauvignon|Red Wine|USA|Napa|Cabernet Sauvignon|Cabernet Sauvignon
+WRW4871BN|Amiral de Beychevelle  Saint Julien|Red Wine|France||Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW5007FT|Fugue De Nenin  "Le 2nd Vin De Chateau Nenin"|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW5105AE|Conti Zecca  Negroamaro Leverano Liranu Riserva|Red Wine|Italy|Puglia|Negroamaro|Medium-bodied Red
+WRW5108AA|Fattoria Le Pupille  Saffredi Maremma Toscana|Red Wine|Italy|Tuscany|Sangiovese|Medium-bodied Red
+WRW5328AA|Cantine Leonardo Da Vinci  Da Vinci I Capolavori Rosso Di Montalcino DOC|Red Wine|Italy|Tuscany|Sangiovese|Medium-bodied Red
+WRW5665DJ|Domaine Jean Fery & Fils  Pernand-Vergelesses 1er Cru "les Vergelesses"|Red Wine|France|Burgundy|Pinot Noir|Medium-bodied Red
+WRW5677FR|Les Solstices  Cuvee Tradition Rouge De France (Fruit Wine)|Red Wine|France|Provence|Grenache, Syrah|Medium-bodied Red
+WRW5683FR|Chateau De Parenchere  Bordeaux Superieur|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Merlot (50%), Cabernet Sauvignon (30%), Cabernet Franc (20%)
+WRW5779AA|Penfolds  II Dourthe Cabernet Shiraz|Red Wine|Australia|Bordeaux|Syrah|Syrah
+WRW5814FU|Chateau La Bridane Saint Julien 2018|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW5862AD|Langmeil  Steadfast Shiraz Cabernet|Red Wine|Australia|Barossa|Syrah|Syrah
+WRW5874DD|Aromo  Winemaker's Selection Cabernet Sauvignon - Syrah|Red Wine|Chile|Central Valley|Cabernet Sauvignon, Syrah|Cabernet Sauvignon
+WRW5884DD|Chateau Meillier  Cuvee Prestige Bordeaux Superieur|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6018FJ|Bosquet des Boiron Cotes du Rhone|Red Wine|France|Rhône|Grenache, Syrah, Mourvèdre|Medium-bodied Red
+WRW6019FJ|Bosquet des Papes Chateauneuf-du-Pape Tradition Rouge|Red Wine|France|Rhône Valley|Grenache, Syrah, Mourvèdre|Medium-bodied Red
+WRW6052BN|Chateau Pedesclaux Pauillac|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6084BN|Chateau Leoville Las Cases  Saint-Julien|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6085BN|Chateau Poujeaux (Moulis-en-Medoc)|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6127AC|Brendel  "Cooper's Reed" Napa Valley Cabernet Sauvignon|Red Wine|USA|Napa|Cabernet Sauvignon|Cabernet Sauvignon
+WRW6190DH|Olek Bondonio  Barbera D’alba DOC|Red Wine|Italy|Piedmont|Barbera|Barbera
+WRW6245FJ|Bindi Surgadi La Boncia Chianti DOCG|Red Wine|Italy|Tuscany|Sangiovese|Medium-bodied Red
+WRW6247FJ|Vite Colte Barolo "Paesi Tuoi" DOCG|Red Wine|Italy|Piedmont|Nebbiolo|Medium-bodied Red
+WRW6255GN|Fontana Di Papa Vino Rosso|Red Wine|Italy|Lazio|Sangiovese|Sangiovese, Merlot, Montepulciano
+WRW6265FJ|Georges Duboeuf  Beaujolais Nouveau 2024|Red Wine|France|Burgundy|Pinot Noir|Gamay
+WRW6266FJ|Georges Duboeuf  Beaujolais Villages Nouveau 2024|Red Wine|France|Burgundy|Pinot Noir|Gamay
+WRW6289CB|Famille Jaume  Gigondas AOP|Red Wine|France|Rhône Valley|Grenache, Syrah, Mourvèdre|Grenache : 80%, Syrah : 20%
+WRW6325FC|Louis Latour  Romanée St Vivant Grand Cru|Red Wine|France|Burgundy|Pinot Noir|Medium-bodied Red
+WRW6328FU|Giustini  Vecchio Sogno Negroamaro Salento IGP|Red Wine|Italy|Puglia|Negroamaro|Medium-bodied Red
+WRW6384AC|Noble Vines  "Marquis" Lodi  Red Blended|Red Wine|USA|California|Cabernet Sauvignon|Red Blend
+WRW6434FT|Confidences De Prieure-Linchine 2019 "Le 2nd Vin De Chateau Prieure-Lichine"|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6447AA|Casarena 505 Malbec|Red Wine|Argentina|Mendoza|Malbec|Malbec
+WRW6492FT|Duluc De Branaire Ducru Saint-Julien Second wine of Chateau Branaire-Ducru|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6495FT|Chevalier De Lascombes Second wine of Chateau Lascombes|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6499FT|Chateau Lagrezette Paragon Malbec|Red Wine|France|Others region|Malbec|Malbec
+WRW6516GT|Chateau Fombrion  Cuvee La Griveliere|Red Wine|France|Bordeaux|Merlot|Medium-bodied Red
+WRW6547FS|Chateau Haut-Brion  Le Clarence de Haut-Brion 2019|Red Wine|France||Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6618AA|Baron Philippe de Rothschild  Mouton Cadet Bordeaux Rouge Bio "Pierre"|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6644DJ|Maxime Cheurlin Noellat Chambolle-Musigny 1er Cru Les Noirots|Red Wine|France|Burgundy|Pinot Noir|Medium-bodied Red
+WSP1098BU|Veuve Clicquot  Brut Yellow Label (Magnum) (1.5 L)|White Wine|France|Champagne|Pinot Noir, Pinot Meunier, Chardonnay|Medium-bodied White
+WSP1108BU|Moet & Chandon  Brut Imperial (Jeroboam) (3 L)|White Wine|France|Champagne|Chardonnay|Medium-bodied White
+WSP1116AD|Dom Perignon  (luminated label)|White Wine|France|Champagne|Pinot Noir, Chardonnay|Medium-bodied White
+WSP1445DR|Martini  Asti  DOCG|Sparkling Wine|Italy|Piedmont|Muscat|Moscato & Blends
+WSP2431AD|Maison de Grand Esprit  L'Etre Magique Cremant De Bourgogne|Sparkling Wine|France|Burgundy|Chardonnay, Pinot Noir|Crémant
+WSP2459AD|Concha Y Toro  Casillero Del Diablo Devil's Brut|White Wine|Chile|Central Valley|Sauvignon Blanc|Medium-bodied White
+WSP2579AD|Atto Primo  Spumante Brut|Sparkling Wine|Italy|Veneto|Glera|Glera (Prosecco)
+WSP5668AA|V8+  Prosecco Brut Millesimato DOC (1.5 L)|Sparkling Wine|Italy|Veneto|Glera|Prosecco
+WSP5670BU|Dom Perignon 2013|Champagne|France|Champagne|Chardonnay, Pinot Noir, Pinot Meunier|Pinot Noir And Chardonnay
+WSP5694AD|Contadi Castaldi  Franciacorta Brut Race Ducati|White Wine|Italy|Lombardy|Pinot Grigio|Medium-bodied White
+WSP5724FJ|Botter Prosecco DOCG Valdobbiadene|Sparkling Wine|Italy|Veneto|Glera|Prosecco
+WSP5726FJ|Heim  Cremant D'Alsace Brut Imperial|Sparkling Wine|France|Alsace|Chardonnay, Pinot Noir|Crémant
+WSP5743AA|Barons de Rothschild  Concordia Brut|White Wine|France|Champagne|Chardonnay|Medium-bodied White
+WSP5755FU|Tenuta Baron  Spumante Eden Brut|Sparkling Wine|Italy|Veneto|Glera|Brut Sparkling Wine
+WSP5765EG|Dom Ruinart Blanc de Blanc 2010|Champagne|France|Champagne|Chardonnay, Pinot Noir, Pinot Meunier|Chardonnay
+WSP5770AB|Giuseppe Verdi Malvasia Spumante Brut Emilia IGT|Sparkling Wine|Italy|Emilia-Romagna|Malvasia|Malvasia
+WSP5772AB|Guiseppe Verdi Lambrusco Rosa Amabile|Sparkling Wine|Italy|Emilia-Romagna|Lambrusco|Lambrusco
+WSP5777AD|Penfolds  Champagne Cuvee Brut|Champagne|France|Champagne|Chardonnay, Pinot Noir, Pinot Meunier|Brut Champagne
+WSP5799DJ|Champagne Chavost Ratafia Champenois Sans Sulfite (700 ml)|Champagne|France|Champagne|Chardonnay, Pinot Noir, Pinot Meunier|Brut Champagne
+WWW0252AD|Pio Cesare  Gavi white DOCG|White Wine|Italy|Piedmont|Cortese|Medium-bodied White
+WWW1177BS|Bottega  Pinot Grigio delle Venezie IGT|White Wine|Italy|Veneto|Pinot Grigio|Pinot Gris
+WWW1425AB|Domaines Barons de Rothschild (Lafite)  Legende Bordeaux Blanc|White Wine|France|Bordeaux|Sauvignon Blanc, Sémillon|55 % S?millon 45 % Sauvignon
+WWW5165DJ|Albert Bichot  Domaine Long-Depaquit Chablis Grand Cru "Moutonne" Monopole|White Wine|France|Burgundy|Chardonnay|Medium-bodied White
+WWW5169FR|Ropiteau  Chardonnay Les Plants Nobles Vin De France|White Wine|France|Provence|Chardonnay|Chardonnay
+WWW5265AB|la Chablisienne  Chateau Grenouille Chablis|White Wine|France|Burgundy|Chardonnay|Chardonnay
+WWW5301AB|Gerard Bertrand  Naturae Orange|Orange Wine|France|Others region||Chardonnay, Grenache Blanc, Viognier, Muscat
+WWW5307AD|Talamonti  Aternum Trebbiano D'Abruzzo|White Wine|Italy|Abruzzo|Trebbiano|Medium-bodied White
+WWW5327AB|Alpaca  Organic White|White Wine|Chile|Central Valley|Sauvignon Blanc|Medium-bodied White
+WWW5353FP|Max Ferd. Richter  Mulheimer Helenenkloster Riesling Spatlese|White Wine|Germany|Mosel|Riesling|Riesling
+WWW5377DH|Bianka & Daniel Schmitt  Feminin Trocken|White Wine|Germany||Chardonnay|Medium-bodied White
+WWW5378AB|Nik Weis  Goldtröpfchen Riesling VDP.GRAND CRU (GROSSES GEWÄCHS)|White Wine|Germany|Mosel|Riesling|Riesling
+WWW5380AB|Nik Weis  Goldtröpfchen Riesling Spätlese|White Wine|Germany|Mosel|Riesling|Riesling
+WWW5416FJ|Heim  Pinot Blanc Imperial|White Wine|France|Alsace|Riesling|Medium-bodied White
+WWW5423AA|Baron Philippe de Rothschild  Mouton Cadet Bordeaux Blanc BIO "Nathan"|White Wine|France|Bordeaux|Sauvignon Blanc|Medium-bodied White
+WWW5425AA|Velenosi  Villa Angela Chardonnay IGT|White Wine|Italy|Marche|Chardonnay|Chardonnay
+WWW5429CB|Domaine Jaume  Cotes-Du-Rhone Blanc AOP|White Wine|France|Rhône|Chardonnay|Clairette 25 % - Grenache 25 % - Marsanne 25 % - Roussane 15 % - Viognier 10 %
+WWW5436FC|Louis Latour  Chateau De Blagny Meursault 1er Cru|White Wine|France|Burgundy|Chardonnay|Medium-bodied White

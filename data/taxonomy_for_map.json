@@ -1,0 +1,2786 @@
+{
+  "_meta": {
+    "generated": "2026-04-12T10:12:56.041Z",
+    "counts": {
+      "countries": 51,
+      "regions": 99,
+      "subregions": 80,
+      "appellations": 81
+    },
+    "needs_coords": {
+      "regions": [
+        "Abruzzo",
+        "Aconcagua Valley",
+        "Adelaide Hills",
+        "Barossa Valley",
+        "Cachapoal Valley",
+        "Campania",
+        "Casablanca",
+        "Casablanca Valley",
+        "Catalunya",
+        "Clare",
+        "Colchagua",
+        "Colchagua Valley",
+        "Coonawarra",
+        "Curico Valley",
+        "Dão",
+        "Emilia-Romagna",
+        "Friuli",
+        "Friuli-Venezia Giulia",
+        "Hunter",
+        "La Mancha",
+        "Lazio",
+        "Loire valley",
+        "Lombardy",
+        "Lowland",
+        "Maipo",
+        "Maipo Valley",
+        "Marche",
+        "Martinborough",
+        "Maule",
+        "Multi-Regional",
+        "Ningxia",
+        "Oregon",
+        "Others region",
+        "Rhône",
+        "Rueda",
+        "Sardinia",
+        "Sonoma County",
+        "South Eastern Australia",
+        "Toro",
+        "Trentino-Alto Adige",
+        "Umbria",
+        "Valencia",
+        "Victoria",
+        "Washington",
+        "Western Cape",
+        "Yarra"
+      ],
+      "subregions": [
+        "Alexander Valley",
+        "Alpera",
+        "Amarone",
+        "Anjou",
+        "Asti",
+        "Barbaresco",
+        "Beaujolais",
+        "Beaune",
+        "Benevento",
+        "Blaye",
+        "Bolgheri",
+        "Cahors",
+        "Calistoga",
+        "Central Coast",
+        "Chablis",
+        "Chassagne-Montrachet",
+        "Chianti",
+        "Columbia Gorge",
+        "Coonawarra / McLaren Vale / Barossa Valley / Adelaide Hills",
+        "Curicó Valley",
+        "Côte de Beaune",
+        "Côte de Nuits",
+        "Côtes de Bourg",
+        "Etna",
+        "Fronsac",
+        "Gevrey-Chambertin",
+        "Graves",
+        "Helan Mountain",
+        "Langhe",
+        "Les Baux-de-Provence",
+        "Luján de Cuyo / Valle de Uco",
+        "Maipú",
+        "Manduria",
+        "Maremma",
+        "Margaux",
+        "Marsala",
+        "Mendocino County",
+        "Millahue Valley",
+        "Minervois",
+        "Montagne de Reims",
+        "Montalcino",
+        "Montepulciano d’Abruzzo",
+        "Monterey County",
+        "Médoc",
+        "Napa Valley",
+        "Nero d'Avola",
+        "Oakville",
+        "Pauillac",
+        "Pays d'Oc",
+        "Pessac-Léognan",
+        "Piave",
+        "Pomerol",
+        "Pommard",
+        "Pouilly-Fuissé",
+        "Prosecco",
+        "Puente Alto",
+        "Right Bank",
+        "Rioja Alavesa",
+        "Rioja Alta",
+        "Riverland",
+        "Roennfeldt Road",
+        "Ruppertsberg",
+        "Rutherford",
+        "Ruwer",
+        "Saint-Estèphe",
+        "Saint-Julien",
+        "Saint-Émilion",
+        "Seppeltsfield",
+        "Soave",
+        "Sonoma County",
+        "Southern Rhône",
+        "St. Helena",
+        "Tamar Valley / Adelaide Hills / Henty",
+        "Taranto",
+        "Uco Valley",
+        "Valpolicella",
+        "Vinci",
+        "Volnay",
+        "Waipara Valley",
+        "Wilyabrup"
+      ]
+    },
+    "duplicate_candidates": [
+      "DUPLICATE? region \"Barossa\" vs [\"Barossa Valley\"]",
+      "DUPLICATE? region \"Barossa Valley\" vs [\"Barossa\"]",
+      "DUPLICATE? region \"Casablanca\" vs [\"Casablanca Valley\"]",
+      "DUPLICATE? region \"Casablanca Valley\" vs [\"Casablanca\"]",
+      "DUPLICATE? region \"Clare\" vs [\"Clare Valley\"]",
+      "DUPLICATE? region \"Clare Valley\" vs [\"Clare\"]",
+      "DUPLICATE? region \"Colchagua\" vs [\"Colchagua Valley\"]",
+      "DUPLICATE? region \"Colchagua Valley\" vs [\"Colchagua\"]",
+      "DUPLICATE? region \"Friuli\" vs [\"Friuli-Venezia Giulia\"]",
+      "DUPLICATE? region \"Friuli-Venezia Giulia\" vs [\"Friuli\"]",
+      "DUPLICATE? region \"Loire\" vs [\"Loire valley\"]",
+      "DUPLICATE? region \"Loire valley\" vs [\"Loire\"]",
+      "DUPLICATE? region \"Maipo\" vs [\"Maipo Valley\"]",
+      "DUPLICATE? region \"Maipo Valley\" vs [\"Maipo\"]",
+      "DUPLICATE? region \"Rhône\" vs [\"Rhône Valley\"]",
+      "DUPLICATE? region \"Rhône Valley\" vs [\"Rhône\"]",
+      "DUPLICATE? region \"Sonoma\" vs [\"Sonoma County\"]",
+      "DUPLICATE? region \"Sonoma County\" vs [\"Sonoma\"]"
+    ]
+  },
+  "countries": [
+    {
+      "id": 35,
+      "name": "Argentina",
+      "slug": "argentina",
+      "latitude": -33,
+      "longitude": -68.5
+    },
+    {
+      "id": 34,
+      "name": "Australia",
+      "slug": "australia",
+      "latitude": -34.9,
+      "longitude": 138.6
+    },
+    {
+      "id": 3,
+      "name": "Austria",
+      "slug": "austria",
+      "latitude": 48.3,
+      "longitude": 15.5
+    },
+    {
+      "id": 26,
+      "name": "Barbados",
+      "slug": "barbados",
+      "latitude": 13.2,
+      "longitude": -59.5
+    },
+    {
+      "id": 27,
+      "name": "Belgium",
+      "slug": "belgium",
+      "latitude": 50.8,
+      "longitude": 4.4
+    },
+    {
+      "id": 45,
+      "name": "Bermuda",
+      "slug": "bermuda",
+      "latitude": 32.3,
+      "longitude": -64.8
+    },
+    {
+      "id": 7,
+      "name": "Brazil",
+      "slug": "brazil",
+      "latitude": -15.8,
+      "longitude": -47.9
+    },
+    {
+      "id": 19,
+      "name": "Canada",
+      "slug": "canada",
+      "latitude": 45,
+      "longitude": -75.7
+    },
+    {
+      "id": 23,
+      "name": "Caribbean",
+      "slug": "caribbean",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 17,
+      "name": "Chile",
+      "slug": "chile",
+      "latitude": -33.5,
+      "longitude": -70.6
+    },
+    {
+      "id": 39,
+      "name": "China",
+      "slug": "china",
+      "latitude": 35,
+      "longitude": 105
+    },
+    {
+      "id": 29,
+      "name": "Colombia",
+      "slug": "colombia",
+      "latitude": 4.7,
+      "longitude": -74.1
+    },
+    {
+      "id": 2,
+      "name": "Cuba",
+      "slug": "cuba",
+      "latitude": 23,
+      "longitude": -82.4
+    },
+    {
+      "id": 41,
+      "name": "Czech Republic",
+      "slug": "czech-republic",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 40,
+      "name": "Dominican Republic",
+      "slug": "dominican-republic",
+      "latitude": 18.5,
+      "longitude": -69.9
+    },
+    {
+      "id": 8,
+      "name": "England",
+      "slug": "england",
+      "latitude": 51.5,
+      "longitude": -1.5
+    },
+    {
+      "id": 4,
+      "name": "France",
+      "slug": "france",
+      "latitude": 46.6,
+      "longitude": 2.2
+    },
+    {
+      "id": 33,
+      "name": "Georgia",
+      "slug": "georgia",
+      "latitude": 42,
+      "longitude": 43.5
+    },
+    {
+      "id": 9,
+      "name": "Germany",
+      "slug": "germany",
+      "latitude": 50,
+      "longitude": 8.3
+    },
+    {
+      "id": 49,
+      "name": "Greece",
+      "slug": "greece",
+      "latitude": 38,
+      "longitude": 23.7
+    },
+    {
+      "id": 25,
+      "name": "Guatemala",
+      "slug": "guatemala",
+      "latitude": 14.6,
+      "longitude": -90.5
+    },
+    {
+      "id": 51,
+      "name": "Hungary",
+      "slug": "hungary",
+      "latitude": 47.5,
+      "longitude": 19.1
+    },
+    {
+      "id": 46,
+      "name": "Indonesia",
+      "slug": "indonesia",
+      "latitude": -6.2,
+      "longitude": 106.8
+    },
+    {
+      "id": 16,
+      "name": "Ireland",
+      "slug": "ireland",
+      "latitude": 53.4,
+      "longitude": -8.2
+    },
+    {
+      "id": 5,
+      "name": "Italy",
+      "slug": "italy",
+      "latitude": 42.5,
+      "longitude": 12.5
+    },
+    {
+      "id": 22,
+      "name": "Jamaica",
+      "slug": "jamaica",
+      "latitude": 18.1,
+      "longitude": -77.3
+    },
+    {
+      "id": 14,
+      "name": "Japan",
+      "slug": "japan",
+      "latitude": 35.7,
+      "longitude": 139.7
+    },
+    {
+      "id": 28,
+      "name": "Martinique",
+      "slug": "martinique",
+      "latitude": 14.6,
+      "longitude": -61
+    },
+    {
+      "id": 21,
+      "name": "Mexico",
+      "slug": "mexico",
+      "latitude": 23.6,
+      "longitude": -102.5
+    },
+    {
+      "id": 12,
+      "name": "Netherland",
+      "slug": "netherland",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 18,
+      "name": "Netherlands",
+      "slug": "netherlands",
+      "latitude": 52.1,
+      "longitude": 5.3
+    },
+    {
+      "id": 37,
+      "name": "New Zealand",
+      "slug": "new-zealand",
+      "latitude": -41.3,
+      "longitude": 174.8
+    },
+    {
+      "id": 44,
+      "name": "Nicaragua",
+      "slug": "nicaragua",
+      "latitude": 12.1,
+      "longitude": -86.3
+    },
+    {
+      "id": 15,
+      "name": "Norway",
+      "slug": "norway",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 42,
+      "name": "Peru",
+      "slug": "peru",
+      "latitude": -12,
+      "longitude": -77
+    },
+    {
+      "id": 47,
+      "name": "Poland",
+      "slug": "poland",
+      "latitude": 52.2,
+      "longitude": 21
+    },
+    {
+      "id": 32,
+      "name": "Portugal",
+      "slug": "portugal",
+      "latitude": 41.2,
+      "longitude": -8.6
+    },
+    {
+      "id": 30,
+      "name": "Russia",
+      "slug": "russia",
+      "latitude": 55.8,
+      "longitude": 37.6
+    },
+    {
+      "id": 10,
+      "name": "Scotland",
+      "slug": "scotland",
+      "latitude": 56.5,
+      "longitude": -4
+    },
+    {
+      "id": 50,
+      "name": "Slovenia",
+      "slug": "slovenia",
+      "latitude": 46.1,
+      "longitude": 14.8
+    },
+    {
+      "id": 36,
+      "name": "South Africa",
+      "slug": "south-africa",
+      "latitude": -33.9,
+      "longitude": 18.9
+    },
+    {
+      "id": 13,
+      "name": "Spain",
+      "slug": "spain",
+      "latitude": 39.5,
+      "longitude": -3.7
+    },
+    {
+      "id": 31,
+      "name": "Sweden",
+      "slug": "sweden",
+      "latitude": 59.3,
+      "longitude": 18.1
+    },
+    {
+      "id": 48,
+      "name": "Taiwan",
+      "slug": "taiwan",
+      "latitude": 25,
+      "longitude": 121.5
+    },
+    {
+      "id": 6,
+      "name": "Thailand",
+      "slug": "thailand",
+      "latitude": 14.5,
+      "longitude": 100.5
+    },
+    {
+      "id": 20,
+      "name": "Trinidad",
+      "slug": "trinidad",
+      "latitude": 10.5,
+      "longitude": -61.3
+    },
+    {
+      "id": 11,
+      "name": "UK",
+      "slug": "uk",
+      "latitude": 55.7,
+      "longitude": -3.5
+    },
+    {
+      "id": 1,
+      "name": "USA",
+      "slug": "usa",
+      "latitude": 38.5,
+      "longitude": -121.5
+    },
+    {
+      "id": 38,
+      "name": "Uruguay",
+      "slug": "uruguay",
+      "latitude": -34.9,
+      "longitude": -56.2
+    },
+    {
+      "id": 24,
+      "name": "Venezuela",
+      "slug": "venezuela",
+      "latitude": 10.5,
+      "longitude": -67
+    },
+    {
+      "id": 43,
+      "name": "Vietnam",
+      "slug": "vietnam",
+      "latitude": 16,
+      "longitude": 108
+    }
+  ],
+  "regions": [
+    {
+      "id": 98,
+      "name": "Abruzzo",
+      "slug": "abruzzo",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 72,
+      "name": "Aconcagua Valley",
+      "slug": "aconcagua-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 17,
+      "parent_name": "Chile"
+    },
+    {
+      "id": 131,
+      "name": "Adelaide Hills",
+      "slug": "adelaide-hills",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 54,
+      "name": "Alsace",
+      "slug": "alsace",
+      "latitude": 48.2,
+      "longitude": 7.3,
+      "parent_id": 4,
+      "parent_name": "France"
+    },
+    {
+      "id": 913,
+      "name": "Armagnac",
+      "slug": "armagnac",
+      "latitude": 43.9,
+      "longitude": -0.1,
+      "parent_id": 4,
+      "parent_name": "France"
+    },
+    {
+      "id": 78,
+      "name": "Barossa",
+      "slug": "barossa",
+      "latitude": -34.5,
+      "longitude": 138.9,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 95,
+      "name": "Barossa Valley",
+      "slug": "barossa-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 58,
+      "name": "Bordeaux",
+      "slug": "bordeaux",
+      "latitude": 44.84,
+      "longitude": -0.58,
+      "parent_id": 4,
+      "parent_name": "France"
+    },
+    {
+      "id": 77,
+      "name": "Burgundy",
+      "slug": "burgundy",
+      "latitude": 47,
+      "longitude": 4.8,
+      "parent_id": 4,
+      "parent_name": "France"
+    },
+    {
+      "id": 128,
+      "name": "Cachapoal Valley",
+      "slug": "cachapoal-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 17,
+      "parent_name": "Chile"
+    },
+    {
+      "id": 66,
+      "name": "California",
+      "slug": "california",
+      "latitude": 37.3,
+      "longitude": -119.5,
+      "parent_id": 1,
+      "parent_name": "USA"
+    },
+    {
+      "id": 86,
+      "name": "Campania",
+      "slug": "campania",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 907,
+      "name": "Campbeltown",
+      "slug": "campbeltown",
+      "latitude": 55.4,
+      "longitude": -5.6,
+      "parent_id": 10,
+      "parent_name": "Scotland"
+    },
+    {
+      "id": 106,
+      "name": "Casablanca",
+      "slug": "casablanca",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 17,
+      "parent_name": "Chile"
+    },
+    {
+      "id": 108,
+      "name": "Casablanca Valley",
+      "slug": "casablanca-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 17,
+      "parent_name": "Chile"
+    },
+    {
+      "id": 105,
+      "name": "Catalunya",
+      "slug": "catalunya",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 130,
+      "name": "Central Otago",
+      "slug": "central-otago",
+      "latitude": -45,
+      "longitude": 169.2,
+      "parent_id": 37,
+      "parent_name": "New Zealand"
+    },
+    {
+      "id": 79,
+      "name": "Central Valley",
+      "slug": "central-valley",
+      "latitude": -34,
+      "longitude": -71.2,
+      "parent_id": 17,
+      "parent_name": "Chile"
+    },
+    {
+      "id": 52,
+      "name": "Champagne",
+      "slug": "champagne",
+      "latitude": 49,
+      "longitude": 3.9,
+      "parent_id": 4,
+      "parent_name": "France"
+    },
+    {
+      "id": 94,
+      "name": "Clare",
+      "slug": "clare",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 89,
+      "name": "Clare Valley",
+      "slug": "clare-valley",
+      "latitude": -33.8,
+      "longitude": 138.7,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 912,
+      "name": "Cognac",
+      "slug": "cognac",
+      "latitude": 45.7,
+      "longitude": -0.3,
+      "parent_id": 4,
+      "parent_name": "France"
+    },
+    {
+      "id": 88,
+      "name": "Colchagua",
+      "slug": "colchagua",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 17,
+      "parent_name": "Chile"
+    },
+    {
+      "id": 87,
+      "name": "Colchagua Valley",
+      "slug": "colchagua-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 17,
+      "parent_name": "Chile"
+    },
+    {
+      "id": 122,
+      "name": "Coonawarra",
+      "slug": "coonawarra",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 120,
+      "name": "Curico Valley",
+      "slug": "curico-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 17,
+      "parent_name": "Chile"
+    },
+    {
+      "id": 60,
+      "name": "Douro",
+      "slug": "douro",
+      "latitude": 41.2,
+      "longitude": -8.2,
+      "parent_id": 32,
+      "parent_name": "Portugal"
+    },
+    {
+      "id": 134,
+      "name": "Dão",
+      "slug": "d-o",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 32,
+      "parent_name": "Portugal"
+    },
+    {
+      "id": 92,
+      "name": "Emilia-Romagna",
+      "slug": "emilia-romagna",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 107,
+      "name": "Friuli",
+      "slug": "friuli",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 100,
+      "name": "Friuli-Venezia Giulia",
+      "slug": "friuli-venezia-giulia",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 117,
+      "name": "Hawke's Bay",
+      "slug": "hawke-s-bay",
+      "latitude": -39.6,
+      "longitude": 176.9,
+      "parent_id": 37,
+      "parent_name": "New Zealand"
+    },
+    {
+      "id": 905,
+      "name": "Highland",
+      "slug": "highland",
+      "latitude": 57,
+      "longitude": -5,
+      "parent_id": 10,
+      "parent_name": "Scotland"
+    },
+    {
+      "id": 121,
+      "name": "Hunter",
+      "slug": "hunter",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 903,
+      "name": "Islay",
+      "slug": "islay",
+      "latitude": 55.8,
+      "longitude": -6.2,
+      "parent_id": 10,
+      "parent_name": "Scotland"
+    },
+    {
+      "id": 910,
+      "name": "Jalisco",
+      "slug": "jalisco",
+      "latitude": 20.7,
+      "longitude": -103.3,
+      "parent_id": 21,
+      "parent_name": "Mexico"
+    },
+    {
+      "id": 59,
+      "name": "Jerez",
+      "slug": "jerez",
+      "latitude": 36.7,
+      "longitude": -6.1,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 919,
+      "name": "Kamptal",
+      "slug": "kamptal",
+      "latitude": 48.5,
+      "longitude": 15.7,
+      "parent_id": 3,
+      "parent_name": "Austria"
+    },
+    {
+      "id": 908,
+      "name": "Kentucky",
+      "slug": "kentucky",
+      "latitude": 38.2,
+      "longitude": -85.7,
+      "parent_id": 1,
+      "parent_name": "USA"
+    },
+    {
+      "id": 93,
+      "name": "La Mancha",
+      "slug": "la-mancha",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 63,
+      "name": "Languedoc",
+      "slug": "languedoc",
+      "latitude": 43.3,
+      "longitude": 3.3,
+      "parent_id": 4,
+      "parent_name": "France"
+    },
+    {
+      "id": 126,
+      "name": "Lazio",
+      "slug": "lazio",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 53,
+      "name": "Loire",
+      "slug": "loire",
+      "latitude": 47.3,
+      "longitude": -0.3,
+      "parent_id": 4,
+      "parent_name": "France"
+    },
+    {
+      "id": 114,
+      "name": "Loire valley",
+      "slug": "loire-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 4,
+      "parent_name": "France"
+    },
+    {
+      "id": 132,
+      "name": "Lombardy",
+      "slug": "lombardy",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 906,
+      "name": "Lowland",
+      "slug": "lowland",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 10,
+      "parent_name": "Scotland"
+    },
+    {
+      "id": 70,
+      "name": "Maipo",
+      "slug": "maipo",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 17,
+      "parent_name": "Chile"
+    },
+    {
+      "id": 115,
+      "name": "Maipo Valley",
+      "slug": "maipo-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 17,
+      "parent_name": "Chile"
+    },
+    {
+      "id": 119,
+      "name": "Marche",
+      "slug": "marche",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 90,
+      "name": "Margaret River",
+      "slug": "margaret-river",
+      "latitude": -33.8,
+      "longitude": 115,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 82,
+      "name": "Marlborough",
+      "slug": "marlborough",
+      "latitude": -41.5,
+      "longitude": 174,
+      "parent_id": 37,
+      "parent_name": "New Zealand"
+    },
+    {
+      "id": 83,
+      "name": "Martinborough",
+      "slug": "martinborough",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 37,
+      "parent_name": "New Zealand"
+    },
+    {
+      "id": 84,
+      "name": "Maule",
+      "slug": "maule",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 17,
+      "parent_name": "Chile"
+    },
+    {
+      "id": 124,
+      "name": "McLaren Vale",
+      "slug": "mclaren-vale",
+      "latitude": -35.2,
+      "longitude": 138.5,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 71,
+      "name": "Mendoza",
+      "slug": "mendoza",
+      "latitude": -33,
+      "longitude": -68.5,
+      "parent_id": 35,
+      "parent_name": "Argentina"
+    },
+    {
+      "id": 109,
+      "name": "Mosel",
+      "slug": "mosel",
+      "latitude": 49.9,
+      "longitude": 7.6,
+      "parent_id": 9,
+      "parent_name": "Germany"
+    },
+    {
+      "id": 76,
+      "name": "Multi-Regional",
+      "slug": "multi-regional",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 67,
+      "name": "Napa",
+      "slug": "napa",
+      "latitude": 38.5,
+      "longitude": -122.3,
+      "parent_id": 1,
+      "parent_name": "USA"
+    },
+    {
+      "id": 99,
+      "name": "Ningxia",
+      "slug": "ningxia",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 39,
+      "parent_name": "China"
+    },
+    {
+      "id": 911,
+      "name": "Oaxaca",
+      "slug": "oaxaca",
+      "latitude": 16.9,
+      "longitude": -96.7,
+      "parent_id": 21,
+      "parent_name": "Mexico"
+    },
+    {
+      "id": 125,
+      "name": "Oregon",
+      "slug": "oregon",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 1,
+      "parent_name": "USA"
+    },
+    {
+      "id": 62,
+      "name": "Others region",
+      "slug": "others-region",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 118,
+      "name": "Paarl",
+      "slug": "paarl",
+      "latitude": -33.9,
+      "longitude": 18.6,
+      "parent_id": 36,
+      "parent_name": "South Africa"
+    },
+    {
+      "id": 916,
+      "name": "Paso Robles",
+      "slug": "paso-robles",
+      "latitude": 35.6,
+      "longitude": -120.7,
+      "parent_id": 1,
+      "parent_name": "USA"
+    },
+    {
+      "id": 112,
+      "name": "Pfalz",
+      "slug": "pfalz",
+      "latitude": 49.5,
+      "longitude": 8.2,
+      "parent_id": 9,
+      "parent_name": "Germany"
+    },
+    {
+      "id": 56,
+      "name": "Piedmont",
+      "slug": "piedmont",
+      "latitude": 44.7,
+      "longitude": 8,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 116,
+      "name": "Priorat",
+      "slug": "priorat",
+      "latitude": 41.2,
+      "longitude": 0.8,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 57,
+      "name": "Provence",
+      "slug": "provence",
+      "latitude": 43.7,
+      "longitude": 6.5,
+      "parent_id": 4,
+      "parent_name": "France"
+    },
+    {
+      "id": 85,
+      "name": "Puglia",
+      "slug": "puglia",
+      "latitude": 41.1,
+      "longitude": 16.9,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 111,
+      "name": "Rheingau",
+      "slug": "rheingau",
+      "latitude": 50,
+      "longitude": 8,
+      "parent_id": 9,
+      "parent_name": "Germany"
+    },
+    {
+      "id": 101,
+      "name": "Rheinhessen",
+      "slug": "rheinhessen",
+      "latitude": 49.8,
+      "longitude": 8.3,
+      "parent_id": 9,
+      "parent_name": "Germany"
+    },
+    {
+      "id": 64,
+      "name": "Rhône",
+      "slug": "rh-ne",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 4,
+      "parent_name": "France"
+    },
+    {
+      "id": 102,
+      "name": "Rhône Valley",
+      "slug": "rh-ne-valley",
+      "latitude": 45.9,
+      "longitude": 7,
+      "parent_id": 4,
+      "parent_name": "France"
+    },
+    {
+      "id": 74,
+      "name": "Ribera del Duero",
+      "slug": "ribera-del-duero",
+      "latitude": 41.7,
+      "longitude": -3.5,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 73,
+      "name": "Rioja",
+      "slug": "rioja",
+      "latitude": 42.5,
+      "longitude": -2.5,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 110,
+      "name": "Rueda",
+      "slug": "rueda",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 129,
+      "name": "Rías Baixas",
+      "slug": "r-as-baixas",
+      "latitude": 42.2,
+      "longitude": -8.8,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 91,
+      "name": "Sardinia",
+      "slug": "sardinia",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 914,
+      "name": "Sauternes",
+      "slug": "sauternes",
+      "latitude": 44.6,
+      "longitude": -0.3,
+      "parent_id": 4,
+      "parent_name": "France"
+    },
+    {
+      "id": 55,
+      "name": "Sicily",
+      "slug": "sicily",
+      "latitude": 37.8,
+      "longitude": 15,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 80,
+      "name": "Sonoma",
+      "slug": "sonoma",
+      "latitude": 38.4,
+      "longitude": -122.7,
+      "parent_id": 1,
+      "parent_name": "USA"
+    },
+    {
+      "id": 81,
+      "name": "Sonoma County",
+      "slug": "sonoma-county",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 1,
+      "parent_name": "USA"
+    },
+    {
+      "id": 65,
+      "name": "South Australia",
+      "slug": "south-australia",
+      "latitude": -35,
+      "longitude": 138.5,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 69,
+      "name": "South Eastern Australia",
+      "slug": "south-eastern-australia",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 917,
+      "name": "Swartland",
+      "slug": "swartland",
+      "latitude": -33.4,
+      "longitude": 18.7,
+      "parent_id": 36,
+      "parent_name": "South Africa"
+    },
+    {
+      "id": 909,
+      "name": "Tennessee",
+      "slug": "tennessee",
+      "latitude": 35.8,
+      "longitude": -86.7,
+      "parent_id": 1,
+      "parent_name": "USA"
+    },
+    {
+      "id": 920,
+      "name": "Tokaj",
+      "slug": "tokaj",
+      "latitude": 48.3,
+      "longitude": 21.5,
+      "parent_id": 51,
+      "parent_name": "Hungary"
+    },
+    {
+      "id": 123,
+      "name": "Toro",
+      "slug": "toro",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 96,
+      "name": "Trentino-Alto Adige",
+      "slug": "trentino-alto-adige",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 68,
+      "name": "Tuscany",
+      "slug": "tuscany",
+      "latitude": 43.3,
+      "longitude": 11.3,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 133,
+      "name": "Umbria",
+      "slug": "umbria",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 104,
+      "name": "Valencia",
+      "slug": "valencia",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 61,
+      "name": "Veneto",
+      "slug": "veneto",
+      "latitude": 45.4,
+      "longitude": 12.3,
+      "parent_id": 5,
+      "parent_name": "Italy"
+    },
+    {
+      "id": 103,
+      "name": "Victoria",
+      "slug": "victoria",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 918,
+      "name": "Wachau",
+      "slug": "wachau",
+      "latitude": 48.4,
+      "longitude": 15.4,
+      "parent_id": 3,
+      "parent_name": "Austria"
+    },
+    {
+      "id": 97,
+      "name": "Washington",
+      "slug": "washington",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 1,
+      "parent_name": "USA"
+    },
+    {
+      "id": 75,
+      "name": "Western Cape",
+      "slug": "western-cape",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 36,
+      "parent_name": "South Africa"
+    },
+    {
+      "id": 915,
+      "name": "Willamette Valley",
+      "slug": "willamette-valley",
+      "latitude": 45.3,
+      "longitude": -123.1,
+      "parent_id": 1,
+      "parent_name": "USA"
+    },
+    {
+      "id": 113,
+      "name": "Yarra",
+      "slug": "yarra",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    }
+  ],
+  "subregions": [
+    {
+      "id": 155,
+      "name": "Alexander Valley",
+      "slug": "alexander-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 81,
+      "parent_name": "Sonoma County",
+      "grandparent_name": "USA"
+    },
+    {
+      "id": 209,
+      "name": "Alpera",
+      "slug": "alpera",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 62,
+      "parent_name": "Others region",
+      "grandparent_name": "Spain"
+    },
+    {
+      "id": 147,
+      "name": "Amarone",
+      "slug": "amarone",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 61,
+      "parent_name": "Veneto",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 182,
+      "name": "Anjou",
+      "slug": "anjou",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 53,
+      "parent_name": "Loire",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 135,
+      "name": "Asti",
+      "slug": "asti",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 56,
+      "parent_name": "Piedmont",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 200,
+      "name": "Barbaresco",
+      "slug": "barbaresco",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 56,
+      "parent_name": "Piedmont",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 188,
+      "name": "Beaujolais",
+      "slug": "beaujolais",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 77,
+      "parent_name": "Burgundy",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 193,
+      "name": "Beaune",
+      "slug": "beaune",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 77,
+      "parent_name": "Burgundy",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 158,
+      "name": "Benevento",
+      "slug": "benevento",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 86,
+      "parent_name": "Campania",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 170,
+      "name": "Blaye",
+      "slug": "blaye",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 58,
+      "parent_name": "Bordeaux",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 211,
+      "name": "Bolgheri",
+      "slug": "bolgheri",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 68,
+      "parent_name": "Tuscany",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 161,
+      "name": "Cahors",
+      "slug": "cahors",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 62,
+      "parent_name": "Others region",
+      "grandparent_name": "Spain"
+    },
+    {
+      "id": 177,
+      "name": "Calistoga",
+      "slug": "calistoga",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 67,
+      "parent_name": "Napa",
+      "grandparent_name": "USA"
+    },
+    {
+      "id": 141,
+      "name": "Central Coast",
+      "slug": "central-coast",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 66,
+      "parent_name": "California",
+      "grandparent_name": "USA"
+    },
+    {
+      "id": 180,
+      "name": "Chablis",
+      "slug": "chablis",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 77,
+      "parent_name": "Burgundy",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 208,
+      "name": "Chassagne-Montrachet",
+      "slug": "chassagne-montrachet",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 77,
+      "parent_name": "Burgundy",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 145,
+      "name": "Chianti",
+      "slug": "chianti",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 68,
+      "parent_name": "Tuscany",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 201,
+      "name": "Columbia Gorge",
+      "slug": "columbia-gorge",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 125,
+      "parent_name": "Oregon",
+      "grandparent_name": "USA"
+    },
+    {
+      "id": 160,
+      "name": "Coonawarra / McLaren Vale / Barossa Valley / Adelaide Hills",
+      "slug": "coonawarra-mclaren-vale-barossa-valley-adelaide-hills",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 65,
+      "parent_name": "South Australia",
+      "grandparent_name": "Australia"
+    },
+    {
+      "id": 151,
+      "name": "Curicó Valley",
+      "slug": "curic-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 79,
+      "parent_name": "Central Valley",
+      "grandparent_name": "Chile"
+    },
+    {
+      "id": 148,
+      "name": "Côte de Beaune",
+      "slug": "c-te-de-beaune",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 77,
+      "parent_name": "Burgundy",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 172,
+      "name": "Côte de Nuits",
+      "slug": "c-te-de-nuits",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 77,
+      "parent_name": "Burgundy",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 191,
+      "name": "Côtes de Bourg",
+      "slug": "c-tes-de-bourg",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 58,
+      "parent_name": "Bordeaux",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 137,
+      "name": "Etna",
+      "slug": "etna",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 55,
+      "parent_name": "Sicily",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 152,
+      "name": "Fronsac",
+      "slug": "fronsac",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 58,
+      "parent_name": "Bordeaux",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 159,
+      "name": "Gevrey-Chambertin",
+      "slug": "gevrey-chambertin",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 77,
+      "parent_name": "Burgundy",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 153,
+      "name": "Graves",
+      "slug": "graves",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 58,
+      "parent_name": "Bordeaux",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 173,
+      "name": "Helan Mountain",
+      "slug": "helan-mountain",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 99,
+      "parent_name": "Ningxia",
+      "grandparent_name": "China"
+    },
+    {
+      "id": 150,
+      "name": "Langhe",
+      "slug": "langhe",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 56,
+      "parent_name": "Piedmont",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 136,
+      "name": "Les Baux-de-Provence",
+      "slug": "les-baux-de-provence",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 57,
+      "parent_name": "Provence",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 195,
+      "name": "Luján de Cuyo / Valle de Uco",
+      "slug": "luj-n-de-cuyo-valle-de-uco",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 71,
+      "parent_name": "Mendoza",
+      "grandparent_name": "Argentina"
+    },
+    {
+      "id": 199,
+      "name": "Maipú",
+      "slug": "maip",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 71,
+      "parent_name": "Mendoza",
+      "grandparent_name": "Argentina"
+    },
+    {
+      "id": 164,
+      "name": "Manduria",
+      "slug": "manduria",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 85,
+      "parent_name": "Puglia",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 166,
+      "name": "Maremma",
+      "slug": "maremma",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 68,
+      "parent_name": "Tuscany",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 169,
+      "name": "Margaux",
+      "slug": "margaux",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 58,
+      "parent_name": "Bordeaux",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 183,
+      "name": "Marsala",
+      "slug": "marsala",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 55,
+      "parent_name": "Sicily",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 154,
+      "name": "Mendocino County",
+      "slug": "mendocino-county",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 66,
+      "parent_name": "California",
+      "grandparent_name": "USA"
+    },
+    {
+      "id": 207,
+      "name": "Millahue Valley",
+      "slug": "millahue-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 128,
+      "parent_name": "Cachapoal Valley",
+      "grandparent_name": "Chile"
+    },
+    {
+      "id": 185,
+      "name": "Minervois",
+      "slug": "minervois",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 63,
+      "parent_name": "Languedoc",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 179,
+      "name": "Montagne de Reims",
+      "slug": "montagne-de-reims",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 52,
+      "parent_name": "Champagne",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 163,
+      "name": "Montalcino",
+      "slug": "montalcino",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 68,
+      "parent_name": "Tuscany",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 171,
+      "name": "Montepulciano d’Abruzzo",
+      "slug": "montepulciano-d-abruzzo",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 98,
+      "parent_name": "Abruzzo",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 162,
+      "name": "Monterey County",
+      "slug": "monterey-county",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 66,
+      "parent_name": "California",
+      "grandparent_name": "USA"
+    },
+    {
+      "id": 142,
+      "name": "Médoc",
+      "slug": "m-doc",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 58,
+      "parent_name": "Bordeaux",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 144,
+      "name": "Napa Valley",
+      "slug": "napa-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 67,
+      "parent_name": "Napa",
+      "grandparent_name": "USA"
+    },
+    {
+      "id": 184,
+      "name": "Nero d'Avola",
+      "slug": "nero-d-avola",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 55,
+      "parent_name": "Sicily",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 140,
+      "name": "Oakville",
+      "slug": "oakville",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 67,
+      "parent_name": "Napa",
+      "grandparent_name": "USA"
+    },
+    {
+      "id": 167,
+      "name": "Pauillac",
+      "slug": "pauillac",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 58,
+      "parent_name": "Bordeaux",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 198,
+      "name": "Pays d'Oc",
+      "slug": "pays-d-oc",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 63,
+      "parent_name": "Languedoc",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 168,
+      "name": "Pessac-Léognan",
+      "slug": "pessac-l-ognan",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 58,
+      "parent_name": "Bordeaux",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 197,
+      "name": "Piave",
+      "slug": "piave",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 61,
+      "parent_name": "Veneto",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 192,
+      "name": "Pomerol",
+      "slug": "pomerol",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 58,
+      "parent_name": "Bordeaux",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 194,
+      "name": "Pommard",
+      "slug": "pommard",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 77,
+      "parent_name": "Burgundy",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 212,
+      "name": "Pouilly-Fuissé",
+      "slug": "pouilly-fuiss",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 77,
+      "parent_name": "Burgundy",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 178,
+      "name": "Prosecco",
+      "slug": "prosecco",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 61,
+      "parent_name": "Veneto",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 186,
+      "name": "Puente Alto",
+      "slug": "puente-alto",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 115,
+      "parent_name": "Maipo Valley",
+      "grandparent_name": "Chile"
+    },
+    {
+      "id": 189,
+      "name": "Right Bank",
+      "slug": "right-bank",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 58,
+      "parent_name": "Bordeaux",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 143,
+      "name": "Rioja Alavesa",
+      "slug": "rioja-alavesa",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 73,
+      "parent_name": "Rioja",
+      "grandparent_name": "Spain"
+    },
+    {
+      "id": 149,
+      "name": "Rioja Alta",
+      "slug": "rioja-alta",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 73,
+      "parent_name": "Rioja",
+      "grandparent_name": "Spain"
+    },
+    {
+      "id": 139,
+      "name": "Riverland",
+      "slug": "riverland",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 65,
+      "parent_name": "South Australia",
+      "grandparent_name": "Australia"
+    },
+    {
+      "id": 210,
+      "name": "Roennfeldt Road",
+      "slug": "roennfeldt-road",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 95,
+      "parent_name": "Barossa Valley",
+      "grandparent_name": "Australia"
+    },
+    {
+      "id": 181,
+      "name": "Ruppertsberg",
+      "slug": "ruppertsberg",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 112,
+      "parent_name": "Pfalz",
+      "grandparent_name": "Germany"
+    },
+    {
+      "id": 204,
+      "name": "Rutherford",
+      "slug": "rutherford",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 67,
+      "parent_name": "Napa",
+      "grandparent_name": "USA"
+    },
+    {
+      "id": 214,
+      "name": "Ruwer",
+      "slug": "ruwer",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 109,
+      "parent_name": "Mosel",
+      "grandparent_name": "Germany"
+    },
+    {
+      "id": 206,
+      "name": "Saint-Estèphe",
+      "slug": "saint-est-phe",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 58,
+      "parent_name": "Bordeaux",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 174,
+      "name": "Saint-Julien",
+      "slug": "saint-julien",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 58,
+      "parent_name": "Bordeaux",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 176,
+      "name": "Saint-Émilion",
+      "slug": "saint-milion",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 58,
+      "parent_name": "Bordeaux",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 205,
+      "name": "Seppeltsfield",
+      "slug": "seppeltsfield",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 78,
+      "parent_name": "Barossa",
+      "grandparent_name": "Australia"
+    },
+    {
+      "id": 213,
+      "name": "Soave",
+      "slug": "soave",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 61,
+      "parent_name": "Veneto",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 138,
+      "name": "Sonoma County",
+      "slug": "sonoma-county",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 80,
+      "parent_name": "Sonoma",
+      "grandparent_name": "USA"
+    },
+    {
+      "id": 203,
+      "name": "Southern Rhône",
+      "slug": "southern-rh-ne",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 64,
+      "parent_name": "Rhône",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 202,
+      "name": "St. Helena",
+      "slug": "st-helena",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 67,
+      "parent_name": "Napa",
+      "grandparent_name": "USA"
+    },
+    {
+      "id": 146,
+      "name": "Tamar Valley / Adelaide Hills / Henty",
+      "slug": "tamar-valley-adelaide-hills-henty",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 76,
+      "parent_name": "Multi-Regional",
+      "grandparent_name": "Australia"
+    },
+    {
+      "id": 157,
+      "name": "Taranto",
+      "slug": "taranto",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 85,
+      "parent_name": "Puglia",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 190,
+      "name": "Uco Valley",
+      "slug": "uco-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 71,
+      "parent_name": "Mendoza",
+      "grandparent_name": "Argentina"
+    },
+    {
+      "id": 187,
+      "name": "Valpolicella",
+      "slug": "valpolicella",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 61,
+      "parent_name": "Veneto",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 165,
+      "name": "Vinci",
+      "slug": "vinci",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 68,
+      "parent_name": "Tuscany",
+      "grandparent_name": "Italy"
+    },
+    {
+      "id": 175,
+      "name": "Volnay",
+      "slug": "volnay",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 77,
+      "parent_name": "Burgundy",
+      "grandparent_name": "France"
+    },
+    {
+      "id": 156,
+      "name": "Waipara Valley",
+      "slug": "waipara-valley",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 82,
+      "parent_name": "Marlborough",
+      "grandparent_name": "New Zealand"
+    },
+    {
+      "id": 196,
+      "name": "Wilyabrup",
+      "slug": "wilyabrup",
+      "latitude": null,
+      "longitude": null,
+      "parent_id": 90,
+      "parent_name": "Margaret River",
+      "grandparent_name": "Australia"
+    }
+  ],
+  "appellations": [
+    {
+      "id": 237,
+      "name": "Aglianico del Beneventano",
+      "slug": "aglianico-del-beneventano",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 234,
+      "name": "Alexander Valley AVA",
+      "slug": "alexander-valley-ava",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 285,
+      "name": "Almansa",
+      "slug": "almansa",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 293,
+      "name": "Alsace",
+      "slug": "alsace",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 269,
+      "name": "Altamira / Vista Flores / Gualtallary",
+      "slug": "altamira-vista-flores-gualtallary",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 257,
+      "name": "Alto Adige",
+      "slug": "alto-adige",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 225,
+      "name": "Amarone della Valpolicella",
+      "slug": "amarone-della-valpolicella",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 232,
+      "name": "Anderson Valley",
+      "slug": "anderson-valley",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 270,
+      "name": "Barbaresco",
+      "slug": "barbaresco",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 216,
+      "name": "Barolo",
+      "slug": "barolo",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 282,
+      "name": "Barossa Valley",
+      "slug": "barossa-valley",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 240,
+      "name": "Bolgheri",
+      "slug": "bolgheri",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 294,
+      "name": "Bordeaux",
+      "slug": "bordeaux",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 284,
+      "name": "Bordeaux AOC",
+      "slug": "bordeaux-aoc",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 274,
+      "name": "Bordeaux Supérieur",
+      "slug": "bordeaux-sup-rieur",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 292,
+      "name": "Brauneberger Juffer",
+      "slug": "brauneberger-juffer",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 238,
+      "name": "Brunello di Montalcino",
+      "slug": "brunello-di-montalcino",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 241,
+      "name": "Cahors",
+      "slug": "cahors",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 219,
+      "name": "California",
+      "slug": "california",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 258,
+      "name": "Chablis Premier Cru",
+      "slug": "chablis-premier-cru",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 251,
+      "name": "Chambolle-Musigny",
+      "slug": "chambolle-musigny",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 281,
+      "name": "Chassagne-Montrachet",
+      "slug": "chassagne-montrachet",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 220,
+      "name": "Chianti Classico",
+      "slug": "chianti-classico",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 272,
+      "name": "Châteauneuf-du-Pape",
+      "slug": "ch-teauneuf-du-pape",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 276,
+      "name": "Columbia Gorge AVA",
+      "slug": "columbia-gorge-ava",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 222,
+      "name": "DOC Rioja",
+      "slug": "doc-rioja",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 242,
+      "name": "DOCa Rioja",
+      "slug": "doca-rioja",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 291,
+      "name": "Douro DOC",
+      "slug": "douro-doc",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 256,
+      "name": "Franciacorta",
+      "slug": "franciacorta",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 239,
+      "name": "Gevrey-Chambertin",
+      "slug": "gevrey-chambertin",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 265,
+      "name": "Haut-Médoc",
+      "slug": "haut-m-doc",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 252,
+      "name": "Helan Mountain Wine Region",
+      "slug": "helan-mountain-wine-region",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 250,
+      "name": "Hermitage",
+      "slug": "hermitage",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 261,
+      "name": "Kabinett",
+      "slug": "kabinett",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 286,
+      "name": "Lambrusco Emilia",
+      "slug": "lambrusco-emilia",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 287,
+      "name": "Lambrusco Grasparossa di Castelvetro",
+      "slug": "lambrusco-grasparossa-di-castelvetro",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 230,
+      "name": "Langhe Nebbiolo",
+      "slug": "langhe-nebbiolo",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 267,
+      "name": "Maipo Valley",
+      "slug": "maipo-valley",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 217,
+      "name": "Margaux",
+      "slug": "margaux",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 262,
+      "name": "Meursault",
+      "slug": "meursault",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 249,
+      "name": "Montepulciano d'Abruzzo DOC",
+      "slug": "montepulciano-d-abruzzo-doc",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 218,
+      "name": "Monterey County",
+      "slug": "monterey-county",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 278,
+      "name": "Morey-Saint-Denis",
+      "slug": "morey-saint-denis",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 283,
+      "name": "Multi-Appellation California",
+      "slug": "multi-appellation-california",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 231,
+      "name": "Napa Valley",
+      "slug": "napa-valley",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 228,
+      "name": "Nuits-Saint-Georges",
+      "slug": "nuits-saint-georges",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 288,
+      "name": "Orvieto Classico",
+      "slug": "orvieto-classico",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 248,
+      "name": "Pauillac",
+      "slug": "pauillac",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 246,
+      "name": "Pauillac AOC",
+      "slug": "pauillac-aoc",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 275,
+      "name": "Pays d'Oc IGP",
+      "slug": "pays-d-oc-igp",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 277,
+      "name": "Pays d'Oc PGI",
+      "slug": "pays-d-oc-pgi",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 247,
+      "name": "Pessac-Léognan AOC",
+      "slug": "pessac-l-ognan-aoc",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 273,
+      "name": "Piave DOC",
+      "slug": "piave-doc",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 226,
+      "name": "Pomerol",
+      "slug": "pomerol",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 245,
+      "name": "Primitivo di Manduria",
+      "slug": "primitivo-di-manduria",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 236,
+      "name": "Primitivo di Manduria DOP",
+      "slug": "primitivo-di-manduria-dop",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 223,
+      "name": "Pritchard Hill",
+      "slug": "pritchard-hill",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 215,
+      "name": "Prosecco",
+      "slug": "prosecco",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 295,
+      "name": "Puligny-Montrachet",
+      "slug": "puligny-montrachet",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 229,
+      "name": "Rioja",
+      "slug": "rioja",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 264,
+      "name": "Rosso di Montepulciano",
+      "slug": "rosso-di-montepulciano",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 235,
+      "name": "Saint-Estèphe",
+      "slug": "saint-est-phe",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 253,
+      "name": "Saint-Julien",
+      "slug": "saint-julien",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 268,
+      "name": "Saint-Émilion",
+      "slug": "saint-milion",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 255,
+      "name": "Saint-Émilion Grand Cru",
+      "slug": "saint-milion-grand-cru",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 221,
+      "name": "Salento",
+      "slug": "salento",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 280,
+      "name": "Sancerre",
+      "slug": "sancerre",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 271,
+      "name": "Santenay",
+      "slug": "santenay",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 260,
+      "name": "Sekt",
+      "slug": "sekt",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 224,
+      "name": "Sicilia DOC",
+      "slug": "sicilia-doc",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 289,
+      "name": "Soave Classico",
+      "slug": "soave-classico",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 233,
+      "name": "Sonoma County",
+      "slug": "sonoma-county",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 259,
+      "name": "Spätlese",
+      "slug": "sp-tlese",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 243,
+      "name": "Stags Leap District",
+      "slug": "stags-leap-district",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 244,
+      "name": "Toscana IGT",
+      "slug": "toscana-igt",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 254,
+      "name": "Tre Venezie I.G.P.",
+      "slug": "tre-venezie-i-g-p",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 266,
+      "name": "Valpolicella Classico Superiore",
+      "slug": "valpolicella-classico-superiore",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 263,
+      "name": "Vino Nobile di Montepulciano",
+      "slug": "vino-nobile-di-montepulciano",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 227,
+      "name": "Volnay AOC",
+      "slug": "volnay-aoc",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 279,
+      "name": "Vosne-Romanée",
+      "slug": "vosne-roman-e",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": 290,
+      "name": "Vouvray",
+      "slug": "vouvray",
+      "latitude": null,
+      "longitude": null
+    }
+  ]
+}

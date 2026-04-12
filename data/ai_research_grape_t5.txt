@@ -1,0 +1,104 @@
+# T5 GRAPE VARIETY — 101 wines missing grape
+# Format: SKU|name|classification|country|region
+
+LGN0123ER|Rock Rose  Autumn Edition Gin (700 ml)|Rose Wine|Scotland|Highland
+LGN0217ER|Rock Rose  Coastal Edition Gin (500 ml)|Rose Wine|Scotland|Highland
+LGN0220ER|Rock Rose  Clootie Dumpling Gin (500 ml)|Rose Wine|Scotland|Highland
+LGN0230ER|Rock Rose  Citrus Coastal Gin (700 ml)|Rose Wine|Scotland|Highland
+LGN0310DG|Glendalough Rose Gin (700 ml)|Rose Wine|Ireland|
+LOT0071AR|Komasa Jyozo  Akazaru Sparkling (300 ml)|Sparkling Wine|Japan|
+LSK0301AR|Dewazakura   Sparkling Saku (250 ml)|Sparkling Wine|Japan|
+LSK0447FS|Hakutsuru  Purupuru Sparkling Jelly Sake Plum (190 ml) (Pack 30 Can)|Sparkling Wine|Japan|
+WDW0017AA|Cantine Pellegrino  Marsala Fine Rubino (750 ml)|Dessert Wine|Italy|Sicily
+WDW0031AB|Donnafugata  Ben Rye' Passito Di Pantelleria (750 ml)|Dessert Wine|Italy|Sicily
+WDW0040AF|Chateau Le Thibaut  Monbrazillac  (375 ml)|Dessert Wine|France|Bordeaux
+WDW0050AF|Cantine Florio  Marsala Superiore DOC "Vecchioflorio"|Dessert Wine|Italy|Marche
+WDW0053AF|Chateau d'Yquem  1 er Grand Cru Classe Exceptionnel 2007|Dessert Wine|France|Bordeaux
+WDW0055AK|Chateau d'Arricaud  Moelleux|Dessert Wine|France|Others region
+WDW0062BS|Masseria Li Veli  Aleatico Passito (375 ml)|Dessert Wine|Italy|Puglia
+WDW0077CC|1st Night Manuka Honey Wine|Dessert Wine|New Zealand|Others region
+WDW0108AF|Chateau Doisy Vedrines  2em Grand Cru Classe 1993|Dessert Wine|France|Bordeaux
+WDW0119ED|Gonzalez Byass Winery (Tio Pepe)  Sherry "Viña Ab" (Amontillado) (375 ml)|Dessert Wine|Spain|Jerez
+WDW0120ED|Gonzalez Byass Winery (Tio Pepe)  Sherry "Leonor" (Palo Cortado) (375 ml)|Dessert Wine|Spain|Jerez
+WDW0121ED|Gonzalez Byass Winery (Tio Pepe)  Sherry "Alfonso" (Oloroso - Dry) (375 ml)|Dessert Wine|Spain|Jerez
+WDW0122ED|Gonzalez Byass Winery (Tio Pepe)  Sherry "Cristina" (Oloroso Abocado) (375 ml)|Dessert Wine|Spain|Jerez
+WDW0123ED|Gonzalez Byass Winery (Tio Pepe)  Sherry "Solera 1847" (Cream) (375 ml)|Dessert Wine|Spain|Jerez
+WDW0124ED|Gonzalez Byass Winery (Tio Pepe)  Sherry "Nectar" (Px) (375 ml)|Dessert Wine|Spain|Jerez
+WDW0126ED|Gonzalez Byass Winery (Sherries & Fino's)  Sherry "Apostoles" (Palo Cortado 30 Years) (375 ml)|Dessert Wine|Spain|Jerez
+WDW0127ED|Gonzalez Byass Winery (Sherries & Fino's)  Sherry "Matusalem" (Cream) (375 ml)|Dessert Wine|Spain|Jerez
+WDW0128ED|Gonzalez Byass Winery (Sherries & Fino's)  Sherry "Noe" (Px) (375 ml)|Dessert Wine|Spain|Jerez
+WDW0129ED|Gonzalez Byass Winery (Sherries & Fino's)  Fino 1 Palma (500 ml)|Dessert Wine|Spain|Jerez (Sherry)
+WDW0130ED|Gonzalez Byass Winery (Sherries & Fino's)  Fino 2 Palmas (500 ml)|Dessert Wine|Spain|Jerez (Sherry)
+WDW0131ED|Gonzalez Byass Winery (Sherries & Fino's)  Fino 3 Palmas (500 ml)|Dessert Wine|Spain|Jerez (Sherry)
+WDW0132ED|Gonzalez Byass Winery (Sherries & Fino's)  Fino 4 Palmas (Amontillado) (500 ml)|Dessert Wine|Spain|Jerez (Sherry)
+WDW0133CH|Osborne  Fino Quinta Sherry|Dessert Wine|Spain|Jerez
+WDW0135EH|Caprice de Bastor-Lamontagne  Sauternes |Dessert Wine|France|Bordeaux
+WDW0136AF|Santa Carolina  "Late Harvest" (Sweet) (500 ml)|Dessert Wine|Chile|Central Valley
+WDW0140EL|Met  Honey Wine (700 ml)|Dessert Wine|Germany|Others region
+WDW0142AA|Livio Felluga  Picolit 2011 (500 ml)|Dessert Wine|Italy|Friuli
+WDW0151BS|Castello Di Bossi  Vin San Laurentino IGT (375 ml)|Dessert Wine|Italy|Tuscany
+WDW0533CB|I Veroni Vin Santo Del Chianti Rufina Riserva DOC (375 ml)|Dessert Wine|Italy|Tuscany
+WNA0003AM|Billabong  Brut (De-Alcoholised)|Sparkling Wine|Australia|South Eastern Australia
+WOW0014DH|Radikon  Oslavje IGT (500 ml)|Orange Wine|Italy|Friuli-Venezia Giulia
+WOW0019AU|Santa Julia  Cuy Orange Natural Wine|Orange Wine|Argentina|Mendoza
+WRS0045AP|Churchview  Silverleaf Rose|Rose Wine|Australia|Margaret River
+WRS0095AB|Miguel Torres  Tormenta Rose|Rose Wine|Chile|Central Valley
+WRS0136EC|Gazela  Vinho Verde Rose|Rose Wine|Portugal|Vinho Verde
+WRS0137EC|Terra Franca  Rose|Rose Wine|Portugal|Others region
+WRS0138EC|Herdade Do Peso  Vinha Do Monte Rose|Rose Wine|Portugal|Others region
+WRS0144DK|Dreissigacker  Pinot & Co Rose|Rose Wine|Germany|Rheingau
+WRS0171AJ|Sutil  Reserve Cabernet Rose|Rose Wine|Chile|Central Valley
+WRS0201FP|Luna Estate  Pinot Meunier Rose|Rose Wine|New Zealand|Martinborough
+WRS0228GE|Sky Walkers  Rose|Rose Wine|Australia|South Eastern Australia
+WRS0277CB|Criss Cross Rosé|Rose Wine|Australia|South Eastern Australia
+WRS0278CB|Alto Los Romeros Rose |Rose Wine|Chile|Colchagua Valley
+WRS0282DW|Dohlmuhle Portugieser Weissherbst|Rose Wine|Germany|Rheinhessen
+WRS0291AD|One By Penfolds Australia Rose|Rose Wine|USA|South Australia
+WRW1607BS|Edi Simcic  Duet|Red Wine|Slovenia|Goriška Brda
+WRW1634BS|Edi Simcic  Kolos|Red Wine|Slovenia|Goriška Brda
+WRW3213AB|Harvest Mile  Dry Red (Fruit wine blend)|Fruit Wine|Australia|Others region
+WRW6793GW|Askaneli Kindzmarauli Red|Red Wine|Georgia|Others region
+WRW7104AB|Xige Estate Year of the Snake Limited Edition (With package)|Red Wine|China|Ningxia
+WRW7667AB|Xige Estate Year of The Horse Limited Edition (With package)|Red Wine|China|Ningxia
+WSP0022AC|Crane Lake  Sparkling Brut|Sparkling Wine|USA|California
+WSP0118AP|Churchview  Silverleaf Sparkling|Sparkling Wine|Australia|Margaret River
+WSP0124AB|Seppelt  Stony Peak Brut|Sparkling Wine|Australia|South Australia
+WSP0127AB|Rothbury  Sparkling Cuvee|Sparkling Wine|Australia|South Eastern Australia
+WSP0133AF|Santa Carolina  Brut|Sparkling Wine|Chile|Central Valley
+WSP1051AB|Yellow Glen  Yellow Brut Cuvee|Sparkling Wine|Australia|South Eastern Australia
+WSP1052AB|Yellow Glen  Yellow Brut Cuvee (200 ml)|Sparkling Wine|Australia|South Eastern Australia
+WSP1145AE|Ayama  Blanc De Blancs|Sparkling Wine|South Africa|Paarl
+WSP1213CP|Lambrini  Original|Sparkling Wine|UK|Others region
+WSP1225CP|Lambrini  Blush|Sparkling Wine|UK|Others region
+WSP1226CP|Chambrini|Sparkling Wine|UK|Others region
+WSP1316AF|Blue Nun  Finest Sparkling|Sparkling Wine|Germany|Rheinhessen
+WSP1462DW|Somerton  Sparkling Brut|Sparkling Wine|Australia|South Eastern Australia
+WSP1463DW|Passion Pop  Original|Sparkling Wine|Australia|South Eastern Australia
+WSP1464DW|Passion Pop  Pink|Sparkling Wine|Australia|South Eastern Australia
+WSP1465DW|Passion Pop  Watermelon|Sparkling Wine|Australia|South Eastern Australia
+WSP1473AB|Belleville  Sparkling Brut (Fruit wine blend)|Sparkling Wine|Australia|Others region
+WSP1487AD|Concha Y Toro  Sunrise Sparkling Brut|Sparkling Wine|Chile|Central Valley
+WSP1554BU|Chandon  Seafolly Limited Edition Brut (750 ml)|Sparkling Wine|Australia|Victoria
+WSP1555BU|Chandon  Seafolly Limited Edition Rose (750 ml)|Sparkling Wine|Australia|Victoria
+WSP2412BU|Chandon  Natsu Matsuri Limited Edition Brut (750 ml)|Sparkling Wine|Australia|Victoria
+WSP2432CP|Lambrini  Original (330 ml)|Fruit Wine|UK|Others region
+WSP2433BU|Chandon  X Seafolly Limited Edition Brut 2019 (750 ml) |Sparkling Wine|Australia|Victoria
+WSP2434BU|Chandon  X Seafolly Limited Edition Rose 2019 (750 ml) |Sparkling Wine|Australia|Victoria
+WSP2486AF|Blue Nun  24K Gold Edition|Sparkling Wine|Germany|Rheinhessen
+WSP2488BU|Chandon X Seafolly Limited Edition Brut 2020 (750 ml) |Sparkling Wine|Australia|Victoria
+WSP2489BU|Chandon X Seafolly Limited Edition Rose 2020 (750 ml) |Sparkling Wine|Australia|Victoria
+WSP2497FD|J. Oppmann  FC Bayern Munich Sekt|Sparkling Wine|Germany|Others region
+WSP2498FD|J. Oppmann  FC Bayern Munich Secco|Sparkling Wine|Germany|Others region
+WSP2585BU|Dom Perignon  P2 2004|Orange Wine|France|
+WSP2632FP|Woolshed  Sparkling Brut|Sparkling Wine|Australia|Others region
+WSP5688AD|Cosmopolitan Diva  Sparkling Peach|Sparkling Wine|Latvia|Others region
+WSP5697CB|Chanson du Vent  Sparkling|Sparkling Wine|Australia|Others region
+WSP5702GL|Mare Santo  Rose|Sparkling Wine|Slovakia|Others region
+WSP5711AE|Ca' Momi  Sparkling Brut California|Sparkling Wine|USA|California
+WSP8999AH|Montes Sparkling Angel Brut|Sparkling Wine|Chile|Others region
+WSP9013GE|Peach Bellini Bella Pesca|Sparkling Wine|Australia|Others region
+WSP9014GE|Limoncello Bella Zesta|Sparkling Wine|Australia|Others region
+WWW1719AB|Harvest Mile  Fresh White (Fruit wine blend)|Fruit Wine|Australia|Others region
+WWW5052FC|Royal Tokaji  5 Puttonyos Aszu Blue Label (500 ml)|White Wine|Hungary|Others region
+WWW5053FC|Royal Tokaji  6 Puttonyos Aszu Gold Label (500 ml)|White Wine|Hungary|Others region
+WWW5464DD|Los Cerros De San Juan  Maderos Blend de Blancs|White Wine|Uruguay|Canelones

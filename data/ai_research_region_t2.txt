@@ -1,0 +1,35 @@
+# T2 REGION — 32 wines missing region
+# Format: SKU|name|classification|country|brand
+
+WRS0055AD|Fantini  Gran Cuvee Rose|Rose Wine|Italy|Fantini
+WRS0086AE|Conti Zecca  Donna Marzia Rosato - Tentazione Rose|Rose Wine|Italy|Conti Zecca  Donna Marzia Rosato
+WRS0192AD|Minuty  M Rosé|Rose Wine|France|Minuty
+WRW1145AA|Haras de Pirque By Antinori  Cabernet Sauvignon Albis|Red Wine|Italy|Haras De Pirque By Antinori
+WRW1211AD|Chateau Ste. Michelle  Cabernet Sauvignon|Red Wine|France|Chateau Ste. Michelle
+WRW1212AD|Chateau Ste. Michelle  Syrah|Red Wine|France|The Columbia Valley Syrah
+WRW2065AC|Solar Viejo  Crianza|Red Wine|Spain|Solar Viejo
+WRW3497BN|Chateau Laforge  St.Emillion Grand Cru|Red Wine|France|Chateau Laforge
+WRW4972AF|Chateau Chasse-Spleen|Red Wine|France|Chasse Spleen
+WRW6173AE|Chateau de G  Gran Reserva Cabernet Sauvignon D.O.|Red Wine|France|Chateau de G
+WRW6205GF|Granduc  Tempranillo Reserva|Red Wine|Spain|Granduc
+WRW6207GF|Clearly Organic  Tempranillo (Organic & Vegan)|Red Wine|Spain|Clearly Organic
+WRW6208GF|Bohem  Tempranillo & Garnacha Blend (Organic & Vegan)|Red Wine|Spain|Bohem
+WRW6294GT|Chateau Du Fort Pontus  Fronsac|Red Wine|France|Chateau Du Fort Pontus
+WRW6297GQ|Chateau du Bergey  Fronsac|Red Wine|France|Chateau du Bergey
+WRW6413DD|La Chasse Des Princes  Chateauneuf du pape|Red Wine|France|La Chasse Des Princes
+WRW6459AA|Di Majo Norante Contado Aglianico Riserva DOC|Red Wine|Italy|Contado
+WRW6465AA|Pajaru Primitivo Solu IGT - Organic|Red Wine|Italy|Pajaru Primitivo Solu IGT
+WRW6468AA|Pajaru Primitivo Picuraru IGT - Organic|Red Wine|Italy|Pajaru Primitivo Picuraru IGT
+WRW6494FT|Chateau Cos Labory  Saint Estephe 5Ème Cru Classé|Red Wine|France|Chateau Cos Labory
+WRW6506AD|Fantini Don Camillo Sangiovese & Cabernet Sauvignon (Gold Collection)|Red Wine|Italy|Fantini Don
+WRW6508AD|Fantini Three Dreamers Rosso Vino Ottenuto Da Uve Appassite|Red Wine|Italy|Fantini Three
+WRW6545FS|Chateau Haut-Brion  Le Clarence de Haut-Brion 2015|Red Wine|France|Chateau Haut-Brion  Le Clarence de Haut-Brion
+WRW6573GX|Cueva del Viento  Misma Luna|Red Wine|Spain|Cueva del Viento
+WRW6574GX|Cueva del Viento  Monastrell|Red Wine|Spain|Cueva del Viento
+WSP1166AC|Diamante  Moscato Spumante Dolce|Sparkling Wine|Italy|Diamante
+WSP5710EG|Piper-Heidsieck  Rare Millesime 2008 (750 ml)|White Wine|France|Piper-Heidsieck  Rare Millesime
+WSP5715GF|Bohem  Frizzante|Sparkling Wine|Italy|Bohem
+WWW2199FC|F.X. Pichler  Riesling Burgstall|White Wine|Germany|F.X. Pichler
+WWW4847AF|Domaine De Baronaques  "Chardonnay" By Baron Phillippe De Rothschild|White Wine|France|Domaine De Baronaques
+WWW5211DD|Notte Rossa  Vermentino  Salento IGP|White Wine|Italy|Vermentino
+WWW5408FJ|Mr.Riggs  'Watervale' Riesling|White Wine|Germany|The Watervale Riesling

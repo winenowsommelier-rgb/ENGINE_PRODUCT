@@ -1,0 +1,34 @@
+# T3 REGION — 31 wines missing region
+# Format: SKU|name|classification|country|brand
+
+LSK0445FS|Hakutsuru  Purupuru Sparkling Jelly Sake Peach (190 ml) (Pack 30 Can)|Sparkling Wine|Japan|Hakutsuru
+LSK0446FS|Hakutsuru  Purupuru Sparkling Jelly Sake Apple (190 ml) (Pack 30 Can)|Sparkling Wine|Japan|Hakutsuru
+WRS0073AC|Gallician  Prestige Rose|Rose Wine|France|Beautiful
+WRW0575AA|Velenosi  Brecciarolo, Rosso Piceno Superiore The Year of the Rabbit|Red Wine|Italy|Velenosi  Brecciarolo
+WRW1341AF|Chateau Riviere "Cuvee Prestige"|Red Wine|France|Chateau Riviere Cuvee Prestige
+WRW1516AD|Marques de Caceres  Reserva|Red Wine|Spain|Dark
+WRW2315BN|Peter Michael  L'Esprit des Pavots 2019|Red Wine|USA|Peter Michael  L'Esprit des Pavots
+WRW2444BN|Chateau Haut Bailly  Grand Cru Classe 2016|Red Wine|France|Chateau Haut Bailly  Grand Cru Classe
+WRW3798DJ|Domaine Giraud  Chateauneuf du Pape - Tradition|Red Wine|France|Domaine Giraud  Chateauneuf du Pape
+WRW4871BN|Amiral de Beychevelle  Saint Julien|Red Wine|France|Amiral de Beychevelle
+WRW4983AA|Fluer De Pedesclaux  "Le 2nd Vin De Chateau Pedesclaux"|Red Wine|France|Ethereal
+WRW5320AD|Chateau la Croix de Mouchet  Montagne St.Emilion|Red Wine|France|Chateau la Croix de Mouchet
+WRW5397FC|Chateau Musar  Red 2017|Red Wine|France|Chateau Musar  Red
+WRW6203GF|Granduc  Tempranillo Crianza|Red Wine|Spain|Granduc
+WRW6274AA|Tua Rita  Giusto di Notri IGT|Red Wine|Italy|Open
+WRW6299GQ|Chateau Du Gazin Cannon Fronsac|Red Wine|France|Du Gazin
+WRW6503AD|Fantini Sangiovese Terre Di Chieti|Red Wine|Italy|Fantini Terre
+WRW6546FS|Chateau Haut-Brion  Le Clarence de Haut-Brion 2020|Red Wine|France|Chateau Haut-Brion  Le Clarence de Haut-Brion
+WRW6547FS|Chateau Haut-Brion  Le Clarence de Haut-Brion 2019|Red Wine|France|Chateau Haut-Brion  Le Clarence de Haut-Brion
+WRW6589GX|Fly By  Cabernet Sauvignon|Red Wine|USA|Fly By
+WSP1060AD|Fantini  Gran Cuvee Bianco|White Wine|Italy|Fantini
+WSP5708BN|Louis Roederer  Rose Vintage 2016|Rose Wine|France|Louis Roederer  Rose Vintage
+WWW0022AD|Chateau Villa Bel Air Blanc|White Wine|France|Villa Bel
+WWW0434AA|Haras de Pirque By Antinori  Chardonnay Reserva|White Wine|Italy|Haras De Pirque By Antinori
+WWW0532AD|Chateau Ste. Michelle  Sauvignon Blanc|White Wine|France|Chateau Ste. Michelle
+WWW1313AC|Gallician  Prestige Blanc|White Wine|France|Gallician
+WWW1814AE|Framingham  Classic Riesling|White Wine|Germany|Framingham
+WWW1974DJ|Chateau Reynon- Blanc - Cadillac|White Wine|France|Chateau Reynon- Blanc
+WWW1994DJ|Domaine Ostertag  Clos Mathis - Riesling|White Wine|Germany|Domaine Ostertag  Clos Mathis
+WWW5319DW|Sitzius   Niederhauser Hermannshohle Riesling Spatlese Trocken|White Wine|Germany|Sitzius
+WWW5377DH|Bianka & Daniel Schmitt  Feminin Trocken|White Wine|Germany|Bianka & Daniel Schmitt

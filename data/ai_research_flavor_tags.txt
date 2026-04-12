@@ -1,0 +1,108 @@
+# FLAVOR TAGS RESEARCH — Remaining T1 Products
+# 101 products need flavor/aroma descriptors
+#
+# INSTRUCTIONS:
+# For each product, provide 5-10 typical flavor/aroma notes as comma-separated list.
+# Base your answer on the grape variety, region, classification, and brand reputation.
+# Use professional tasting vocabulary.
+# For glassware/accessories: write "N/A"
+# Return in this exact format: SKU|flavor1, flavor2, flavor3, ...
+#
+
+WRW0464AD|Vigneti del Salento  "ZOLLA" Primitivo Merlot Puglia IGP|Red Wine|Italy|Puglia|Zinfandel, Merlot|Merlot
+WRW0574AA|Velenosi  Montepulciano D' Abruzzo The Year of the Rabbit|Red Wine|Italy|Abruzzo|Montepulciano|Montepulciano
+WRW0617AA|Allegrini  Palazzo della Torre IGT|Red Wine|Italy|Veneto|Corvina, Sangiovese|Medium-bodied Red
+WRW1024AB|Springfield Estate  The Work of Time|Red Wine|South Africa|Western Cape|Cabernet Sauvignon, Cabernet Franc, Merlot, Petit Verdot|Merlot, 31% Cabrnet Franc, 25% Cabernet Sauvignon,  14% Petit Verdot
+WRW1039AD|Wolf Blass  Eaglehawk Shiraz|Red Wine|Australia|South Australia|Syrah|Syrah
+WRW1089AH|Piccini  Chianti Arancio DOCG|Red Wine|Italy|Tuscany|Sangiovese|Sangiovese 5% Ciliegiolo.
+WRW1288AF|Masi  Amarone "Costasera" Classico DOC|Red Wine|Italy|Veneto|Sangiovese, Corvina|Medium-bodied Red
+WRW1608BS|Castellare Di Castellina  Chianti Classico Riserva DOCG|Red Wine|Italy|Tuscany|Sangiovese|Medium-bodied Red
+WRW1830GC|Tedeschi  Amarone Della Valpolicella Classico Riserva Capitel Monte Olmi|Red Wine|Italy|Veneto|Corvina|Medium-bodied Red
+WRW1852AE|Zenato  Amarone della Valpolicella Classico DOC|Red Wine|Italy|Veneto|Corvina|Medium-bodied Red
+WRW2358BN|Glaetzer  Bishop|Red Wine|Australia|Barossa|Shiraz|Medium-bodied Red
+WRW3064BN|Castello di Fonterutoli  Castello Fonterutoli Chianti Classico Gran Selezione DOCG|Red Wine|Italy|Tuscany|Sangiovese|Medium-bodied Red
+WRW3065BS|Luccarelli  Negroamaro Puglia IGP|Red Wine|Italy|Puglia|Negroamaro|Medium-bodied Red
+WRW3122CH|Mcguigan  Black Label Red|Red Wine|Australia|South Eastern Australia|Shiraz|Medium-bodied Red
+WRW3123CH|Mcguigan  Black Label Merlot|Red Wine|Australia|South Eastern Australia|Merlot|Merlot
+WRW3191AD|Vigneti del Salento  "ZOLLA" Primitivo Di Manduria DOC|Red Wine|Italy|Puglia|Zinfandel|Zinfandel
+WRW3272AB|San Marzano  Santoro Primitivo Puglia IGP|Red Wine|Italy|Puglia|Zinfandel|Primitivo
+WRW3294AE|Casanova di Neri  Brunello di Montalcino Tenuta Nuova DOCG 2017|Red Wine|Italy|Tuscany|Sangiovese|Sangiovese
+WRW3305DD|Viu Manent  Estate Collection Reserva Merlot|Red Wine|Chile|Colchagua|Merlot|Merlot
+WRW3471AH|Montes Winemaker's Choice  Cabernet Sauvignon|Red Wine|Chile|Maipo|Cabernet Sauvignon|Cabernet Sauvignon (100%)
+WRW4287CH|Monsoon Valley Signature Red|Red Wine|Thailand|Hua Hin Hills|Dornfelder, Syrah|Medium-bodied Red
+WRW4291BU|Jacob's Creek  Classic Cabernet Sauvignon (750 ml)|Red Wine|Australia|South Australia|Cabernet Sauvignon|Cabernet Sauvignon
+WRW4300BU|George Wyndham  Bin 555 Shiraz (750 ml)|Red Wine|Australia|South Eastern Australia|Syrah|Syrah
+WRW4303BU|Campo Viejo  Tempranillo (750 ml)|Red Wine|Spain|Rioja|Tempranillo|Tempranillo
+WRW4305BU|Brancott Estate  Pinot Noir (750 ml)|Red Wine|New Zealand|Marlborough|Pinot Noir|Pinot Noir
+WRW4577DD|Angove  Long Row Cabernet Sauvignon (187 ml)|Red Wine|Australia|South Australia|Cabernet Sauvignon|Cabernet Sauvignon
+WRW4679AD|Penfolds  Bin 2|Red Wine|Australia|Barossa|Syrah, Mourvèdre|Medium-bodied Red
+WRW4683AD|Penfolds  Bin 389 Cabernet Sauvignon/Shiraz|Red Wine|Australia|South Australia|Cabernet Sauvignon, Syrah|Cabernet Sauvignon
+WRW4688AD|Penfolds  Koonunga Hill Shiraz|Red Wine|Australia|South Australia|Syrah|Syrah
+WRW4689AD|Penfolds  Koonunga Hill Cabernet Sauvignon|Red Wine|Australia|South Australia|Cabernet Sauvignon|Cabernet Sauvignon
+WRW4692AD|Penfolds  Max's Shiraz / Cabernet Sauvignon|Red Wine|Australia|South Australia|Syrah, Cabernet Sauvignon|Cabernet Sauvignon
+WRW4693AD|Penfolds  Max's Cabernet Sauvignon|Red Wine|Australia|South Australia|Cabernet Sauvignon|Cabernet Sauvignon
+WRW4696AD|Beringer  Main & Vine Cabernet Sauvignon|Red Wine|USA|California|Cabernet Sauvignon|Cabernet Sauvignon
+WRW4703AD|19 Crimes  Cabernet Sauvignon|Red Wine|Australia|South Eastern Australia|Cabernet Sauvignon|Cabernet Sauvignon
+WRW5047AC|Shafer  TD-9|Red Wine|USA|Napa|Cabernet Sauvignon|Merlot, 26% Cabernet Sauvignon And 16% Malbec
+WRW5186FC|Castello Di Ama  Chianti Classico DOCG|Red Wine|Italy|Tuscany|Sangiovese|Medium-bodied Red
+WRW5284AA|Cantine Leonardo Da Vinci   1502 Da Vinci in Romagna Sangiovese Appassimento|Red Wine|Italy|Tuscany|Sangiovese|Sangiovese
+WRW5285AA|Brancaia  Rosso "Tre" IGT|Red Wine|Italy|Tuscany|Sangiovese, Merlot, Cabernet Sauvignon|Medium-bodied Red
+WRW5286AA|Brancaia  Chianti Classico DOCG|Red Wine|Italy|Tuscany|Sangiovese|Medium-bodied Red
+WRW5333AA|Velenosi  Montepulciano D' Abruzzo DOC Circum|Red Wine|Italy|Abruzzo|Montepulciano|Montepulciano
+WRW5406BN|Castello di Fonterutoli  Badiola|Red Wine|Italy|Tuscany|Sangiovese|Red Blend
+WRW5408BN|Tenuta Belguardo  Maremma Toscana DOC|Red Wine|Italy|Tuscany|Cabernet Sauvignon, Cabernet Franc|Medium-bodied Red
+WRW5457BN|Domaine Du Pegau  Cotes du Rhone Cuvee Setier Villages Rouge|Red Wine|France|Rhône|Grenache, Syrah, Mourvèdre|Medium-bodied Red
+WRW5463FJ|Messenez Family  Chateau M Gran Reserva Cabernet Merlot|Red Wine|France|Languedoc|Merlot|Merlot
+WRW5470FJ|Pinical Estate  Cabernet Merlot|Red Wine|Australia|South Eastern Australia|Merlot|Merlot
+WRW5479BS|Villa di Corlo  Lambrusco Grasparossa di Castelvetro Corleto DOC|Sparkling Wine|Italy|Emilia-Romagna|Lambrusco|Lambrusco Grasparossa
+WRW5530FJ|Georges Duboeuf  Pinot Noir (VDF D'OC)|Red Wine|France|Beaujolais|Pinot Noir|Pinot Noir
+WRW5676DJ|Domaine de La Pousse d’Or  Volnay 1er Cru "Clos des 60 Ouvrees" - Monopole|Red Wine|France|Burgundy|Pinot Noir|Medium-bodied Red
+WRW5763FJ|CUNE  Gran Reserva|Red Wine|Spain|Rioja|Tempranillo|Medium-bodied Red
+WRW5852AD|Penfolds  Bin 389 Magnum-Lunar New Year 2023 (limited Edition)  (1.5L)|Red Wine|Australia|South Australia|Syrah, Cabernet Sauvignon|Cabernet Sauvignon And 43% Shiraz
+WRW5861AD|Langmeil  Barossa Valley Floor Shiraz|Red Wine|Australia|Barossa|Syrah|Syrah
+WRW5908FJ|Reserve St Martin  Pinot Noir|Red Wine|France|Languedoc|Pinot Noir|Pinot Noir
+WRW5962FS|Santa Helena  Gran Vino (Red Blend)|Red Wine|Chile|Central Valley|Cabernet Sauvignon|Medium-bodied Red
+WRW5997AD|Bell' Agio  Chianti DOCG Fiasco|Red Wine|Italy|Tuscany|Sangiovese|Medium-bodied Red
+WRW6105AB|Alpaca  Organic Red|Red Wine|Chile|Central Valley|Cabernet Sauvignon|Shiraz, Cabernet Sauvignon, Carmenere
+WRW6186WN|Chateau de la Vieille Tour  Bordeaux Supérieur AOP|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6187WN|Vinum Terra  Bordeaux AOP (No Sulfites)|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6188WN|Reserve Tradition du Chateau de la Vieille Tour Bordeaux Supérieur AOP|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6251FJ|CUNE  Crianza|Red Wine|Spain|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6278DJ|Ferraton Pere & Fils  Hermitage “les Miaux” Rouge|Red Wine|France|Rhône Valley|Grenache, Syrah, Mourvèdre|Medium-bodied Red
+WRW6363FC|Two Hands  Gnarly Dudes Shiraz Barossa|Red Wine|Australia|Barossa|Syrah|Syrah
+WRW6428AB|Shumi  Kindzmarauli|Red Wine|Georgia|Others region|Saperavi|Saperavi
+WRW6501FS|Chateau Leoville Poyferre Saint-Julien Grand Cru Classé 2017|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Cabernet Sauvignon, 27% Merlot, 3% Cabernet Franc And 2% Petit Verdot,
+WRW6598GX|VIK  Milla Cala|Red Wine|Chile|Central Valley|Cabernet Sauvignon|Medium-bodied Red
+WRW6742DJ|Domaine Pierre Girardin Volnay Premier Cru Les Taillepieds|Red Wine|France|Burgundy|Pinot Noir|Medium-bodied Red
+WSP0062EG|Bollinger  Special Cuvee|White Wine|France|Champagne|Chardonnay|Medium-bodied White
+WSP1095AD|Veuve Clicquot  Brut Yellow Label (375 ml)|White Wine|France|Champagne|Pinot Noir, Pinot Meunier, Chardonnay|Medium-bodied White
+WSP1096AD|Veuve Clicquot  Brut Yellow Label (750 ml)|White Wine|France|Champagne|Pinot Noir, Pinot Meunier, Chardonnay|Medium-bodied White
+WSP1117AD|Chandon  Brut|Sparkling Wine|Australia|Victoria|Chardonnay, Pinot Noir|Chardonnay
+WSP1235FC|Laurent Perrier  La Cuvée (750 ml)|White Wine|France|Champagne|Chardonnay|Medium-bodied White
+WSP1296EG|Piper-Heidsieck  Cuvee Brut (750 ml)|White Wine|France|Champagne|Chardonnay|Medium-bodied White
+WSP1297EG|Piper-Heidsieck  Cuvee Brut (375 ml)|White Wine|France|Champagne|Chardonnay|Medium-bodied White
+WSP1490BU|Jacob's Creek  Sparkling Chardonnay Pinot Noir (750 ml)|Sparkling Wine|Australia|South Australia|Chardonnay, Pinot Noir|Pinot Noir
+WSP1541CH|Monsoon Valley  Brut Prestige Sparkling Wine|Sparkling Wine|Thailand|Khao Yai|Chenin Blanc, Colombard|Brut Sparkling Wine
+WSP2440BN|Zardetto  Prosecco Brut|Sparkling Wine|Italy|Veneto|Glera|Glera
+WSP2509EG|Charles Heidsieck  The Brut Reserve (750 ml)|White Wine|France|Champagne|Pinot Meunier, Chardonnay, Pinot Noir|Medium-bodied White
+WSP2523AD|Veuve du Vernay  Brut Rose|Rose Wine|France|Bordeaux|Grenache, Cinsault|Rosé
+WSP5686AD|Pares Balta  Cava Brut Organic|Sparkling Wine|Spain|Penedès|Macabeo, Xarel·lo, Parellada|Cava
+WSP5723FJ|Botter Prosecco DOC Extra Dry|Sparkling Wine|Italy|Veneto|Glera|Prosecco
+WSP5768AB|Otello Ceci 1813 Nero di Lambrusco Emilia IGT Frizzante|Sparkling Wine|Italy|Emilia-Romagna|Lambrusco|Lambrusco
+WSP5786BN|Louis Roederer  Collection 245|White Wine|France|Champagne|Chardonnay|Medium-bodied White
+WWW0047AC|Sunnycliff  Chardonnay|White Wine|Australia|Murray Darling|Chardonnay|Chardonnay
+WWW0080AH|Banrock Station  Moscato|White Wine|Australia|South Australia|Muscat|Moscato 100%
+WWW0196AD|Concha Y Toro  Casillero del Diablo Reserva Sauvignon Blanc|White Wine|Chile|Central Valley|Sauvignon Blanc|Sauvignon Blanc
+WWW1231AE|Feudo Maccari  Grillo IGT|White Wine|Italy|Islands|Grillo|Medium-bodied White
+WWW1789AD|Trimbach  Pinot Blanc|White Wine|France|Alsace|Riesling|Medium-bodied White
+WWW2216BU|Brancott Estate  Sauvignon Blanc (750 ml)|White Wine|New Zealand|Marlborough|Sauvignon Blanc|Sauvignon Blanc
+WWW2217BU|Brancott Estate  Letter Series "B" Sauvignon Blanc (750 ml)|White Wine|New Zealand|Marlborough|Sauvignon Blanc|Sauvignon Blanc
+WWW2311AB|Louis Jadot  Chablis|White Wine|France|Burgundy|Chardonnay|Chardonnay
+WWW2411DD|Mount Riley  Riesling|White Wine|New Zealand|Marlborough|Riesling|Riesling
+WWW2412DD|Mount Riley  Sauvignon Blanc|White Wine|New Zealand|Marlborough|Sauvignon Blanc|Sauvignon Blanc
+WWW2417DD|Mount Riley  Gewurztraminer|White Wine|New Zealand|Marlborough|Gewürztraminer|Gewurztraminer
+WWW4887BS|Alta Mora  Etna Bianco|White Wine|Italy|Sicily|Carricante|Carricante 100%
+WWW5113FJ|Pinical Estate  Chardonnay|White Wine|Australia|South Eastern Australia|Chardonnay|Chardonnay
+WWW5368BN|Weingut Robert Weil  Riesling Rheingau Tradition|White Wine|Germany|Rheingau|Riesling|Riesling
+WWW5373AB|Nollen Erben	 Rheinhessen Gewürztraminer Kabinett|White Wine|Germany|Rheinhessen|Gewürztraminer|Gewurztraminer
+WWW5443EI|Chavin Zero Non-Alcoholic Chardonnay (750 ml)|White Wine|France|Others region|Chardonnay|Chardonnay

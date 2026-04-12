@@ -1,0 +1,66 @@
+# T5 REGION — 63 wines missing region
+# Format: SKU|name|classification|country|brand
+
+LGN0310DG|Glendalough Rose Gin (700 ml)|Rose Wine|Ireland|Glendalough Gin
+LOT0071AR|Komasa Jyozo  Akazaru Sparkling (300 ml)|Sparkling Wine|Japan|Komasa
+LSK0301AR|Dewazakura   Sparkling Saku (250 ml)|Sparkling Wine|Japan|Dewazakura
+LSK0447FS|Hakutsuru  Purupuru Sparkling Jelly Sake Plum (190 ml) (Pack 30 Can)|Sparkling Wine|Japan|Hakutsuru
+WDW0519GS|Monemvasia	 Malvasia (375 ml)|Red Wine|Greece|Monemvasia Malvasia
+WRS0002AA|Chateau La Tour L'Eveque Pétale de Rose Rosé AOP|Rose Wine|France|La Tour
+WRS0193AD|Minuty  M Rosé (1.5 L)|Rose Wine|France|Minuty
+WRS0244GS|Monemvasia	 Voltes Rose|Rose Wine|Greece|Monemvasia Voltes
+WRW0571AA|Velenosi  Breciarolo Gold, Rosso Piceno Superiore DOC|Red Wine|Italy|Velenosi  Breciarolo Gold
+WRW1144AA|Haras de Pirque By Antinori  Cabernet Sauvignon Hussonet|Red Wine|Italy|Haras De Pirque By Antinori
+WRW1368AF|Chateau Laffitte Carcasset  Cru Bourgeois|Red Wine|France|Chateau Laffitte Carcasset
+WRW1786AE|Feudo Maccari  Maharis IGT|Red Wine|Italy|Mahar
+WRW1844AA|Tua Rita  Perlato del Bosco Rosso IGT|Red Wine|Italy|Tua Rita
+WRW2004AC|Gallician  Prestige Rouge|Red Wine|France|Gallician
+WRW2066AC|Solar Viejo  Reserva|Red Wine|Spain|Solar Viejo
+WRW2067AC|Solar Viejo  Orube|Red Wine|Spain|Solar Viejo
+WRW2902BN|Domaine Du Pegau  Chateauneuf du Pape da Capo 2016|Red Wine|France|Domaine Du Pegau  Chateauneuf du Pape da Capo
+WRW3284DD|Chateau Tour Saint Vincent  Cru Bourgeois|Red Wine|France|Chateau Tour Saint Vincent
+WRW3764DJ|Chateau Falfas   Le Chevalier|Red Wine|France|Chateau Falfas
+WRW3799DJ|Domaine Giraud  Chateauneuf du Pape - Les Grenaches de Pierre|Red Wine|France|Domaine Giraud  Chateauneuf du Pape
+WRW3879AA|Casarena Single Vineyard Owen Cabernet Sauvignon|Red Wine|Portugal|Casarena Owen
+WRW4123AJ|Starmont  Carneros Pinot Noir|Red Wine|USA|This Wine
+WRW4899AA|Fattoria Aldobrandesca By Antinori  Vie Cave, Malbec IGT|Red Wine|Italy|Fattoria Aldobrandesca By Antinori  Vie Cave
+WRW4969AF|Domain De Baronaques  "Rouges" By Baron Phillippe De Rothschild|Red Wine|France|Domain De Baronaques
+WRW5004AF|Chateau D'Arcole  Grand Cru|Red Wine|France|Chateau D'Arcole
+WRW5344AE|Domaine Duseigneur  Catarina Chateauneuf du Pape|Red Wine|France|Domaine Duseigneur
+WRW5422AC|Valdubon  Honoris de Valdubon|Red Wine|Spain|Honoris
+WRW5571FP|Herdade de Sao Miguel  Colheita Seleccionada|Red Wine|Portugal|Herdade de Sao Miguel
+WRW5785DD|Le Clos du Serres  Sainte-Pauline Terrasses du Larzac|Red Wine|France|Le Clos du Serres
+WRW5786DD|Le Clos du Serres  Saint-Jean Terrasses du Larzac|Red Wine|France|Le Clos du Serres
+WRW5995AD|Borgogno  No Name Red (Nebbiolo)|Red Wine|Italy|Borgogno
+WRW6010FJ|Chateau Grand Lartigues St.Emilion Gran Cru AOC|Red Wine|France|Grand Lartigues
+WRW6149DH|Bianka & Daniel Schmitt  Piros Trocken|Red Wine|Germany|Bianka & Daniel Schmitt
+WRW6213AD|Craggy Range  Sophia Gimblett Gravels, Hawke’s Bay|Red Wine|New Zealand|Craggy Range  Sophia Gimblett Gravels
+WRW6272AA|Tua Rita  Rosso dei Notri IGT|Red Wine|Italy|Tua Rita
+WRW6273AA|Tua Rita  Lodano Rosso IGT|Red Wine|Italy|Lodano Rosso
+WRW6275AA|Tua Rita  Redigaffi IGT|Red Wine|Italy|Tua Rita
+WRW6354FC|Dry Creek Vineyard  Old Vine Zinfandel|Red Wine|USA|Dry Creek Vineyard
+WRW6407DD|Le Clos du Serres  Le Clos Du Les Maros|Red Wine|France|Le Clos du Serres
+WRW6408DD|Le Clos du Serres  Le Clos Du Serres Le Palas|Red Wine|France|Le Clos du Serres
+WRW6409DD|Le Clos du Serres  L'Humeur Vagabonde|Red Wine|France|Le Clos du Serres
+WRW6410DD|Cellier Des Princes  Chateauneuf Du pape Rouge - Biologique|Red Wine|France|Cellier Des Princes  Chateauneuf Du pape Rouge
+WRW6437GS|Monemvasia	 Voltes Red|Red Wine|Greece|Monemvasia Voltes
+WRW6458AA|Di Majo Norante Ramitello Biferno Rosso DOC|Red Wine|Italy|Full
+WRW6460AA|Di Majo Norante Tintilia del Molise DOC|Red Wine|Italy|Tintilia
+WRW6461AA|Di Majo Norante Don Luigi Riserva Molise DOC|Red Wine|Italy|Di Majo
+WSP1236FC|Laurent Perrier  Brut Millesime 2015|Sparkling Wine|France|Laurent Perrier  Brut Millesime
+WSP2585BU|Dom Perignon  P2 2004|Orange Wine|France|Dom Perignon  P2
+WWW0435AA|Haras de Pirque By Antinori  Sauvignon Albaclara|White Wine|Italy|Haras De Pirque By Antinori
+WWW2030GC|Astrolabe  Sauvignon Blanc|White Wine|New Zealand|Astrolabe
+WWW2345CH|Gallo Family Vineyards  Chardonnay|White Wine|USA|Our Chardonnay
+WWW4837AA|Monteverro  Vermentino IGT|White Wine|Italy|Vermentino
+WWW5087BN|Domaine Fontaine-Gagnard  Criots Batard Montrachet|White Wine|France|Domaine Fontaine-Gagnard
+WWW5088BN|Domaine Fontaine-Gagnard  Le Montrachet|White Wine|France|Domaine Fontaine-Gagnard
+WWW5204CU|Bodegas Granbazan  Contrapunto Albarino|White Wine|Spain|Bodegas Granbazan
+WWW5286GE|Bramblewood  Riesling|White Wine|Germany|Bramblewood
+WWW5348FP|Edition Abtei  Himmerod Riesling Trocken|White Wine|Germany|Edition Abtei
+WWW5403AE|Framingham  True Nature Sauvignon Blanc|White Wine|New Zealand|Framingham
+WWW5450FC|Dry Creek Vineyard  Fume Blanc|White Wine|USA|Dry Creek Vineyard
+WWW5456FC|F.X. Pichler  Grüner Veltliner Kellerberg|White Wine|Austria|The Kellerberg
+WWW5480GS|Monemvasia	 Kydonitsa|White Wine|Greece|Yellow
+WWW5485AA|Casarena Single Vineyard Owen Chardonnay|White Wine|Portugal|Casarena Owen
+WWW5915GX|Fly By  Chardonnay|White Wine|USA|Fly By

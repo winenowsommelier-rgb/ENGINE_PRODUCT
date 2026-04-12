@@ -1,0 +1,187 @@
+# T2 FLAVOR TAGS — 184 products
+# Format: SKU|name|classification|country|region|grape|style
+
+LBD0006CN|St-Rémy  X.O (700 ml)|Brandy|France|||Brandy
+LBD0226BU|Hennessy  2025 MAF X.O Limited Edition (700 ml)|Brandy|France|Cognac||Brandy
+LBD0238BU|Hennessy V.S.O.P - Year of the Horse (Limited Edition)|Brandy|France|Cognac||Brandy
+LBE0286AB|Paulaner  Hefe Weissbier Naturtrub  500ml x 20|Beer|Germany|||Lager
+LBE0317AB|Paulaner  Hefe Weissbier Party  5L x 1|Beer|Germany|||Lager
+LGN0316DG|Kilo  Gin (700 ml)|Gin|Thailand|||Dry Gin
+LGN0374AE|Kosapan Orange (700 ml)|Gin|Thailand|||Dry Gin
+LGN0380AE|Boatyard Old Tom (700 ml)|Gin|Ireland|||Old Tom Gin
+LGP0005AA|Nonino  Grappa Tradizione  (1 L)|Brandy|Italy|Friuli||Grappa
+LLQ0063CN|Bols  Blue Curacao (700 ml)|Liqueur|Netherland|Kentucky||Fruit Liqueur
+LLQ0247CN|Cointreau  Orange Liqueur (350 ml)|Liqueur|France|||Fruit Liqueur
+LLQ0267AE|Giffard  Poire Williams (William Pear Liqueur ) (700 ml)|Liqueur|France|Loire||Fruit Liqueur
+LLQ0452AV|The Japanese   Shiso Bitter (200 ml)|Liqueur|Japan|||Herbal Liqueur
+LLQ0468BU|Phoenix  Orange Curacao (700 ml)|Liqueur||||Fruit Liqueur
+LLQ0476BU|Phoenix  Blue Caracao (700 ml)|Liqueur||||Liqueur
+LLQ0480CN|Hotel Starlino  Rosso Vermouth (750 ml)|Liqueur|Italy|Kentucky||Liqueur
+LLQ0487ER|Strange Luve Negroni (700 ml)|Liqueur|Belgium|||Liqueur
+LLQ0495CN|Cinzano  Vermouth Di Torino Bottega Rosso 1757 (1 L)|Liqueur|Italy|Piedmont||Liqueur
+LLQ0500GW|Strega  Limoncello (700 ml)|Liqueur|Italy|||Fruit Liqueur
+LOT0038AB|Kozaemon  Shiroku Junmai Kabosu Sake (1.8 L)|Others|Japan|||
+LOT0085AR|Komasa Jyozo  Komasa no Yuzushu (1800 ml)|Others|Japan|||
+LOT0086AR|Komasa Jyozo  Komasa no Yuzushu (500 ml)|Others|Japan|||
+LRM0137AA|Nusa Cana  Tropical Island White Rum (700 ml)|Rum|Indonesia|Islands||White Rum
+LRM0206CP|Dead Man's Finger  Herbal Rum (700 ml)|Rum|England|Barbados||Rum
+LRM0229GK|Asura  (Thai White Spirits Distilled From Potato) (Alc. Volume 40%) (330 ml)|Thai White Spirits|Thailand|||
+LRM0242GK|Asura  Silver Giant (Thai White Spirits Distilled From SugarCane) (625ml)|Thai White Spirits|Thailand|||
+LRM0243GK|Asura  Rose Gold Giant (Thai White Spirits Distilled From Lychee) (625ml)|Thai White Spirits|Thailand|||
+LRM0249GK|Asura  (Thai White Spirits Distilled From SugarCane) (Alc. Volume 40%) (330 ml)|Thai White Spirits|Thailand|||
+LRM0250GK|Asura  (Thai White Spirits Distilled From Pineapple) (Alc. Volume 40%) (330 ml)|Thai White Spirits|Thailand|||
+LRM0251GK|Asura  Pearl White Giant (Thai White Spirits Distilled From Potato) (625ml)|Thai White Spirits|Thailand|||
+LSK0015AR|Fukuju  Junmai ginjo (1.8 L)|Sake/Shochu|Japan|||
+LSK0347AD|Tamanohikari  Junmai Ginjo Shuraku Sake (720 ml)|Sake/Shochu|Japan|||
+LSK0348AD|Tamanohikari  Junmai Ginjo Shuraku Sake (1.8 L)|Sake/Shochu|Japan|||
+LSK0432FS|Hakutsuru  Sho Une (720 ml)|Sake/Shochu|Japan|||
+LSK0439FS|Hakutsuru  Maru (2 L)|Sake/Shochu|Japan|||
+LSK0480AB|Chiyomusubi Junmai Goriki 60 Muroka Nama Genshu (1.8 L)|Sake/Shochu|Japan|||
+LSK0483AB|Chiyomusubi Junmai Goriki 60 (1.8 L)|Sake/Shochu|Japan|||
+LSK0503AB|Eikun Junmai Ginjo Midori-No-Eikun (720 ml)|Sake/Shochu|Japan|||
+LSK0513AB|Kariho Junmai Ginjo Rokushuu (720 ml)|Sake/Shochu|Japan|||
+LSK0528AB|Kirinzan Mellow (720 ml)|Sake/Shochu|Japan|||
+LSK0530AB|Kirinzan Extra Dry (720 ml)|Sake/Shochu|Japan|||
+LSK0561AB|Masumi Junmai Ginjo Shiro White (1.8 L)|Sake/Shochu|Japan|||
+LSK0578AB|Sakunohana Nanago Junmai Ginjo (720 ml)|Sake/Shochu|Japan|||
+LSK0600AB|Takasago Junmai Ginjo (720 ml)|Sake/Shochu|Japan|||
+LTQ0201AD|Pancho Villa  Gold Tequila (750 ml)|Tequila|Mexico|||Tequila Blanco
+LVK0034AB|Sobieski Vodka (1 L)|Vodka|Poland|||Plain Vodka
+LVK0071BU|Ketel One  Vodka  (750 ml)|Vodka|Netherlands|||Plain Vodka
+LVK0072BU|Ciroc Vodka  (750 ml)|Vodka|France|South West France||Plain Vodka
+LVK0172CN|Tito’s  Handmade Vodka (750 ml)|Vodka|USA|||Plain Vodka
+LVK0180AE|Russian Standard  Gold Vodka (700 ml)|Vodka|Russia|||Plain Vodka
+LVK0214EQ|Gradus  Black Vodka (700 ml)|Vodka|Russia|||Plain Vodka
+LVK0216CN|Tito’s  Handmade Vodka (1 L)|Vodka|USA|||Plain Vodka
+LVK0639AB|Lycan  AK 47 Vodka (750 ml)|Vodka|France|||Plain Vodka
+LVK0646BU|Gilbey's  Vodka (700 ml)|Vodka|England|||Plain Vodka
+LVK0648GK|Asura  (Thai White Spirits Distilled From Potato) (Alc. Volume 30%) (330 ml)|Thai White Spirits|Thailand|||
+LVK0649GK|Asura  Golden Giant (Thai White Spirits Distilled From Potato) (625ml)|Thai White Spirits|Thailand|||
+LWH0166BU|Glenmorangie  The Nectar d'Or (700 ml)|Whisky|Scotland|Highland||Blended Scotch Whisky
+LWH0261AD|Evan Williams  1783 Small Batch (750 ml)|Whisky|USA|Kentucky||Bourbon
+LWH0323AH|Southern Comfort  (750 ml)|Whisky|USA|||Bourbon
+LWH0353DG|Nikka  Coffey Grain Whisky (700 ml)|Whisky|Japan|Japan||Japanese Whisky
+LWH0359DB|Ichiro's  Malt & Grain Blended Whisky (700 ml)|Whisky|Japan|||Blended Whisky
+LWH0557EQ|Cutty Sark  Prohibition Blended Scotch Whisky (700 ml)|Whisky|Scotland|||Blended Scotch Whisky
+LWH1090ER|Wolfburn  Single Malt Whisky Small Batch No.458 (Limited Edition) (700 ml)|Whisky|Scotland|Demerara||Single Malt Scotch Whisky
+LWH1188AB|Glen Scotia  Festival Scotch Whisky (700 ml)|Whisky|Scotland|Campbeltown||Blended Scotch Whisky
+LWH1211AE|Ezra Brooks 99 Rye (700 ml)|Whisky|USA|||Rye Whiskey
+LWS0001HE|KAO HOM Chaiyaphum (700 ml)|White Spirits|Thailand|||
+LWS0002HE|KAO HOM Chaiyaphum (330 ml)|White Spirits|Thailand|||
+MNA0114AE|Fever-Tree  Premium Pink Grapefruit Soda Water (200 ml) (Pack 24 Bottles)|Non-Alcoholic|UK|||
+WDW0005AD|Graham's  fine ruby|Red Wine|Portugal|Douro|Touriga Nacional|Medium-bodied Red
+WRS0124AE|Zenato  Bardolino Chiaretto DOC|Rose Wine|Italy|Veneto|Corvina|Rosé
+WRS0233AB|Maison Castel  Côtes de Provence Rosé|Rose Wine|France|Provence|Grenache, Cinsault|Cinsault, Grenache, Syrah
+WRS0234AB|Alpaca  Rosé|Rose Wine|Chile|Central Valley||Rosé
+WRW0012AD|Castello Banfi  Chianti|Red Wine|Italy|Tuscany|Sangiovese|Medium-bodied Red
+WRW0380AD|Concha Y Toro  Don Melchor|Red Wine|Chile|Central Valley|Cabernet Sauvignon|Medium-bodied Red
+WRW0444AA|Batasiolo  Barolo Riserva|Red Wine|Italy|Piedmont|Nebbiolo|Medium-bodied Red
+WRW0578AD|Vigneti Del Vulture  Tufarello Nero Di Troia IGT|Red Wine|Italy|Basilicata|Sangiovese|Medium-bodied Red
+WRW1070AA|Frescobaldi  Castiglioni Chianti DOCG|Red Wine|Italy|Tuscany|Sangiovese|Sangiovese And Merlot.
+WRW1110AA|Luce Della Vite  La Vite Lucente Toscana IGT|Red Wine|Italy|Tuscany|Sangiovese, Merlot|Medium-bodied Red
+WRW1323AF|Tenuta San Guido  Le Difese|Red Wine|Italy|Tuscany|Cabernet Sauvignon, Sangiovese|Medium-bodied Red
+WRW1767AE|Conti Zecca  Donna Marzia Primitivo IGP Salento Primitivo Rosso|Red Wine|Italy|Puglia|Zinfandel|Zinfandel
+WRW1833AE|Tenuta Sette Ponti  Crognolo|Red Wine|Italy|Tuscany|Sangiovese|Medium-bodied Red
+WRW1855AE|Fontodi  Flaccianello della Pieve|Red Wine|Italy|Tuscany|Sangiovese|Sangiovese 100%
+WRW1931AC|Vina El Principal  Memorias|Red Wine|Chile|Central Valley|Cabernet Sauvignon|Medium-bodied Red
+WRW2273AB|Domaines Barons de Rothschild (Lafite)  Legende Bordeaux Rouge|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Cabernet Sauvignon 45% Merlot
+WRW2459FS|Chateau Lynch Bages  AOC Pauillac 2018|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW2974BN|Dal Forno Romano  Amarone della Valpolicella 2017|Red Wine|Italy|Veneto|Corvina|Medium-bodied Red
+WRW3063BN|Castello di Fonterutoli  Siepi Toscana IGT|Red Wine|Italy|Tuscany|Sangiovese, Merlot|Medium-bodied Red
+WRW3351FT|Chateau Plantey  Pauillac Cru Bourgeois|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW3403AC|Chateau Haut Fourat  Bordeaux|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW3496BN|Chateau Teyssier  St.Emillion Grand Cru|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW3497BN|Chateau Laforge  St.Emillion Grand Cru|Red Wine|France||Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW3606AD|Pio Cesare  Oltre Langhe DOC|Red Wine|Italy|Piedmont|Nebbiolo, Barbera, Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW3651DJ|Domaine Jan Marc & Hugues  Pavelot Savigny-Les-Beaune 1er Cru "aux Guettes"|Red Wine|France|Burgundy|Pinot Noir|Pinot Noir
+WRW4298BU|Jacob's Creek  Double Barrel Cabernet Sauvignon (750 ml)|Red Wine|Australia|South Australia|Cabernet Sauvignon|Cabernet Sauvignon
+WRW4691AD|Penfolds  Max's Shiraz|Red Wine|Australia|South Australia|Syrah|Syrah
+WRW4744AD|Concha Y Toro  Casillero Del Diablo Reserva Merlot|Red Wine|Chile|Central Valley|Merlot|Merlot
+WRW4814DD|Antigal  Estimulo Cabernet Sauvignon|Red Wine|Argentina|Mendoza|Cabernet Sauvignon|Cabernet Sauvignon
+WRW4938AA|Rapitala by Giv  "Hugonis" Cabernet Sauvignon & Nero D' Avola IGT  |Red Wine|Italy|Sicily|Cabernet Sauvignon|Cabernet Sauvignon, 50% Nero D‘avola
+WRW5025AD|Wolf Blass  Grey Label Shiraz|Red Wine|Australia|Barossa Valley|Syrah|Syrah
+WRW5039FS|Chateau Lynch Bages  AOC Pauillac 2013|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW5050AJ|G.D. Vajra  Barolo Albe DOCG|Red Wine|Italy|Piedmont|Nebbiolo|Medium-bodied Red
+WRW5107AA|Brancaia  ILatraia IGT Rosso Toscana|Red Wine|Italy|Tuscany|Cabernet Sauvignon, Petit Verdot, Cabernet Franc|Medium-bodied Red
+WRW5127AA|Ceretto  Barbaresco BIO DOCG|Red Wine|Italy|Piedmont|Nebbiolo|Medium-bodied Red
+WRW5331AA|Velenosi  Rosso Piceno DOC Superiore Circum|Red Wine|Italy|Marche|Sangiovese|Medium-bodied Red
+WRW5453AC|Valdubon  Roble|Red Wine|Spain|Ribera del Duero|Tempranillo|Medium-bodied Red
+WRW5532FJ|Georges Duboeuf  Cabernet Sauvignon (VDF D'OC)|Red Wine|France|Languedoc|Cabernet Sauvignon|Cabernet Sauvignon
+WRW5535BN|Argiano  Brunello di Montalcino|Red Wine|Italy|Tuscany|Sangiovese|Sangiovese
+WRW5548FT|Chateau Boyd-Cantenac  Margaux|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW5568FP|Masi  Campofiorin Rosso Veronese|Red Wine|Italy|Veneto|Corvina|Medium-bodied Red
+WRW5695FR|Birchgrove  Bird'S Block Cuvee "Inspiring Red" (Fruit Wine)|Red Wine|Australia|South Eastern Australia|Shiraz|Medium-bodied Red
+WRW5719BN|Argiano  Solengo IGT|Red Wine|Italy|Tuscany|Sangiovese|Medium-bodied Red
+WRW5844AB|F. Jeantet  Cotes du Rhone Rouge|Red Wine|France|Rhône|Grenache, Syrah, Mourvèdre|Shiraz, Grenache
+WRW5882DD|Aromo  Reservado Cabernet Sauvignon|Red Wine|Chile|Central Valley|Cabernet Sauvignon|Cabernet Sauvignon
+WRW5885DD|Chateau Lauzanet   Bordeaux Rouge|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW5895AB|Gerard Bertrand  Art de Vivre Languedoc AOP (Syrah, Grenache, Mourvèdre)|Red Wine|France|Languedoc|Syrah, Grenache, Mourvèdre|Grenache Syrah Mourvedre
+WRW5921AB|Maison Castel  Grande Reserve Cabernet Sauvignon IGP Pays d'Oc|Red Wine|France|Languedoc|Cabernet Sauvignon|Cabernet Sauvignon
+WRW5981AB|Vintae  Le Naturel D.O. Navarra|Red Wine|Spain|Others region|Tempranillo|Grenache
+WRW5984AB|Seven Hills  Merlot Walla Walla Valley|Red Wine|USA|California|Merlot|Merlot
+WRW6223FS|Chateau Lynch Bages  AOC Pauillac 2011|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6232BN|Chateau Palmer  Margaux 2015|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6240FJ|Chateau Maris  Merlot Syrah (Organic)|Red Wine|France|Languedoc|Merlot, Syrah|Merlot
+WRW6276AD|Concha Y Toro  Casillero Del Diablo Devil's Carnaval Spectacular Cabernet|Red Wine|Chile|Central Valley|Cabernet Sauvignon|Medium-bodied Red
+WRW6280AJ|Maison 1982  'Atlantique' Bordeaux|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6294GT|Chateau Du Fort Pontus  Fronsac|Red Wine|France||Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6317FC|Louis Latour  Chassagne-Montrachet Rouge|Red Wine|France|Burgundy|Pinot Noir|Medium-bodied Red
+WRW6335BS|Rocca di Frassinello  Poggio alla Guardia|Red Wine|Italy|Tuscany|Sangiovese|Medium-bodied Red
+WRW6364FC|Two Hands  Sexy Beast Cabernet Sauvignon McLaren|Red Wine|Australia|Clare|Cabernet Sauvignon|Cabernet Sauvignon
+WRW6370FC|Two Hands  Waterfall Block Shiraz Adelaide|Red Wine|Australia|South Eastern Australia|Syrah|Syrah
+WRW6372FC|Two Hands  Secret Block Shiraz Barossa|Red Wine|Australia|Barossa|Syrah|Syrah
+WRW6376AE|Poggio Al Lupo  Morellino Di Scansano|Red Wine|Italy|Tuscany|Sangiovese|Sangiovese
+WRW6438GS|Monemvasia	 300 Red|Red Wine|Greece|Macedonia|Agiorgitiko|Medium-bodied Red
+WRW6459AA|Di Majo Norante Contado Aglianico Riserva DOC|Red Wine|Italy||Aglianico|Aglianico
+WRW6504AD|Fantini Montepulciano D'Abruzzo|Red Wine|Italy|Abruzzo|Montepulciano|Montepulciano
+WRW6550FS|Echo de Lynch Bages AOC Pauillac 2018|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Medium-bodied Red
+WRW6586AD|E. Guigal  Cote-Rotie La Landonne|Red Wine|France|Rhône Valley|Syrah, Grenache|Medium-bodied Red
+WRW6599GX|Voyager Estate  Cabernet Sauvignon|Red Wine|Australia|South Eastern Australia|Cabernet Sauvignon|Cabernet Sauvignon
+WRW6774GW|La Rue De L'Amour Premium Selected Rouge|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Red Grapes
+WRW6926GW|Tagaro Piè Del Monaco Primitivo Valle D’Itria Igp|Red Wine|Italy|Puglia|Zinfandel|Primitivo
+WRW6936AB|Ricossa  Barbera Appassimento Piemonte DOC|Red Wine|Italy|Piedmont|Barbera|Barbera
+WRW7003GX|Les Licornes De Cantenac Brown Margaux 2016 (Second Label of Château Cantenac Brown)|Red Wine|France|Bordeaux|Cabernet Sauvignon, Merlot|Cabernet Sauvignon, Merlot, Cabernet Franc
+WRW7054AD|Barefoot Cabernet Sauvignon|Red Wine|USA|California|Cabernet Sauvignon|Cabernet Sauvignon
+WRW7084AB|Edenvale Cabernet Sauvignon (Non-Alcoholic Wine)|Red Wine|Australia|South Australia|Cabernet Sauvignon|Cabernet Sauvignon
+WRW7202AB|Pierre Chavin  Le Petit Etoile Cabernet Sauvignon (Non-Alcoholic Wine)|Red Wine|France|Languedoc|Cabernet Sauvignon|Cabernet Sauvignon
+WRW7525AP|Renzo Masi Contrappasso Rosso di Toscana|Red Wine|Italy|Tuscany|Sangiovese, Syrah|Sangiovese And Syrah
+WSP1056AC|Deor  Gold Collection Vino Spumante Extra Dry|Sparkling Wine|Italy|Veneto|Glera|Sparkling Wine
+WSP1106BU|Moet & Chandon  Brut Imperial (Magnum) (1.5 L)|White Wine|France|Champagne|Chardonnay|Medium-bodied White
+WSP1166AC|Diamante  Moscato Spumante Dolce|Sparkling Wine|Italy||Muscat|Muscat
+WSP1190CI|Tosti  Moscato|White Wine|Italy|Piedmont|Muscat|Muscat
+WSP1216AC|Don Luciano  Moscato|White Wine|Italy|La Mancha|Muscat|Muscat
+WSP1231AD|Bodegas Codorniu Raventos  Codorniu Clasico|White Wine|Spain|Penedès|Verdejo|Medium-bodied White
+WSP1241FC|Laurent Perrier  La Cuvée (375 ml)|White Wine|France|Champagne|Chardonnay|Medium-bodied White
+WSP1298EG|Piper-Heidsieck  Cuvee Brut (1.5 L)|White Wine|France|Champagne|Chardonnay|Medium-bodied White
+WSP1587CH|Yellow Tail  Bubbles|White Wine|Australia|Champagne|Chardonnay|Medium-bodied White
+WSP2622CN|Cinzano  Rose Edition|Sparkling Wine|Italy|Piedmont|Pinot Noir|Chardonnay, Pinot Noir
+WSP5665AA|Penfolds  Champagne Rose Thienot x Penfolds|Champagne|France|Champagne|Chardonnay, Pinot Noir, Pinot Meunier|Rosé Champagne
+WSP5667AA|V8+  Prosecco Brut Millesimato DOC|Sparkling Wine|Italy|Veneto|Glera|Prosecco
+WSP5745AA|Barons de Rothschild  Brut Ritz|White Wine|France|Champagne|Chardonnay, Pinot Noir|Medium-bodied White
+WSP5780AD|Dom Perignon 2015|Orange Wine|France|Champagne|Pinot Noir, Chardonnay|Medium-bodied Orange
+WSP5800DJ|Champagne Chavost Assemblage Brut Nature|Champagne|France|Champagne|Chardonnay, Pinot Noir, Pinot Meunier|Brut Nature Champagne
+WSP8889FS|Champagne Andre Clouet Grand Reserve Grand Cru Brut|Champagne|France|Champagne|Chardonnay, Pinot Noir, Pinot Meunier|Brut Champagne
+WSP8890FS|Champagne Andre Clouet Un Jour De 1911 Grand Cru Classé Brut|Champagne|France|Champagne|Chardonnay, Pinot Noir, Pinot Meunier|Brut Champagne
+WSP8923AB|Edenvale Pink Moscato (Non-Alcoholic Wine)|Sparkling Wine|Australia|South Australia|Muscat|Moscato
+WSP9000BU|Campo Viejo Cava Brut (750 ml)|Sparkling Wine|Spain|Rioja|Macabeo, Xarel·lo, Parellada|Macabeo, Xarel·lo, Parellada
+WWW0191AD|Castello Banfi  San Angelo Pinot Grigio|White Wine|Italy|Tuscany|Pinot Grigio|Pinot Gris
+WWW1810AE|Zenato  Lugana San Benedetto DOC|White Wine|Italy|Lombardy|Pinot Grigio|Medium-bodied White
+WWW1858DH|Domaine Huet  Le Clos Du Bourg Moelleux1Er Trie|White Wine|France|Loire valley|Chenin Blanc|Medium-bodied White
+WWW2396AA|Terre del Vulcano  Lava Greco di Tufo DOCG|White Wine|Italy|Campania|Greco|Greco
+WWW2401AD|Penfolds  Max's Chardonnay|White Wine|Australia|South Australia|Chardonnay|Chardonnay
+WWW4795AA|Livon  Braide Alte Grand Cru IGT|White Wine|Italy|Tuscany|Vernaccia, Trebbiano|Medium-bodied White
+WWW4847AF|Domaine De Baronaques  "Chardonnay" By Baron Phillippe De Rothschild|White Wine|France||Chardonnay|Chardonnay
+WWW4858AD|Wolf Blass  Gold Label Adelaide Hills Chardonnay|White Wine|Australia|Adelaide Hills|Chardonnay|Chardonnay
+WWW5122AA|7 Cascine  Moscato d'Asti DOCG|White Wine|Italy|Piedmont|Muscat|Muscat
+WWW5137FP|Max Ferd. Richter  Estate Riesling|White Wine|Germany|Mosel|Riesling|Riesling
+WWW5302AB|Gerard Bertrand  Orange Gold|Orange Wine|France|Others region|Chardonnay, Grenache, Viognier, Marsanne, Mauzac, Muscat|Chardonnay, Grenache Blanc, Viognier, Marsanne , Mauzac, Muscat
+WWW5412FJ|Chateau Maris  Viognier Grenache (Organic)|Red Wine|France|Languedoc|Viognier, Grenache|Grenache
+WWW5438FC|Louis Latour  Puligny-Montrachet|White Wine|France|Burgundy|Chardonnay|Medium-bodied White
+WWW5474AB|I Vigneri  Palmento Caselle Etna Bianco Superiore DOC|White Wine|Italy|Sicily|Carricante|Carricante
+WWW5952GW|La Rue De L'Amour Premium Selected Blanche|White Wine|France|Bordeaux|Sauvignon Blanc, Semillon|White Grapes
+WWW6005GW|Cantine Paolini Sicilien Chardonnay Sicilia D.O.C.|White Wine|Italy|Sicily|Chardonnay|Chardonnay
+WWW6042AD|Banfi La Pettegola Vermentino|White Wine|Italy|Tuscany|Vermentino|Vermentino
+WWW6062AB|Edenvale Chardonnay (Non-Alcoholic Wine)|White Wine|Australia|South Australia|Chardonnay|Chardonnay
+WWW6063AB|Edenvale Sauvignon Blanc (Non-Alcoholic Wine)|White Wine|Australia|South Australia|Sauvignon Blanc|Sauvignon Blanc
+WWW6126AB|Pierre Chavin  Le Petit Etoile Chardonnay (Non-Alcoholic Wine)|White Wine|France|Languedoc|Chardonnay|Chardonnay
+WWW6221AP|La Bastarda Bianco di Toscana|White Wine|Italy|Tuscany|Trebbiano, Chardonnay|Trebbiano, Chardonnay

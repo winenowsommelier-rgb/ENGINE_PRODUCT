@@ -1,0 +1,23 @@
+# T3 GRAPE VARIETY — 20 wines missing grape
+# Format: SKU|name|classification|country|region
+
+LGN0120ER|Rock Rose  Navy Strength Edition Gin (700 ml)|Rose Wine|Scotland|Highland
+LGN0121ER|Rock Rose  Spring Edition Gin (700 ml)|Rose Wine|Scotland|Highland
+LGN0124ER|Rock Rose  Winter Edition Gin (700 ml)|Rose Wine|Scotland|Highland
+LGN0168ER|Rock Rose  Pink Grapefruit Old Tom Gin (700 ml)|Rose Wine|Scotland|Highland
+LGN0218ER|Rock Rose  Jam Doughnut Gin (500 ml)|Rose Wine|Scotland|Highland
+LGN0219ER|Rock Rose  Apple & Lavender Gin (500 ml)|Rose Wine|Scotland|Highland
+LGN0227ER|Buss 509  Bulgarian Rose Gin (700 ml)|Rose Wine|England|Sussex
+LGN0229ER|Rock Rose  Sloe Berries Gin (500 ml)|Rose Wine|Scotland|Highland
+LGN0332ER|Rock Rose  Smoked Orange Gin (700 ml)|Rose Wine|Scotland|Highland
+LSK0013AR|Fukuju  Awasaki Sparkling Sake (300 ml)|Sparkling Wine|Japan|Champagne
+LSK0445FS|Hakutsuru  Purupuru Sparkling Jelly Sake Peach (190 ml) (Pack 30 Can)|Sparkling Wine|Japan|
+LSK0446FS|Hakutsuru  Purupuru Sparkling Jelly Sake Apple (190 ml) (Pack 30 Can)|Sparkling Wine|Japan|
+WRS0158DD|Antigal  UNO Rose|Rose Wine|Argentina|Mendoza
+WRS0216AB|Los Vascos Rose|Rose Wine|Chile|Colchagua Valley
+WRS0231BU|Headline Acts  Rose (750 ml)|Rose Wine|Australia|South Eastern Australia
+WRS0240AA|Blowfish  Rose|Rose Wine|Australia|South Australia
+WRW6329AB|Xige Estate  Jade Dove Single Varietal Cabernet Gernischt|Red Wine|China|Ningxia
+WSP5695FJ|Elmfield  Sparkling Cuvee|Sparkling Wine|Australia|South Eastern Australia
+WWW2406DD|The Old Town  South African Dry White (Fruit wine blend)|Fruit Wine|South Africa|Western Cape
+WWW5301AB|Gerard Bertrand  Naturae Orange|Orange Wine|France|Others region

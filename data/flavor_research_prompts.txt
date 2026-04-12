@@ -1,0 +1,190 @@
+FLAVOR TAG RESEARCH — T1 PRODUCTS
+Total: 135 products in 7 batches
+======================================================================
+
+INSTRUCTIONS FOR AI ASSISTANT:
+For each product, provide typical flavor/aroma notes based on the grape variety,
+region, classification, and style. Use professional wine/spirits tasting vocabulary.
+Return as comma-separated list: cherry, blackberry, vanilla, oak, tobacco, leather
+For spirits: juniper, citrus, pepper, vanilla, caramel, smoke, honey, etc.
+For accessories: skip (write "N/A")
+
+======================================================================
+
+=== BATCH 1 (20 products) ===
+For each product below, provide typical flavor/aroma notes as a comma-separated list.
+Use professional tasting vocabulary. 5-10 descriptors per product.
+Format: SKU | flavor notes
+
+CIG0375BT | Romeo Y Julieta  Mini (20 Sticks per Box) | Cigar | Cuba  | 
+GDC0048AB | Riedel  Decanter Ultra Magnum | Glassware | Austria  | 
+GLQ0023BR | Glencairn  Official Whisky Glass (Set of 6) | Glassware |   | 
+GWN0161AB | Riedel  Sommeliers Black Series ( R ) : Bordeaux Grand Cru | Glassware | Austria Bordeaux | 
+GWN0406AB | Riedel  Veloce Cabernet/Merlot (Pack 2 piece) | Glassware | Austria  |  body=full acid= tannin=low
+LBD0007CN | St-Rémy  V.S.O.P (700 ml) | Brandy | France  | 
+LBD0011CN | Remy Martin  V.S.O.P (700 ml) | Brandy | France Champagne |  body=full acid= tannin=low
+LGN0003AD | McCormick  Gin Extra Dry (750 ml) | Gin | USA Caribbean | 
+LGN0026BU | Monkey 47  Dry Gin (500 ml) | Gin | Germany  | 
+LGN0118EQ | Harahorn  Norwegian Small Batch Gin (750 ml) | Gin | Norway  | 
+LLQ0058CN | Cointreau  Orange Liqueur (700 ml) | Liqueur | France  | 
+LLQ0066AD | De Kuyper  Blue Curacao (700 ml) | Liqueur | Netherlands Cognac | 
+LLQ0072AT | Luxardo  Limoncello (750 ml) | Liqueur | Italy  | 
+LLQ0167AH | Mr.Boston  Triple Sec (1 L) | Liqueur | USA Islands | 
+LLQ0432CN | Ancho Reyes Originale Chili Liqueur (700 ml) | Liqueur | Mexico  | 
+LLQ0488CN | Passoa Passion fruit liqueur (700 ml) | Liqueur | France  |  body=full acid=high tannin=
+LOT0174GR | Inchon  Plum Umeshu (750 ml) | Others | Thailand  |  body=full acid= tannin=
+LRM0035BU | Captain Morgan  Jamaica Rum (700 ml) | Rum | Caribbean Jamaica | 
+LTQ0177CN | Montelobos  Espadin Joven Mezcal (700 ml) | Tequila | Mexico Oaxaca | 
+LVK0047BU | Smirnoff  Vodka (1 L) | Vodka | Russia Islands | 
+
+=== BATCH 2 (20 products) ===
+For each product below, provide typical flavor/aroma notes as a comma-separated list.
+Use professional tasting vocabulary. 5-10 descriptors per product.
+Format: SKU | flavor notes
+
+LVK0048BU | Smirnoff  Vodka (700 ml) | Vodka | Russia Islands | 
+LVK0647BU | Gilbey's  Vodka (1 L) | Vodka | England  | 
+LWH0205AD | Evan Williams Bourbon Black (750 ml) | Whisky | USA Kentucky | 
+LWH0217BU | Jack Daniel's  Single Barrel Tennessee Whiskey (750 ml) | Whisky | USA Tennessee |  body=full acid= tannin=low
+LWH0251AA | Suntory Whisky  Chita (700 ml) | Whisky | Japan Japan | 
+LWH0980DG | Nikka  Taketsuru Pure Malt Whisky (700 ml) | Whisky | Japan Japan | 
+LWH1051DG | Nikka  Days Whisky (700 ml) | Whisky | Japan Japan | 
+WDW0516AB | Maison Castel  Medium Sweet Muscat Pays d'Oc | Dessert Wine | France Languedoc | Muscat body=Light acid=Medium tannin=Low
+WRS0047AB | Chamdeville  Pinot Noir Rose | Rose Wine | France Others region | Pinot Noir body=Light acid=Medium tannin=Low
+WRW0035AD | Rawson's Retreat  Cabernet Sauvignon | Red Wine | Australia South Eastern Australia | Cabernet Sauvignon body=Full acid=Medium tannin=Medium
+WRW0114AD | Michel Lynch  Bordeaux Rouge | Red Wine | France Bordeaux | Cabernet Sauvignon, Merlot body=Full acid=Medium tannin=Medium
+WRW0202AH | Hardys  Varietal Range Merlot | Red Wine | Australia South Eastern Australia | Merlot body=Full acid=Medium tannin=High
+WRW0204AH | Hardys  Varietal Range Shiraz | Red Wine | Australia South Eastern Australia | Syrah body=Full acid=Medium tannin=Medium
+WRW0207AH | Hardys  Stamp Shiraz/Cabernet Sauvignon | Red Wine | Australia South Eastern Australia | Syrah, Cabernet Sauvignon body=Medium acid=Medium tannin=Medium
+WRW0232AH | Montes  Alpha Cabernet Sauvignon | Red Wine | Chile Maipo | Cabernet Sauvignon body=Full acid=Medium tannin=High
+WRW0255AA | Baron Philippe de Rothschild  Mouton Cadet Bordeaux Rouge | Red Wine | France Bordeaux | Cabernet Sauvignon, Merlot body=Medium acid=Medium tannin=Medium
+WRW0288AD | Concha Y Toro  Frontera Cabernet Sauvignon | Red Wine | Chile Central Valley | Cabernet Sauvignon body=Full acid=Medium tannin=Medium
+WRW0338AD | Catena Zapata  Catena Cabernet Sauvignon | Red Wine | Argentina Mendoza | Cabernet Sauvignon body=Full acid=Medium tannin=Medium
+WRW0464AD | Vigneti del Salento  "ZOLLA" Primitivo Merlot Puglia IGP | Red Wine | Italy Puglia | Zinfandel, Merlot body=Full acid=Low tannin=High
+WRW0574AA | Velenosi  Montepulciano D' Abruzzo The Year of the Rabbit | Red Wine | Italy Abruzzo | Montepulciano body=Full acid=High tannin=High
+
+=== BATCH 3 (20 products) ===
+For each product below, provide typical flavor/aroma notes as a comma-separated list.
+Use professional tasting vocabulary. 5-10 descriptors per product.
+Format: SKU | flavor notes
+
+WRW0617AA | Allegrini  Palazzo della Torre IGT | Red Wine | Italy Veneto | Corvina, Sangiovese body=Medium acid=High tannin=High
+WRW1024AB | Springfield Estate  The Work of Time | Red Wine | South Africa Western Cape | Cabernet Sauvignon, Cabernet Franc, Merlot, Petit Verdot body=Medium acid=Medium tannin=Medium
+WRW1039AD | Wolf Blass  Eaglehawk Shiraz | Red Wine | Australia South Australia | Syrah body=Medium acid=Medium tannin=Medium
+WRW1089AH | Piccini  Chianti Arancio DOCG | Red Wine | Italy Tuscany | Sangiovese body=Full acid=High tannin=High
+WRW1288AF | Masi  Amarone "Costasera" Classico DOC | Red Wine | Italy Veneto | Sangiovese, Corvina body=Full acid=High tannin=High
+WRW1608BS | Castellare Di Castellina  Chianti Classico Riserva DOCG | Red Wine | Italy Tuscany | Sangiovese body=Full acid=Medium tannin=Medium
+WRW1830GC | Tedeschi  Amarone Della Valpolicella Classico Riserva Capitel Monte Olmi | Red Wine | Italy Veneto | Corvina body=Full acid=Medium tannin=Medium
+WRW1852AE | Zenato  Amarone della Valpolicella Classico DOC | Red Wine | Italy Veneto | Corvina body=Medium acid=High tannin=High
+WRW2358BN | Glaetzer  Bishop | Red Wine | Australia Barossa | Shiraz body=Full acid=Medium tannin=High
+WRW3064BN | Castello di Fonterutoli  Castello Fonterutoli Chianti Classico Gran Selezione DOCG | Red Wine | Italy Tuscany | Sangiovese body=Full acid=High tannin=High
+WRW3065BS | Luccarelli  Negroamaro Puglia IGP | Red Wine | Italy Puglia | Negroamaro body=Medium acid=Medium tannin=Medium
+WRW3122CH | Mcguigan  Black Label Red | Red Wine | Australia South Eastern Australia | Shiraz body=Full acid=Medium tannin=High
+WRW3123CH | Mcguigan  Black Label Merlot | Red Wine | Australia South Eastern Australia | Merlot body=Full acid=Medium tannin=High
+WRW3191AD | Vigneti del Salento  "ZOLLA" Primitivo Di Manduria DOC | Red Wine | Italy Puglia | Zinfandel body=Full acid=Low tannin=High
+WRW3272AB | San Marzano  Santoro Primitivo Puglia IGP | Red Wine | Italy Puglia | Zinfandel body=medium acid=low tannin=low
+WRW3294AE | Casanova di Neri  Brunello di Montalcino Tenuta Nuova DOCG 2017 | Red Wine | Italy Tuscany | Sangiovese body=Full acid=Medium tannin=High
+WRW3305DD | Viu Manent  Estate Collection Reserva Merlot | Red Wine | Chile Colchagua | Merlot body=Full acid=Medium tannin=High
+WRW3471AH | Montes Winemaker's Choice  Cabernet Sauvignon | Red Wine | Chile Maipo | Cabernet Sauvignon body=Medium acid=Medium tannin=Medium
+WRW4287CH | Monsoon Valley Signature Red | Red Wine | Thailand Hua Hin Hills | Dornfelder, Syrah body=Medium acid=Medium tannin=Medium
+WRW4291BU | Jacob's Creek  Classic Cabernet Sauvignon (750 ml) | Red Wine | Australia South Australia | Cabernet Sauvignon body=Medium acid=Medium tannin=Medium
+
+=== BATCH 4 (20 products) ===
+For each product below, provide typical flavor/aroma notes as a comma-separated list.
+Use professional tasting vocabulary. 5-10 descriptors per product.
+Format: SKU | flavor notes
+
+WRW4300BU | George Wyndham  Bin 555 Shiraz (750 ml) | Red Wine | Australia South Eastern Australia | Syrah body=Full acid=High tannin=Medium
+WRW4303BU | Campo Viejo  Tempranillo (750 ml) | Red Wine | Spain Rioja | Tempranillo body=Medium acid=Medium tannin=Medium
+WRW4305BU | Brancott Estate  Pinot Noir (750 ml) | Red Wine | New Zealand Marlborough | Pinot Noir body=Light acid=High tannin=Low
+WRW4577DD | Angove  Long Row Cabernet Sauvignon (187 ml) | Red Wine | Australia South Australia | Cabernet Sauvignon body=Full acid=Medium tannin=High
+WRW4679AD | Penfolds  Bin 2 | Red Wine | Australia Barossa | Syrah, Mourvèdre body=Full acid=Medium tannin=Medium
+WRW4683AD | Penfolds  Bin 389 Cabernet Sauvignon/Shiraz | Red Wine | Australia South Australia | Cabernet Sauvignon, Syrah body=Full acid=Medium tannin=High
+WRW4688AD | Penfolds  Koonunga Hill Shiraz | Red Wine | Australia South Australia | Syrah body=Medium acid=Medium tannin=Medium
+WRW4689AD | Penfolds  Koonunga Hill Cabernet Sauvignon | Red Wine | Australia South Australia | Cabernet Sauvignon body=Full acid=Medium tannin=Medium
+WRW4692AD | Penfolds  Max's Shiraz / Cabernet Sauvignon | Red Wine | Australia South Australia | Syrah, Cabernet Sauvignon body=Full acid=Medium tannin=Medium
+WRW4693AD | Penfolds  Max's Cabernet Sauvignon | Red Wine | Australia South Australia | Cabernet Sauvignon body=Full acid=Medium tannin=High
+WRW4696AD | Beringer  Main & Vine Cabernet Sauvignon | Red Wine | USA California | Cabernet Sauvignon body=Full acid=Medium tannin=Medium
+WRW4703AD | 19 Crimes  Cabernet Sauvignon | Red Wine | Australia South Eastern Australia | Cabernet Sauvignon body=Full acid=Medium tannin=Medium
+WRW5047AC | Shafer  TD-9 | Red Wine | USA Napa | Cabernet Sauvignon body=Full acid=Medium tannin=High
+WRW5186FC | Castello Di Ama  Chianti Classico DOCG | Red Wine | Italy Tuscany | Sangiovese body=Full acid=High tannin=High
+WRW5284AA | Cantine Leonardo Da Vinci   1502 Da Vinci in Romagna Sangiovese Appassimento | Red Wine | Italy Tuscany | Sangiovese body=Full acid=Medium tannin=Medium
+WRW5285AA | Brancaia  Rosso "Tre" IGT | Red Wine | Italy Tuscany | Sangiovese, Merlot, Cabernet Sauvignon body=Full acid=Medium tannin=Medium
+WRW5286AA | Brancaia  Chianti Classico DOCG | Red Wine | Italy Tuscany | Sangiovese body=Full acid=Medium tannin=Medium
+WRW5333AA | Velenosi  Montepulciano D' Abruzzo DOC Circum | Red Wine | Italy Abruzzo | Montepulciano body=Full acid=High tannin=High
+WRW5406BN | Castello di Fonterutoli  Badiola | Red Wine | Italy Tuscany | Sangiovese body=Full acid=Medium tannin=Medium
+WRW5408BN | Tenuta Belguardo  Maremma Toscana DOC | Red Wine | Italy Tuscany | Cabernet Sauvignon, Cabernet Franc body=Full acid=Medium tannin=Medium
+
+=== BATCH 5 (20 products) ===
+For each product below, provide typical flavor/aroma notes as a comma-separated list.
+Use professional tasting vocabulary. 5-10 descriptors per product.
+Format: SKU | flavor notes
+
+WRW5457BN | Domaine Du Pegau  Cotes du Rhone Cuvee Setier Villages Rouge | Red Wine | France Rhône | Grenache, Syrah, Mourvèdre body=Medium acid=Medium tannin=Medium
+WRW5463FJ | Messenez Family  Chateau M Gran Reserva Cabernet Merlot | Red Wine | France Languedoc | Merlot body=Full acid=High tannin=High
+WRW5470FJ | Pinical Estate  Cabernet Merlot | Red Wine | Australia South Eastern Australia | Merlot body=Medium acid=Medium tannin=Medium
+WRW5479BS | Villa di Corlo  Lambrusco Grasparossa di Castelvetro Corleto DOC | Sparkling Wine | Italy Emilia-Romagna | Lambrusco body=Full acid=High tannin=Medium
+WRW5530FJ | Georges Duboeuf  Pinot Noir (VDF D'OC) | Red Wine | France Beaujolais | Pinot Noir body=Light acid=Medium tannin=Low
+WRW5676DJ | Domaine de La Pousse d’Or  Volnay 1er Cru "Clos des 60 Ouvrees" - Monopole | Red Wine | France Burgundy | Pinot Noir body=Medium acid=High tannin=Medium
+WRW5763FJ | CUNE  Gran Reserva | Red Wine | Spain Rioja | Tempranillo body=Medium acid=Medium tannin=Medium
+WRW5852AD | Penfolds  Bin 389 Magnum-Lunar New Year 2023 (limited Edition)  (1.5L) | Red Wine | Australia South Australia | Syrah, Cabernet Sauvignon body=Full acid=Medium tannin=Medium
+WRW5861AD | Langmeil  Barossa Valley Floor Shiraz | Red Wine | Australia Barossa | Syrah body=Full acid=Medium tannin=Medium
+WRW5908FJ | Reserve St Martin  Pinot Noir | Red Wine | France Languedoc | Pinot Noir body=Light acid=High tannin=Low
+WRW5962FS | Santa Helena  Gran Vino (Red Blend) | Red Wine | Chile Central Valley | Cabernet Sauvignon body=Full acid=Medium tannin=Medium
+WRW5997AD | Bell' Agio  Chianti DOCG Fiasco | Red Wine | Italy Tuscany | Sangiovese body=Medium acid=Medium tannin=Low
+WRW6105AB | Alpaca  Organic Red | Red Wine | Chile Central Valley | Cabernet Sauvignon body=Medium acid=Medium tannin=Medium
+WRW6186WN | Chateau de la Vieille Tour  Bordeaux Supérieur AOP | Red Wine | France Bordeaux | Cabernet Sauvignon, Merlot body=Medium acid=Medium tannin=Medium
+WRW6187WN | Vinum Terra  Bordeaux AOP (No Sulfites) | Red Wine | France Bordeaux | Cabernet Sauvignon, Merlot body=Medium acid=Medium tannin=Low
+WRW6188WN | Reserve Tradition du Chateau de la Vieille Tour Bordeaux Supérieur AOP | Red Wine | France Bordeaux | Cabernet Sauvignon, Merlot body=Full acid=Medium tannin=Medium
+WRW6251FJ | CUNE  Crianza | Red Wine | Spain Bordeaux | Cabernet Sauvignon, Merlot body=Medium acid=Medium tannin=Medium
+WRW6278DJ | Ferraton Pere & Fils  Hermitage “les Miaux” Rouge | Red Wine | France Rhône Valley | Grenache, Syrah, Mourvèdre body=Full acid=Medium tannin=Medium
+WRW6363FC | Two Hands  Gnarly Dudes Shiraz Barossa | Red Wine | Australia Barossa | Syrah body=Full acid=Medium tannin=Medium
+WRW6428AB | Shumi  Kindzmarauli | Red Wine | Georgia Others region | Saperavi body=Medium acid=Medium tannin=Medium
+
+=== BATCH 6 (20 products) ===
+For each product below, provide typical flavor/aroma notes as a comma-separated list.
+Use professional tasting vocabulary. 5-10 descriptors per product.
+Format: SKU | flavor notes
+
+WRW6501FS | Chateau Leoville Poyferre Saint-Julien Grand Cru Classé 2017 | Red Wine | France Bordeaux | Cabernet Sauvignon, Merlot body=Medium acid=Medium tannin=Medium
+WRW6598GX | VIK  Milla Cala | Red Wine | Chile Central Valley | Cabernet Sauvignon body=Full acid=Medium tannin=Medium
+WRW6742DJ | Domaine Pierre Girardin Volnay Premier Cru Les Taillepieds | Red Wine | France Burgundy | Pinot Noir body=Medium acid=Medium tannin=Medium
+WSP0062EG | Bollinger  Special Cuvee | White Wine | France Champagne | Chardonnay body=Full acid=High tannin=Low
+WSP1095AD | Veuve Clicquot  Brut Yellow Label (375 ml) | White Wine | France Champagne | Pinot Noir, Pinot Meunier, Chardonnay body=Full acid=High tannin=Low
+WSP1096AD | Veuve Clicquot  Brut Yellow Label (750 ml) | White Wine | France Champagne | Pinot Noir, Pinot Meunier, Chardonnay body=Full acid=High tannin=Low
+WSP1117AD | Chandon  Brut | Sparkling Wine | Australia Victoria | Chardonnay, Pinot Noir body=Medium acid=High tannin=Low
+WSP1235FC | Laurent Perrier  La Cuvée (750 ml) | White Wine | France Champagne | Chardonnay body=Full acid=High tannin=Low
+WSP1296EG | Piper-Heidsieck  Cuvee Brut (750 ml) | White Wine | France Champagne | Chardonnay body=Full acid=High tannin=Low
+WSP1297EG | Piper-Heidsieck  Cuvee Brut (375 ml) | White Wine | France Champagne | Chardonnay body=Full acid=High tannin=Low
+WSP1490BU | Jacob's Creek  Sparkling Chardonnay Pinot Noir (750 ml) | Sparkling Wine | Australia South Australia | Chardonnay, Pinot Noir body=Medium acid=High tannin=Low
+WSP1541CH | Monsoon Valley  Brut Prestige Sparkling Wine | Sparkling Wine | Thailand Khao Yai | Chenin Blanc, Colombard body=Light acid=High tannin=Low
+WSP2440BN | Zardetto  Prosecco Brut | Sparkling Wine | Italy Veneto | Glera body=Light acid=High tannin=Low
+WSP2509EG | Charles Heidsieck  The Brut Reserve (750 ml) | White Wine | France Champagne | Pinot Meunier, Chardonnay, Pinot Noir body=Full acid=High tannin=Low
+WSP2523AD | Veuve du Vernay  Brut Rose | Rose Wine | France Bordeaux | Grenache, Cinsault body=Medium acid=High tannin=Low
+WSP5686AD | Pares Balta  Cava Brut Organic | Sparkling Wine | Spain Penedès | Macabeo, Xarel·lo, Parellada body=Light acid=High tannin=Low
+WSP5723FJ | Botter Prosecco DOC Extra Dry | Sparkling Wine | Italy Veneto | Glera body=Light acid=High tannin=Low
+WSP5768AB | Otello Ceci 1813 Nero di Lambrusco Emilia IGT Frizzante | Sparkling Wine | Italy Emilia-Romagna | Lambrusco body=Medium acid=High tannin=Low
+WSP5786BN | Louis Roederer  Collection 245 | White Wine | France Champagne | Chardonnay body=Full acid=High tannin=Medium
+WWW0047AC | Sunnycliff  Chardonnay | White Wine | Australia Murray Darling | Chardonnay body=Medium acid=Medium tannin=Low
+
+=== BATCH 7 (15 products) ===
+For each product below, provide typical flavor/aroma notes as a comma-separated list.
+Use professional tasting vocabulary. 5-10 descriptors per product.
+Format: SKU | flavor notes
+
+WWW0080AH | Banrock Station  Moscato | White Wine | Australia South Australia | Muscat body=Light acid=Medium tannin=Low
+WWW0196AD | Concha Y Toro  Casillero del Diablo Reserva Sauvignon Blanc | White Wine | Chile Central Valley | Sauvignon Blanc body=Medium acid=High tannin=Low
+WWW1231AE | Feudo Maccari  Grillo IGT | White Wine | Italy Islands | Grillo
+WWW1789AD | Trimbach  Pinot Blanc | White Wine | France Alsace | Riesling body=Light acid=High tannin=Low
+WWW2216BU | Brancott Estate  Sauvignon Blanc (750 ml) | White Wine | New Zealand Marlborough | Sauvignon Blanc body=Light acid=High tannin=Low
+WWW2217BU | Brancott Estate  Letter Series "B" Sauvignon Blanc (750 ml) | White Wine | New Zealand Marlborough | Sauvignon Blanc body=Medium acid=High tannin=Low
+WWW2311AB | Louis Jadot  Chablis | White Wine | France Burgundy | Chardonnay body=Medium acid=Medium tannin=Low
+WWW2411DD | Mount Riley  Riesling | White Wine | New Zealand Marlborough | Riesling body=Light acid=High tannin=Low
+WWW2412DD | Mount Riley  Sauvignon Blanc | White Wine | New Zealand Marlborough | Sauvignon Blanc body=Medium acid=High tannin=Low
+WWW2417DD | Mount Riley  Gewurztraminer | White Wine | New Zealand Marlborough | Gewürztraminer body=Medium acid=Low tannin=Low
+WWW4887BS | Alta Mora  Etna Bianco | White Wine | Italy Sicily | Carricante body=Medium acid=Medium tannin=Low
+WWW5113FJ | Pinical Estate  Chardonnay | White Wine | Australia South Eastern Australia | Chardonnay body=Medium acid=Medium tannin=Low
+WWW5368BN | Weingut Robert Weil  Riesling Rheingau Tradition | White Wine | Germany Rheingau | Riesling body=Light acid=High tannin=Low
+WWW5373AB | Nollen Erben	 Rheinhessen Gewürztraminer Kabinett | White Wine | Germany Rheinhessen | Gewürztraminer body=Light acid=High tannin=Low
+WWW5443EI | Chavin Zero Non-Alcoholic Chardonnay (750 ml) | White Wine | France Others region | Chardonnay body=Light acid=Medium tannin=Low
+
