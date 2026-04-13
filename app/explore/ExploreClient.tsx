@@ -15,6 +15,7 @@ import ZoomControls from "@/components/explore/ZoomControls";
 import SearchOverlay from "@/components/explore/SearchOverlay";
 import ProductSidebar from "@/components/explore/ProductSidebar";
 import BottomPanel from "@/components/explore/BottomPanel";
+import OnboardingHint from "@/components/explore/OnboardingHint";
 
 // Dynamic import for the map to avoid SSR issues with WebGL
 const ExploreMap = dynamic(() => import("@/components/explore/ExploreMap"), {
@@ -172,6 +173,14 @@ export default function ExploreClient({ slug }: Props) {
 
   return (
     <div className="relative h-full w-full">
+      {/* Accessible live region for drill-down announcements */}
+      <div className="sr-only" role="status" aria-live="polite">
+        {parsed.drillLevel === 'world' && 'World map view'}
+        {parsed.country && `Viewing ${parsed.country.name}`}
+        {parsed.region && `, ${parsed.region.name}`}
+        {parsed.subregion && `, ${parsed.subregion.name}`}
+      </div>
+
       {/* Map */}
       <ExploreMap
         category={parsed.category}
@@ -226,6 +235,9 @@ export default function ExploreClient({ slug }: Props) {
           onClose={handleCloseProducts}
         />
       )}
+
+      {/* Onboarding hint (world view only) */}
+      {parsed.drillLevel === "world" && <OnboardingHint />}
 
       {/* Bottom bar */}
       <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-3 backdrop-blur-md max-lg:bottom-0"

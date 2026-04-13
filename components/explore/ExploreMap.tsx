@@ -237,6 +237,7 @@ export default function ExploreMap({
   }, [showCountryMarkers, showRegionMarkers, showSubregionMarkers]);
 
   return (
+    <div role="application" aria-label="Interactive world map showing wine and spirits regions" style={{ width: "100%", height: "100%" }}>
     <Map
       ref={mapRef}
       {...viewState}
@@ -370,5 +371,6 @@ export default function ExploreMap({
         </Source>
       )}
     </Map>
+    </div>
   );
 }

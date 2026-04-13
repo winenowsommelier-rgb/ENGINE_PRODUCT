@@ -21,7 +21,7 @@ export default function Breadcrumb({ items }: Props) {
             ) : (
               <Link
                 href={item.href}
-                className="text-white/60 hover:text-white transition-colors"
+                className="inline-flex items-center min-h-[44px] px-1 text-white/60 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none rounded"
               >
                 {item.label}
               </Link>

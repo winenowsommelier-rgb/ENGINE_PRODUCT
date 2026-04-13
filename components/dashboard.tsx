@@ -1,36 +1,53 @@
 'use client';
 import React, { Suspense, useState } from 'react';
-import { BookOpen, ClipboardCheck, Database, Grid3X3, LayoutDashboard, Library, Package, RefreshCw, Settings, Sparkles, TrendingUp, Upload, type LucideIcon } from 'lucide-react';
+import { BookOpen, ClipboardCheck, Grid3X3, History, Library, Package, Settings, Upload, type LucideIcon } from 'lucide-react';
 
 // Lazy imports — each page loads independently, crashes are isolated
-const ImportPage        = React.lazy(() => import('@/components/pages/ImportPage').then(m => ({ default: m.ImportPage })));
-const ProcessingReviewPage = React.lazy(() => import('@/components/pages/ProcessingReviewPage').then(m => ({ default: m.ProcessingReviewPage })));
-const TaxonomyQueuePage = React.lazy(() => import('@/components/pages/TaxonomyQueuePage').then(m => ({ default: m.TaxonomyQueuePage })));
-const TaxonomyManagerPage = React.lazy(() => import('@/components/pages/TaxonomyManagerPage').then(m => ({ default: m.TaxonomyManagerPage })));
 const ProductsPage      = React.lazy(() => import('@/components/pages/ProductsPage').then(m => ({ default: m.ProductsPage })));
-const OverrideImportPage = React.lazy(() => import('@/components/pages/OverrideImportPage').then(m => ({ default: m.OverrideImportPage })));
 const ProductMatrixPage = React.lazy(() => import('@/components/pages/ProductMatrixPage').then(m => ({ default: m.ProductMatrixPage })));
-const SeoCommandCenter  = React.lazy(() => import('@/components/seo-command-center').then(m => ({ default: m.SeoCommandCenter })));
-const SettingsPage      = React.lazy(() => import('@/components/pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
-const AIReviewQueuePage = React.lazy(() => import('@/components/pages/AIReviewQueuePage').then(m => ({ default: m.AIReviewQueuePage })));
+const TaxonomyManagerPage = React.lazy(() => import('@/components/pages/TaxonomyManagerPage').then(m => ({ default: m.TaxonomyManagerPage })));
 const KnowledgeLibraryPage = React.lazy(() => import('@/components/pages/KnowledgeLibraryPage').then(m => ({ default: m.KnowledgeLibraryPage })));
 const ValidationDashboardPage = React.lazy(() => import('@/components/pages/ValidationDashboardPage').then(m => ({ default: m.ValidationDashboardPage })));
+const ChangeLogPage = React.lazy(() => import('@/components/pages/ChangeLogPage').then(m => ({ default: m.ChangeLogPage })));
+const ImportHubPage = React.lazy(() => import('@/components/pages/ImportHubPage').then(m => ({ default: m.ImportHubPage })));
+const SettingsPage      = React.lazy(() => import('@/components/pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
 
-type Section = 'import' | 'processing' | 'taxonomy_queue' | 'taxonomy_manager' | 'knowledge_library' | 'products' | 'override_import' | 'matrix' | 'settings' | 'seo' | 'ai_review_queue' | 'validation';
+type Section = 'products' | 'matrix' | 'taxonomy_manager' | 'knowledge_library' | 'validation' | 'changelog' | 'import' | 'settings';
 
-const NAV_ITEMS: Array<{ id: Section; label: string; Icon: LucideIcon }> = [
-  { id: 'import',           label: 'Import',             Icon: Upload },
-  { id: 'processing',       label: 'Processing Review',  Icon: RefreshCw },
-  { id: 'ai_review_queue', label: 'AI Review Queue',    Icon: Sparkles },
-  { id: 'taxonomy_queue',   label: 'Taxonomy Queue',     Icon: Database },
-  { id: 'taxonomy_manager', label: 'Taxonomy Manager',   Icon: BookOpen },
-  { id: 'knowledge_library', label: 'Knowledge Library', Icon: Library },
-  { id: 'products',         label: 'Products',           Icon: Package },
-  { id: 'override_import',  label: 'Override Import',    Icon: LayoutDashboard },
-  { id: 'validation',       label: 'Data Validation',    Icon: ClipboardCheck },
-  { id: 'matrix',           label: 'Product Matrix',     Icon: Grid3X3 },
-  { id: 'seo',              label: 'SEO Command Center', Icon: TrendingUp },
-  { id: 'settings',         label: 'Settings',           Icon: Settings },
+interface NavGroup {
+  label: string;
+  items: Array<{ id: Section; label: string; Icon: LucideIcon }>;
+}
+
+const NAV_GROUPS: NavGroup[] = [
+  {
+    label: 'Catalog',
+    items: [
+      { id: 'products',         label: 'Products',           Icon: Package },
+      { id: 'matrix',           label: 'Product Matrix',     Icon: Grid3X3 },
+      { id: 'taxonomy_manager', label: 'Taxonomy Manager',   Icon: BookOpen },
+      { id: 'knowledge_library', label: 'Knowledge Library', Icon: Library },
+    ],
+  },
+  {
+    label: 'Operations',
+    items: [
+      { id: 'validation', label: 'Data Validation', Icon: ClipboardCheck },
+      { id: 'changelog',  label: 'Change Log',      Icon: History },
+    ],
+  },
+  {
+    label: 'Data',
+    items: [
+      { id: 'import', label: 'Import', Icon: Upload },
+    ],
+  },
+  {
+    label: '',
+    items: [
+      { id: 'settings', label: 'Settings', Icon: Settings },
+    ],
+  },
 ];
 
 // Per-page error boundary
@@ -69,20 +86,30 @@ function Sidebar({ active, onNavigate }: { active: Section; onNavigate: (s: Sect
         <span className="text-sm font-semibold text-white">WNLQ9 PIM</span>
       </div>
       <div className="flex flex-1 flex-col gap-0.5 p-2 pt-3">
-        {NAV_ITEMS.map(({ id, label, Icon }) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => onNavigate(id)}
-            className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors ${
-              active === id
-                ? 'bg-violet-500/20 text-white'
-                : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-            }`}
-          >
-            <Icon size={15} />
-            {label}
-          </button>
+        {NAV_GROUPS.map((group, gi) => (
+          <React.Fragment key={gi}>
+            {group.label && (
+              <p className={`px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-600 ${gi > 0 ? 'mt-4' : ''} mb-1`}>
+                {group.label}
+              </p>
+            )}
+            {!group.label && gi > 0 && <div className="mt-auto" />}
+            {group.items.map(({ id, label, Icon }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => onNavigate(id)}
+                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors ${
+                  active === id
+                    ? 'bg-violet-500/20 text-white'
+                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                }`}
+              >
+                <Icon size={15} />
+                {label}
+              </button>
+            ))}
+          </React.Fragment>
         ))}
       </div>
     </nav>
@@ -90,21 +117,17 @@ function Sidebar({ active, onNavigate }: { active: Section; onNavigate: (s: Sect
 }
 
 export function Dashboard() {
-  const [section, setSection] = useState<Section>('import');
+  const [section, setSection] = useState<Section>('products');
 
   const pages: Record<Section, React.ReactNode> = {
-    import:           <ImportPage />,
-    processing:       <ProcessingReviewPage onNavigateToReview={() => setSection('ai_review_queue')} />,
-    taxonomy_queue:   <TaxonomyQueuePage />,
+    products:         <ProductsPage />,
+    matrix:           <ProductMatrixPage />,
     taxonomy_manager: <TaxonomyManagerPage />,
     knowledge_library: <KnowledgeLibraryPage />,
-    products:         <ProductsPage />,
-    override_import:  <OverrideImportPage />,
-    matrix:           <ProductMatrixPage />,
-    seo:              <SeoCommandCenter />,
-    settings:         <SettingsPage />,
-    ai_review_queue:  <AIReviewQueuePage />,
     validation:       <ValidationDashboardPage />,
+    changelog:        <ChangeLogPage />,
+    import:           <ImportHubPage />,
+    settings:         <SettingsPage />,
   };
 
   return (

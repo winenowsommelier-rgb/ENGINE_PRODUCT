@@ -56,7 +56,7 @@ export default function SearchOverlay({ category, onSelect }: Props) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-black/40 text-white/60 backdrop-blur-md transition-all hover:bg-white/10 hover:text-white"
+        className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-black/40 text-white/60 backdrop-blur-md transition-all hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none"
         aria-label="Search regions"
       >
         <Search size={16} />
@@ -82,7 +82,7 @@ export default function SearchOverlay({ category, onSelect }: Props) {
             placeholder="Search countries, regions..."
             className="flex-1 bg-transparent text-white placeholder:text-white/30 outline-none"
           />
-          <button onClick={() => setOpen(false)} className="text-white/40 hover:text-white">
+          <button onClick={() => setOpen(false)} className="text-white/40 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none rounded" aria-label="Close search">
             <X size={18} />
           </button>
         </div>
@@ -92,7 +92,7 @@ export default function SearchOverlay({ category, onSelect }: Props) {
             {results.map((r, i) => (
               <li key={`${r.type}-${r.slug}`}>
                 <button
-                  className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left transition-colors"
+                  className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left transition-colors focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none"
                   style={{
                     background: i === selectedIdx ? "rgba(255,255,255,0.08)" : "transparent",
                   }}

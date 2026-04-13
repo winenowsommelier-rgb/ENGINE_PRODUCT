@@ -45,7 +45,7 @@ export default function RegionCard({ region, category, onExplore, onClose }: Pro
         </div>
         <button
           onClick={onClose}
-          className="rounded-lg p-1 text-white/40 hover:bg-white/10 hover:text-white transition-colors"
+          className="rounded-lg p-1 text-white/40 hover:bg-white/10 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none"
           aria-label="Close region card"
         >
           <X size={16} />
@@ -86,7 +86,7 @@ export default function RegionCard({ region, category, onExplore, onClose }: Pro
         <div className="border-t border-white/8 p-4 pt-3">
           <button
             onClick={onExplore}
-            className="w-full rounded-xl py-2.5 text-sm font-semibold text-white transition-all hover:brightness-110"
+            className="w-full rounded-xl py-2.5 text-sm font-semibold text-white transition-all hover:brightness-110 focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none"
             style={{ background: accent }}
           >
             Explore Products

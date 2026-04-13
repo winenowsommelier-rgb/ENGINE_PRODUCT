@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Loader2, GripHorizontal, ChevronDown } from "lucide-react";
 import type { CategoryScope, ExploreProduct } from "@/lib/explore/types";
 import { getAccent } from "@/lib/explore/category-config";
+import ProductFilters from "./ProductFilters";
 
 interface Props {
   locationName: string;
@@ -26,6 +27,7 @@ export default function BottomPanel({
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [expanded, setExpanded] = useState(false);
+  const [filters, setFilters] = useState<Record<string, string>>({});
   const accent = getAccent(category);
 
   useEffect(() => {
@@ -41,6 +43,11 @@ export default function BottomPanel({
         params.set("page", "1");
         params.set("limit", "20");
 
+        // Append product filters
+        for (const [key, value] of Object.entries(filters)) {
+          if (value) params.set(key, value);
+        }
+
         const res = await fetch(`/api/explore/products?${params}`);
         if (!res.ok) throw new Error("Failed");
         const data = await res.json();
@@ -53,7 +60,7 @@ export default function BottomPanel({
       }
     };
     fetchProducts();
-  }, [country, region, subregion, category]);
+  }, [country, region, subregion, category, filters]);
 
   return (
     <div
@@ -88,30 +95,35 @@ export default function BottomPanel({
 
       {/* Expanded product list */}
       {expanded && (
-        <div className="flex-1 overflow-y-auto px-4 pb-4" style={{ maxHeight: "calc(85vh - 80px)" }}>
-          {loading && (
-            <div className="flex justify-center py-8">
-              <Loader2 size={20} className="animate-spin text-white/30" />
-            </div>
-          )}
+        <div className="flex-1 overflow-y-auto pb-4" style={{ maxHeight: "calc(85vh - 80px)" }}>
+          {/* Filters */}
+          <ProductFilters category={category} onChange={setFilters} />
 
-          {!loading && products.length === 0 && (
-            <p className="py-8 text-center text-sm text-white/40">No products found</p>
-          )}
-
-          <div className="space-y-2">
-            {products.map((p) => (
-              <div key={p.id} className="rounded-xl border border-white/6 bg-white/3 p-3">
-                <h3 className="text-sm font-medium text-white">{p.name}</h3>
-                <div className="mt-1 flex items-center gap-2 text-xs text-white/50">
-                  {p.brand && <span>{p.brand}</span>}
-                  {p.vintage && <span>{p.vintage}</span>}
-                </div>
-                <p className="mt-1 text-sm font-semibold text-white">
-                  ฿{p.price?.toLocaleString() ?? "N/A"}
-                </p>
+          <div className="px-4">
+            {loading && (
+              <div className="flex justify-center py-8">
+                <Loader2 size={20} className="animate-spin text-white/30" />
               </div>
-            ))}
+            )}
+
+            {!loading && products.length === 0 && (
+              <p className="py-8 text-center text-sm text-white/40">No products found</p>
+            )}
+
+            <div className="space-y-2">
+              {products.map((p) => (
+                <div key={p.id} className="rounded-xl border border-white/6 bg-white/3 p-3">
+                  <h3 className="text-sm font-medium text-white">{p.name}</h3>
+                  <div className="mt-1 flex items-center gap-2 text-xs text-white/50">
+                    {p.brand && <span>{p.brand}</span>}
+                    {p.vintage && <span>{p.vintage}</span>}
+                  </div>
+                  <p className="mt-1 text-sm font-semibold text-white">
+                    ฿{p.price?.toLocaleString() ?? "N/A"}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import type { CategoryScope, ExploreProduct } from "@/lib/explore/types";
 import { getAccent } from "@/lib/explore/category-config";
+import EmptyState from "@/components/explore/EmptyState";
+import ProductFilters from "./ProductFilters";
 
 interface Props {
   locationName: string;
@@ -32,6 +34,7 @@ export default function ProductSidebar({
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [sort, setSort] = useState<SortOption>("popular");
+  const [filters, setFilters] = useState<Record<string, string>>({});
   const listRef = useRef<HTMLDivElement>(null);
   const accent = getAccent(category);
 
@@ -49,6 +52,11 @@ export default function ProductSidebar({
         params.set("page", String(pageNum));
         params.set("limit", "20");
 
+        // Append product filters
+        for (const [key, value] of Object.entries(filters)) {
+          if (value) params.set(key, value);
+        }
+
         const res = await fetch(`/api/explore/products?${params}`);
         if (!res.ok) throw new Error("Failed to load products");
         const data = await res.json();
@@ -61,7 +69,7 @@ export default function ProductSidebar({
         setLoading(false);
       }
     },
-    [country, region, subregion, category, sort]
+    [country, region, subregion, category, sort, filters]
   );
 
   // Fetch on mount and when filters change
@@ -89,7 +97,7 @@ export default function ProductSidebar({
       <div className="flex items-center gap-3 border-b border-white/8 px-4 py-3">
         <button
           onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 hover:bg-white/10 hover:text-white transition-colors"
+          className="flex h-11 w-11 items-center justify-center rounded-lg text-white/50 hover:bg-white/10 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none"
           aria-label="Close sidebar"
         >
           <ChevronLeft size={18} />
@@ -115,6 +123,15 @@ export default function ProductSidebar({
           <option value="name">Name A-Z</option>
         </select>
       </div>
+
+      {/* Filters */}
+      <ProductFilters
+        category={category}
+        onChange={(f) => {
+          setFilters(f);
+          setPage(1);
+        }}
+      />
 
       {/* Product list */}
       <div ref={listRef} onScroll={handleScroll} className="flex-1 overflow-y-auto p-3 space-y-2">
@@ -153,7 +170,7 @@ export default function ProductSidebar({
             <p className="text-sm text-white/50">{error}</p>
             <button
               onClick={() => fetchProducts(page)}
-              className="mt-2 rounded-lg px-4 py-1.5 text-sm font-medium text-white"
+              className="mt-2 rounded-lg px-4 py-1.5 text-sm font-medium text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none"
               style={{ background: accent }}
             >
               Retry
@@ -162,7 +179,7 @@ export default function ProductSidebar({
         )}
 
         {!loading && !error && products.length === 0 && (
-          <p className="py-8 text-center text-sm text-white/40">No products found for this region</p>
+          <EmptyState category={category} locationName={locationName} />
         )}
 
         {!loading && products.length > 0 && products.length < totalCount && (

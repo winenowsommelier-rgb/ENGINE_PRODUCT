@@ -33,6 +33,7 @@ const SELECT_FIELDS = [
   "brand",
   "classification",
   "grape_variety",
+  "wine_color",
   "vintage",
   "price",
   "currency",
@@ -59,6 +60,34 @@ export async function GET(req: NextRequest) {
   if (region) filters.push(`region=eq.${encodeURIComponent(region)}`);
   if (subregion) filters.push(`subregion=eq.${encodeURIComponent(subregion)}`);
   if (category && SEGMENT_FILTERS[category]) filters.push(SEGMENT_FILTERS[category]);
+
+  // Product filters — multi-select fields use PostgREST `in.()` syntax
+  const wineColor = sp.get("wine_color") ?? "";
+  const classification = sp.get("classification") ?? "";
+  const grapeVariety = sp.get("grape_variety") ?? "";
+  const priceMin = sp.get("price_min") ?? "";
+  const priceMax = sp.get("price_max") ?? "";
+
+  if (wineColor) {
+    const vals = wineColor.split(",").map((v) => encodeURIComponent(v.trim()));
+    filters.push(vals.length === 1
+      ? `wine_color=eq.${vals[0]}`
+      : `wine_color=in.(${vals.join(",")})`);
+  }
+  if (classification) {
+    const vals = classification.split(",").map((v) => encodeURIComponent(v.trim()));
+    filters.push(vals.length === 1
+      ? `classification=eq.${vals[0]}`
+      : `classification=in.(${vals.join(",")})`);
+  }
+  if (grapeVariety) {
+    const vals = grapeVariety.split(",").map((v) => encodeURIComponent(v.trim()));
+    filters.push(vals.length === 1
+      ? `grape_variety=eq.${vals[0]}`
+      : `grape_variety=in.(${vals.join(",")})`);
+  }
+  if (priceMin) filters.push(`price=gte.${Number(priceMin)}`);
+  if (priceMax) filters.push(`price=lte.${Number(priceMax)}`);
 
   const order = SORT_MAP[sort] ?? SORT_MAP.popular;
 
