@@ -1,412 +1,400 @@
 === FULL TAXONOMY LIST ===
-Countries: 51
-Regions: 99
+Countries: 50
+Regions: 90
 Subregions: 80
 Appellations: 81
 
-=== COUNTRIES (51) ===
-✓ Argentina                [-33, -68.5]         scopes: wine
-○ Australia                [-34.9, 138.6]       scopes: accessories, spirits, wine
-○ Austria                  [48.3, 15.5]         scopes: accessories, wine
-✓ Barbados                 [13.2, -59.5]        scopes: spirits
-✓ Belgium                  [50.8, 4.4]          scopes: spirits
-○ Bermuda                  [32.3, -64.8]        scopes: spirits
-✓ Brazil                   [-15.8, -47.9]       scopes: spirits
-✓ Canada                   [45, -75.7]          scopes: spirits
-○ Caribbean                [NEEDS COORDS]       scopes: spirits
-○ Chile                    [-33.5, -70.6]       scopes: spirits, wine
-○ China                    [35, 105]            scopes: spirits, wine
-✓ Colombia                 [4.7, -74.1]         scopes: spirits
-○ Cuba                     [23, -82.4]          scopes: accessories, spirits
-○ Czech Republic           [NEEDS COORDS]       scopes: spirits
-○ Dominican Republic       [18.5, -69.9]        scopes: accessories, spirits
-✓ England                  [51.5, -1.5]         scopes: spirits, wine
-○ France                   [46.6, 2.2]          scopes: accessories, non_alc, spirits, wine
-✓ Georgia                  [42, 43.5]           scopes: wine
-○ Germany                  [50, 8.3]            scopes: beer, spirits, wine
-✓ Greece                   [38, 23.7]           scopes: wine
-✓ Guatemala                [14.6, -90.5]        scopes: spirits
-✓ Hungary                  [47.5, 19.1]         scopes: wine
-○ Indonesia                [-6.2, 106.8]        scopes: spirits
-✓ Ireland                  [53.4, -8.2]         scopes: spirits
-✓ Italy                    [42.5, 12.5]         scopes: spirits, wine
-✓ Jamaica                  [18.1, -77.3]        scopes: spirits
-○ Japan                    [35.7, 139.7]        scopes: accessories, sake, spirits
-○ Martinique               [14.6, -61]          scopes: spirits
-✓ Mexico                   [23.6, -102.5]       scopes: spirits, wine
-○ Netherland               [NEEDS COORDS]       scopes: spirits
-✓ Netherlands              [52.1, 5.3]          scopes: spirits
-○ New Zealand              [-41.3, 174.8]       scopes: spirits, wine
-○ Nicaragua                [12.1, -86.3]        scopes: spirits
-○ Norway                   [NEEDS COORDS]       scopes: spirits
-○ Peru                     [-12, -77]           scopes: spirits, wine
-✓ Poland                   [52.2, 21]           scopes: spirits
-✓ Portugal                 [41.2, -8.6]         scopes: wine
-✓ Russia                   [55.8, 37.6]         scopes: spirits
-✓ Scotland                 [56.5, -4]           scopes: spirits, wine
-✓ Slovenia                 [46.1, 14.8]         scopes: wine
-✓ South Africa             [-33.9, 18.9]        scopes: wine
-○ Spain                    [39.5, -3.7]         scopes: spirits, wine
-✓ Sweden                   [59.3, 18.1]         scopes: spirits
-✓ Taiwan                   [25, 121.5]          scopes: spirits
-○ Thailand                 [14.5, 100.5]        scopes: accessories, asian_spirits, beer, non_alc, spirits, wine
-✓ Trinidad                 [10.5, -61.3]        scopes: spirits
-○ UK                       [55.7, -3.5]         scopes: non_alc, spirits
-○ USA                      [38.5, -121.5]       scopes: accessories, spirits, wine
-✓ Uruguay                  [-34.9, -56.2]       scopes: wine
-○ Venezuela                [10.5, -67]          scopes: spirits
-✓ Vietnam                  [16, 108]            scopes: spirits
+=== COUNTRIES (50) ===
+✓ Argentina                [-33, -68.5]         scopes: 
+✓ Australia                [-34.9, 138.6]       scopes: 
+✓ Austria                  [48.3, 15.5]         scopes: 
+✓ Barbados                 [13.2, -59.5]        scopes: 
+✓ Belgium                  [50.8, 4.4]          scopes: 
+✓ Bermuda                  [32.3, -64.8]        scopes: 
+✓ Brazil                   [-15.8, -47.9]       scopes: 
+✓ Canada                   [45, -75.7]          scopes: 
+✓ Caribbean                [17.5, -67.5]        scopes: 
+✓ Chile                    [-33.5, -70.6]       scopes: 
+✓ China                    [35, 105]            scopes: 
+✓ Colombia                 [4.7, -74.1]         scopes: 
+✓ Cuba                     [23, -82.4]          scopes: 
+✓ Czech Republic           [49.8, 15.5]         scopes: 
+✓ Dominican Republic       [18.5, -69.9]        scopes: 
+✓ England                  [51.5, -1.5]         scopes: 
+✓ France                   [46.6, 2.2]          scopes: 
+✓ Georgia                  [42, 43.5]           scopes: 
+✓ Germany                  [50, 8.3]            scopes: 
+✓ Greece                   [38, 23.7]           scopes: 
+✓ Guatemala                [14.6, -90.5]        scopes: 
+✓ Hungary                  [47.5, 19.1]         scopes: 
+✓ Indonesia                [-6.2, 106.8]        scopes: 
+✓ Ireland                  [53.4, -8.2]         scopes: 
+✓ Italy                    [42.5, 12.5]         scopes: 
+✓ Jamaica                  [18.1, -77.3]        scopes: 
+✓ Japan                    [35.7, 139.7]        scopes: 
+✓ Martinique               [14.6, -61]          scopes: 
+✓ Mexico                   [23.6, -102.5]       scopes: 
+✓ Netherlands              [52.1, 5.3]          scopes: 
+✓ New Zealand              [-41.3, 174.8]       scopes: 
+✓ Nicaragua                [12.1, -86.3]        scopes: 
+✓ Norway                   [59.9, 10.7]         scopes: 
+✓ Peru                     [-12, -77]           scopes: 
+✓ Poland                   [52.2, 21]           scopes: 
+✓ Portugal                 [41.2, -8.6]         scopes: 
+✓ Russia                   [55.8, 37.6]         scopes: 
+✓ Scotland                 [56.5, -4]           scopes: 
+✓ Slovenia                 [46.1, 14.8]         scopes: 
+✓ South Africa             [-33.9, 18.9]        scopes: 
+✓ Spain                    [39.5, -3.7]         scopes: 
+✓ Sweden                   [59.3, 18.1]         scopes: 
+✓ Taiwan                   [25, 121.5]          scopes: 
+✓ Thailand                 [14.5, 100.5]        scopes: 
+✓ Trinidad                 [10.5, -61.3]        scopes: 
+✓ UK                       [55.7, -3.5]         scopes: 
+✓ USA                      [38.5, -121.5]       scopes: 
+✓ Uruguay                  [-34.9, -56.2]       scopes: 
+✓ Venezuela                [10.5, -67]          scopes: 
+✓ Vietnam                  [16, 108]            scopes: 
 
-=== REGIONS (99) ===
+=== REGIONS (90) ===
 Format: status | name | [lat, lng] | parent_country | scopes
 
 --- Argentina ---
-  ✓ Mendoza                       [-33, -68.5]          wine
+  ✓ Mendoza                        [-33, -68.5]           
 
 --- Australia ---
-  ○ Adelaide Hills                [NEEDS COORDS]        wine
-  ✓ Barossa                       [-34.5, 138.9]        wine
-  ○ Barossa Valley                [NEEDS COORDS]        wine
-  ○ Clare                         [NEEDS COORDS]        wine
-  ○ Clare Valley                  [-33.8, 138.7]        wine
-  ○ Coonawarra                    [NEEDS COORDS]        wine
-  ○ Hunter                        [NEEDS COORDS]        wine
-  ✓ Margaret River                [-33.8, 115]          wine
-  ✓ McLaren Vale                  [-35.2, 138.5]        wine
-  ○ Multi-Regional                [NEEDS COORDS]        wine
-  ✓ South Australia               [-35, 138.5]          wine
-  ○ South Eastern Australia       [NEEDS COORDS]        wine
-  ○ Victoria                      [NEEDS COORDS]        wine
-  ○ Yarra                         [NEEDS COORDS]        spirits
+  ✓ Adelaide Hills                 [-35.0, 138.7]         
+  ✓ Barossa Valley                 [-34.5, 138.9]         
+  ✓ Clare Valley                   [-33.8, 138.7]         
+  ✓ Coonawarra                     [-37.3, 140.8]         
+  ✓ Hunter                         [-32.8, 151.3]         
+  ✓ Margaret River                 [-33.8, 115]           
+  ✓ McLaren Vale                   [-35.2, 138.5]         
+  ✓ Multi-Regional                 [-34.0, 140.0]         
+  ✓ South Australia                [-35, 138.5]           
+  ✓ South Eastern Australia        [-36.0, 145.0]         
+  ✓ Victoria                       [-37.0, 145.0]         
+  ✓ Yarra                          [-37.7, 145.5]         
 
 --- Austria ---
-  ✓ Kamptal                       [48.5, 15.7]          wine
-  ✓ Wachau                        [48.4, 15.4]          wine
+  ✓ Kamptal                        [48.5, 15.7]           
+  ✓ Wachau                         [48.4, 15.4]           
 
 --- Chile ---
-  ○ Aconcagua Valley              [NEEDS COORDS]        wine
-  ○ Cachapoal Valley              [NEEDS COORDS]        wine
-  ○ Casablanca                    [NEEDS COORDS]        wine
-  ○ Casablanca Valley             [NEEDS COORDS]        wine
-  ○ Central Valley                [-34, -71.2]          wine
-  ○ Colchagua                     [NEEDS COORDS]        wine
-  ○ Colchagua Valley              [NEEDS COORDS]        wine
-  ○ Curico Valley                 [NEEDS COORDS]        wine
-  ○ Maipo                         [NEEDS COORDS]        wine
-  ○ Maipo Valley                  [NEEDS COORDS]        wine
-  ○ Maule                         [NEEDS COORDS]        wine
+  ✓ Aconcagua Valley               [-32.8, -70.7]         
+  ✓ Cachapoal Valley               [-34.2, -70.9]         
+  ✓ Casablanca Valley              [-33.3, -71.4]         
+  ✓ Central Valley                 [-34, -71.2]           
+  ✓ Colchagua Valley               [-34.6, -71.2]         
+  ✓ Curico Valley                  [-35.0, -71.2]         
+  ✓ Maipo Valley                   [-33.5, -70.6]         
+  ✓ Maule                          [-35.5, -71.7]         
 
 --- China ---
-  ○ Ningxia                       [NEEDS COORDS]        wine
+  ✓ Ningxia                        [38.5, 106.3]          
 
 --- France ---
-  ○ Alsace                        [48.2, 7.3]           spirits, wine
-  ✓ Armagnac                      [43.9, -0.1]          spirits
-  ○ Bordeaux                      [44.84, -0.58]        spirits, wine
-  ✓ Burgundy                      [47, 4.8]             wine
-  ○ Champagne                     [49, 3.9]             accessories, spirits, wine
-  ✓ Cognac                        [45.7, -0.3]          spirits
-  ✓ Languedoc                     [43.3, 3.3]           wine
-  ○ Loire                         [47.3, -0.3]          spirits
-  ○ Loire valley                  [NEEDS COORDS]        wine
-  ○ Provence                      [43.7, 6.5]           spirits, wine
-  ○ Rhône                         [NEEDS COORDS]        wine
-  ✓ Rhône Valley                  [45.9, 7]             wine
-  ✓ Sauternes                     [44.6, -0.3]          wine
+  ✓ Alsace                         [48.2, 7.3]            
+  ✓ Armagnac                       [43.9, -0.1]           
+  ✓ Bordeaux                       [44.84, -0.58]         
+  ✓ Burgundy                       [47, 4.8]              
+  ✓ Champagne                      [49, 3.9]              
+  ✓ Cognac                         [45.7, -0.3]           
+  ✓ Languedoc                      [43.3, 3.3]            
+  ✓ Loire Valley                   [47.3, -0.3]           
+  ✓ Provence                       [43.7, 6.5]            
+  ✓ Rhône Valley                   [45.9, 7]              
+  ✓ Sauternes                      [44.6, -0.3]           
 
 --- Germany ---
-  ✓ Mosel                         [49.9, 7.6]           wine
-  ○ Pfalz                         [49.5, 8.2]           wine
-  ○ Rheingau                      [50, 8]               wine
-  ○ Rheinhessen                   [49.8, 8.3]           wine
+  ✓ Mosel                          [49.9, 7.6]            
+  ✓ Pfalz                          [49.5, 8.2]            
+  ✓ Rheingau                       [50, 8]                
+  ✓ Rheinhessen                    [49.8, 8.3]            
 
 --- Hungary ---
-  ✓ Tokaj                         [48.3, 21.5]          wine
+  ✓ Tokaj                          [48.3, 21.5]           
 
 --- Italy ---
-  ○ Abruzzo                       [NEEDS COORDS]        wine
-  ○ Campania                      [NEEDS COORDS]        wine
-  ○ Emilia-Romagna                [NEEDS COORDS]        wine
-  ○ Friuli                        [NEEDS COORDS]        wine
-  ○ Friuli-Venezia Giulia         [NEEDS COORDS]        wine
-  ○ Lazio                         [NEEDS COORDS]        wine
-  ○ Lombardy                      [NEEDS COORDS]        wine
-  ○ Marche                        [NEEDS COORDS]        wine
-  ○ Piedmont                      [44.7, 8]             spirits, wine
-  ✓ Puglia                        [41.1, 16.9]          wine
-  ○ Sardinia                      [NEEDS COORDS]        wine
-  ○ Sicily                        [37.8, 15]            spirits, wine
-  ○ Trentino-Alto Adige           [NEEDS COORDS]        wine
-  ○ Tuscany                       [43.3, 11.3]          spirits, wine
-  ○ Umbria                        [NEEDS COORDS]        wine
-  ✓ Veneto                        [45.4, 12.3]          wine
+  ✓ Abruzzo                        [42.4, 13.4]           
+  ✓ Campania                       [40.8, 14.3]           
+  ✓ Emilia-Romagna                 [44.5, 11.3]           
+  ✓ Friuli-Venezia Giulia          [46.1, 13.2]           
+  ✓ Lazio                          [41.9, 12.5]           
+  ✓ Lombardy                       [45.5, 9.9]            
+  ✓ Marche                         [43.6, 13.5]           
+  ✓ Piedmont                       [44.7, 8]              
+  ✓ Puglia                         [41.1, 16.9]           
+  ✓ Sardinia                       [40.1, 9.1]            
+  ✓ Sicily                         [37.8, 15]             
+  ✓ Trentino-Alto Adige            [46.4, 11.3]           
+  ✓ Tuscany                        [43.3, 11.3]           
+  ✓ Umbria                         [42.7, 12.6]           
+  ✓ Veneto                         [45.4, 12.3]           
 
 --- Mexico ---
-  ✓ Jalisco                       [20.7, -103.3]        spirits
-  ✓ Oaxaca                        [16.9, -96.7]         spirits
+  ✓ Jalisco                        [20.7, -103.3]         
+  ✓ Oaxaca                         [16.9, -96.7]          
 
 --- New Zealand ---
-  ✓ Central Otago                 [-45, 169.2]          wine
-  ✓ Hawke's Bay                   [-39.6, 176.9]        wine
-  ✓ Marlborough                   [-41.5, 174]          wine
-  ○ Martinborough                 [NEEDS COORDS]        wine
+  ✓ Central Otago                  [-45, 169.2]           
+  ✓ Hawke's Bay                    [-39.6, 176.9]         
+  ✓ Marlborough                    [-41.5, 174]           
+  ✓ Martinborough                  [-41.2, 175.5]         
 
 --- Portugal ---
-  ✓ Douro                         [41.2, -8.2]          wine
-  ○ Dão                           [NEEDS COORDS]        wine
+  ✓ Douro                          [41.2, -8.2]           
+  ✓ Dão                            [40.5, -7.9]           
 
 --- Scotland ---
-  ✓ Campbeltown                   [55.4, -5.6]          spirits
-  ✓ Highland                      [57, -5]              spirits
-  ✓ Islay                         [55.8, -6.2]          spirits
-  ✓ Lowland                       [NEEDS COORDS]        spirits
+  ✓ Campbeltown                    [55.4, -5.6]           
+  ✓ Highland                       [57, -5]               
+  ✓ Islay                          [55.8, -6.2]           
+  ✓ Lowland                        [55.9, -3.2]           
 
 --- South Africa ---
-  ○ Paarl                         [-33.9, 18.6]         wine
-  ✓ Swartland                     [-33.4, 18.7]         wine
-  ○ Western Cape                  [NEEDS COORDS]        wine
+  ✓ Paarl                          [-33.9, 18.6]          
+  ✓ Swartland                      [-33.4, 18.7]          
+  ✓ Western Cape                   [-33.9, 18.4]          
 
 --- Spain ---
-  ○ Catalunya                     [NEEDS COORDS]        wine
-  ✓ Jerez                         [36.7, -6.1]          spirits, wine
-  ○ La Mancha                     [NEEDS COORDS]        wine
-  ○ Others region                 [NEEDS COORDS]        wine
-  ✓ Priorat                       [41.2, 0.8]           wine
-  ✓ Ribera del Duero              [41.7, -3.5]          wine
-  ✓ Rioja                         [42.5, -2.5]          wine
-  ○ Rueda                         [NEEDS COORDS]        wine
-  ✓ Rías Baixas                   [42.2, -8.8]          wine
-  ○ Toro                          [NEEDS COORDS]        wine
-  ○ Valencia                      [NEEDS COORDS]        wine
+  ✓ Catalunya                      [41.4, 1.8]            
+  ✓ Jerez                          [36.7, -6.1]           
+  ✓ La Mancha                      [39.0, -3.0]           
+  ✓ Others region                  [40.0, -3.7]           
+  ✓ Priorat                        [41.2, 0.8]            
+  ✓ Ribera del Duero               [41.7, -3.5]           
+  ✓ Rioja                          [42.5, -2.5]           
+  ✓ Rueda                          [41.4, -4.9]           
+  ✓ Rías Baixas                    [42.2, -8.8]           
+  ✓ Toro                           [41.5, -5.4]           
+  ✓ Valencia                       [39.5, -0.4]           
 
 --- USA ---
-  ✓ California                    [37.3, -119.5]        wine
-  ✓ Kentucky                      [38.2, -85.7]         spirits
-  ✓ Napa                          [38.5, -122.3]        wine
-  ○ Oregon                        [NEEDS COORDS]        wine
-  ✓ Paso Robles                   [35.6, -120.7]        wine
-  ✓ Sonoma                        [38.4, -122.7]        wine
-  ○ Sonoma County                 [NEEDS COORDS]        wine
-  ✓ Tennessee                     [35.8, -86.7]         spirits
-  ○ Washington                    [NEEDS COORDS]        wine
-  ✓ Willamette Valley             [45.3, -123.1]        wine
+  ✓ California                     [37.3, -119.5]         
+  ✓ Kentucky                       [38.2, -85.7]          
+  ✓ Napa                           [38.5, -122.3]         
+  ✓ Oregon                         [45.5, -122.7]         
+  ✓ Paso Robles                    [35.6, -120.7]         
+  ✓ Sonoma County                  [38.4, -122.7]         
+  ✓ Tennessee                      [35.8, -86.7]          
+  ✓ Washington                     [46.8, -120.5]         
+  ✓ Willamette Valley              [45.3, -123.1]         
 
 === SUBREGIONS (80) ===
 Format: status | name | [lat, lng] | parent_region | grandparent_country
 
 --- Argentina ---
   [Mendoza]
-    ○ Luján de Cuyo / Valle de Uco[NEEDS COORDS]        wine
-    ○ Maipú                       [NEEDS COORDS]        wine
-    ✓ Uco Valley                  [NEEDS COORDS]        wine
+    ✓ Luján de Cuyo / Valle de Uco   [-33.1, -69.1]         
+    ✓ Maipú                          [-32.9, -68.4]         
+    ✓ Uco Valley                     [-33.8, -69.3]         
 
 --- Australia ---
-  [Barossa]
-    ○ Seppeltsfield               [NEEDS COORDS]        wine
   [Barossa Valley]
-    ○ Roennfeldt Road             [NEEDS COORDS]        wine
+    ✓ Roennfeldt Road                [-34.5, 139.0]         
+    ✓ Seppeltsfield                  [-34.5, 138.9]         
   [Margaret River]
-    ○ Wilyabrup                   [NEEDS COORDS]        wine
+    ✓ Wilyabrup                      [-33.8, 115.0]         
   [Multi-Regional]
-    ○ Tamar Valley / Adelaide Hills / Henty[NEEDS COORDS]        wine
+    ✓ Tamar Valley / Adelaide Hills / Henty [-41.3, 147.0]         
   [South Australia]
-    ○ Coonawarra / McLaren Vale / Barossa Valley / Adelaide Hills[NEEDS COORDS]        wine
-    ○ Riverland                   [NEEDS COORDS]        wine
+    ✓ Coonawarra / McLaren Vale / Barossa Valley / Adelaide Hills [-35.5, 138.8]         
+    ✓ Riverland                      [-34.2, 140.5]         
 
 --- Chile ---
   [Cachapoal Valley]
-    ○ Millahue Valley             [NEEDS COORDS]        wine
+    ✓ Millahue Valley                [-34.1, -71.0]         
   [Central Valley]
-    ○ Curicó Valley               [NEEDS COORDS]        wine
+    ✓ Curicó Valley                  [-35.0, -71.2]         
   [Maipo Valley]
-    ○ Puente Alto                 [NEEDS COORDS]        wine
+    ✓ Puente Alto                    [-33.6, -70.6]         
 
 --- China ---
   [Ningxia]
-    ○ Helan Mountain              [NEEDS COORDS]        wine
+    ✓ Helan Mountain                 [38.8, 105.8]          
 
 --- France ---
   [Bordeaux]
-    ○ Blaye                       [NEEDS COORDS]        wine
-    ○ Côtes de Bourg              [NEEDS COORDS]        wine
-    ○ Fronsac                     [NEEDS COORDS]        wine
-    ○ Graves                      [NEEDS COORDS]        wine
-    ✓ Margaux                     [NEEDS COORDS]        wine
-    ✓ Médoc                       [NEEDS COORDS]        wine
-    ✓ Pauillac                    [NEEDS COORDS]        wine
-    ○ Pessac-Léognan              [NEEDS COORDS]        wine
-    ✓ Pomerol                     [NEEDS COORDS]        wine
-    ○ Right Bank                  [NEEDS COORDS]        wine
-    ○ Saint-Estèphe               [NEEDS COORDS]        wine
-    ○ Saint-Julien                [NEEDS COORDS]        wine
-    ✓ Saint-Émilion               [NEEDS COORDS]        wine
+    ✓ Blaye                          [45.1, -0.7]           
+    ✓ Côtes de Bourg                 [45.0, -0.6]           
+    ✓ Fronsac                        [44.9, -0.3]           
+    ✓ Graves                         [44.7, -0.5]           
+    ✓ Margaux                        [45.1, -0.7]           
+    ✓ Médoc                          [45.2, -0.9]           
+    ✓ Pauillac                       [45.2, -0.8]           
+    ✓ Pessac-Léognan                 [44.7, -0.6]           
+    ✓ Pomerol                        [44.9, -0.2]           
+    ✓ Right Bank                     [44.9, -0.1]           
+    ✓ Saint-Estèphe                  [45.3, -0.8]           
+    ✓ Saint-Julien                   [45.2, -0.7]           
+    ✓ Saint-Émilion                  [44.9, -0.2]           
   [Burgundy]
-    ✓ Beaujolais                  [NEEDS COORDS]        wine
-    ○ Beaune                      [NEEDS COORDS]        wine
-    ✓ Chablis                     [NEEDS COORDS]        wine
-    ○ Chassagne-Montrachet        [NEEDS COORDS]        wine
-    ✓ Côte de Beaune              [NEEDS COORDS]        wine
-    ✓ Côte de Nuits               [NEEDS COORDS]        wine
-    ○ Gevrey-Chambertin           [NEEDS COORDS]        wine
-    ○ Pommard                     [NEEDS COORDS]        wine
-    ○ Pouilly-Fuissé              [NEEDS COORDS]        wine
-    ○ Volnay                      [NEEDS COORDS]        wine
+    ✓ Beaujolais                     [46.2, 4.6]            
+    ✓ Beaune                         [47.0, 4.8]            
+    ✓ Chablis                        [47.8, 3.8]            
+    ✓ Chassagne-Montrachet           [46.9, 4.7]            
+    ✓ Côte de Beaune                 [47.0, 4.8]            
+    ✓ Côte de Nuits                  [47.2, 5.0]            
+    ✓ Gevrey-Chambertin              [47.2, 4.9]            
+    ✓ Pommard                        [47.0, 4.8]            
+    ✓ Pouilly-Fuissé                 [46.3, 4.7]            
+    ✓ Volnay                         [47.0, 4.8]            
   [Champagne]
-    ○ Montagne de Reims           [NEEDS COORDS]        wine
+    ✓ Montagne de Reims              [49.2, 3.9]            
   [Languedoc]
-    ○ Minervois                   [NEEDS COORDS]        wine
-    ○ Pays d'Oc                   [NEEDS COORDS]        wine
-  [Loire]
-    ○ Anjou                       [NEEDS COORDS]        spirits
+    ✓ Minervois                      [43.3, 2.8]            
+    ✓ Pays d'Oc                      [43.5, 3.4]            
+  [Loire Valley]
+    ✓ Anjou                          [47.5, -0.6]           
   [Provence]
-    ○ Les Baux-de-Provence        [NEEDS COORDS]        wine
-  [Rhône]
-    ○ Southern Rhône              [NEEDS COORDS]        wine
+    ✓ Les Baux-de-Provence           [43.7, 4.8]            
+  [Rhône Valley]
+    ✓ Southern Rhône                 [44.1, 4.8]            
 
 --- Germany ---
   [Mosel]
-    ○ Ruwer                       [NEEDS COORDS]        wine
+    ✓ Ruwer                          [49.8, 6.7]            
   [Pfalz]
-    ○ Ruppertsberg                [NEEDS COORDS]        wine
+    ✓ Ruppertsberg                   [49.4, 8.2]            
 
 --- Italy ---
   [Abruzzo]
-    ○ Montepulciano d’Abruzzo     [NEEDS COORDS]        wine
+    ✓ Montepulciano d’Abruzzo        [42.4, 13.8]           
   [Campania]
-    ○ Benevento                   [NEEDS COORDS]        wine
+    ✓ Benevento                      [41.1, 14.8]           
   [Piedmont]
-    ○ Asti                        [NEEDS COORDS]        spirits
-    ○ Barbaresco                  [NEEDS COORDS]        wine
-    ○ Langhe                      [NEEDS COORDS]        wine
+    ✓ Asti                           [44.9, 8.2]            
+    ✓ Barbaresco                     [44.7, 8.1]            
+    ✓ Langhe                         [44.6, 8.0]            
   [Puglia]
-    ○ Manduria                    [NEEDS COORDS]        wine
-    ○ Taranto                     [NEEDS COORDS]        wine
+    ✓ Manduria                       [40.4, 17.6]           
+    ✓ Taranto                        [40.5, 17.2]           
   [Sicily]
-    ○ Etna                        [NEEDS COORDS]        wine
-    ○ Marsala                     [NEEDS COORDS]        wine
-    ○ Nero d'Avola                [NEEDS COORDS]        wine
+    ✓ Etna                           [37.8, 15.0]           
+    ✓ Marsala                        [37.8, 12.4]           
+    ✓ Nero d'Avola                   [37.0, 14.9]           
   [Tuscany]
-    ✓ Bolgheri                    [NEEDS COORDS]        wine
-    ○ Chianti                     [NEEDS COORDS]        wine
-    ○ Maremma                     [NEEDS COORDS]        wine
-    ○ Montalcino                  [NEEDS COORDS]        wine
-    ○ Vinci                       [NEEDS COORDS]        wine
+    ✓ Bolgheri                       [43.2, 10.6]           
+    ✓ Chianti                        [43.5, 11.3]           
+    ✓ Maremma                        [42.8, 11.1]           
+    ✓ Montalcino                     [43.1, 11.5]           
+    ✓ Vinci                          [43.8, 10.9]           
   [Veneto]
-    ○ Amarone                     [NEEDS COORDS]        wine
-    ○ Piave                       [NEEDS COORDS]        wine
-    ○ Prosecco                    [NEEDS COORDS]        wine
-    ○ Soave                       [NEEDS COORDS]        wine
-    ○ Valpolicella                [NEEDS COORDS]        wine
+    ✓ Amarone                        [45.5, 10.9]           
+    ✓ Piave                          [45.7, 12.3]           
+    ✓ Prosecco                       [45.9, 12.0]           
+    ✓ Soave                          [45.4, 11.2]           
+    ✓ Valpolicella                   [45.5, 10.9]           
 
 --- New Zealand ---
   [Marlborough]
-    ○ Waipara Valley              [NEEDS COORDS]        wine
+    ✓ Waipara Valley                 [-43.1, 172.8]         
 
 --- Spain ---
   [Others region]
-    ○ Alpera                      [NEEDS COORDS]        wine
-    ○ Cahors                      [NEEDS COORDS]        wine
+    ✓ Alpera                         [38.9, -1.2]           
+    ✓ Cahors                         [44.5, 1.4]            
   [Rioja]
-    ○ Rioja Alavesa               [NEEDS COORDS]        wine
-    ○ Rioja Alta                  [NEEDS COORDS]        wine
+    ✓ Rioja Alavesa                  [42.6, -2.6]           
+    ✓ Rioja Alta                     [42.5, -2.8]           
 
 --- USA ---
   [California]
-    ○ Central Coast               [NEEDS COORDS]        wine
-    ○ Mendocino County            [NEEDS COORDS]        wine
-    ○ Monterey County             [NEEDS COORDS]        wine
+    ✓ Central Coast                  [35.3, -120.7]         
+    ✓ Mendocino County               [39.2, -123.4]         
+    ✓ Monterey County                [36.2, -121.4]         
   [Napa]
-    ○ Calistoga                   [NEEDS COORDS]        wine
-    ○ Napa Valley                 [NEEDS COORDS]        wine
-    ○ Oakville                    [NEEDS COORDS]        wine
-    ○ Rutherford                  [NEEDS COORDS]        wine
-    ○ St. Helena                  [NEEDS COORDS]        wine
+    ✓ Calistoga                      [38.6, -122.6]         
+    ✓ Napa Valley                    [38.5, -122.3]         
+    ✓ Oakville                       [38.4, -122.4]         
+    ✓ Rutherford                     [38.5, -122.4]         
+    ✓ St. Helena                     [38.5, -122.5]         
   [Oregon]
-    ○ Columbia Gorge              [NEEDS COORDS]        wine
-  [Sonoma]
-    ○ Sonoma County               [NEEDS COORDS]        wine
+    ✓ Columbia Gorge                 [45.7, -121.6]         
   [Sonoma County]
-    ○ Alexander Valley            [NEEDS COORDS]        wine
+    ✓ Alexander Valley               [38.7, -122.9]         
+    ✓ Sonoma County                  [38.5, -122.8]         
 
 === APPELLATIONS (81) ===
-  ○ Aglianico del Beneventano               [NEEDS COORDS]        wine
-  ○ Alexander Valley AVA                    [NEEDS COORDS]        wine
-  ○ Almansa                                 [NEEDS COORDS]        wine
-  ○ Alsace                                  [NEEDS COORDS]        wine
-  ○ Altamira / Vista Flores / Gualtallary   [NEEDS COORDS]        wine
-  ○ Alto Adige                              [NEEDS COORDS]        wine
-  ✓ Amarone della Valpolicella              [NEEDS COORDS]        wine
-  ○ Anderson Valley                         [NEEDS COORDS]        wine
-  ✓ Barbaresco                              [NEEDS COORDS]        wine
-  ✓ Barolo                                  [NEEDS COORDS]        wine
-  ○ Barossa Valley                          [NEEDS COORDS]        wine
-  ○ Bolgheri                                [NEEDS COORDS]        wine
-  ○ Bordeaux                                [NEEDS COORDS]        wine
-  ○ Bordeaux AOC                            [NEEDS COORDS]        wine
-  ○ Bordeaux Supérieur                      [NEEDS COORDS]        wine
-  ○ Brauneberger Juffer                     [NEEDS COORDS]        wine
-  ✓ Brunello di Montalcino                  [NEEDS COORDS]        wine
-  ○ Cahors                                  [NEEDS COORDS]        wine
-  ○ California                              [NEEDS COORDS]        wine
-  ○ Chablis Premier Cru                     [NEEDS COORDS]        wine
-  ○ Chambolle-Musigny                       [NEEDS COORDS]        wine
-  ○ Chassagne-Montrachet                    [NEEDS COORDS]        wine
-  ○ Chianti Classico                        [NEEDS COORDS]        wine
-  ✓ Châteauneuf-du-Pape                     [NEEDS COORDS]        wine
-  ○ Columbia Gorge AVA                      [NEEDS COORDS]        wine
-  ○ DOC Rioja                               [NEEDS COORDS]        wine
-  ○ DOCa Rioja                              [NEEDS COORDS]        wine
-  ○ Douro DOC                               [NEEDS COORDS]        wine
-  ○ Franciacorta                            [NEEDS COORDS]        wine
-  ○ Gevrey-Chambertin                       [NEEDS COORDS]        wine
-  ○ Haut-Médoc                              [NEEDS COORDS]        wine
-  ○ Helan Mountain Wine Region              [NEEDS COORDS]        wine
-  ○ Hermitage                               [NEEDS COORDS]        wine
-  ○ Kabinett                                [NEEDS COORDS]        wine
-  ○ Lambrusco Emilia                        [NEEDS COORDS]        wine
-  ○ Lambrusco Grasparossa di Castelvetro    [NEEDS COORDS]        wine
-  ○ Langhe Nebbiolo                         [NEEDS COORDS]        wine
-  ○ Maipo Valley                            [NEEDS COORDS]        wine
-  ○ Margaux                                 [NEEDS COORDS]        wine
-  ○ Meursault                               [NEEDS COORDS]        wine
-  ○ Montepulciano d'Abruzzo DOC             [NEEDS COORDS]        wine
-  ○ Monterey County                         [NEEDS COORDS]        wine
-  ○ Morey-Saint-Denis                       [NEEDS COORDS]        wine
-  ○ Multi-Appellation California            [NEEDS COORDS]        wine
-  ✓ Napa Valley                             [NEEDS COORDS]        wine
-  ○ Nuits-Saint-Georges                     [NEEDS COORDS]        wine
-  ○ Orvieto Classico                        [NEEDS COORDS]        wine
-  ✓ Pauillac                                [NEEDS COORDS]        wine
-  ○ Pauillac AOC                            [NEEDS COORDS]        wine
-  ○ Pays d'Oc IGP                           [NEEDS COORDS]        wine
-  ○ Pays d'Oc PGI                           [NEEDS COORDS]        wine
-  ○ Pessac-Léognan AOC                      [NEEDS COORDS]        wine
-  ○ Piave DOC                               [NEEDS COORDS]        wine
-  ○ Pomerol                                 [NEEDS COORDS]        wine
-  ○ Primitivo di Manduria                   [NEEDS COORDS]        wine
-  ○ Primitivo di Manduria DOP               [NEEDS COORDS]        wine
-  ○ Pritchard Hill                          [NEEDS COORDS]        wine
-  ○ Prosecco                                [NEEDS COORDS]        spirits, wine
-  ○ Puligny-Montrachet                      [NEEDS COORDS]        wine
-  ○ Rioja                                   [NEEDS COORDS]        wine
-  ○ Rosso di Montepulciano                  [NEEDS COORDS]        wine
-  ○ Saint-Estèphe                           [NEEDS COORDS]        wine
-  ✓ Saint-Julien                            [NEEDS COORDS]        wine
-  ○ Saint-Émilion                           [NEEDS COORDS]        wine
-  ○ Saint-Émilion Grand Cru                 [NEEDS COORDS]        wine
-  ○ Salento                                 [NEEDS COORDS]        wine
-  ✓ Sancerre                                [NEEDS COORDS]        wine
-  ○ Santenay                                [NEEDS COORDS]        wine
-  ○ Sekt                                    [NEEDS COORDS]        wine
-  ○ Sicilia DOC                             [NEEDS COORDS]        wine
-  ○ Soave Classico                          [NEEDS COORDS]        wine
-  ○ Sonoma County                           [NEEDS COORDS]        wine
-  ○ Spätlese                                [NEEDS COORDS]        wine
-  ○ Stags Leap District                     [NEEDS COORDS]        wine
-  ○ Toscana IGT                             [NEEDS COORDS]        wine
-  ○ Tre Venezie I.G.P.                      [NEEDS COORDS]        wine
-  ○ Valpolicella Classico Superiore         [NEEDS COORDS]        wine
-  ✓ Vino Nobile di Montepulciano            [NEEDS COORDS]        wine
-  ○ Volnay AOC                              [NEEDS COORDS]        wine
-  ○ Vosne-Romanée                           [NEEDS COORDS]        wine
-  ○ Vouvray                                 [NEEDS COORDS]        wine
+  ✓ Aglianico del Beneventano                    [41.1, 14.8]           
+  ✓ Alexander Valley AVA                         [38.7, -122.9]         
+  ✓ Almansa                                      [38.9, -1.1]           
+  ✓ Alsace                                       [48.2, 7.3]            
+  ✓ Altamira / Vista Flores / Gualtallary        [-33.6, -69.2]         
+  ✓ Alto Adige                                   [46.7, 11.4]           
+  ✓ Amarone della Valpolicella                   [45.5, 10.9]           
+  ✓ Anderson Valley                              [39.1, -123.5]         
+  ✓ Barbaresco                                   [44.7, 8.1]            
+  ✓ Barolo                                       [44.6, 7.9]            
+  ✓ Barossa Valley                               [-34.5, 138.9]         
+  ✓ Bolgheri                                     [43.2, 10.6]           
+  ✓ Bordeaux                                     [44.8, -0.6]           
+  ✓ Bordeaux AOC                                 [44.8, -0.6]           
+  ✓ Bordeaux Supérieur                           [44.8, -0.6]           
+  ✓ Brauneberger Juffer                          [49.9, 6.9]            
+  ✓ Brunello di Montalcino                       [43.1, 11.5]           
+  ✓ Cahors                                       [44.5, 1.4]            
+  ✓ California                                   [37.3, -119.5]         
+  ✓ Chablis Premier Cru                          [47.8, 3.8]            
+  ✓ Chambolle-Musigny                            [47.2, 4.9]            
+  ✓ Chassagne-Montrachet                         [46.9, 4.7]            
+  ✓ Chianti Classico                             [43.5, 11.3]           
+  ✓ Châteauneuf-du-Pape                          [44.1, 4.8]            
+  ✓ Columbia Gorge AVA                           [45.7, -121.6]         
+  ✓ DOC Rioja                                    [42.5, -2.5]           
+  ✓ DOCa Rioja                                   [42.5, -2.5]           
+  ✓ Douro DOC                                    [41.2, -7.8]           
+  ✓ Franciacorta                                 [45.6, 10.0]           
+  ✓ Gevrey-Chambertin                            [47.2, 4.9]            
+  ✓ Haut-Médoc                                   [45.1, -0.8]           
+  ✓ Helan Mountain Wine Region                   [38.8, 105.8]          
+  ✓ Hermitage                                    [45.1, 4.8]            
+  ✓ Kabinett                                     [50.0, 8.0]            
+  ✓ Lambrusco Emilia                             [44.6, 11.0]           
+  ✓ Lambrusco Grasparossa di Castelvetro         [44.5, 11.0]           
+  ✓ Langhe Nebbiolo                              [44.6, 8.0]            
+  ✓ Maipo Valley                                 [-33.5, -70.6]         
+  ✓ Margaux                                      [45.1, -0.7]           
+  ✓ Meursault                                    [47.0, 4.8]            
+  ✓ Montepulciano d'Abruzzo DOC                  [42.4, 13.8]           
+  ✓ Monterey County                              [36.2, -121.4]         
+  ✓ Morey-Saint-Denis                            [47.2, 4.9]            
+  ✓ Multi-Appellation California                 [37.3, -119.5]         
+  ✓ Napa Valley                                  [38.5, -122.3]         
+  ✓ Nuits-Saint-Georges                          [47.1, 4.9]            
+  ✓ Orvieto Classico                             [42.7, 12.1]           
+  ✓ Pauillac                                     [45.2, -0.8]           
+  ✓ Pauillac AOC                                 [45.2, -0.8]           
+  ✓ Pays d'Oc IGP                                [43.5, 3.4]            
+  ✓ Pays d'Oc PGI                                [43.5, 3.4]            
+  ✓ Pessac-Léognan AOC                           [44.7, -0.6]           
+  ✓ Piave DOC                                    [45.7, 12.3]           
+  ✓ Pomerol                                      [44.9, -0.2]           
+  ✓ Primitivo di Manduria                        [40.4, 17.6]           
+  ✓ Primitivo di Manduria DOP                    [40.4, 17.6]           
+  ✓ Pritchard Hill                               [38.5, -122.3]         
+  ✓ Prosecco                                     [45.9, 12.0]           
+  ✓ Puligny-Montrachet                           [46.9, 4.7]            
+  ✓ Rioja                                        [42.5, -2.5]           
+  ✓ Rosso di Montepulciano                       [43.1, 11.8]           
+  ✓ Saint-Estèphe                                [45.3, -0.8]           
+  ✓ Saint-Julien                                 [45.2, -0.7]           
+  ✓ Saint-Émilion                                [44.9, -0.2]           
+  ✓ Saint-Émilion Grand Cru                      [44.9, -0.2]           
+  ✓ Salento                                      [40.4, 18.2]           
+  ✓ Sancerre                                     [47.3, 2.8]            
+  ✓ Santenay                                     [46.9, 4.7]            
+  ✓ Sekt                                         [50.0, 8.0]            
+  ✓ Sicilia DOC                                  [37.5, 14.0]           
+  ✓ Soave Classico                               [45.4, 11.2]           
+  ✓ Sonoma County                                [38.5, -122.8]         
+  ✓ Spätlese                                     [50.0, 8.0]            
+  ✓ Stags Leap District                          [38.4, -122.4]         
+  ✓ Toscana IGT                                  [43.3, 11.3]           
+  ✓ Tre Venezie I.G.P.                           [45.8, 12.0]           
+  ✓ Valpolicella Classico Superiore              [45.5, 10.9]           
+  ✓ Vino Nobile di Montepulciano                 [43.1, 11.8]           
+  ✓ Volnay AOC                                   [47.0, 4.8]            
+  ✓ Vosne-Romanée                                [47.2, 4.9]            
+  ✓ Vouvray                                      [47.4, 0.8]            

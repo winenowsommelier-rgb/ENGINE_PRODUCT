@@ -1,0 +1,6256 @@
+{
+  "_meta": {
+    "generated": "2026-04-12T18:02:31.274721+00:00",
+    "description": "Explore taxonomy for interactive map — countries, regions, subregions, appellations with product counts and price ranges",
+    "counts": {
+      "countries": 50,
+      "regions": 90,
+      "subregions": 80,
+      "appellations": 81
+    },
+    "productStats": {
+      "total": 4333,
+      "mappedToCountry": 3638,
+      "mappedToRegion": 190,
+      "mappedToSubregion": 26,
+      "excludedAccessories": 624
+    },
+    "nonGeographicEntries": [
+      "Multi-Appellation California",
+      "Multi-Regional",
+      "Others region",
+      "South Eastern Australia"
+    ]
+  },
+  "countries": [
+    {
+      "id": 35,
+      "name": "Argentina",
+      "slug": "argentina",
+      "latitude": -33,
+      "longitude": -68.5,
+      "scopes": [],
+      "counts": {
+        "wine": 64,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 64
+      },
+      "priceRange": {
+        "min": 595,
+        "max": 7719
+      }
+    },
+    {
+      "id": 34,
+      "name": "Australia",
+      "slug": "australia",
+      "latitude": -34.9,
+      "longitude": 138.6,
+      "scopes": [],
+      "counts": {
+        "wine": 335,
+        "spirits": 5,
+        "beer": 0,
+        "sake": 0,
+        "total": 340
+      },
+      "priceRange": {
+        "min": 145,
+        "max": 68819
+      }
+    },
+    {
+      "id": 3,
+      "name": "Austria",
+      "slug": "austria",
+      "latitude": 48.3,
+      "longitude": 15.5,
+      "scopes": [],
+      "counts": {
+        "wine": 12,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 12
+      },
+      "priceRange": {
+        "min": 889,
+        "max": 5009
+      }
+    },
+    {
+      "id": 26,
+      "name": "Barbados",
+      "slug": "barbados",
+      "latitude": 13.2,
+      "longitude": -59.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 11,
+        "beer": 0,
+        "sake": 0,
+        "total": 11
+      },
+      "priceRange": {
+        "min": 915,
+        "max": 3579
+      }
+    },
+    {
+      "id": 27,
+      "name": "Belgium",
+      "slug": "belgium",
+      "latitude": 50.8,
+      "longitude": 4.4,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 3,
+        "beer": 0,
+        "sake": 0,
+        "total": 3
+      },
+      "priceRange": {
+        "min": 2600,
+        "max": 3700
+      }
+    },
+    {
+      "id": 45,
+      "name": "Bermuda",
+      "slug": "bermuda",
+      "latitude": 32.3,
+      "longitude": -64.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 7,
+      "name": "Brazil",
+      "slug": "brazil",
+      "latitude": -15.8,
+      "longitude": -47.9,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 3,
+        "beer": 0,
+        "sake": 0,
+        "total": 3
+      },
+      "priceRange": {
+        "min": 1299,
+        "max": 3380
+      }
+    },
+    {
+      "id": 19,
+      "name": "Canada",
+      "slug": "canada",
+      "latitude": 45,
+      "longitude": -75.7,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 9,
+        "beer": 0,
+        "sake": 0,
+        "total": 9
+      },
+      "priceRange": {
+        "min": 655,
+        "max": 815
+      }
+    },
+    {
+      "id": 23,
+      "name": "Caribbean",
+      "slug": "caribbean",
+      "latitude": 17.5,
+      "longitude": -67.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 16,
+        "beer": 0,
+        "sake": 0,
+        "total": 16
+      },
+      "priceRange": {
+        "min": 419,
+        "max": 3600
+      }
+    },
+    {
+      "id": 17,
+      "name": "Chile",
+      "slug": "chile",
+      "latitude": -33.5,
+      "longitude": -70.6,
+      "scopes": [],
+      "counts": {
+        "wine": 189,
+        "spirits": 3,
+        "beer": 0,
+        "sake": 0,
+        "total": 192
+      },
+      "priceRange": {
+        "min": 349,
+        "max": 9955
+      }
+    },
+    {
+      "id": 39,
+      "name": "China",
+      "slug": "china",
+      "latitude": 35,
+      "longitude": 105,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 5,
+        "beer": 0,
+        "sake": 0,
+        "total": 5
+      },
+      "priceRange": {
+        "min": 1210,
+        "max": 3099
+      }
+    },
+    {
+      "id": 29,
+      "name": "Colombia",
+      "slug": "colombia",
+      "latitude": 4.7,
+      "longitude": -74.1,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 2,
+      "name": "Cuba",
+      "slug": "cuba",
+      "latitude": 23,
+      "longitude": -82.4,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 3,
+        "beer": 0,
+        "sake": 0,
+        "total": 3
+      },
+      "priceRange": {
+        "min": 825,
+        "max": 2099
+      }
+    },
+    {
+      "id": 41,
+      "name": "Czech Republic",
+      "slug": "czech-republic",
+      "latitude": 49.8,
+      "longitude": 15.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 6,
+        "beer": 0,
+        "sake": 0,
+        "total": 6
+      },
+      "priceRange": {
+        "min": 715,
+        "max": 1449
+      }
+    },
+    {
+      "id": 40,
+      "name": "Dominican Republic",
+      "slug": "dominican-republic",
+      "latitude": 18.5,
+      "longitude": -69.9,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 2,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 2059,
+        "max": 4050
+      }
+    },
+    {
+      "id": 8,
+      "name": "England",
+      "slug": "england",
+      "latitude": 51.5,
+      "longitude": -1.5,
+      "scopes": [],
+      "counts": {
+        "wine": 8,
+        "spirits": 70,
+        "beer": 4,
+        "sake": 0,
+        "total": 82
+      },
+      "priceRange": {
+        "min": 395,
+        "max": 3550
+      }
+    },
+    {
+      "id": 4,
+      "name": "France",
+      "slug": "france",
+      "latitude": 46.6,
+      "longitude": 2.2,
+      "scopes": [],
+      "counts": {
+        "wine": 789,
+        "spirits": 65,
+        "beer": 0,
+        "sake": 0,
+        "total": 854
+      },
+      "priceRange": {
+        "min": 295,
+        "max": 186609
+      }
+    },
+    {
+      "id": 33,
+      "name": "Georgia",
+      "slug": "georgia",
+      "latitude": 42,
+      "longitude": 43.5,
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 899,
+        "max": 1399
+      }
+    },
+    {
+      "id": 9,
+      "name": "Germany",
+      "slug": "germany",
+      "latitude": 50,
+      "longitude": 8.3,
+      "scopes": [],
+      "counts": {
+        "wine": 51,
+        "spirits": 3,
+        "beer": 9,
+        "sake": 0,
+        "total": 63
+      },
+      "priceRange": {
+        "min": 649,
+        "max": 5149
+      }
+    },
+    {
+      "id": 49,
+      "name": "Greece",
+      "slug": "greece",
+      "latitude": 38,
+      "longitude": 23.7,
+      "scopes": [],
+      "counts": {
+        "wine": 10,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 10
+      },
+      "priceRange": {
+        "min": 700,
+        "max": 4799
+      }
+    },
+    {
+      "id": 25,
+      "name": "Guatemala",
+      "slug": "guatemala",
+      "latitude": 14.6,
+      "longitude": -90.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 2,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 2999,
+        "max": 8799
+      }
+    },
+    {
+      "id": 51,
+      "name": "Hungary",
+      "slug": "hungary",
+      "latitude": 47.5,
+      "longitude": 19.1,
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 1579,
+        "max": 1579
+      }
+    },
+    {
+      "id": 46,
+      "name": "Indonesia",
+      "slug": "indonesia",
+      "latitude": -6.2,
+      "longitude": 106.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 2,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 899,
+        "max": 1009
+      }
+    },
+    {
+      "id": 16,
+      "name": "Ireland",
+      "slug": "ireland",
+      "latitude": 53.4,
+      "longitude": -8.2,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 28,
+        "beer": 0,
+        "sake": 0,
+        "total": 28
+      },
+      "priceRange": {
+        "min": 949,
+        "max": 8195
+      }
+    },
+    {
+      "id": 5,
+      "name": "Italy",
+      "slug": "italy",
+      "latitude": 42.5,
+      "longitude": 12.5,
+      "scopes": [],
+      "counts": {
+        "wine": 812,
+        "spirits": 63,
+        "beer": 0,
+        "sake": 0,
+        "total": 875
+      },
+      "priceRange": {
+        "min": 240,
+        "max": 88259
+      }
+    },
+    {
+      "id": 22,
+      "name": "Jamaica",
+      "slug": "jamaica",
+      "latitude": 18.1,
+      "longitude": -77.3,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 1,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 989,
+        "max": 989
+      }
+    },
+    {
+      "id": 14,
+      "name": "Japan",
+      "slug": "japan",
+      "latitude": 35.7,
+      "longitude": 139.7,
+      "scopes": [],
+      "counts": {
+        "wine": 5,
+        "spirits": 73,
+        "beer": 0,
+        "sake": 99,
+        "total": 177
+      },
+      "priceRange": {
+        "min": 235,
+        "max": 5899
+      }
+    },
+    {
+      "id": 28,
+      "name": "Martinique",
+      "slug": "martinique",
+      "latitude": 14.6,
+      "longitude": -61,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 4,
+        "beer": 0,
+        "sake": 0,
+        "total": 4
+      },
+      "priceRange": {
+        "min": 985,
+        "max": 3755
+      }
+    },
+    {
+      "id": 21,
+      "name": "Mexico",
+      "slug": "mexico",
+      "latitude": 23.6,
+      "longitude": -102.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 78,
+        "beer": 0,
+        "sake": 0,
+        "total": 78
+      },
+      "priceRange": {
+        "min": 729,
+        "max": 38222
+      }
+    },
+    {
+      "id": 18,
+      "name": "Netherlands",
+      "slug": "netherlands",
+      "latitude": 52.1,
+      "longitude": 5.3,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 17,
+        "beer": 0,
+        "sake": 0,
+        "total": 17
+      },
+      "priceRange": {
+        "min": 695,
+        "max": 995
+      }
+    },
+    {
+      "id": 37,
+      "name": "New Zealand",
+      "slug": "new-zealand",
+      "latitude": -41.3,
+      "longitude": 174.8,
+      "scopes": [],
+      "counts": {
+        "wine": 87,
+        "spirits": 8,
+        "beer": 0,
+        "sake": 0,
+        "total": 95
+      },
+      "priceRange": {
+        "min": 599,
+        "max": 4019
+      }
+    },
+    {
+      "id": 44,
+      "name": "Nicaragua",
+      "slug": "nicaragua",
+      "latitude": 12.1,
+      "longitude": -86.3,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 15,
+      "name": "Norway",
+      "slug": "norway",
+      "latitude": 59.9,
+      "longitude": 10.7,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 3,
+        "beer": 0,
+        "sake": 0,
+        "total": 3
+      },
+      "priceRange": {
+        "min": 2545,
+        "max": 2745
+      }
+    },
+    {
+      "id": 42,
+      "name": "Peru",
+      "slug": "peru",
+      "latitude": -12,
+      "longitude": -77,
+      "scopes": [],
+      "counts": {
+        "wine": 8,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 8
+      },
+      "priceRange": {
+        "min": 735,
+        "max": 2275
+      }
+    },
+    {
+      "id": 47,
+      "name": "Poland",
+      "slug": "poland",
+      "latitude": 52.2,
+      "longitude": 21,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 1,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 2039,
+        "max": 2039
+      }
+    },
+    {
+      "id": 32,
+      "name": "Portugal",
+      "slug": "portugal",
+      "latitude": 41.2,
+      "longitude": -8.6,
+      "scopes": [],
+      "counts": {
+        "wine": 14,
+        "spirits": 1,
+        "beer": 0,
+        "sake": 0,
+        "total": 15
+      },
+      "priceRange": {
+        "min": 739,
+        "max": 6969
+      }
+    },
+    {
+      "id": 30,
+      "name": "Russia",
+      "slug": "russia",
+      "latitude": 55.8,
+      "longitude": 37.6,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 20,
+        "beer": 0,
+        "sake": 0,
+        "total": 20
+      },
+      "priceRange": {
+        "min": 319,
+        "max": 12599
+      }
+    },
+    {
+      "id": 10,
+      "name": "Scotland",
+      "slug": "scotland",
+      "latitude": 56.5,
+      "longitude": -4,
+      "scopes": [],
+      "counts": {
+        "wine": 13,
+        "spirits": 173,
+        "beer": 0,
+        "sake": 0,
+        "total": 186
+      },
+      "priceRange": {
+        "min": 219,
+        "max": 161999
+      }
+    },
+    {
+      "id": 50,
+      "name": "Slovenia",
+      "slug": "slovenia",
+      "latitude": 46.1,
+      "longitude": 14.8,
+      "scopes": [],
+      "counts": {
+        "wine": 4,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 4
+      },
+      "priceRange": {
+        "min": 1899,
+        "max": 4899
+      }
+    },
+    {
+      "id": 36,
+      "name": "South Africa",
+      "slug": "south-africa",
+      "latitude": -33.9,
+      "longitude": 18.9,
+      "scopes": [],
+      "counts": {
+        "wine": 36,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 36
+      },
+      "priceRange": {
+        "min": 299,
+        "max": 2995
+      }
+    },
+    {
+      "id": 13,
+      "name": "Spain",
+      "slug": "spain",
+      "latitude": 39.5,
+      "longitude": -3.7,
+      "scopes": [],
+      "counts": {
+        "wine": 105,
+        "spirits": 8,
+        "beer": 0,
+        "sake": 0,
+        "total": 113
+      },
+      "priceRange": {
+        "min": 249,
+        "max": 9600
+      }
+    },
+    {
+      "id": 31,
+      "name": "Sweden",
+      "slug": "sweden",
+      "latitude": 59.3,
+      "longitude": 18.1,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 9,
+        "beer": 0,
+        "sake": 0,
+        "total": 9
+      },
+      "priceRange": {
+        "min": 775,
+        "max": 4595
+      }
+    },
+    {
+      "id": 48,
+      "name": "Taiwan",
+      "slug": "taiwan",
+      "latitude": 25,
+      "longitude": 121.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 6,
+        "beer": 0,
+        "sake": 0,
+        "total": 6
+      },
+      "priceRange": {
+        "min": 2659,
+        "max": 10979
+      }
+    },
+    {
+      "id": 6,
+      "name": "Thailand",
+      "slug": "thailand",
+      "latitude": 14.5,
+      "longitude": 100.5,
+      "scopes": [],
+      "counts": {
+        "wine": 33,
+        "spirits": 38,
+        "beer": 2,
+        "sake": 0,
+        "total": 73
+      },
+      "priceRange": {
+        "min": 459,
+        "max": 3239
+      }
+    },
+    {
+      "id": 20,
+      "name": "Trinidad",
+      "slug": "trinidad",
+      "latitude": 10.5,
+      "longitude": -61.3,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 6,
+        "beer": 0,
+        "sake": 0,
+        "total": 6
+      },
+      "priceRange": {
+        "min": 1159,
+        "max": 2169
+      }
+    },
+    {
+      "id": 11,
+      "name": "UK",
+      "slug": "uk",
+      "latitude": 55.7,
+      "longitude": -3.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 1,
+      "name": "USA",
+      "slug": "usa",
+      "latitude": 38.5,
+      "longitude": -121.5,
+      "scopes": [],
+      "counts": {
+        "wine": 142,
+        "spirits": 40,
+        "beer": 0,
+        "sake": 0,
+        "total": 182
+      },
+      "priceRange": {
+        "min": 550,
+        "max": 21189
+      }
+    },
+    {
+      "id": 38,
+      "name": "Uruguay",
+      "slug": "uruguay",
+      "latitude": -34.9,
+      "longitude": -56.2,
+      "scopes": [],
+      "counts": {
+        "wine": 18,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 18
+      },
+      "priceRange": {
+        "min": 635,
+        "max": 2655
+      }
+    },
+    {
+      "id": 24,
+      "name": "Venezuela",
+      "slug": "venezuela",
+      "latitude": 10.5,
+      "longitude": -67,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 1,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 725,
+        "max": 725
+      }
+    },
+    {
+      "id": 43,
+      "name": "Vietnam",
+      "slug": "vietnam",
+      "latitude": 16,
+      "longitude": 108,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    }
+  ],
+  "regions": [
+    {
+      "id": 98,
+      "name": "Abruzzo",
+      "slug": "abruzzo",
+      "latitude": 42.4,
+      "longitude": 13.4,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 8,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 8
+      },
+      "priceRange": {
+        "min": 705,
+        "max": 1490
+      }
+    },
+    {
+      "id": 72,
+      "name": "Aconcagua Valley",
+      "slug": "aconcagua-valley",
+      "latitude": -32.8,
+      "longitude": -70.7,
+      "parentId": 17,
+      "parentSlug": "chile",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 131,
+      "name": "Adelaide Hills",
+      "slug": "adelaide-hills",
+      "latitude": -35.0,
+      "longitude": 138.7,
+      "parentId": 34,
+      "parentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 1605,
+        "max": 1605
+      }
+    },
+    {
+      "id": 54,
+      "name": "Alsace",
+      "slug": "alsace",
+      "latitude": 48.2,
+      "longitude": 7.3,
+      "parentId": 4,
+      "parentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 1249,
+        "max": 2819
+      }
+    },
+    {
+      "id": 913,
+      "name": "Armagnac",
+      "slug": "armagnac",
+      "latitude": 43.9,
+      "longitude": -0.1,
+      "parentId": 4,
+      "parentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 95,
+      "name": "Barossa Valley",
+      "slug": "barossa-valley",
+      "latitude": -34.5,
+      "longitude": 138.9,
+      "parentId": 34,
+      "parentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 58,
+      "name": "Bordeaux",
+      "slug": "bordeaux",
+      "latitude": 44.84,
+      "longitude": -0.58,
+      "parentId": 4,
+      "parentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 13,
+        "spirits": 2,
+        "beer": 0,
+        "sake": 0,
+        "total": 15
+      },
+      "priceRange": {
+        "min": 995,
+        "max": 4159
+      }
+    },
+    {
+      "id": 77,
+      "name": "Burgundy",
+      "slug": "burgundy",
+      "latitude": 47,
+      "longitude": 4.8,
+      "parentId": 4,
+      "parentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 13,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 13
+      },
+      "priceRange": {
+        "min": 1269,
+        "max": 36919
+      }
+    },
+    {
+      "id": 128,
+      "name": "Cachapoal Valley",
+      "slug": "cachapoal-valley",
+      "latitude": -34.2,
+      "longitude": -70.9,
+      "parentId": 17,
+      "parentSlug": "chile",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 66,
+      "name": "California",
+      "slug": "california",
+      "latitude": 37.3,
+      "longitude": -119.5,
+      "parentId": 1,
+      "parentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 12,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 12
+      },
+      "priceRange": {
+        "min": 599,
+        "max": 1759
+      }
+    },
+    {
+      "id": 86,
+      "name": "Campania",
+      "slug": "campania",
+      "latitude": 40.8,
+      "longitude": 14.3,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 895,
+        "max": 995
+      }
+    },
+    {
+      "id": 907,
+      "name": "Campbeltown",
+      "slug": "campbeltown",
+      "latitude": 55.4,
+      "longitude": -5.6,
+      "parentId": 10,
+      "parentSlug": "scotland",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 108,
+      "name": "Casablanca Valley",
+      "slug": "casablanca-valley",
+      "latitude": -33.3,
+      "longitude": -71.4,
+      "parentId": 17,
+      "parentSlug": "chile",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 105,
+      "name": "Catalunya",
+      "slug": "catalunya",
+      "latitude": 41.4,
+      "longitude": 1.8,
+      "parentId": 13,
+      "parentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 130,
+      "name": "Central Otago",
+      "slug": "central-otago",
+      "latitude": -45,
+      "longitude": 169.2,
+      "parentId": 37,
+      "parentSlug": "new-zealand",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 79,
+      "name": "Central Valley",
+      "slug": "central-valley",
+      "latitude": -34,
+      "longitude": -71.2,
+      "parentId": 17,
+      "parentSlug": "chile",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 52,
+      "name": "Champagne",
+      "slug": "champagne",
+      "latitude": 49,
+      "longitude": 3.9,
+      "parentId": 4,
+      "parentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 5099,
+        "max": 15545
+      }
+    },
+    {
+      "id": 89,
+      "name": "Clare Valley",
+      "slug": "clare-valley",
+      "latitude": -33.8,
+      "longitude": 138.7,
+      "parentId": 34,
+      "parentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 1789,
+        "max": 2249
+      }
+    },
+    {
+      "id": 912,
+      "name": "Cognac",
+      "slug": "cognac",
+      "latitude": 45.7,
+      "longitude": -0.3,
+      "parentId": 4,
+      "parentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 87,
+      "name": "Colchagua Valley",
+      "slug": "colchagua-valley",
+      "latitude": -34.6,
+      "longitude": -71.2,
+      "parentId": 17,
+      "parentSlug": "chile",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 122,
+      "name": "Coonawarra",
+      "slug": "coonawarra",
+      "latitude": -37.3,
+      "longitude": 140.8,
+      "parentId": 34,
+      "parentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 1495,
+        "max": 1495
+      }
+    },
+    {
+      "id": 120,
+      "name": "Curico Valley",
+      "slug": "curico-valley",
+      "latitude": -35.0,
+      "longitude": -71.2,
+      "parentId": 17,
+      "parentSlug": "chile",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 60,
+      "name": "Douro",
+      "slug": "douro",
+      "latitude": 41.2,
+      "longitude": -8.2,
+      "parentId": 32,
+      "parentSlug": "portugal",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 134,
+      "name": "Dão",
+      "slug": "d-o",
+      "latitude": 40.5,
+      "longitude": -7.9,
+      "parentId": 32,
+      "parentSlug": "portugal",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 92,
+      "name": "Emilia-Romagna",
+      "slug": "emilia-romagna",
+      "latitude": 44.5,
+      "longitude": 11.3,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 995,
+        "max": 995
+      }
+    },
+    {
+      "id": 100,
+      "name": "Friuli-Venezia Giulia",
+      "slug": "friuli-venezia-giulia",
+      "latitude": 46.1,
+      "longitude": 13.2,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 959,
+        "max": 959
+      }
+    },
+    {
+      "id": 117,
+      "name": "Hawke's Bay",
+      "slug": "hawke-s-bay",
+      "latitude": -39.6,
+      "longitude": 176.9,
+      "parentId": 37,
+      "parentSlug": "new-zealand",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 1859,
+        "max": 1859
+      }
+    },
+    {
+      "id": 905,
+      "name": "Highland",
+      "slug": "highland",
+      "latitude": 57,
+      "longitude": -5,
+      "parentId": 10,
+      "parentSlug": "scotland",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 2,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 2585,
+        "max": 4845
+      }
+    },
+    {
+      "id": 121,
+      "name": "Hunter",
+      "slug": "hunter",
+      "latitude": -32.8,
+      "longitude": 151.3,
+      "parentId": 34,
+      "parentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 903,
+      "name": "Islay",
+      "slug": "islay",
+      "latitude": 55.8,
+      "longitude": -6.2,
+      "parentId": 10,
+      "parentSlug": "scotland",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 910,
+      "name": "Jalisco",
+      "slug": "jalisco",
+      "latitude": 20.7,
+      "longitude": -103.3,
+      "parentId": 21,
+      "parentSlug": "mexico",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 59,
+      "name": "Jerez",
+      "slug": "jerez",
+      "latitude": 36.7,
+      "longitude": -6.1,
+      "parentId": 13,
+      "parentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 919,
+      "name": "Kamptal",
+      "slug": "kamptal",
+      "latitude": 48.5,
+      "longitude": 15.7,
+      "parentId": 3,
+      "parentSlug": "austria",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 908,
+      "name": "Kentucky",
+      "slug": "kentucky",
+      "latitude": 38.2,
+      "longitude": -85.7,
+      "parentId": 1,
+      "parentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 3,
+        "beer": 0,
+        "sake": 0,
+        "total": 3
+      },
+      "priceRange": {
+        "min": 1519,
+        "max": 3789
+      }
+    },
+    {
+      "id": 93,
+      "name": "La Mancha",
+      "slug": "la-mancha",
+      "latitude": 39.0,
+      "longitude": -3.0,
+      "parentId": 13,
+      "parentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 63,
+      "name": "Languedoc",
+      "slug": "languedoc",
+      "latitude": 43.3,
+      "longitude": 3.3,
+      "parentId": 4,
+      "parentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 7,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 7
+      },
+      "priceRange": {
+        "min": 825,
+        "max": 1499
+      }
+    },
+    {
+      "id": 126,
+      "name": "Lazio",
+      "slug": "lazio",
+      "latitude": 41.9,
+      "longitude": 12.5,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 5,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 5
+      },
+      "priceRange": {
+        "min": 649,
+        "max": 3265
+      }
+    },
+    {
+      "id": 53,
+      "name": "Loire Valley",
+      "slug": "loire-valley",
+      "latitude": 47.3,
+      "longitude": -0.3,
+      "parentId": 4,
+      "parentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 1059,
+        "max": 2529
+      }
+    },
+    {
+      "id": 132,
+      "name": "Lombardy",
+      "slug": "lombardy",
+      "latitude": 45.5,
+      "longitude": 9.9,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 906,
+      "name": "Lowland",
+      "slug": "lowland",
+      "latitude": 55.9,
+      "longitude": -3.2,
+      "parentId": 10,
+      "parentSlug": "scotland",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 115,
+      "name": "Maipo Valley",
+      "slug": "maipo-valley",
+      "latitude": -33.5,
+      "longitude": -70.6,
+      "parentId": 17,
+      "parentSlug": "chile",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 9955,
+        "max": 9955
+      }
+    },
+    {
+      "id": 119,
+      "name": "Marche",
+      "slug": "marche",
+      "latitude": 43.6,
+      "longitude": 13.5,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 1899,
+        "max": 2699
+      }
+    },
+    {
+      "id": 90,
+      "name": "Margaret River",
+      "slug": "margaret-river",
+      "latitude": -33.8,
+      "longitude": 115,
+      "parentId": 34,
+      "parentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 989,
+        "max": 989
+      }
+    },
+    {
+      "id": 82,
+      "name": "Marlborough",
+      "slug": "marlborough",
+      "latitude": -41.5,
+      "longitude": 174,
+      "parentId": 37,
+      "parentSlug": "new-zealand",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 83,
+      "name": "Martinborough",
+      "slug": "martinborough",
+      "latitude": -41.2,
+      "longitude": 175.5,
+      "parentId": 37,
+      "parentSlug": "new-zealand",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 999,
+        "max": 2569
+      }
+    },
+    {
+      "id": 84,
+      "name": "Maule",
+      "slug": "maule",
+      "latitude": -35.5,
+      "longitude": -71.7,
+      "parentId": 17,
+      "parentSlug": "chile",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 124,
+      "name": "McLaren Vale",
+      "slug": "mclaren-vale",
+      "latitude": -35.2,
+      "longitude": 138.5,
+      "parentId": 34,
+      "parentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 71,
+      "name": "Mendoza",
+      "slug": "mendoza",
+      "latitude": -33,
+      "longitude": -68.5,
+      "parentId": 35,
+      "parentSlug": "argentina",
+      "scopes": [],
+      "counts": {
+        "wine": 7,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 7
+      },
+      "priceRange": {
+        "min": 749,
+        "max": 6449
+      }
+    },
+    {
+      "id": 109,
+      "name": "Mosel",
+      "slug": "mosel",
+      "latitude": 49.9,
+      "longitude": 7.6,
+      "parentId": 9,
+      "parentSlug": "germany",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 76,
+      "name": "Multi-Regional",
+      "slug": "multi-regional",
+      "latitude": -34.0,
+      "longitude": 140.0,
+      "parentId": 34,
+      "parentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      },
+      "nonGeographic": true
+    },
+    {
+      "id": 67,
+      "name": "Napa",
+      "slug": "napa",
+      "latitude": 38.5,
+      "longitude": -122.3,
+      "parentId": 1,
+      "parentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 10,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 10
+      },
+      "priceRange": {
+        "min": 4559,
+        "max": 17879
+      }
+    },
+    {
+      "id": 99,
+      "name": "Ningxia",
+      "slug": "ningxia",
+      "latitude": 38.5,
+      "longitude": 106.3,
+      "parentId": 39,
+      "parentSlug": "china",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 911,
+      "name": "Oaxaca",
+      "slug": "oaxaca",
+      "latitude": 16.9,
+      "longitude": -96.7,
+      "parentId": 21,
+      "parentSlug": "mexico",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 125,
+      "name": "Oregon",
+      "slug": "oregon",
+      "latitude": 45.5,
+      "longitude": -122.7,
+      "parentId": 1,
+      "parentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 62,
+      "name": "Others region",
+      "slug": "others-region",
+      "latitude": 40.0,
+      "longitude": -3.7,
+      "parentId": 13,
+      "parentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      },
+      "nonGeographic": true
+    },
+    {
+      "id": 118,
+      "name": "Paarl",
+      "slug": "paarl",
+      "latitude": -33.9,
+      "longitude": 18.6,
+      "parentId": 36,
+      "parentSlug": "south-africa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 916,
+      "name": "Paso Robles",
+      "slug": "paso-robles",
+      "latitude": 35.6,
+      "longitude": -120.7,
+      "parentId": 1,
+      "parentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 4809,
+        "max": 4809
+      }
+    },
+    {
+      "id": 112,
+      "name": "Pfalz",
+      "slug": "pfalz",
+      "latitude": 49.5,
+      "longitude": 8.2,
+      "parentId": 9,
+      "parentSlug": "germany",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 56,
+      "name": "Piedmont",
+      "slug": "piedmont",
+      "latitude": 44.7,
+      "longitude": 8,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 12,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 12
+      },
+      "priceRange": {
+        "min": 645,
+        "max": 5299
+      }
+    },
+    {
+      "id": 116,
+      "name": "Priorat",
+      "slug": "priorat",
+      "latitude": 41.2,
+      "longitude": 0.8,
+      "parentId": 13,
+      "parentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 4019,
+        "max": 4019
+      }
+    },
+    {
+      "id": 57,
+      "name": "Provence",
+      "slug": "provence",
+      "latitude": 43.7,
+      "longitude": 6.5,
+      "parentId": 4,
+      "parentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 1,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 1349,
+        "max": 1349
+      }
+    },
+    {
+      "id": 85,
+      "name": "Puglia",
+      "slug": "puglia",
+      "latitude": 41.1,
+      "longitude": 16.9,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 3,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 3
+      },
+      "priceRange": {
+        "min": 1135,
+        "max": 1585
+      }
+    },
+    {
+      "id": 111,
+      "name": "Rheingau",
+      "slug": "rheingau",
+      "latitude": 50,
+      "longitude": 8,
+      "parentId": 9,
+      "parentSlug": "germany",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 845,
+        "max": 845
+      }
+    },
+    {
+      "id": 101,
+      "name": "Rheinhessen",
+      "slug": "rheinhessen",
+      "latitude": 49.8,
+      "longitude": 8.3,
+      "parentId": 9,
+      "parentSlug": "germany",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 689,
+        "max": 689
+      }
+    },
+    {
+      "id": 102,
+      "name": "Rhône Valley",
+      "slug": "rh-ne-valley",
+      "latitude": 45.9,
+      "longitude": 7,
+      "parentId": 4,
+      "parentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 3,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 3
+      },
+      "priceRange": {
+        "min": 1045,
+        "max": 2025
+      }
+    },
+    {
+      "id": 74,
+      "name": "Ribera del Duero",
+      "slug": "ribera-del-duero",
+      "latitude": 41.7,
+      "longitude": -3.5,
+      "parentId": 13,
+      "parentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 9,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 9
+      },
+      "priceRange": {
+        "min": 769,
+        "max": 8940
+      }
+    },
+    {
+      "id": 73,
+      "name": "Rioja",
+      "slug": "rioja",
+      "latitude": 42.5,
+      "longitude": -2.5,
+      "parentId": 13,
+      "parentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 895,
+        "max": 945
+      }
+    },
+    {
+      "id": 110,
+      "name": "Rueda",
+      "slug": "rueda",
+      "latitude": 41.4,
+      "longitude": -4.9,
+      "parentId": 13,
+      "parentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 129,
+      "name": "Rías Baixas",
+      "slug": "r-as-baixas",
+      "latitude": 42.2,
+      "longitude": -8.8,
+      "parentId": 13,
+      "parentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 91,
+      "name": "Sardinia",
+      "slug": "sardinia",
+      "latitude": 40.1,
+      "longitude": 9.1,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 1235,
+        "max": 1235
+      }
+    },
+    {
+      "id": 914,
+      "name": "Sauternes",
+      "slug": "sauternes",
+      "latitude": 44.6,
+      "longitude": -0.3,
+      "parentId": 4,
+      "parentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 55,
+      "name": "Sicily",
+      "slug": "sicily",
+      "latitude": 37.8,
+      "longitude": 15,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 10,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 10
+      },
+      "priceRange": {
+        "min": 659,
+        "max": 2105
+      }
+    },
+    {
+      "id": 81,
+      "name": "Sonoma County",
+      "slug": "sonoma-county",
+      "latitude": 38.4,
+      "longitude": -122.7,
+      "parentId": 1,
+      "parentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 65,
+      "name": "South Australia",
+      "slug": "south-australia",
+      "latitude": -35,
+      "longitude": 138.5,
+      "parentId": 34,
+      "parentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 69,
+      "name": "South Eastern Australia",
+      "slug": "south-eastern-australia",
+      "latitude": -36.0,
+      "longitude": 145.0,
+      "parentId": 34,
+      "parentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      },
+      "nonGeographic": true
+    },
+    {
+      "id": 917,
+      "name": "Swartland",
+      "slug": "swartland",
+      "latitude": -33.4,
+      "longitude": 18.7,
+      "parentId": 36,
+      "parentSlug": "south-africa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 909,
+      "name": "Tennessee",
+      "slug": "tennessee",
+      "latitude": 35.8,
+      "longitude": -86.7,
+      "parentId": 1,
+      "parentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 920,
+      "name": "Tokaj",
+      "slug": "tokaj",
+      "latitude": 48.3,
+      "longitude": 21.5,
+      "parentId": 51,
+      "parentSlug": "hungary",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 123,
+      "name": "Toro",
+      "slug": "toro",
+      "latitude": 41.5,
+      "longitude": -5.4,
+      "parentId": 13,
+      "parentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 96,
+      "name": "Trentino-Alto Adige",
+      "slug": "trentino-alto-adige",
+      "latitude": 46.4,
+      "longitude": 11.3,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 68,
+      "name": "Tuscany",
+      "slug": "tuscany",
+      "latitude": 43.3,
+      "longitude": 11.3,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 18,
+        "spirits": 2,
+        "beer": 0,
+        "sake": 0,
+        "total": 20
+      },
+      "priceRange": {
+        "min": 849,
+        "max": 12169
+      }
+    },
+    {
+      "id": 133,
+      "name": "Umbria",
+      "slug": "umbria",
+      "latitude": 42.7,
+      "longitude": 12.6,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 2255,
+        "max": 2255
+      }
+    },
+    {
+      "id": 104,
+      "name": "Valencia",
+      "slug": "valencia",
+      "latitude": 39.5,
+      "longitude": -0.4,
+      "parentId": 13,
+      "parentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 61,
+      "name": "Veneto",
+      "slug": "veneto",
+      "latitude": 45.4,
+      "longitude": 12.3,
+      "parentId": 5,
+      "parentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 13,
+        "spirits": 1,
+        "beer": 0,
+        "sake": 0,
+        "total": 14
+      },
+      "priceRange": {
+        "min": 559,
+        "max": 1699
+      }
+    },
+    {
+      "id": 103,
+      "name": "Victoria",
+      "slug": "victoria",
+      "latitude": -37.0,
+      "longitude": 145.0,
+      "parentId": 34,
+      "parentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 918,
+      "name": "Wachau",
+      "slug": "wachau",
+      "latitude": 48.4,
+      "longitude": 15.4,
+      "parentId": 3,
+      "parentSlug": "austria",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 97,
+      "name": "Washington",
+      "slug": "washington",
+      "latitude": 46.8,
+      "longitude": -120.5,
+      "parentId": 1,
+      "parentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 829,
+        "max": 829
+      }
+    },
+    {
+      "id": 75,
+      "name": "Western Cape",
+      "slug": "western-cape",
+      "latitude": -33.9,
+      "longitude": 18.4,
+      "parentId": 36,
+      "parentSlug": "south-africa",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 700,
+        "max": 700
+      }
+    },
+    {
+      "id": 915,
+      "name": "Willamette Valley",
+      "slug": "willamette-valley",
+      "latitude": 45.3,
+      "longitude": -123.1,
+      "parentId": 1,
+      "parentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 113,
+      "name": "Yarra",
+      "slug": "yarra",
+      "latitude": -37.7,
+      "longitude": 145.5,
+      "parentId": 34,
+      "parentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 915,
+        "max": 945
+      }
+    }
+  ],
+  "subregions": [
+    {
+      "id": 155,
+      "name": "Alexander Valley",
+      "slug": "alexander-valley",
+      "latitude": 38.7,
+      "longitude": -122.9,
+      "parentId": 81,
+      "parentSlug": "sonoma-county",
+      "grandparentId": 1,
+      "grandparentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 209,
+      "name": "Alpera",
+      "slug": "alpera",
+      "latitude": 38.9,
+      "longitude": -1.2,
+      "parentId": 62,
+      "parentSlug": "others-region",
+      "grandparentId": 13,
+      "grandparentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 147,
+      "name": "Amarone",
+      "slug": "amarone",
+      "latitude": 45.5,
+      "longitude": 10.9,
+      "parentId": 61,
+      "parentSlug": "veneto",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 182,
+      "name": "Anjou",
+      "slug": "anjou",
+      "latitude": 47.5,
+      "longitude": -0.6,
+      "parentId": 53,
+      "parentSlug": "loire-valley",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 135,
+      "name": "Asti",
+      "slug": "asti",
+      "latitude": 44.9,
+      "longitude": 8.2,
+      "parentId": 56,
+      "parentSlug": "piedmont",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 200,
+      "name": "Barbaresco",
+      "slug": "barbaresco",
+      "latitude": 44.7,
+      "longitude": 8.1,
+      "parentId": 56,
+      "parentSlug": "piedmont",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 188,
+      "name": "Beaujolais",
+      "slug": "beaujolais",
+      "latitude": 46.2,
+      "longitude": 4.6,
+      "parentId": 77,
+      "parentSlug": "burgundy",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 193,
+      "name": "Beaune",
+      "slug": "beaune",
+      "latitude": 47.0,
+      "longitude": 4.8,
+      "parentId": 77,
+      "parentSlug": "burgundy",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 158,
+      "name": "Benevento",
+      "slug": "benevento",
+      "latitude": 41.1,
+      "longitude": 14.8,
+      "parentId": 86,
+      "parentSlug": "campania",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 170,
+      "name": "Blaye",
+      "slug": "blaye",
+      "latitude": 45.1,
+      "longitude": -0.7,
+      "parentId": 58,
+      "parentSlug": "bordeaux",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 211,
+      "name": "Bolgheri",
+      "slug": "bolgheri",
+      "latitude": 43.2,
+      "longitude": 10.6,
+      "parentId": 68,
+      "parentSlug": "tuscany",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 1690,
+        "max": 1690
+      }
+    },
+    {
+      "id": 161,
+      "name": "Cahors",
+      "slug": "cahors",
+      "latitude": 44.5,
+      "longitude": 1.4,
+      "parentId": 62,
+      "parentSlug": "others-region",
+      "grandparentId": 13,
+      "grandparentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 177,
+      "name": "Calistoga",
+      "slug": "calistoga",
+      "latitude": 38.6,
+      "longitude": -122.6,
+      "parentId": 67,
+      "parentSlug": "napa",
+      "grandparentId": 1,
+      "grandparentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 141,
+      "name": "Central Coast",
+      "slug": "central-coast",
+      "latitude": 35.3,
+      "longitude": -120.7,
+      "parentId": 66,
+      "parentSlug": "california",
+      "grandparentId": 1,
+      "grandparentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 180,
+      "name": "Chablis",
+      "slug": "chablis",
+      "latitude": 47.8,
+      "longitude": 3.8,
+      "parentId": 77,
+      "parentSlug": "burgundy",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 208,
+      "name": "Chassagne-Montrachet",
+      "slug": "chassagne-montrachet",
+      "latitude": 46.9,
+      "longitude": 4.7,
+      "parentId": 77,
+      "parentSlug": "burgundy",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 145,
+      "name": "Chianti",
+      "slug": "chianti",
+      "latitude": 43.5,
+      "longitude": 11.3,
+      "parentId": 68,
+      "parentSlug": "tuscany",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 10,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 10
+      },
+      "priceRange": {
+        "min": 849,
+        "max": 12169
+      }
+    },
+    {
+      "id": 201,
+      "name": "Columbia Gorge",
+      "slug": "columbia-gorge",
+      "latitude": 45.7,
+      "longitude": -121.6,
+      "parentId": 125,
+      "parentSlug": "oregon",
+      "grandparentId": 1,
+      "grandparentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 160,
+      "name": "Coonawarra / McLaren Vale / Barossa Valley / Adelaide Hills",
+      "slug": "coonawarra-mclaren-vale-barossa-valley-adelaide-hills",
+      "latitude": -35.5,
+      "longitude": 138.8,
+      "parentId": 65,
+      "parentSlug": "south-australia",
+      "grandparentId": 34,
+      "grandparentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 151,
+      "name": "Curicó Valley",
+      "slug": "curic-valley",
+      "latitude": -35.0,
+      "longitude": -71.2,
+      "parentId": 79,
+      "parentSlug": "central-valley",
+      "grandparentId": 17,
+      "grandparentSlug": "chile",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 148,
+      "name": "Côte de Beaune",
+      "slug": "c-te-de-beaune",
+      "latitude": 47.0,
+      "longitude": 4.8,
+      "parentId": 77,
+      "parentSlug": "burgundy",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 172,
+      "name": "Côte de Nuits",
+      "slug": "c-te-de-nuits",
+      "latitude": 47.2,
+      "longitude": 5.0,
+      "parentId": 77,
+      "parentSlug": "burgundy",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 191,
+      "name": "Côtes de Bourg",
+      "slug": "c-tes-de-bourg",
+      "latitude": 45.0,
+      "longitude": -0.6,
+      "parentId": 58,
+      "parentSlug": "bordeaux",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 137,
+      "name": "Etna",
+      "slug": "etna",
+      "latitude": 37.8,
+      "longitude": 15.0,
+      "parentId": 55,
+      "parentSlug": "sicily",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 1499,
+        "max": 1499
+      }
+    },
+    {
+      "id": 152,
+      "name": "Fronsac",
+      "slug": "fronsac",
+      "latitude": 44.9,
+      "longitude": -0.3,
+      "parentId": 58,
+      "parentSlug": "bordeaux",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 159,
+      "name": "Gevrey-Chambertin",
+      "slug": "gevrey-chambertin",
+      "latitude": 47.2,
+      "longitude": 4.9,
+      "parentId": 77,
+      "parentSlug": "burgundy",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 4399,
+        "max": 4399
+      }
+    },
+    {
+      "id": 153,
+      "name": "Graves",
+      "slug": "graves",
+      "latitude": 44.7,
+      "longitude": -0.5,
+      "parentId": 58,
+      "parentSlug": "bordeaux",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 173,
+      "name": "Helan Mountain",
+      "slug": "helan-mountain",
+      "latitude": 38.8,
+      "longitude": 105.8,
+      "parentId": 99,
+      "parentSlug": "ningxia",
+      "grandparentId": 39,
+      "grandparentSlug": "china",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 150,
+      "name": "Langhe",
+      "slug": "langhe",
+      "latitude": 44.6,
+      "longitude": 8.0,
+      "parentId": 56,
+      "parentSlug": "piedmont",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 136,
+      "name": "Les Baux-de-Provence",
+      "slug": "les-baux-de-provence",
+      "latitude": 43.7,
+      "longitude": 4.8,
+      "parentId": 57,
+      "parentSlug": "provence",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 195,
+      "name": "Luján de Cuyo / Valle de Uco",
+      "slug": "luj-n-de-cuyo-valle-de-uco",
+      "latitude": -33.1,
+      "longitude": -69.1,
+      "parentId": 71,
+      "parentSlug": "mendoza",
+      "grandparentId": 35,
+      "grandparentSlug": "argentina",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 199,
+      "name": "Maipú",
+      "slug": "maip",
+      "latitude": -32.9,
+      "longitude": -68.4,
+      "parentId": 71,
+      "parentSlug": "mendoza",
+      "grandparentId": 35,
+      "grandparentSlug": "argentina",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 164,
+      "name": "Manduria",
+      "slug": "manduria",
+      "latitude": 40.4,
+      "longitude": 17.6,
+      "parentId": 85,
+      "parentSlug": "puglia",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 166,
+      "name": "Maremma",
+      "slug": "maremma",
+      "latitude": 42.8,
+      "longitude": 11.1,
+      "parentId": 68,
+      "parentSlug": "tuscany",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 169,
+      "name": "Margaux",
+      "slug": "margaux",
+      "latitude": 45.1,
+      "longitude": -0.7,
+      "parentId": 58,
+      "parentSlug": "bordeaux",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 183,
+      "name": "Marsala",
+      "slug": "marsala",
+      "latitude": 37.8,
+      "longitude": 12.4,
+      "parentId": 55,
+      "parentSlug": "sicily",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 154,
+      "name": "Mendocino County",
+      "slug": "mendocino-county",
+      "latitude": 39.2,
+      "longitude": -123.4,
+      "parentId": 66,
+      "parentSlug": "california",
+      "grandparentId": 1,
+      "grandparentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 207,
+      "name": "Millahue Valley",
+      "slug": "millahue-valley",
+      "latitude": -34.1,
+      "longitude": -71.0,
+      "parentId": 128,
+      "parentSlug": "cachapoal-valley",
+      "grandparentId": 17,
+      "grandparentSlug": "chile",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 185,
+      "name": "Minervois",
+      "slug": "minervois",
+      "latitude": 43.3,
+      "longitude": 2.8,
+      "parentId": 63,
+      "parentSlug": "languedoc",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 179,
+      "name": "Montagne de Reims",
+      "slug": "montagne-de-reims",
+      "latitude": 49.2,
+      "longitude": 3.9,
+      "parentId": 52,
+      "parentSlug": "champagne",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 163,
+      "name": "Montalcino",
+      "slug": "montalcino",
+      "latitude": 43.1,
+      "longitude": 11.5,
+      "parentId": 68,
+      "parentSlug": "tuscany",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 1085,
+        "max": 1085
+      }
+    },
+    {
+      "id": 171,
+      "name": "Montepulciano d’Abruzzo",
+      "slug": "montepulciano-d-abruzzo",
+      "latitude": 42.4,
+      "longitude": 13.8,
+      "parentId": 98,
+      "parentSlug": "abruzzo",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 162,
+      "name": "Monterey County",
+      "slug": "monterey-county",
+      "latitude": 36.2,
+      "longitude": -121.4,
+      "parentId": 66,
+      "parentSlug": "california",
+      "grandparentId": 1,
+      "grandparentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 142,
+      "name": "Médoc",
+      "slug": "m-doc",
+      "latitude": 45.2,
+      "longitude": -0.9,
+      "parentId": 58,
+      "parentSlug": "bordeaux",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 2269,
+        "max": 2269
+      }
+    },
+    {
+      "id": 144,
+      "name": "Napa Valley",
+      "slug": "napa-valley",
+      "latitude": 38.5,
+      "longitude": -122.3,
+      "parentId": 67,
+      "parentSlug": "napa",
+      "grandparentId": 1,
+      "grandparentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 184,
+      "name": "Nero d'Avola",
+      "slug": "nero-d-avola",
+      "latitude": 37.0,
+      "longitude": 14.9,
+      "parentId": 55,
+      "parentSlug": "sicily",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 140,
+      "name": "Oakville",
+      "slug": "oakville",
+      "latitude": 38.4,
+      "longitude": -122.4,
+      "parentId": 67,
+      "parentSlug": "napa",
+      "grandparentId": 1,
+      "grandparentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 167,
+      "name": "Pauillac",
+      "slug": "pauillac",
+      "latitude": 45.2,
+      "longitude": -0.8,
+      "parentId": 58,
+      "parentSlug": "bordeaux",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 198,
+      "name": "Pays d'Oc",
+      "slug": "pays-d-oc",
+      "latitude": 43.5,
+      "longitude": 3.4,
+      "parentId": 63,
+      "parentSlug": "languedoc",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 168,
+      "name": "Pessac-Léognan",
+      "slug": "pessac-l-ognan",
+      "latitude": 44.7,
+      "longitude": -0.6,
+      "parentId": 58,
+      "parentSlug": "bordeaux",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 4,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 4
+      },
+      "priceRange": {
+        "min": 1719,
+        "max": 2199
+      }
+    },
+    {
+      "id": 197,
+      "name": "Piave",
+      "slug": "piave",
+      "latitude": 45.7,
+      "longitude": 12.3,
+      "parentId": 61,
+      "parentSlug": "veneto",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 192,
+      "name": "Pomerol",
+      "slug": "pomerol",
+      "latitude": 44.9,
+      "longitude": -0.2,
+      "parentId": 58,
+      "parentSlug": "bordeaux",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 194,
+      "name": "Pommard",
+      "slug": "pommard",
+      "latitude": 47.0,
+      "longitude": 4.8,
+      "parentId": 77,
+      "parentSlug": "burgundy",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 212,
+      "name": "Pouilly-Fuissé",
+      "slug": "pouilly-fuiss",
+      "latitude": 46.3,
+      "longitude": 4.7,
+      "parentId": 77,
+      "parentSlug": "burgundy",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 178,
+      "name": "Prosecco",
+      "slug": "prosecco",
+      "latitude": 45.9,
+      "longitude": 12.0,
+      "parentId": 61,
+      "parentSlug": "veneto",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 186,
+      "name": "Puente Alto",
+      "slug": "puente-alto",
+      "latitude": -33.6,
+      "longitude": -70.6,
+      "parentId": 115,
+      "parentSlug": "maipo-valley",
+      "grandparentId": 17,
+      "grandparentSlug": "chile",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 189,
+      "name": "Right Bank",
+      "slug": "right-bank",
+      "latitude": 44.9,
+      "longitude": -0.1,
+      "parentId": 58,
+      "parentSlug": "bordeaux",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 143,
+      "name": "Rioja Alavesa",
+      "slug": "rioja-alavesa",
+      "latitude": 42.6,
+      "longitude": -2.6,
+      "parentId": 73,
+      "parentSlug": "rioja",
+      "grandparentId": 13,
+      "grandparentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 149,
+      "name": "Rioja Alta",
+      "slug": "rioja-alta",
+      "latitude": 42.5,
+      "longitude": -2.8,
+      "parentId": 73,
+      "parentSlug": "rioja",
+      "grandparentId": 13,
+      "grandparentSlug": "spain",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 139,
+      "name": "Riverland",
+      "slug": "riverland",
+      "latitude": -34.2,
+      "longitude": 140.5,
+      "parentId": 65,
+      "parentSlug": "south-australia",
+      "grandparentId": 34,
+      "grandparentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 210,
+      "name": "Roennfeldt Road",
+      "slug": "roennfeldt-road",
+      "latitude": -34.5,
+      "longitude": 139.0,
+      "parentId": 95,
+      "parentSlug": "barossa-valley",
+      "grandparentId": 34,
+      "grandparentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 181,
+      "name": "Ruppertsberg",
+      "slug": "ruppertsberg",
+      "latitude": 49.4,
+      "longitude": 8.2,
+      "parentId": 112,
+      "parentSlug": "pfalz",
+      "grandparentId": 9,
+      "grandparentSlug": "germany",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 204,
+      "name": "Rutherford",
+      "slug": "rutherford",
+      "latitude": 38.5,
+      "longitude": -122.4,
+      "parentId": 67,
+      "parentSlug": "napa",
+      "grandparentId": 1,
+      "grandparentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 214,
+      "name": "Ruwer",
+      "slug": "ruwer",
+      "latitude": 49.8,
+      "longitude": 6.7,
+      "parentId": 109,
+      "parentSlug": "mosel",
+      "grandparentId": 9,
+      "grandparentSlug": "germany",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 206,
+      "name": "Saint-Estèphe",
+      "slug": "saint-est-phe",
+      "latitude": 45.3,
+      "longitude": -0.8,
+      "parentId": 58,
+      "parentSlug": "bordeaux",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 174,
+      "name": "Saint-Julien",
+      "slug": "saint-julien",
+      "latitude": 45.2,
+      "longitude": -0.7,
+      "parentId": 58,
+      "parentSlug": "bordeaux",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 176,
+      "name": "Saint-Émilion",
+      "slug": "saint-milion",
+      "latitude": 44.9,
+      "longitude": -0.2,
+      "parentId": 58,
+      "parentSlug": "bordeaux",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 4,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 4
+      },
+      "priceRange": {
+        "min": 2999,
+        "max": 4159
+      }
+    },
+    {
+      "id": 205,
+      "name": "Seppeltsfield",
+      "slug": "seppeltsfield",
+      "latitude": -34.5,
+      "longitude": 138.9,
+      "parentId": 95,
+      "parentSlug": "barossa-valley",
+      "grandparentId": 34,
+      "grandparentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 213,
+      "name": "Soave",
+      "slug": "soave",
+      "latitude": 45.4,
+      "longitude": 11.2,
+      "parentId": 61,
+      "parentSlug": "veneto",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 1299,
+        "max": 1699
+      }
+    },
+    {
+      "id": 138,
+      "name": "Sonoma County",
+      "slug": "sonoma-county",
+      "latitude": 38.5,
+      "longitude": -122.8,
+      "parentId": 81,
+      "parentSlug": "sonoma-county",
+      "grandparentId": 1,
+      "grandparentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 203,
+      "name": "Southern Rhône",
+      "slug": "southern-rh-ne",
+      "latitude": 44.1,
+      "longitude": 4.8,
+      "parentId": 102,
+      "parentSlug": "rh-ne-valley",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 202,
+      "name": "St. Helena",
+      "slug": "st-helena",
+      "latitude": 38.5,
+      "longitude": -122.5,
+      "parentId": 67,
+      "parentSlug": "napa",
+      "grandparentId": 1,
+      "grandparentSlug": "usa",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 146,
+      "name": "Tamar Valley / Adelaide Hills / Henty",
+      "slug": "tamar-valley-adelaide-hills-henty",
+      "latitude": -41.3,
+      "longitude": 147.0,
+      "parentId": 76,
+      "parentSlug": "multi-regional",
+      "grandparentId": 34,
+      "grandparentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 157,
+      "name": "Taranto",
+      "slug": "taranto",
+      "latitude": 40.5,
+      "longitude": 17.2,
+      "parentId": 85,
+      "parentSlug": "puglia",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 190,
+      "name": "Uco Valley",
+      "slug": "uco-valley",
+      "latitude": -33.8,
+      "longitude": -69.3,
+      "parentId": 71,
+      "parentSlug": "mendoza",
+      "grandparentId": 35,
+      "grandparentSlug": "argentina",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 187,
+      "name": "Valpolicella",
+      "slug": "valpolicella",
+      "latitude": 45.5,
+      "longitude": 10.9,
+      "parentId": 61,
+      "parentSlug": "veneto",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 165,
+      "name": "Vinci",
+      "slug": "vinci",
+      "latitude": 43.8,
+      "longitude": 10.9,
+      "parentId": 68,
+      "parentSlug": "tuscany",
+      "grandparentId": 5,
+      "grandparentSlug": "italy",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 175,
+      "name": "Volnay",
+      "slug": "volnay",
+      "latitude": 47.0,
+      "longitude": 4.8,
+      "parentId": 77,
+      "parentSlug": "burgundy",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 156,
+      "name": "Waipara Valley",
+      "slug": "waipara-valley",
+      "latitude": -43.1,
+      "longitude": 172.8,
+      "parentId": 82,
+      "parentSlug": "marlborough",
+      "grandparentId": 37,
+      "grandparentSlug": "new-zealand",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 196,
+      "name": "Wilyabrup",
+      "slug": "wilyabrup",
+      "latitude": -33.8,
+      "longitude": 115.0,
+      "parentId": 90,
+      "parentSlug": "margaret-river",
+      "grandparentId": 34,
+      "grandparentSlug": "australia",
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    }
+  ],
+  "appellations": [
+    {
+      "id": 237,
+      "name": "Aglianico del Beneventano",
+      "slug": "aglianico-del-beneventano",
+      "latitude": 41.1,
+      "longitude": 14.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 234,
+      "name": "Alexander Valley AVA",
+      "slug": "alexander-valley-ava",
+      "latitude": 38.7,
+      "longitude": -122.9,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 285,
+      "name": "Almansa",
+      "slug": "almansa",
+      "latitude": 38.9,
+      "longitude": -1.1,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 293,
+      "name": "Alsace",
+      "slug": "alsace",
+      "latitude": 48.2,
+      "longitude": 7.3,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 269,
+      "name": "Altamira / Vista Flores / Gualtallary",
+      "slug": "altamira-vista-flores-gualtallary",
+      "latitude": -33.6,
+      "longitude": -69.2,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 257,
+      "name": "Alto Adige",
+      "slug": "alto-adige",
+      "latitude": 46.7,
+      "longitude": 11.4,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 225,
+      "name": "Amarone della Valpolicella",
+      "slug": "amarone-della-valpolicella",
+      "latitude": 45.5,
+      "longitude": 10.9,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 232,
+      "name": "Anderson Valley",
+      "slug": "anderson-valley",
+      "latitude": 39.1,
+      "longitude": -123.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 270,
+      "name": "Barbaresco",
+      "slug": "barbaresco",
+      "latitude": 44.7,
+      "longitude": 8.1,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 216,
+      "name": "Barolo",
+      "slug": "barolo",
+      "latitude": 44.6,
+      "longitude": 7.9,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 282,
+      "name": "Barossa Valley",
+      "slug": "barossa-valley",
+      "latitude": -34.5,
+      "longitude": 138.9,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 240,
+      "name": "Bolgheri",
+      "slug": "bolgheri",
+      "latitude": 43.2,
+      "longitude": 10.6,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 294,
+      "name": "Bordeaux",
+      "slug": "bordeaux",
+      "latitude": 44.8,
+      "longitude": -0.6,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 284,
+      "name": "Bordeaux AOC",
+      "slug": "bordeaux-aoc",
+      "latitude": 44.8,
+      "longitude": -0.6,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 274,
+      "name": "Bordeaux Supérieur",
+      "slug": "bordeaux-sup-rieur",
+      "latitude": 44.8,
+      "longitude": -0.6,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 292,
+      "name": "Brauneberger Juffer",
+      "slug": "brauneberger-juffer",
+      "latitude": 49.9,
+      "longitude": 6.9,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 238,
+      "name": "Brunello di Montalcino",
+      "slug": "brunello-di-montalcino",
+      "latitude": 43.1,
+      "longitude": 11.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 241,
+      "name": "Cahors",
+      "slug": "cahors",
+      "latitude": 44.5,
+      "longitude": 1.4,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 219,
+      "name": "California",
+      "slug": "california",
+      "latitude": 37.3,
+      "longitude": -119.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 258,
+      "name": "Chablis Premier Cru",
+      "slug": "chablis-premier-cru",
+      "latitude": 47.8,
+      "longitude": 3.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 251,
+      "name": "Chambolle-Musigny",
+      "slug": "chambolle-musigny",
+      "latitude": 47.2,
+      "longitude": 4.9,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 281,
+      "name": "Chassagne-Montrachet",
+      "slug": "chassagne-montrachet",
+      "latitude": 46.9,
+      "longitude": 4.7,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 220,
+      "name": "Chianti Classico",
+      "slug": "chianti-classico",
+      "latitude": 43.5,
+      "longitude": 11.3,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 272,
+      "name": "Châteauneuf-du-Pape",
+      "slug": "ch-teauneuf-du-pape",
+      "latitude": 44.1,
+      "longitude": 4.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 276,
+      "name": "Columbia Gorge AVA",
+      "slug": "columbia-gorge-ava",
+      "latitude": 45.7,
+      "longitude": -121.6,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 222,
+      "name": "DOC Rioja",
+      "slug": "doc-rioja",
+      "latitude": 42.5,
+      "longitude": -2.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 242,
+      "name": "DOCa Rioja",
+      "slug": "doca-rioja",
+      "latitude": 42.5,
+      "longitude": -2.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 291,
+      "name": "Douro DOC",
+      "slug": "douro-doc",
+      "latitude": 41.2,
+      "longitude": -7.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 256,
+      "name": "Franciacorta",
+      "slug": "franciacorta",
+      "latitude": 45.6,
+      "longitude": 10.0,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 239,
+      "name": "Gevrey-Chambertin",
+      "slug": "gevrey-chambertin",
+      "latitude": 47.2,
+      "longitude": 4.9,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 265,
+      "name": "Haut-Médoc",
+      "slug": "haut-m-doc",
+      "latitude": 45.1,
+      "longitude": -0.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 252,
+      "name": "Helan Mountain Wine Region",
+      "slug": "helan-mountain-wine-region",
+      "latitude": 38.8,
+      "longitude": 105.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 250,
+      "name": "Hermitage",
+      "slug": "hermitage",
+      "latitude": 45.1,
+      "longitude": 4.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 261,
+      "name": "Kabinett",
+      "slug": "kabinett",
+      "latitude": 50.0,
+      "longitude": 8.0,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 286,
+      "name": "Lambrusco Emilia",
+      "slug": "lambrusco-emilia",
+      "latitude": 44.6,
+      "longitude": 11.0,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 287,
+      "name": "Lambrusco Grasparossa di Castelvetro",
+      "slug": "lambrusco-grasparossa-di-castelvetro",
+      "latitude": 44.5,
+      "longitude": 11.0,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 230,
+      "name": "Langhe Nebbiolo",
+      "slug": "langhe-nebbiolo",
+      "latitude": 44.6,
+      "longitude": 8.0,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 267,
+      "name": "Maipo Valley",
+      "slug": "maipo-valley",
+      "latitude": -33.5,
+      "longitude": -70.6,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 217,
+      "name": "Margaux",
+      "slug": "margaux",
+      "latitude": 45.1,
+      "longitude": -0.7,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 262,
+      "name": "Meursault",
+      "slug": "meursault",
+      "latitude": 47.0,
+      "longitude": 4.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 249,
+      "name": "Montepulciano d'Abruzzo DOC",
+      "slug": "montepulciano-d-abruzzo-doc",
+      "latitude": 42.4,
+      "longitude": 13.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 218,
+      "name": "Monterey County",
+      "slug": "monterey-county",
+      "latitude": 36.2,
+      "longitude": -121.4,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 278,
+      "name": "Morey-Saint-Denis",
+      "slug": "morey-saint-denis",
+      "latitude": 47.2,
+      "longitude": 4.9,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 283,
+      "name": "Multi-Appellation California",
+      "slug": "multi-appellation-california",
+      "latitude": 37.3,
+      "longitude": -119.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      },
+      "nonGeographic": true
+    },
+    {
+      "id": 231,
+      "name": "Napa Valley",
+      "slug": "napa-valley",
+      "latitude": 38.5,
+      "longitude": -122.3,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 228,
+      "name": "Nuits-Saint-Georges",
+      "slug": "nuits-saint-georges",
+      "latitude": 47.1,
+      "longitude": 4.9,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 288,
+      "name": "Orvieto Classico",
+      "slug": "orvieto-classico",
+      "latitude": 42.7,
+      "longitude": 12.1,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 248,
+      "name": "Pauillac",
+      "slug": "pauillac",
+      "latitude": 45.2,
+      "longitude": -0.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 246,
+      "name": "Pauillac AOC",
+      "slug": "pauillac-aoc",
+      "latitude": 45.2,
+      "longitude": -0.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 275,
+      "name": "Pays d'Oc IGP",
+      "slug": "pays-d-oc-igp",
+      "latitude": 43.5,
+      "longitude": 3.4,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 277,
+      "name": "Pays d'Oc PGI",
+      "slug": "pays-d-oc-pgi",
+      "latitude": 43.5,
+      "longitude": 3.4,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 247,
+      "name": "Pessac-Léognan AOC",
+      "slug": "pessac-l-ognan-aoc",
+      "latitude": 44.7,
+      "longitude": -0.6,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 273,
+      "name": "Piave DOC",
+      "slug": "piave-doc",
+      "latitude": 45.7,
+      "longitude": 12.3,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 226,
+      "name": "Pomerol",
+      "slug": "pomerol",
+      "latitude": 44.9,
+      "longitude": -0.2,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 245,
+      "name": "Primitivo di Manduria",
+      "slug": "primitivo-di-manduria",
+      "latitude": 40.4,
+      "longitude": 17.6,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 236,
+      "name": "Primitivo di Manduria DOP",
+      "slug": "primitivo-di-manduria-dop",
+      "latitude": 40.4,
+      "longitude": 17.6,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 223,
+      "name": "Pritchard Hill",
+      "slug": "pritchard-hill",
+      "latitude": 38.5,
+      "longitude": -122.3,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 215,
+      "name": "Prosecco",
+      "slug": "prosecco",
+      "latitude": 45.9,
+      "longitude": 12.0,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 295,
+      "name": "Puligny-Montrachet",
+      "slug": "puligny-montrachet",
+      "latitude": 46.9,
+      "longitude": 4.7,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 229,
+      "name": "Rioja",
+      "slug": "rioja",
+      "latitude": 42.5,
+      "longitude": -2.5,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 264,
+      "name": "Rosso di Montepulciano",
+      "slug": "rosso-di-montepulciano",
+      "latitude": 43.1,
+      "longitude": 11.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 235,
+      "name": "Saint-Estèphe",
+      "slug": "saint-est-phe",
+      "latitude": 45.3,
+      "longitude": -0.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 253,
+      "name": "Saint-Julien",
+      "slug": "saint-julien",
+      "latitude": 45.2,
+      "longitude": -0.7,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 268,
+      "name": "Saint-Émilion",
+      "slug": "saint-milion",
+      "latitude": 44.9,
+      "longitude": -0.2,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 255,
+      "name": "Saint-Émilion Grand Cru",
+      "slug": "saint-milion-grand-cru",
+      "latitude": 44.9,
+      "longitude": -0.2,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 221,
+      "name": "Salento",
+      "slug": "salento",
+      "latitude": 40.4,
+      "longitude": 18.2,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 280,
+      "name": "Sancerre",
+      "slug": "sancerre",
+      "latitude": 47.3,
+      "longitude": 2.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 271,
+      "name": "Santenay",
+      "slug": "santenay",
+      "latitude": 46.9,
+      "longitude": 4.7,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 260,
+      "name": "Sekt",
+      "slug": "sekt",
+      "latitude": 50.0,
+      "longitude": 8.0,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 224,
+      "name": "Sicilia DOC",
+      "slug": "sicilia-doc",
+      "latitude": 37.5,
+      "longitude": 14.0,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 289,
+      "name": "Soave Classico",
+      "slug": "soave-classico",
+      "latitude": 45.4,
+      "longitude": 11.2,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 233,
+      "name": "Sonoma County",
+      "slug": "sonoma-county",
+      "latitude": 38.5,
+      "longitude": -122.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 259,
+      "name": "Spätlese",
+      "slug": "sp-tlese",
+      "latitude": 50.0,
+      "longitude": 8.0,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 243,
+      "name": "Stags Leap District",
+      "slug": "stags-leap-district",
+      "latitude": 38.4,
+      "longitude": -122.4,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 244,
+      "name": "Toscana IGT",
+      "slug": "toscana-igt",
+      "latitude": 43.3,
+      "longitude": 11.3,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 254,
+      "name": "Tre Venezie I.G.P.",
+      "slug": "tre-venezie-i-g-p",
+      "latitude": 45.8,
+      "longitude": 12.0,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 266,
+      "name": "Valpolicella Classico Superiore",
+      "slug": "valpolicella-classico-superiore",
+      "latitude": 45.5,
+      "longitude": 10.9,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 263,
+      "name": "Vino Nobile di Montepulciano",
+      "slug": "vino-nobile-di-montepulciano",
+      "latitude": 43.1,
+      "longitude": 11.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 227,
+      "name": "Volnay AOC",
+      "slug": "volnay-aoc",
+      "latitude": 47.0,
+      "longitude": 4.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 279,
+      "name": "Vosne-Romanée",
+      "slug": "vosne-roman-e",
+      "latitude": 47.2,
+      "longitude": 4.9,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    },
+    {
+      "id": 290,
+      "name": "Vouvray",
+      "slug": "vouvray",
+      "latitude": 47.4,
+      "longitude": 0.8,
+      "scopes": [],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 0
+      },
+      "priceRange": {
+        "min": null,
+        "max": null
+      }
+    }
+  ]
+}
