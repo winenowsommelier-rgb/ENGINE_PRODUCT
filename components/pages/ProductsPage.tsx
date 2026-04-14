@@ -98,7 +98,7 @@ type TaxContext = { term: string; description_short: string };
 function parseTags(raw: string | string[] | null | undefined): string[] {
   if (!raw) return [];
   if (Array.isArray(raw)) return (raw as string[]).filter(Boolean);
-  try { const p = JSON.parse(raw as string); return Array.isArray(p) ? p.filter(Boolean) : []; } catch { return []; }
+  try { const p = JSON.parse(raw as string); return Array.isArray(p) ? p.filter(Boolean) : []; } catch (_e) { return []; }
 }
 
 function fmt(v: unknown) { return v === null || v === undefined || v === '' ? '--' : String(v); }
@@ -108,7 +108,7 @@ function fmtPrice(v: unknown, currency = 'THB') {
   const n = parseFloat(String(v)); if (isNaN(n)) return '--';
   const cur = (currency || 'THB').toUpperCase();
   try { return n.toLocaleString('th-TH', { style: 'currency', currency: cur, maximumFractionDigits: 0 }); }
-  catch { return `${cur} ${n.toLocaleString()}`; }
+  catch (_e) { return `${cur} ${n.toLocaleString()}`; }
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -295,7 +295,7 @@ export function ProductsPage() {
       }
       if (json.characterDimensions) setCharDimensions(json.characterDimensions);
       if (json.taxonomyContexts) setTaxContexts(json.taxonomyContexts);
-    } catch { /* keep the initial product data */ }
+    } catch (_e) { /* keep the initial product data */ }
     setDetailLoading(false);
   }
 
