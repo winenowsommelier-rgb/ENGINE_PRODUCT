@@ -12,3 +12,21 @@ data/taxonomy.db
 data/taxonomy.db-wal
 data/taxonomy.db-shm
 supabase/.temp/
+
+# Research working files — transient work products
+data/ai_research_*_status_*.txt
+data/master_item_reference_status_*.csv
+data/master_item_reference_with_descriptions_status_*.csv
+data/master_research_backlog_status_*.csv
+data/producer_evidence_library_status_*.csv
+data/research_progress_*.csv
+data/research_progress_*.md
+data/next_best_batch_queue.csv
+data/product_engine_upload_*.csv
+data/product_image_research_*.csv
+data/product_image_research_*.json
+data/product_image_upload_template.csv
+data/PROCESS_UPGRADE_REPORT.md
+public/spec-preview.html
+public/spec-preview.md
+.DS_Store
