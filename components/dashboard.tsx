@@ -1,6 +1,6 @@
 'use client';
 import React, { Suspense, useState } from 'react';
-import { BookOpen, ClipboardCheck, Grid3X3, History, Library, Package, Settings, Upload, type LucideIcon } from 'lucide-react';
+import { BookOpen, ClipboardCheck, Globe, Grid3X3, History, Library, Package, Settings, Upload, type LucideIcon } from 'lucide-react';
 
 // Lazy imports — each page loads independently, crashes are isolated
 const ProductsPage      = React.lazy(() => import('@/components/pages/ProductsPage').then(m => ({ default: m.ProductsPage })));
@@ -86,6 +86,16 @@ function Sidebar({ active, onNavigate }: { active: Section; onNavigate: (s: Sect
         <span className="text-sm font-semibold text-white">WNLQ9 PIM</span>
       </div>
       <div className="flex flex-1 flex-col gap-0.5 p-2 pt-3">
+        {/* Map Explorer — separate route */}
+        <a
+          href="/explore"
+          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-colors mb-2"
+        >
+          <Globe size={15} />
+          Map Explorer
+          <span className="ml-auto text-[10px] text-slate-600">↗</span>
+        </a>
+        <div className="border-b border-white/5 mb-2" />
         {NAV_GROUPS.map((group, gi) => (
           <React.Fragment key={gi}>
             {group.label && (
