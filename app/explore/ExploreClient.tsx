@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
@@ -39,10 +39,26 @@ export default function ExploreClient({ slug }: Props) {
   const parsed = useMemo(() => parseSlug(slug), [slug]);
   const breadcrumbs = useMemo(() => buildBreadcrumbs(parsed), [parsed]);
 
+  // Track previous slug to detect navigation changes
+  const prevSlugRef = useRef(slug.join("/"));
+
   // Local UI state (not in URL)
   const [selectedRegion, setSelectedRegion] = useState<TaxRegion | null>(null);
   const [regionCardPosition, setRegionCardPosition] = useState<{ x: number; y: number } | undefined>(undefined);
   const [showProducts, setShowProducts] = useState(false);
+
+  // ── Reset UI state when URL changes (breadcrumb click, back/forward) ──
+  useEffect(() => {
+    const currentSlug = slug.join("/");
+    if (prevSlugRef.current !== currentSlug) {
+      prevSlugRef.current = currentSlug;
+      setSelectedRegion(null);
+      // Only keep showProducts if we're at subregion+ level (auto-show)
+      if (parsed.drillLevel !== "subregion" && parsed.drillLevel !== "appellation") {
+        setShowProducts(false);
+      }
+    }
+  }, [slug, parsed.drillLevel]);
 
   // ── Navigation helpers ────────────────────────
 
@@ -60,7 +76,6 @@ export default function ExploreClient({ slug }: Props) {
     (cat: CategoryScope | null) => {
       setSelectedRegion(null);
       setShowProducts(false);
-      // Preserve current drill level, just change category
       if (parsed.country) {
         const segs = [parsed.country.slug];
         if (parsed.region) segs.push(parsed.region.slug);
@@ -75,7 +90,6 @@ export default function ExploreClient({ slug }: Props) {
 
   const handleSelectCountry = useCallback(
     (c: TaxCountry, position?: { x: number; y: number }) => {
-      // Show info card for the country (wrap as TaxRegion-compatible shape)
       setSelectedRegion({
         ...c,
         parentId: 0,
@@ -106,8 +120,7 @@ export default function ExploreClient({ slug }: Props) {
     setShowProducts(true);
     setSelectedRegion(null);
     if (isCountryLevel) {
-      // Country card — just show products for this country (URL already set)
-      // No additional navigation needed, just show the sidebar
+      // Country card — products for this country, URL already set
     } else if (parsed.country) {
       router.push(buildUrl(parsed.category, parsed.country.slug, selectedRegion.slug));
     }
@@ -140,12 +153,35 @@ export default function ExploreClient({ slug }: Props) {
     setShowProducts(false);
   }, []);
 
+  // ── Navigate back one level ──────────────────
+  const handleBack = useCallback(() => {
+    setSelectedRegion(null);
+    setShowProducts(false);
+    if (parsed.subregion && parsed.region && parsed.country) {
+      router.push(buildUrl(parsed.category, parsed.country.slug, parsed.region.slug));
+    } else if (parsed.region && parsed.country) {
+      router.push(buildUrl(parsed.category, parsed.country.slug));
+    } else if (parsed.country) {
+      router.push(buildUrl(parsed.category));
+    }
+  }, [parsed, router, buildUrl]);
+
+  // ── Keyboard shortcuts ───────────────────────
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (selectedRegion) { setSelectedRegion(null); return; }
+        if (showProducts) { setShowProducts(false); return; }
+        handleBack();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [selectedRegion, showProducts, handleBack]);
+
   // ── Zoom controls ────────────────────────────
 
   const handleZoomIn = useCallback(() => {
-    // Use native map zoom via a global ref — set by ExploreMap
-    const mapEl = document.querySelector(".maplibregl-map") as HTMLElement & { _map?: maplibregl.Map };
-    // Fallback: dispatch keyboard event
     window.dispatchEvent(new KeyboardEvent("keydown", { key: "+" }));
   }, []);
 
@@ -157,12 +193,11 @@ export default function ExploreClient({ slug }: Props) {
 
   const productLocation = useMemo(() => {
     if (parsed.subregion) {
-      const region = parsed.region;
       return {
         name: parsed.subregion.name,
         slug: parsed.subregion.slug,
         country: parsed.country?.name,
-        region: region?.name,
+        region: parsed.region?.name,
         subregion: parsed.subregion.name,
       };
     }
@@ -184,9 +219,9 @@ export default function ExploreClient({ slug }: Props) {
     return null;
   }, [parsed]);
 
-  // Show products when drilled to region level or deeper (after explore click)
+  // Show products: explicitly requested OR at subregion+ depth (auto-show)
   const shouldShowProducts =
-    showProducts || parsed.drillLevel === "region" || parsed.drillLevel === "subregion" || parsed.drillLevel === "appellation";
+    showProducts || parsed.drillLevel === "subregion" || parsed.drillLevel === "appellation";
 
   return (
     <div className="relative h-full w-full">
@@ -261,7 +296,19 @@ export default function ExploreClient({ slug }: Props) {
       <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-3 backdrop-blur-md max-lg:bottom-0"
         style={{ background: "rgba(10,10,26,0.6)" }}
       >
-        <Breadcrumb items={breadcrumbs} />
+        <div className="flex items-center gap-2">
+          {parsed.drillLevel !== "world" && (
+            <button
+              onClick={handleBack}
+              className="flex h-8 items-center gap-1 rounded-lg bg-white/[0.06] px-2.5 text-xs text-white/60 hover:bg-white/10 hover:text-white transition-colors"
+              aria-label="Go back one level"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              Back
+            </button>
+          )}
+          <Breadcrumb items={breadcrumbs} />
+        </div>
         <ZoomControls onZoomIn={handleZoomIn} onZoomOut={handleZoomOut} />
       </div>
     </div>
