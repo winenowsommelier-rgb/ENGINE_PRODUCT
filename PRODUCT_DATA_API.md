@@ -1,22 +1,64 @@
 # WNLQ9 Product Intelligence API
 
-**Base URL:** `http://localhost:3000` (local) — update for production deployment.
+**Base URL:** `http://localhost:3000` (local)
+**Last updated:** 2026-04-14
+**Database:** Supabase PostgreSQL (11,564 products)
 
-This document describes how to access the WNLQ9 product intelligence database. Share this with team members, external projects, or AI agents that need to read, search, validate, or enrich product data.
+This is the central product intelligence database for Wine-Now (th.wine-now.com) and LIQ9 (th.liq9.com). Share this document with team members, external projects, or AI agents that need to read, search, validate, or enrich product data.
+
+---
+
+## Database Snapshot
+
+| Metric | Value |
+|--------|-------|
+| Total products | 11,564 |
+| Validated | 11,433 (99%) |
+| Needs review | 131 |
+| Wine | 7,103 |
+| Spirits | 3,317 |
+| Beer | 227 |
+| Accessories | 1,032 |
+| Currency | THB (Thai Baht) |
+
+### Field Coverage
+
+| Field | Filled | Coverage |
+|-------|--------|----------|
+| country | 11,330 | 98% |
+| brand | 11,550 | 100% |
+| region | 8,767 | 76% |
+| vintage | 7,667 | 66% |
+| grape_variety | 6,959 | 60% |
+| flavor_profile | 3,867 | 33% |
+| full_description | 0 | 0% |
+
+### Priority Gaps to Fill
+
+| Gap | Count | Suggestion |
+|-----|-------|------------|
+| Missing region | 2,797 | Use search API with `missing=region&has=country` |
+| Missing grape variety | 4,605 | Focus on wine SKUs: `missing=grape_variety&classification=Red%20Wine` |
+| Missing flavor profile | 7,697 | AI can generate from grape + region + classification |
+| Missing description | 11,564 | All products need descriptions |
+| Missing vintage | 3,897 | Check against masterfile or brand websites |
 
 ---
 
 ## Quick Start
 
 ```bash
-# Get a full overview of the database (schema, counts, gaps, available APIs)
+# Get a live overview of the database (schema, counts, gaps, all API docs)
 curl http://localhost:3000/api/products/overview
 
-# Look up a product by SKU
+# Look up products by SKU
 curl http://localhost:3000/api/products/lookup?sku=WRW0066AC
 
 # Search by keyword
-curl http://localhost:3000/api/products/search?q=chateau&limit=5
+curl "http://localhost:3000/api/products/search?q=chateau&limit=5"
+
+# Find products missing a field (for AI enrichment)
+curl "http://localhost:3000/api/products/search?missing=grape_variety&country=France&limit=20"
 
 # Export all validated products as JSON
 curl http://localhost:3000/api/products/export?format=json
@@ -29,9 +71,9 @@ curl http://localhost:3000/api/products/export?format=csv
 
 ## API Endpoints
 
-### 1. Overview — `/api/products/overview`
+### 1. Overview — `GET /api/products/overview`
 
-**GET** — Returns the complete state of the database: schema, counts by status/segment, field coverage percentages, price statistics, top countries, data gaps to fill, and a full list of available APIs.
+Returns the complete state of the database: schema, counts by status/segment, field coverage percentages, price statistics, top countries, data gaps to fill, and a full list of available APIs.
 
 **Use this first** — it tells you everything you need to know about the data.
 
@@ -41,9 +83,9 @@ curl http://localhost:3000/api/products/overview | python3 -m json.tool
 
 ---
 
-### 2. Search — `/api/products/search`
+### 2. Search — `GET /api/products/search`
 
-**GET** — Full-text search across name, brand, SKU, grape variety. Supports filters and field-presence queries.
+Full-text search across name, brand, SKU, grape variety. Supports filters and field-presence queries.
 
 | Parameter | Description | Example |
 |-----------|-------------|---------|
@@ -55,8 +97,8 @@ curl http://localhost:3000/api/products/overview | python3 -m json.tool
 | `brand` | Brand (partial match) | `brand=opus` |
 | `validation_status` | Status filter | `validation_status=validated` |
 | `price_min` / `price_max` | Price range (THB) | `price_min=500&price_max=2000` |
-| `has` | Only products with this field filled | `has=region` |
-| `missing` | Only products missing this field | `missing=grape_variety` |
+| `has` | Only products WITH this field filled | `has=region` |
+| `missing` | Only products MISSING this field | `missing=grape_variety` |
 | `sort` | Sort by: name, price, sku, country, overall_confidence, vintage | `sort=price` |
 | `sortDir` | asc or desc | `sortDir=desc` |
 | `limit` | Results per page (max 100) | `limit=20` |
@@ -65,104 +107,140 @@ curl http://localhost:3000/api/products/overview | python3 -m json.tool
 **Examples:**
 
 ```bash
-# Find French red wines
-curl "http://localhost:3000/api/products/search?country=France&classification=Red%20Wine&limit=10"
+# French red wines sorted by price
+curl "http://localhost:3000/api/products/search?country=France&classification=Red%20Wine&sort=price&sortDir=desc&limit=10"
 
-# Find products missing grape variety (for enrichment)
+# Italian wines missing grape variety
 curl "http://localhost:3000/api/products/search?missing=grape_variety&country=Italy&limit=50"
 
-# Find products missing descriptions (for AI to fill)
+# Expensive products missing descriptions (priority for AI enrichment)
 curl "http://localhost:3000/api/products/search?missing=full_description&has=country&sort=price&sortDir=desc&limit=20"
 
 # Search by brand
 curl "http://localhost:3000/api/products/search?brand=penfolds&limit=10"
+
+# Whisky products with region data
+curl "http://localhost:3000/api/products/search?has=region&classification=Whisky&limit=20"
+```
+
+**Response format:**
+```json
+{
+  "products": [ { "sku": "WRW0066AC", "name": "...", "country": "France", ... } ],
+  "total": 707,
+  "limit": 20,
+  "offset": 0,
+  "hasMore": true
+}
 ```
 
 ---
 
-### 3. Lookup by SKU — `/api/products/lookup`
+### 3. Lookup by SKU — `GET|POST /api/products/lookup`
 
 **GET** `?sku=SKU1,SKU2` or **POST** `{ "skus": ["SKU1", "SKU2"] }`
 
-Returns enriched product intelligence cards keyed by SKU.
+Returns enriched product intelligence cards keyed by SKU. Best for integrating with other systems.
 
 ```bash
 # Single SKU
 curl http://localhost:3000/api/products/lookup?sku=WRW0066AC
 
-# Multiple SKUs
+# Multiple SKUs (POST)
 curl -X POST http://localhost:3000/api/products/lookup \
   -H "Content-Type: application/json" \
   -d '{"skus": ["WRW0066AC", "WWW0047AC", "LWH0001AA"]}'
 ```
 
-Response includes: `{ products: { SKU: {...} }, count, missing: [] }`
+**Response:** `{ "products": { "WRW0066AC": {...}, ... }, "count": 3, "missing": [] }`
 
 ---
 
-### 4. Export — `/api/products/export`
+### 4. Export — `GET /api/products/export`
 
-**GET** — Bulk download all products.
+Bulk download all products.
+
+| Parameter | Options |
+|-----------|---------|
+| `format` | `json` (default) or `csv` |
+| `status` | `validated` (default) or `all` |
 
 ```bash
-# JSON (all validated)
+# JSON — all validated
 curl http://localhost:3000/api/products/export?format=json > products.json
 
-# CSV (all validated)
+# CSV — all validated
 curl http://localhost:3000/api/products/export?format=csv > products.csv
 
-# Include unvalidated products too
+# JSON — include unvalidated too
 curl "http://localhost:3000/api/products/export?format=json&status=all" > all_products.json
 ```
 
 ---
 
-### 5. Browse — `/api/products`
+### 5. Browse — `GET /api/products`
 
-**GET** — Paginated product browsing with filters and sorting (50/page).
+Paginated product browsing with filters and sorting (50/page).
 
 | Parameter | Description |
 |-----------|-------------|
 | `search` | Search name/SKU/brand |
-| `country` | Country filter |
-| `region` | Region filter |
-| `classification` | Classification filter |
+| `country`, `region` | Geography filters |
+| `classification` | Product type filter |
 | `segment` | wine, spirits, beer, accessories |
 | `validation_status` | validated, needs_review, needs_attention |
 | `sort` | name, price, confidence, vintage, created, sku |
 | `sortDir` | asc, desc |
-| `page` | Page number |
+| `page` | Page number (1-based) |
 
 ---
 
-### 6. Single Product — `/api/products/{id}`
+### 6. Single Product — `GET|PATCH /api/products/{id}`
 
 **GET** — Full product detail with taxonomy context and character dimensions.
 
-**PATCH** — Update product fields:
+**PATCH** — Update product fields (changes are auto-logged to changelog):
 ```bash
 curl -X PATCH http://localhost:3000/api/products/PRODUCT_ID \
   -H "Content-Type: application/json" \
-  -d '{"fields": {"region": "Burgundy", "grape_variety": "Pinot Noir"}, "note": "AI enrichment"}'
+  -d '{
+    "fields": { "region": "Burgundy", "grape_variety": "Pinot Noir" },
+    "note": "AI enrichment"
+  }'
 ```
 
 ---
 
-### 7. Facets — `/api/products/facets`
+### 7. Facets — `GET /api/products/facets`
 
-**GET** — Returns all distinct values with counts for filter dropdowns: categories, countries, statuses, regions, appellations, wine classifications.
+Returns all distinct values with counts for every filterable field: categories, countries, statuses, regions, appellations, wine classifications. Use this to understand what values exist in the database.
 
 ---
 
-### 8. Change Log — `/api/changelog`
+### 8. Change Log — `GET /api/changelog`
 
-**GET** — View product change history with filters.
+View product change history with filters.
 
 | Parameter | Description |
 |-----------|-------------|
-| `field` | Filter by field (price, cost, region, etc.) |
+| `field` | Filter by changed field (price, cost, region, etc.) |
 | `source` | masterfile_import, override_import, batch_process, manual_edit |
 | `sku` | Filter by SKU (partial match) |
+| `since` | ISO date — only changes after this date |
+| `page` / `limit` | Pagination (default 50/page) |
+
+---
+
+### 9. Map Explorer — `GET /api/explore/products`
+
+Products for the interactive wine/spirits map at `/explore`.
+
+| Parameter | Description |
+|-----------|-------------|
+| `country` | Country filter |
+| `region` | Region filter |
+| `category` | wine, spirits, beer, sake |
+| `sort` | popular, price-asc, price-desc, newest, name |
 | `page` / `limit` | Pagination |
 
 ---
@@ -173,72 +251,90 @@ curl -X PATCH http://localhost:3000/api/products/PRODUCT_ID \
 
 | Field | Type | Description | Coverage |
 |-------|------|-------------|----------|
-| `sku` | string | Unique product identifier (prefix indicates type) | 100% |
+| `sku` | string | Unique product identifier (prefix = type) | 100% |
 | `name` | string | Product name | 100% |
-| `brand` | string | Brand name | ~80% |
-| `classification` | string | Product type: Red Wine, White Wine, Whisky, Gin, etc. | ~95% |
-| `wine_classification` | string | Quality tier: Grand Cru, Premier Cru, Reserva, etc. | ~10% |
-| `grape_variety` | string | Grape(s): "Cabernet Sauvignon", "Pinot Noir 100%" | ~30% |
-| `vintage` | string | Vintage year or "NV" | ~40% |
-| `country` | string | Country of origin | ~87% |
-| `region` | string | Wine/spirits region (Bordeaux, Napa, Highland...) | ~5% |
-| `subregion` | string | Subregion (Pauillac, Oakville...) | ~1% |
-| `appellation` | string | Appellation/AOC | <1% |
-| `wine_body` | string | Light, Medium, Full | ~15% |
-| `wine_acidity` | string | Low, Medium, High | ~15% |
-| `wine_tannin` | string | Low, Medium, High | ~15% |
-| `food_matching` | string | Food pairing suggestions | ~15% |
-| `flavor_tags` | string | JSON array of flavor descriptors | ~20% |
-| `flavor_profile` | string | JSON array of tasting notes | ~20% |
+| `brand` | string | Brand name | 100% |
+| `classification` | string | Red Wine, White Wine, Whisky, Gin, Rum, Beer, Sake... | 95% |
+| `wine_classification` | string | Quality tier: Grand Cru, Premier Cru, Reserva... | 10% |
+| `grape_variety` | string | Grape(s): "Cabernet Sauvignon", "Pinot Noir 100%" | 60% |
+| `vintage` | string | Vintage year or "NV" | 66% |
+| `country` | string | Country of origin | 98% |
+| `region` | string | Wine/spirits region: Bordeaux, Napa, Highland... | 76% |
+| `subregion` | string | Subregion: Pauillac, Oakville, Speyside... | low |
+| `appellation` | string | AOC/AVA/DOC | low |
+| `wine_body` | string | Light, Medium, Full | 15% |
+| `wine_acidity` | string | Low, Medium, High | 15% |
+| `wine_tannin` | string | Low, Medium, High | 15% |
+| `food_matching` | string | Food pairing suggestions | 15% |
+| `flavor_tags` | string | JSON array of flavor descriptors | 20% |
+| `flavor_profile` | string | JSON array of tasting notes | 33% |
 | `price` | number | Retail price in THB | 100% |
-| `cost` | number | Cost price in THB | ~90% |
-| `bottle_size` | string | "750 ml", "1 L", etc. | ~80% |
-| `alcohol` | string | ABV percentage | ~30% |
-| `full_description` | string | HTML product description | ~15% |
+| `cost_price` | number | Cost price in THB | 90% |
+| `bottle_size` | string | "750 ml", "1 L", "1.75 L" | 80% |
+| `alcohol` | string | ABV percentage | 30% |
+| `full_description` | string | HTML product description | 0% |
 | `validation_status` | string | validated, needs_review, needs_attention | 100% |
-| `overall_confidence` | number | 0.0–1.0 enrichment confidence score | 100% |
+| `overall_confidence` | number | 0.0-1.0 enrichment confidence score | 100% |
 
 ### SKU Prefixes
 
-| Prefix | Category | Example |
-|--------|----------|---------|
-| `WRW` | Red Wine | WRW0066AC |
-| `WWW` | White Wine | WWW0047AC |
-| `WSP` | Sparkling Wine | WSP0012AA |
-| `WCH` | Champagne | WCH0003AA |
-| `WRS` | Rosé | WRS0005AA |
-| `WDW` | Dessert Wine | WDW0001AA |
-| `LWH` | Whisky | LWH0001AA |
-| `LGN` | Gin | LGN0010AA |
-| `LRM` | Rum | LRM0003AA |
-| `LTQ` | Tequila | LTQ0001AA |
-| `LVK` | Vodka | LVK0002AA |
-| `LBD` | Brandy | LBD0001AA |
-| `LLQ` | Liqueur | LLQ0005AA |
-| `LSK` | Sake | LSK0001AA |
-| `LBE` | Beer | LBE0001AA |
+| Prefix | Category | Count |
+|--------|----------|-------|
+| `WRW` | Red Wine | ~1,700 |
+| `WWW` | White Wine | ~620 |
+| `WSP` | Sparkling Wine | ~300 |
+| `WCH` | Champagne | included in WSP |
+| `WRS` | Rose | ~70 |
+| `WDW` | Dessert Wine | ~35 |
+| `LWH` | Whisky | ~230 |
+| `LGN` | Gin | ~130 |
+| `LRM` | Rum | ~80 |
+| `LTQ` | Tequila | ~80 |
+| `LVK` | Vodka | ~65 |
+| `LBD` | Brandy | ~53 |
+| `LLQ` | Liqueur | ~110 |
+| `LSK` | Sake | ~100 |
+| `LBE` | Beer | ~19 |
+| `ABA/AWC` | Accessories | ~490 |
+| `GWN` | Glassware | ~280 |
+| `NNA` | Non-alcoholic | ~84 |
 
 ---
 
 ## For AI Agents
 
-### Finding Products to Enrich
+### Step 1: Understand the Data
 
 ```bash
-# Products with country but missing region — high confidence first
-curl "http://localhost:3000/api/products/search?has=country&missing=region&sort=overall_confidence&sortDir=desc&limit=50"
-
-# Products missing descriptions
-curl "http://localhost:3000/api/products/search?missing=full_description&sort=price&sortDir=desc&limit=50"
-
-# Products missing grape variety
-curl "http://localhost:3000/api/products/search?missing=grape_variety&classification=Red%20Wine&limit=50"
+curl http://localhost:3000/api/products/overview
 ```
 
-### Updating Products
+This returns live stats, schema, coverage, gaps, and all API endpoints.
+
+### Step 2: Find Products to Enrich
 
 ```bash
-# Update a single product (PATCH by ID)
+# Products with country but missing region (high confidence first)
+curl "http://localhost:3000/api/products/search?has=country&missing=region&sort=overall_confidence&sortDir=desc&limit=50"
+
+# Wine products missing grape variety
+curl "http://localhost:3000/api/products/search?missing=grape_variety&classification=Red%20Wine&limit=50"
+
+# All products missing flavor profile
+curl "http://localhost:3000/api/products/search?missing=flavor_profile&has=grape_variety&limit=50"
+
+# Expensive products missing descriptions (highest business value)
+curl "http://localhost:3000/api/products/search?missing=full_description&sort=price&sortDir=desc&limit=50"
+```
+
+### Step 3: Update Products
+
+```bash
+# Get the product ID first
+curl "http://localhost:3000/api/products/search?q=WRW0066AC&limit=1"
+# Use the id from the response
+
+# Update fields
 curl -X PATCH http://localhost:3000/api/products/PRODUCT_ID \
   -H "Content-Type: application/json" \
   -d '{
@@ -248,16 +344,76 @@ curl -X PATCH http://localhost:3000/api/products/PRODUCT_ID \
       "grape_variety": "Cabernet Sauvignon, Merlot",
       "wine_body": "Full",
       "wine_acidity": "Medium",
-      "wine_tannin": "High"
+      "wine_tannin": "High",
+      "food_matching": "Grilled beef, lamb, aged cheese"
     },
     "note": "AI enrichment from product research"
   }'
 ```
 
-### Workflow for Validation
+### Step 4: Verify Updates
 
-1. Call `/api/products/overview` to understand current data state
-2. Use `/api/products/search?missing=FIELD` to find gaps
-3. Research and fill via PATCH `/api/products/{id}`
-4. Changes are logged automatically in the changelog
-5. Check `/api/changelog?source=manual_edit` to verify your updates
+```bash
+# Check your changes were logged
+curl "http://localhost:3000/api/changelog?source=manual_edit&limit=10"
+```
+
+### Enrichment Guidelines
+
+When filling in data, follow these conventions:
+
+- **grape_variety**: Use full names, comma-separated. Include percentages if known. Example: "Cabernet Sauvignon 60%, Merlot 30%, Petit Verdot 10%"
+- **wine_body**: One of: Light, Medium, Medium-Full, Full
+- **wine_acidity**: One of: Low, Medium, Medium-High, High
+- **wine_tannin**: One of: Low, Medium, Medium-High, High
+- **food_matching**: Comma-separated food categories. Example: "Grilled red meat, lamb, aged hard cheese, dark chocolate"
+- **flavor_profile**: JSON array. Example: '["Blackcurrant","Cedar","Tobacco","Dark Cherry","Vanilla"]'
+- **region**: Use the canonical region name from the taxonomy. Call `/api/products/facets` to see existing values.
+- **classification**: Must be one of the existing categories. Call `/api/products/facets` to see valid values.
+
+### Batch Enrichment Pattern
+
+For enriching many products at once:
+
+1. Export a batch: `GET /api/products/search?missing=FIELD&limit=100`
+2. Research and prepare updates externally
+3. Apply updates one by one via `PATCH /api/products/{id}`
+4. Or prepare a CSV and use the Masterfile Import UI at `http://localhost:3000` (Import > Masterfile Update)
+
+---
+
+## For Other Projects
+
+### Syncing Product Data
+
+```bash
+# Full sync — download all validated products
+curl http://localhost:3000/api/products/export?format=json > local_cache.json
+
+# Incremental — look up specific SKUs
+curl -X POST http://localhost:3000/api/products/lookup \
+  -H "Content-Type: application/json" \
+  -d '{"skus": ["WRW0066AC", "WWW0047AC"]}'
+```
+
+### Integration Pattern
+
+1. On first run: call `/api/products/export` to get the full catalog
+2. Cache locally in your project
+3. For real-time lookups: call `/api/products/lookup?sku=XXX`
+4. Periodically re-sync by comparing your cache timestamp against a fresh export
+
+### Interactive Map
+
+The product database powers an interactive wine/spirits map at:
+
+```
+http://localhost:3000/explore
+http://localhost:3000/explore/wine
+http://localhost:3000/explore/wine/france
+http://localhost:3000/explore/wine/france/burgundy
+```
+
+Map data (taxonomy with coordinates and product counts) is available at:
+- Static JSON: `data/taxonomy/explore-taxonomy.json` (118 KB)
+- Country boundaries: `public/data/ne_110m_countries.geojson` (819 KB)
