@@ -246,22 +246,6 @@ export default function ProductDetailCard({
         )}
       </div>
 
-      {/* Keyframe for card entry animation */}
-      <style jsx global>{`
-        @keyframes card-in {
-          from {
-            opacity: 0;
-            transform: scale(0.95) translateY(12px);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
-        }
-        .animate-card-in {
-          animation: card-in 0.2s ease-out;
-        }
-      `}</style>
     </div>
   );
 }
