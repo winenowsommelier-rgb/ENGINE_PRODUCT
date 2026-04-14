@@ -102,7 +102,11 @@ export default function RegionCard({ region, category, position, onExplore, onCl
   const cardRef = useRef<HTMLDivElement>(null);
   const [style, setStyle] = useState<React.CSSProperties>({});
 
-  const flag = country ? countryFlag(country.name) : '\u{1F30D}';
+  // For country-level cards (parentId === 0), use the region name itself for the flag
+  const isCountryLevel = region.parentId === 0;
+  const flag = isCountryLevel
+    ? countryFlag(region.name)
+    : country ? countryFlag(country.name) : '\u{1F30D}';
 
   // Compute positioned style once after first render (need card dimensions)
   useEffect(() => {
@@ -143,7 +147,7 @@ export default function RegionCard({ region, category, position, onExplore, onCl
             <span className="truncate">{region.name}</span>
           </h3>
           <p className="mt-0.5 text-sm text-white/50">
-            {country?.name}
+            {isCountryLevel ? 'Country' : country?.name}
             {category && (
               <span
                 className="ml-2 inline-block rounded-full px-2 py-0.5 text-xs font-medium"

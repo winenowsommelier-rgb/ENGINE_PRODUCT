@@ -74,8 +74,17 @@ export default function ExploreClient({ slug }: Props) {
   );
 
   const handleSelectCountry = useCallback(
-    (c: TaxCountry) => {
-      setSelectedRegion(null);
+    (c: TaxCountry, position?: { x: number; y: number }) => {
+      // Show info card for the country (wrap as TaxRegion-compatible shape)
+      setSelectedRegion({
+        ...c,
+        parentId: 0,
+        parentSlug: '',
+        description: undefined,
+        keyGrapes: undefined,
+        keyStyles: undefined,
+      } as TaxRegion);
+      setRegionCardPosition(position);
       setShowProducts(false);
       router.push(buildUrl(parsed.category, c.slug));
     },
@@ -92,10 +101,16 @@ export default function ExploreClient({ slug }: Props) {
   );
 
   const handleExploreRegion = useCallback(() => {
-    if (!selectedRegion || !parsed.country) return;
+    if (!selectedRegion) return;
+    const isCountryLevel = selectedRegion.parentId === 0;
     setShowProducts(true);
     setSelectedRegion(null);
-    router.push(buildUrl(parsed.category, parsed.country.slug, selectedRegion.slug));
+    if (isCountryLevel) {
+      // Country card — just show products for this country (URL already set)
+      // No additional navigation needed, just show the sidebar
+    } else if (parsed.country) {
+      router.push(buildUrl(parsed.category, parsed.country.slug, selectedRegion.slug));
+    }
   }, [selectedRegion, parsed.category, parsed.country, router, buildUrl]);
 
   const handleSelectSubregion = useCallback(
@@ -171,7 +186,7 @@ export default function ExploreClient({ slug }: Props) {
 
   // Show products when drilled to region level or deeper (after explore click)
   const shouldShowProducts =
-    showProducts || parsed.drillLevel === "subregion" || parsed.drillLevel === "appellation";
+    showProducts || parsed.drillLevel === "region" || parsed.drillLevel === "subregion" || parsed.drillLevel === "appellation";
 
   return (
     <div className="relative h-full w-full">

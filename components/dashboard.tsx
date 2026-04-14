@@ -12,7 +12,7 @@ const ChangeLogPage = React.lazy(() => import('@/components/pages/ChangeLogPage'
 const ImportHubPage = React.lazy(() => import('@/components/pages/ImportHubPage').then(m => ({ default: m.ImportHubPage })));
 const SettingsPage      = React.lazy(() => import('@/components/pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
 
-type Section = 'products' | 'matrix' | 'knowledge_library' | 'validation' | 'changelog' | 'import' | 'settings';
+type Section = 'products' | 'matrix' | 'taxonomy_manager' | 'knowledge_library' | 'validation' | 'changelog' | 'import' | 'settings';
 
 interface NavGroup {
   label: string;
@@ -131,6 +131,7 @@ export function Dashboard() {
   const pages: Record<Section, React.ReactNode> = {
     products:         <ProductsPage />,
     matrix:           <ProductMatrixPage />,
+    taxonomy_manager: <TaxonomyManagerPage />,
     knowledge_library: <KnowledgeLibraryPage />,
     validation:       <ValidationDashboardPage />,
     changelog:        <ChangeLogPage />,
