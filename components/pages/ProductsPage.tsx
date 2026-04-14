@@ -5,8 +5,10 @@ import {
   SlidersHorizontal, Layers, MapPin, Star, Tag, Wine, Code2, Eye, FileText,
   ArrowUpDown, ChevronDown, CheckCircle2, Utensils, BarChart3
 } from 'lucide-react';
-
-// ── Searchable select dropdown ──────────────────────────────────────────────
+import {
+  CharacterRadarChart, FlavorWheel, BodySweetnessMatrix,
+  FoodPairingGrid, DataQualityGauge, VintageTimeline,
+} from '@/components/product-visualizations';
 
 function SearchableSelect({ value, onChange, options, placeholder }: {
   value: string;
@@ -16,78 +18,61 @@ function SearchableSelect({ value, onChange, options, placeholder }: {
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const filtered = useMemo(() => {
     if (!query) return options;
     const q = query.toLowerCase();
-    return options.filter(o => o.label.toLowerCase().includes(q));
+    return options.filter(function (o) { return o.label.toLowerCase().includes(q); });
   }, [options, query]);
 
-  // Close on outside click
-  useEffect(() => {
+  useEffect(function () {
     if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
+    function handler(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) setOpen(false);
+    }
     document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    return function () { document.removeEventListener('mousedown', handler); };
   }, [open]);
 
-  // Focus input on open
-  useEffect(() => {
+  useEffect(function () {
     if (open) { setQuery(''); inputRef.current?.focus(); }
   }, [open]);
 
-  const selectedLabel = value ? options.find(o => o.value === value)?.label ?? value : '';
+  const selectedLabel = value ? (options.find(function (o) { return o.value === value; })?.label || value) : '';
 
   return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-left transition-colors hover:border-white/20"
-      >
+    <div ref={containerRef} className="relative">
+      <button type="button" onClick={function () { setOpen(!open); }}
+        className="w-full flex items-center justify-between bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-left transition-colors hover:border-white/20">
         <span className={value ? 'text-white' : 'text-slate-500'}>{value ? selectedLabel : placeholder}</span>
-        <ChevronDown size={12} className={`text-slate-500 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown size={12} className={'text-slate-500 transition-transform' + (open ? ' rotate-180' : '')} />
       </button>
-
       {open && (
         <div className="absolute z-50 mt-1 w-full rounded-lg border border-white/10 bg-slate-800 shadow-xl">
-          {/* Search input */}
           {options.length > 5 && (
             <div className="p-1.5 border-b border-white/8">
-              <input
-                ref={inputRef}
-                type="text"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
+              <input ref={inputRef} type="text" value={query}
+                onChange={function (e) { setQuery(e.target.value); }}
                 placeholder="Type to filter..."
-                className="w-full bg-slate-900 border border-white/10 rounded px-2 py-1 text-xs text-white placeholder:text-slate-600 outline-none"
-              />
+                className="w-full bg-slate-900 border border-white/10 rounded px-2 py-1 text-xs text-white placeholder:text-slate-600 outline-none" />
             </div>
           )}
-
-          {/* Options list */}
           <div className="max-h-52 overflow-y-auto p-1">
-            {/* Clear / All option */}
-            <button
-              onClick={() => { onChange(''); setOpen(false); }}
-              className={`w-full text-left rounded px-2 py-1.5 text-xs transition-colors ${!value ? 'bg-violet-500/15 text-violet-300' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
-            >
+            <button onClick={function () { onChange(''); setOpen(false); }}
+              className={'w-full text-left rounded px-2 py-1.5 text-xs transition-colors ' + (!value ? 'bg-violet-500/15 text-violet-300' : 'text-slate-400 hover:bg-white/5 hover:text-white')}>
               {placeholder}
             </button>
-            {filtered.map(o => (
-              <button
-                key={o.value}
-                onClick={() => { onChange(o.value); setOpen(false); }}
-                className={`w-full text-left rounded px-2 py-1.5 text-xs transition-colors flex items-center justify-between ${value === o.value ? 'bg-violet-500/15 text-violet-300' : 'text-slate-300 hover:bg-white/5 hover:text-white'}`}
-              >
-                <span className="truncate">{o.label}</span>
-                {o.count !== undefined && <span className="text-slate-600 ml-1 shrink-0">{o.count}</span>}
-              </button>
-            ))}
+            {filtered.map(function (o) {
+              return (
+                <button key={o.value} onClick={function () { onChange(o.value); setOpen(false); }}
+                  className={'w-full text-left rounded px-2 py-1.5 text-xs transition-colors flex items-center justify-between ' + (value === o.value ? 'bg-violet-500/15 text-violet-300' : 'text-slate-300 hover:bg-white/5 hover:text-white')}>
+                  <span className="truncate">{o.label}</span>
+                  {o.count !== undefined && <span className="text-slate-600 ml-1 shrink-0">{o.count}</span>}
+                </button>
+              );
+            })}
             {filtered.length === 0 && (
               <p className="px-2 py-3 text-center text-xs text-slate-600">No matches</p>
             )}
@@ -97,10 +82,6 @@ function SearchableSelect({ value, onChange, options, placeholder }: {
     </div>
   );
 }
-import {
-  CharacterRadarChart, FlavorWheel, BodySweetnessMatrix,
-  FoodPairingGrid, DataQualityGauge, VintageTimeline,
-} from '@/components/product-visualizations';
 
 type Product = Record<string, unknown>;
 type Facet = { value: string; count: number };
@@ -243,8 +224,6 @@ const EDITABLE = ['name','sku','brand','vintage','country','region','subregion',
 export function ProductsPage() {
   const [data, setData] = useState<{ items: Product[]; total: number; totalPages: number; page: number } | null>(null);
   const [page, setPage] = useState(1);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const listScrollRef = useRef<HTMLDivElement>(null);
   const [search, setSearch] = useState('');
   const [country, setCountry] = useState('');
   const [region, setRegion] = useState('');
@@ -277,9 +256,8 @@ export function ProductsPage() {
   const load = useCallback(async (
     p = page, q = search, c = country, r = region, ap = appellation,
     s = status, cl = classification, wc = wineClass, sg = segment,
-    sb = sortBy, sd = sortDir, append = false,
+    sb = sortBy, sd = sortDir,
   ) => {
-    if (append) setLoadingMore(true);
     const params = new URLSearchParams({ page: String(p) });
     if (q)  params.set('search', q);
     if (c)  params.set('country', c);
@@ -292,45 +270,13 @@ export function ProductsPage() {
     params.set('sort', sb);
     params.set('sortDir', sd);
     const res = await fetch(`/api/products?${params}`);
-    const json = await res.json();
-    if (append && data) {
-      setData({ ...json, items: [...data.items, ...json.items] });
-    } else {
-      setData(json);
-    }
-    setLoadingMore(false);
-  }, [page, search, country, region, appellation, status, classification, wineClass, segment, sortBy, sortDir, data]);
+    setData(await res.json());
+  }, [page, search, country, region, appellation, status, classification, wineClass, segment, sortBy, sortDir]);
 
-  // Reset and load on filter change
   useEffect(() => {
-    setPage(1);
-    const params = new URLSearchParams({ page: '1' });
-    if (search)  params.set('search', search);
-    if (country)  params.set('country', country);
-    if (region)  params.set('region', region);
-    if (appellation) params.set('appellation', appellation);
-    if (status)  params.set('validation_status', status);
-    if (classification) params.set('classification', classification);
-    if (wineClass) params.set('wine_classification', wineClass);
-    if (segment) params.set('segment', segment);
-    params.set('sort', sortBy);
-    params.set('sortDir', sortDir);
-    fetch(`/api/products?${params}`).then(r => r.json()).then(setData).catch(() => {});
+    load(page, search, country, region, appellation, status, classification, wineClass, segment, sortBy, sortDir);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, country, region, appellation, status, classification, wineClass, segment, sortBy, sortDir]);
-
-  // Infinite scroll handler
-  const handleListScroll = useCallback(() => {
-    const el = listScrollRef.current;
-    if (!el || loadingMore || !data) return;
-    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 300) {
-      if (data.items.length < data.total) {
-        const nextPage = page + 1;
-        setPage(nextPage);
-        load(nextPage, search, country, region, appellation, status, classification, wineClass, segment, sortBy, sortDir, true);
-      }
-    }
-  }, [loadingMore, data, page, load, search, country, region, appellation, status, classification, wineClass, segment, sortBy, sortDir]);
+  }, [page, search, country, region, appellation, status, classification, wineClass, segment, sortBy, sortDir]);
 
   async function openProduct(p: Product) {
     setSelected(p);
@@ -387,7 +333,7 @@ export function ProductsPage() {
   const [tierFilter, setTierFilter] = useState('');
 
   // Group products by sku_base
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+  const [expandedGroups, setExpandedGroups] = useState(() => new Set<string>());
   const groupedProducts = useMemo(() => {
     const items = data?.items ?? [];
     // Client-side price filter
@@ -410,7 +356,7 @@ export function ProductsPage() {
       filtered = filtered.filter(p => String(p.enrichment_priority) === tierFilter);
     }
 
-    const map = new Map<string, Product[]>();
+    const map = new Map() as Map<string, Product[]>;
     for (const p of filtered) {
       const base = String(p.sku_base ?? (p.sku ? String(p.sku).substring(0, 7) : 'unknown'));
       if (!map.has(base)) map.set(base, []);
@@ -441,7 +387,7 @@ export function ProductsPage() {
   }
 
   const taxContextMap = useMemo(() => {
-    const m = new Map<string, string>();
+    const m = new Map() as Map<string, string>;
     for (const tc of taxContexts) {
       if (tc.term && tc.description_short) m.set(tc.term, tc.description_short);
     }
@@ -483,41 +429,35 @@ export function ProductsPage() {
           {/* Filters */}
           {showFilters && (
             <div className="space-y-2 pt-1">
-              <SearchableSelect
-                value={classification}
-                onChange={v => { setClassification(v); setPage(1); }}
-                options={(facets?.categories ?? []).map(f => ({ value: f.value, label: f.value, count: f.count }))}
-                placeholder="All classifications"
-              />
-              <SearchableSelect
-                value={country}
-                onChange={v => { setCountry(v); setRegion(''); setAppellation(''); setPage(1); }}
-                options={(facets?.countries ?? []).map(f => ({ value: f.value, label: f.value, count: f.count }))}
-                placeholder="All countries"
-              />
+              <SearchableSelect value={classification}
+                onChange={function(v) { setClassification(v); setPage(1); }}
+                options={(facets?.categories ?? []).map(function(f) { return { value: f.value, label: f.value, count: f.count }; })}
+                placeholder="All classifications" />
+              <SearchableSelect value={country}
+                onChange={function(v) { setCountry(v); setRegion(''); setAppellation(''); setPage(1); }}
+                options={(facets?.countries ?? []).map(function(f) { return { value: f.value, label: f.value, count: f.count }; })}
+                placeholder="All countries" />
               <div className="flex gap-2">
                 <input placeholder="Price min" value={priceMin} onChange={e => setPriceMin(e.target.value)}
                   className="flex-1 bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-slate-600" />
                 <input placeholder="Price max" value={priceMax} onChange={e => setPriceMax(e.target.value)}
                   className="flex-1 bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-slate-600" />
               </div>
-              <SearchableSelect
-                value={confFilter}
-                onChange={v => setConfFilter(v)}
-                options={[{ value: '75', label: '75%+' }, { value: '50', label: '50%+' }, { value: '25', label: '25%+' }]}
-                placeholder="Any confidence"
-              />
-              <SearchableSelect
-                value={tierFilter}
-                onChange={v => setTierFilter(v)}
-                options={[
-                  { value: '1', label: 'T1 - High priority' },
-                  { value: '2', label: 'T2 - Medium priority' },
-                  { value: '3', label: 'T3 - Standard' },
-                  { value: '5', label: 'T5 - Low / No sales' },
-                ]}
-                placeholder="Any enrichment tier"
-              />
+              <select value={confFilter} onChange={e => setConfFilter(e.target.value)}
+                className="w-full bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white">
+                <option value="">Any confidence</option>
+                <option value="75">75%+</option>
+                <option value="50">50%+</option>
+                <option value="25">25%+</option>
+              </select>
+              <select value={tierFilter} onChange={e => setTierFilter(e.target.value)}
+                className="w-full bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white">
+                <option value="">Any enrichment tier</option>
+                <option value="1">T1 - High priority</option>
+                <option value="2">T2 - Medium priority</option>
+                <option value="3">T3 - Standard</option>
+                <option value="5">T5 - Low / No sales</option>
+              </select>
               {/* Sort */}
               <div className="flex items-center gap-1.5 pt-1 flex-wrap">
                 <ArrowUpDown size={10} className="text-slate-500" />
@@ -543,8 +483,8 @@ export function ProductsPage() {
           )}
         </div>
 
-        {/* Product list — infinite scroll */}
-        <div className="flex-1 overflow-y-auto" ref={listScrollRef} onScroll={handleListScroll}>
+        {/* Product list */}
+        <div className="flex-1 overflow-y-auto">
           {groupedProducts.map((group) => {
             const p = group[0];
             const conf = confValue(p);
@@ -579,19 +519,21 @@ export function ProductsPage() {
           {!data && (
             <div className="px-4 py-12 text-center text-slate-600 text-sm">Loading...</div>
           )}
-          {loadingMore && (
-            <div className="px-4 py-4 text-center">
-              <div className="w-4 h-4 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto" />
+        </div>
+
+        {/* Pagination */}
+        {data && data.totalPages > 1 && (
+          <div className="px-4 py-2.5 border-t border-white/10 flex items-center justify-between shrink-0">
+            <p className="text-[10px] text-slate-500">Page {data.page}/{data.totalPages}</p>
+            <div className="flex items-center gap-1.5">
+              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
+                className="text-slate-400 disabled:opacity-30 p-1"><ChevronLeft size={14} /></button>
+              <span className="text-[11px] text-slate-300">{data.page}</span>
+              <button onClick={() => setPage(p => Math.min(data.totalPages, p + 1))} disabled={page === data.totalPages}
+                className="text-slate-400 disabled:opacity-30 p-1"><ChevronRight size={14} /></button>
             </div>
-          )}
-          {data && data.items.length > 0 && (
-            <div className="px-4 py-2 border-t border-white/8 text-center shrink-0">
-              <p className="text-[10px] text-slate-600">
-                {data.items.length} of {data.total.toLocaleString()} products
-                {data.items.length < data.total && ' — scroll for more'}
-              </p>
-            </div>
-          )}
+          </div>
+        )}
       </div>
 
       {/* ═══ RIGHT PANEL: Product Detail Dashboard ═══ */}
