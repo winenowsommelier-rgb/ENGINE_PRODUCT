@@ -19,7 +19,7 @@ export interface ProductChangelog {
   product_id: string;
   sku: string;
   changed_at: string;
-  source: 'batch_process' | 'taxonomy_queue' | 'manual_edit' | 'override_import';
+  source: 'batch_process' | 'taxonomy_queue' | 'manual_edit' | 'override_import' | 'masterfile_import';
   field: string;
   old_value: string | null;
   new_value: string | null;
