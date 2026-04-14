@@ -9,6 +9,7 @@ import {
   CharacterRadarChart, FlavorWheel, BodySweetnessMatrix,
   FoodPairingGrid, DataQualityGauge, VintageTimeline,
 } from '@/components/product-visualizations';
+import { ProductImage } from '@/components/ProductImage';
 
 function SearchableSelect({ value, onChange, options, placeholder }: {
   value: string;
@@ -492,7 +493,14 @@ export function ProductsPage() {
             return (
               <div key={String(p.id)} onClick={() => openProduct(p)}
                 className={`px-4 py-3 border-b border-white/5 cursor-pointer transition-colors ${isActive ? 'bg-violet-500/10 border-l-2 border-l-violet-500' : 'hover:bg-white/5'}`}>
-                <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start gap-3">
+                  <ProductImage
+                    src={p.image_url ? String(p.image_url) : undefined}
+                    alt={p.image_alt_text ? String(p.image_alt_text) : undefined}
+                    sku={String(p.sku ?? '')}
+                    classification={p.classification ? String(p.classification) : undefined}
+                    size="sm"
+                  />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm text-white truncate font-medium">{String(p.name ?? 'Untitled')}</p>
                     <p className="text-[11px] text-slate-500 font-mono mt-0.5">{String(p.sku ?? '--')}</p>
@@ -553,6 +561,13 @@ export function ProductsPage() {
                 <button onClick={() => setSelected(null)} className="lg:hidden text-slate-400 hover:text-white shrink-0">
                   <ChevronLeft size={18} />
                 </button>
+                <ProductImage
+                  src={selected.image_url ? String(selected.image_url) : undefined}
+                  alt={selected.image_alt_text ? String(selected.image_alt_text) : undefined}
+                  sku={String(selected.sku ?? '')}
+                  classification={selected.classification ? String(selected.classification) : undefined}
+                  size="md"
+                />
                 <div className="min-w-0">
                   <h2 className="text-sm font-semibold text-white truncate">{String(selected.name ?? '')}</h2>
                   <p className="text-[11px] text-slate-500 font-mono">{String(selected.sku ?? '')}</p>

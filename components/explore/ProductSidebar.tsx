@@ -4,8 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import type { CategoryScope, ExploreProduct } from "@/lib/explore/types";
 import { getAccent } from "@/lib/explore/category-config";
+import { ProductImage } from "@/components/ProductImage";
 import EmptyState from "@/components/explore/EmptyState";
 import ProductFilters from "./ProductFilters";
+import ProductDetailCard from "./ProductDetailCard";
 
 interface Props {
   locationName: string;
@@ -35,6 +37,7 @@ export default function ProductSidebar({
   const [totalCount, setTotalCount] = useState(0);
   const [sort, setSort] = useState<SortOption>("popular");
   const [filters, setFilters] = useState<Record<string, string>>({});
+  const [selectedProduct, setSelectedProduct] = useState<ExploreProduct | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const accent = getAccent(category);
 
@@ -136,15 +139,27 @@ export default function ProductSidebar({
       {/* Product list */}
       <div ref={listRef} onScroll={handleScroll} className="flex-1 overflow-y-auto p-3 space-y-2">
         {products.map((p) => (
-          <div
+          <button
             key={p.id}
-            className="rounded-xl border border-white/6 bg-white/3 p-3 transition-colors hover:bg-white/6"
+            type="button"
+            onClick={() => setSelectedProduct(p)}
+            className="w-full text-left rounded-xl border border-white/6 bg-white/3 p-3 transition-colors hover:bg-white/6 cursor-pointer focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none"
           >
-            <h3 className="text-sm font-medium text-white leading-snug">{p.name}</h3>
-            <div className="mt-1 flex items-center gap-2 text-xs text-white/50">
-              {p.brand && <span>{p.brand}</span>}
-              {p.grape_variety && <span>{p.grape_variety}</span>}
-              {p.vintage && <span>{p.vintage}</span>}
+            <div className="flex gap-3">
+              <ProductImage
+                src={p.image_url}
+                sku={p.sku}
+                classification={p.classification}
+                size="sm"
+              />
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm font-medium text-white leading-snug">{p.name}</h3>
+                <div className="mt-1 flex items-center gap-2 text-xs text-white/50">
+                  {p.brand && <span>{p.brand}</span>}
+                  {p.grape_variety && <span>{p.grape_variety}</span>}
+                  {p.vintage && <span>{p.vintage}</span>}
+                </div>
+              </div>
             </div>
             <div className="mt-1.5 flex items-center justify-between">
               <span className="text-sm font-semibold text-white">
@@ -156,7 +171,7 @@ export default function ProductSidebar({
                 </span>
               )}
             </div>
-          </div>
+          </button>
         ))}
 
         {loading && (
@@ -188,6 +203,15 @@ export default function ProductSidebar({
           </p>
         )}
       </div>
+
+      {/* Product detail overlay */}
+      {selectedProduct && (
+        <ProductDetailCard
+          product={selectedProduct}
+          category={category}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </div>
   );
 }

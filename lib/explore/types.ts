@@ -116,4 +116,9 @@ export interface ExploreProduct {
   region: string;
   subregion?: string;
   desc_en_short?: string;
+  wine_body?: string;
+  wine_acidity?: string;
+  wine_tannin?: string;
+  flavor_tags?: string;
+  food_matching?: string;
 }

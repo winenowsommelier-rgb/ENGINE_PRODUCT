@@ -34,7 +34,7 @@ interface Props {
   region?: TaxRegion;
   subregion?: TaxSubregion;
   onSelectCountry: (c: TaxCountry) => void;
-  onSelectRegion: (r: TaxRegion) => void;
+  onSelectRegion: (r: TaxRegion, position: { x: number; y: number }) => void;
   onSelectSubregion: (s: TaxSubregion) => void;
 }
 
@@ -170,7 +170,7 @@ export default function ExploreMap({
         if (!country) return;
         const regions = getRegionsForCountry(country.id, category);
         const r = regions.find((x) => x.id === props.id);
-        if (r) onSelectRegion(r);
+        if (r) onSelectRegion(r, { x: e.point.x, y: e.point.y });
       } else if (layerId === "subregion-markers") {
         if (!region) return;
         const subs = getSubregionsForRegion(region.id, category);

@@ -41,6 +41,12 @@ const SELECT_FIELDS = [
   "region",
   "subregion",
   "image_url",
+  "desc_en_short",
+  "wine_body",
+  "wine_acidity",
+  "wine_tannin",
+  "flavor_tags",
+  "food_matching",
 ].join(",");
 
 export async function GET(req: NextRequest) {

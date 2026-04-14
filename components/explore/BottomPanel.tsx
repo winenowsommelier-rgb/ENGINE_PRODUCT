@@ -4,7 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Loader2, GripHorizontal, ChevronDown } from "lucide-react";
 import type { CategoryScope, ExploreProduct } from "@/lib/explore/types";
 import { getAccent } from "@/lib/explore/category-config";
+import { ProductImage } from "@/components/ProductImage";
 import ProductFilters from "./ProductFilters";
+import ProductDetailCard from "./ProductDetailCard";
 
 interface Props {
   locationName: string;
@@ -28,6 +30,7 @@ export default function BottomPanel({
   const [totalCount, setTotalCount] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [filters, setFilters] = useState<Record<string, string>>({});
+  const [selectedProduct, setSelectedProduct] = useState<ExploreProduct | null>(null);
   const accent = getAccent(category);
 
   useEffect(() => {
@@ -112,20 +115,39 @@ export default function BottomPanel({
 
             <div className="space-y-2">
               {products.map((p) => (
-                <div key={p.id} className="rounded-xl border border-white/6 bg-white/3 p-3">
-                  <h3 className="text-sm font-medium text-white">{p.name}</h3>
-                  <div className="mt-1 flex items-center gap-2 text-xs text-white/50">
-                    {p.brand && <span>{p.brand}</span>}
-                    {p.vintage && <span>{p.vintage}</span>}
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setSelectedProduct(p)}
+                  className="w-full text-left rounded-xl border border-white/6 bg-white/3 p-3 transition-colors hover:bg-white/6 cursor-pointer focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none"
+                >
+                  <div className="flex gap-3">
+                    <ProductImage src={p.image_url} sku={p.sku} classification={p.classification} size="sm" />
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-sm font-medium text-white">{p.name}</h3>
+                      <div className="mt-1 flex items-center gap-2 text-xs text-white/50">
+                        {p.brand && <span>{p.brand}</span>}
+                        {p.vintage && <span>{p.vintage}</span>}
+                      </div>
+                    </div>
                   </div>
                   <p className="mt-1 text-sm font-semibold text-white">
                     ฿{p.price?.toLocaleString() ?? "N/A"}
                   </p>
-                </div>
+                </button>
               ))}
             </div>
           </div>
         </div>
+      )}
+
+      {/* Product detail overlay */}
+      {selectedProduct && (
+        <ProductDetailCard
+          product={selectedProduct}
+          category={category}
+          onClose={() => setSelectedProduct(null)}
+        />
       )}
     </div>
   );

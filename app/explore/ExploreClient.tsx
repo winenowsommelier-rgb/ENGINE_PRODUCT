@@ -41,6 +41,7 @@ export default function ExploreClient({ slug }: Props) {
 
   // Local UI state (not in URL)
   const [selectedRegion, setSelectedRegion] = useState<TaxRegion | null>(null);
+  const [regionCardPosition, setRegionCardPosition] = useState<{ x: number; y: number } | undefined>(undefined);
   const [showProducts, setShowProducts] = useState(false);
 
   // ── Navigation helpers ────────────────────────
@@ -82,8 +83,9 @@ export default function ExploreClient({ slug }: Props) {
   );
 
   const handleSelectRegion = useCallback(
-    (r: TaxRegion) => {
+    (r: TaxRegion, position?: { x: number; y: number }) => {
       setSelectedRegion(r);
+      setRegionCardPosition(position);
       setShowProducts(false);
     },
     []
@@ -206,6 +208,7 @@ export default function ExploreClient({ slug }: Props) {
         <RegionCard
           region={selectedRegion}
           category={parsed.category}
+          position={regionCardPosition}
           onExplore={handleExploreRegion}
           onClose={handleCloseCard}
         />

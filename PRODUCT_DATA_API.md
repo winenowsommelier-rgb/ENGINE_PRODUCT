@@ -211,7 +211,39 @@ curl -X PATCH http://localhost:3000/api/products/PRODUCT_ID \
 
 ---
 
-### 7. Facets — `GET /api/products/facets`
+### 7. Product Image — `GET|POST /api/products/{id}/image`
+
+**GET** — Returns image metadata and suggested SEO filename for a product.
+
+**POST** — Upload or fetch a product image. Two modes:
+
+```bash
+# Mode 1: Download from URL (for AI agents / scrapers)
+curl -X POST http://localhost:3000/api/products/PRODUCT_ID/image \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com/product-photo.jpg"}'
+
+# Mode 2: Direct file upload
+curl -X POST http://localhost:3000/api/products/PRODUCT_ID/image \
+  -F "file=@/path/to/image.webp"
+```
+
+The image is automatically:
+- Saved with an SEO-optimized filename: `{brand}-{product-name}-{grape}-{region}-{vintage}.webp`
+- Stored in `public/images/products/{country}/`
+- Product record updated with `image_url`, `image_alt_text`, `image_local_path`
+- Alt text auto-generated: "{Brand} {Product Name} -- {Grape/Type} from {Region}"
+
+**Image naming examples:**
+| Product | Generated Filename |
+|---------|-------------------|
+| Opus One 2019, Napa | `opus-one-cabernet-sauvignon-napa-2019.webp` |
+| Glenfiddich 18 Year | `glenfiddich-18-year-single-malt-speyside.webp` |
+| Asahi Super Dry | `asahi-super-dry-premium-lager-japan.webp` |
+
+---
+
+### 8. Facets — `GET /api/products/facets`
 
 Returns all distinct values with counts for every filterable field: categories, countries, statuses, regions, appellations, wine classifications. Use this to understand what values exist in the database.
 
