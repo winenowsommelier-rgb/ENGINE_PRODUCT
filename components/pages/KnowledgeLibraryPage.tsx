@@ -261,17 +261,26 @@ function EntityBrowser({
                     <div className="flex items-center gap-2">
                       <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${STATUS_DOT[worstStatus] ?? 'bg-slate-600'}`} />
                       <span className="text-sm text-white truncate">{entity.name}</span>
+                      {scopeBadges.length > 0 && (
+                        <div className="flex gap-1">
+                          {scopes
+                            .filter(s => scopeBadges.includes(s.id))
+                            .map(s => (
+                              <span key={s.id} className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-slate-400">
+                                {s.label}
+                              </span>
+                            ))}
+                        </div>
+                      )}
                     </div>
-                    {scopeBadges.length > 0 && (
-                      <div className="flex gap-1 mt-1 ml-3.5">
-                        {scopes
-                          .filter(s => scopeBadges.includes(s.id))
-                          .map(s => (
-                            <span key={s.id} className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-slate-400">
-                              {s.label}
-                            </span>
-                          ))}
-                      </div>
+                    {/* Description preview */}
+                    {entity.contexts?.length > 0 && entity.contexts[0].description_short && (
+                      <p className="text-[11px] text-slate-500 mt-0.5 ml-3.5 truncate">
+                        {entity.contexts[0].description_short}
+                      </p>
+                    )}
+                    {(!entity.contexts?.length || !entity.contexts[0].description_short) && (
+                      <p className="text-[10px] text-slate-700 mt-0.5 ml-3.5 italic">No description</p>
                     )}
                   </div>
                   {canDrill && !search && (
@@ -602,7 +611,7 @@ export function KnowledgeLibraryPage() {
             <BookOpen size={15} className="text-violet-400" />
             Knowledge Library
           </h1>
-          <p className="text-[10px] text-slate-500 mt-0.5">Browse and edit taxonomy descriptions</p>
+          <p className="text-[10px] text-slate-500 mt-0.5">Browse, search, and manage taxonomy with descriptions</p>
         </div>
         <EntityBrowser onSelect={setSelectedId} selectedId={selectedId} />
       </div>
