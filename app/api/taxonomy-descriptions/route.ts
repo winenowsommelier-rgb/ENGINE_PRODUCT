@@ -90,6 +90,20 @@ export async function GET(req: NextRequest) {
     const text = readFileSync(filePath, 'utf-8');
     let entries = parseCSV(text);
 
+    // Deduplicate: keep only the highest product-count entry per entity name
+    // This fixes Bordeaux→France (726) instead of Bordeaux→Uruguay (1)
+    const bestByName = new Map<string, DescEntry>();
+    for (const e of entries) {
+      const key = e.entity_name.toLowerCase();
+      const existing = bestByName.get(key);
+      const count = parseInt(e.product_count) || 0;
+      const existingCount = existing ? (parseInt(existing.product_count) || 0) : -1;
+      if (count > existingCount) {
+        bestByName.set(key, e);
+      }
+    }
+    entries = Array.from(bestByName.values());
+
     if (name) {
       const q = name.toLowerCase();
       entries = entries.filter(function (e) {
