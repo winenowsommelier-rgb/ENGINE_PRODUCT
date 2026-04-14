@@ -1,17 +1,18 @@
 'use client';
 import React, { Suspense, useState } from 'react';
-import { ClipboardCheck, Globe, Grid3X3, History, Library, Package, Settings, Upload, type LucideIcon } from 'lucide-react';
+import { BookOpen, ClipboardCheck, Globe, Grid3X3, History, Library, Package, Settings, Upload, type LucideIcon } from 'lucide-react';
 
 // Lazy imports — each page loads independently, crashes are isolated
 const ProductsPage      = React.lazy(() => import('@/components/pages/ProductsPage').then(m => ({ default: m.ProductsPage })));
 const ProductMatrixPage = React.lazy(() => import('@/components/pages/ProductMatrixPage').then(m => ({ default: m.ProductMatrixPage })));
+const TaxonomyManagerPage = React.lazy(() => import('@/components/pages/TaxonomyManagerPage').then(m => ({ default: m.TaxonomyManagerPage })));
 const KnowledgeLibraryPage = React.lazy(() => import('@/components/pages/KnowledgeLibraryPage').then(m => ({ default: m.KnowledgeLibraryPage })));
 const ValidationDashboardPage = React.lazy(() => import('@/components/pages/ValidationDashboardPage').then(m => ({ default: m.ValidationDashboardPage })));
 const ChangeLogPage = React.lazy(() => import('@/components/pages/ChangeLogPage').then(m => ({ default: m.ChangeLogPage })));
 const ImportHubPage = React.lazy(() => import('@/components/pages/ImportHubPage').then(m => ({ default: m.ImportHubPage })));
 const SettingsPage      = React.lazy(() => import('@/components/pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
 
-type Section = 'products' | 'matrix' | 'knowledge_library' | 'validation' | 'changelog' | 'import' | 'settings';
+type Section = 'products' | 'matrix' | 'taxonomy_manager' | 'knowledge_library' | 'validation' | 'changelog' | 'import' | 'settings';
 
 interface NavGroup {
   label: string;
@@ -130,6 +131,7 @@ export function Dashboard() {
   const pages: Record<Section, React.ReactNode> = {
     products:         <ProductsPage />,
     matrix:           <ProductMatrixPage />,
+    taxonomy_manager: <TaxonomyManagerPage />,
     knowledge_library: <KnowledgeLibraryPage />,
     validation:       <ValidationDashboardPage />,
     changelog:        <ChangeLogPage />,

@@ -16,6 +16,7 @@ import SearchOverlay from "@/components/explore/SearchOverlay";
 import ProductSidebar from "@/components/explore/ProductSidebar";
 import BottomPanel from "@/components/explore/BottomPanel";
 import OnboardingHint from "@/components/explore/OnboardingHint";
+import LocationInfo from "@/components/explore/LocationInfo";
 
 // Dynamic import for the map to avoid SSR issues with WebGL
 const ExploreMap = dynamic(() => import("@/components/explore/ExploreMap"), {
@@ -46,6 +47,7 @@ export default function ExploreClient({ slug }: Props) {
   const [selectedRegion, setSelectedRegion] = useState<TaxRegion | null>(null);
   const [regionCardPosition, setRegionCardPosition] = useState<{ x: number; y: number } | undefined>(undefined);
   const [showProducts, setShowProducts] = useState(false);
+  const [showLocationInfo, setShowLocationInfo] = useState(true);
 
   // ── Reset UI state when URL changes (breadcrumb click, back/forward) ──
   useEffect(() => {
@@ -53,6 +55,7 @@ export default function ExploreClient({ slug }: Props) {
     if (prevSlugRef.current !== currentSlug) {
       prevSlugRef.current = currentSlug;
       setSelectedRegion(null);
+      setShowLocationInfo(true);
       // Only keep showProducts if we're at subregion+ level (auto-show)
       if (parsed.drillLevel !== "subregion" && parsed.drillLevel !== "appellation") {
         setShowProducts(false);
@@ -223,6 +226,52 @@ export default function ExploreClient({ slug }: Props) {
   const shouldShowProducts =
     showProducts || parsed.drillLevel === "subregion" || parsed.drillLevel === "appellation";
 
+  // ── Location info panel context ──────────────────
+  const locationInfoData = useMemo(() => {
+    if (parsed.subregion && parsed.region && parsed.country) {
+      return {
+        name: parsed.subregion.name,
+        type: "subregion" as const,
+        parentName: parsed.country.name,
+        counts: parsed.subregion.counts,
+        priceRange: parsed.subregion.priceRange,
+      };
+    }
+    if (parsed.region && parsed.country) {
+      return {
+        name: parsed.region.name,
+        type: "region" as const,
+        parentName: parsed.country.name,
+        counts: parsed.region.counts,
+        priceRange: parsed.region.priceRange,
+      };
+    }
+    if (parsed.country) {
+      return {
+        name: parsed.country.name,
+        type: "country" as const,
+        parentName: undefined,
+        counts: parsed.country.counts,
+        priceRange: parsed.country.priceRange,
+      };
+    }
+    return null;
+  }, [parsed]);
+
+  const shouldShowLocationInfo =
+    showLocationInfo &&
+    locationInfoData !== null &&
+    parsed.drillLevel !== "world";
+
+  const handleCloseLocationInfo = useCallback(() => {
+    setShowLocationInfo(false);
+  }, []);
+
+  const handleExploreFromInfo = useCallback(() => {
+    setShowProducts(true);
+    setShowLocationInfo(false);
+  }, []);
+
   return (
     <div className="relative h-full w-full">
       {/* Accessible live region for drill-down announcements */}
@@ -252,6 +301,20 @@ export default function ExploreClient({ slug }: Props) {
         <CategoryLens active={parsed.category} onSelect={handleCategoryChange} />
         <SearchOverlay category={parsed.category} onSelect={handleSearchSelect} />
       </div>
+
+      {/* Location info panel (desktop, left side) */}
+      {shouldShowLocationInfo && locationInfoData && (
+        <LocationInfo
+          name={locationInfoData.name}
+          type={locationInfoData.type}
+          parentName={locationInfoData.parentName}
+          category={parsed.category}
+          counts={locationInfoData.counts}
+          priceRange={locationInfoData.priceRange}
+          onExploreProducts={handleExploreFromInfo}
+          onClose={handleCloseLocationInfo}
+        />
+      )}
 
       {/* Region card (floating, desktop/tablet) */}
       {selectedRegion && !shouldShowProducts && (

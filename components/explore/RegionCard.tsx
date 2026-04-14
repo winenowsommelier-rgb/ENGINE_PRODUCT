@@ -102,6 +102,38 @@ export default function RegionCard({ region, category, position, onExplore, onCl
   const cardRef = useRef<HTMLDivElement>(null);
   const [style, setStyle] = useState<React.CSSProperties>({});
 
+  // Fetch context description if region has none
+  const [fetchedDescription, setFetchedDescription] = useState<string | null>(null);
+  const [fetchedGrapes, setFetchedGrapes] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (region.description && region.keyGrapes && region.keyGrapes.length > 0) return;
+
+    const isCountryLevel = region.parentId === 0;
+    const contextType = isCountryLevel ? "country" : "region";
+    const params = new URLSearchParams({ name: region.name, type: contextType });
+    if (category) params.set("scope", category);
+
+    let cancelled = false;
+    fetch(`/api/explore/context?${params}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (cancelled || !data) return;
+        if (!region.description && data.description_short) {
+          setFetchedDescription(data.description_short);
+        }
+        if ((!region.keyGrapes || region.keyGrapes.length === 0) && data.key_grapes?.length > 0) {
+          setFetchedGrapes(data.key_grapes);
+        }
+      })
+      .catch(() => {});
+
+    return () => { cancelled = true; };
+  }, [region.name, region.parentId, region.description, region.keyGrapes, category]);
+
+  const displayDescription = region.description || fetchedDescription;
+  const displayGrapes = (region.keyGrapes && region.keyGrapes.length > 0) ? region.keyGrapes : fetchedGrapes;
+
   // For country-level cards (parentId === 0), use the region name itself for the flag
   const isCountryLevel = region.parentId === 0;
   const flag = isCountryLevel
@@ -168,16 +200,16 @@ export default function RegionCard({ region, category, position, onExplore, onCl
       </div>
 
       {/* Description */}
-      {region.description && (
+      {displayDescription && (
         <p className="border-t border-white/[0.08] px-4 py-3 text-sm leading-relaxed text-white/60">
-          {region.description}
+          {displayDescription}
         </p>
       )}
 
       {/* Key grapes */}
-      {region.keyGrapes && region.keyGrapes.length > 0 && (
+      {displayGrapes.length > 0 && (
         <div className="flex flex-wrap gap-1.5 border-t border-white/[0.08] px-4 py-3">
-          {region.keyGrapes.map((g) => (
+          {displayGrapes.map((g) => (
             <span
               key={g}
               className="rounded-full bg-white/[0.08] px-2.5 py-1 text-xs font-medium text-white/70"
