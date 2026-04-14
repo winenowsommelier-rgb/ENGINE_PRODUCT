@@ -1,0 +1,9 @@
+{
+  "total_packs": 55,
+  "by_pack_type": {
+    "brand": 12,
+    "classification": 9,
+    "country": 14,
+    "region": 20
+  }
+}

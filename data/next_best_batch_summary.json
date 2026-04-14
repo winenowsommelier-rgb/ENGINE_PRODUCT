@@ -1,0 +1,10 @@
+{
+  "pending_unique_skus": 1695,
+  "top_20_live_records": 20,
+  "top_20_repeated_producers": 17,
+  "top_20_task_mix": {
+    "flavor": 19,
+    "region": 8,
+    "grape": 2
+  }
+}
