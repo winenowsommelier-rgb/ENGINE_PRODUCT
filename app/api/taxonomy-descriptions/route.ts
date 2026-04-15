@@ -50,6 +50,62 @@ function parseCSV(text: string): DescEntry[] {
   return results;
 }
 
+interface ExpertEntry {
+  pack_type: string;
+  canonical_name: string;
+  parent_country: string;
+  parent_region: string;
+  scope: string;
+  knowledge_short_en: string;
+  knowledge_full_en: string;
+  signature_varieties_or_styles: string;
+  signature_regions_or_appellations: string;
+  house_or_category_traits: string;
+  use_cases: string;
+  validation_status: string;
+  confidence_level: string;
+  source_basis: string;
+  last_reviewed: string;
+  notes: string;
+}
+
+// Cache the expert library in memory — reloaded per request but parsed once
+let _expertCache: { mtime: number; byType: Map<string, Map<string, ExpertEntry>> } | null = null;
+
+function loadExpertLibrary(type: string): Map<string, ExpertEntry> {
+  const expertPath = join(DATA_DIR, 'expert_knowledge_library.csv');
+  if (!existsSync(expertPath)) return new Map();
+
+  try {
+    const stat = require('fs').statSync(expertPath);
+    const mtime = stat.mtimeMs;
+
+    if (!_expertCache || _expertCache.mtime !== mtime) {
+      const text = readFileSync(expertPath, 'utf-8');
+      const lines = text.split('\n');
+      const headers = parseCSVLine(lines[0]);
+      const byType = new Map<string, Map<string, ExpertEntry>>();
+
+      for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        const values = parseCSVLine(lines[i]);
+        const entry: any = {};
+        headers.forEach(function (h, idx) { entry[h] = values[idx] || ''; });
+        const t = entry.pack_type;
+        if (!byType.has(t)) byType.set(t, new Map());
+        byType.get(t)!.set(entry.canonical_name.toLowerCase(), entry);
+      }
+
+      _expertCache = { mtime, byType };
+    }
+
+    // Map API type ('country') to pack_type (same name usually)
+    return _expertCache.byType.get(type) || new Map();
+  } catch {
+    return new Map();
+  }
+}
+
 function parseCSVLine(line: string): string[] {
   const result: string[] = [];
   let current = '';
@@ -91,7 +147,7 @@ export async function GET(req: NextRequest) {
     let entries = parseCSV(text);
 
     // Deduplicate: keep only the highest product-count entry per entity name
-    // This fixes Bordeaux→France (726) instead of Bordeaux→Uruguay (1)
+    // This fixes Bordeaux->France (726) instead of Bordeaux->Uruguay (1)
     const bestByName = new Map<string, DescEntry>();
     for (const e of entries) {
       const key = e.entity_name.toLowerCase();
@@ -104,6 +160,9 @@ export async function GET(req: NextRequest) {
     }
     entries = Array.from(bestByName.values());
 
+    // OVERLAY EXPERT LIBRARY — expert-authored entries take priority over templates
+    const expertMap = loadExpertLibrary(type);
+
     if (name) {
       const q = name.toLowerCase();
       entries = entries.filter(function (e) {
@@ -114,7 +173,32 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       type,
       total: entries.length,
+      expertCount: expertMap.size,
       entries: entries.map(function (e) {
+        const expert = expertMap.get(e.entity_name.toLowerCase());
+        if (expert) {
+          // Expert-authored entry: use expert content, keep catalog metadata
+          return {
+            name: e.entity_name,
+            parentCountry: expert.parent_country || e.parent_country,
+            parentRegion: expert.parent_region || e.parent_region,
+            productCount: parseInt(e.product_count) || 0,
+            segments: e.segments_seen,
+            status: expert.validation_status || 'expert_authored',
+            shortDesc: expert.knowledge_short_en,
+            fullDesc: expert.knowledge_full_en,
+            notes: expert.notes || '',
+            isExpert: true,
+            confidence: expert.confidence_level,
+            signatureVarieties: expert.signature_varieties_or_styles,
+            signatureRegions: expert.signature_regions_or_appellations,
+            houseTraits: expert.house_or_category_traits,
+            useCases: expert.use_cases,
+            lastReviewed: expert.last_reviewed,
+            sourceBasis: expert.source_basis,
+          };
+        }
+        // Template-generated fallback
         return {
           name: e.entity_name,
           parentCountry: e.parent_country,
@@ -125,6 +209,7 @@ export async function GET(req: NextRequest) {
           shortDesc: e.description_short_en,
           fullDesc: e.description_full_en,
           notes: e.notes,
+          isExpert: false,
         };
       }),
     });

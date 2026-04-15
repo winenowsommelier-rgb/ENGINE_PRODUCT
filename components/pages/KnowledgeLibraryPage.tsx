@@ -460,6 +460,11 @@ function EntityDetail({ entityId }: { entityId: string }) {
                   <span className={`ml-2 text-[10px] px-1.5 py-0.5 rounded-full ${STATUS_COLORS[ctx.status]}`}>
                     {ctx.status}
                   </span>
+                  {(ctx as any).expert_overlay && (
+                    <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-violet-500/20 text-violet-300 font-semibold">
+                      Expert {(ctx as any).expert_confidence || ''}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -468,6 +473,34 @@ function EntityDetail({ entityId }: { entityId: string }) {
           {/* Context form */}
           {activeCtx && activeCtxForm && (
             <div className="flex-1 overflow-auto p-6 space-y-5">
+              {/* Expert overlay banner */}
+              {(activeCtx as any).expert_overlay && (
+                <div className="rounded-lg border border-violet-500/30 bg-violet-500/8 p-3">
+                  <div className="flex items-start gap-2">
+                    <div className="flex h-5 items-center rounded-full bg-violet-500/30 px-2 text-[10px] font-semibold text-violet-200">
+                      Expert {(activeCtx as any).expert_confidence || ''}
+                    </div>
+                    <div className="flex-1 text-xs text-slate-300">
+                      <p>This description is expert-authored content from the knowledge library.</p>
+                      <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] text-slate-400">
+                        {(activeCtx as any).expert_signature_varieties && (
+                          <div><span className="text-slate-500">Signature:</span> {(activeCtx as any).expert_signature_varieties}</div>
+                        )}
+                        {(activeCtx as any).expert_signature_regions && (
+                          <div><span className="text-slate-500">Regions:</span> {(activeCtx as any).expert_signature_regions}</div>
+                        )}
+                        {(activeCtx as any).expert_house_traits && (
+                          <div><span className="text-slate-500">Traits:</span> {(activeCtx as any).expert_house_traits}</div>
+                        )}
+                        {(activeCtx as any).expert_use_cases && (
+                          <div><span className="text-slate-500">Use cases:</span> {(activeCtx as any).expert_use_cases}</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Status */}
               <div>
                 <label className="block text-xs text-slate-400 mb-1.5">Status</label>

@@ -7,8 +7,105 @@ import path from 'path';
 import fs from 'fs';
 
 const DB_PATH = path.join(process.cwd(), 'data', 'taxonomy.db');
+const EXPERT_PATH = path.join(process.cwd(), 'data', 'expert_knowledge_library.csv');
 
 let _db: Database.Database | null = null;
+
+// ── Expert library overlay ───────────────────────────────────────────────────
+
+interface ExpertEntry {
+  pack_type: string;
+  canonical_name: string;
+  scope: string;
+  knowledge_short_en: string;
+  knowledge_full_en: string;
+  signature_varieties_or_styles: string;
+  signature_regions_or_appellations: string;
+  house_or_category_traits: string;
+  use_cases: string;
+  confidence_level: string;
+  source_basis: string;
+  last_reviewed: string;
+}
+
+let _expertCache: { mtime: number; byTypeAndName: Map<string, ExpertEntry> } | null = null;
+
+function parseCSVLineExpert(line: string): string[] {
+  const result: string[] = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
+      else { inQuotes = !inQuotes; }
+    } else if (ch === ',' && !inQuotes) {
+      result.push(current); current = '';
+    } else {
+      current += ch;
+    }
+  }
+  result.push(current);
+  return result;
+}
+
+function getExpertLibrary(): Map<string, ExpertEntry> {
+  if (!fs.existsSync(EXPERT_PATH)) return new Map();
+  const stat = fs.statSync(EXPERT_PATH);
+  const mtime = stat.mtimeMs;
+  if (_expertCache && _expertCache.mtime === mtime) return _expertCache.byTypeAndName;
+
+  const text = fs.readFileSync(EXPERT_PATH, 'utf-8');
+  const lines = text.split('\n');
+  const headers = parseCSVLineExpert(lines[0]);
+  const byTypeAndName = new Map<string, ExpertEntry>();
+
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const values = parseCSVLineExpert(lines[i]);
+    const entry: any = {};
+    headers.forEach((h, idx) => { entry[h] = values[idx] || ''; });
+    // Key: "packType|name" lowercase
+    const key = `${entry.pack_type}|${entry.canonical_name.toLowerCase()}`;
+    byTypeAndName.set(key, entry);
+  }
+
+  _expertCache = { mtime, byTypeAndName };
+  return byTypeAndName;
+}
+
+/** Overlay expert content onto contexts for a given entity */
+function overlayExpertContexts(entity: any, contexts: any[]): any[] {
+  const expertLib = getExpertLibrary();
+  if (expertLib.size === 0) return contexts;
+
+  const key = `${entity.entity_type}|${entity.name.toLowerCase()}`;
+  const expert = expertLib.get(key);
+  if (!expert) return contexts;
+
+  // Find the context matching the expert's scope, or use the first one
+  const targetScope = expert.scope || (contexts[0]?.scope_id);
+  if (!targetScope) return contexts;
+
+  return contexts.map(c => {
+    if (c.scope_id !== targetScope) return c;
+    // Overlay: prefer expert content, keep metadata
+    return {
+      ...c,
+      description_short: expert.knowledge_short_en || c.description_short,
+      description_en: expert.knowledge_full_en || c.description_en,
+      status: c.status === 'published' ? c.status : 'validated',
+      expert_overlay: true,
+      expert_confidence: expert.confidence_level,
+      expert_source: expert.source_basis,
+      expert_signature_varieties: expert.signature_varieties_or_styles,
+      expert_signature_regions: expert.signature_regions_or_appellations,
+      expert_house_traits: expert.house_or_category_traits,
+      expert_use_cases: expert.use_cases,
+      expert_last_reviewed: expert.last_reviewed,
+    };
+  });
+}
 
 export function getTaxonomyDb(): Database.Database {
   if (_db) return _db;
@@ -220,7 +317,7 @@ export function listEntities(opts: {
 
   return result.map(e => ({
     ...e,
-    contexts: parsedContexts.filter(c => c.entity_id === e.id),
+    contexts: overlayExpertContexts(e, parsedContexts.filter(c => c.entity_id === e.id)),
   }));
 }
 
@@ -252,7 +349,7 @@ export function getEntityDetail(id: number) {
     attributes: c.attributes ? JSON.parse(c.attributes) : {},
   }));
 
-  return { entity, breadcrumb, contexts: parsedContexts };
+  return { entity, breadcrumb, contexts: overlayExpertContexts(entity, parsedContexts) };
 }
 
 export function updateContext(contextId: number, data: {
