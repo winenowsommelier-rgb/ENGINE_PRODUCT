@@ -28,16 +28,25 @@ export const BI_FIELDS = new Set<string>([
 
 /** Fields owned by the PIM enrichment pipeline. */
 export const PIM_FIELDS = new Set<string>([
+  // Geography / taxonomy
   'country', 'region', 'subregion', 'appellation',
-  'classification', 'wine_classification', 'grape_variety', 'grape_class',
+  'classification', 'wine_classification',
+  'grape_variety', 'grape_class', 'style',
   'liquor_main_type', 'other_type', 'wine_type',
+  // Tasting profile
   'wine_body', 'wine_acidity', 'wine_tannin',
   'food_matching', 'flavor_tags', 'flavor_profile', 'character_traits',
-  'full_description',
+  // Descriptions (all variants)
+  'full_description', 'short_description_en',
+  'description_en_text', 'description_en_html',
+  'desc_en_short', 'desc_en_full',
+  // Images
   'image_url', 'image_alt_text', 'image_local_path', 'image_scraped_url',
+  // Validation / enrichment metadata
   'validation_status', 'overall_confidence',
   'taxonomy_confidence', 'description_confidence',
   'enrichment_source', 'enrichment_note', 'enrichment_priority',
+  'research_validation', 'research_confidence_level',
   'queue_priority',
 ]);
 
