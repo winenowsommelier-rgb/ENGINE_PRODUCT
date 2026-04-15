@@ -51,8 +51,15 @@ for (const s of taxonomy.subregions) {
 }
 
 const appBySlug = new Map<string, TaxAppellation>();
+const appsBySubregionId = new Map<number, TaxAppellation[]>();
 for (const a of taxonomy.appellations) {
   appBySlug.set(a.slug, a);
+  if (typeof (a as unknown as { parentId?: number }).parentId === "number") {
+    const pid = (a as unknown as { parentId: number }).parentId;
+    const list = appsBySubregionId.get(pid) ?? [];
+    list.push(a);
+    appsBySubregionId.set(pid, list);
+  }
 }
 
 // ── Public API ──────────────────────────────────
@@ -76,6 +83,10 @@ export function getSubregionsForRegion(regionId: number, category: CategoryScope
   const list = subsByRegionId.get(regionId) ?? [];
   if (!category) return list.filter((s) => !s.nonGeographic);
   return list;
+}
+
+export function getAppellationsForSubregion(subregionId: number): TaxAppellation[] {
+  return appsBySubregionId.get(subregionId) ?? [];
 }
 
 export function findCountry(slug: string): TaxCountry | undefined {

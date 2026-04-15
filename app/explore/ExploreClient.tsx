@@ -235,6 +235,10 @@ export default function ExploreClient({ slug }: Props) {
         parentName: parsed.country.name,
         counts: parsed.subregion.counts,
         priceRange: parsed.subregion.priceRange,
+        entityId: parsed.subregion.id,
+        countrySlug: parsed.country.slug,
+        regionSlug: parsed.region.slug,
+        subregionSlug: parsed.subregion.slug,
       };
     }
     if (parsed.region && parsed.country) {
@@ -244,6 +248,9 @@ export default function ExploreClient({ slug }: Props) {
         parentName: parsed.country.name,
         counts: parsed.region.counts,
         priceRange: parsed.region.priceRange,
+        entityId: parsed.region.id,
+        countrySlug: parsed.country.slug,
+        regionSlug: parsed.region.slug,
       };
     }
     if (parsed.country) {
@@ -253,6 +260,8 @@ export default function ExploreClient({ slug }: Props) {
         parentName: undefined,
         counts: parsed.country.counts,
         priceRange: parsed.country.priceRange,
+        entityId: parsed.country.id,
+        countrySlug: parsed.country.slug,
       };
     }
     return null;
@@ -315,6 +324,10 @@ export default function ExploreClient({ slug }: Props) {
           priceRange={locationInfoData.priceRange}
           onExploreProducts={handleExploreFromInfo}
           onClose={handleCloseLocationInfo}
+          entityId={locationInfoData.entityId}
+          countrySlug={locationInfoData.countrySlug}
+          regionSlug={"regionSlug" in locationInfoData ? locationInfoData.regionSlug : undefined}
+          subregionSlug={"subregionSlug" in locationInfoData ? locationInfoData.subregionSlug : undefined}
         />
       )}
 

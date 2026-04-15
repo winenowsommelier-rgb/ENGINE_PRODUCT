@@ -1,10 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { X, ChevronDown, ChevronUp } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { X, ChevronDown, ChevronUp, ChevronRight } from "lucide-react";
 import type { CategoryScope, Counts, PriceRange } from "@/lib/explore/types";
 import { getAccent, getAccentRgb } from "@/lib/explore/category-config";
-import { getCount } from "@/lib/explore/taxonomy-utils";
+import {
+  getCount,
+  getRegionsForCountry,
+  getSubregionsForRegion,
+  getAppellationsForSubregion,
+} from "@/lib/explore/taxonomy-utils";
 
 /* ── Flag emoji lookup (duplicated from RegionCard) ──── */
 
@@ -67,6 +73,12 @@ interface LocationInfoProps {
   priceRange: PriceRange;
   onExploreProducts: () => void;
   onClose: () => void;
+  /** Entity id — used to look up children (regions of a country, subregions of a region, etc.) */
+  entityId?: number;
+  /** Slugs of ancestors, for building child links */
+  countrySlug?: string;
+  regionSlug?: string;
+  subregionSlug?: string;
 }
 
 /* ── Component ───────────────────────────────────────── */
@@ -80,6 +92,10 @@ export default function LocationInfo({
   priceRange,
   onExploreProducts,
   onClose,
+  entityId,
+  countrySlug,
+  regionSlug,
+  subregionSlug,
 }: LocationInfoProps) {
   const [context, setContext] = useState<LocationContext | null>(null);
   const [loading, setLoading] = useState(true);
@@ -107,6 +123,56 @@ export default function LocationInfo({
       : type === "region"
         ? "Region"
         : "Subregion";
+
+  // Compute clickable children (regions for a country, subregions for a region, etc.)
+  const catPrefix = category ? `/${category}` : "";
+  const children = useMemo(() => {
+    if (!entityId) return { items: [] as { slug: string; name: string; count: number; href: string }[], label: "" };
+
+    if (type === "country") {
+      const regions = getRegionsForCountry(entityId, category);
+      return {
+        label: "Regions",
+        items: regions
+          .map((r) => ({
+            slug: r.slug,
+            name: r.name,
+            count: category ? r.counts[category] : r.counts.total,
+            href: `/explore${catPrefix}/${countrySlug}/${r.slug}`,
+          }))
+          .filter((i) => i.count > 0)
+          .sort((a, b) => b.count - a.count),
+      };
+    }
+    if (type === "region") {
+      const subs = getSubregionsForRegion(entityId, category);
+      return {
+        label: "Subregions",
+        items: subs
+          .map((s) => ({
+            slug: s.slug,
+            name: s.name,
+            count: category ? s.counts[category] : s.counts.total,
+            href: `/explore${catPrefix}/${countrySlug}/${regionSlug}/${s.slug}`,
+          }))
+          .filter((i) => i.count > 0)
+          .sort((a, b) => b.count - a.count),
+      };
+    }
+    if (type === "subregion") {
+      const apps = getAppellationsForSubregion(entityId);
+      return {
+        label: "Appellations",
+        items: apps.map((a) => ({
+          slug: a.slug,
+          name: a.name,
+          count: 0,
+          href: `/explore${catPrefix}/${countrySlug}/${regionSlug}/${subregionSlug}/${a.slug}`,
+        })),
+      };
+    }
+    return { items: [], label: "" };
+  }, [entityId, type, category, catPrefix, countrySlug, regionSlug, subregionSlug]);
 
   // Fetch context on mount / when name changes
   useEffect(() => {
@@ -293,6 +359,32 @@ export default function LocationInfo({
             )}
           </p>
         </div>
+
+        {/* Clickable children (regions / subregions / appellations) */}
+        {children.items.length > 0 && (
+          <div className="border-t border-white/[0.06] px-5 py-4">
+            <h3 className="mb-3 flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-white/40">
+              <span>{children.label}</span>
+              <span className="text-white/30">{children.items.length}</span>
+            </h3>
+            <ul className="flex flex-col gap-1">
+              {children.items.map((c) => (
+                <li key={c.slug}>
+                  <Link
+                    href={c.href}
+                    className="group flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/[0.06] focus-visible:bg-white/[0.06] focus-visible:outline-none"
+                  >
+                    <span className="truncate text-white/85 group-hover:text-white">{c.name}</span>
+                    <span className="flex shrink-0 items-center gap-1.5 text-xs text-white/40 group-hover:text-white/60">
+                      {c.count > 0 && <span>{c.count}</span>}
+                      <ChevronRight size={12} />
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* CTA */}
         {count > 0 && (
