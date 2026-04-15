@@ -35,7 +35,26 @@ Multiple systems write to the product catalog. To avoid conflicts, each field ha
 - **BI owns commercial data** — anything that changes with sales, pricing, or stock decisions
 - **PIM owns product intelligence** — anything about what the product IS (origin, style, taste, description, images)
 
-**Conflict policy:** If the BI app sends a PATCH that includes a PIM-owned field, the API will silently ignore that field. Same applies the other way — PIM enrichment jobs should never overwrite BI-owned fields.
+**Conflict policy (enforced):** PATCH requests are filtered by the `X-Source` header (or `?source=` query param):
+
+| Source | Can Write | Ignored (dropped) |
+|--------|-----------|-------------------|
+| `admin` (default) | All fields | — |
+| `bi` | BI-owned fields + system fields | PIM-owned fields |
+| `enrichment` | PIM-owned fields + system fields | BI-owned fields |
+| `system` | All fields | — |
+
+The response includes `applied: [fields]` and `dropped: [fields]` so callers can see what was actually written.
+
+Example — BI app updates price only:
+
+```bash
+curl -X PATCH http://localhost:3000/api/products/PRODUCT_ID \
+  -H "X-Source: bi" \
+  -H "Content-Type: application/json" \
+  -d '{"fields": {"price": 2500, "region": "Bordeaux"}}'
+# Response: {"updated": true, "source": "bi", "applied": ["price"], "dropped": ["region"]}
+```
 
 ---
 

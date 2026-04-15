@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { filterByOwnership, parseSource } from '@/lib/products/ownership';
 
 export const runtime = 'nodejs';
 
@@ -61,18 +62,32 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       return NextResponse.json({ error: 'fields object required' }, { status: 400 });
     }
 
-    const payload = { ...body.fields, updated_at: new Date().toISOString() };
+    // Enforce field ownership policy — see PRODUCT_DATA_API.md
+    // Default source is `admin` (full access from internal dashboard).
+    // External callers send `X-Source: bi` or `?source=enrichment` to restrict writes.
+    const source = parseSource(req, req.nextUrl.searchParams);
+    const { allowed, dropped } = filterByOwnership(body.fields, source);
+
+    if (Object.keys(allowed).length === 0) {
+      return NextResponse.json({
+        error: 'No writable fields for this source',
+        source,
+        dropped,
+      }, { status: 400 });
+    }
+
+    const payload: Record<string, unknown> = { ...allowed, updated_at: new Date().toISOString() };
 
     // Cast price / cost_price to integer if present
-    if (payload.price != null)      payload.price      = parseInt(payload.price)      || null;
-    if (payload.cost_price != null) payload.cost_price = parseInt(payload.cost_price) || null;
+    if (payload.price != null)      payload.price      = parseInt(payload.price as string)      || null;
+    if (payload.cost_price != null) payload.cost_price = parseInt(payload.cost_price as string) || null;
 
     const res = await fetch(
       `${SUPABASE_URL}/rest/v1/products?id=eq.${encodeURIComponent(params.id)}`,
       { method: 'PATCH', headers: HEADERS, body: JSON.stringify(payload) },
     );
     if (!res.ok) throw new Error(await res.text());
-    return NextResponse.json({ updated: true });
+    return NextResponse.json({ updated: true, source, applied: Object.keys(allowed), dropped });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Request failed' }, { status: 500 });
   }
