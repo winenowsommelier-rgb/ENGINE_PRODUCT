@@ -217,10 +217,14 @@ export function ChangeLogPage() {
           className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white outline-none"
         >
           <option value="">All sources</option>
-          <option value="masterfile_import">Masterfile Import</option>
+          <option value="enrichment">Enrichment Agent</option>
+          <option value="bi_sync">BI Sync</option>
+          <option value="manual_edit">Manual Edit</option>
           <option value="override_import">Override Import</option>
           <option value="batch_process">Batch Process</option>
-          <option value="manual_edit">Manual Edit</option>
+          <option value="taxonomy_queue">Taxonomy Queue</option>
+          <option value="system">System</option>
+          <option value="masterfile_import">Masterfile Import (legacy)</option>
         </select>
       </div>
 
@@ -324,11 +328,14 @@ function MetricCard({ icon, label, value, sub, color }: {
 
 function SourceBadge({ source }: { source: string }) {
   const colors: Record<string, string> = {
-    masterfile_import: 'bg-blue-500/15 text-blue-400',
+    enrichment: 'bg-violet-500/15 text-violet-300',
+    bi_sync: 'bg-blue-500/15 text-blue-300',
+    manual_edit: 'bg-emerald-500/15 text-emerald-400',
     override_import: 'bg-violet-500/15 text-violet-400',
     batch_process: 'bg-amber-500/15 text-amber-400',
-    manual_edit: 'bg-emerald-500/15 text-emerald-400',
     taxonomy_queue: 'bg-slate-500/15 text-slate-400',
+    system: 'bg-slate-600/15 text-slate-400',
+    masterfile_import: 'bg-blue-500/15 text-blue-400',
   };
   return (
     <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${colors[source] ?? 'bg-white/10 text-slate-400'}`}>

@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { filterByOwnership, parseSource } from '@/lib/products/ownership';
+import { filterByOwnership, parseSource, type Source } from '@/lib/products/ownership';
+import { addChangelogEntries, type ProductChangelog } from '@/lib/db/client';
 
 export const runtime = 'nodejs';
+
+function sourceToChangelog(source: Source): ProductChangelog['source'] {
+  if (source === 'bi') return 'bi_sync';
+  if (source === 'enrichment') return 'enrichment';
+  if (source === 'system') return 'system';
+  return 'manual_edit';
+}
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
@@ -76,6 +84,16 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       }, { status: 400 });
     }
 
+    // Fetch current values for changelog diff
+    const fieldNames = Object.keys(allowed);
+    const selectCols = Array.from(new Set(['id', 'sku', ...fieldNames])).join(',');
+    const currentRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/products?id=eq.${encodeURIComponent(params.id)}&select=${selectCols}&limit=1`,
+      { headers: HEADERS }
+    );
+    const currentRows = currentRes.ok ? await currentRes.json() : [];
+    const current: Record<string, unknown> = currentRows[0] || {};
+
     const payload: Record<string, unknown> = { ...allowed, updated_at: new Date().toISOString() };
 
     // Cast price / cost_price to integer if present
@@ -87,6 +105,32 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       { method: 'PATCH', headers: HEADERS, body: JSON.stringify(payload) },
     );
     if (!res.ok) throw new Error(await res.text());
+
+    // Write changelog — only for fields that actually changed
+    if (current.id) {
+      const note = typeof body.note === 'string' ? body.note : null;
+      const changelogSource = sourceToChangelog(source);
+      const entries: Omit<ProductChangelog, 'id' | 'changed_at'>[] = [];
+      for (const field of fieldNames) {
+        const oldStr = current[field] == null ? '' : String(current[field]);
+        const newStr = payload[field] == null ? '' : String(payload[field]);
+        if (oldStr !== newStr) {
+          entries.push({
+            product_id: String(current.id),
+            sku: String(current.sku ?? ''),
+            source: changelogSource,
+            field,
+            old_value: oldStr || null,
+            new_value: newStr,
+            note,
+          });
+        }
+      }
+      if (entries.length > 0) {
+        try { await addChangelogEntries(entries); } catch (err) { console.error('Changelog write failed:', err); }
+      }
+    }
+
     return NextResponse.json({ updated: true, source, applied: Object.keys(allowed), dropped });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Request failed' }, { status: 500 });

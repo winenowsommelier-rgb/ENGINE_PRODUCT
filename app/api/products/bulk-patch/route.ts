@@ -28,10 +28,19 @@
  * }
  */
 import { NextRequest, NextResponse } from 'next/server';
-import { filterByOwnership, parseSource } from '@/lib/products/ownership';
+import { filterByOwnership, parseSource, type Source } from '@/lib/products/ownership';
+import { addChangelogEntries, type ProductChangelog } from '@/lib/db/client';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
+
+/** Map the ownership source to a changelog source label. */
+function sourceToChangelog(source: Source): ProductChangelog['source'] {
+  if (source === 'bi') return 'bi_sync';
+  if (source === 'enrichment') return 'enrichment';
+  if (source === 'system') return 'system';
+  return 'manual_edit'; // admin default
+}
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
@@ -49,14 +58,31 @@ interface UpdateItem {
   fields: Record<string, unknown>;
 }
 
-async function resolveId(sku: string): Promise<string | null> {
+/**
+ * Fetch current state of a product by id OR sku. We need the current values
+ * to log old->new diffs in the changelog.
+ */
+async function fetchCurrent(
+  lookup: { id?: string; sku?: string },
+  fieldsToSelect: string[]
+): Promise<{ id: string; sku: string; current: Record<string, unknown> } | null> {
+  const selectCols = Array.from(new Set(['id', 'sku', ...fieldsToSelect])).join(',');
+  let query: string;
+  if (lookup.id) {
+    query = `id=eq.${encodeURIComponent(lookup.id)}`;
+  } else if (lookup.sku) {
+    query = `sku=eq.${encodeURIComponent(lookup.sku)}`;
+  } else {
+    return null;
+  }
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/products?sku=eq.${encodeURIComponent(sku)}&select=id&limit=1`,
+    `${SUPABASE_URL}/rest/v1/products?${query}&select=${selectCols}&limit=1`,
     { headers: HEADERS }
   );
   if (!res.ok) return null;
   const rows = await res.json();
-  return rows[0]?.id ?? null;
+  if (!rows[0]) return null;
+  return { id: rows[0].id, sku: rows[0].sku, current: rows[0] };
 }
 
 async function patchProduct(id: string, payload: Record<string, unknown>): Promise<boolean> {
@@ -83,10 +109,13 @@ export async function POST(req: NextRequest) {
     }
 
     const source = parseSource(req, req.nextUrl.searchParams);
+    const changelogSource = sourceToChangelog(source);
+    const note = typeof body.note === 'string' ? body.note : null;
 
     const results: any[] = [];
     const allDropped = new Set<string>();
     const timestamp = new Date().toISOString();
+    const changelogEntries: Omit<ProductChangelog, 'id' | 'changed_at'>[] = [];
 
     for (const item of updates) {
       if (!item.fields || typeof item.fields !== 'object') {
@@ -108,13 +137,11 @@ export async function POST(req: NextRequest) {
         continue;
       }
 
-      // Resolve id
-      let id = item.id;
-      if (!id && item.sku) {
-        id = (await resolveId(item.sku)) ?? undefined;
-      }
-      if (!id) {
-        results.push({ sku: item.sku, error: 'product not found' });
+      // Fetch current state (need both id and old values for changelog diff)
+      const fieldNames = Object.keys(allowed);
+      const existing = await fetchCurrent({ id: item.id, sku: item.sku }, fieldNames);
+      if (!existing) {
+        results.push({ sku: item.sku, id: item.id, error: 'product not found' });
         continue;
       }
 
@@ -123,17 +150,45 @@ export async function POST(req: NextRequest) {
       if (payload.price != null) payload.price = parseInt(payload.price as string) || null;
       if (payload.cost_price != null) payload.cost_price = parseInt(payload.cost_price as string) || null;
 
-      const ok = await patchProduct(id, payload);
+      const ok = await patchProduct(existing.id, payload);
       if (ok) {
+        // Collect changelog entries — only for fields that actually changed
+        for (const field of fieldNames) {
+          const oldVal = existing.current[field];
+          const newVal = payload[field];
+          const oldStr = oldVal == null ? '' : String(oldVal);
+          const newStr = newVal == null ? '' : String(newVal);
+          if (oldStr !== newStr) {
+            changelogEntries.push({
+              product_id: existing.id,
+              sku: existing.sku,
+              source: changelogSource,
+              field,
+              old_value: oldStr || null,
+              new_value: newStr,
+              note,
+            });
+          }
+        }
+
         results.push({
-          sku: item.sku,
-          id,
+          sku: existing.sku,
+          id: existing.id,
           updated: true,
-          applied: Object.keys(allowed),
+          applied: fieldNames,
           dropped,
         });
       } else {
-        results.push({ sku: item.sku, id, error: 'supabase patch failed' });
+        results.push({ sku: item.sku, id: existing.id, error: 'supabase patch failed' });
+      }
+    }
+
+    // Write changelog in one batch
+    if (changelogEntries.length > 0) {
+      try {
+        await addChangelogEntries(changelogEntries);
+      } catch (err) {
+        console.error('Changelog write failed:', err);
       }
     }
 
@@ -145,6 +200,7 @@ export async function POST(req: NextRequest) {
       total: updates.length,
       succeeded,
       failed,
+      changelog_entries: changelogEntries.length,
       dropped_fields_unique: Array.from(allDropped),
       results,
     });
