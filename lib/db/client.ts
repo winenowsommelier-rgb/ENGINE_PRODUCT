@@ -332,6 +332,37 @@ async function saveChangelog(entries: ProductChangelog[]) {
   await writeFile(changelogFile, JSON.stringify(entries, null, 2), 'utf-8');
 }
 
+/**
+ * Mirror changelog entries to Supabase product_changelog table in parallel.
+ * Fire-and-forget — if it fails, the local JSON is still the source of truth
+ * for dev. In production, Supabase becomes the authoritative store.
+ */
+async function mirrorToSupabase(entries: ProductChangelog[]): Promise<void> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key || entries.length === 0) return;
+
+  try {
+    const res = await fetch(`${url}/rest/v1/product_changelog`, {
+      method: 'POST',
+      headers: {
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify(entries),
+    });
+    if (!res.ok) {
+      const detail = await res.text();
+      // Log but don't throw — local JSON is still the fallback
+      console.warn(`[changelog] Supabase mirror failed (${res.status}): ${detail.slice(0, 200)}`);
+    }
+  } catch (err) {
+    console.warn('[changelog] Supabase mirror error:', err instanceof Error ? err.message : err);
+  }
+}
+
 export async function addChangelogEntries(entries: Omit<ProductChangelog, 'id' | 'changed_at'>[]) {
   const existing = await readChangelog();
   const now = new Date().toISOString();
@@ -341,6 +372,10 @@ export async function addChangelogEntries(entries: Omit<ProductChangelog, 'id' |
     changed_at: now,
   }));
   await saveChangelog([...existing, ...newEntries]);
+
+  // Mirror to Supabase in parallel — don't await, don't block
+  void mirrorToSupabase(newEntries);
+
   return newEntries;
 }
 
