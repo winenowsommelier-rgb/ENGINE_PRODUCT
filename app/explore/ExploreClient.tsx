@@ -294,8 +294,10 @@ export default function ExploreClient({ slug }: Props) {
         onSelectSubregion={handleSelectSubregion}
       />
 
-      {/* Top bar */}
-      <div className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-4 py-3 backdrop-blur-md"
+      {/* Top bar — offset right when LocationInfo is showing on desktop */}
+      <div className={`absolute right-0 top-0 z-20 flex items-center justify-between px-4 py-3 backdrop-blur-md transition-all ${
+          shouldShowLocationInfo ? "left-0 lg:left-[380px]" : "left-0"
+        } ${shouldShowProducts ? "lg:right-[380px]" : ""}`}
         style={{ background: "rgba(10,10,26,0.6)" }}
       >
         <CategoryLens active={parsed.category} onSelect={handleCategoryChange} />
@@ -355,8 +357,10 @@ export default function ExploreClient({ slug }: Props) {
       {/* Onboarding hint (world view only) */}
       {parsed.drillLevel === "world" && <OnboardingHint />}
 
-      {/* Bottom bar */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-3 backdrop-blur-md max-lg:bottom-0"
+      {/* Bottom bar — offset to avoid overlapping LocationInfo and sidebar */}
+      <div className={`absolute bottom-0 right-0 z-20 flex items-center justify-between px-4 py-3 backdrop-blur-md transition-all ${
+          shouldShowLocationInfo ? "left-0 lg:left-[380px]" : "left-0"
+        } ${shouldShowProducts ? "lg:right-[380px]" : ""}`}
         style={{ background: "rgba(10,10,26,0.6)" }}
       >
         <div className="flex items-center gap-2">

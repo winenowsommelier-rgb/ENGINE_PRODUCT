@@ -151,7 +151,10 @@ export default function LocationInfo({
   const hasStyles = context?.key_styles && context.key_styles.length > 0;
 
   return (
-    <div className="fixed left-0 top-0 z-30 hidden h-full w-[380px] animate-slide-in-left border-r border-white/[0.08] bg-[#12121f] lg:block">
+    <aside
+      aria-label={`${name} information`}
+      className="fixed left-0 top-0 z-30 hidden h-full w-[380px] animate-slide-in-left border-r border-white/[0.08] bg-[#12121f] shadow-[8px_0_32px_rgba(0,0,0,0.4)] lg:block"
+    >
       {/* Scrollable content */}
       <div className="flex h-full flex-col overflow-y-auto">
         {/* Header */}
@@ -308,6 +311,6 @@ export default function LocationInfo({
         {/* Spacer to ensure content isn't hidden by bottom bar */}
         <div className="h-16 shrink-0" />
       </div>
-    </div>
+    </aside>
   );
 }
