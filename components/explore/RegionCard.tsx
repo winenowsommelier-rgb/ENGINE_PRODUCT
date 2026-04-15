@@ -155,21 +155,13 @@ export default function RegionCard({ region, category, position, onExplore, onCl
   return (
     <div
       ref={cardRef}
-      className={`absolute z-30 w-[340px] max-w-[calc(100vw-24px)] rounded-2xl border border-white/[0.08] animate-card-in ${positionClasses}`}
+      className={`region-card absolute z-30 w-[340px] max-w-[calc(100vw-24px)] rounded-2xl border border-white/[0.08] animate-card-in ${positionClasses}`}
       style={{
-        background: "rgba(10,10,26,0.88)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
         boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)",
         ...style,
       }}
     >
       {/* Mobile: solid bg override via media query in globals.css */}
-      <style jsx>{`
-        @media (max-width: 767px) {
-          div { background: #12121f !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-        }
-      `}</style>
 
       {/* Header */}
       <div className="flex items-start justify-between p-4 pb-2">

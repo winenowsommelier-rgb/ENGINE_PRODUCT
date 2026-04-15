@@ -67,3 +67,17 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* RegionCard glassmorphism with mobile fallback */
+.region-card {
+  background: rgba(10, 10, 26, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+@media (max-width: 767px) {
+  .region-card {
+    background: #12121f;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
