@@ -1,19 +1,17 @@
 'use client';
 
 import React, { Suspense, useState } from 'react';
-import { Upload, FileSpreadsheet, LayoutDashboard, RefreshCw, Sparkles, Database } from 'lucide-react';
+import { Upload, LayoutDashboard, RefreshCw, Sparkles, Database } from 'lucide-react';
 
 const ImportPage        = React.lazy(() => import('@/components/pages/ImportPage').then(m => ({ default: m.ImportPage })));
-const MasterfileImportPage = React.lazy(() => import('@/components/pages/MasterfileImportPage').then(m => ({ default: m.MasterfileImportPage })));
 const OverrideImportPage = React.lazy(() => import('@/components/pages/OverrideImportPage').then(m => ({ default: m.OverrideImportPage })));
 const ProcessingReviewPage = React.lazy(() => import('@/components/pages/ProcessingReviewPage').then(m => ({ default: m.ProcessingReviewPage })));
 const AIReviewQueuePage = React.lazy(() => import('@/components/pages/AIReviewQueuePage').then(m => ({ default: m.AIReviewQueuePage })));
 const TaxonomyQueuePage = React.lazy(() => import('@/components/pages/TaxonomyQueuePage').then(m => ({ default: m.TaxonomyQueuePage })));
 
-type Tab = 'masterfile' | 'csv_import' | 'override' | 'processing' | 'ai_review' | 'taxonomy_queue';
+type Tab = 'csv_import' | 'override' | 'processing' | 'ai_review' | 'taxonomy_queue';
 
 const TABS: Array<{ id: Tab; label: string; Icon: React.ElementType; description: string }> = [
-  { id: 'masterfile',     label: 'Masterfile Update',  Icon: FileSpreadsheet, description: 'Upload masterfile CSV/XLSX to update pricing, stock & product data' },
   { id: 'csv_import',     label: 'New Products',       Icon: Upload,          description: 'Import new products from CSV with AI enrichment' },
   { id: 'override',       label: 'Field Override',     Icon: LayoutDashboard, description: 'Override specific fields for existing products by SKU' },
   { id: 'processing',     label: 'Processing Review',  Icon: RefreshCw,       description: 'Review batch processing results' },
@@ -30,7 +28,7 @@ function TabLoader() {
 }
 
 export function ImportHubPage() {
-  const [activeTab, setActiveTab] = useState<Tab>('masterfile');
+  const [activeTab, setActiveTab] = useState<Tab>('csv_import');
 
   return (
     <div className="space-y-0">
@@ -57,7 +55,6 @@ export function ImportHubPage() {
       {/* Tab content */}
       <div className="p-6">
         <Suspense fallback={<TabLoader />}>
-          {activeTab === 'masterfile' && <MasterfileImportPage />}
           {activeTab === 'csv_import' && <ImportPage />}
           {activeTab === 'override' && <OverrideImportPage />}
           {activeTab === 'processing' && <ProcessingReviewPage onNavigateToReview={() => setActiveTab('ai_review')} />}
