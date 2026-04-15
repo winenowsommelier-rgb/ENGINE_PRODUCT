@@ -188,21 +188,48 @@ export default function BottomPanel({
                       key={p.id}
                       type="button"
                       onClick={() => setSelectedProduct(p)}
-                      className="w-full text-left rounded-xl border border-white/6 bg-white/3 p-3 transition-colors hover:bg-white/6 cursor-pointer focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none"
+                      className="group w-full rounded-xl border border-white/[0.06] bg-white/[0.02] p-3 text-left transition-all hover:border-white/[0.12] hover:bg-white/[0.05] focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none"
                     >
                       <div className="flex gap-3">
-                        <ProductImage src={p.image_url} sku={p.sku} classification={p.classification} size="sm" />
-                        <div className="min-w-0 flex-1">
-                          <h3 className="text-sm font-medium text-white">{p.name}</h3>
-                          <div className="mt-1 flex items-center gap-2 text-xs text-white/50">
-                            {p.brand && <span>{p.brand}</span>}
-                            {p.vintage && <span>{p.vintage}</span>}
+                        {/* Product image */}
+                        <div className="h-20 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-white/[0.03] flex items-center justify-center">
+                          <ProductImage
+                            src={p.image_url}
+                            sku={p.sku}
+                            classification={p.classification}
+                            size="md"
+                            className="!w-full !h-full"
+                          />
+                        </div>
+
+                        {/* Info */}
+                        <div className="flex flex-1 flex-col min-w-0">
+                          <h3 className="text-sm font-semibold text-white leading-snug line-clamp-2 group-hover:text-white">
+                            {p.name}
+                          </h3>
+                          {p.brand && (
+                            <p className="mt-0.5 text-xs text-white/50 truncate">{p.brand}</p>
+                          )}
+                          <p className="mt-1 text-[11px] text-white/40 truncate">
+                            {[p.grape_variety, p.vintage].filter(Boolean).join(" · ")}
+                          </p>
+                          <div className="mt-auto flex items-center justify-between gap-2 pt-2">
+                            {p.classification ? (
+                              <span
+                                className="truncate rounded-full px-2 py-0.5 text-[10px] font-medium"
+                                style={{ background: `rgba(${accentRgb},0.15)`, color: accent }}
+                              >
+                                {p.classification}
+                              </span>
+                            ) : (
+                              <span />
+                            )}
+                            <span className="text-sm font-bold text-white whitespace-nowrap">
+                              &#x0E3F;{p.price?.toLocaleString() ?? "—"}
+                            </span>
                           </div>
                         </div>
                       </div>
-                      <p className="mt-1 text-sm font-semibold text-white">
-                        &#x0E3F;{p.price?.toLocaleString() ?? "N/A"}
-                      </p>
                     </button>
                   ))}
                 </div>

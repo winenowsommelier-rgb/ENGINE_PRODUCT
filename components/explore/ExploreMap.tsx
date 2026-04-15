@@ -52,6 +52,24 @@ export default function ExploreMap({
   const [viewState, setViewState] = useState(INITIAL_VIEW);
   const [countryGeoJson, setCountryGeoJson] = useState<GeoJSON | null>(null);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const [hoverTooltip, setHoverTooltip] = useState<{
+    x: number;
+    y: number;
+    name: string;
+    count: number;
+    type: "country" | "region" | "subregion";
+  } | null>(null);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  // Detect touch device once on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const touch =
+      "ontouchstart" in window ||
+      (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0) ||
+      window.matchMedia("(hover: none)").matches;
+    setIsTouchDevice(touch);
+  }, []);
 
   // Load country boundaries
   useEffect(() => {
@@ -190,7 +208,36 @@ export default function ExploreMap({
     const map = mapRef.current;
     if (map) map.getCanvas().style.cursor = "";
     setHoveredId(null);
+    setHoverTooltip(null);
   }, []);
+
+  const handleMouseMove = useCallback(
+    (e: maplibregl.MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] }) => {
+      if (isTouchDevice) return;
+      const map = mapRef.current;
+      const f = e.features?.[0];
+      if (!f || !f.properties) {
+        if (map) map.getCanvas().style.cursor = "";
+        setHoverTooltip(null);
+        return;
+      }
+      if (map) map.getCanvas().style.cursor = "pointer";
+
+      const layerId = f.layer?.id;
+      let type: "country" | "region" | "subregion" = "country";
+      if (layerId === "region-markers") type = "region";
+      else if (layerId === "subregion-markers") type = "subregion";
+
+      setHoverTooltip({
+        x: e.point.x,
+        y: e.point.y,
+        name: String(f.properties.name ?? ""),
+        count: Number(f.properties.total ?? 0),
+        type,
+      });
+    },
+    [isTouchDevice]
+  );
 
   // ── Determine which marker layers to show ─────
 
@@ -237,7 +284,7 @@ export default function ExploreMap({
   }, [showCountryMarkers, showRegionMarkers, showSubregionMarkers]);
 
   return (
-    <div role="application" aria-label="Interactive world map showing wine and spirits regions" style={{ width: "100%", height: "100%" }}>
+    <div role="application" aria-label="Interactive world map showing wine and spirits regions" style={{ position: "relative", width: "100%", height: "100%" }}>
     <Map
       ref={mapRef}
       {...viewState}
@@ -247,6 +294,7 @@ export default function ExploreMap({
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
       interactiveLayerIds={interactiveLayerIds}
       attributionControl={false}
     >
@@ -258,7 +306,7 @@ export default function ExploreMap({
             type="fill"
             paint={{
               "fill-color": getAccent(category),
-              "fill-opacity": drillLevel === "world" ? 0.15 : 0.05,
+              "fill-opacity": drillLevel === "world" ? 0.15 : 0.03,
             }}
           />
           <Layer
@@ -269,6 +317,28 @@ export default function ExploreMap({
               "line-width": 0.8,
             }}
           />
+          {country && drillLevel !== "world" && (
+            <Layer
+              id="active-country-fill"
+              type="fill"
+              filter={["==", ["get", "ADMIN"], country.name]}
+              paint={{
+                "fill-color": getAccent(category),
+                "fill-opacity": 0.25,
+              }}
+            />
+          )}
+          {country && drillLevel !== "world" && (
+            <Layer
+              id="active-country-border"
+              type="line"
+              filter={["==", ["get", "ADMIN"], country.name]}
+              paint={{
+                "line-color": "rgba(255,255,255,0.4)",
+                "line-width": 1.5,
+              }}
+            />
+          )}
         </Source>
       )}
 
@@ -371,6 +441,15 @@ export default function ExploreMap({
         </Source>
       )}
     </Map>
+    {hoverTooltip && !isTouchDevice && (
+      <div
+        className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-[calc(100%+12px)] rounded-lg bg-[#0a0a1a] px-3 py-2 text-xs text-white shadow-lg border border-white/[0.12] backdrop-blur-sm"
+        style={{ left: hoverTooltip.x, top: hoverTooltip.y }}
+      >
+        <p className="font-semibold">{hoverTooltip.name}</p>
+        <p className="text-white/50">{hoverTooltip.count.toLocaleString()} products</p>
+      </div>
+    )}
     </div>
   );
 }

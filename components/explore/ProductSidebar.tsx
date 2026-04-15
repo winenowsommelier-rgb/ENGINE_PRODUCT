@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import type { CategoryScope, ExploreProduct } from "@/lib/explore/types";
-import { getAccent } from "@/lib/explore/category-config";
+import { getAccent, getAccentRgb } from "@/lib/explore/category-config";
 import { ProductImage } from "@/components/ProductImage";
 import EmptyState from "@/components/explore/EmptyState";
 import ProductFilters from "./ProductFilters";
@@ -40,6 +40,7 @@ export default function ProductSidebar({
   const [selectedProduct, setSelectedProduct] = useState<ExploreProduct | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const accent = getAccent(category);
+  const accentRgb = getAccentRgb(category);
 
   const fetchProducts = useCallback(
     async (pageNum: number, append = false) => {
@@ -97,17 +98,21 @@ export default function ProductSidebar({
   return (
     <div className="fixed right-0 top-0 z-40 flex h-full w-[380px] flex-col border-l border-white/8 bg-[#12121f] shadow-2xl max-lg:hidden">
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-white/8 px-4 py-3">
-        <button
-          onClick={onClose}
-          className="flex h-11 w-11 items-center justify-center rounded-lg text-white/50 hover:bg-white/10 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none"
-          aria-label="Close sidebar"
-        >
-          <ChevronLeft size={18} />
-        </button>
-        <div className="flex-1 min-w-0">
-          <h2 className="truncate text-sm font-semibold text-white">{locationName}</h2>
-          <p className="text-xs text-white/40">{totalCount} product{totalCount !== 1 ? "s" : ""}</p>
+      <div className="border-b border-white/[0.08] px-4 py-4">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onClose}
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-white/50 hover:bg-white/10 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none"
+            aria-label="Close sidebar"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-sm font-semibold text-white truncate">{locationName}</h2>
+            <p className="text-xs text-white/40">
+              {totalCount.toLocaleString()} {totalCount === 1 ? "product" : "products"}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -143,33 +148,47 @@ export default function ProductSidebar({
             key={p.id}
             type="button"
             onClick={() => setSelectedProduct(p)}
-            className="w-full text-left rounded-xl border border-white/6 bg-white/3 p-3 transition-colors hover:bg-white/6 cursor-pointer focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none"
+            className="group w-full rounded-xl border border-white/[0.06] bg-white/[0.02] p-3 text-left transition-all hover:border-white/[0.12] hover:bg-white/[0.05] focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none"
           >
             <div className="flex gap-3">
-              <ProductImage
-                src={p.image_url}
-                sku={p.sku}
-                classification={p.classification}
-                size="sm"
-              />
-              <div className="min-w-0 flex-1">
-                <h3 className="text-sm font-medium text-white leading-snug">{p.name}</h3>
-                <div className="mt-1 flex items-center gap-2 text-xs text-white/50">
-                  {p.brand && <span>{p.brand}</span>}
-                  {p.grape_variety && <span>{p.grape_variety}</span>}
-                  {p.vintage && <span>{p.vintage}</span>}
+              {/* Product image */}
+              <div className="h-20 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-white/[0.03] flex items-center justify-center">
+                <ProductImage
+                  src={p.image_url}
+                  sku={p.sku}
+                  classification={p.classification}
+                  size="md"
+                  className="!w-full !h-full"
+                />
+              </div>
+
+              {/* Info */}
+              <div className="flex flex-1 flex-col min-w-0">
+                <h3 className="text-sm font-semibold text-white leading-snug line-clamp-2 group-hover:text-white">
+                  {p.name}
+                </h3>
+                {p.brand && (
+                  <p className="mt-0.5 text-xs text-white/50 truncate">{p.brand}</p>
+                )}
+                <p className="mt-1 text-[11px] text-white/40 truncate">
+                  {[p.grape_variety, p.vintage].filter(Boolean).join(" · ")}
+                </p>
+                <div className="mt-auto flex items-center justify-between gap-2 pt-2">
+                  {p.classification ? (
+                    <span
+                      className="truncate rounded-full px-2 py-0.5 text-[10px] font-medium"
+                      style={{ background: `rgba(${accentRgb},0.15)`, color: accent }}
+                    >
+                      {p.classification}
+                    </span>
+                  ) : (
+                    <span />
+                  )}
+                  <span className="text-sm font-bold text-white whitespace-nowrap">
+                    ฿{p.price?.toLocaleString() ?? "—"}
+                  </span>
                 </div>
               </div>
-            </div>
-            <div className="mt-1.5 flex items-center justify-between">
-              <span className="text-sm font-semibold text-white">
-                ฿{p.price?.toLocaleString() ?? "N/A"}
-              </span>
-              {p.classification && (
-                <span className="rounded-full bg-white/8 px-2 py-0.5 text-[10px] text-white/40">
-                  {p.classification}
-                </span>
-              )}
             </div>
           </button>
         ))}
