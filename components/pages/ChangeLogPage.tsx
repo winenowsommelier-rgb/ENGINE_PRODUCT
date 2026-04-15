@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import { ArrowUpRight, ArrowDownRight, TrendingUp, Package, DollarSign, History, Filter, RefreshCw } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ArrowUpRight, ArrowDownRight, TrendingUp, Package, DollarSign, History, Filter, RefreshCw, List, Layers, ChevronDown, ChevronRight } from 'lucide-react';
 
 /* ──────────────────────────────────────────────── */
 
@@ -36,6 +36,53 @@ interface Summary {
 
 /* ──────────────────────────────────────────────── */
 
+type ViewMode = 'list' | 'batches';
+
+interface Batch {
+  key: string;
+  source: string;
+  note: string | null;
+  startedAt: string;
+  endedAt: string;
+  entries: ChangelogEntry[];
+  uniqueSkus: number;
+  fieldCounts: Record<string, number>;
+}
+
+/** Group entries into batches by (source, note, timestamp rounded to minute). */
+function groupIntoBatches(entries: ChangelogEntry[]): Batch[] {
+  const map = new Map<string, Batch>();
+  for (const e of entries) {
+    // Round timestamp down to minute for batch grouping
+    const minute = e.changed_at.slice(0, 16); // "YYYY-MM-DDTHH:MM"
+    const key = `${e.source}|${e.note ?? ''}|${minute}`;
+    let batch = map.get(key);
+    if (!batch) {
+      batch = {
+        key,
+        source: e.source,
+        note: e.note,
+        startedAt: e.changed_at,
+        endedAt: e.changed_at,
+        entries: [],
+        uniqueSkus: 0,
+        fieldCounts: {},
+      };
+      map.set(key, batch);
+    }
+    batch.entries.push(e);
+    if (e.changed_at < batch.startedAt) batch.startedAt = e.changed_at;
+    if (e.changed_at > batch.endedAt) batch.endedAt = e.changed_at;
+    batch.fieldCounts[e.field] = (batch.fieldCounts[e.field] ?? 0) + 1;
+  }
+  // Compute unique SKUs per batch
+  for (const b of map.values()) {
+    b.uniqueSkus = new Set(b.entries.map(e => e.sku)).size;
+  }
+  // Sort batches by most recent first
+  return Array.from(map.values()).sort((a, b) => b.endedAt.localeCompare(a.endedAt));
+}
+
 export function ChangeLogPage() {
   const [entries, setEntries] = useState<ChangelogEntry[]>([]);
   const [summary, setSummary] = useState<Summary | null>(null);
@@ -45,6 +92,8 @@ export function ChangeLogPage() {
   const [fieldFilter, setFieldFilter] = useState('');
   const [sourceFilter, setSourceFilter] = useState('');
   const [skuFilter, setSkuFilter] = useState('');
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [expandedBatchKeys, setExpandedBatchKeys] = useState<Set<string>>(new Set());
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -54,7 +103,8 @@ export function ChangeLogPage() {
       if (sourceFilter) params.set('source', sourceFilter);
       if (skuFilter) params.set('sku', skuFilter);
       params.set('page', String(page));
-      params.set('limit', '50');
+      // In batches view, pull more rows so batches include all their entries
+      params.set('limit', viewMode === 'batches' ? '500' : '50');
 
       const res = await fetch(`/api/changelog?${params}`);
       const data = await res.json();
@@ -66,7 +116,20 @@ export function ChangeLogPage() {
     } finally {
       setLoading(false);
     }
-  }, [fieldFilter, sourceFilter, skuFilter, page]);
+  }, [fieldFilter, sourceFilter, skuFilter, page, viewMode]);
+
+  const batches = useMemo(
+    () => viewMode === 'batches' ? groupIntoBatches(entries) : [],
+    [entries, viewMode]
+  );
+
+  function toggleBatch(key: string) {
+    setExpandedBatchKeys(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key); else next.add(key);
+      return next;
+    });
+  }
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -226,57 +289,145 @@ export function ChangeLogPage() {
           <option value="system">System</option>
           <option value="masterfile_import">Masterfile Import (legacy)</option>
         </select>
+
+        {/* View mode toggle */}
+        <div className="ml-auto flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 p-0.5">
+          <button
+            onClick={() => setViewMode('list')}
+            className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition-colors ${viewMode === 'list' ? 'bg-violet-500/20 text-violet-300' : 'text-slate-400 hover:text-white'}`}
+            title="Show individual field changes"
+          >
+            <List size={12} /> List
+          </button>
+          <button
+            onClick={() => setViewMode('batches')}
+            className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition-colors ${viewMode === 'batches' ? 'bg-violet-500/20 text-violet-300' : 'text-slate-400 hover:text-white'}`}
+            title="Group changes by batch (source + minute)"
+          >
+            <Layers size={12} /> Batches
+          </button>
+        </div>
       </div>
 
-      {/* Changelog table */}
-      <div className="rounded-xl border border-white/8 bg-white/3 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-white/8 text-left">
-              <th className="px-4 py-3 text-xs font-medium text-slate-500">Date</th>
-              <th className="px-4 py-3 text-xs font-medium text-slate-500">SKU</th>
-              <th className="px-4 py-3 text-xs font-medium text-slate-500">Field</th>
-              <th className="px-4 py-3 text-xs font-medium text-slate-500">Old Value</th>
-              <th className="px-4 py-3 text-xs font-medium text-slate-500">New Value</th>
-              <th className="px-4 py-3 text-xs font-medium text-slate-500">Source</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-500">Loading...</td></tr>
-            ) : entries.length === 0 ? (
-              <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-500">No changes found</td></tr>
-            ) : entries.map((e) => (
-              <tr key={e.id} className="border-b border-white/4 hover:bg-white/3 transition-colors">
-                <td className="px-4 py-2.5 text-xs text-slate-500 whitespace-nowrap">
-                  {new Date(e.changed_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' })}
-                  <span className="ml-1 text-slate-600">
-                    {new Date(e.changed_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                </td>
-                <td className="px-4 py-2.5 font-mono text-xs text-violet-400">{e.sku}</td>
-                <td className="px-4 py-2.5 font-mono text-xs text-slate-300">{e.field}</td>
-                <td className="px-4 py-2.5 text-xs text-rose-400/60">
-                  {e.field === 'price' || e.field === 'cost'
-                    ? e.old_value ? `฿${Number(e.old_value).toLocaleString()}` : '—'
-                    : e.old_value || '—'
-                  }
-                </td>
-                <td className="px-4 py-2.5 text-xs text-emerald-400">
-                  {e.field === 'price' || e.field === 'cost'
-                    ? e.new_value ? `฿${Number(e.new_value).toLocaleString()}` : '—'
-                    : e.new_value || '—'
-                  }
-                  {e.field === 'price' && e.old_value && e.new_value && (
-                    <PriceDiff oldVal={e.old_value} newVal={e.new_value} />
-                  )}
-                </td>
-                <td className="px-4 py-2.5"><SourceBadge source={e.source} /></td>
+      {/* Batches view */}
+      {viewMode === 'batches' && (
+        <div className="space-y-2">
+          {loading && <div className="p-8 text-center text-slate-500">Loading...</div>}
+          {!loading && batches.length === 0 && (
+            <div className="p-8 text-center text-slate-500 text-sm">No changes found</div>
+          )}
+          {batches.map((batch) => {
+            const isExpanded = expandedBatchKeys.has(batch.key);
+            const topFields = Object.entries(batch.fieldCounts)
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 5);
+            return (
+              <div key={batch.key} className="rounded-xl border border-white/8 bg-white/3 overflow-hidden">
+                <button
+                  onClick={() => toggleBatch(batch.key)}
+                  className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-white/3 transition-colors"
+                >
+                  {isExpanded ? <ChevronDown size={14} className="text-slate-500 shrink-0" /> : <ChevronRight size={14} className="text-slate-500 shrink-0" />}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <SourceBadge source={batch.source} />
+                      <span className="text-sm text-white">
+                        {batch.uniqueSkus} product{batch.uniqueSkus !== 1 ? 's' : ''} &middot; {batch.entries.length} changes
+                      </span>
+                      {batch.note && (
+                        <span className="text-xs text-slate-400 truncate max-w-md">&ldquo;{batch.note}&rdquo;</span>
+                      )}
+                    </div>
+                    <div className="mt-1 flex items-center gap-3 text-[11px] text-slate-500">
+                      <span>{new Date(batch.startedAt).toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                      <span className="flex gap-2">
+                        {topFields.map(([f, c]) => (
+                          <span key={f} className="font-mono">
+                            <span className="text-slate-300">{f}</span>
+                            <span className="text-slate-600">:{c}</span>
+                          </span>
+                        ))}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+                {isExpanded && (
+                  <div className="border-t border-white/8 max-h-96 overflow-y-auto">
+                    <table className="w-full text-sm">
+                      <tbody>
+                        {batch.entries.map((e) => (
+                          <tr key={e.id} className="border-b border-white/4 hover:bg-white/3 transition-colors">
+                            <td className="px-4 py-1.5 font-mono text-xs text-violet-400 w-28">{e.sku}</td>
+                            <td className="px-4 py-1.5 font-mono text-xs text-slate-300 w-32">{e.field}</td>
+                            <td className="px-4 py-1.5 text-xs text-rose-400/60 truncate max-w-xs">
+                              {e.old_value || <span className="text-slate-600">—</span>}
+                            </td>
+                            <td className="px-4 py-1.5 text-xs text-emerald-400 truncate max-w-xs">
+                              {e.new_value || <span className="text-slate-600">—</span>}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* List view (individual changes) */}
+      {viewMode === 'list' && (
+        <div className="rounded-xl border border-white/8 bg-white/3 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-white/8 text-left">
+                <th className="px-4 py-3 text-xs font-medium text-slate-500">Date</th>
+                <th className="px-4 py-3 text-xs font-medium text-slate-500">SKU</th>
+                <th className="px-4 py-3 text-xs font-medium text-slate-500">Field</th>
+                <th className="px-4 py-3 text-xs font-medium text-slate-500">Old Value</th>
+                <th className="px-4 py-3 text-xs font-medium text-slate-500">New Value</th>
+                <th className="px-4 py-3 text-xs font-medium text-slate-500">Source</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-500">Loading...</td></tr>
+              ) : entries.length === 0 ? (
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-500">No changes found</td></tr>
+              ) : entries.map((e) => (
+                <tr key={e.id} className="border-b border-white/4 hover:bg-white/3 transition-colors">
+                  <td className="px-4 py-2.5 text-xs text-slate-500 whitespace-nowrap">
+                    {new Date(e.changed_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' })}
+                    <span className="ml-1 text-slate-600">
+                      {new Date(e.changed_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2.5 font-mono text-xs text-violet-400">{e.sku}</td>
+                  <td className="px-4 py-2.5 font-mono text-xs text-slate-300">{e.field}</td>
+                  <td className="px-4 py-2.5 text-xs text-rose-400/60">
+                    {e.field === 'price' || e.field === 'cost'
+                      ? e.old_value ? `฿${Number(e.old_value).toLocaleString()}` : '—'
+                      : e.old_value || '—'
+                    }
+                  </td>
+                  <td className="px-4 py-2.5 text-xs text-emerald-400">
+                    {e.field === 'price' || e.field === 'cost'
+                      ? e.new_value ? `฿${Number(e.new_value).toLocaleString()}` : '—'
+                      : e.new_value || '—'
+                    }
+                    {e.field === 'price' && e.old_value && e.new_value && (
+                      <PriceDiff oldVal={e.old_value} newVal={e.new_value} />
+                    )}
+                  </td>
+                  <td className="px-4 py-2.5"><SourceBadge source={e.source} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* Pagination */}
       {total > 50 && (
