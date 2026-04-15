@@ -8,6 +8,37 @@ This is the central product intelligence database for Wine-Now (th.wine-now.com)
 
 ---
 
+## Field Ownership Matrix
+
+Multiple systems write to the product catalog. To avoid conflicts, each field has a designated owner. Other systems should treat non-owned fields as read-only.
+
+| Field | Owner | Updated Via |
+|-------|-------|-------------|
+| `sku`, `name` | BI (source of truth) | BI sync / masterfile import |
+| `brand`, `bottle_size`, `vintage`, `alcohol` | BI | BI sync / masterfile import |
+| `price`, `cost_price`, `currency` | **BI** | BI sync (price/stock authoritative) |
+| `special_price`, `promotion_price`, `promotion_tier_price` | **BI** | BI sync |
+| `margin_thb`, `margin_pct`, `b2b_price`, `b2b_margin_*` | **BI** | BI sync |
+| `is_in_stock`, `custom_stock_status`, `wn_stock` | **BI** | BI sync |
+| `sold_orders`, `sold_qty`, `consign` | **BI** | BI sync (sales/inventory) |
+| `country`, `region`, `subregion`, `appellation` | **PIM** | AI enrichment / manual edit |
+| `classification`, `wine_classification` | **PIM** | AI enrichment / taxonomy queue |
+| `grape_variety`, `liquor_main_type`, `other_type` | **PIM** | AI enrichment |
+| `wine_body`, `wine_acidity`, `wine_tannin` | **PIM** | AI enrichment / expert library |
+| `food_matching`, `flavor_tags`, `flavor_profile` | **PIM** | AI enrichment / expert library |
+| `full_description` | **PIM** | AI enrichment / expert library |
+| `image_url`, `image_alt_text`, `image_local_path` | **PIM** | Image pipeline / manual upload |
+| `validation_status`, `overall_confidence` | **PIM** | Validation pipeline |
+| `enrichment_source`, `enrichment_note` | **PIM** | Enrichment pipeline |
+
+**Rule of thumb:**
+- **BI owns commercial data** — anything that changes with sales, pricing, or stock decisions
+- **PIM owns product intelligence** — anything about what the product IS (origin, style, taste, description, images)
+
+**Conflict policy:** If the BI app sends a PATCH that includes a PIM-owned field, the API will silently ignore that field. Same applies the other way — PIM enrichment jobs should never overwrite BI-owned fields.
+
+---
+
 ## Database Snapshot
 
 | Metric | Value |
