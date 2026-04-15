@@ -46,8 +46,10 @@ export const PIM_FIELDS = new Set<string>([
   'validation_status', 'overall_confidence',
   'taxonomy_confidence', 'description_confidence',
   'enrichment_source', 'enrichment_note', 'enrichment_priority',
-  'research_validation', 'research_confidence_level',
   'queue_priority',
+  // NOTE: 'research_validation' and 'research_confidence_level' are NOT
+  // in the live Supabase products schema. Removed to prevent 400 errors.
+  // If those columns are added later, re-add here.
 ]);
 
 /** System fields that anyone can write. */

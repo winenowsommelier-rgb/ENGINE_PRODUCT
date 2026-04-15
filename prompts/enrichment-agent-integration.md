@@ -119,7 +119,9 @@ The `X-Source: enrichment` header restricts writes to these fields. Any other fi
 `image_url`, `image_alt_text`, `image_local_path`, `image_scraped_url`
 
 ### Enrichment Metadata
-`validation_status`, `overall_confidence`, `taxonomy_confidence`, `description_confidence`, `enrichment_source`, `enrichment_note`, `enrichment_priority`, `research_validation`, `research_confidence_level`, `queue_priority`
+`validation_status`, `overall_confidence`, `taxonomy_confidence`, `description_confidence`, `enrichment_source`, `enrichment_note`, `enrichment_priority`, `queue_priority`
+
+**Not yet supported in live schema:** `research_validation`, `research_confidence_level` — these columns don't exist in Supabase yet. Skip them when building update payloads; the API will drop them automatically as of this version, but agents should exclude them upstream to keep batches clean.
 
 ### Blocked (BI-owned, not writable by enrichment)
 `price`, `cost_price`, `is_in_stock`, `sku`, `name`, `brand`, `bottle_size`, `vintage`, `alcohol` — if you send these, they'll appear in the `dropped` response array.
