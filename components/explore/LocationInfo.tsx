@@ -7,6 +7,7 @@ import type { CategoryScope, Counts, PriceRange } from "@/lib/explore/types";
 import { getAccent, getAccentRgb } from "@/lib/explore/category-config";
 import {
   getCount,
+  getCountries,
   getRegionsForCountry,
   getSubregionsForRegion,
   getAppellationsForSubregion,
@@ -66,7 +67,7 @@ interface LocationContext {
 
 interface LocationInfoProps {
   name: string;
-  type: "country" | "region" | "subregion";
+  type: "world" | "country" | "region" | "subregion";
   parentName?: string;
   category: CategoryScope | null;
   counts: Counts;
@@ -127,6 +128,22 @@ export default function LocationInfo({
   // Compute clickable children (regions for a country, subregions for a region, etc.)
   const catPrefix = category ? `/${category}` : "";
   const children = useMemo(() => {
+    if (type === "world") {
+      const countries = getCountries(category);
+      return {
+        label: "Countries",
+        items: countries
+          .map((c) => ({
+            slug: c.slug,
+            name: `${countryFlag(c.name)} ${c.name}`,
+            count: category ? c.counts[category] : c.counts.total,
+            href: `/explore${catPrefix}/${c.slug}`,
+          }))
+          .filter((i) => i.count > 0)
+          .sort((a, b) => b.count - a.count),
+      };
+    }
+
     if (!entityId) return { items: [] as { slug: string; name: string; count: number; href: string }[], label: "" };
 
     if (type === "country") {
@@ -174,8 +191,10 @@ export default function LocationInfo({
     return { items: [], label: "" };
   }, [entityId, type, category, catPrefix, countrySlug, regionSlug, subregionSlug]);
 
-  // Fetch context on mount / when name changes
+  // Fetch context on mount / when name changes (skip for world)
   useEffect(() => {
+    if (type === "world") { setLoading(false); setContext(null); return; }
+
     let cancelled = false;
     setLoading(true);
     setShowFull(false);
@@ -227,11 +246,21 @@ export default function LocationInfo({
         <div className="flex items-start justify-between p-5 pb-3">
           <div className="min-w-0 flex-1">
             <h2 className="flex items-center gap-2 text-xl font-semibold text-white">
-              <span className="text-2xl leading-none" aria-hidden="true">
-                {flag}
-              </span>
-              <span className="truncate">{name}</span>
+              {type !== "world" && (
+                <span className="text-2xl leading-none" aria-hidden="true">
+                  {flag}
+                </span>
+              )}
+              {type === "world" && (
+                <span className="text-2xl leading-none" aria-hidden="true">🌍</span>
+              )}
+              <span className="truncate">{type === "world" ? "Explore" : name}</span>
             </h2>
+            {type === "world" ? (
+              <p className="mt-1 text-sm text-white/50">
+                Discover wines, spirits, beer &amp; sake by region
+              </p>
+            ) : (
             <p className="mt-1 text-sm text-white/50">
               {parentName && <span>{parentName} &middot; </span>}
               <span
@@ -244,6 +273,7 @@ export default function LocationInfo({
                 {category ? `${category} ${typeLabel}` : typeLabel}
               </span>
             </p>
+            )}
           </div>
           <button
             onClick={onClose}
@@ -349,7 +379,8 @@ export default function LocationInfo({
           </div>
         )}
 
-        {/* Stats */}
+        {/* Stats (hide at world level) */}
+        {type !== "world" && (
         <div className="border-t border-white/[0.06] px-5 py-4">
           <p className="text-sm text-white/70">
             <span className="font-semibold text-white">{count}</span>{" "}
@@ -359,6 +390,7 @@ export default function LocationInfo({
             )}
           </p>
         </div>
+        )}
 
         {/* Clickable children (regions / subregions / appellations) */}
         {children.items.length > 0 && (
@@ -386,8 +418,8 @@ export default function LocationInfo({
           </div>
         )}
 
-        {/* CTA */}
-        {count > 0 && (
+        {/* CTA (hide at world level) */}
+        {type !== "world" && count > 0 && (
           <div className="border-t border-white/[0.06] px-5 py-4">
             <button
               onClick={onExploreProducts}

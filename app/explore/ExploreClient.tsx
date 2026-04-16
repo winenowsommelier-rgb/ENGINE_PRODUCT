@@ -264,13 +264,19 @@ export default function ExploreClient({ slug }: Props) {
         countrySlug: parsed.country.slug,
       };
     }
-    return null;
+    // World level — show all countries
+    return {
+      name: "World",
+      type: "world" as const,
+      parentName: undefined,
+      counts: { wine: 0, spirits: 0, beer: 0, sake: 0, total: 0 },
+      priceRange: { min: null, max: null },
+    };
   }, [parsed]);
 
   const shouldShowLocationInfo =
     showLocationInfo &&
-    locationInfoData !== null &&
-    parsed.drillLevel !== "world";
+    locationInfoData !== null;
 
   const handleCloseLocationInfo = useCallback(() => {
     setShowLocationInfo(false);
