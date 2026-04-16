@@ -107,6 +107,17 @@ Each update can be keyed by `sku` OR `id`. The API resolves sku→id server-side
 The `X-Source: enrichment` header restricts writes to these fields. Any other fields you send will be silently dropped (listed in `dropped` response field):
 
 ### Geography / Taxonomy
+
+**CRITICAL FORMATTING RULES:**
+1. **NEVER use pipe separators** (`|`) in taxonomy fields. The API will reject them with a 400 error.
+2. `region` must be ONLY the region name (e.g., `"Bordeaux"`, NOT `"Bordeaux | Pauillac"`)
+3. `subregion` is the separate field for the sub-area (e.g., `"Pauillac"`)
+4. If you know both, send BOTH as separate fields in the same update:
+   ```json
+   {"fields": {"region": "Bordeaux", "subregion": "Pauillac"}}
+   ```
+
+Allowed fields:
 `country`, `region`, `subregion`, `appellation`, `classification`, `wine_classification`, `grape_variety`, `grape_class`, `style`, `liquor_main_type`, `other_type`, `wine_type`
 
 ### Tasting Profile

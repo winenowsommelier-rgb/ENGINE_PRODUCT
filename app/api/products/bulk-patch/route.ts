@@ -29,6 +29,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { filterByOwnership, parseSource, type Source } from '@/lib/products/ownership';
+import { validateProductFields } from '@/lib/products/field-validation';
 import { addChangelogEntries, type ProductChangelog } from '@/lib/db/client';
 
 export const runtime = 'nodejs';
@@ -137,8 +138,22 @@ export async function POST(req: NextRequest) {
         continue;
       }
 
+      // Validate field values
+      const validation = validateProductFields(allowed);
+      if (!validation.valid) {
+        results.push({
+          sku: item.sku,
+          id: item.id,
+          error: 'validation failed: ' + validation.errors.join('; '),
+          validation_errors: validation.errors,
+        });
+        continue;
+      }
+      // Use cleaned values (trimmed, etc.)
+      const cleanedFields = validation.cleaned;
+
       // Fetch current state (need both id and old values for changelog diff)
-      const fieldNames = Object.keys(allowed);
+      const fieldNames = Object.keys(cleanedFields);
       const existing = await fetchCurrent({ id: item.id, sku: item.sku }, fieldNames);
       if (!existing) {
         results.push({ sku: item.sku, id: item.id, error: 'product not found' });
@@ -146,7 +161,7 @@ export async function POST(req: NextRequest) {
       }
 
       // Numeric casts
-      const payload: Record<string, unknown> = { ...allowed, updated_at: timestamp };
+      const payload: Record<string, unknown> = { ...cleanedFields, updated_at: timestamp };
       if (payload.price != null) payload.price = parseInt(payload.price as string) || null;
       if (payload.cost_price != null) payload.cost_price = parseInt(payload.cost_price as string) || null;
 

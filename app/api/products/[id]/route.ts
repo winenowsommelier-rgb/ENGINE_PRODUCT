@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { filterByOwnership, parseSource, type Source } from '@/lib/products/ownership';
+import { validateProductFields } from '@/lib/products/field-validation';
 import { addChangelogEntries, type ProductChangelog } from '@/lib/db/client';
 
 export const runtime = 'nodejs';
@@ -81,6 +82,17 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
         error: 'No writable fields for this source',
         source,
         dropped,
+      }, { status: 400 });
+    }
+
+    // Validate field values — reject pipe-separated taxonomy values, etc.
+    const validation = validateProductFields(allowed);
+    if (!validation.valid) {
+      return NextResponse.json({
+        error: 'Field validation failed',
+        validation_errors: validation.errors,
+        warnings: validation.warnings,
+        source,
       }, { status: 400 });
     }
 

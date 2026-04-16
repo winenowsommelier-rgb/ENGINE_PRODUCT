@@ -105,7 +105,7 @@ export function DashboardHomePage({ onNavigate }: { onNavigate: (section: string
                   <span className="text-xs text-slate-300 w-28 truncate">{tc.name}</span>
                   <div className="flex-1 h-4 bg-white/5 rounded-full overflow-hidden">
                     <div className="h-full bg-violet-500/40 rounded-full"
-                      style={{ width: Math.max(2, (tc.count / (data.topCountries[0]?.count || 1)) * 100) + '%' }} />
+                      style={{ width: Math.max(2, (tc.count / (data!.topCountries[0]?.count || 1)) * 100) + '%' }} />
                   </div>
                   <span className="text-xs text-slate-500 w-12 text-right">{tc.count}</span>
                 </div>
