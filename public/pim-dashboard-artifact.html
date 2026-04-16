@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WNLQ9 PIM Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { color-scheme: dark; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0f1a; color: #e2e8f0; min-height: 100vh; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  h2 { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #94a3b8; }
+  .subtitle { font-size: 12px; color: #64748b; }
+
+  .config-bar { display: flex; gap: 8px; align-items: center; margin: 12px 0; padding: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; }
+  .config-bar input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 6px 10px; font-size: 12px; color: #fff; outline: none; }
+  .config-bar input:focus { border-color: rgba(139,92,246,0.5); }
+  .config-bar button { background: #7c3aed; color: #fff; border: none; border-radius: 6px; padding: 6px 14px; font-size: 12px; font-weight: 500; cursor: pointer; }
+  .config-bar button:hover { background: #6d28d9; }
+  .status { font-size: 11px; padding: 3px 8px; border-radius: 12px; }
+  .status.ok { background: rgba(34,197,94,0.15); color: #4ade80; }
+  .status.err { background: rgba(239,68,68,0.15); color: #f87171; }
+  .status.loading { background: rgba(139,92,246,0.15); color: #a78bfa; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 12px 0; }
+  .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px; }
+  .card-label { font-size: 11px; color: #64748b; margin-bottom: 4px; }
+  .card-value { font-size: 22px; font-weight: 700; }
+  .card-sub { font-size: 10px; color: #475569; margin-top: 2px; }
+
+  .cov-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin: 8px 0; }
+  .cov-item { text-align: center; padding: 10px 6px; }
+  .cov-pct { font-size: 18px; font-weight: 700; }
+  .cov-label { font-size: 10px; color: #64748b; margin-top: 2px; }
+  .cov-count { font-size: 9px; color: #334155; }
+  .green { color: #4ade80; } .yellow { color: #facc15; } .orange { color: #fb923c; } .red { color: #f87171; }
+
+  .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .bar-label { font-size: 11px; color: #94a3b8; width: 80px; text-align: right; }
+  .bar-track { flex: 1; height: 14px; background: rgba(255,255,255,0.04); border-radius: 7px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 7px; transition: width 0.5s; }
+  .bar-count { font-size: 10px; color: #475569; width: 60px; }
+
+  .search-box { margin: 12px 0; }
+  .search-box input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #fff; outline: none; }
+  .search-box input:focus { border-color: rgba(139,92,246,0.5); }
+
+  .results { margin: 8px 0; }
+  .result-item { display: flex; gap: 10px; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; align-items: flex-start; }
+  .result-item:hover { background: rgba(255,255,255,0.03); }
+  .sku { font-family: monospace; color: #a78bfa; min-width: 90px; font-size: 11px; }
+  .name { color: #e2e8f0; flex: 1; }
+  .meta { color: #64748b; font-size: 11px; }
+  .price { color: #94a3b8; min-width: 70px; text-align: right; font-weight: 500; }
+
+  .tabs { display: flex; gap: 4px; margin: 12px 0; }
+  .tab { padding: 6px 14px; font-size: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: #64748b; cursor: pointer; }
+  .tab.active { background: rgba(139,92,246,0.15); color: #a78bfa; border-color: rgba(139,92,246,0.3); }
+
+  .gap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px; margin: 8px 0; }
+  .gap-card { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; }
+  .gap-label { font-size: 11px; color: #94a3b8; }
+  .gap-count { font-size: 16px; font-weight: 700; color: #f87171; }
+
+  .section { margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); }
+  .empty { padding: 20px; text-align: center; color: #475569; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>WNLQ9 Product Intelligence</h1>
+  <p class="subtitle">Connect to PIM Engine to browse products, check coverage, and search the catalog</p>
+
+  <!-- Config -->
+  <div class="config-bar">
+    <input id="baseUrl" value="http://localhost:3000" placeholder="PIM Base URL" />
+    <button onclick="connect()">Connect</button>
+    <span id="connStatus" class="status loading">not connected</span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('overview')">Overview</button>
+    <button class="tab" onclick="showTab('search')">Search</button>
+    <button class="tab" onclick="showTab('gaps')">Gaps</button>
+    <button class="tab" onclick="showTab('changelog')">Changes</button>
+  </div>
+
+  <!-- Overview tab -->
+  <div id="tab-overview">
+    <div id="metrics" class="grid"></div>
+    <div class="section">
+      <h2>Data Coverage</h2>
+      <div id="coverage" class="cov-grid"></div>
+    </div>
+    <div class="section">
+      <h2>Product Segments</h2>
+      <div id="segments"></div>
+    </div>
+    <div class="section">
+      <h2>Top Countries</h2>
+      <div id="countries"></div>
+    </div>
+  </div>
+
+  <!-- Search tab -->
+  <div id="tab-search" style="display:none">
+    <div class="search-box">
+      <input id="searchInput" placeholder="Search products by name, SKU, brand, grape..." onkeydown="if(event.key==='Enter')doSearch()" />
+    </div>
+    <div id="searchFilters" style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+      <select id="fCountry" style="background:#111827;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:4px 8px;font-size:11px;color:#94a3b8">
+        <option value="">All countries</option>
+      </select>
+      <select id="fClass" style="background:#111827;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:4px 8px;font-size:11px;color:#94a3b8">
+        <option value="">All types</option>
+      </select>
+      <button onclick="doSearch()" style="background:#7c3aed;color:#fff;border:none;border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer">Search</button>
+    </div>
+    <div id="searchResults" class="results"><div class="empty">Type a query and press Enter</div></div>
+  </div>
+
+  <!-- Gaps tab -->
+  <div id="tab-gaps" style="display:none">
+    <p class="subtitle" style="margin-bottom:8px">Products missing key fields — priority enrichment targets</p>
+    <div id="gapsGrid" class="gap-grid"></div>
+    <div class="section">
+      <h2>Missing by Field</h2>
+      <div id="gapsBars"></div>
+    </div>
+  </div>
+
+  <!-- Changelog tab -->
+  <div id="tab-changelog" style="display:none">
+    <div id="changelogContent"><div class="empty">Connect to PIM to view changes</div></div>
+  </div>
+</div>
+
+<script>
+let BASE = 'http://localhost:3000';
+let overviewData = null;
+
+async function api(path) {
+  const res = await fetch(BASE + path);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+async function connect() {
+  BASE = document.getElementById('baseUrl').value.replace(/\/+$/, '');
+  const el = document.getElementById('connStatus');
+  el.className = 'status loading'; el.textContent = 'connecting...';
+  try {
+    overviewData = await api('/api/products/overview');
+    el.className = 'status ok'; el.textContent = overviewData.counts.total.toLocaleString() + ' products';
+    renderOverview(overviewData);
+    loadFacets();
+    loadChangelog();
+  } catch (e) {
+    el.className = 'status err'; el.textContent = 'failed: ' + e.message;
+  }
+}
+
+function showTab(name) {
+  document.querySelectorAll('[id^="tab-"]').forEach(function(el) { el.style.display = 'none'; });
+  document.getElementById('tab-' + name).style.display = '';
+  document.querySelectorAll('.tab').forEach(function(el) { el.className = 'tab'; });
+  event.target.className = 'tab active';
+}
+
+function renderOverview(d) {
+  var c = d.counts;
+  document.getElementById('metrics').innerHTML =
+    mc('Total Products', c.total, '', 'violet') +
+    mc('Validated', c.byStatus.validated, Math.round(c.byStatus.validated/c.total*100)+'%', 'green') +
+    mc('Needs Review', c.byStatus.needs_review, '', 'yellow') +
+    mc('Wine', c.bySegment.wine, Math.round(c.bySegment.wine/c.total*100)+'%', 'red');
+
+  // Coverage
+  var cov = d.coverage.fields;
+  var covHtml = '';
+  var fields = ['country','region','grape_variety','vintage','brand','flavor_profile','price','full_description'];
+  var labels = ['Country','Region','Grape','Vintage','Brand','Flavor','Price','Description'];
+  for (var i = 0; i < fields.length; i++) {
+    var f = cov[fields[i]];
+    if (!f) continue;
+    var cls = f.pct >= 80 ? 'green' : f.pct >= 50 ? 'yellow' : f.pct >= 20 ? 'orange' : 'red';
+    covHtml += '<div class="cov-item"><div class="cov-pct ' + cls + '">' + f.pct + '%</div><div class="cov-label">' + labels[i] + '</div><div class="cov-count">' + f.filled.toLocaleString() + '/' + f.total.toLocaleString() + '</div></div>';
+  }
+  document.getElementById('coverage').innerHTML = covHtml;
+
+  // Segments
+  var segs = [['Wine', c.bySegment.wine, '#ef4444'], ['Spirits', c.bySegment.spirits, '#f59e0b'], ['Beer', c.bySegment.beer, '#eab308'], ['Accessories', c.bySegment.accessories, '#64748b']];
+  var segHtml = '';
+  for (var s of segs) {
+    var pct = Math.round(s[1]/c.total*100);
+    segHtml += '<div class="bar-row"><span class="bar-label">' + s[0] + '</span><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + s[2] + '"></div></div><span class="bar-count">' + s[1].toLocaleString() + '</span></div>';
+  }
+  document.getElementById('segments').innerHTML = segHtml;
+
+  // Countries
+  var tc = d.topCountries.slice(0, 10);
+  var maxC = tc[0]?.count || 1;
+  var cHtml = '';
+  for (var t of tc) {
+    var pctC = Math.round(t.count/maxC*100);
+    cHtml += '<div class="bar-row"><span class="bar-label">' + t.name + '</span><div class="bar-track"><div class="bar-fill" style="width:' + pctC + '%;background:#7c3aed"></div></div><span class="bar-count">' + t.count.toLocaleString() + '</span></div>';
+  }
+  document.getElementById('countries').innerHTML = cHtml;
+
+  // Gaps
+  var gaps = d.gapsToFill;
+  var gapItems = [['Description', gaps.missingDescription], ['Flavor Profile', gaps.missingFlavorProfile], ['Grape Variety', gaps.missingGrape], ['Region', gaps.missingRegion], ['Vintage', gaps.missingVintage], ['Brand', gaps.missingBrand]];
+  var gHtml = '';
+  var gbHtml = '';
+  for (var g of gapItems) {
+    if (typeof g[1] !== 'number' || g[1] === 0) continue;
+    gHtml += '<div class="gap-card"><span class="gap-label">' + g[0] + '</span><span class="gap-count">' + g[1].toLocaleString() + '</span></div>';
+    var gPct = Math.round(g[1]/c.total*100);
+    gbHtml += '<div class="bar-row"><span class="bar-label">' + g[0] + '</span><div class="bar-track"><div class="bar-fill" style="width:' + gPct + '%;background:#f87171"></div></div><span class="bar-count">' + g[1].toLocaleString() + ' (' + gPct + '%)</span></div>';
+  }
+  document.getElementById('gapsGrid').innerHTML = gHtml;
+  document.getElementById('gapsBars').innerHTML = gbHtml;
+}
+
+function mc(label, value, sub, color) {
+  var colors = {violet:'rgba(139,92,246,0.12)',green:'rgba(34,197,94,0.12)',yellow:'rgba(250,204,21,0.12)',red:'rgba(239,68,68,0.12)'};
+  var textColors = {violet:'#a78bfa',green:'#4ade80',yellow:'#facc15',red:'#f87171'};
+  return '<div class="card" style="background:' + (colors[color]||'') + '"><div class="card-label">' + label + '</div><div class="card-value" style="color:' + (textColors[color]||'#fff') + '">' + (typeof value === 'number' ? value.toLocaleString() : value) + '</div>' + (sub ? '<div class="card-sub">' + sub + '</div>' : '') + '</div>';
+}
+
+async function loadFacets() {
+  try {
+    var d = await api('/api/products/facets');
+    var sel = document.getElementById('fCountry');
+    (d.countries||[]).forEach(function(f) { sel.innerHTML += '<option value="' + f.value + '">' + f.value + ' (' + f.count + ')</option>'; });
+    var cls = document.getElementById('fClass');
+    (d.categories||[]).forEach(function(f) { cls.innerHTML += '<option value="' + f.value + '">' + f.value + ' (' + f.count + ')</option>'; });
+  } catch(e) {}
+}
+
+async function doSearch() {
+  var q = document.getElementById('searchInput').value;
+  var country = document.getElementById('fCountry').value;
+  var cls = document.getElementById('fClass').value;
+  var params = new URLSearchParams();
+  if (q) params.set('q', q);
+  if (country) params.set('country', country);
+  if (cls) params.set('classification', cls);
+  params.set('limit', '30');
+
+  document.getElementById('searchResults').innerHTML = '<div class="empty">Searching...</div>';
+  try {
+    var d = await api('/api/products/search?' + params);
+    if (!d.products.length) {
+      document.getElementById('searchResults').innerHTML = '<div class="empty">No results</div>';
+      return;
+    }
+    var html = '<div style="font-size:11px;color:#475569;margin-bottom:6px">' + d.total + ' results</div>';
+    for (var p of d.products) {
+      html += '<div class="result-item">' +
+        '<span class="sku">' + (p.sku||'') + '</span>' +
+        '<div><span class="name">' + (p.name||'') + '</span>' +
+        '<div class="meta">' + [p.country, p.region, p.grape_variety, p.vintage].filter(Boolean).join(' · ') + '</div></div>' +
+        '<span class="price">' + (p.price ? '฿' + Number(p.price).toLocaleString() : '') + '</span></div>';
+    }
+    document.getElementById('searchResults').innerHTML = html;
+  } catch(e) {
+    document.getElementById('searchResults').innerHTML = '<div class="empty">Error: ' + e.message + '</div>';
+  }
+}
+
+async function loadChangelog() {
+  try {
+    var d = await api('/api/changelog?limit=30');
+    var html = '<div style="font-size:11px;color:#475569;margin-bottom:6px">' + d.total.toLocaleString() + ' total changes</div>';
+    for (var e of d.entries) {
+      var dt = new Date(e.changed_at);
+      var dateStr = dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) + ' ' + dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+      html += '<div class="result-item">' +
+        '<span style="font-size:10px;color:#475569;min-width:80px">' + dateStr + '</span>' +
+        '<span class="sku">' + e.sku + '</span>' +
+        '<span style="font-family:monospace;font-size:11px;color:#94a3b8;min-width:80px">' + e.field + '</span>' +
+        '<span style="font-size:11px;color:#f87171;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (e.old_value||'—').slice(0,30) + '</span>' +
+        '<span style="font-size:11px;color:#4ade80;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (e.new_value||'—').slice(0,30) + '</span>' +
+        '<span style="font-size:10px;padding:2px 6px;border-radius:8px;background:rgba(139,92,246,0.15);color:#a78bfa">' + e.source.replace(/_/g,' ') + '</span></div>';
+    }
+    document.getElementById('changelogContent').innerHTML = html;
+  } catch(e) {
+    document.getElementById('changelogContent').innerHTML = '<div class="empty">Error: ' + e.message + '</div>';
+  }
+}
+
+// Auto-connect on load
+connect();
+</script>
+</body>
+</html>
