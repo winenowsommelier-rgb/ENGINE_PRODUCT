@@ -1,18 +1,17 @@
 'use client';
 import React, { Suspense, useState } from 'react';
-import { BookOpen, ClipboardCheck, Globe, Grid3X3, History, Library, Package, Settings, Upload, type LucideIcon } from 'lucide-react';
+import { ClipboardCheck, Globe, Grid3X3, History, Home, Library, Package, Settings, Upload, type LucideIcon } from 'lucide-react';
 
-// Lazy imports — each page loads independently, crashes are isolated
+const DashboardHomePage = React.lazy(() => import('@/components/pages/DashboardHomePage').then(m => ({ default: m.DashboardHomePage })));
 const ProductsPage      = React.lazy(() => import('@/components/pages/ProductsPage').then(m => ({ default: m.ProductsPage })));
 const ProductMatrixPage = React.lazy(() => import('@/components/pages/ProductMatrixPage').then(m => ({ default: m.ProductMatrixPage })));
-const TaxonomyManagerPage = React.lazy(() => import('@/components/pages/TaxonomyManagerPage').then(m => ({ default: m.TaxonomyManagerPage })));
 const KnowledgeLibraryPage = React.lazy(() => import('@/components/pages/KnowledgeLibraryPage').then(m => ({ default: m.KnowledgeLibraryPage })));
 const ValidationDashboardPage = React.lazy(() => import('@/components/pages/ValidationDashboardPage').then(m => ({ default: m.ValidationDashboardPage })));
 const ChangeLogPage = React.lazy(() => import('@/components/pages/ChangeLogPage').then(m => ({ default: m.ChangeLogPage })));
 const ImportHubPage = React.lazy(() => import('@/components/pages/ImportHubPage').then(m => ({ default: m.ImportHubPage })));
 const SettingsPage      = React.lazy(() => import('@/components/pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
 
-type Section = 'products' | 'matrix' | 'taxonomy_manager' | 'knowledge_library' | 'validation' | 'changelog' | 'import' | 'settings';
+type Section = 'home' | 'products' | 'matrix' | 'knowledge_library' | 'validation' | 'changelog' | 'import' | 'settings';
 
 interface NavGroup {
   label: string;
@@ -20,6 +19,12 @@ interface NavGroup {
 }
 
 const NAV_GROUPS: NavGroup[] = [
+  {
+    label: '',
+    items: [
+      { id: 'home',             label: 'Dashboard',          Icon: Home },
+    ],
+  },
   {
     label: 'Catalog',
     items: [
@@ -49,7 +54,6 @@ const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
-// Per-page error boundary
 class PageErrorBoundary extends React.Component<{ name: string; children: React.ReactNode }, { error: Error | null }> {
   constructor(props: any) { super(props); this.state = { error: null }; }
   static getDerivedStateFromError(error: Error) { return { error }; }
@@ -85,11 +89,9 @@ function Sidebar({ active, onNavigate }: { active: Section; onNavigate: (s: Sect
         <span className="text-sm font-semibold text-white">WNLQ9 PIM</span>
       </div>
       <div className="flex flex-1 flex-col gap-0.5 p-2 pt-3">
-        {/* Map Explorer — separate route */}
-        <a
-          href="/explore"
-          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-colors mb-2"
-        >
+        {/* Map Explorer — opens separate route */}
+        <a href="/explore"
+          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-colors mb-2">
           <Globe size={15} />
           Map Explorer
           <span className="ml-auto text-[10px] text-slate-600">↗</span>
@@ -98,26 +100,21 @@ function Sidebar({ active, onNavigate }: { active: Section; onNavigate: (s: Sect
         {NAV_GROUPS.map((group, gi) => (
           <React.Fragment key={gi}>
             {group.label && (
-              <p className={`px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-600 ${gi > 0 ? 'mt-4' : ''} mb-1`}>
+              <p className={'px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-600 ' + (gi > 0 ? 'mt-4 ' : '') + 'mb-1'}>
                 {group.label}
               </p>
             )}
             {!group.label && gi > 0 && <div className="mt-auto" />}
-            {group.items.map(({ id, label, Icon }) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => onNavigate(id)}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors ${
-                  active === id
-                    ? 'bg-violet-500/20 text-white'
-                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                }`}
-              >
-                <Icon size={15} />
-                {label}
-              </button>
-            ))}
+            {group.items.map(function ({ id, label, Icon }) {
+              return (
+                <button key={id} type="button" onClick={function () { onNavigate(id); }}
+                  className={'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors ' +
+                    (active === id ? 'bg-violet-500/20 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200')}>
+                  <Icon size={15} />
+                  {label}
+                </button>
+              );
+            })}
           </React.Fragment>
         ))}
       </div>
@@ -126,12 +123,12 @@ function Sidebar({ active, onNavigate }: { active: Section; onNavigate: (s: Sect
 }
 
 export function Dashboard() {
-  const [section, setSection] = useState<Section>('products');
+  const [section, setSection] = useState<Section>('home');
 
   const pages: Record<Section, React.ReactNode> = {
+    home:             <DashboardHomePage onNavigate={function (s: string) { setSection(s as Section); }} />,
     products:         <ProductsPage />,
     matrix:           <ProductMatrixPage />,
-    taxonomy_manager: <TaxonomyManagerPage />,
     knowledge_library: <KnowledgeLibraryPage />,
     validation:       <ValidationDashboardPage />,
     changelog:        <ChangeLogPage />,
