@@ -144,7 +144,7 @@ export default function LocationInfo({
       };
     }
 
-    if (!entityId) return { items: [] as { slug: string; name: string; count: number; href: string }[], label: "" };
+    if (!entityId) { const empty: { slug: string; name: string; count: number; href: string }[] = []; return { items: empty, label: "" }; }
 
     if (type === "country") {
       const regions = getRegionsForCountry(entityId, category);
