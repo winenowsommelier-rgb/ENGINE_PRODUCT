@@ -301,11 +301,18 @@ function buildSources(wn: SiteBundle, lq: SiteBundle, sheets: SheetData[]): Sour
     },
   ];
 
+  const sheetsApiEnabled = !sheets.some(s => s.error?.includes('has not been used') || s.error?.includes('disabled'));
   if (sheets.length === 0) {
     sources.push({
       name: 'Google Sheets',
       status: 'not_configured',
-      note: 'Set SHEETS_SPREADSHEET_ID in .env.local to connect a sheet.',
+      note: 'Sheet IDs configured. Enable Sheets API at: https://console.developers.google.com/apis/api/sheets.googleapis.com/overview?project=1030487865754',
+    });
+  } else if (!sheetsApiEnabled) {
+    sources.push({
+      name: 'Google Sheets',
+      status: 'error',
+      note: 'Sheets API not enabled. Visit: https://console.developers.google.com/apis/api/sheets.googleapis.com/overview?project=1030487865754',
     });
   } else {
     for (const s of sheets) {
@@ -347,19 +354,29 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
 
   // ── Fetch all data in parallel ────────────────────────────────────────────
-  // GSC + GA4 for both sites + any configured sheets
-  const sheetId = process.env.SHEETS_SPREADSHEET_ID ?? '';
-  const sheetRange = process.env.SHEETS_RANGE ?? 'Sheet1!A:Z';
-  const sheetName = process.env.SHEETS_NAME ?? 'Raw Data';
+  // GSC + GA4 for both sites + key tabs from the three Google Sheets.
+  //
+  // WN GA sheet tabs:  Monthly Summary | Daily Metrics | Daily by Source |
+  //                    Ecommerce Daily | Product Performance | Landing Pages |
+  //                    Traffic Overview | Top Pages | Traffic Sources | ...
+  // LIQ9 GA sheet tabs: same structure as WN GA
+  // GSC sheet tabs:    WN GSC 90D | LIQ9 GSC 90D | WN GSC FEED | LIQ9 GSC FEED | GSC Status
+  const sheetConfigs = [
+    // GA4 — Monthly rollup (best overview for claudeContext / AI consumption)
+    { id: process.env.SHEETS_WN_GA_ID ?? '',   range: 'Monthly Summary!A:J', name: 'WN Monthly' },
+    { id: process.env.SHEETS_WN_GA_ID ?? '',   range: 'Ecommerce Daily!A:H', name: 'WN Ecommerce' },
+    { id: process.env.SHEETS_LIQ9_GA_ID ?? '',  range: 'Monthly Summary!A:J', name: 'LIQ9 Monthly' },
+    // GSC — page×query data for both sites (90-day rolling, updated by Apps Script)
+    { id: process.env.SHEETS_GSC_ID ?? '',       range: 'WN GSC 90D!A:H',    name: 'WN GSC 90D' },
+    { id: process.env.SHEETS_GSC_ID ?? '',       range: 'LIQ9 GSC 90D!A:H',  name: 'LIQ9 GSC 90D' },
+  ].filter(s => s.id.length > 0);
 
   const [gscWn, gscLq, ga4Wn, ga4Lq, ...sheetResults] = await Promise.all([
     fetchGsc('winenow', days).catch(e => ({ error: String(e) })),
     fetchGsc('liq9', days).catch(e => ({ error: String(e) })),
     fetchGa4('winenow', days).catch(e => ({ error: String(e) })),
     fetchGa4('liq9', days).catch(e => ({ error: String(e) })),
-    ...(sheetId
-      ? [fetchSheet(sheetId, sheetRange, sheetName)]
-      : []),
+    ...sheetConfigs.map(s => fetchSheet(s.id, s.range, s.name)),
   ]);
 
   const winenow = buildSiteBundle('Wine-Now', 'https://th.wine-now.com', gscWn, ga4Wn);

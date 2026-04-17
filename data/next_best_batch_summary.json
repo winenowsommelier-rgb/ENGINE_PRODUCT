@@ -1,10 +1,19 @@
 {
-  "pending_unique_skus": 1695,
+  "pending_unique_skus": 1669,
+  "fast_lane_rows": 30,
   "top_20_live_records": 20,
-  "top_20_repeated_producers": 17,
+  "top_20_repeated_producers": 9,
+  "top_20_ga_products": 0,
+  "top_20_ga_brands": 14,
+  "top_20_ga_taxonomy": 0,
+  "top_20_priority_bands": {
+    "publish_fast_lane": 7,
+    "ga_brand_cluster": 9,
+    "high_value_cluster": 4
+  },
   "top_20_task_mix": {
-    "flavor": 19,
-    "region": 8,
-    "grape": 2
+    "flavor": 14,
+    "grape": 7,
+    "region": 7
   }
 }

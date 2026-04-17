@@ -42,8 +42,9 @@ async function runReport(
 }
 
 const GA4_PROPERTY_MAP: Record<string, string> = {
-  winenow: '386954192',
+  winenow: '377750759',   // Primary GA4 property — has full Enhanced E-commerce events
   liq9:    '377924618',
+  // winenow_secondary: '386954192', // secondary property — basic events only, no e-commerce
 };
 
 // ─── GET /api/ga4 ─────────────────────────────────────────────────────────────
@@ -133,7 +134,10 @@ export async function GET(request: Request) {
         }),
       }).then(r => r.json()),
 
-      // Conversion events
+      // Conversion & engagement events — tracks both e-commerce events
+      // (purchase, add_to_cart, begin_checkout, view_item) and fallback
+      // engagement signals (form_submit, view_search_results, click, scroll)
+      // for sites that haven't yet configured full e-commerce tracking.
       fetch(base, {
         method: 'POST', headers,
         body: JSON.stringify({
@@ -147,12 +151,22 @@ export async function GET(request: Request) {
             filter: {
               fieldName: 'eventName',
               inListFilter: {
-                values: ['purchase', 'add_to_cart', 'begin_checkout', 'view_item', 'generate_lead', 'form_submit', 'contact']
+                values: [
+                  // E-commerce (GA4 Enhanced Ecommerce)
+                  'purchase', 'add_to_cart', 'begin_checkout', 'view_item',
+                  'remove_from_cart', 'view_cart', 'add_payment_info', 'add_shipping_info',
+                  // Lead / contact
+                  'generate_lead', 'form_submit', 'form_start', 'contact',
+                  // Engagement signals
+                  'view_search_results', 'search', 'click', 'scroll',
+                  // Custom Magento events (common)
+                  'wishlist_add', 'checkout', 'order_complete',
+                ]
               }
             }
           },
           orderBys: [{ metric: { metricName: 'eventCount' }, desc: true }],
-          limit: 10,
+          limit: 20,
         }),
       }).then(r => r.json()),
     ]);
@@ -211,6 +225,11 @@ export async function GET(request: Request) {
       perUser: parseFloat(parseFloat(r.metricValues?.[1]?.value ?? '0').toFixed(2)),
     }));
 
+    // Flag whether GA4 Enhanced E-commerce is configured on this property.
+    // If none of the core purchase events fire, Magento GTM needs to be set up.
+    const ecommerceEvents = ['purchase', 'add_to_cart', 'begin_checkout', 'view_item', 'view_cart'];
+    const ecommerceConfigured = conversions.some((c: { event: string }) => ecommerceEvents.includes(c.event));
+
     return NextResponse.json({
       propertyId,
       period: { startDate, endDate: 'today', days },
@@ -219,6 +238,11 @@ export async function GET(request: Request) {
       topPages,
       daily,
       conversions,
+      ecommerceConfigured,
+      // Action required message when e-commerce is not set up
+      ecommerceNote: ecommerceConfigured
+        ? null
+        : 'GA4 Enhanced E-commerce events (purchase, add_to_cart, begin_checkout) are not firing. Configure Google Tag Manager with Magento purchase events to track revenue and conversion rate.',
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';

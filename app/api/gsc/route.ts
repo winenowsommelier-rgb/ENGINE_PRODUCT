@@ -52,7 +52,7 @@ export async function GET(request: Request) {
 
     // Fetch in parallel: performance history + top keywords + top pages
     const [historyRes, keywordsRes, pagesRes] = await Promise.all([
-      // Weekly performance (clicks, impressions, ctr, position)
+      // Daily performance (clicks, impressions, ctr, position)
       sc.searchanalytics.query({
         siteUrl,
         requestBody: {
@@ -62,24 +62,24 @@ export async function GET(request: Request) {
           rowLimit: 90,
         },
       }),
-      // Top keywords
+      // Top keywords — 100 rows for full coverage including position 11-30 quick wins
       sc.searchanalytics.query({
         siteUrl,
         requestBody: {
           startDate,
           endDate,
           dimensions: ['query'],
-          rowLimit: 25,
+          rowLimit: 100,
         },
       }),
-      // Top pages
+      // Top pages — 25 rows for meaningful page-level analysis
       sc.searchanalytics.query({
         siteUrl,
         requestBody: {
           startDate,
           endDate,
           dimensions: ['page'],
-          rowLimit: 10,
+          rowLimit: 25,
         },
       }),
     ]);
@@ -128,8 +128,8 @@ export async function GET(request: Request) {
       period: { startDate, endDate, days },
       totals: { ...totals, avgCtr, avgPosition, keywords: keywords.length },
       history,
-      keywords,
-      pages,
+      keywords,        // top 100 by clicks
+      pages,           // top 25 by clicks
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';

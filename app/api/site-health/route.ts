@@ -120,14 +120,15 @@ export async function GET(request: Request) {
           rowLimit: 50,
         },
       }),
-      // Queries — we'll filter for position 11-30 quick wins
+      // Queries — 200 rows so position 11-30 quick wins are captured
+      // even for high-ranking sites where the top 50 are all page 1
       sc.searchanalytics.query({
         siteUrl,
         requestBody: {
           startDate,
           endDate,
           dimensions: ['query'],
-          rowLimit: 50,
+          rowLimit: 200,
         },
       }),
     ]);
