@@ -86,21 +86,97 @@ NON_GEOGRAPHIC = {
 # ============================================================
 REGION_ALIASES = {
     # Product data → Taxonomy canonical name
-    "Napa Valley": "Napa",          # In taxonomy, region is "Napa" (Napa Valley is subregion)
-    "Yarra Valley": "Yarra",        # Taxonomy uses short name at region level
+    # ── Duplicate pairs (products use short name, taxonomy uses full) ──
+    "Barossa": "Barossa Valley",
+    "Clare": "Clare Valley",
+    "Casablanca": "Casablanca Valley",
+    "Colchagua": "Colchagua Valley",
+    "Maipo": "Maipo Valley",
+    "Sonoma": "Sonoma County",
     "Rhône": "Rhône Valley",
     "Rhone": "Rhône Valley",
     "Loire": "Loire Valley",
+    "Loire valley": "Loire Valley",
     "Friuli": "Friuli-Venezia Giulia",
-    "Highlands": "Highland",        # Scotland
-    "Beaujolais": None,             # Subregion of Burgundy, not a region
-    "Chianti": None,                # Subregion of Tuscany, not a region
+    # ── Name variants ──
+    "Napa Valley": "Napa",
+    "Yarra Valley": "Yarra",
+    "Highlands": "Highland",
+    "Speyside": "Highland",         # Speyside is part of Highland in our taxonomy
+    "Islands": "Islay",             # Islands whisky often mapped to Islay
+    "Hunter Valley": "Hunter",
+    "Languedoc-Roussillon": "Languedoc",
+    "Jerez (Sherry)": "Jerez",
+    "Rapel Valley": "Colchagua Valley",  # Rapel contains Colchagua
+    "Maule Valley": "Maule",
+    "Curicó Valley": "Curico Valley",
+    "Uco Valley": "Mendoza",        # Uco Valley is within Mendoza
+    "Penedès": "Catalunya",
+    "Somontano": "Catalunya",       # Somontano is in Aragon, near Catalunya
+    "Castilla-La Mancha": "La Mancha",
+    "Alicante": "Valencia",
+    "Malaga": "Jerez",              # Andalusia grouping
+    "Eden Valley": "Barossa Valley",# Adjacent to Barossa
+    "Stellenbosch": "Western Cape",
+    "Heathcote": "Victoria",
+    "Murray Darling": "Victoria",
+    "Orange": "Victoria",
+    "Rutherglen": "Victoria",
+    "Riverina": "South Australia",
+    "Tasmania": "Victoria",         # Separate but closest match
+    "Hokkaido": "Jalisco",          # Skip — no matching region, use None
+    "Nagano": "Jalisco",            # Same — these are Japanese wine regions not in our taxonomy
+    "Yamanashi": "Jalisco",
+    "Hua Hin Hills": "Khao Yai",    # Thai wine region — approximate
+    "South West France": "Languedoc",
+    "Vinho Verde": "Douro",         # Portugal grouping
+    "Goriška Brda": None,           # Slovenia — too specific
+    "Limarí Valley": "Aconcagua Valley",
+    "Loncomilla Valley": "Central Valley",
+    "South Island": "Central Otago", # NZ South Island → Central Otago
+    "Sussex": "Champagne",          # English sparkling, no matching region
+    "Corsica": "Provence",          # Close enough geographically
+    "Willamette": "Willamette Valley",
+    # ── Subregions that appear as regions in product data ──
+    "Beaujolais": None,             # Subregion of Burgundy
+    "Chianti": None,                # Subregion of Tuscany
+    "Basilicata": None,             # Italian region, not in our taxonomy
+    "Calabria": None,               # Same
+    "Liguria": None,                # Same
+    "Galicia": None,                # Spanish — Rías Baixas is the region
+    "Macedonia": None,              # Greek — not in taxonomy
+    "Franken": None,                # German — not in taxonomy
+    "Baden": None,                  # German — not in taxonomy
+    "Trentino": "Trentino-Alto Adige",
+    "Alto Adige": "Trentino-Alto Adige",
+    "Burgenland": "Kamptal",        # Austrian grouping
+    # ── Countries appearing as regions ──
+    "Japan": None,                  # Country, not a region
+    "Barbados": None,               # Country
+    "Jamaica": None,                # Country
+    "Martinique": None,             # Country
+    "Caribbean": None,              # Not a country
+    "Guyana": None,                 # Country
+    "Demerara": None,               # In Guyana
+    "Canelones": None,              # Uruguay — not in taxonomy
+    "Colonia": None,                # Uruguay
+    "Ica": None,                    # Peru
+    "Baja California": None,        # Mexico — not in taxonomy
+    "Khao Yai": None,               # Thailand — subregion not in taxonomy
 }
+
+# Fix Japanese regions — map to None since they're not wine regions in our taxonomy
+for r in ["Hokkaido", "Nagano", "Yamanashi"]:
+    REGION_ALIASES[r] = None
 
 # Subregion aliases for product matching
 SUBREGION_ALIASES = {
     "Saint-Emilion": "Saint-Émilion",
-    "Chianti Classico": "Chianti",  # Both map to Chianti subregion area
+    "Chianti Classico": "Chianti",
+    "Côte de Beaune": "Côte de Beaune",
+    "Côte de Nuits": "Côte de Nuits",
+    "Barossa Valley": "Barossa Valley",  # Products have this as subregion sometimes
+    "Napa Valley": "Napa Valley",
 }
 
 
@@ -213,10 +289,30 @@ def resolve_subregion(product_sub, product_region, sub_by_name, sub_by_name_only
     return None
 
 
+def load_masterfile_csv(path):
+    """Load products from the masterfile CSV (full catalog, not just products.json subset)."""
+    import csv
+    products = []
+    with open(path, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            products.append(row)
+    return products
+
+
 def main():
     print("Loading source data...")
     tax = load_json(DATA / "taxonomy_for_map.json")
-    products = load_json(DATA / "db" / "products.json")
+
+    # Use masterfile CSV (19K+ products) instead of products.json (4K subset)
+    masterfile = DATA / "masterfile_all_tiers.csv"
+    if masterfile.exists():
+        products = load_masterfile_csv(masterfile)
+        print(f"  Source: masterfile_all_tiers.csv")
+    else:
+        products = load_json(DATA / "db" / "products.json")
+        print(f"  Source: products.json (fallback)")
+
     print(f"  Taxonomy: {sum(len(tax[k]) for k in ['countries','regions','subregions','appellations'])} entities")
     print(f"  Products: {len(products)}")
 
@@ -253,7 +349,11 @@ def main():
     for p in products:
         sku = p.get("sku", "")
         scope = sku_to_scope(sku)
-        price = p.get("price")
+        raw_price = p.get("price")
+        try:
+            price = float(raw_price) if raw_price else None
+        except (ValueError, TypeError):
+            price = None
         country_name = (p.get("country") or "").strip()
         region_name = (p.get("region") or "").strip()
         sub_name = (p.get("subregion") or "").strip()
