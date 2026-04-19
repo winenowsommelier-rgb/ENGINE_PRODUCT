@@ -49,15 +49,23 @@ export default function ExploreClient({ slug }: Props) {
   const [showProducts, setShowProducts] = useState(false);
   const [showLocationInfo, setShowLocationInfo] = useState(true);
 
-  // ── Reset UI state when URL changes (breadcrumb click, back/forward) ──
+  // ── Reset UI state when URL changes (breadcrumb, back/forward, Link click) ──
   useEffect(() => {
     const currentSlug = slug.join("/");
     if (prevSlugRef.current !== currentSlug) {
+      const prevLevel = prevSlugRef.current.split("/").length;
+      const currLevel = currentSlug.split("/").length;
+      const navigatedBack = currLevel < prevLevel;
+
       prevSlugRef.current = currentSlug;
+
+      // Always clear floating card on navigation
       setSelectedRegion(null);
+      // Re-open location info panel on navigation
       setShowLocationInfo(true);
-      // Only keep showProducts if we're at subregion+ level (auto-show)
-      if (parsed.drillLevel !== "subregion" && parsed.drillLevel !== "appellation") {
+      // Close sidebar when navigating back OR when at world/country level
+      // Keep it open only when navigating forward into subregion+
+      if (navigatedBack || parsed.drillLevel === "world" || parsed.drillLevel === "country") {
         setShowProducts(false);
       }
     }
@@ -92,17 +100,11 @@ export default function ExploreClient({ slug }: Props) {
   );
 
   const handleSelectCountry = useCallback(
-    (c: TaxCountry, position?: { x: number; y: number }) => {
-      setSelectedRegion({
-        ...c,
-        parentId: 0,
-        parentSlug: '',
-        description: undefined,
-        keyGrapes: undefined,
-        keyStyles: undefined,
-      } as TaxRegion);
-      setRegionCardPosition(position);
+    (c: TaxCountry, _position?: { x: number; y: number }) => {
+      // Don't show floating card — the LocationInfo panel shows country details
+      setSelectedRegion(null);
       setShowProducts(false);
+      setShowLocationInfo(true);
       router.push(buildUrl(parsed.category, c.slug));
     },
     [parsed.category, router, buildUrl]
@@ -122,9 +124,8 @@ export default function ExploreClient({ slug }: Props) {
     const isCountryLevel = selectedRegion.parentId === 0;
     setShowProducts(true);
     setSelectedRegion(null);
-    if (isCountryLevel) {
-      // Country card — products for this country, URL already set
-    } else if (parsed.country) {
+    setShowLocationInfo(false); // Hide info panel to make room for sidebar
+    if (!isCountryLevel && parsed.country) {
       router.push(buildUrl(parsed.category, parsed.country.slug, selectedRegion.slug));
     }
   }, [selectedRegion, parsed.category, parsed.country, router, buildUrl]);
@@ -154,6 +155,7 @@ export default function ExploreClient({ slug }: Props) {
 
   const handleCloseProducts = useCallback(() => {
     setShowProducts(false);
+    setShowLocationInfo(true); // Re-show info panel when sidebar closes
   }, []);
 
   // ── Navigate back one level ──────────────────
