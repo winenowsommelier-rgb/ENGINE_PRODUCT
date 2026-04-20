@@ -119,6 +119,7 @@ Top-level object with two keys: `_meta` (summary) and `records` (SKU → record)
 
 | Field | Type | Notes |
 |---|---|---|
+| `_meta.row_count` | int | Number of **records written** (i.e. rows with a non-blank SKU). Not the raw CSV row count. |
 | `sku` | string | Primary key. |
 | `website` | `"wine-now"` / `"liq9"` / `null` | Null for system products (shipping, coupons, gift cards). |
 | `name_seo` | string | Display title. `Brand Name Vintage Size \| Website`. |
@@ -196,7 +197,7 @@ All flags optional. Defaults:
 - `--master` → `data/data mastefile WNLQ9/DATA_ Master_Product_Data_Enable SKU 2026FEB -  image url .csv`
 - `--output` → `data/db/product-images.json`
 - `--mirror-to-products` → `data/db/products.json` (on by default; disable with `--no-mirror`)
-- `--no-commit` → skip git commit (on by default is commit; flag disables)
+- `--no-commit` → flag (argparse `store_true`). Auto-commit is **on** by default; passing `--no-commit` disables it.
 - `--dry-run` → print summary, skip all writes and commit
 
 ### 6.4 Library contract (public)
@@ -249,8 +250,8 @@ All functions are pure (no I/O, no globals mutated). Each has a direct unit test
 | All 3 URL columns empty | 22 | Write record with `images: null`, `image_status = "missing"`. |
 | Blank SKU | rare | Skip row. |
 | Unknown SKU prefix | 0 expected, but new ones may appear | Log warning. Record is written with `website: null`, `name_seo` without suffix. Operator updates library constants as needed. |
-| SKU collision (two rows, same SKU) | unknown | Last row wins. Log warning with both source row numbers. |
-| Slug collision (two SKUs, same slug) | ~4 expected | Both records written (SKU is primary key). Logged in summary so operator can dedupe names if desired. |
+| SKU collision (two rows, same SKU) | unknown | Last row wins. Logged to stderr **and** included in `product-images-summary.json` under `warnings.sku_collisions` with both source row numbers. |
+| Slug collision (two SKUs, same slug) | ~4 expected | Both records written (SKU is primary key). Logged to stderr **and** included in `product-images-summary.json` under `warnings.slug_collisions` so operator can dedupe names if desired. |
 | Diacritics in brand / name | many | Stripped in slug via `unicodedata.normalize('NFKD', ...)` → ASCII. Preserved in `name_seo` (display) and `brand`. |
 
 ## 8. Testing
@@ -265,7 +266,7 @@ Tiny fixture CSV (~5 rows covering: normal / partial / empty / unknown prefix / 
 
 ### 8.3 Smoke test (manual, after first real run)
 
-- Spot-check 5 records from different prefixes (WDW, LWH, CIG, NNA, AWN, DELIVERY1) in `product-images.json`.
+- Spot-check 5 records from different prefixes (WDW, LWH, CIG, NNA, AWN) plus one system-product SKU (e.g. `DELIVERY1`, prefix `DEL`) in `product-images.json`.
 - Fetch 2–3 random URLs to confirm the Magento endpoints are still live.
 
 ### 8.4 Run order
