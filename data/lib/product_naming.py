@@ -4,6 +4,8 @@ No I/O. No globals mutated. Every function is unit-tested.
 """
 from __future__ import annotations
 
+import re
+
 WINE_NOW_PREFIXES: frozenset[str] = frozenset({
     # Wines
     "WRW", "WWW", "WSP", "WRS", "WDW", "WOW", "WEV", "WBS", "WNA", "WTK",
@@ -44,3 +46,47 @@ def detect_website(sku: str) -> str | None:
     if prefix in LIQ9_PREFIXES:
         return "liq9"
     return None
+
+
+def normalize_vintage(raw: str) -> str | None:
+    """'Current vintage' -> None, 'NV' -> 'NV', year kept, blank -> None."""
+    if not raw:
+        return None
+    cleaned = raw.strip()
+    if not cleaned:
+        return None
+    if cleaned.lower() == "current vintage":
+        return None
+    return cleaned
+
+
+def normalize_bottle_size(raw: str) -> str | None:
+    """'750 ml' -> '750ml', '1.5 L' -> '1500ml', blank -> None.
+
+    Handles integer + decimal L values. Falls back to the stripped original
+    string if parsing fails (so unexpected formats like '3x750ml' pass through).
+    """
+    if not raw:
+        return None
+    cleaned = raw.strip()
+    if not cleaned:
+        return None
+    # L / l / Liter / liter -> ml
+    match = re.fullmatch(r"([\d.]+)\s*[Ll]", cleaned)
+    if match:
+        value_l = float(match.group(1))
+        return f"{int(round(value_l * 1000))}ml"
+    # ml / mL / ML with optional space
+    match = re.fullmatch(r"([\d.]+)\s*[mM][lL]", cleaned)
+    if match:
+        value_ml = float(match.group(1))
+        return f"{int(round(value_ml))}ml"
+    # Unknown format -> slug-safe pass-through (strip internal spaces only)
+    return cleaned.replace(" ", "")
+
+
+def clean_name(raw: str) -> str:
+    """Collapse internal whitespace runs to single spaces, trim ends."""
+    if not raw:
+        return ""
+    return re.sub(r"\s+", " ", raw).strip()
