@@ -124,3 +124,38 @@ def to_slug(brand: str, name: str, vintage: str, size: str) -> str:
         tokens.append(s)
     joined = " ".join(t for t in tokens if t)
     return _slugify(joined)
+
+
+_WEBSITE_DISPLAY = {"wine-now": "Wine-Now", "liq9": "Liq9"}
+
+
+def to_seo_title(
+    brand: str, name: str, vintage: str, size: str, website: str | None
+) -> str:
+    """Produce an SEO-ready display title.
+
+    Example:
+        'Batasiolo Moscato Spumante Dolce NV 750ml | Wine-Now'
+
+    When website is None, the ' | Website' suffix is omitted (system products).
+    """
+    tokens = [clean_name(brand), clean_name(name)]
+    v = normalize_vintage(vintage)
+    if v:
+        tokens.append(v)
+    s = normalize_bottle_size(size)
+    if s:
+        tokens.append(s)
+    core = " ".join(t for t in tokens if t)
+    if website and website in _WEBSITE_DISPLAY:
+        return f"{core} | {_WEBSITE_DISPLAY[website]}"
+    return core
+
+
+def to_image_filename_base(
+    brand: str, name: str, vintage: str, size: str, sku: str
+) -> str:
+    """Slug-shaped filename stem including the SKU (no extension)."""
+    slug = to_slug(brand, name, vintage, size)
+    sku_part = sku.strip().lower()
+    return f"{slug}-{sku_part}" if slug else sku_part
