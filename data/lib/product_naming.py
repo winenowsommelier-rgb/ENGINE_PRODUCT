@@ -159,3 +159,43 @@ def to_image_filename_base(
     slug = to_slug(brand, name, vintage, size)
     sku_part = sku.strip().lower()
     return f"{slug}-{sku_part}" if slug else sku_part
+
+
+IMAGE_SPECS: dict[str, dict[str, int | str]] = {
+    "thumbnail": {"width": 240,  "height": 240,  "format": "JPEG", "quality": 85, "max_kb":  20},
+    "image":     {"width": 800,  "height": 800,  "format": "JPEG", "quality": 85, "max_kb": 120},
+    "image_hd":  {"width": 2000, "height": 2000, "format": "WebP", "quality": 90, "max_kb": 500},
+}
+
+
+def image_spec(slot: str) -> dict[str, int | str]:
+    """Return the target spec for a slot. KeyError on unknown slot."""
+    return dict(IMAGE_SPECS[slot])  # copy so callers can't mutate our constant
+
+
+def pick_best_url(thumb: str, image: str, small: str) -> str | None:
+    """Priority: image > thumbnail > small_image. Whitespace treated as empty."""
+    for candidate in (image, thumb, small):
+        if candidate and candidate.strip():
+            return candidate.strip()
+    return None
+
+
+def build_image_struct(
+    best_url: str | None,
+) -> tuple[dict[str, dict] | None, str]:
+    """Expand a single URL into the 3-slot structure + return the status.
+
+    Returns (images_dict, status) where status is 'legacy' or 'missing'.
+    When best_url is None, images_dict is None and status is 'missing'.
+    """
+    if not best_url:
+        return None, "missing"
+    images: dict[str, dict] = {}
+    for slot in ("thumbnail", "image", "image_hd"):
+        images[slot] = {
+            "url": best_url,
+            "spec": image_spec(slot),
+            "source": "magento-legacy",
+        }
+    return images, "legacy"

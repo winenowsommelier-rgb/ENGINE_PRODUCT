@@ -155,3 +155,54 @@ class TestToImageFilenameBase:
         )
         assert "." not in result
         assert result.endswith("-wdw0001aa")
+
+
+class TestImageSpecs:
+    def test_thumbnail_spec(self):
+        s = pn.image_spec("thumbnail")
+        assert s == {"width": 240, "height": 240, "format": "JPEG", "quality": 85, "max_kb": 20}
+
+    def test_image_spec(self):
+        s = pn.image_spec("image")
+        assert s["width"] == 800 and s["height"] == 800 and s["format"] == "JPEG"
+
+    def test_image_hd_spec(self):
+        s = pn.image_spec("image_hd")
+        assert s["width"] == 2000 and s["format"] == "WebP" and s["max_kb"] == 500
+
+    def test_unknown_slot_raises(self):
+        import pytest as _pytest
+        with _pytest.raises(KeyError):
+            pn.image_spec("xxl")
+
+
+class TestPickBestUrl:
+    def test_image_wins_over_others(self):
+        assert pn.pick_best_url("a.jpg", "b.jpg", "c.jpg") == "b.jpg"
+
+    def test_thumbnail_fallback(self):
+        assert pn.pick_best_url("a.jpg", "", "c.jpg") == "a.jpg"
+
+    def test_small_fallback_last(self):
+        assert pn.pick_best_url("", "", "c.jpg") == "c.jpg"
+
+    def test_all_empty_returns_none(self):
+        assert pn.pick_best_url("", "", "") is None
+
+    def test_whitespace_treated_as_empty(self):
+        assert pn.pick_best_url("   ", "", "  ") is None
+
+
+class TestBuildImageStruct:
+    def test_url_populates_all_three_slots(self):
+        images, status = pn.build_image_struct("https://example.com/x.jpg")
+        assert status == "legacy"
+        assert set(images.keys()) == {"thumbnail", "image", "image_hd"}
+        for slot in ("thumbnail", "image", "image_hd"):
+            assert images[slot]["url"] == "https://example.com/x.jpg"
+            assert images[slot]["source"] == "magento-legacy"
+            assert "spec" in images[slot]
+
+    def test_none_returns_missing(self):
+        images, status = pn.build_image_struct(None)
+        assert images is None and status == "missing"
