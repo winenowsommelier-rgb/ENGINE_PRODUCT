@@ -77,3 +77,39 @@ class TestCleanName:
 
     def test_preserves_diacritics(self):
         assert pn.clean_name("Château Pétale Rosé") == "Château Pétale Rosé"
+
+
+class TestToSlug:
+    def test_basic_slug(self):
+        assert pn.to_slug("Batasiolo", "Moscato Spumante Dolce", "NV", "750 ml") \
+            == "batasiolo-moscato-spumante-dolce-nv-750ml"
+
+    def test_strips_diacritics(self):
+        assert pn.to_slug(
+            "Château la Tour de l'évêque",
+            "Pétale de Rose Rosé",
+            "2020",
+            "750 ml",
+        ) == "chateau-la-tour-de-l-eveque-petale-de-rose-rose-2020-750ml"
+
+    def test_drops_current_vintage(self):
+        assert pn.to_slug("Coastal Ridge", "Cabernet Sauvignon", "Current vintage", "750 ml") \
+            == "coastal-ridge-cabernet-sauvignon-750ml"
+
+    def test_drops_blank_vintage_and_size(self):
+        assert pn.to_slug("Vinturi", "Deluxe Red Wine Aerator Set", "", "") \
+            == "vinturi-deluxe-red-wine-aerator-set"
+
+    def test_collapses_double_spaces_in_raw_name(self):
+        assert pn.to_slug("Batasiolo", "Moscato  Spumante   Dolce", "NV", "750 ml") \
+            == "batasiolo-moscato-spumante-dolce-nv-750ml"
+
+    def test_strips_special_chars(self):
+        assert pn.to_slug("Moët & Chandon", "Brut Impérial", "NV", "750 ml") \
+            == "moet-chandon-brut-imperial-nv-750ml"
+
+    def test_no_leading_trailing_hyphens(self):
+        # Even if inputs start/end with punctuation, slug has no leading/trailing dash
+        result = pn.to_slug("  -Brand-  ", "!Name!", "NV", "750 ml")
+        assert not result.startswith("-")
+        assert not result.endswith("-")

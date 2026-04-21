@@ -5,6 +5,7 @@ No I/O. No globals mutated. Every function is unit-tested.
 from __future__ import annotations
 
 import re
+import unicodedata
 
 WINE_NOW_PREFIXES: frozenset[str] = frozenset({
     # Wines
@@ -90,3 +91,36 @@ def clean_name(raw: str) -> str:
     if not raw:
         return ""
     return re.sub(r"\s+", " ", raw).strip()
+
+
+def _slugify(text: str) -> str:
+    """Lower-case, ASCII-only, hyphen-separated. Used for both slugs + filenames."""
+    # Normalize unicode + strip combining marks (diacritics)
+    normalized = unicodedata.normalize("NFKD", text)
+    ascii_only = normalized.encode("ascii", "ignore").decode("ascii")
+    # Lowercase
+    lowered = ascii_only.lower()
+    # Replace any run of non-[a-z0-9] with a single hyphen
+    hyphenated = re.sub(r"[^a-z0-9]+", "-", lowered)
+    # Collapse repeated hyphens, strip leading/trailing
+    return hyphenated.strip("-")
+
+
+def to_slug(brand: str, name: str, vintage: str, size: str) -> str:
+    """Produce a URL-safe slug from brand + name + vintage + size.
+
+    Examples:
+        to_slug('Batasiolo', 'Moscato Spumante Dolce', 'NV', '750 ml')
+            -> 'batasiolo-moscato-spumante-dolce-nv-750ml'
+
+    'Current vintage' and blank values are dropped entirely from the slug.
+    """
+    tokens = [clean_name(brand), clean_name(name)]
+    v = normalize_vintage(vintage)
+    if v:
+        tokens.append(v)
+    s = normalize_bottle_size(size)
+    if s:
+        tokens.append(s)
+    joined = " ".join(t for t in tokens if t)
+    return _slugify(joined)
