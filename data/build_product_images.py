@@ -136,7 +136,7 @@ def build_records(csv_path: Path) -> tuple[dict, dict, dict]:
     return records, meta, warnings
 
 
-def atomic_write_json(path: Path, data: dict) -> None:
+def atomic_write_json(path: Path, data) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(
         "w", dir=str(path.parent), delete=False, suffix=".tmp", encoding="utf-8"
@@ -146,6 +146,35 @@ def atomic_write_json(path: Path, data: dict) -> None:
         os.fsync(tmp.fileno())
         tmp_path = Path(tmp.name)
     os.replace(tmp_path, path)
+
+
+def mirror_image_url_to_products(
+    products_path: Path, records: dict[str, dict]
+) -> int:
+    """Overwrite only the `image_url` field per matching SKU. Returns count updated.
+
+    All other fields on each record are untouched. Records in products.json whose
+    SKU is not in the image library are untouched. Atomic write.
+    """
+    if not products_path.exists():
+        print(
+            f"WARNING: products.json not found at {products_path}, skipping mirror",
+            file=sys.stderr,
+        )
+        return 0
+    products: list[dict] = json.loads(products_path.read_text(encoding="utf-8"))
+    updated = 0
+    for row in products:
+        sku = row.get("sku")
+        if not sku:
+            continue
+        rec = records.get(sku)
+        if not rec or not rec.get("images"):
+            continue
+        row["image_url"] = rec["images"]["image"]["url"]
+        updated += 1
+    atomic_write_json(products_path, products)
+    return updated
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -180,12 +209,19 @@ def main(argv: list[str] | None = None) -> int:
     if args.dry_run:
         print(f"[dry-run] would write {len(records)} records to {args.output}")
         print(f"[dry-run] would write summary to {args.summary}")
+        if not args.no_mirror:
+            print(f"[dry-run] would mirror image_url into {args.mirror_to_products}")
         return 0
 
     atomic_write_json(args.output, output_data)
     atomic_write_json(args.summary, summary_data)
     print(f"Wrote {len(records)} records to {args.output}")
     print(f"Wrote summary to {args.summary}")
+
+    if not args.no_mirror:
+        updated = mirror_image_url_to_products(args.mirror_to_products, records)
+        print(f"Mirrored image_url to {updated} records in {args.mirror_to_products}")
+
     return 0
 
 

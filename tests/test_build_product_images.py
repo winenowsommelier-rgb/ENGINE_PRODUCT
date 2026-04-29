@@ -130,3 +130,51 @@ class TestValidation:
         data = run_driver(tmp_path)
         url = data["records"]["WDW0001AA"]["images"]["image"]["url"]
         assert url.endswith("wdw0001aa_dup.jpg")
+
+
+class TestMirror:
+    def test_mirror_updates_only_image_url(self, tmp_path):
+        # Seed a fake products.json with 2 rows
+        fake_products = tmp_path / "fake-products.json"
+        fake_products.write_text(json.dumps([
+            {"sku": "WDW0001AA", "name": "Foo", "image_url": None, "price": 1000},
+            {"sku": "UNRELATED", "name": "Bar", "image_url": "keep-me", "price": 500},
+        ]))
+        output = tmp_path / "product-images.json"
+        summary = tmp_path / "product-images-summary.json"
+        result = subprocess.run(
+            [sys.executable, str(DRIVER),
+             "--master", str(FIXTURE_CSV),
+             "--output", str(output),
+             "--summary", str(summary),
+             "--mirror-to-products", str(fake_products),
+             "--no-commit"],
+            capture_output=True, text=True, cwd=REPO_ROOT,
+        )
+        assert result.returncode == 0, result.stderr
+        mirrored = json.loads(fake_products.read_text())
+        by_sku = {r["sku"]: r for r in mirrored}
+        # Matching SKU: image_url set, everything else identical
+        assert by_sku["WDW0001AA"]["image_url"].endswith("wdw0001aa_dup.jpg")
+        assert by_sku["WDW0001AA"]["name"] == "Foo"
+        assert by_sku["WDW0001AA"]["price"] == 1000
+        # Unrelated SKU: untouched
+        assert by_sku["UNRELATED"]["image_url"] == "keep-me"
+        assert by_sku["UNRELATED"]["price"] == 500
+
+    def test_no_mirror_flag_skips(self, tmp_path):
+        fake_products = tmp_path / "fake-products.json"
+        original = [{"sku": "WDW0001AA", "image_url": "original"}]
+        fake_products.write_text(json.dumps(original))
+        output = tmp_path / "product-images.json"
+        summary = tmp_path / "product-images-summary.json"
+        subprocess.run(
+            [sys.executable, str(DRIVER),
+             "--master", str(FIXTURE_CSV),
+             "--output", str(output),
+             "--summary", str(summary),
+             "--mirror-to-products", str(fake_products),
+             "--no-mirror", "--no-commit"],
+            check=True, cwd=REPO_ROOT,
+        )
+        assert json.loads(fake_products.read_text()) == original
