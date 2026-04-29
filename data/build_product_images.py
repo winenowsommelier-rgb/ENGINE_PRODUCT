@@ -264,6 +264,22 @@ def main(argv: list[str] | None = None) -> int:
             files.append(args.mirror_to_products)
         auto_commit(files, meta, warnings, mirror_count)
 
+    print("")
+    print("───── Summary ─────")
+    print(f"Read {meta['row_count']} records from {args.master.name}")
+    by_ws = meta["by_website"]
+    print("  " + " | ".join(f"{k}: {v}" for k, v in by_ws.items()))
+    print(
+        f"Images: legacy={meta['row_count'] - meta['missing_count']} | "
+        f"partial-filled={meta['partial_filled_count']} | missing={meta['missing_count']}"
+    )
+    if warnings["slug_collisions"]:
+        print(f"Slug collisions: {len(warnings['slug_collisions'])} (see product-images-summary.json)")
+    if warnings["sku_collisions"]:
+        print(f"SKU collisions: {len(warnings['sku_collisions'])} (see product-images-summary.json)")
+    if meta["unknown_prefixes"]:
+        print(f"Unknown SKU prefixes: {meta['unknown_prefixes']}")
+
     return 0
 
 

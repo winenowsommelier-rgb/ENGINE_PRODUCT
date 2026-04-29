@@ -195,3 +195,32 @@ class TestAutoCommit:
         )
         assert result.returncode == 0
         assert "Committed" not in result.stdout
+
+
+class TestStdoutSummary:
+    def test_stdout_has_by_website_line(self, tmp_path):
+        output = tmp_path / "product-images.json"
+        summary = tmp_path / "product-images-summary.json"
+        result = subprocess.run(
+            [sys.executable, str(DRIVER),
+             "--master", str(FIXTURE_CSV),
+             "--output", str(output),
+             "--summary", str(summary),
+             "--no-mirror", "--no-commit"],
+            capture_output=True, text=True, cwd=REPO_ROOT,
+        )
+        assert "wine-now" in result.stdout.lower() or "liq9" in result.stdout.lower()
+
+    def test_dry_run_writes_nothing(self, tmp_path):
+        output = tmp_path / "product-images.json"
+        summary = tmp_path / "product-images-summary.json"
+        subprocess.run(
+            [sys.executable, str(DRIVER),
+             "--master", str(FIXTURE_CSV),
+             "--output", str(output),
+             "--summary", str(summary),
+             "--no-mirror", "--no-commit", "--dry-run"],
+            check=True, cwd=REPO_ROOT,
+        )
+        assert not output.exists()
+        assert not summary.exists()
