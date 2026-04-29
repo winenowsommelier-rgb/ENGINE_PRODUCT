@@ -178,3 +178,20 @@ class TestMirror:
             check=True, cwd=REPO_ROOT,
         )
         assert json.loads(fake_products.read_text()) == original
+
+
+class TestAutoCommit:
+    def test_no_commit_flag_skips_git(self, tmp_path):
+        """When --no-commit is set, git operations must not run."""
+        output = tmp_path / "product-images.json"
+        summary = tmp_path / "product-images-summary.json"
+        result = subprocess.run(
+            [sys.executable, str(DRIVER),
+             "--master", str(FIXTURE_CSV),
+             "--output", str(output),
+             "--summary", str(summary),
+             "--no-mirror", "--no-commit"],
+            capture_output=True, text=True, cwd=REPO_ROOT,
+        )
+        assert result.returncode == 0
+        assert "Committed" not in result.stdout

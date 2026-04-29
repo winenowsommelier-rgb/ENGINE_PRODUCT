@@ -177,6 +177,39 @@ def mirror_image_url_to_products(
     return updated
 
 
+def auto_commit(files: list[Path], meta: dict, warnings: dict, mirror_count: int | None) -> bool:
+    """git add + commit the specified files. Skip if no diff. Returns True if committed."""
+    subprocess.run(["git", "add", "--"] + [str(f) for f in files], check=True, cwd=REPO_ROOT)
+    diff = subprocess.run(
+        ["git", "diff", "--cached", "--quiet"],
+        cwd=REPO_ROOT,
+    )
+    if diff.returncode == 0:
+        print("No output changes to commit.")
+        return False
+
+    by_ws = meta.get("by_website", {})
+    by_ws_str = " | ".join(f"{k}: {v}" for k, v in by_ws.items()) or "(none)"
+    lines = [
+        "data: rebuild product image library from 2026FEB masterfile",
+        "",
+        f"- {meta['row_count']} rows ingested ({by_ws_str})",
+        f"- images: legacy={meta['row_count'] - meta['missing_count']} | "
+        f"partial-filled={meta['partial_filled_count']} | missing={meta['missing_count']}",
+    ]
+    if warnings.get("slug_collisions"):
+        lines.append(f"- slug collisions: {len(warnings['slug_collisions'])} (see product-images-summary.json)")
+    if warnings.get("sku_collisions"):
+        lines.append(f"- sku collisions: {len(warnings['sku_collisions'])} (see product-images-summary.json)")
+    if mirror_count is not None:
+        lines.append(f"- mirrored image_url to {mirror_count} records in products.json")
+
+    msg = "\n".join(lines)
+    subprocess.run(["git", "commit", "-m", msg], check=True, cwd=REPO_ROOT)
+    print("Committed outputs.")
+    return True
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Build product image library from masterfile CSV.")
     p.add_argument("--master", type=Path, default=DEFAULT_MASTER)
@@ -211,6 +244,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"[dry-run] would write summary to {args.summary}")
         if not args.no_mirror:
             print(f"[dry-run] would mirror image_url into {args.mirror_to_products}")
+        if not args.no_commit:
+            print("[dry-run] would auto-commit outputs")
         return 0
 
     atomic_write_json(args.output, output_data)
@@ -218,9 +253,16 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Wrote {len(records)} records to {args.output}")
     print(f"Wrote summary to {args.summary}")
 
+    mirror_count: int | None = None
     if not args.no_mirror:
-        updated = mirror_image_url_to_products(args.mirror_to_products, records)
-        print(f"Mirrored image_url to {updated} records in {args.mirror_to_products}")
+        mirror_count = mirror_image_url_to_products(args.mirror_to_products, records)
+        print(f"Mirrored image_url to {mirror_count} records in {args.mirror_to_products}")
+
+    if not args.no_commit:
+        files = [args.output, args.summary]
+        if not args.no_mirror:
+            files.append(args.mirror_to_products)
+        auto_commit(files, meta, warnings, mirror_count)
 
     return 0
 
