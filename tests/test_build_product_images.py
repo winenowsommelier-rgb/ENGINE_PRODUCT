@@ -76,3 +76,21 @@ class TestTransform:
         assert url.endswith("cig0149bt.jpg")
         assert rec["images"]["thumbnail"]["url"] == url
         assert rec["images"]["image_hd"]["url"] == url
+
+
+class TestBrandPrefixStripping:
+    def test_brand_not_duplicated_in_seo_title(self, tmp_path):
+        # Fixture row: brand=Batasiolo, name='Batasiolo  Moscato Spumante Dolce'
+        # Expectation: SEO title contains brand exactly once.
+        data = run_driver(tmp_path)
+        seo = data["records"]["WDW0001AA"]["name_seo"]
+        # Count case-insensitive occurrences of 'Batasiolo' in the title — should be exactly 1
+        assert seo.lower().count("batasiolo") == 1
+        assert seo == "Batasiolo Moscato Spumante Dolce NV 750ml | Wine-Now"
+
+    def test_brand_preserved_in_slug(self, tmp_path):
+        data = run_driver(tmp_path)
+        slug = data["records"]["WDW0001AA"]["name_slug"]
+        # Slug should start with the brand, not skip it
+        assert slug.startswith("batasiolo-")
+        assert slug == "batasiolo-moscato-spumante-dolce-nv-750ml"

@@ -65,19 +65,26 @@ def build_records(csv_path: Path) -> tuple[dict, dict]:
             if status == "missing":
                 missing_count += 1
 
-            # The masterfile name column already contains the brand prefix,
-            # so pass an empty brand to avoid duplication in SEO title / slug.
+            brand = (row.get("brand") or "").strip()
             name = row.get("name") or ""
             vintage_raw = row.get("vintage") or ""
             size_raw = row.get("bottle_size") or ""
 
+            # The masterfile name often starts with the brand (e.g. "Batasiolo  Moscato ...").
+            # Strip the duplicated brand prefix so the SEO title/slug doesn't carry it twice.
+            cleaned_name = name
+            if brand and name.lower().lstrip().startswith(brand.lower()):
+                # Drop exactly one leading occurrence of the brand (case-insensitive)
+                after = name.lstrip()[len(brand):]
+                cleaned_name = after.lstrip()
+
             records[sku] = {
                 "sku": sku,
                 "website": website,
-                "name_seo": pn.to_seo_title("", name, vintage_raw, size_raw, website),
-                "name_slug": pn.to_slug("", name, vintage_raw, size_raw),
-                "image_filename_base": pn.to_image_filename_base("", name, vintage_raw, size_raw, sku),
-                "brand": (row.get("brand") or "").strip(),
+                "name_seo": pn.to_seo_title(brand, cleaned_name, vintage_raw, size_raw, website),
+                "name_slug": pn.to_slug(brand, cleaned_name, vintage_raw, size_raw),
+                "image_filename_base": pn.to_image_filename_base(brand, cleaned_name, vintage_raw, size_raw, sku),
+                "brand": brand,
                 "vintage": pn.normalize_vintage(vintage_raw),
                 "bottle_size": pn.normalize_bottle_size(size_raw),
                 "images": images,
