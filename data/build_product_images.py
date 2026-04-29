@@ -33,20 +33,33 @@ DEFAULT_PRODUCTS = REPO_ROOT / "data" / "db" / "products.json"
 SOURCE_TAG = "masterfile-2026FEB"
 
 
-def build_records(csv_path: Path) -> tuple[dict, dict]:
+def build_records(csv_path: Path) -> tuple[dict, dict, dict]:
+    """Read CSV; return (records, meta, warnings)."""
     records: dict[str, dict] = {}
     by_website: Counter[str] = Counter()
     unknown_prefixes: set[str] = set()
+    sku_collisions: list[dict] = []
+    slug_to_skus: dict[str, list[str]] = defaultdict(list)
+    seen_skus: dict[str, int] = {}  # sku -> first-seen row number
     missing_count = 0
     partial_filled_count = 0
     generated_at = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
     with csv_path.open(newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
-        for row in reader:
+        for row_num, row in enumerate(reader, start=2):  # 1 = header
             sku = (row.get("sku") or "").strip()
             if not sku:
                 continue
+
+            if sku in seen_skus:
+                sku_collisions.append({
+                    "sku": sku,
+                    "first_row": seen_skus[sku],
+                    "duplicate_row": row_num,
+                })
+            else:
+                seen_skus[sku] = row_num
 
             website = pn.detect_website(sku)
             if website is None and sku[:3] not in pn.NO_SUFFIX_PREFIXES and len(sku) >= 3:
@@ -70,19 +83,21 @@ def build_records(csv_path: Path) -> tuple[dict, dict]:
             vintage_raw = row.get("vintage") or ""
             size_raw = row.get("bottle_size") or ""
 
-            # The masterfile name often starts with the brand (e.g. "Batasiolo  Moscato ...").
-            # Strip the duplicated brand prefix so the SEO title/slug doesn't carry it twice.
+            # Strip brand prefix from name to avoid duplication
             cleaned_name = name
             if brand and name.lower().lstrip().startswith(brand.lower()):
-                # Drop exactly one leading occurrence of the brand (case-insensitive)
                 after = name.lstrip()[len(brand):]
                 cleaned_name = after.lstrip()
+
+            slug = pn.to_slug(brand, cleaned_name, vintage_raw, size_raw)
+            if slug:
+                slug_to_skus[slug].append(sku)
 
             records[sku] = {
                 "sku": sku,
                 "website": website,
                 "name_seo": pn.to_seo_title(brand, cleaned_name, vintage_raw, size_raw, website),
-                "name_slug": pn.to_slug(brand, cleaned_name, vintage_raw, size_raw),
+                "name_slug": slug,
                 "image_filename_base": pn.to_image_filename_base(brand, cleaned_name, vintage_raw, size_raw, sku),
                 "brand": brand,
                 "vintage": pn.normalize_vintage(vintage_raw),
@@ -95,6 +110,16 @@ def build_records(csv_path: Path) -> tuple[dict, dict]:
             }
             by_website[website or "none"] += 1
 
+    # For SKU collisions, dedupe slug entries (the duplicate row's slug got appended twice)
+    for slug_key, skus in list(slug_to_skus.items()):
+        slug_to_skus[slug_key] = sorted(set(skus))
+
+    slug_collisions = [
+        {"slug": s, "skus": skus}
+        for s, skus in slug_to_skus.items()
+        if len(skus) > 1
+    ]
+
     meta = {
         "generated_at": generated_at,
         "source_file": csv_path.name,
@@ -104,7 +129,11 @@ def build_records(csv_path: Path) -> tuple[dict, dict]:
         "by_website": dict(by_website),
         "unknown_prefixes": sorted(unknown_prefixes),
     }
-    return records, meta
+    warnings = {
+        "sku_collisions": sku_collisions,
+        "slug_collisions": slug_collisions,
+    }
+    return records, meta, warnings
 
 
 def atomic_write_json(path: Path, data: dict) -> None:
@@ -136,15 +165,27 @@ def main(argv: list[str] | None = None) -> int:
     if not args.master.exists():
         print(f"ERROR: masterfile not found: {args.master}", file=sys.stderr)
         return 1
-    records, meta = build_records(args.master)
+    records, meta, warnings = build_records(args.master)
     output_data = {"_meta": meta, "records": records}
+    summary_data = {**meta, "warnings": warnings}
+
+    # Stderr warnings for operator-visible issues
+    if warnings["sku_collisions"]:
+        print(f"WARNING: {len(warnings['sku_collisions'])} SKU collisions (see summary)", file=sys.stderr)
+    if warnings["slug_collisions"]:
+        print(f"WARNING: {len(warnings['slug_collisions'])} slug collisions (see summary)", file=sys.stderr)
+    if meta["unknown_prefixes"]:
+        print(f"WARNING: unknown SKU prefixes: {meta['unknown_prefixes']}", file=sys.stderr)
 
     if args.dry_run:
         print(f"[dry-run] would write {len(records)} records to {args.output}")
+        print(f"[dry-run] would write summary to {args.summary}")
         return 0
 
     atomic_write_json(args.output, output_data)
+    atomic_write_json(args.summary, summary_data)
     print(f"Wrote {len(records)} records to {args.output}")
+    print(f"Wrote summary to {args.summary}")
     return 0
 
 

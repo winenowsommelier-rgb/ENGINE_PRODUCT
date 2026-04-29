@@ -12,12 +12,13 @@ DRIVER = REPO_ROOT / "data" / "build_product_images.py"
 
 
 def run_driver(tmp_path: Path, extra_args: list[str] = None) -> dict:
-    """Run the driver on the fixture, return parsed product-images.json."""
     output = tmp_path / "product-images.json"
+    summary = tmp_path / "product-images-summary.json"
     args = [
         sys.executable, str(DRIVER),
         "--master", str(FIXTURE_CSV),
         "--output", str(output),
+        "--summary", str(summary),
         "--no-mirror",
         "--no-commit",
     ]
@@ -31,8 +32,11 @@ def run_driver(tmp_path: Path, extra_args: list[str] = None) -> dict:
 class TestTransform:
     def test_record_count_and_meta(self, tmp_path):
         data = run_driver(tmp_path)
-        assert data["_meta"]["row_count"] == 6
-        assert data["_meta"]["missing_count"] == 1
+        # 8 raw fixture rows; WDW0001AA is duplicated -> 7 unique SKUs written
+        # (last-row-wins for collisions — duplicate also tracked in warnings.sku_collisions)
+        assert data["_meta"]["row_count"] == 7
+        assert data["_meta"]["missing_count"] == 1  # DELIVERY1 has no image
+        # CIG has only thumbnail; NNA has only image; DELIVERY1 empty -> 2 partial-filled
         assert data["_meta"]["partial_filled_count"] == 2
 
     def test_wine_record(self, tmp_path):
@@ -45,7 +49,8 @@ class TestTransform:
         assert rec["vintage"] == "NV"
         assert rec["bottle_size"] == "750ml"
         assert rec["image_status"] == "legacy"
-        assert rec["images"]["image"]["url"].endswith("wdw0001aa.jpg")
+        # Duplicate row (WDW0001AA appears twice); last-row-wins -> _dup.jpg
+        assert rec["images"]["image"]["url"].endswith("wdw0001aa_dup.jpg")
 
     def test_liq9_record(self, tmp_path):
         data = run_driver(tmp_path)
@@ -94,3 +99,34 @@ class TestBrandPrefixStripping:
         # Slug should start with the brand, not skip it
         assert slug.startswith("batasiolo-")
         assert slug == "batasiolo-moscato-spumante-dolce-nv-750ml"
+
+
+class TestValidation:
+    def test_sku_collision_recorded(self, tmp_path):
+        data = run_driver(tmp_path)
+        summary_path = tmp_path / "product-images-summary.json"
+        summary = json.loads(summary_path.read_text())
+        sku_coll = summary.get("warnings", {}).get("sku_collisions", [])
+        assert any(c["sku"] == "WDW0001AA" for c in sku_coll)
+
+    def test_slug_collision_recorded(self, tmp_path):
+        data = run_driver(tmp_path)
+        summary_path = tmp_path / "product-images-summary.json"
+        summary = json.loads(summary_path.read_text())
+        slug_coll = summary.get("warnings", {}).get("slug_collisions", [])
+        # WDW0001AA + WDW0099AA share the slug
+        hits = [c for c in slug_coll
+                if c["slug"] == "batasiolo-moscato-spumante-dolce-nv-750ml"]
+        assert hits and set(hits[0]["skus"]) == {"WDW0001AA", "WDW0099AA"}
+
+    def test_summary_has_meta_counters(self, tmp_path):
+        run_driver(tmp_path)
+        summary = json.loads((tmp_path / "product-images-summary.json").read_text())
+        assert "row_count" in summary
+        assert "missing_count" in summary
+        assert "by_website" in summary
+
+    def test_duplicate_sku_last_row_wins(self, tmp_path):
+        data = run_driver(tmp_path)
+        url = data["records"]["WDW0001AA"]["images"]["image"]["url"]
+        assert url.endswith("wdw0001aa_dup.jpg")
