@@ -1,0 +1,25 @@
+{
+  "generated_at": "2026-05-01T15:52:40Z",
+  "source_file": "DATA_ Master_Product_Data_Enable SKU 2026FEB -  image url .csv",
+  "row_count": 11841,
+  "missing_count": 22,
+  "partial_filled_count": 5,
+  "by_website": {
+    "wine-now": 8196,
+    "none": 25,
+    "liq9": 3620
+  },
+  "unknown_prefixes": [],
+  "warnings": {
+    "sku_collisions": [],
+    "slug_collisions": [
+      {
+        "slug": "absente-shot-glass",
+        "skus": [
+          "GLQ0076AH",
+          "GLQ0120AH"
+        ]
+      }
+    ]
+  }
+}
