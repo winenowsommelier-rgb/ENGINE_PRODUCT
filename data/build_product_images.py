@@ -84,10 +84,7 @@ def build_records(csv_path: Path) -> tuple[dict, dict, dict]:
             size_raw = row.get("bottle_size") or ""
 
             # Strip brand prefix from name to avoid duplication
-            cleaned_name = name
-            if brand and name.lower().lstrip().startswith(brand.lower()):
-                after = name.lstrip()[len(brand):]
-                cleaned_name = after.lstrip()
+            cleaned_name = pn.strip_brand_prefix(brand, name)
 
             slug = pn.to_slug(brand, cleaned_name, vintage_raw, size_raw)
             if slug:

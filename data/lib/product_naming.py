@@ -173,6 +173,30 @@ def image_spec(slot: str) -> dict[str, int | str]:
     return dict(IMAGE_SPECS[slot])  # copy so callers can't mutate our constant
 
 
+def strip_brand_prefix(brand: str, name: str) -> str:
+    """Drop a leading occurrence of the brand from name, when name starts with brand
+    followed by whitespace or end-of-string.
+
+    The word-boundary check prevents biting into longer words: when brand is
+    'Val'Friso' and name is 'Val'Frison Cuvée', we leave name unchanged.
+
+    Examples:
+        strip_brand_prefix('Batasiolo', 'Batasiolo  Moscato Spumante') -> 'Moscato Spumante'
+        strip_brand_prefix('Val\\'Friso', 'Val\\'Frison Cuvée')          -> "Val'Frison Cuvée"  (unchanged)
+        strip_brand_prefix('', 'Anything')                              -> 'Anything'
+    """
+    if not brand:
+        return name
+    stripped = name.lstrip()
+    if not stripped.lower().startswith(brand.lower()):
+        return name
+    after = stripped[len(brand):]
+    # Require a word boundary: end-of-string or whitespace immediately after the brand.
+    if after and not after[0].isspace():
+        return name
+    return after.lstrip()
+
+
 def pick_best_url(thumb: str, image: str, small: str) -> str | None:
     """Priority: image > thumbnail > small_image. Whitespace treated as empty."""
     for candidate in (image, thumb, small):

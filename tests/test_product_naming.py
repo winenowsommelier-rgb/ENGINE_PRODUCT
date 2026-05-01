@@ -206,3 +206,39 @@ class TestBuildImageStruct:
     def test_none_returns_missing(self):
         images, status = pn.build_image_struct(None)
         assert images is None and status == "missing"
+
+
+class TestStripBrandPrefix:
+    def test_simple_match_strips_brand(self):
+        assert pn.strip_brand_prefix("Batasiolo", "Batasiolo  Moscato Spumante Dolce") \
+            == "Moscato Spumante Dolce"
+
+    def test_case_insensitive(self):
+        assert pn.strip_brand_prefix("BATASIOLO", "batasiolo  Moscato") == "Moscato"
+
+    def test_word_boundary_blocks_partial_match(self):
+        # 'Val'Friso' is a prefix of 'Val'Frison' — must NOT be stripped.
+        assert pn.strip_brand_prefix("Val'Friso", "Val'Frison Cuvée") == "Val'Frison Cuvée"
+
+    def test_word_boundary_blocks_no_space(self):
+        # name starts with brand text but next char is a letter -> mid-word match.
+        assert pn.strip_brand_prefix("Doug", "Douglas Laing") == "Douglas Laing"
+
+    def test_apostrophe_s_blocked_by_boundary(self):
+        # 'Douglas Laing' is followed by "'s" (no space). Don't strip — that's a possessive.
+        assert pn.strip_brand_prefix("Douglas Laing", "Douglas Laing's Scallywag") \
+            == "Douglas Laing's Scallywag"
+
+    def test_empty_brand_returns_name_unchanged(self):
+        assert pn.strip_brand_prefix("", "Some Name") == "Some Name"
+
+    def test_brand_only_returns_empty(self):
+        # name is exactly the brand -> stripping leaves nothing
+        assert pn.strip_brand_prefix("Batasiolo", "Batasiolo") == ""
+
+    def test_brand_with_trailing_whitespace_in_name(self):
+        # Leading whitespace on name should be tolerated
+        assert pn.strip_brand_prefix("Batasiolo", "  Batasiolo  Moscato") == "Moscato"
+
+    def test_no_match_returns_unchanged(self):
+        assert pn.strip_brand_prefix("Brand", "Different Name") == "Different Name"
