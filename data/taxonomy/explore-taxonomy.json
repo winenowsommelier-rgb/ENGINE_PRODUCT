@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "generated": "2026-04-12T18:02:31.274721+00:00",
+    "generated": "2026-04-17T13:53:33.064924+00:00",
     "description": "Explore taxonomy for interactive map — countries, regions, subregions, appellations with product counts and price ranges",
     "counts": {
       "countries": 50,
@@ -9,11 +9,11 @@
       "appellations": 81
     },
     "productStats": {
-      "total": 4333,
-      "mappedToCountry": 3638,
-      "mappedToRegion": 190,
-      "mappedToSubregion": 26,
-      "excludedAccessories": 624
+      "total": 11387,
+      "mappedToCountry": 10065,
+      "mappedToRegion": 7215,
+      "mappedToSubregion": 1214,
+      "excludedAccessories": 1142
     },
     "nonGeographicEntries": [
       "Multi-Appellation California",
@@ -31,15 +31,15 @@
       "longitude": -68.5,
       "scopes": [],
       "counts": {
-        "wine": 64,
+        "wine": 176,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 64
+        "total": 176
       },
       "priceRange": {
-        "min": 595,
-        "max": 7719
+        "min": 530.0,
+        "max": 7719.0
       }
     },
     {
@@ -50,15 +50,15 @@
       "longitude": 138.6,
       "scopes": [],
       "counts": {
-        "wine": 335,
-        "spirits": 5,
+        "wine": 770,
+        "spirits": 20,
         "beer": 0,
         "sake": 0,
-        "total": 340
+        "total": 790
       },
       "priceRange": {
-        "min": 145,
-        "max": 68819
+        "min": 145.0,
+        "max": 126999.0
       }
     },
     {
@@ -69,15 +69,15 @@
       "longitude": 15.5,
       "scopes": [],
       "counts": {
-        "wine": 12,
+        "wine": 20,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 12
+        "total": 20
       },
       "priceRange": {
-        "min": 889,
-        "max": 5009
+        "min": 880.0,
+        "max": 5009.0
       }
     },
     {
@@ -89,14 +89,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 11,
+        "spirits": 20,
         "beer": 0,
         "sake": 0,
-        "total": 11
+        "total": 20
       },
       "priceRange": {
-        "min": 915,
-        "max": 3579
+        "min": 755.0,
+        "max": 11089.0
       }
     },
     {
@@ -108,14 +108,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 3,
-        "beer": 0,
+        "spirits": 19,
+        "beer": 43,
         "sake": 0,
-        "total": 3
+        "total": 62
       },
       "priceRange": {
-        "min": 2600,
-        "max": 3700
+        "min": 289.0,
+        "max": 5679.0
       }
     },
     {
@@ -127,14 +127,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 0,
+        "spirits": 2,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 2
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1399.0,
+        "max": 2885.0
       }
     },
     {
@@ -146,14 +146,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 3,
+        "spirits": 15,
         "beer": 0,
         "sake": 0,
-        "total": 3
+        "total": 15
       },
       "priceRange": {
-        "min": 1299,
-        "max": 3380
+        "min": 820.0,
+        "max": 26759.0
       }
     },
     {
@@ -165,14 +165,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 9,
-        "beer": 0,
+        "spirits": 28,
+        "beer": 1,
         "sake": 0,
-        "total": 9
+        "total": 29
       },
       "priceRange": {
-        "min": 655,
-        "max": 815
+        "min": 655.0,
+        "max": 3939.0
       }
     },
     {
@@ -184,14 +184,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 16,
+        "spirits": 11,
         "beer": 0,
         "sake": 0,
-        "total": 16
+        "total": 11
       },
       "priceRange": {
-        "min": 419,
-        "max": 3600
+        "min": 419.0,
+        "max": 3600.0
       }
     },
     {
@@ -202,15 +202,15 @@
       "longitude": -70.6,
       "scopes": [],
       "counts": {
-        "wine": 189,
-        "spirits": 3,
+        "wine": 461,
+        "spirits": 4,
         "beer": 0,
         "sake": 0,
-        "total": 192
+        "total": 465
       },
       "priceRange": {
-        "min": 349,
-        "max": 9955
+        "min": 349.0,
+        "max": 13419.0
       }
     },
     {
@@ -221,15 +221,15 @@
       "longitude": 105,
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 5,
+        "wine": 9,
+        "spirits": 4,
         "beer": 0,
         "sake": 0,
-        "total": 5
+        "total": 13
       },
       "priceRange": {
-        "min": 1210,
-        "max": 3099
+        "min": 1100.0,
+        "max": 8900.0
       }
     },
     {
@@ -241,14 +241,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 0,
+        "spirits": 7,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 7
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 2099.0,
+        "max": 4799.0
       }
     },
     {
@@ -260,14 +260,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 3,
+        "spirits": 10,
         "beer": 0,
         "sake": 0,
-        "total": 3
+        "total": 10
       },
       "priceRange": {
-        "min": 825,
-        "max": 2099
+        "min": 799.0,
+        "max": 2309.0
       }
     },
     {
@@ -279,14 +279,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 6,
-        "beer": 0,
+        "spirits": 5,
+        "beer": 7,
         "sake": 0,
-        "total": 6
+        "total": 12
       },
       "priceRange": {
-        "min": 715,
-        "max": 1449
+        "min": 720.0,
+        "max": 4679.0
       }
     },
     {
@@ -298,14 +298,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 2,
+        "spirits": 10,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 10
       },
       "priceRange": {
-        "min": 2059,
-        "max": 4050
+        "min": 690.0,
+        "max": 3999.0
       }
     },
     {
@@ -316,15 +316,15 @@
       "longitude": -1.5,
       "scopes": [],
       "counts": {
-        "wine": 8,
-        "spirits": 70,
+        "wine": 4,
+        "spirits": 62,
         "beer": 4,
         "sake": 0,
-        "total": 82
+        "total": 70
       },
       "priceRange": {
-        "min": 395,
-        "max": 3550
+        "min": 395.0,
+        "max": 3550.0
       }
     },
     {
@@ -335,15 +335,15 @@
       "longitude": 2.2,
       "scopes": [],
       "counts": {
-        "wine": 789,
-        "spirits": 65,
-        "beer": 0,
+        "wine": 2257,
+        "spirits": 317,
+        "beer": 7,
         "sake": 0,
-        "total": 854
+        "total": 2581
       },
       "priceRange": {
-        "min": 295,
-        "max": 186609
+        "min": 230.0,
+        "max": 1059300.0
       }
     },
     {
@@ -354,15 +354,15 @@
       "longitude": 43.5,
       "scopes": [],
       "counts": {
-        "wine": 2,
+        "wine": 12,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 12
       },
       "priceRange": {
-        "min": 899,
-        "max": 1399
+        "min": 590.0,
+        "max": 1600.0
       }
     },
     {
@@ -373,15 +373,15 @@
       "longitude": 8.3,
       "scopes": [],
       "counts": {
-        "wine": 51,
-        "spirits": 3,
-        "beer": 9,
+        "wine": 128,
+        "spirits": 52,
+        "beer": 29,
         "sake": 0,
-        "total": 63
+        "total": 209
       },
       "priceRange": {
-        "min": 649,
-        "max": 5149
+        "min": 490.0,
+        "max": 9159.0
       }
     },
     {
@@ -392,15 +392,15 @@
       "longitude": 23.7,
       "scopes": [],
       "counts": {
-        "wine": 10,
-        "spirits": 0,
+        "wine": 7,
+        "spirits": 1,
         "beer": 0,
         "sake": 0,
-        "total": 10
+        "total": 8
       },
       "priceRange": {
-        "min": 700,
-        "max": 4799
+        "min": 700.0,
+        "max": 1659.0
       }
     },
     {
@@ -418,8 +418,8 @@
         "total": 2
       },
       "priceRange": {
-        "min": 2999,
-        "max": 8799
+        "min": 2999.0,
+        "max": 8799.0
       }
     },
     {
@@ -430,15 +430,15 @@
       "longitude": 19.1,
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 5,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 5
       },
       "priceRange": {
-        "min": 1579,
-        "max": 1579
+        "min": 1460.0,
+        "max": 3280.0
       }
     },
     {
@@ -456,8 +456,8 @@
         "total": 2
       },
       "priceRange": {
-        "min": 899,
-        "max": 1009
+        "min": 899.0,
+        "max": 1009.0
       }
     },
     {
@@ -469,14 +469,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 28,
-        "beer": 0,
+        "spirits": 65,
+        "beer": 6,
         "sake": 0,
-        "total": 28
+        "total": 71
       },
       "priceRange": {
-        "min": 949,
-        "max": 8195
+        "min": 949.0,
+        "max": 12209.0
       }
     },
     {
@@ -487,15 +487,15 @@
       "longitude": 12.5,
       "scopes": [],
       "counts": {
-        "wine": 812,
-        "spirits": 63,
-        "beer": 0,
+        "wine": 1771,
+        "spirits": 173,
+        "beer": 17,
         "sake": 0,
-        "total": 875
+        "total": 1961
       },
       "priceRange": {
-        "min": 240,
-        "max": 88259
+        "min": 180.0,
+        "max": 88259.0
       }
     },
     {
@@ -507,14 +507,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 1,
+        "spirits": 9,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 9
       },
       "priceRange": {
-        "min": 989,
-        "max": 989
+        "min": 689.0,
+        "max": 11909.0
       }
     },
     {
@@ -526,14 +526,14 @@
       "scopes": [],
       "counts": {
         "wine": 5,
-        "spirits": 73,
-        "beer": 0,
-        "sake": 99,
-        "total": 177
+        "spirits": 330,
+        "beer": 16,
+        "sake": 450,
+        "total": 801
       },
       "priceRange": {
-        "min": 235,
-        "max": 5899
+        "min": 235.0,
+        "max": 349999.0
       }
     },
     {
@@ -551,8 +551,8 @@
         "total": 4
       },
       "priceRange": {
-        "min": 985,
-        "max": 3755
+        "min": 985.0,
+        "max": 3755.0
       }
     },
     {
@@ -564,14 +564,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 78,
-        "beer": 0,
+        "spirits": 199,
+        "beer": 4,
         "sake": 0,
-        "total": 78
+        "total": 203
       },
       "priceRange": {
-        "min": 729,
-        "max": 38222
+        "min": 585.0,
+        "max": 138999.0
       }
     },
     {
@@ -589,8 +589,8 @@
         "total": 17
       },
       "priceRange": {
-        "min": 695,
-        "max": 995
+        "min": 695.0,
+        "max": 995.0
       }
     },
     {
@@ -601,15 +601,15 @@
       "longitude": 174.8,
       "scopes": [],
       "counts": {
-        "wine": 87,
-        "spirits": 8,
+        "wine": 177,
+        "spirits": 11,
         "beer": 0,
         "sake": 0,
-        "total": 95
+        "total": 188
       },
       "priceRange": {
-        "min": 599,
-        "max": 4019
+        "min": 449.0,
+        "max": 11100.0
       }
     },
     {
@@ -621,14 +621,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 0,
+        "spirits": 8,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 8
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 889.0,
+        "max": 70719.0
       }
     },
     {
@@ -640,14 +640,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 3,
+        "spirits": 5,
         "beer": 0,
         "sake": 0,
-        "total": 3
+        "total": 5
       },
       "priceRange": {
-        "min": 2545,
-        "max": 2745
+        "min": 1699.0,
+        "max": 2745.0
       }
     },
     {
@@ -659,14 +659,14 @@
       "scopes": [],
       "counts": {
         "wine": 8,
-        "spirits": 0,
+        "spirits": 1,
         "beer": 0,
         "sake": 0,
-        "total": 8
+        "total": 9
       },
       "priceRange": {
-        "min": 735,
-        "max": 2275
+        "min": 735.0,
+        "max": 2275.0
       }
     },
     {
@@ -678,14 +678,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 1,
+        "spirits": 23,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 23
       },
       "priceRange": {
-        "min": 2039,
-        "max": 2039
+        "min": 670.0,
+        "max": 20999.0
       }
     },
     {
@@ -696,15 +696,15 @@
       "longitude": -8.6,
       "scopes": [],
       "counts": {
-        "wine": 14,
+        "wine": 44,
         "spirits": 1,
-        "beer": 0,
+        "beer": 3,
         "sake": 0,
-        "total": 15
+        "total": 48
       },
       "priceRange": {
-        "min": 739,
-        "max": 6969
+        "min": 590.0,
+        "max": 6969.0
       }
     },
     {
@@ -716,14 +716,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 20,
+        "spirits": 43,
         "beer": 0,
         "sake": 0,
-        "total": 20
+        "total": 43
       },
       "priceRange": {
-        "min": 319,
-        "max": 12599
+        "min": 319.0,
+        "max": 12599.0
       }
     },
     {
@@ -735,14 +735,14 @@
       "scopes": [],
       "counts": {
         "wine": 13,
-        "spirits": 173,
-        "beer": 0,
+        "spirits": 571,
+        "beer": 7,
         "sake": 0,
-        "total": 186
+        "total": 591
       },
       "priceRange": {
-        "min": 219,
-        "max": 161999
+        "min": 219.0,
+        "max": 2460999.0
       }
     },
     {
@@ -753,15 +753,15 @@
       "longitude": 14.8,
       "scopes": [],
       "counts": {
-        "wine": 4,
+        "wine": 3,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 4
+        "total": 3
       },
       "priceRange": {
-        "min": 1899,
-        "max": 4899
+        "min": 1899.0,
+        "max": 4899.0
       }
     },
     {
@@ -772,15 +772,15 @@
       "longitude": 18.9,
       "scopes": [],
       "counts": {
-        "wine": 36,
+        "wine": 85,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 36
+        "total": 85
       },
       "priceRange": {
-        "min": 299,
-        "max": 2995
+        "min": 300.0,
+        "max": 4709.0
       }
     },
     {
@@ -791,15 +791,15 @@
       "longitude": -3.7,
       "scopes": [],
       "counts": {
-        "wine": 105,
-        "spirits": 8,
-        "beer": 0,
+        "wine": 329,
+        "spirits": 25,
+        "beer": 11,
         "sake": 0,
-        "total": 113
+        "total": 365
       },
       "priceRange": {
-        "min": 249,
-        "max": 9600
+        "min": 249.0,
+        "max": 17379.0
       }
     },
     {
@@ -811,14 +811,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 9,
-        "beer": 0,
+        "spirits": 31,
+        "beer": 3,
         "sake": 0,
-        "total": 9
+        "total": 34
       },
       "priceRange": {
-        "min": 775,
-        "max": 4595
+        "min": 755.0,
+        "max": 12999.0
       }
     },
     {
@@ -830,14 +830,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 6,
+        "spirits": 21,
         "beer": 0,
         "sake": 0,
-        "total": 6
+        "total": 21
       },
       "priceRange": {
-        "min": 2659,
-        "max": 10979
+        "min": 1210.0,
+        "max": 29129.0
       }
     },
     {
@@ -848,15 +848,15 @@
       "longitude": 100.5,
       "scopes": [],
       "counts": {
-        "wine": 33,
-        "spirits": 38,
-        "beer": 2,
+        "wine": 36,
+        "spirits": 81,
+        "beer": 22,
         "sake": 0,
-        "total": 73
+        "total": 139
       },
       "priceRange": {
-        "min": 459,
-        "max": 3239
+        "min": 349.0,
+        "max": 4179.0
       }
     },
     {
@@ -874,8 +874,8 @@
         "total": 6
       },
       "priceRange": {
-        "min": 1159,
-        "max": 2169
+        "min": 1159.0,
+        "max": 2169.0
       }
     },
     {
@@ -886,15 +886,15 @@
       "longitude": -3.5,
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 0,
-        "beer": 0,
+        "wine": 4,
+        "spirits": 65,
+        "beer": 13,
         "sake": 0,
-        "total": 0
+        "total": 82
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 79.0,
+        "max": 4179.0
       }
     },
     {
@@ -905,15 +905,15 @@
       "longitude": -121.5,
       "scopes": [],
       "counts": {
-        "wine": 142,
-        "spirits": 40,
-        "beer": 0,
+        "wine": 604,
+        "spirits": 166,
+        "beer": 13,
         "sake": 0,
-        "total": 182
+        "total": 783
       },
       "priceRange": {
-        "min": 550,
-        "max": 21189
+        "min": 400.0,
+        "max": 98995.0
       }
     },
     {
@@ -924,15 +924,15 @@
       "longitude": -56.2,
       "scopes": [],
       "counts": {
-        "wine": 18,
+        "wine": 20,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 18
+        "total": 20
       },
       "priceRange": {
-        "min": 635,
-        "max": 2655
+        "min": 635.0,
+        "max": 2655.0
       }
     },
     {
@@ -944,14 +944,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 1,
+        "spirits": 7,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 7
       },
       "priceRange": {
-        "min": 725,
-        "max": 725
+        "min": 719.0,
+        "max": 12395.0
       }
     },
     {
@@ -963,14 +963,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 0,
+        "spirits": 8,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 8
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1189.0,
+        "max": 1699.0
       }
     }
   ],
@@ -985,15 +985,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 8,
+        "wine": 59,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 8
+        "total": 59
       },
       "priceRange": {
-        "min": 705,
-        "max": 1490
+        "min": 500.0,
+        "max": 2985.0
       }
     },
     {
@@ -1006,15 +1006,15 @@
       "parentSlug": "chile",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 8,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 8
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 800.0,
+        "max": 9530.0
       }
     },
     {
@@ -1027,15 +1027,15 @@
       "parentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 15,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 15
       },
       "priceRange": {
-        "min": 1605,
-        "max": 1605
+        "min": 699.0,
+        "max": 6785.0
       }
     },
     {
@@ -1048,15 +1048,15 @@
       "parentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 2,
-        "spirits": 0,
+        "wine": 34,
+        "spirits": 3,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 37
       },
       "priceRange": {
-        "min": 1249,
-        "max": 2819
+        "min": 880.0,
+        "max": 4020.0
       }
     },
     {
@@ -1070,14 +1070,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 0,
+        "spirits": 13,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 13
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1899.0,
+        "max": 108529.0
       }
     },
     {
@@ -1090,15 +1090,15 @@
       "parentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 141,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 141
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 545.0,
+        "max": 126999.0
       }
     },
     {
@@ -1111,15 +1111,15 @@
       "parentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 13,
-        "spirits": 2,
+        "wine": 706,
+        "spirits": 8,
         "beer": 0,
         "sake": 0,
-        "total": 15
+        "total": 714
       },
       "priceRange": {
-        "min": 995,
-        "max": 4159
+        "min": 390.0,
+        "max": 221599.0
       }
     },
     {
@@ -1132,15 +1132,15 @@
       "parentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 13,
-        "spirits": 0,
+        "wine": 517,
+        "spirits": 19,
         "beer": 0,
         "sake": 0,
-        "total": 13
+        "total": 536
       },
       "priceRange": {
-        "min": 1269,
-        "max": 36919
+        "min": 629.0,
+        "max": 1059300.0
       }
     },
     {
@@ -1153,15 +1153,15 @@
       "parentSlug": "chile",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 6,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 6
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 760.0,
+        "max": 7600.0
       }
     },
     {
@@ -1174,15 +1174,15 @@
       "parentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 12,
+        "wine": 234,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 12
+        "total": 234
       },
       "priceRange": {
-        "min": 599,
-        "max": 1759
+        "min": 499.0,
+        "max": 15500.0
       }
     },
     {
@@ -1195,15 +1195,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 2,
+        "wine": 35,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 35
       },
       "priceRange": {
-        "min": 895,
-        "max": 995
+        "min": 750.0,
+        "max": 12599.0
       }
     },
     {
@@ -1217,14 +1217,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 0,
+        "spirits": 7,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 7
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 3095.0,
+        "max": 11700.0
       }
     },
     {
@@ -1237,15 +1237,15 @@
       "parentSlug": "chile",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 17,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 17
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 600.0,
+        "max": 5499.0
       }
     },
     {
@@ -1258,15 +1258,15 @@
       "parentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 67,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 67
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 249.0,
+        "max": 5149.0
       }
     },
     {
@@ -1279,15 +1279,15 @@
       "parentSlug": "new-zealand",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 21,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 21
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 909.0,
+        "max": 4019.0
       }
     },
     {
@@ -1300,15 +1300,15 @@
       "parentSlug": "chile",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 219,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 219
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 395.0,
+        "max": 8959.0
       }
     },
     {
@@ -1321,15 +1321,15 @@
       "parentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 2,
-        "spirits": 0,
+        "wine": 459,
+        "spirits": 49,
         "beer": 0,
-        "sake": 0,
-        "total": 2
+        "sake": 2,
+        "total": 510
       },
       "priceRange": {
-        "min": 5099,
-        "max": 15545
+        "min": 300.0,
+        "max": 188999.0
       }
     },
     {
@@ -1342,15 +1342,15 @@
       "parentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 2,
+        "wine": 36,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 36
       },
       "priceRange": {
-        "min": 1789,
-        "max": 2249
+        "min": 145.0,
+        "max": 4279.0
       }
     },
     {
@@ -1364,14 +1364,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 0,
+        "spirits": 104,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 104
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 579.0,
+        "max": 181499.0
       }
     },
     {
@@ -1384,15 +1384,15 @@
       "parentSlug": "chile",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 112,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 112
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 415.0,
+        "max": 4555.0
       }
     },
     {
@@ -1405,15 +1405,15 @@
       "parentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 29,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 29
       },
       "priceRange": {
-        "min": 1495,
-        "max": 1495
+        "min": 760.0,
+        "max": 5190.0
       }
     },
     {
@@ -1426,15 +1426,15 @@
       "parentSlug": "chile",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 16,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 16
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 789.0,
+        "max": 2400.0
       }
     },
     {
@@ -1447,15 +1447,15 @@
       "parentSlug": "portugal",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 0,
+        "wine": 25,
+        "spirits": 2,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 27
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 590.0,
+        "max": 6969.0
       }
     },
     {
@@ -1468,15 +1468,15 @@
       "parentSlug": "portugal",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 2,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 2
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 700.0,
+        "max": 700.0
       }
     },
     {
@@ -1489,15 +1489,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 1,
-        "spirits": 0,
+        "wine": 40,
+        "spirits": 2,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 42
       },
       "priceRange": {
-        "min": 995,
-        "max": 995
+        "min": 500.0,
+        "max": 3300.0
       }
     },
     {
@@ -1510,15 +1510,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 1,
-        "spirits": 0,
+        "wine": 78,
+        "spirits": 2,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 80
       },
       "priceRange": {
-        "min": 959,
-        "max": 959
+        "min": 630.0,
+        "max": 4025.0
       }
     },
     {
@@ -1531,15 +1531,15 @@
       "parentSlug": "new-zealand",
       "scopes": [],
       "counts": {
-        "wine": 2,
+        "wine": 12,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 12
       },
       "priceRange": {
-        "min": 1859,
-        "max": 1859
+        "min": 449.0,
+        "max": 11100.0
       }
     },
     {
@@ -1552,15 +1552,15 @@
       "parentSlug": "scotland",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 2,
+        "wine": 1,
+        "spirits": 209,
         "beer": 0,
-        "sake": 0,
-        "total": 2
+        "sake": 1,
+        "total": 211
       },
       "priceRange": {
-        "min": 2585,
-        "max": 4845
+        "min": 459.0,
+        "max": 202399.0
       }
     },
     {
@@ -1573,15 +1573,15 @@
       "parentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 12,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 12
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 695.0,
+        "max": 2440.0
       }
     },
     {
@@ -1594,15 +1594,15 @@
       "parentSlug": "scotland",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 0,
+        "wine": 4,
+        "spirits": 87,
         "beer": 0,
-        "sake": 0,
-        "total": 0
+        "sake": 5,
+        "total": 96
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 595.0,
+        "max": 108999.0
       }
     },
     {
@@ -1616,14 +1616,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 0,
+        "spirits": 15,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 15
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 769.0,
+        "max": 61899.0
       }
     },
     {
@@ -1636,15 +1636,15 @@
       "parentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 0,
+        "wine": 22,
+        "spirits": 6,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 28
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 899.0,
+        "max": 9600.0
       }
     },
     {
@@ -1657,15 +1657,15 @@
       "parentSlug": "austria",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 4,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 4
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 889.0,
+        "max": 1399.0
       }
     },
     {
@@ -1679,14 +1679,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 3,
+        "spirits": 33,
         "beer": 0,
         "sake": 0,
-        "total": 3
+        "total": 33
       },
       "priceRange": {
-        "min": 1519,
-        "max": 3789
+        "min": 649.0,
+        "max": 21189.0
       }
     },
     {
@@ -1699,15 +1699,15 @@
       "parentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 25,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 25
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 559.0,
+        "max": 2100.0
       }
     },
     {
@@ -1720,15 +1720,15 @@
       "parentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 7,
-        "spirits": 0,
+        "wine": 144,
+        "spirits": 4,
         "beer": 0,
         "sake": 0,
-        "total": 7
+        "total": 148
       },
       "priceRange": {
-        "min": 825,
-        "max": 1499
+        "min": 230.0,
+        "max": 22499.0
       }
     },
     {
@@ -1741,15 +1741,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 5,
+        "wine": 16,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 5
+        "total": 16
       },
       "priceRange": {
-        "min": 649,
-        "max": 3265
+        "min": 599.0,
+        "max": 3265.0
       }
     },
     {
@@ -1762,15 +1762,15 @@
       "parentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 2,
-        "spirits": 0,
+        "wine": 63,
+        "spirits": 7,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 70
       },
       "priceRange": {
-        "min": 1059,
-        "max": 2529
+        "min": 699.0,
+        "max": 7700.0
       }
     },
     {
@@ -1783,15 +1783,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 0,
-        "beer": 0,
+        "wine": 36,
+        "spirits": 2,
+        "beer": 1,
         "sake": 0,
-        "total": 0
+        "total": 39
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 589.0,
+        "max": 7380.0
       }
     },
     {
@@ -1805,14 +1805,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 0,
+        "spirits": 10,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 10
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1595.0,
+        "max": 12999.0
       }
     },
     {
@@ -1825,15 +1825,15 @@
       "parentSlug": "chile",
       "scopes": [],
       "counts": {
-        "wine": 2,
+        "wine": 48,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 48
       },
       "priceRange": {
-        "min": 9955,
-        "max": 9955
+        "min": 499.0,
+        "max": 13419.0
       }
     },
     {
@@ -1846,15 +1846,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 2,
+        "wine": 23,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 23
       },
       "priceRange": {
-        "min": 1899,
-        "max": 2699
+        "min": 735.0,
+        "max": 2420.0
       }
     },
     {
@@ -1867,15 +1867,15 @@
       "parentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 2,
+        "wine": 50,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 50
       },
       "priceRange": {
-        "min": 989,
-        "max": 989
+        "min": 849.0,
+        "max": 5700.0
       }
     },
     {
@@ -1888,15 +1888,15 @@
       "parentSlug": "new-zealand",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 105,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 105
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 585.0,
+        "max": 4769.0
       }
     },
     {
@@ -1909,15 +1909,15 @@
       "parentSlug": "new-zealand",
       "scopes": [],
       "counts": {
-        "wine": 2,
+        "wine": 14,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 14
       },
       "priceRange": {
-        "min": 999,
-        "max": 2569
+        "min": 799.0,
+        "max": 3089.0
       }
     },
     {
@@ -1930,15 +1930,15 @@
       "parentSlug": "chile",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 29,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 29
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 349.0,
+        "max": 1599.0
       }
     },
     {
@@ -1951,15 +1951,15 @@
       "parentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 25,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 25
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 640.0,
+        "max": 1949.0
       }
     },
     {
@@ -1972,15 +1972,15 @@
       "parentSlug": "argentina",
       "scopes": [],
       "counts": {
-        "wine": 7,
+        "wine": 174,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 7
+        "total": 174
       },
       "priceRange": {
-        "min": 749,
-        "max": 6449
+        "min": 530.0,
+        "max": 7719.0
       }
     },
     {
@@ -1993,15 +1993,15 @@
       "parentSlug": "germany",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 0,
+        "wine": 33,
+        "spirits": 1,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 34
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 600.0,
+        "max": 5249.0
       }
     },
     {
@@ -2014,15 +2014,15 @@
       "parentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 3,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 3
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 595.0,
+        "max": 1885.0
       },
       "nonGeographic": true
     },
@@ -2036,15 +2036,15 @@
       "parentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 10,
-        "spirits": 0,
+        "wine": 273,
+        "spirits": 6,
         "beer": 0,
         "sake": 0,
-        "total": 10
+        "total": 279
       },
       "priceRange": {
-        "min": 4559,
-        "max": 17879
+        "min": 630.0,
+        "max": 98995.0
       }
     },
     {
@@ -2057,15 +2057,15 @@
       "parentSlug": "china",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 9,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 9
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1100.0,
+        "max": 8900.0
       }
     },
     {
@@ -2079,14 +2079,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 0,
+        "spirits": 22,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 22
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 2070.0,
+        "max": 9200.0
       }
     },
     {
@@ -2099,15 +2099,15 @@
       "parentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1989.0,
+        "max": 1989.0
       }
     },
     {
@@ -2120,15 +2120,15 @@
       "parentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 165,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 165
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 79.0,
+        "max": 10619.0
       },
       "nonGeographic": true
     },
@@ -2142,15 +2142,15 @@
       "parentSlug": "south-africa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 16,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 16
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 700.0,
+        "max": 1335.0
       }
     },
     {
@@ -2163,15 +2163,15 @@
       "parentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 0,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 0
       },
       "priceRange": {
-        "min": 4809,
-        "max": 4809
+        "min": null,
+        "max": null
       }
     },
     {
@@ -2184,15 +2184,15 @@
       "parentSlug": "germany",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 14,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 14
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 859.0,
+        "max": 9159.0
       }
     },
     {
@@ -2205,15 +2205,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 12,
-        "spirits": 0,
+        "wine": 278,
+        "spirits": 7,
         "beer": 0,
         "sake": 0,
-        "total": 12
+        "total": 285
       },
       "priceRange": {
-        "min": 645,
-        "max": 5299
+        "min": 430.0,
+        "max": 12685.0
       }
     },
     {
@@ -2226,15 +2226,15 @@
       "parentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 7,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 7
       },
       "priceRange": {
-        "min": 4019,
-        "max": 4019
+        "min": 1300.0,
+        "max": 3580.0
       }
     },
     {
@@ -2247,15 +2247,15 @@
       "parentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 1,
+        "wine": 60,
+        "spirits": 6,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 66
       },
       "priceRange": {
-        "min": 1349,
-        "max": 1349
+        "min": 319.0,
+        "max": 8365.0
       }
     },
     {
@@ -2268,15 +2268,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 3,
+        "wine": 109,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 3
+        "total": 109
       },
       "priceRange": {
-        "min": 1135,
-        "max": 1585
+        "min": 600.0,
+        "max": 5730.0
       }
     },
     {
@@ -2289,15 +2289,15 @@
       "parentSlug": "germany",
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 28,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 28
       },
       "priceRange": {
-        "min": 845,
-        "max": 845
+        "min": 845.0,
+        "max": 5295.0
       }
     },
     {
@@ -2310,15 +2310,15 @@
       "parentSlug": "germany",
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 12,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 12
       },
       "priceRange": {
-        "min": 689,
-        "max": 689
+        "min": 649.0,
+        "max": 1100.0
       }
     },
     {
@@ -2331,15 +2331,15 @@
       "parentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 3,
+        "wine": 137,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 3
+        "total": 137
       },
       "priceRange": {
-        "min": 1045,
-        "max": 2025
+        "min": 500.0,
+        "max": 22099.0
       }
     },
     {
@@ -2352,15 +2352,15 @@
       "parentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 9,
+        "wine": 33,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 9
+        "total": 33
       },
       "priceRange": {
-        "min": 769,
-        "max": 8940
+        "min": 829.0,
+        "max": 17379.0
       }
     },
     {
@@ -2373,15 +2373,15 @@
       "parentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 2,
+        "wine": 72,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 72
       },
       "priceRange": {
-        "min": 895,
-        "max": 945
+        "min": 590.0,
+        "max": 13000.0
       }
     },
     {
@@ -2394,15 +2394,15 @@
       "parentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 3,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 3
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 769.0,
+        "max": 1000.0
       }
     },
     {
@@ -2415,15 +2415,15 @@
       "parentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 3,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 3
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 700.0,
+        "max": 1579.0
       }
     },
     {
@@ -2436,15 +2436,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 1,
-        "spirits": 0,
+        "wine": 10,
+        "spirits": 1,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 11
       },
       "priceRange": {
-        "min": 1235,
-        "max": 1235
+        "min": 710.0,
+        "max": 3220.0
       }
     },
     {
@@ -2478,15 +2478,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 10,
-        "spirits": 0,
+        "wine": 117,
+        "spirits": 11,
         "beer": 0,
         "sake": 0,
-        "total": 10
+        "total": 128
       },
       "priceRange": {
-        "min": 659,
-        "max": 2105
+        "min": 450.0,
+        "max": 7049.0
       }
     },
     {
@@ -2499,15 +2499,15 @@
       "parentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 53,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 53
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1139.0,
+        "max": 7995.0
       }
     },
     {
@@ -2520,15 +2520,15 @@
       "parentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 203,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 203
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 145.0,
+        "max": 31409.0
       }
     },
     {
@@ -2541,15 +2541,15 @@
       "parentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 171,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 171
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 300.0,
+        "max": 4229.0
       },
       "nonGeographic": true
     },
@@ -2585,14 +2585,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 0,
+        "spirits": 19,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 19
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 579.0,
+        "max": 6899.0
       }
     },
     {
@@ -2605,15 +2605,15 @@
       "parentSlug": "hungary",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 0,
+        "wine": 1,
+        "spirits": 1,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 2
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1579.0,
+        "max": 3900.0
       }
     },
     {
@@ -2626,15 +2626,15 @@
       "parentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 7,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 7
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 445.0,
+        "max": 2680.0
       }
     },
     {
@@ -2647,15 +2647,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 0,
+        "wine": 51,
+        "spirits": 2,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 53
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 599.0,
+        "max": 9899.0
       }
     },
     {
@@ -2668,15 +2668,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 18,
-        "spirits": 2,
+        "wine": 425,
+        "spirits": 5,
         "beer": 0,
         "sake": 0,
-        "total": 20
+        "total": 430
       },
       "priceRange": {
-        "min": 849,
-        "max": 12169
+        "min": 580.0,
+        "max": 88259.0
       }
     },
     {
@@ -2689,15 +2689,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 33,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 33
       },
       "priceRange": {
-        "min": 2255,
-        "max": 2255
+        "min": 670.0,
+        "max": 3800.0
       }
     },
     {
@@ -2710,15 +2710,15 @@
       "parentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 25,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 25
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 590.0,
+        "max": 2500.0
       }
     },
     {
@@ -2731,15 +2731,15 @@
       "parentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 13,
-        "spirits": 1,
+        "wine": 347,
+        "spirits": 19,
         "beer": 0,
         "sake": 0,
-        "total": 14
+        "total": 366
       },
       "priceRange": {
-        "min": 559,
-        "max": 1699
+        "min": 180.0,
+        "max": 40829.0
       }
     },
     {
@@ -2752,15 +2752,15 @@
       "parentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 0,
+        "wine": 44,
+        "spirits": 8,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 52
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 469.0,
+        "max": 9479.0
       }
     },
     {
@@ -2773,15 +2773,15 @@
       "parentSlug": "austria",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 3,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 3
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 895.0,
+        "max": 2149.0
       }
     },
     {
@@ -2794,15 +2794,15 @@
       "parentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 3,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 3
       },
       "priceRange": {
-        "min": 829,
-        "max": 829
+        "min": 1700.0,
+        "max": 2200.0
       }
     },
     {
@@ -2815,15 +2815,15 @@
       "parentSlug": "south-africa",
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 65,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 65
       },
       "priceRange": {
-        "min": 700,
-        "max": 700
+        "min": 300.0,
+        "max": 4709.0
       }
     },
     {
@@ -2836,15 +2836,15 @@
       "parentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 3,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 3
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1800.0,
+        "max": 3599.0
       }
     },
     {
@@ -2857,15 +2857,15 @@
       "parentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 2,
-        "spirits": 0,
+        "wine": 15,
+        "spirits": 1,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 16
       },
       "priceRange": {
-        "min": 915,
-        "max": 945
+        "min": 779.0,
+        "max": 3399.0
       }
     }
   ],
@@ -2882,15 +2882,15 @@
       "grandparentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 8,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 8
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1200.0,
+        "max": 6509.0
       }
     },
     {
@@ -2905,15 +2905,15 @@
       "grandparentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 900.0,
+        "max": 900.0
       }
     },
     {
@@ -2928,15 +2928,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 0,
+        "wine": 35,
+        "spirits": 1,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 36
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 849.0,
+        "max": 40829.0
       }
     },
     {
@@ -2951,15 +2951,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 0,
+        "wine": 1,
+        "spirits": 1,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 2
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 889.0,
+        "max": 1080.0
       }
     },
     {
@@ -2974,15 +2974,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 0,
+        "wine": 13,
+        "spirits": 1,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 14
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 700.0,
+        "max": 7859.0
       }
     },
     {
@@ -2997,15 +2997,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 11,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 11
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1170.0,
+        "max": 3890.0
       }
     },
     {
@@ -3020,15 +3020,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 18,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 18
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1000.0,
+        "max": 2520.0
       }
     },
     {
@@ -3043,15 +3043,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 7,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 7
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 2600.0,
+        "max": 7389.0
       }
     },
     {
@@ -3066,15 +3066,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 895.0,
+        "max": 895.0
       }
     },
     {
@@ -3089,15 +3089,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 3,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 3
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 635.0,
+        "max": 3488.0
       }
     },
     {
@@ -3112,15 +3112,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 10,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 10
       },
       "priceRange": {
-        "min": 1690,
-        "max": 1690
+        "min": 1700.0,
+        "max": 42400.0
       }
     },
     {
@@ -3135,15 +3135,15 @@
       "grandparentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1000.0,
+        "max": 1000.0
       }
     },
     {
@@ -3158,15 +3158,15 @@
       "grandparentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 12,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 12
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1700.0,
+        "max": 12400.0
       }
     },
     {
@@ -3181,15 +3181,15 @@
       "grandparentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 23,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 23
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 905.0,
+        "max": 2300.0
       }
     },
     {
@@ -3204,15 +3204,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 56,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 56
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1000.0,
+        "max": 6470.0
       }
     },
     {
@@ -3227,15 +3227,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 18,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 18
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 3249.0,
+        "max": 23500.0
       }
     },
     {
@@ -3250,15 +3250,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 10,
+        "wine": 61,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 10
+        "total": 61
       },
       "priceRange": {
-        "min": 849,
-        "max": 12169
+        "min": 580.0,
+        "max": 11000.0
       }
     },
     {
@@ -3273,15 +3273,15 @@
       "grandparentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1989.0,
+        "max": 1989.0
       }
     },
     {
@@ -3296,15 +3296,15 @@
       "grandparentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 26885.0,
+        "max": 26885.0
       }
     },
     {
@@ -3319,15 +3319,15 @@
       "grandparentSlug": "chile",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 859.0,
+        "max": 859.0
       }
     },
     {
@@ -3342,15 +3342,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 17,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 17
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1680.0,
+        "max": 9000.0
       }
     },
     {
@@ -3365,15 +3365,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 36,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 36
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1900.0,
+        "max": 54000.0
       }
     },
     {
@@ -3388,15 +3388,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 2,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 2
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 789.0,
+        "max": 949.0
       }
     },
     {
@@ -3411,15 +3411,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 2,
+        "wine": 5,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 5
       },
       "priceRange": {
-        "min": 1499,
-        "max": 1499
+        "min": 1300.0,
+        "max": 4500.0
       }
     },
     {
@@ -3434,15 +3434,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1849.0,
+        "max": 1849.0
       }
     },
     {
@@ -3457,15 +3457,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 46,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 46
       },
       "priceRange": {
-        "min": 4399,
-        "max": 4399
+        "min": 2840.0,
+        "max": 96300.0
       }
     },
     {
@@ -3480,15 +3480,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 31,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 31
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 599.0,
+        "max": 30115.0
       }
     },
     {
@@ -3503,15 +3503,15 @@
       "grandparentSlug": "china",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1300.0,
+        "max": 1300.0
       }
     },
     {
@@ -3526,15 +3526,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 7,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 7
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 950.0,
+        "max": 2770.0
       }
     },
     {
@@ -3549,15 +3549,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 19,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 19
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 319.0,
+        "max": 7100.0
       }
     },
     {
@@ -3572,15 +3572,15 @@
       "grandparentSlug": "argentina",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 3699.0,
+        "max": 3699.0
       }
     },
     {
@@ -3595,15 +3595,15 @@
       "grandparentSlug": "argentina",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1535.0,
+        "max": 1535.0
       }
     },
     {
@@ -3618,15 +3618,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1000.0,
+        "max": 1000.0
       }
     },
     {
@@ -3641,15 +3641,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 17,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 17
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 799.0,
+        "max": 5990.0
       }
     },
     {
@@ -3664,15 +3664,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 41,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 41
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1040.0,
+        "max": 38200.0
       }
     },
     {
@@ -3687,15 +3687,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 3,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 3
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 740.0,
+        "max": 945.0
       }
     },
     {
@@ -3710,15 +3710,15 @@
       "grandparentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 3,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 3
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 2220.0,
+        "max": 3100.0
       }
     },
     {
@@ -3733,15 +3733,15 @@
       "grandparentSlug": "chile",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 7600.0,
+        "max": 7600.0
       }
     },
     {
@@ -3756,15 +3756,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 8,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 8
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 700.0,
+        "max": 2110.0
       }
     },
     {
@@ -3779,15 +3779,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 21,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 21
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 2480.0,
+        "max": 60460.0
       }
     },
     {
@@ -3802,15 +3802,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 56,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 56
       },
       "priceRange": {
-        "min": 1085,
-        "max": 1085
+        "min": 700.0,
+        "max": 22459.0
       }
     },
     {
@@ -3825,15 +3825,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 45,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 45
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 500.0,
+        "max": 2800.0
       }
     },
     {
@@ -3848,15 +3848,15 @@
       "grandparentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1199.0,
+        "max": 1199.0
       }
     },
     {
@@ -3871,15 +3871,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 1,
+        "wine": 65,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 1
+        "total": 65
       },
       "priceRange": {
-        "min": 2269,
-        "max": 2269
+        "min": 590.0,
+        "max": 34350.0
       }
     },
     {
@@ -3894,15 +3894,15 @@
       "grandparentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 51,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 51
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1500.0,
+        "max": 24700.0
       }
     },
     {
@@ -3917,15 +3917,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 13,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 13
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 599.0,
+        "max": 7049.0
       }
     },
     {
@@ -3940,15 +3940,15 @@
       "grandparentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 15,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 15
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 679.0,
+        "max": 8400.0
       }
     },
     {
@@ -3963,15 +3963,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 52,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 52
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 2100.0,
+        "max": 40829.0
       }
     },
     {
@@ -3986,15 +3986,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 3,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 3
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 700.0,
+        "max": 700.0
       }
     },
     {
@@ -4009,15 +4009,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 4,
+        "wine": 19,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 4
+        "total": 19
       },
       "priceRange": {
-        "min": 1719,
-        "max": 2199
+        "min": 1230.0,
+        "max": 69979.0
       }
     },
     {
@@ -4032,15 +4032,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1159.0,
+        "max": 1159.0
       }
     },
     {
@@ -4055,15 +4055,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 42,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 42
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 860.0,
+        "max": 221599.0
       }
     },
     {
@@ -4078,15 +4078,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 9,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 9
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 2255.0,
+        "max": 13400.0
       }
     },
     {
@@ -4101,15 +4101,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 10,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 10
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1360.0,
+        "max": 2599.0
       }
     },
     {
@@ -4124,15 +4124,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
-        "spirits": 0,
+        "wine": 74,
+        "spirits": 4,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 78
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 319.0,
+        "max": 4900.0
       }
     },
     {
@@ -4147,15 +4147,15 @@
       "grandparentSlug": "chile",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 5,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 5
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 899.0,
+        "max": 13419.0
       }
     },
     {
@@ -4170,15 +4170,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 2,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 2
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 799.0,
+        "max": 1420.0
       }
     },
     {
@@ -4193,15 +4193,15 @@
       "grandparentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 7,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 7
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1269.0,
+        "max": 3700.0
       }
     },
     {
@@ -4216,15 +4216,15 @@
       "grandparentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 8,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 8
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 795.0,
+        "max": 13000.0
       }
     },
     {
@@ -4239,15 +4239,15 @@
       "grandparentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 509.0,
+        "max": 509.0
       }
     },
     {
@@ -4262,15 +4262,15 @@
       "grandparentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 7800.0,
+        "max": 7800.0
       }
     },
     {
@@ -4285,15 +4285,15 @@
       "grandparentSlug": "germany",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 859.0,
+        "max": 859.0
       }
     },
     {
@@ -4308,15 +4308,15 @@
       "grandparentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 19,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 19
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1700.0,
+        "max": 98995.0
       }
     },
     {
@@ -4331,15 +4331,15 @@
       "grandparentSlug": "germany",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1279.0,
+        "max": 1279.0
       }
     },
     {
@@ -4354,15 +4354,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 19,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 19
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1090.0,
+        "max": 47639.0
       }
     },
     {
@@ -4377,15 +4377,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 18,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 18
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1160.0,
+        "max": 13600.0
       }
     },
     {
@@ -4400,15 +4400,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 4,
+        "wine": 51,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 4
+        "total": 51
       },
       "priceRange": {
-        "min": 2999,
-        "max": 4159
+        "min": 1000.0,
+        "max": 67000.0
       }
     },
     {
@@ -4423,15 +4423,15 @@
       "grandparentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 4229.0,
+        "max": 4229.0
       }
     },
     {
@@ -4446,15 +4446,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 2,
+        "wine": 8,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 2
+        "total": 8
       },
       "priceRange": {
-        "min": 1299,
-        "max": 1699
+        "min": 570.0,
+        "max": 1400.0
       }
     },
     {
@@ -4469,15 +4469,15 @@
       "grandparentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 16,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 16
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1139.0,
+        "max": 7995.0
       }
     },
     {
@@ -4492,15 +4492,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 12,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 12
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 945.0,
+        "max": 5359.0
       }
     },
     {
@@ -4515,15 +4515,15 @@
       "grandparentSlug": "usa",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 8,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 8
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 2300.0,
+        "max": 12400.0
       }
     },
     {
@@ -4538,15 +4538,15 @@
       "grandparentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1885.0,
+        "max": 1885.0
       }
     },
     {
@@ -4561,15 +4561,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 3,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 3
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 995.0,
+        "max": 1340.0
       }
     },
     {
@@ -4584,15 +4584,15 @@
       "grandparentSlug": "argentina",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 2,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 2
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 800.0,
+        "max": 1599.0
       }
     },
     {
@@ -4607,15 +4607,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 14,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 14
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 599.0,
+        "max": 3300.0
       }
     },
     {
@@ -4630,15 +4630,15 @@
       "grandparentSlug": "italy",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1500.0,
+        "max": 1500.0
       }
     },
     {
@@ -4653,15 +4653,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 4,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 4
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 3100.0,
+        "max": 7700.0
       }
     },
     {
@@ -4676,15 +4676,15 @@
       "grandparentSlug": "new-zealand",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 1,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 1
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 2100.0,
+        "max": 2100.0
       }
     },
     {
@@ -4699,15 +4699,15 @@
       "grandparentSlug": "australia",
       "scopes": [],
       "counts": {
-        "wine": 0,
+        "wine": 3,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 0
+        "total": 3
       },
       "priceRange": {
-        "min": null,
-        "max": null
+        "min": 1099.0,
+        "max": 5700.0
       }
     }
   ],
