@@ -20,7 +20,7 @@ const SEGMENT_FILTERS: Record<string, string> = {
 };
 
 const SORT_MAP: Record<string, string> = {
-  popular: "enrichment_priority.desc.nullslast,price.desc.nullslast",
+  popular: "popularity_score.desc.nullslast,popularity_orders_90d.desc.nullslast,price.desc.nullslast",
   "price-asc": "price.asc.nullslast",
   "price-desc": "price.desc.nullslast",
   newest: "vintage.desc.nullslast,created_at.desc",
@@ -48,6 +48,12 @@ const SELECT_FIELDS = [
   "wine_tannin",
   "flavor_tags",
   "food_matching",
+  "popularity_score",
+  "popularity_qty_90d",
+  "popularity_orders_90d",
+  "popularity_revenue_90d",
+  "popularity_window_days",
+  "popularity_synced_at",
 ].join(",");
 
 const CHAMPAGNE_COUNTRY = "France";

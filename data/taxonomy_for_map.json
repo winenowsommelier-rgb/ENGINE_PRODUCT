@@ -578,7 +578,7 @@
     },
     {
       "id": 120,
-      "name": "Curico Valley",
+      "name": "Curicó Valley",
       "slug": "curico-valley",
       "latitude": -35.0,
       "longitude": -71.2,
@@ -1196,6 +1196,276 @@
       "longitude": 145.5,
       "parent_id": 34,
       "parent_name": "Australia"
+    },
+    {
+      "id": 921,
+      "name": "Riverland",
+      "slug": "riverland",
+      "latitude": -34.27,
+      "longitude": 140.6,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 922,
+      "name": "Riverina",
+      "slug": "riverina",
+      "latitude": -34.3,
+      "longitude": 146.05,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 923,
+      "name": "Eden Valley",
+      "slug": "eden-valley",
+      "latitude": -34.65,
+      "longitude": 139.1,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 924,
+      "name": "Hunter Valley",
+      "slug": "hunter-valley",
+      "latitude": -32.78,
+      "longitude": 151.3,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 925,
+      "name": "King Valley",
+      "slug": "king-valley",
+      "latitude": -36.65,
+      "longitude": 146.4,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 926,
+      "name": "Grampians",
+      "slug": "grampians",
+      "latitude": -37.2,
+      "longitude": 142.5,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 927,
+      "name": "Mount Benson",
+      "slug": "mount-benson",
+      "latitude": -36.97,
+      "longitude": 139.83,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 928,
+      "name": "Great Southern",
+      "slug": "great-southern",
+      "latitude": -34.62,
+      "longitude": 117.85,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 929,
+      "name": "Beechworth",
+      "slug": "beechworth",
+      "latitude": -36.36,
+      "longitude": 146.69,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 930,
+      "name": "Heathcote",
+      "slug": "heathcote",
+      "latitude": -36.92,
+      "longitude": 144.71,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 931,
+      "name": "Padthaway",
+      "slug": "padthaway",
+      "latitude": -36.62,
+      "longitude": 140.5,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 932,
+      "name": "Murray Darling",
+      "slug": "murray-darling",
+      "latitude": -34.18,
+      "longitude": 142.16,
+      "parent_id": 34,
+      "parent_name": "Australia"
+    },
+    {
+      "id": 933,
+      "name": "Limarí Valley",
+      "slug": "limari-valley",
+      "latitude": -30.62,
+      "longitude": -71.2,
+      "parent_id": 17,
+      "parent_name": "Chile"
+    },
+    {
+      "id": 934,
+      "name": "Lodi",
+      "slug": "lodi",
+      "latitude": 38.13,
+      "longitude": -121.27,
+      "parent_id": 1,
+      "parent_name": "USA"
+    },
+    {
+      "id": 935,
+      "name": "Alexander Valley",
+      "slug": "alexander-valley",
+      "latitude": 38.62,
+      "longitude": -122.85,
+      "parent_id": 1,
+      "parent_name": "USA"
+    },
+    {
+      "id": 936,
+      "name": "Speyside",
+      "slug": "speyside",
+      "latitude": 57.45,
+      "longitude": -3.2,
+      "parent_id": 10,
+      "parent_name": "Scotland"
+    },
+    {
+      "id": 937,
+      "name": "Islands",
+      "slug": "islands",
+      "latitude": 58.5,
+      "longitude": -6.3,
+      "parent_id": 10,
+      "parent_name": "Scotland"
+    },
+    {
+      "id": 938,
+      "name": "Almansa",
+      "slug": "almansa",
+      "latitude": 38.87,
+      "longitude": -1.1,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 939,
+      "name": "Calatayud",
+      "slug": "calatayud",
+      "latitude": 41.35,
+      "longitude": -1.65,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 940,
+      "name": "Yecla",
+      "slug": "yecla",
+      "latitude": 38.62,
+      "longitude": -1.1,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 941,
+      "name": "Cigales",
+      "slug": "cigales",
+      "latitude": 41.75,
+      "longitude": -4.69,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 942,
+      "name": "Campo de Borja",
+      "slug": "campo-de-borja",
+      "latitude": 41.83,
+      "longitude": -1.55,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 943,
+      "name": "Bierzo",
+      "slug": "bierzo",
+      "latitude": 42.55,
+      "longitude": -6.6,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 944,
+      "name": "Castilla y León",
+      "slug": "castilla-y-leon",
+      "latitude": 41.75,
+      "longitude": -4.3,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 945,
+      "name": "Aragón",
+      "slug": "aragon",
+      "latitude": 41.65,
+      "longitude": -0.9,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 946,
+      "name": "Cádiz",
+      "slug": "cadiz",
+      "latitude": 36.53,
+      "longitude": -6.3,
+      "parent_id": 13,
+      "parent_name": "Spain"
+    },
+    {
+      "id": 947,
+      "name": "Alentejo",
+      "slug": "alentejo",
+      "latitude": 38.55,
+      "longitude": -7.95,
+      "parent_id": 32,
+      "parent_name": "Portugal"
+    },
+    {
+      "id": 948,
+      "name": "Kremstal",
+      "slug": "kremstal",
+      "latitude": 48.4,
+      "longitude": 15.62,
+      "parent_id": 3,
+      "parent_name": "Austria"
+    },
+    {
+      "id": 949,
+      "name": "Nelson",
+      "slug": "nelson",
+      "latitude": -41.27,
+      "longitude": 173.28,
+      "parent_id": 37,
+      "parent_name": "New Zealand"
+    },
+    {
+      "id": 950,
+      "name": "Franken",
+      "slug": "franken",
+      "latitude": 49.8,
+      "longitude": 9.95,
+      "parent_id": 9,
+      "parent_name": "Germany"
     }
   ],
   "subregions": [

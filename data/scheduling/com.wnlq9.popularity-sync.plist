@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.wnlq9.popularity-sync</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/.venv/bin/python3</string>
+        <string>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/sync_popularity_from_bi.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT</string>
+
+    <!-- Run daily at 04:00 local time -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>4</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <!-- If the Mac was asleep at 04:00, run at next wake -->
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/scheduling/popularity-sync.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/scheduling/popularity-sync.err.log</string>
+</dict>
+</plist>

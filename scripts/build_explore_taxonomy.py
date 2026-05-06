@@ -140,9 +140,7 @@ REGION_ALIASES = {
     "Napa Valley": "Napa",
     "Yarra Valley": "Yarra",
     "Highlands": "Highland",
-    "Speyside": "Highland",         # Speyside is part of Highland in our taxonomy
-    "Islands": "Islay",             # Islands whisky often mapped to Islay
-    "Hunter Valley": "Hunter",
+            "Hunter Valley": "Hunter",
     "Languedoc-Roussillon": "Languedoc",
     "Jerez (Sherry)": "Jerez",
     "Rapel Valley": "Colchagua Valley",  # Rapel contains Colchagua
@@ -154,14 +152,10 @@ REGION_ALIASES = {
     "Castilla-La Mancha": "La Mancha",
     "Alicante": "Valencia",
     "Malaga": "Jerez",              # Andalusia grouping
-    "Eden Valley": "Barossa Valley",# Adjacent to Barossa
-    "Stellenbosch": "Western Cape",
-    "Heathcote": "Victoria",
-    "Murray Darling": "Victoria",
-    "Orange": "Victoria",
+        "Stellenbosch": "Western Cape",
+            "Orange": "Victoria",
     "Rutherglen": "Victoria",
-    "Riverina": "South Australia",
-    "Tasmania": "Victoria",         # Separate but closest match
+        "Tasmania": "Victoria",         # Separate but closest match
     "Hokkaido": "Jalisco",          # Skip — no matching region, use None
     "Nagano": "Jalisco",            # Same — these are Japanese wine regions not in our taxonomy
     "Yamanashi": "Jalisco",
@@ -170,8 +164,7 @@ REGION_ALIASES = {
     "South West France": "Languedoc",
     "Vinho Verde": "Douro",         # Portugal grouping
     "Goriška Brda": None,           # Slovenia — too specific
-    "Limarí Valley": "Aconcagua Valley",
-    "Loncomilla Valley": "Central Valley",
+        "Loncomilla Valley": "Central Valley",
     "South Island": "Central Otago", # NZ South Island → Central Otago
     "Sussex": "Sussex",
     "Corsica": "Provence",          # Close enough geographically

@@ -1,8 +1,8 @@
 # WNLQ9 Product Intelligence API
 
 **Base URL:** `http://localhost:3000` (local)
-**Last updated:** 2026-04-14
-**Database:** Supabase PostgreSQL (11,564 products)
+**Last updated:** 2026-05-07
+**Database:** Supabase PostgreSQL (11,841 products)
 
 This is the central product intelligence database for Wine-Now (th.wine-now.com) and LIQ9 (th.liq9.com). Share this document with team members, external projects, or AI agents that need to read, search, validate, or enrich product data.
 
@@ -21,6 +21,7 @@ Multiple systems write to the product catalog. To avoid conflicts, each field ha
 | `margin_thb`, `margin_pct`, `b2b_price`, `b2b_margin_*` | **BI** | BI sync |
 | `is_in_stock`, `custom_stock_status`, `wn_stock` | **BI** | BI sync |
 | `sold_orders`, `sold_qty`, `consign` | **BI** | BI sync (sales/inventory) |
+| `popularity_score`, `popularity_qty_90d`, `popularity_orders_90d`, `popularity_revenue_90d`, `popularity_window_days`, `popularity_synced_at` | **BI** | `data/sync_popularity_from_bi.py` (daily 04:00 launchd) |
 | `country`, `region`, `subregion`, `appellation` | **PIM** | AI enrichment / manual edit |
 | `classification`, `wine_classification` | **PIM** | AI enrichment / taxonomy queue |
 | `grape_variety`, `liquor_main_type`, `other_type` | **PIM** | AI enrichment |
@@ -62,14 +63,15 @@ curl -X PATCH http://localhost:3000/api/products/PRODUCT_ID \
 
 | Metric | Value |
 |--------|-------|
-| Total products | 11,564 |
-| Validated | 11,433 (99%) |
-| Needs review | 131 |
+| Total products | 11,841 |
+| Validated | ~10,130 |
+| Needs review | ~1,710 (manual region-audit queue from May 2026 enrichment) |
 | Wine | 7,103 |
 | Spirits | 3,317 |
 | Beer | 227 |
 | Accessories | 1,032 |
 | Currency | THB (Thai Baht) |
+| Popularity coverage | 1,395 SKUs (any closed order in last 90 days) |
 
 ### Field Coverage
 
@@ -324,6 +326,10 @@ Products for the interactive wine/spirits map at `/explore`.
 | `category` | wine, spirits, beer, sake |
 | `sort` | popular, price-asc, price-desc, newest, name |
 | `page` / `limit` | Pagination |
+
+`popular` sorts by `products.popularity_score` descending, then `popularity_orders_90d`, then `price`. The response includes `popularity_score`, `popularity_qty_90d`, `popularity_orders_90d`, `popularity_revenue_90d`, `popularity_window_days`, and `popularity_synced_at` when those columns are populated.
+
+**Popularity pipeline:** populated by `data/sync_popularity_from_bi.py`, which reads `marts.mart_pivot_base` from the local BI DuckDB (`/Users/admin/Desktop/CLAUDE DATA_WNLQ9 M REPORT ALL/data/processed/ecommerce_bi.duckdb`), aggregates the last 90 days of `is_closed = 1` orders per SKU, computes `popularity_score = 0.5·norm(orders) + 0.3·norm(qty) + 0.2·norm(revenue)` (each component min-max normalised to `[0, 1]`), and upserts to Supabase. A launchd job (`com.wnlq9.popularity-sync`) runs the script daily at 04:00 local time. Manual run: `.venv/bin/python3 data/sync_popularity_from_bi.py [--window-days N] [--dry-run]`.
 
 ---
 
