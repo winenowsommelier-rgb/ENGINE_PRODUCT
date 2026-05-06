@@ -1,0 +1,2 @@
+sku,name,brand,classification,current_country,proposed_country,confidence,publish_safe,reasoning,source_basis,lane_recommendation
+AWC0138EN,Kadeka  Steel Series One Temp Zone 121 Bottles (Silver),,Wine product,,Singapore,high,yes,"Live catalog pattern match: five sibling Kadeka wine-cellar SKUs in products.json already carry country=Singapore, and this SKU name clearly matches the same Kadeka product family despite the blank brand field.","Current live products.json sibling SKU pattern (AWC0135EN, AWC0136EN, AWC0137EN, AWC0139EN, AWC0140EN)",merge_now

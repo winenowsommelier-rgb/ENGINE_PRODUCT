@@ -10,6 +10,7 @@ interface Props {
   locationName: string;
   suggestedHref?: string;
   suggestedName?: string;
+  theme?: "dark" | "light";
 }
 
 export default function EmptyState({
@@ -17,6 +18,7 @@ export default function EmptyState({
   locationName,
   suggestedHref,
   suggestedName,
+  theme = "dark",
 }: Props) {
   const label = category
     ? getCategoryConfig(category)?.label ?? category
@@ -24,8 +26,8 @@ export default function EmptyState({
 
   return (
     <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
-      <MapPin size={40} className="text-white/15 mb-4" />
-      <p className="text-sm text-white/50">
+      <MapPin size={40} className={theme === "light" ? "mb-4 text-slate-300" : "mb-4 text-white/15"} />
+      <p className={theme === "light" ? "text-sm text-slate-600" : "text-sm text-white/50"}>
         No {label} from {locationName}
       </p>
       {suggestedHref && suggestedName && (

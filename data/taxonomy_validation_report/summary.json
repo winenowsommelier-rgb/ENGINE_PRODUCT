@@ -1,0 +1,20 @@
+{
+  "taxonomy": {
+    "countries": 28,
+    "regions": 83,
+    "subregions": 129
+  },
+  "products_total": 4333,
+  "status": {
+    "ok": 2688,
+    "unknown_region": 671,
+    "unknown_subregion": 543,
+    "unknown_country": 301,
+    "empty": 81,
+    "unknown_region;unknown_subregion": 33,
+    "unknown_country;unknown_region": 16
+  },
+  "missing_countries_unique": 44,
+  "missing_regions_unique": 62,
+  "missing_subregions_unique": 47
+}

@@ -1,0 +1,101 @@
+brand,country,region,sku_count,top_price
+Pieropan,Italy,Veneto,4,2880.0
+Speri,Italy,Veneto,4,2555.0
+Galardi Terra di Lavoro,Italy,Puglia,1,5730.0
+Ca'Momi,USA,California,6,1870.0
+Chateaux Larcis Ducasse,France,Bordeaux,1,5710.0
+Château Falfas,France,Bordeaux,1,3800.0
+Chateau Siran,France,Bordeaux,2,3210.0
+Caliterra,Chile,Colchagua Valley,5,1809.0
+Pine Ridge,USA,California,2,4000.0
+Fattoria di Fiorano,Italy,Lazio,3,3260.0
+Domaine Guiberteau,France,Loire Valley,4,2820.0
+Klumpp,Germany,Baden,3,3250.0
+Bodegas Volver,Spain,Alicante,5,2500.0
+E. Michel,France,Champagne,3,3220.0
+Chateau Bellevue,France,Bordeaux,1,3700.0
+Domaine Julien Brocard,France,Burgundy,3,3199.0
+Perticaia,Italy,Umbria,6,2260.0
+Les Bertrand,France,Burgundy,6,2260.0
+Red bank,Australia,Victoria,3,3189.0
+Cono Sur,Chile,Casablanca Valley,2,3900.0
+Wente Vineyards,USA,California,6,1799.0
+Torello Winery,Spain,Catalunya,7,2080.0
+Allart & Fils,France,Champagne,3,2100.0
+Zeni,Italy,Veneto,3,2699.0
+Cuvaison,USA,California,2,2569.0
+Concha Y Toro,Chile,Rapel Valley,7,1599.0
+Clos du Clocher,France,Bordeaux,2,3839.0
+Clos La Madeleine,France,Bordeaux,1,3600.0
+Arione,Italy,Piedmont,16,1350.0
+Spy Valley,New Zealand,Marlborough,4,1799.0
+Joseph Perrier,France,Champagne,3,3099.0
+Valfieri,Italy,Piedmont,3,3080.0
+Santa Ema,Chile,Maipo Valley,5,1700.0
+St. Hugo,Australia,Coonawarra,2,2999.0
+Chateau Duhart Milon Rothschild,France,Bordeaux,1,5300.0
+Domaine des Senechaux,France,Rhône Valley,2,3730.0
+Chateau Pibran,France,Bordeaux,1,3500.0
+Chateau Chasse-Spleen,France,Bordeaux,1,3500.0
+Egon Muller,Germany,Mosel,1,5249.0
+Feudo Maccari,Italy,Sicily,3,2020.0
+Fleury,France,Champagne,2,3709.0
+Hill Family Estate,USA,California,2,3700.0
+Domaine Piguet Girardin,France,Burgundy,2,3700.0
+Chartogne-Taillet,France,Champagne,3,3019.0
+Marques de Caceres,Spain,Rioja,5,1669.0
+Dog Point,New Zealand,Marlborough,4,1899.0
+Tommasi,Italy,Veneto,4,2600.0
+Arnaud Mortet,France,Burgundy,1,5200.0
+Nicolas Feuillatte,France,Champagne,3,3000.0
+Maison de Grand Esprit,France,Bordeaux,3,2995.0
+Domaine de la Motte,France,Burgundy,4,2300.0
+Mt. Brave,USA,California,1,5159.0
+Thorn Clarke,Australia,Barossa Valley,3,2970.0
+Greywacke,New Zealand,Marlborough,7,1599.0
+Champagne Jerome Dehours,France,Champagne,3,2949.0
+Dourthe,France,Bordeaux,8,1699.0
+Fantinel,Italy,Friuli-Venezia Giulia,7,1500.0
+V8+,Italy,Veneto,4,1855.0
+Clos de L'Oratoire,France,Bordeaux,1,3400.0
+Chateau Bourgneuf,France,Bordeaux,1,3400.0
+Peay Vineyards,USA,California,3,2940.0
+Jorge Ordonez Winery,Spain,Malaga,8,1800.0
+Champagne Lallier,France,Champagne,2,3589.0
+Bodegas Palacios Remondo,Spain,Priorat,2,3580.0
+Clarendelle,France,Bordeaux,5,1499.0
+Clos Pegase,USA,California,3,2900.0
+Poggio Al Lupo,Italy,Tuscany,2,2360.0
+Lombard & Cie,France,Champagne,3,2890.0
+Contadi Castaldi,Italy,Lombardy,3,1925.0
+Chateau Prieure-Lichine,France,Bordeaux,2,2825.0
+Chateau Maucoil,France,Rhône Valley,2,3530.0
+Follador,Italy,Veneto,8,1170.0
+Pajaru,Italy,Puglia,5,1585.0
+Chateau Pedesclaux,France,Bordeaux,2,2800.0
+Chateau Grand Mayne,France,Bordeaux,2,2800.0
+Marie Courtin,France,Champagne,2,3499.0
+Villa Girardi,Italy,Veneto,2,2799.0
+St Hallett,Australia,Barossa Valley,4,1799.0
+Precision,USA,California,3,1900.0
+Altos de Rioja,Spain,Rioja,3,1900.0
+Chateau Haut Bages,France,Bordeaux,1,3290.0
+Poderi Luigi Einaudi,Italy,Piedmont,2,3489.0
+Vigneti Del Vulture,Italy,Basilicata,3,1899.0
+Coterella,Italy,Lazio,1,3265.0
+Ruppert Leroy,France,Champagne,2,3460.0
+Santa Barbara,Italy,Marche,2,2300.0
+Chris Ringland,Australia,Barossa Valley,2,2299.0
+Chateau Rol Valentin,France,Bordeaux,1,4869.0
+Urciuolo Vini,Italy,Campania,3,2800.0
+Mas Doix,Spain,Priorat,3,2800.0
+Danimi,Italy,Campania,3,2800.0
+Umani Ronchi,Italy,Marche,4,2420.0
+Veuve Clicquot,France,Burgundy,1,4839.0
+Champagne Val'Friso,France,Champagne,2,3399.0
+The Mathematician,Australia,South Australia,1,3200.0
+Red Beast,Australia,Barossa Valley,1,3200.0
+Millaman,Chile,Curico Valley,4,2400.0
+Apollonio,Italy,Puglia,9,1600.0
+2:am,Australia,Barossa Valley,1,3200.0
+Chateau Potensac,France,Bordeaux,2,3390.0

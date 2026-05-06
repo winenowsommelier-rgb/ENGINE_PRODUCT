@@ -154,8 +154,8 @@ function IssuesList({ products }: { products: ScoredProduct[] }) {
   const placeholderIssues = products.filter(p =>
     p.quality_score.issues.some(i => /placeholder/i.test(i))
   );
-  const missingClassification = products.filter(p =>
-    p.quality_score.issues.some(i => /Missing or invalid classification/i.test(i))
+  const missingItemCategory = products.filter(p =>
+    p.quality_score.issues.some(i => /Missing or invalid (classification|item category)/i.test(i))
   );
 
   // Duplicate SKU detection
@@ -181,11 +181,11 @@ function IssuesList({ products }: { products: ScoredProduct[] }) {
       items: placeholderIssues.slice(0, 5),
     },
     {
-      label: 'Missing classification',
+      label: 'Missing item category',
       icon: XCircle,
-      count: missingClassification.length,
+      count: missingItemCategory.length,
       color: 'text-orange-400',
-      items: missingClassification.slice(0, 5),
+      items: missingItemCategory.slice(0, 5),
     },
     {
       label: 'Duplicate SKUs',
@@ -253,7 +253,7 @@ function ProductTable({ products }: { products: ScoredProduct[] }) {
             <tr className="text-left text-slate-500 uppercase tracking-wider border-b border-white/10">
               <th className="pb-2 pl-3">SKU</th>
               <th className="pb-2">Name</th>
-              <th className="pb-2">Classification</th>
+              <th className="pb-2">Item Category</th>
               <th className="pb-2 text-right">Score</th>
               <th className="pb-2 text-right">Comp</th>
               <th className="pb-2 text-right">Desc</th>

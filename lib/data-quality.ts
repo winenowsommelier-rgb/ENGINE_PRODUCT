@@ -152,11 +152,11 @@ function scoreTaxonomyAccuracy(product: any): { score: number; issues: string[] 
   let score = 0;
   const issues: string[] = [];
 
-  // Classification matches scope (has a valid classification)
+  // Item category matches scope (has a valid item category)
   if (hasValue(product.classification) && !isPlaceholder(product.classification)) {
     score += 5;
   } else {
-    issues.push('Missing or invalid classification');
+    issues.push('Missing or invalid item category');
   }
 
   // Country exists

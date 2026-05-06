@@ -8,9 +8,10 @@ import { searchLocations, type SearchResult } from "@/lib/explore/taxonomy-utils
 interface Props {
   category: CategoryScope | null;
   onSelect: (result: SearchResult) => void;
+  theme?: "dark" | "light";
 }
 
-export default function SearchOverlay({ category, onSelect }: Props) {
+export default function SearchOverlay({ category, onSelect, theme = "dark" }: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -56,7 +57,11 @@ export default function SearchOverlay({ category, onSelect }: Props) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-black/40 text-white/60 backdrop-blur-md transition-all hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none"
+        className={`flex h-11 w-11 items-center justify-center rounded-lg border backdrop-blur-md transition-all focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none ${
+          theme === "light"
+            ? "border-slate-300/80 bg-white/80 text-slate-600 hover:bg-white hover:text-slate-900"
+            : "border-white/10 bg-black/40 text-white/60 hover:bg-white/10 hover:text-white"
+        }`}
         aria-label="Search regions"
       >
         <Search size={16} />
@@ -67,12 +72,14 @@ export default function SearchOverlay({ category, onSelect }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-20">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60" onClick={() => setOpen(false)} />
+      <div className={`absolute inset-0 ${theme === "light" ? "bg-slate-900/20" : "bg-black/60"}`} onClick={() => setOpen(false)} />
 
       {/* Search panel */}
-      <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-[#12121f] shadow-2xl">
-        <div className="flex items-center gap-3 border-b border-white/8 px-4 py-3">
-          <Search size={18} className="text-white/40" />
+      <div className={`relative w-full max-w-lg rounded-2xl border shadow-2xl ${
+        theme === "light" ? "border-slate-200 bg-white" : "border-white/10 bg-[#12121f]"
+      }`}>
+        <div className={`flex items-center gap-3 border-b px-4 py-3 ${theme === "light" ? "border-slate-200" : "border-white/8"}`}>
+          <Search size={18} className={theme === "light" ? "text-slate-400" : "text-white/40"} />
           <input
             ref={inputRef}
             type="text"
@@ -80,9 +87,13 @@ export default function SearchOverlay({ category, onSelect }: Props) {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search countries, regions..."
-            className="flex-1 bg-transparent text-white placeholder:text-white/30 outline-none"
+            className={`flex-1 bg-transparent outline-none ${
+              theme === "light" ? "text-slate-900 placeholder:text-slate-400" : "text-white placeholder:text-white/30"
+            }`}
           />
-          <button onClick={() => setOpen(false)} className="text-white/40 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none rounded" aria-label="Close search">
+          <button onClick={() => setOpen(false)} className={`rounded focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none ${
+            theme === "light" ? "text-slate-400 hover:text-slate-900" : "text-white/40 hover:text-white"
+          }`} aria-label="Close search">
             <X size={18} />
           </button>
         </div>
@@ -94,18 +105,18 @@ export default function SearchOverlay({ category, onSelect }: Props) {
                 <button
                   className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left transition-colors focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none"
                   style={{
-                    background: i === selectedIdx ? "rgba(255,255,255,0.08)" : "transparent",
+                    background: i === selectedIdx ? (theme === "light" ? "rgba(15,23,42,0.06)" : "rgba(255,255,255,0.08)") : "transparent",
                   }}
                   onMouseEnter={() => setSelectedIdx(i)}
                   onClick={() => { onSelect(r); setOpen(false); }}
                 >
                   <div>
-                    <span className="text-sm font-medium text-white">{r.name}</span>
+                    <span className={theme === "light" ? "text-sm font-medium text-slate-900" : "text-sm font-medium text-white"}>{r.name}</span>
                     {r.parentName && (
-                      <span className="ml-2 text-xs text-white/40">{r.parentName}</span>
+                      <span className={theme === "light" ? "ml-2 text-xs text-slate-500" : "ml-2 text-xs text-white/40"}>{r.parentName}</span>
                     )}
                   </div>
-                  <span className="text-xs text-white/30">
+                  <span className={theme === "light" ? "text-xs text-slate-500" : "text-xs text-white/30"}>
                     {r.total > 0 ? `${r.total} products` : ""}
                   </span>
                 </button>
@@ -115,7 +126,7 @@ export default function SearchOverlay({ category, onSelect }: Props) {
         )}
 
         {query && results.length === 0 && (
-          <p className="p-4 text-center text-sm text-white/40">No regions found</p>
+          <p className={theme === "light" ? "p-4 text-center text-sm text-slate-500" : "p-4 text-center text-sm text-white/40"}>No regions found</p>
         )}
       </div>
     </div>

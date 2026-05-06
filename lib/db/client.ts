@@ -130,18 +130,65 @@ async function saveBatchLogs(logs: BatchLog[]) {
   await writeFile(logsFile, JSON.stringify(logs, null, 2), 'utf-8');
 }
 
+// Splits "Region | Subregion" (and the "Region|Region | Subregion" double-pipe bug seen
+// in the MAR31 2026 masterfile import) into separate region/subregion fields.
+// Returns updates applied so the caller can log or warn. Never lets a "|" reach the stored
+// region/subregion columns — those must match the taxonomy, which stores the two levels
+// separately.
+export function splitCompoundTaxonomyFields(
+  data: Record<string, any>,
+  existing: Record<string, any> = {},
+): { data: Record<string, any>; warnings: string[] } {
+  const out = { ...data };
+  const warnings: string[] = [];
+
+  const rawRegion = typeof out.region === 'string' ? out.region : '';
+  const regionHadPipe = rawRegion.includes('|');
+  if (regionHadPipe) {
+    const collapsed = rawRegion.replace(/^([^|]+)\|\1\s*\|\s*/, '$1 | ');
+    const parts = collapsed.split('|').map(s => s.trim()).filter(Boolean);
+    const base = parts[0] ?? '';
+    const embeddedSub = parts[1] ?? '';
+    const existingSub = typeof out.subregion === 'string' && out.subregion.trim()
+      ? out.subregion.trim()
+      : (typeof existing.subregion === 'string' ? existing.subregion.trim() : '');
+    out.region = base;
+    if (embeddedSub && (!existingSub || existingSub === embeddedSub)) {
+      out.subregion = embeddedSub;
+    } else if (existingSub) {
+      out.subregion = existingSub;
+    }
+    const dropped = parts.slice(2).join(' | ');
+    warnings.push(`region "${rawRegion}" split → region="${out.region}"${out.subregion ? `, subregion="${out.subregion}"` : ''}${dropped ? `, dropped extra parts "${dropped}"` : ''}`);
+  }
+
+  const rawSub = typeof out.subregion === 'string' ? out.subregion : '';
+  if (rawSub.includes('|') && !regionHadPipe) {
+    const first = rawSub.split('|').map(s => s.trim()).filter(Boolean)[0] ?? '';
+    warnings.push(`subregion "${rawSub}" truncated to "${first}" (pipes not allowed)`);
+    out.subregion = first;
+  }
+  return { data: out, warnings };
+}
+
 export async function saveCleanedProduct(productData: Record<string, any>) {
   const products = await readProducts();
   const existingIdx = products.findIndex(p => p.id === productData.id);
-  
-  if (existingIdx >= 0) {
-    products[existingIdx] = { ...products[existingIdx], ...productData, updated_at: new Date().toISOString() };
-  } else {
-    products.push({ ...productData, created_at: new Date().toISOString(), updated_at: new Date().toISOString() });
+  const existing = existingIdx >= 0 ? products[existingIdx] : {};
+
+  const { data: cleaned, warnings } = splitCompoundTaxonomyFields(productData, existing);
+  if (warnings.length > 0) {
+    console.warn(`[saveCleanedProduct] sku=${cleaned.sku ?? existing.sku ?? '?'} taxonomy normalization:`, warnings.join('; '));
   }
-  
+
+  if (existingIdx >= 0) {
+    products[existingIdx] = { ...products[existingIdx], ...cleaned, updated_at: new Date().toISOString() };
+  } else {
+    products.push({ ...cleaned, created_at: new Date().toISOString(), updated_at: new Date().toISOString() });
+  }
+
   await saveProducts(products);
-  return { success: true, id: productData.id };
+  return { success: true, id: cleaned.id, normalized: warnings.length > 0 ? warnings : undefined };
 }
 
 export async function getCleanedProducts(filters?: Record<string, any>) {

@@ -1,0 +1,38 @@
+sku,field_name,proposed_value,confidence,source_lane,publish_safe,reasoning
+AWC0138EN,country,Singapore,high,country_refresh,yes,"Live catalog pattern match: five sibling Kadeka wine-cellar SKUs in products.json already carry country=Singapore, and this SKU name clearly matches the same Kadeka product family despite the blank brand field."
+LAB0016EQ,region,Moravia,high,region_lane,yes,R. Jelinek is centered on Vizovice in Moravia; Moravia is the safest region-level fill.
+LBD0194AA,region,Coquimbo,high,region_lane,yes,Capel is a Chilean pisco house identified with the Coquimbo pisco zone; this is a straightforward Chilean pisco region fill.
+LBE0770DO,region,Phuket,high,region_lane,yes,"Full Moon Brewworks is the Phuket craft brewery behind Chalawan, making Phuket a safe region fill."
+LBE0771DO,region,Phuket,high,region_lane,yes,"Full Moon Brewworks is the Phuket craft brewery behind Chatri, making Phuket a safe region fill."
+LGN0069DG,region,Cognac,high,region_lane,yes,"Citadelle is produced by Maison Ferrand in Cognac, making Cognac the safest region fill."
+LGN0198DG,region,Cognac,high,region_lane,yes,Citadelle is the Ferrand gin from Cognac; Cognac is the clearest publish-safe regional reference for the house.
+LGN0291EQ,region,Nagano,high,region_lane,yes,"Senjyo is a Nagano producer, so Nagano is a straightforward regional fill."
+LGN0292EQ,region,Riga,high,region_lane,yes,"Cross Keys is a Latvian gin brand tied to Riga, which is the safest regional reference."
+LLQ0059AD,region,Lower Saxony,high,region_lane,yes,Jagermeister is produced in Wolfenbuettel in Lower Saxony; Lower Saxony is the clearest region-level fill.
+LLQ0293DG,region,Cognac,high,region_lane,yes,Pierre Ferrand is a Cognac house and Dry Curacao is anchored to that production base in Cognac.
+LLQ0436EQ,region,Riga,high,region_lane,yes,Riga Black Balsam is explicitly identified with Riga; region fill is direct and publish-safe.
+LLQ0448EQ,region,Moravia,high,region_lane,yes,R. Jelinek is centered on Vizovice in Moravia; Moravia is the safest region-level fill.
+LLQ0449EQ,region,Moravia,high,region_lane,yes,R. Jelinek is centered on Vizovice in Moravia; Moravia is the safest region-level fill.
+LOT0072AR,region,Hyogo,high,region_lane,yes,"The product name itself anchors this umeshu to Kobe, so Hyogo is a safe region fill."
+LOT0076AR,region,Fukushima,high,region_lane,yes,"Daishichi is a Fukushima house, so Fukushima is a safe region assignment."
+LOT0160FS,region,Ehime,high,region_lane,yes,Umenishiki is an Ehime producer; Ehime is a publish-safe regional fill.
+LRM0236ER,region,Veracruz,high,region_lane,yes,Villa Rica rum is strongly associated with Veracruz and is commonly positioned as a Veracruz rum.
+LSK0406AR,region,Miyagi,high,region_lane,yes,"Hitakami is a Miyagi sake, making Miyagi the clearest publish-safe region."
+LTQ0187EQ,region,Jalisco,high,region_lane,yes,"Tequila is canonically tied to Jalisco, and Rooster Rojo is a Jalisco tequila brand."
+LTQ0229ER,region,Jalisco,high,region_lane,yes,Flavored tequila extension of the same house; Jalisco remains the safe canonical region.
+LTQ0230ER,region,Jalisco,high,region_lane,yes,Hijos de Villa is a tequila label and Jalisco is the safe canonical region for tequila.
+LTQ0231ER,region,Jalisco,high,region_lane,yes,Hijos de Villa is a tequila label and Jalisco is the safe canonical region for tequila.
+LVK0638EQ,region,Riga,high,region_lane,yes,The Riga Black line is tied to Riga and can safely inherit Riga as the regional fill.
+LWH0563AD,region,Yamanashi,high,region_lane,yes,"Tenjaku is positioned as a Yamanashi Japanese whisky, making Yamanashi a safe region fill."
+LWH0722CP,region,Wales,high,region_lane,yes,"Aber Falls is a Welsh distillery; with country stored as UK, Wales is the clearest region-level fill."
+WRW3414AF,subregion,Cotes du Rhone,high,subregion_refresh,yes,Product name explicitly contains Cotes du Rhone below the current Rhône Valley region.
+WRW3837AF,subregion,Saint-Joseph,high,subregion_refresh,yes,Product name explicitly contains the Saint-Joseph appellation below the current Rhône Valley region.
+WRW5786DD,subregion,Terrasses du Larzac,high,subregion_refresh,yes,Product name explicitly contains Terrasses du Larzac below the current Languedoc-Roussillon region.
+WRW6243FJ,subregion,Sancerre,high,subregion_refresh,yes,Product name explicitly contains Sancerre below the current Loire Valley region.
+WWW0204AD,subregion,Chablis,high,subregion_refresh,yes,Product name explicitly contains Chablis below the current Burgundy region.
+WWW1085AF,subregion,Sancerre,high,subregion_refresh,yes,Product name explicitly contains Sancerre below the current Loire Valley region.
+WWW1115AD,subregion,Saint-Joseph,high,subregion_refresh,yes,Product name explicitly contains the Saint-Joseph appellation below the current Rhône Valley region.
+WWW2026AF,subregion,Cotes du Rhone,high,subregion_refresh,yes,Product name explicitly contains Cotes du Rhone below the current Rhône Valley region.
+WWW5072DJ,subregion,Saint-Veran,high,subregion_refresh,yes,Product name explicitly contains Saint-Veran below the current Burgundy region.
+WWW5112FJ,subregion,Sancerre,high,subregion_refresh,yes,Product name explicitly contains Sancerre below the current Loire Valley region.
+WWW5406BN,subregion,Saint-Bris,high,subregion_refresh,yes,Product name explicitly contains Saint-Bris below the current Burgundy region.

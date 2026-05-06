@@ -45,7 +45,7 @@ export async function GET() {
   try {
     // Fetch all facet columns in one paginated sweep — no repeated round-trips per field
     const rows = await sbAll(
-      'classification,country,validation_status,region,appellation,wine_classification'
+      'classification,country,validation_status,region,appellation,wine_classification,enrichment_priority'
     );
 
     return NextResponse.json({
@@ -55,6 +55,7 @@ export async function GET() {
       regions:      countBy(rows, 'region'),
       appellations: countBy(rows, 'appellation'),
       wineClasses:  countBy(rows, 'wine_classification'),
+      tiers:        countBy(rows, 'enrichment_priority'),
     });
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });

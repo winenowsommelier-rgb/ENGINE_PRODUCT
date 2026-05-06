@@ -1,0 +1,69 @@
+{
+  "total_rows": 2291,
+  "brand_rows": 1132,
+  "producer_rows": 1159,
+  "ga_status": "awaiting_ga_export",
+  "priority_rule": "sales > GA views > brand strength > high value SKU",
+  "top_10_brands_by_sales": [
+    {
+      "authority_name": "Bottega",
+      "sales_priority_score": "1475.0",
+      "sold_qty_total": "105.0",
+      "sold_orders_total": "17.0"
+    },
+    {
+      "authority_name": "Wolf Blass",
+      "sales_priority_score": "1435.0",
+      "sold_qty_total": "101.0",
+      "sold_orders_total": "17.0"
+    },
+    {
+      "authority_name": "Penfolds",
+      "sales_priority_score": "1400.0",
+      "sold_qty_total": "85.0",
+      "sold_orders_total": "22.0"
+    },
+    {
+      "authority_name": "Mcguigan",
+      "sales_priority_score": "1265.0",
+      "sold_qty_total": "114.0",
+      "sold_orders_total": "5.0"
+    },
+    {
+      "authority_name": "Baron Philippe de Rothschild",
+      "sales_priority_score": "1180.0",
+      "sold_qty_total": "63.0",
+      "sold_orders_total": "22.0"
+    },
+    {
+      "authority_name": "Concha Y Toro",
+      "sales_priority_score": "1120.0",
+      "sold_qty_total": "72.0",
+      "sold_orders_total": "16.0"
+    },
+    {
+      "authority_name": "G7 The 7th Generation",
+      "sales_priority_score": "1030.0",
+      "sold_qty_total": "88.0",
+      "sold_orders_total": "6.0"
+    },
+    {
+      "authority_name": "Chateau de la Vieille Tour",
+      "sales_priority_score": "710.0",
+      "sold_qty_total": "31.0",
+      "sold_orders_total": "16.0"
+    },
+    {
+      "authority_name": "Glaetzer",
+      "sales_priority_score": "615.0",
+      "sold_qty_total": "49.0",
+      "sold_orders_total": "5.0"
+    },
+    {
+      "authority_name": "Velenosi",
+      "sales_priority_score": "595.0",
+      "sold_qty_total": "42.0",
+      "sold_orders_total": "7.0"
+    }
+  ]
+}

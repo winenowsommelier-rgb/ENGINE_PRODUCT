@@ -197,7 +197,7 @@ export function ChangeLogPage() {
             <div className="space-y-2">
               {topFields.map(([field, count]) => (
                 <div key={field} className="flex items-center gap-3">
-                  <span className="w-28 text-xs text-slate-400 font-mono truncate">{field}</span>
+                  <span className="w-28 text-xs text-slate-400 font-mono truncate">{formatField(field)}</span>
                   <div className="flex-1 h-5 bg-white/5 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-violet-500/40 rounded-full transition-all"
@@ -272,7 +272,7 @@ export function ChangeLogPage() {
           <option value="name">Name</option>
           <option value="country">Country</option>
           <option value="region">Region</option>
-          <option value="classification">Classification</option>
+          <option value="classification">Item Category</option>
         </select>
         <select
           value={sourceFilter}
@@ -358,7 +358,7 @@ export function ChangeLogPage() {
                         {batch.entries.map((e) => (
                           <tr key={e.id} className="border-b border-white/4 hover:bg-white/3 transition-colors">
                             <td className="px-4 py-1.5 font-mono text-xs text-violet-400 w-28">{e.sku}</td>
-                            <td className="px-4 py-1.5 font-mono text-xs text-slate-300 w-32">{e.field}</td>
+                            <td className="px-4 py-1.5 font-mono text-xs text-slate-300 w-32">{formatField(e.field)}</td>
                             <td className="px-4 py-1.5 text-xs text-rose-400/60 truncate max-w-xs">
                               {e.old_value || <span className="text-slate-600">—</span>}
                             </td>
@@ -405,7 +405,7 @@ export function ChangeLogPage() {
                     </span>
                   </td>
                   <td className="px-4 py-2.5 font-mono text-xs text-violet-400">{e.sku}</td>
-                  <td className="px-4 py-2.5 font-mono text-xs text-slate-300">{e.field}</td>
+                  <td className="px-4 py-2.5 font-mono text-xs text-slate-300">{formatField(e.field)}</td>
                   <td className="px-4 py-2.5 text-xs text-rose-400/60">
                     {e.field === 'price' || e.field === 'cost'
                       ? e.old_value ? `฿${Number(e.old_value).toLocaleString()}` : '—'
@@ -497,6 +497,12 @@ function SourceBadge({ source }: { source: string }) {
 
 function formatSource(s: string): string {
   return s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function formatField(s: string): string {
+  if (s === 'classification') return 'Item Category';
+  if (s === 'wine_classification') return 'Classification';
+  return s;
 }
 
 function PriceDiff({ oldVal, newVal }: { oldVal: string; newVal: string }) {

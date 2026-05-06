@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WNLQ9 Enrichment Dashboard</title>
+  <style>
+    :root {
+      --bg: #f6f2e8;
+      --panel: #fffdf8;
+      --ink: #1f1a14;
+      --muted: #6f675d;
+      --line: #ddd3c4;
+      --accent: #7a2f2f;
+      --accent-2: #315d4f;
+      --warn: #9a6b1b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      background: linear-gradient(180deg, #f2ecdf 0%, #f8f4ec 100%);
+      color: var(--ink);
+    }
+    .wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 32px 24px 56px;
+    }
+    .hero {
+      background: radial-gradient(circle at top left, rgba(122,47,47,.14), transparent 32%),
+                  radial-gradient(circle at right, rgba(49,93,79,.12), transparent 28%),
+                  var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 40px rgba(46,36,24,.06);
+    }
+    h1, h2, h3 { margin: 0 0 12px; }
+    h1 { font-size: 34px; }
+    h2 { font-size: 22px; margin-top: 28px; }
+    p.lead { margin: 0; color: var(--muted); max-width: 880px; line-height: 1.5; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .card {
+      background: rgba(255,255,255,.82);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .label {
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 8px;
+    }
+    .value {
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .muted-inline {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(46,36,24,.05);
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+    .bar {
+      margin-top: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--accent);
+      font-size: 16px;
+    }
+    ul {
+      margin: 10px 0 0 18px;
+      padding: 0;
+      line-height: 1.5;
+    }
+    .pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 12px;
+      margin-left: 6px;
+      border: 1px solid var(--line);
+      background: #f9f4ea;
+    }
+    .pill.verified { color: var(--accent-2); }
+    .pill.partially_verified { color: var(--warn); }
+    .pill.needs_review { color: var(--accent); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+    }
+    .foot {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .lens-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .lens {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,.72);
+    }
+    .lens-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .lens p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .mini-bar {
+      height: 10px;
+      background: #efe5d4;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .mini-bar span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #c68f61);
+      border-radius: 999px;
+    }
+    .artifact-group + .artifact-group {
+      margin-top: 22px;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>WNLQ9 Enrichment Dashboard</h1>
+      <p class="lead">This dashboard consolidates the current research queue, Product Engine publishing state, quality-control pressure points, taxonomy progress, and live GA-driven priorities for Wine-Now and LIQ9.</p>
+      <div class="cards"><div class='card'><div class='label'>Completed Research Rows</div><div class='value'>130</div></div><div class='card'><div class='label'>Overall Program</div><div class='value'>7%</div></div><div class='card'><div class='label'>T2 Flavor</div><div class='value'>62%</div></div><div class='card'><div class='label'>Fast Lane</div><div class='value'>0%</div></div><div class='card'><div class='label'>Live Publish Clean</div><div class='value'>75%</div></div><div class='card'><div class='label'>Country Taxonomy</div><div class='value'>72%</div></div><div class='card'><div class='label'>Live Upload Rows</div><div class='value'>48</div></div><div class='card'><div class='label'>Live Product Records</div><div class='value'>72</div></div><div class='card'><div class='label'>GA Priority Products</div><div class='value'>51</div></div><div class='card'><div class='label'>Mapped Trend Signals</div><div class='value'>47</div></div><div class='card'><div class='label'>Side-Lane Packs</div><div class='value'>3</div></div><div class='card'><div class='label'>Publish Logs</div><div class='value'>5</div></div><div class='card'><div class='label'>Geography Gaps</div><div class='value'>11836</div></div><div class='card'><div class='label'>Geography Merge-Now</div><div class='value'>37</div></div></div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Program Progress</h2>
+        <p><strong>130</strong> completed researched rows out of <strong>1834</strong> queued tasks across flavor, grape, and region work. The dashboard now shows separate progress lenses so the active batch does not get buried under the full backlog.</p>
+        <div class="bar">██░░░░░░░░░░░░░░░░░░░░ 7%</div>
+        <div class="lens-grid"><div class='lens'><div class='lens-head'><strong>Overall Program</strong><span>130/1834 • 7%</span></div><div class='mini-bar'><span style='width:7%;'></span></div><p>All queued TXT tasks across flavor, grape, and region.</p></div><div class='lens'><div class='lens-head'><strong>Active T2 Flavor</strong><span>114/184 • 62%</span></div><div class='mini-bar'><span style='width:62%;'></span></div><p>Main active file and the clearest short-term completion target.</p></div><div class='lens'><div class='lens-head'><strong>Fast Lane Queue</strong><span>0/30 • 0%</span></div><div class='mini-bar'><span style='width:0%;'></span></div><p>High-impact rows selected for speed: live records, GA pressure, and reusable clusters.</p></div><div class='lens'><div class='lens-head'><strong>Live Publish Clean</strong><span>36/48 • 75%</span></div><div class='mini-bar'><span style='width:75%;'></span></div><p>Rows currently safe to publish without weak rationale flags.</p></div><div class='lens'><div class='lens-head'><strong>Country Taxonomy</strong><span>51/71 • 72%</span></div><div class='mini-bar'><span style='width:72%;'></span></div><p>Expert-reviewed country descriptions in the taxonomy library.</p></div></div>
+        <div class="two-col">
+          <div>
+            <h3>Validation Mix</h3>
+            <ul><li><strong>verified</strong>: 68</li><li><strong>partially_verified</strong>: 46</li><li><strong>needs_review</strong>: 5</li></ul>
+          </div>
+          <div>
+            <h3>Confidence Mix</h3>
+            <ul><li><strong>unrated</strong>: 15</li><li><strong>A</strong>: 55</li><li><strong>C</strong>: 17</li><li><strong>B</strong>: 32</li></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Publish + QC</h2>
+        <ul>
+          <li><strong>Live-ready rows:</strong> 48</li>
+          <li><strong>Short-description length issues:</strong> 77</li>
+          <li><strong>Full-description length issues:</strong> 63</li>
+          <li><strong>Template-language leaks:</strong> 3</li>
+          <li><strong>Missing sources:</strong> 4</li>
+          <li><strong>Verified rows missing rationale:</strong> 14</li>
+          <li><strong>Weak publish rationale:</strong> 12</li>
+          <li><strong>Latest publish wave:</strong> live_records_publish | 25 succeeded / 0 failed</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Updated ETA</h2>
+        <p>The estimates below are recalculated from the current queue state and the active fast-lane workflow. They should be read as operational planning ranges, not hard deadlines.</p>
+        <ul><li><strong>T2 Flavor:</strong> 1 to 2 working days <span class='muted-inline'>(70 remaining)</span></li><li><strong>Country Taxonomy:</strong> 1 to 2 working days <span class='muted-inline'>(20 remaining)</span></li><li><strong>All Flavor Files:</strong> 1.5 to 2.5 weeks <span class='muted-inline'>(1452 remaining)</span></li><li><strong>All Txt Queues:</strong> 2.5 to 4.5 weeks <span class='muted-inline'>(1704 remaining)</span></li><li><strong>Validated Program Pass:</strong> 4.5 to 7 weeks</li></ul>
+      </div>
+
+      <div class="panel">
+        <h2>Endpoint Sync Status</h2>
+        <ul>
+          <li><strong>Public-safe fields confirmed live:</strong> <code>enrichment_priority</code>, <code>enrichment_source</code>, <code>enrichment_note</code></li>
+          <li><strong>Internal field kept local:</strong> <code>queue_priority</code></li>
+          <li><strong>Push key to prefer:</strong> <code>sku</code> for public endpoint waves</li>
+          <li><strong>Fast-lane metadata batch:</strong> keep as dashboard/local ops layer unless Product Engine gets a dedicated internal endpoint</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Publish History</h2>
+      <p>Latest Product Engine publish attempts recorded by the orchestration scripts.</p>
+      <ul><li><strong>live_records_publish</strong>: 25 succeeded, 0 failed <span class='muted-inline'>(2026-04-22T09:39:24.457355)</span></li><li><strong>live_records_publish_dry_run</strong>: 0 succeeded, 0 failed <span class='muted-inline'>(2026-04-22T09:37:28.555473)</span></li><li><strong>live_records_publish</strong>: 37 succeeded, 0 failed <span class='muted-inline'>(2026-04-22T00:28:35.367260)</span></li><li><strong>live_records_publish_dry_run</strong>: 0 succeeded, 0 failed <span class='muted-inline'>(2026-04-22T00:25:48.551974)</span></li><li><strong>live_records_publish_dry_run</strong>: 0 succeeded, 0 failed <span class='muted-inline'>(2026-04-20T14:41:46.209735)</span></li></ul>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Taxonomy + Authority</h2>
+        <ul>
+          <li><strong>Country taxonomy expert-reviewed:</strong> 51 / 71</li>
+          <li><strong>Country taxonomy remaining:</strong> 20</li>
+          <li><strong>Authority library rows:</strong> 2291</li>
+          <li><strong>Brand rows:</strong> 1132</li>
+          <li><strong>Producer rows:</strong> 1159</li>
+          <li><strong>Producer evidence entries:</strong> 1159</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h2>Recently Completed</h2>
+        <ul><li><code>WWW5438FC</code> Louis Latour  Puligny-Montrachet <span class='pill verified'>verified</span></li><li><code>WWW5137FP</code> Max Ferd. Richter  Estate Riesling <span class='pill partially_verified'>partially_verified</span></li><li><code>WWW4847AF</code> Domaine De Baronaques  &quot;Chardonnay&quot; By Baron Phillippe De Rothschild <span class='pill partially_verified'>partially_verified</span></li><li><code>WWW0435AA</code> Haras de Pirque By Antinori  Sauvignon Albaclara <span class='pill verified'>verified</span></li><li><code>WWW0191AD</code> Castello Banfi  San Angelo Pinot Grigio <span class='pill verified'>verified</span></li><li><code>WSP5780AD</code> Dom Perignon 2015 <span class='pill partially_verified'>partially_verified</span></li><li><code>WSP1298EG</code> Piper-Heidsieck  Cuvee Brut (1.5 L) <span class='pill verified'>verified</span></li><li><code>WSP1166AC</code> Diamante  Moscato Spumante Dolce <span class='pill verified'>verified</span></li><li><code>WSP1106BU</code> Moet &amp; Chandon  Brut Imperial (Magnum) (1.5 L) <span class='pill verified'>verified</span></li><li><code>WRW6586AD</code> E. Guigal  Cote-Rotie La Landonne <span class='pill verified'>verified</span></li><li><code>WRW6547FS</code> Chateau Haut-Brion  Le Clarence de Haut-Brion 2019 <span class='pill verified'>verified</span></li><li><code>WRW6461AA</code> Di Majo Norante Don Luigi Riserva Molise DOC <span class='pill verified'>verified</span></li></ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Artifact Index</h2>
+      <p>Click any artifact below to open the underlying file directly. This is the fastest way to inspect the real working data behind each section of the process.</p>
+      <div class='artifact-group'><h3>Core Dashboard</h3><table><thead><tr><th>Artifact</th><th>Purpose</th><th>Path</th></tr></thead><tbody><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/process_dashboard.html">Process Dashboard HTML</a></td><td>Main visual dashboard for progress, GA signals, mappings, and queue state.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/process_dashboard.html</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/process_dashboard_snapshot.json">Dashboard Snapshot JSON</a></td><td>Machine-readable status snapshot behind the dashboard.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/process_dashboard_snapshot.json</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/build_process_dashboard.py">Dashboard Builder</a></td><td>Script that rebuilds the dashboard artifact.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/build_process_dashboard.py</code></td></tr></tbody></table></div><div class='artifact-group'><h3>Process Contract</h3><table><thead><tr><th>Artifact</th><th>Purpose</th><th>Path</th></tr></thead><tbody><tr><td><a href="file:///Users/admin/Documents/CODEX Projects/RUNBOOK.md">Runbook</a></td><td>High-level operating model for code, data, and Product Engine publishing.</td><td><code>/Users/admin/Documents/CODEX Projects/RUNBOOK.md</code></td></tr><tr><td><a href="file:///Users/admin/Documents/CODEX Projects/FIELD_REGISTRY.csv">Field Registry</a></td><td>Ownership and publishability rules for important fields.</td><td><code>/Users/admin/Documents/CODEX Projects/FIELD_REGISTRY.csv</code></td></tr><tr><td><a href="file:///Users/admin/Documents/CODEX Projects/PUBLISH_SAFE_FIELDS.json">Publish Safe Fields</a></td><td>Public-safe vs internal-only field split for Product Engine pushes.</td><td><code>/Users/admin/Documents/CODEX Projects/PUBLISH_SAFE_FIELDS.json</code></td></tr><tr><td><a href="file:///Users/admin/Documents/CODEX Projects/BATCH_STATES.md">Batch States</a></td><td>Shared state model for research, QC, publish, and taxonomy work.</td><td><code>/Users/admin/Documents/CODEX Projects/BATCH_STATES.md</code></td></tr></tbody></table></div><div class='artifact-group'><h3>Research Progress</h3><table><thead><tr><th>Artifact</th><th>Purpose</th><th>Path</th></tr></thead><tbody><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/research_progress_dashboard_status.md">Progress Markdown</a></td><td>Compact textual progress summary by queue and recent completions.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/research_progress_dashboard_status.md</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/research_progress_summary.csv">Progress Summary CSV</a></td><td>Per-file completion counts and percentages.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/research_progress_summary.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/master_item_reference_with_descriptions_status_in_progress.csv">Master Reference CSV</a></td><td>Main pooled SKU working file with descriptions, sources, and validation.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/master_item_reference_with_descriptions_status_in_progress.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ai_research_flavor_t2_status_in_progress.txt">Flavor T2 Status TXT</a></td><td>Current answer file for the main active flavor batch.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ai_research_flavor_t2_status_in_progress.txt</code></td></tr></tbody></table></div><div class='artifact-group'><h3>Priority + GA</h3><table><thead><tr><th>Artifact</th><th>Purpose</th><th>Path</th></tr></thead><tbody><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_priority_products.csv">GA Priority Products</a></td><td>Top product priorities from live GA signals.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_priority_products.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_priority_brands.csv">GA Priority Brands</a></td><td>Brand priorities from combined product and brand-page demand.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_priority_brands.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_priority_taxonomy.csv">GA Website IA Signals</a></td><td>Website category, collection, hub, and brand-page signals for taxonomy mapping.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_priority_taxonomy.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_category_selection_trends.csv">Category + Selection Trends</a></td><td>Trend/reference layer from website categories and selections.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_category_selection_trends.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_priority_summary.json">GA Summary JSON</a></td><td>Summary of current GA-based priority extraction.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_priority_summary.json</code></td></tr></tbody></table></div><div class='artifact-group'><h3>Geography Focus</h3><table><thead><tr><th>Artifact</th><th>Purpose</th><th>Path</th></tr></thead><tbody><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/geography_priority_queue.csv">Geography Priority Queue</a></td><td>Ranked country, region, and subregion queue for the geography-first refocus.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/geography_priority_queue.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/geography_priority_summary.json">Geography Summary</a></td><td>Actionable geography gap counts and top queue slices.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/geography_priority_summary.json</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/geography_lanes_summary.json">Geography Lane Summary</a></td><td>Split counts for country, region, and subregion work lanes.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/geography_lanes_summary.json</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/geography_reconciliation_summary.md">Geography Reconciliation</a></td><td>What stayed valid versus stale after the main-process taxonomy update.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/geography_reconciliation_summary.md</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/geography_country_summary_refresh.md">Country Refresh Summary</a></td><td>Current live-safe country refresh pack.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/geography_country_summary_refresh.md</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/current_merge_now_geography_batch.csv">Current Merge-Now Geography Batch</a></td><td>One clean current merge-now geography batch from refreshed country, valid region, and refreshed subregion rows.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/current_merge_now_geography_batch.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_engine_geography_publish_batch.csv">Geography Publish Batch</a></td><td>SKU-wide publish-safe geography wave ready for Product Engine bulk patch.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_engine_geography_publish_batch.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_engine_geography_publish_batch_summary.json">Geography Publish Summary</a></td><td>Summary counts for the current publish-safe geography wave.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_engine_geography_publish_batch_summary.json</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_engine_subregion_exact_match_batch.csv">Subregion Exact-Match Batch</a></td><td>Second geography wave from exact product-title matches against existing taxonomy subregions.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_engine_subregion_exact_match_batch.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_engine_subregion_exact_match_batch_summary.json">Subregion Exact-Match Summary</a></td><td>Summary counts for the exact-match subregion wave.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_engine_subregion_exact_match_batch_summary.json</code></td></tr></tbody></table></div><div class='artifact-group'><h3>Queue + Publishing</h3><table><thead><tr><th>Artifact</th><th>Purpose</th><th>Path</th></tr></thead><tbody><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/next_best_batch_queue.csv">Next Best Batch Queue</a></td><td>Full prioritized queue for remaining enrichment work.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/next_best_batch_queue.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/next_fast_lane_queue.csv">Next Fast Lane Queue</a></td><td>Small accelerated queue for high-impact next work.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/next_fast_lane_queue.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/next_best_batch_summary.json">Next Queue Summary</a></td><td>Summary metrics for the live queue state.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/next_best_batch_summary.json</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_engine_upload_live_records_only.csv">Live Records Upload CSV</a></td><td>Rows currently staged for direct Product Engine publishing.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_engine_upload_live_records_only.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_engine_upload_live_records_review_only.csv">Live Review Upload CSV</a></td><td>Rows with live records that still need review before publish.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_engine_upload_live_records_review_only.csv</code></td></tr><tr><td><a href="file:///Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/publish_logs">Publish Log Folder</a></td><td>Structured history of Product Engine publish attempts.</td><td><code>/Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/publish_logs</code></td></tr></tbody></table></div><div class='artifact-group'><h3>Taxonomy + Mapping</h3><table><thead><tr><th>Artifact</th><th>Purpose</th><th>Path</th></tr></thead><tbody><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/country_description_library.csv">Country Description Library</a></td><td>Country taxonomy copy and review status.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/country_description_library.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/authority_brand_producer_library.csv">Authority Brand/Producer Library</a></td><td>Brand and producer authority layer with priority context.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/authority_brand_producer_library.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_trend_taxonomy_mapping_candidates.csv">Trend Mapping Candidates</a></td><td>Suggested mappings from website trend signals into app taxonomy.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_trend_taxonomy_mapping_candidates.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_trend_taxonomy_mapping_summary.json">Trend Mapping Summary</a></td><td>Coverage summary for mapped vs unmapped trend rows.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/ga_trend_taxonomy_mapping_summary.json</code></td></tr></tbody></table></div><div class='artifact-group'><h3>Parallel Side Lanes</h3><table><thead><tr><th>Artifact</th><th>Purpose</th><th>Path</th></tr></thead><tbody><tr><td><a href="file:///Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/delegated_batches/producer_authority_lane/producer_authority_lane_summary.md">Producer Authority Summary</a></td><td>Sub-agent authority cleanup recommendations for later quality passes.</td><td><code>/Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/delegated_batches/producer_authority_lane/producer_authority_lane_summary.md</code></td></tr><tr><td><a href="file:///Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/delegated_batches/producer_authority_lane/producer_authority_candidates.csv">Producer Authority Candidates</a></td><td>Priority queue for official-site mapping and producer cleanup.</td><td><code>/Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/delegated_batches/producer_authority_lane/producer_authority_candidates.csv</code></td></tr><tr><td><a href="file:///Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/delegated_batches/taxonomy_refinement_lane/taxonomy_refinement_summary.md">Taxonomy Refinement Summary</a></td><td>Sub-agent recommendations for website IA to canonical taxonomy decisions.</td><td><code>/Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/delegated_batches/taxonomy_refinement_lane/taxonomy_refinement_summary.md</code></td></tr><tr><td><a href="file:///Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/delegated_batches/taxonomy_refinement_lane/taxonomy_mapping_candidates.csv">Taxonomy Mapping Candidates</a></td><td>Resolved reference-only and unmapped taxonomy trend rows.</td><td><code>/Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/delegated_batches/taxonomy_refinement_lane/taxonomy_mapping_candidates.csv</code></td></tr><tr><td><a href="file:///Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/delegated_batches/image_perfection_lane/image_perfection_summary.md">Image Perfection Summary</a></td><td>Sub-agent later-pass image refinement plan.</td><td><code>/Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/delegated_batches/image_perfection_lane/image_perfection_summary.md</code></td></tr><tr><td><a href="file:///Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/delegated_batches/image_perfection_lane/image_cleanup_candidates.csv">Image Cleanup Candidates</a></td><td>Ranked current image cleanup candidates.</td><td><code>/Users/admin/Documents/CODEX Projects/research_jobs/progress_outputs/delegated_batches/image_perfection_lane/image_cleanup_candidates.csv</code></td></tr></tbody></table></div><div class='artifact-group'><h3>Quality + Images</h3><table><thead><tr><th>Artifact</th><th>Purpose</th><th>Path</th></tr></thead><tbody><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/quality_control_report.md">Quality Control Report</a></td><td>Narrative QC summary for current working data.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/quality_control_report.md</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/quality_control_issues.csv">Quality Control Issues</a></td><td>Structured list of QC findings.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/quality_control_issues.csv</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/quality_control_summary.json">Quality Control Summary</a></td><td>QC counts used by the dashboard.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/quality_control_summary.json</code></td></tr><tr><td><a href="file:///Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_image_research_t2_combined_batches.csv">Image Research Combined T2</a></td><td>Staged image research results for completed T2 items.</td><td><code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/product_image_research_t2_combined_batches.csv</code></td></tr></tbody></table></div>
+    </section>
+
+    <section class="panel">
+      <h2>Next Fast Lane</h2>
+      <p><strong>30</strong> rows are now in the accelerated working queue, with <strong>20</strong> live Product Engine records in the top 20.</p>
+      <table><thead><tr><th>Rank</th><th>SKU</th><th>Product</th><th>Lane</th><th>GA Brand</th><th>GA Taxonomy</th><th>Why Now</th></tr></thead><tbody><tr><td>1</td><td>LOT0071AR</td><td>Komasa Jyozo  Akazaru Sparkling (300 ml)</td><td>publish_fast_lane</td><td></td><td></td><td>live Product Engine record; repeated producer (6 SKUs); appears in 3 task queues; strong producer reuse; high-frequency country</td></tr><tr><td>2</td><td>WSP5665AA</td><td>Penfolds  Champagne Rose Thienot x Penfolds</td><td>ga_brand_cluster</td><td>1</td><td></td><td>live Product Engine record; top GA brand rank #1; current priority TXT file; high-frequency country</td></tr><tr><td>3</td><td>WWW2401AD</td><td>Penfolds  Max&#x27;s Chardonnay</td><td>ga_brand_cluster</td><td>1</td><td></td><td>live Product Engine record; top GA brand rank #1; current priority TXT file; high-frequency country</td></tr><tr><td>4</td><td>WSP2585BU</td><td>Dom Perignon  P2 2004</td><td>publish_fast_lane</td><td>34</td><td></td><td>live Product Engine record; top GA brand rank #34; repeated producer (7 SKUs); appears in 2 task queues; strong producer reuse; high-frequency country</td></tr><tr><td>5</td><td>WSP5777AD</td><td>Penfolds  Champagne Cuvee Brut</td><td>ga_brand_cluster</td><td>1</td><td></td><td>live Product Engine record; top GA brand rank #1; high-frequency country</td></tr><tr><td>6</td><td>WRW0571AA</td><td>Velenosi  Breciarolo Gold, Rosso Piceno Superiore DOC</td><td>publish_fast_lane</td><td>17</td><td></td><td>live Product Engine record; top GA brand rank #17; appears in 2 task queues; high-frequency country</td></tr><tr><td>7</td><td>WRW5779AA</td><td>Penfolds  II Dourthe Cabernet Shiraz</td><td>ga_brand_cluster</td><td>1</td><td></td><td>live Product Engine record; top GA brand rank #1; high-frequency country</td></tr><tr><td>10</td><td>WRW6618AA</td><td>Baron Philippe de Rothschild  Mouton Cadet Bordeaux Rouge Bio &quot;Pierre&quot;</td><td>ga_brand_cluster</td><td>5</td><td></td><td>live Product Engine record; top GA brand rank #5; high-frequency country</td></tr><tr><td>11</td><td>WWW5149AA</td><td>Baron Philippe de Rothschild  Mouton Cadet Reserve Sauternes</td><td>ga_brand_cluster</td><td>5</td><td></td><td>live Product Engine record; top GA brand rank #5; high-frequency country</td></tr><tr><td>12</td><td>WWW5423AA</td><td>Baron Philippe de Rothschild  Mouton Cadet Bordeaux Blanc BIO &quot;Nathan&quot;</td><td>ga_brand_cluster</td><td>5</td><td></td><td>live Product Engine record; top GA brand rank #5; high-frequency country</td></tr><tr><td>13</td><td>LGP0091FX</td><td>Granmonte  Red Jungle Grappa (330 ml)</td><td>ga_brand_cluster</td><td>3</td><td></td><td>live Product Engine record; top GA brand rank #3</td></tr><tr><td>14</td><td>LGP0092FX</td><td>Granmonte  Red Jungle Grappa (700 ml)</td><td>ga_brand_cluster</td><td>3</td><td></td><td>live Product Engine record; top GA brand rank #3</td></tr></tbody></table>
+    </section>
+
+    <section class="panel">
+      <h2>Geography-First Queue</h2>
+      <p>The mainline is now refocused on <strong>country → region → subregion</strong>. This queue separates actionable geography work from lower-value noise and ranks it by GA demand, value, and safe applicability.</p>
+      <ul>
+        <li><strong>Actionable geography gaps:</strong> 11836</li>
+        <li><strong>Country gaps:</strong> 215</li>
+        <li><strong>Region gaps:</strong> 2230</li>
+        <li><strong>Subregion gaps:</strong> 9391</li>
+        <li><strong>Current merge-now geography rows:</strong> 37</li>
+        <li><strong>Country lane:</strong> 1 rows</li>
+        <li><strong>Region lane:</strong> 130 rows</li>
+        <li><strong>Subregion clear-fill:</strong> 12 rows</li>
+        <li><strong>Subregion assess-later:</strong> 1717 rows</li>
+      </ul>
+      <table><thead><tr><th>Rank</th><th>Gap</th><th>SKU</th><th>Product</th><th>Classification</th><th>GA Rank</th><th>Subregion Action</th><th>Why Now</th></tr></thead><tbody><tr><td>1</td><td>country</td><td>LWF0006HC</td><td>Hibiki Collection @Blue Moon Siam Paragon</td><td>Whisky</td><td></td><td></td><td>country-first gap | spirits lane | high value | high confidence context</td></tr><tr><td>2</td><td>country</td><td>LWF0013HC</td><td>Yamazaki Tsukuriwake Collection @Blue Moon Siam Paragon</td><td>Whisky</td><td></td><td></td><td>country-first gap | spirits lane | high value | high confidence context</td></tr><tr><td>3</td><td>country</td><td>LWF0015HC</td><td>Hibiki Nas Collection @Blue Moon Siam Paragon</td><td>Whisky</td><td></td><td></td><td>country-first gap | spirits lane | high value | high confidence context</td></tr><tr><td>4</td><td>country</td><td>LWF0016HC</td><td>Diageo Special Release Collection 2021: Legends Untold @Blue Moon Siam Paragon</td><td>Whisky</td><td></td><td></td><td>country-first gap | spirits lane | high value | high confidence context</td></tr><tr><td>5</td><td>country</td><td>LRM0270AE</td><td>Black Tot Historic Solera (700 ml)</td><td>Rum</td><td></td><td></td><td>country-first gap | spirits lane | high value</td></tr><tr><td>6</td><td>country</td><td>LLQ0491EI</td><td>Sober Spirits  Bitter Non-Alcoholic Beverage (500 ml)</td><td>Liqueur</td><td></td><td></td><td>country-first gap | spirits lane | mid value | high confidence context</td></tr><tr><td>7</td><td>country</td><td>LWF0009HC</td><td>Ballentine’s Collection @Blue Moon Siam Paragon</td><td>Whisky</td><td></td><td></td><td>country-first gap | spirits lane | mid value | high confidence context</td></tr><tr><td>8</td><td>country</td><td>LWF0017HC</td><td>Speyside Big Fan @Blue Moon Siam Paragon</td><td>Whisky</td><td></td><td></td><td>country-first gap | spirits lane | mid value | high confidence context</td></tr><tr><td>9</td><td>country</td><td>LWF0018HC</td><td>ISLAY FC @Blue Moon Siam Paragon</td><td>Whisky</td><td></td><td></td><td>country-first gap | spirits lane | mid value | high confidence context</td></tr><tr><td>10</td><td>country</td><td>ABA0056BM</td><td>Metrokane  Vip Vertical Rabbit - Sterling W/Leather - Black</td><td>Accessories</td><td></td><td></td><td>country-first gap | high value | high confidence context</td></tr><tr><td>11</td><td>country</td><td>ABA0105BM</td><td>Rabbit  Aerating Decanter Set</td><td>Accessories</td><td></td><td></td><td>country-first gap | high value | high confidence context</td></tr><tr><td>12</td><td>country</td><td>ABA0131BM</td><td>Metrokane  L-Press Juicer - W/Orange Handles</td><td>Accessories</td><td></td><td></td><td>country-first gap | high value | high confidence context</td></tr></tbody></table>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Geography Reconciliation</h2>
+        <ul>
+          <li><strong>Live country gaps:</strong> 215</li>
+          <li><strong>Live region gaps:</strong> 2230</li>
+          <li><strong>Live subregion gaps:</strong> 9391</li>
+          <li><strong>Old country lane:</strong> stale_except_current_overlap</li>
+          <li><strong>Old region lane:</strong> still_usable</li>
+          <li><strong>Old subregion clear-fill:</strong> stale_clear_fill_set</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h2>Current Merge-Now Geography</h2>
+        <ul>
+          <li><strong>Total rows:</strong> 37</li>
+          <li><strong>Country rows:</strong> 1</li>
+          <li><strong>Region rows:</strong> 25</li>
+          <li><strong>Subregion rows:</strong> 11</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Parallel Side Lanes</h2>
+        <p>These sub-agent lanes are intentionally separate from the mainline so deeper quality work can progress without slowing publishable SKU throughput.</p>
+        <ul>
+          <li><strong>Producer authority lane:</strong> 36 candidate rows, 15 immediate official-site anchors</li>
+          <li><strong>Taxonomy refinement lane:</strong> 29 reviewed rows, 8 promote-now candidates, 0 hybrid candidates</li>
+          <li><strong>Image perfection lane:</strong> 15 cleanup rows, 5 highest-priority later-pass items</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h2>Lane Strategy</h2>
+        <ul>
+          <li><strong>Mainline:</strong> fastest overall SKU coverage, QC, and publish-safe Product Engine updates</li>
+          <li><strong>Producer lane:</strong> authority cleanup and official-site mapping for later quality lifts</li>
+          <li><strong>Taxonomy lane:</strong> canonical structure and website-to-app mapping refinement</li>
+          <li><strong>Image lane:</strong> asset consistency and selective perfection without blocking throughput</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Top GA Priority Products</h2>
+      <table><thead><tr><th>Rank</th><th>Site</th><th>SKU</th><th>Product</th><th>Brand</th><th>Score</th><th>Band</th></tr></thead><tbody><tr><td>1</td><td>Wine-Now</td><td>WRW4291BU</td><td>Jacob&#x27;s Creek  Classic Cabernet Sauvignon (750 ml)</td><td>Jacob&#x27;s Creek</td><td>175.9</td><td>high</td></tr><tr><td>2</td><td>Wine-Now</td><td>WRW4679AD</td><td>Penfolds  Bin 2</td><td>Penfolds</td><td>155.47</td><td>high</td></tr><tr><td>3</td><td>Wine-Now</td><td>WRW0255AA</td><td>Baron Philippe de Rothschild  Mouton Cadet Bordeaux Rouge</td><td>Baron Philippe de Rothschild</td><td>89.0</td><td>medium</td></tr><tr><td>4</td><td>Wine-Now</td><td>WSP1117AD</td><td>Chandon  Brut</td><td>Chandon</td><td>86.58</td><td>medium</td></tr><tr><td>5</td><td>Wine-Now</td><td>WRW3191AD</td><td>Vigneti del Salento  &quot;ZOLLA&quot; Primitivo Di Manduria DOC</td><td>Vigneti Del Salento</td><td>76.6</td><td>medium</td></tr><tr><td>6</td><td>Wine-Now</td><td>WRW4677AD</td><td>Penfolds  Bin 8 Shiraz Cabernet</td><td>Penfolds</td><td>60.61</td><td>medium</td></tr><tr><td>7</td><td>Wine-Now</td><td>WRW4683AD</td><td>Penfolds  Bin 389 Cabernet Sauvignon/Shiraz</td><td>Penfolds</td><td>60.03</td><td>medium</td></tr><tr><td>8</td><td>Wine-Now</td><td>WRW5284AA</td><td>Cantine Leonardo Da Vinci   1502 Da Vinci in Romagna Sangiovese Appassimento</td><td>Cantine Leonardo Da Vinci</td><td>60.0</td><td>medium</td></tr><tr><td>9</td><td>LIQ9</td><td>LGN0061CM</td><td>Iron Balls Gin (700 ml)</td><td>Iron Balls</td><td>49.2</td><td>medium</td></tr><tr><td>10</td><td>Wine-Now</td><td>WRW0244AA</td><td>Baron Philippe de Rothschild  Mapu Cabernet Sauvignon (Screw Cap)</td><td>Baron Philippe de Rothschild</td><td>49.0</td><td>medium</td></tr><tr><td>11</td><td>Wine-Now</td><td>WRW4289BU</td><td>Jacob&#x27;s Creek  Classic Shiraz Cabernet (750 ml)</td><td>Jacob&#x27;s Creek</td><td>45.0</td><td>medium</td></tr><tr><td>12</td><td>Wine-Now</td><td>WRW4681AD</td><td>Penfolds  Bin 407</td><td>Penfolds</td><td>42.0</td><td>medium</td></tr></tbody></table>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Top GA Priority Brands</h2>
+        <table><thead><tr><th>Rank</th><th>Brand</th><th>Sites</th><th>Score</th><th>Band</th><th>Matched Products</th></tr></thead><tbody><tr><td>1</td><td>Penfolds</td><td>Wine-Now</td><td>854.4</td><td>critical</td><td>7</td></tr><tr><td>2</td><td>Jacob&#x27;s Creek</td><td>Wine-Now</td><td>394.0</td><td>critical</td><td>3</td></tr><tr><td>3</td><td>Granmonte</td><td>Wine-Now</td><td>188.15</td><td>high</td><td>1</td></tr><tr><td>4</td><td>Chandon</td><td>Wine-Now</td><td>169.5</td><td>high</td><td>2</td></tr><tr><td>5</td><td>Baron Philippe de Rothschild</td><td>Wine-Now</td><td>159.0</td><td>high</td><td>3</td></tr><tr><td>6</td><td>Freixenet</td><td>Wine-Now</td><td>119.15</td><td>high</td><td>1</td></tr><tr><td>7</td><td>Vigneti Del Salento</td><td>Wine-Now</td><td>104.25</td><td>high</td><td>0</td></tr><tr><td>8</td><td>Inchon</td><td>LIQ9</td><td>97.5</td><td>medium</td><td>0</td></tr><tr><td>9</td><td>Ruinart</td><td>Wine-Now</td><td>96.85</td><td>medium</td><td>0</td></tr><tr><td>10</td><td>Nikka</td><td>LIQ9</td><td>81.0</td><td>medium</td><td>0</td></tr><tr><td>11</td><td>Iron Balls</td><td>LIQ9</td><td>67.75</td><td>medium</td><td>0</td></tr><tr><td>12</td><td>Cantine Leonardo Da Vinci</td><td>Wine-Now</td><td>60.0</td><td>medium</td><td>1</td></tr></tbody></table>
+      </div>
+
+      <div class="panel">
+        <h2>Top GA Website IA Signals</h2>
+        <p>These rows come from website category, hub, brand-page, and collection demand. They are signals for mapping into app taxonomy, not direct app taxonomy records.</p>
+        <table><thead><tr><th>Rank</th><th>Site</th><th>Website Surface</th><th>Website Target</th><th>Suggested App Type</th><th>Score</th><th>Band</th></tr></thead><tbody><tr><td>1</td><td>Wine-Now</td><td>category</td><td>Red Wine Category</td><td>classification</td><td>1848.66</td><td>critical</td></tr><tr><td>2</td><td>Wine-Now</td><td>hub</td><td>Wine Category</td><td>navigation_hub</td><td>1434.2</td><td>critical</td></tr><tr><td>3</td><td>Wine-Now</td><td>hub</td><td>All brands</td><td>navigation_hub</td><td>476.8</td><td>critical</td></tr><tr><td>4</td><td>Wine-Now</td><td>category</td><td>White Wine Category</td><td>classification</td><td>465.52</td><td>critical</td></tr><tr><td>5</td><td>Wine-Now</td><td>collection</td><td>Best Sellers Right Now</td><td>collection_theme</td><td>375.6</td><td>critical</td></tr><tr><td>6</td><td>LIQ9</td><td>category</td><td>Single Malt Whisky Category</td><td>classification</td><td>298.54</td><td>critical</td></tr><tr><td>7</td><td>Wine-Now</td><td>category</td><td>Sparkling Wine Category</td><td>classification</td><td>277.86</td><td>critical</td></tr><tr><td>8</td><td>Wine-Now</td><td>category</td><td>Champagne Category</td><td>classification</td><td>270.6</td><td>critical</td></tr><tr><td>9</td><td>LIQ9</td><td>category</td><td>Brandy Category</td><td>classification</td><td>247.5</td><td>critical</td></tr><tr><td>10</td><td>LIQ9</td><td>collection</td><td>Special of the Month</td><td>collection_theme</td><td>203.0</td><td>critical</td></tr><tr><td>11</td><td>Wine-Now</td><td>brand_hub</td><td>Penfolds Brand Page</td><td>brand</td><td>184.0</td><td>high</td></tr><tr><td>12</td><td>Wine-Now</td><td>collection</td><td>Trending items</td><td>collection_theme</td><td>183.6</td><td>high</td></tr></tbody></table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Category + Selection Trends</h2>
+      <p>This is the browse-demand reference layer for website categories, selections, hubs, and region discovery pages. It is useful for deciding what to enrich next and how to map trend pressure into app taxonomy.</p>
+      <table><thead><tr><th>Rank</th><th>Site</th><th>Trend Type</th><th>Website Reference</th><th>Suggested App Type</th><th>Suggested App Entity</th><th>Trend Score</th></tr></thead><tbody><tr><td>1</td><td>Wine-Now</td><td>category</td><td>Red Wine Category</td><td>classification</td><td>Red Wine Category</td><td>1848.66</td></tr><tr><td>2</td><td>Wine-Now</td><td>hub</td><td>Wine Category</td><td>navigation_hub</td><td>Wine Category</td><td>1434.2</td></tr><tr><td>3</td><td>Wine-Now</td><td>hub</td><td>All brands</td><td>navigation_hub</td><td>All brands</td><td>476.8</td></tr><tr><td>4</td><td>Wine-Now</td><td>category</td><td>White Wine Category</td><td>classification</td><td>White Wine Category</td><td>465.52</td></tr><tr><td>5</td><td>Wine-Now</td><td>collection</td><td>Best Sellers Right Now</td><td>collection_theme</td><td>Best Sellers Right Now</td><td>375.6</td></tr><tr><td>6</td><td>LIQ9</td><td>category</td><td>Single Malt Whisky Category</td><td>classification</td><td>Single Malt Whisky Category</td><td>298.54</td></tr><tr><td>7</td><td>Wine-Now</td><td>category</td><td>Sparkling Wine Category</td><td>classification</td><td>Sparkling Wine Category</td><td>277.86</td></tr><tr><td>8</td><td>Wine-Now</td><td>category</td><td>Champagne Category</td><td>classification</td><td>Champagne Category</td><td>270.6</td></tr><tr><td>9</td><td>LIQ9</td><td>category</td><td>Brandy Category</td><td>classification</td><td>Brandy Category</td><td>247.5</td></tr><tr><td>10</td><td>LIQ9</td><td>collection</td><td>Special of the Month</td><td>collection_theme</td><td>Special of the Month</td><td>203.0</td></tr><tr><td>11</td><td>Wine-Now</td><td>brand_hub</td><td>Penfolds Brand Page</td><td>brand</td><td>Penfolds</td><td>184.0</td></tr><tr><td>12</td><td>Wine-Now</td><td>collection</td><td>Trending items</td><td>collection_theme</td><td>Trending items</td><td>183.6</td></tr></tbody></table>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Trend Mapping Status</h2>
+        <ul>
+          <li><strong>Total trend rows:</strong> 76</li>
+          <li><strong>Mapped exact:</strong> 47</li>
+          <li><strong>Mapped alias:</strong> 0</li>
+          <li><strong>Reference only:</strong> 21</li>
+          <li><strong>Unmapped:</strong> 8</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h2>Top Mapping Candidates</h2>
+        <table><thead><tr><th>Rank</th><th>Reference</th><th>Suggested Type</th><th>Matched Type</th><th>Matched Entity</th><th>Status</th></tr></thead><tbody><tr><td>1</td><td>Red Wine Category</td><td>classification</td><td>classification</td><td>Red Wine</td><td>mapped_exact</td></tr><tr><td>2</td><td>Wine Category</td><td>navigation_hub</td><td></td><td></td><td>reference_only</td></tr><tr><td>3</td><td>All brands</td><td>navigation_hub</td><td></td><td></td><td>reference_only</td></tr><tr><td>4</td><td>White Wine Category</td><td>classification</td><td>classification</td><td>White Wine</td><td>mapped_exact</td></tr><tr><td>5</td><td>Best Sellers Right Now</td><td>collection_theme</td><td></td><td></td><td>reference_only</td></tr><tr><td>6</td><td>Single Malt Whisky Category</td><td>classification</td><td></td><td></td><td>unmapped</td></tr><tr><td>7</td><td>Sparkling Wine Category</td><td>classification</td><td>classification</td><td>Sparkling Wine</td><td>mapped_exact</td></tr><tr><td>8</td><td>Champagne Category</td><td>classification</td><td>classification</td><td>Champagne</td><td>mapped_exact</td></tr><tr><td>9</td><td>Brandy Category</td><td>classification</td><td>classification</td><td>Brandy</td><td>mapped_exact</td></tr><tr><td>10</td><td>Special of the Month</td><td>collection_theme</td><td></td><td></td><td>reference_only</td></tr><tr><td>11</td><td>Penfolds Brand Page</td><td>brand</td><td>brand</td><td>Penfolds</td><td>mapped_exact</td></tr><tr><td>12</td><td>Trending items</td><td>collection_theme</td><td></td><td></td><td>reference_only</td></tr></tbody></table>
+      </div>
+    </section>
+
+    <div class="foot">
+      Generated from live progress, QC, Product Engine staging, and GA-based priority files in <code>/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data</code>.
+    </div>
+  </div>
+</body>
+</html>

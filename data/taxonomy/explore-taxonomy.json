@@ -1,18 +1,18 @@
 {
   "_meta": {
-    "generated": "2026-04-17T13:53:33.064924+00:00",
+    "generated": "2026-05-06T06:39:53.973978+00:00",
     "description": "Explore taxonomy for interactive map — countries, regions, subregions, appellations with product counts and price ranges",
     "counts": {
-      "countries": 50,
-      "regions": 90,
-      "subregions": 80,
+      "countries": 66,
+      "regions": 97,
+      "subregions": 81,
       "appellations": 81
     },
     "productStats": {
       "total": 11387,
-      "mappedToCountry": 10065,
-      "mappedToRegion": 7215,
-      "mappedToSubregion": 1214,
+      "mappedToCountry": 10206,
+      "mappedToRegion": 7242,
+      "mappedToSubregion": 1604,
       "excludedAccessories": 1142
     },
     "nonGeographicEntries": [
@@ -23,6 +23,30 @@
     ]
   },
   "countries": [
+    {
+      "id": 65,
+      "name": "Anguilla",
+      "slug": "anguilla",
+      "latitude": 18.2,
+      "longitude": -63.1,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 0,
+        "spirits": 1,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 1999.0,
+        "max": 1999.0
+      }
+    },
     {
       "id": 35,
       "name": "Argentina",
@@ -154,6 +178,30 @@
       "priceRange": {
         "min": 820.0,
         "max": 26759.0
+      }
+    },
+    {
+      "id": 61,
+      "name": "Cambodia",
+      "slug": "cambodia",
+      "latitude": 12.6,
+      "longitude": 104.9,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 0,
+        "spirits": 3,
+        "beer": 0,
+        "sake": 0,
+        "total": 3
+      },
+      "priceRange": {
+        "min": 1389.0,
+        "max": 1789.0
       }
     },
     {
@@ -290,6 +338,30 @@
       }
     },
     {
+      "id": 53,
+      "name": "Denmark",
+      "slug": "denmark",
+      "latitude": 56.0,
+      "longitude": 10.0,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 0,
+        "spirits": 0,
+        "beer": 9,
+        "sake": 0,
+        "total": 9
+      },
+      "priceRange": {
+        "min": 2599.0,
+        "max": 6189.0
+      }
+    },
+    {
       "id": 40,
       "name": "Dominican Republic",
       "slug": "dominican-republic",
@@ -316,15 +388,63 @@
       "longitude": -1.5,
       "scopes": [],
       "counts": {
-        "wine": 4,
-        "spirits": 62,
-        "beer": 4,
+        "wine": 8,
+        "spirits": 127,
+        "beer": 17,
         "sake": 0,
-        "total": 70
+        "total": 152
       },
       "priceRange": {
-        "min": 395.0,
-        "max": 3550.0
+        "min": 79.0,
+        "max": 4179.0
+      }
+    },
+    {
+      "id": 63,
+      "name": "Fiji",
+      "slug": "fiji",
+      "latitude": -17.8,
+      "longitude": 178.1,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 0,
+        "spirits": 2,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 1699.0,
+        "max": 5449.0
+      }
+    },
+    {
+      "id": 56,
+      "name": "Finland",
+      "slug": "finland",
+      "latitude": 64.5,
+      "longitude": 26.0,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 0,
+        "spirits": 8,
+        "beer": 0,
+        "sake": 0,
+        "total": 8
+      },
+      "priceRange": {
+        "min": 799.0,
+        "max": 3200.0
       }
     },
     {
@@ -404,6 +524,30 @@
       }
     },
     {
+      "id": 66,
+      "name": "Grenada",
+      "slug": "grenada",
+      "latitude": 12.1,
+      "longitude": -61.7,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 0,
+        "spirits": 1,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 2580.0,
+        "max": 2580.0
+      }
+    },
+    {
       "id": 25,
       "name": "Guatemala",
       "slug": "guatemala",
@@ -423,6 +567,30 @@
       }
     },
     {
+      "id": 60,
+      "name": "Guyana",
+      "slug": "guyana",
+      "latitude": 5.0,
+      "longitude": -58.9,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 0,
+        "spirits": 5,
+        "beer": 0,
+        "sake": 0,
+        "total": 5
+      },
+      "priceRange": {
+        "min": 540.0,
+        "max": 2380.0
+      }
+    },
+    {
       "id": 51,
       "name": "Hungary",
       "slug": "hungary",
@@ -439,6 +607,54 @@
       "priceRange": {
         "min": 1460.0,
         "max": 3280.0
+      }
+    },
+    {
+      "id": 54,
+      "name": "Iceland",
+      "slug": "iceland",
+      "latitude": 64.9,
+      "longitude": -18.6,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 0,
+        "spirits": 8,
+        "beer": 0,
+        "sake": 0,
+        "total": 8
+      },
+      "priceRange": {
+        "min": 860.0,
+        "max": 2599.0
+      }
+    },
+    {
+      "id": 55,
+      "name": "India",
+      "slug": "india",
+      "latitude": 22.6,
+      "longitude": 79.0,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 0,
+        "spirits": 8,
+        "beer": 0,
+        "sake": 0,
+        "total": 8
+      },
+      "priceRange": {
+        "min": 755.0,
+        "max": 2259.0
       }
     },
     {
@@ -537,6 +753,78 @@
       }
     },
     {
+      "id": 52,
+      "name": "Korea",
+      "slug": "korea",
+      "latitude": 36.5,
+      "longitude": 127.9,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 0,
+        "spirits": 14,
+        "beer": 6,
+        "sake": 0,
+        "total": 20
+      },
+      "priceRange": {
+        "min": 2700.0,
+        "max": 5019.0
+      }
+    },
+    {
+      "id": 57,
+      "name": "Latvia",
+      "slug": "latvia",
+      "latitude": 56.9,
+      "longitude": 24.6,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 1,
+        "spirits": 5,
+        "beer": 0,
+        "sake": 0,
+        "total": 6
+      },
+      "priceRange": {
+        "min": 259.0,
+        "max": 1285.0
+      }
+    },
+    {
+      "id": 64,
+      "name": "Lebanon",
+      "slug": "lebanon",
+      "latitude": 33.9,
+      "longitude": 35.8,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 3730.0,
+        "max": 6700.0
+      }
+    },
+    {
       "id": 28,
       "name": "Martinique",
       "slug": "martinique",
@@ -575,6 +863,30 @@
       }
     },
     {
+      "id": 67,
+      "name": "Monaco",
+      "slug": "monaco",
+      "latitude": 43.7,
+      "longitude": 7.4,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 0,
+        "spirits": 1,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 3100.0,
+        "max": 3100.0
+      }
+    },
+    {
       "id": 18,
       "name": "Netherlands",
       "slug": "netherlands",
@@ -583,14 +895,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 17,
+        "spirits": 65,
         "beer": 0,
         "sake": 0,
-        "total": 17
+        "total": 65
       },
       "priceRange": {
-        "min": 695.0,
-        "max": 995.0
+        "min": 499.0,
+        "max": 2999.0
       }
     },
     {
@@ -651,6 +963,30 @@
       }
     },
     {
+      "id": 59,
+      "name": "Panama",
+      "slug": "panama",
+      "latitude": 8.6,
+      "longitude": -80.0,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 0,
+        "spirits": 6,
+        "beer": 0,
+        "sake": 0,
+        "total": 6
+      },
+      "priceRange": {
+        "min": 1320.0,
+        "max": 4719.0
+      }
+    },
+    {
       "id": 42,
       "name": "Peru",
       "slug": "peru",
@@ -667,6 +1003,30 @@
       "priceRange": {
         "min": 735.0,
         "max": 2275.0
+      }
+    },
+    {
+      "id": 62,
+      "name": "Philippines",
+      "slug": "philippines",
+      "latitude": 12.8,
+      "longitude": 121.8,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 0,
+        "spirits": 1,
+        "beer": 2,
+        "sake": 0,
+        "total": 3
+      },
+      "priceRange": {
+        "min": 1309.0,
+        "max": 1699.0
       }
     },
     {
@@ -716,10 +1076,10 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 43,
+        "spirits": 44,
         "beer": 0,
         "sake": 0,
-        "total": 43
+        "total": 44
       },
       "priceRange": {
         "min": 319.0,
@@ -743,6 +1103,30 @@
       "priceRange": {
         "min": 219.0,
         "max": 2460999.0
+      }
+    },
+    {
+      "id": 58,
+      "name": "Slovakia",
+      "slug": "slovakia",
+      "latitude": 48.7,
+      "longitude": 19.7,
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 2,
+        "spirits": 4,
+        "beer": 0,
+        "sake": 0,
+        "total": 6
+      },
+      "priceRange": {
+        "min": 1579.0,
+        "max": 5100.0
       }
     },
     {
@@ -868,14 +1252,14 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 6,
+        "spirits": 9,
         "beer": 0,
         "sake": 0,
-        "total": 6
+        "total": 9
       },
       "priceRange": {
         "min": 1159.0,
-        "max": 2169.0
+        "max": 4259.0
       }
     },
     {
@@ -886,15 +1270,15 @@
       "longitude": -3.5,
       "scopes": [],
       "counts": {
-        "wine": 4,
-        "spirits": 65,
-        "beer": 13,
+        "wine": 0,
+        "spirits": 0,
+        "beer": 0,
         "sake": 0,
-        "total": 82
+        "total": 0
       },
       "priceRange": {
-        "min": 79.0,
-        "max": 4179.0
+        "min": null,
+        "max": null
       }
     },
     {
@@ -1081,6 +1465,32 @@
       }
     },
     {
+      "id": 925,
+      "name": "Baden",
+      "slug": "baden",
+      "latitude": 48.5,
+      "longitude": 8.9,
+      "parentId": 9,
+      "parentSlug": "germany",
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 4,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 4
+      },
+      "priceRange": {
+        "min": 895.0,
+        "max": 3250.0
+      }
+    },
+    {
       "id": 95,
       "name": "Barossa Valley",
       "slug": "barossa-valley",
@@ -1228,6 +1638,32 @@
       }
     },
     {
+      "id": 922,
+      "name": "Canelones",
+      "slug": "canelones",
+      "latitude": -34.6,
+      "longitude": -56.3,
+      "parentId": 38,
+      "parentSlug": "uruguay",
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 16,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 16
+      },
+      "priceRange": {
+        "min": 635.0,
+        "max": 2655.0
+      }
+    },
+    {
       "id": 108,
       "name": "Casablanca Valley",
       "slug": "casablanca-valley",
@@ -1321,15 +1757,15 @@
       "parentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 459,
-        "spirits": 49,
+        "wine": 451,
+        "spirits": 0,
         "beer": 0,
-        "sake": 2,
-        "total": 510
+        "sake": 0,
+        "total": 451
       },
       "priceRange": {
         "min": 300.0,
-        "max": 188999.0
+        "max": 95899.0
       }
     },
     {
@@ -1364,10 +1800,10 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 104,
+        "spirits": 106,
         "beer": 0,
         "sake": 0,
-        "total": 104
+        "total": 106
       },
       "priceRange": {
         "min": 579.0,
@@ -1501,6 +1937,32 @@
       }
     },
     {
+      "id": 926,
+      "name": "Franken",
+      "slug": "franken",
+      "latitude": 49.8,
+      "longitude": 10.2,
+      "parentId": 9,
+      "parentSlug": "germany",
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 1,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 1
+      },
+      "priceRange": {
+        "min": 2259.0,
+        "max": 2259.0
+      }
+    },
+    {
       "id": 100,
       "name": "Friuli-Venezia Giulia",
       "slug": "friuli-venezia-giulia",
@@ -1531,11 +1993,11 @@
       "parentSlug": "new-zealand",
       "scopes": [],
       "counts": {
-        "wine": 12,
+        "wine": 24,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 12
+        "total": 24
       },
       "priceRange": {
         "min": 449.0,
@@ -1585,6 +2047,32 @@
       }
     },
     {
+      "id": 924,
+      "name": "Ica",
+      "slug": "ica",
+      "latitude": -14.1,
+      "longitude": -75.7,
+      "parentId": 42,
+      "parentSlug": "peru",
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 3,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 3
+      },
+      "priceRange": {
+        "min": 735.0,
+        "max": 885.0
+      }
+    },
+    {
       "id": 903,
       "name": "Islay",
       "slug": "islay",
@@ -1595,10 +2083,10 @@
       "scopes": [],
       "counts": {
         "wine": 4,
-        "spirits": 87,
-        "beer": 0,
+        "spirits": 91,
+        "beer": 1,
         "sake": 5,
-        "total": 96
+        "total": 101
       },
       "priceRange": {
         "min": 595.0,
@@ -1679,14 +2167,40 @@
       "scopes": [],
       "counts": {
         "wine": 0,
-        "spirits": 33,
+        "spirits": 34,
         "beer": 0,
         "sake": 0,
-        "total": 33
+        "total": 34
       },
       "priceRange": {
         "min": 649.0,
         "max": 21189.0
+      }
+    },
+    {
+      "id": 921,
+      "name": "Khao Yai",
+      "slug": "khao-yai",
+      "latitude": 14.55,
+      "longitude": 101.37,
+      "parentId": 6,
+      "parentSlug": "thailand",
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 32,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 32
+      },
+      "priceRange": {
+        "min": 630.0,
+        "max": 2989.0
       }
     },
     {
@@ -1813,6 +2327,32 @@
       "priceRange": {
         "min": 1595.0,
         "max": 12999.0
+      }
+    },
+    {
+      "id": 927,
+      "name": "Macedonia",
+      "slug": "macedonia",
+      "latitude": 40.7,
+      "longitude": 22.9,
+      "parentId": 49,
+      "parentSlug": "greece",
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 2,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 2
+      },
+      "priceRange": {
+        "min": 850.0,
+        "max": 960.0
       }
     },
     {
@@ -2120,11 +2660,11 @@
       "parentSlug": "spain",
       "scopes": [],
       "counts": {
-        "wine": 165,
+        "wine": 170,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 165
+        "total": 170
       },
       "priceRange": {
         "min": 79.0,
@@ -2552,6 +3092,32 @@
         "max": 4229.0
       },
       "nonGeographic": true
+    },
+    {
+      "id": 923,
+      "name": "Sussex",
+      "slug": "sussex",
+      "latitude": 50.9,
+      "longitude": -0.2,
+      "parentId": 8,
+      "parentSlug": "england",
+      "scopes": [
+        "wine",
+        "spirits",
+        "beer",
+        "sake"
+      ],
+      "counts": {
+        "wine": 2,
+        "spirits": 1,
+        "beer": 0,
+        "sake": 0,
+        "total": 3
+      },
+      "priceRange": {
+        "min": 700.0,
+        "max": 3150.0
+      }
     },
     {
       "id": 917,
@@ -3377,6 +3943,56 @@
       }
     },
     {
+      "id": 217,
+      "name": "Côte des Bar",
+      "slug": "cote-des-bar",
+      "latitude": 48.12,
+      "longitude": 4.37,
+      "parentId": 52,
+      "parentSlug": "champagne",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [
+        "wine"
+      ],
+      "counts": {
+        "wine": 85,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 85
+      },
+      "priceRange": {
+        "min": 1815.0,
+        "max": 10100.0
+      }
+    },
+    {
+      "id": 216,
+      "name": "Côte des Blancs",
+      "slug": "cote-des-blancs",
+      "latitude": 48.97,
+      "longitude": 4.02,
+      "parentId": 52,
+      "parentSlug": "champagne",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [
+        "wine"
+      ],
+      "counts": {
+        "wine": 40,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 40
+      },
+      "priceRange": {
+        "min": 1505.0,
+        "max": 20180.0
+      }
+    },
+    {
       "id": 191,
       "name": "Côtes de Bourg",
       "slug": "c-tes-de-bourg",
@@ -3779,15 +4395,15 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 21,
+        "wine": 160,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 21
+        "total": 160
       },
       "priceRange": {
-        "min": 2480.0,
-        "max": 60460.0
+        "min": 1409.0,
+        "max": 95899.0
       }
     },
     {
@@ -4159,29 +4775,6 @@
       }
     },
     {
-      "id": 189,
-      "name": "Right Bank",
-      "slug": "right-bank",
-      "latitude": 44.9,
-      "longitude": -0.1,
-      "parentId": 58,
-      "parentSlug": "bordeaux",
-      "grandparentId": 4,
-      "grandparentSlug": "france",
-      "scopes": [],
-      "counts": {
-        "wine": 2,
-        "spirits": 0,
-        "beer": 0,
-        "sake": 0,
-        "total": 2
-      },
-      "priceRange": {
-        "min": 799.0,
-        "max": 1420.0
-      }
-    },
-    {
       "id": 143,
       "name": "Rioja Alavesa",
       "slug": "rioja-alavesa",
@@ -4400,14 +4993,14 @@
       "grandparentSlug": "france",
       "scopes": [],
       "counts": {
-        "wine": 51,
+        "wine": 52,
         "spirits": 0,
         "beer": 0,
         "sake": 0,
-        "total": 51
+        "total": 52
       },
       "priceRange": {
-        "min": 1000.0,
+        "min": 799.0,
         "max": 67000.0
       }
     },
@@ -4455,29 +5048,6 @@
       "priceRange": {
         "min": 570.0,
         "max": 1400.0
-      }
-    },
-    {
-      "id": 138,
-      "name": "Sonoma County",
-      "slug": "sonoma-county",
-      "latitude": 38.5,
-      "longitude": -122.8,
-      "parentId": 81,
-      "parentSlug": "sonoma-county",
-      "grandparentId": 1,
-      "grandparentSlug": "usa",
-      "scopes": [],
-      "counts": {
-        "wine": 16,
-        "spirits": 0,
-        "beer": 0,
-        "sake": 0,
-        "total": 16
-      },
-      "priceRange": {
-        "min": 1139.0,
-        "max": 7995.0
       }
     },
     {
@@ -4593,6 +5163,31 @@
       "priceRange": {
         "min": 800.0,
         "max": 1599.0
+      }
+    },
+    {
+      "id": 215,
+      "name": "Vallée de la Marne",
+      "slug": "vallee-de-la-marne",
+      "latitude": 49.05,
+      "longitude": 3.8,
+      "parentId": 52,
+      "parentSlug": "champagne",
+      "grandparentId": 4,
+      "grandparentSlug": "france",
+      "scopes": [
+        "wine"
+      ],
+      "counts": {
+        "wine": 143,
+        "spirits": 0,
+        "beer": 0,
+        "sake": 0,
+        "total": 143
+      },
+      "priceRange": {
+        "min": 689.0,
+        "max": 41100.0
       }
     },
     {

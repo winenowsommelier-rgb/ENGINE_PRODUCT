@@ -1,0 +1,155 @@
+sku,name,classification,action,confidence,field,old_value,new_value,rule
+WRW6191DH,Olek Bondonio  Langhe Nebbiolo DOC,Red Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW5383DH,Rocca di Montegrossi  Chianti Classico Gran Selezione DOCG Vigneto San Marcellino,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW5381DH,Rocca di Montegrossi  Chianti Classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW2019AC,Coli  Chianti Classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW2046AC,Danese  Valpolicella DOC,Red Wine,fill_subregion_from_name,0.9,subregion,,Valpolicella,valpolicella
+WRW2021AC,"Coli  ""Villa Montignana"" Chianti Classico Riserva DOCG",Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW2020AC,Coli  Chianti Classico Riserva DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW1856AE,Fontodi  Chianti Classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW1737AE,Chateau Tournefeuille  Lalande-de-Pomerol,Red Wine,conflict_subregion,0.95,subregion,Saint-Émilion,Pomerol,pomerol; chateau
+WRW5657AE,Zenato  Podere Prospero Bolgheri Rosso,Red Wine,conflict_region,0.95,region,Veneto,Tuscany,bolgheri
+WRW5657AE,Zenato  Podere Prospero Bolgheri Rosso,Red Wine,conflict_region,0.95,subregion,,Bolgheri,bolgheri
+WWW5402AE,Massolino  Langhe DOC Chardonnay,White Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW5724AE,Passi di Orma Bolgheri DOC,Red Wine,fill_subregion_from_name,0.95,subregion,,Bolgheri,bolgheri
+WRW5408BN,Tenuta Belguardo  Maremma Toscana DOC,Red Wine,fill_subregion_from_name,0.9,subregion,,Maremma,maremma; tenuta
+WRW3064BN,Castello di Fonterutoli  Castello Fonterutoli Chianti Classico Gran Selezione DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW2988BN,Castello di Fonterutoli  Fonterutoli Chianti Classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+LBD0136AA,Courvoisier VSOP Cognac (700 ml),Wine product,fill_region_from_name,0.92,region,,Cognac,cognac
+LBD0176AA,Chateau du Breuil  Calvados VSOP (700 ml),Wine product,fill_region_from_name,0.95,region,,Calvados,calvados; chateau
+LGP0012AA,Nonino  Ue Il Prosecco (700 ml),Wine product,fill_region_from_name,0.88,region,,Veneto,prosecco
+LGP0012AA,Nonino  Ue Il Prosecco (700 ml),Wine product,fill_region_from_name,0.88,subregion,,Prosecco,prosecco
+LBD0175AA,Chateau du Breuil  Calvados Fine (700 ml),Wine product,fill_region_from_name,0.95,region,,Calvados,calvados; chateau
+WWW0201AA,Michele Chiarlo  Gavi Le Marne DOCG,White Wine,fill_subregion_from_name,0.9,subregion,,Gavi,gavi
+WRW0009AA,Palazzo Grimani by Allegrini  Valpolicella Ripasso DOC,Red Wine,conflict_region,0.95,region,Tuscany,Veneto,valpolicella ripasso; valpolicella; ripasso
+WRW0009AA,Palazzo Grimani by Allegrini  Valpolicella Ripasso DOC,Red Wine,conflict_region,0.95,subregion,,Valpolicella Ripasso,valpolicella ripasso; valpolicella; ripasso
+WWW5482AA,Fontanafredda  Gavi Del Commune Di Gavi DOCG,White Wine,fill_subregion_from_name,0.9,subregion,,Gavi,gavi
+WRW0410AA,Santa Cristina By Antinori  Chianti Superiore DOCG,Wine product,fill_region_from_name,0.88,region,,Tuscany,chianti
+WRW0410AA,Santa Cristina By Antinori  Chianti Superiore DOCG,Wine product,fill_region_from_name,0.88,subregion,,Chianti,chianti
+WSP1453AA,Cavicchioli  Prosecco Extra Dry,Wine product,fill_region_from_name,0.88,region,,Veneto,prosecco
+WSP1453AA,Cavicchioli  Prosecco Extra Dry,Wine product,fill_region_from_name,0.88,subregion,,Prosecco,prosecco
+WWW4997AA,Ceretto  Langhe Arneis Blange BIO DOC,White Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WSP0074AA,Cavicchioli & Figli  Cavicchioli Lambrusco Emilia Amabile,Wine product,fill_region_from_name,0.88,region,,Emilia-Romagna,lambrusco
+WRW5647AA,Baron Philippe de Rothschild  Mouton Cadet Reserve Haut Medoc,Red Wine,conflict_subregion,0.95,subregion,Médoc,Haut-Médoc,haut medoc; medoc
+WRS0162AA,Tenuta Guado al Tasso By Antinori  Scalabrone Rosato Bolgheri DOC,Wine product,fill_region_from_name,0.95,region,,Tuscany,bolgheri; tenuta
+WRS0162AA,Tenuta Guado al Tasso By Antinori  Scalabrone Rosato Bolgheri DOC,Wine product,fill_region_from_name,0.95,subregion,,Bolgheri,bolgheri; tenuta
+WSP2452AA,Antinori  Marchese Cuvee Royale Franciacorta DOCG,Wine product,fill_region_from_name,0.95,region,,Lombardy,franciacorta
+WSP0075AA,Cavicchioli  Lambrusco Grasparossa di Castelvetro Amabile,Wine product,fill_region_from_name,0.88,region,,Emilia-Romagna,lambrusco
+WRW5125AA,Ceretto  Langhe Rosso Monsordo BIO DOC,Red Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WWW4828AA,Damilano  Langhe Arneis DOC,White Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW5612AA,Wynns  Coonawarra  Estate  Black Label Shiraz,Red Wine,conflict_region,0.95,region,South Australia,Coonawarra,coonawarra
+WWW5151AA,Wynns  Coonawarra  Estate Chardonnay,White Wine,conflict_region,0.95,region,South Australia,Coonawarra,coonawarra
+WRW3467AA,"Pian delle Vigne By Antinori  Brunello Di Montalcino ""Vignaferrovia"" Riserva DOCG",Wine product,fill_region_from_name,0.97,region,,Tuscany,brunello di montalcino; montalcino
+WRW3467AA,"Pian delle Vigne By Antinori  Brunello Di Montalcino ""Vignaferrovia"" Riserva DOCG",Wine product,fill_region_from_name,0.97,subregion,,Brunello di Montalcino,brunello di montalcino; montalcino
+WRW5106AA,Brancaia  Chianti Classico Riserva DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW5108AA,Fattoria Le Pupille  Saffredi Maremma Toscana,Red Wine,fill_subregion_from_name,0.9,subregion,,Maremma,maremma
+WRW0413AA,Tenuta Guado al Tasso By Antinori  Bolgheri Superiore DOC,Wine product,fill_region_from_name,0.95,region,,Tuscany,bolgheri; tenuta
+WRW0413AA,Tenuta Guado al Tasso By Antinori  Bolgheri Superiore DOC,Wine product,fill_region_from_name,0.95,subregion,,Bolgheri,bolgheri; tenuta
+WRW0422AA,"Antinori  Chianti Classico Riserva ""Badia A Passignano"" DOCG",Wine product,fill_region_from_name,0.95,region,,Tuscany,chianti classico; chianti
+WRW0422AA,"Antinori  Chianti Classico Riserva ""Badia A Passignano"" DOCG",Wine product,fill_region_from_name,0.95,subregion,,Chianti Classico,chianti classico; chianti
+WRW5829AA,Michele Chiarlo  Langhe Il Principe DOC,Red Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WWW5481AA,Fontanafredda  Roero Arneis Pradalupo DOCG,White Wine,fill_subregion_from_name,0.88,subregion,,Roero,roero
+WRW3474AA,Tenuta Guado al Tasso By Antinori  Matarocchio Bolgheri IGT,Wine product,fill_region_from_name,0.95,region,,Tuscany,bolgheri; tenuta
+WRW3474AA,Tenuta Guado al Tasso By Antinori  Matarocchio Bolgheri IGT,Wine product,fill_region_from_name,0.95,subregion,,Bolgheri,bolgheri; tenuta
+WRW0412AA,"Antinori  Chianti Classico Riserva ""Marchese"" Tignanello DOCG",Wine product,fill_region_from_name,0.95,region,,Tuscany,chianti classico; chianti
+WRW0412AA,"Antinori  Chianti Classico Riserva ""Marchese"" Tignanello DOCG",Wine product,fill_region_from_name,0.95,subregion,,Chianti Classico,chianti classico; chianti
+WRW5608AA,Wynns  Coonawarra  Estate Cabernet Shiraz Merlot,Red Wine,conflict_region,0.95,region,South Australia,Coonawarra,coonawarra
+WRW5609AA,Wynns  Coonawarra  Estate Shiraz,Red Wine,conflict_region,0.95,region,South Australia,Coonawarra,coonawarra
+WRW5610AA,Wynns  Coonawarra  Estate  The Siding Cabernet Sauvignon,Red Wine,conflict_region,0.95,region,South Australia,Coonawarra,coonawarra
+WRW3381AA,Pian delle Vigne By Antinori  Rosso Di Montalcino DOC,Wine product,fill_region_from_name,0.97,region,,Tuscany,rosso di montalcino; montalcino
+WRW3381AA,Pian delle Vigne By Antinori  Rosso Di Montalcino DOC,Wine product,fill_region_from_name,0.97,subregion,,Rosso di Montalcino,rosso di montalcino; montalcino
+WRW4900AA,Tenuta Guado al Tasso By Antinori  COn't Ugo Bolgheri DOC,Wine product,fill_region_from_name,0.95,region,,Tuscany,bolgheri; tenuta
+WRW4900AA,Tenuta Guado al Tasso By Antinori  COn't Ugo Bolgheri DOC,Wine product,fill_region_from_name,0.95,subregion,,Bolgheri,bolgheri; tenuta
+WRW6271AA,Velenosi  Verso Sera Montepulciano d’Abruzzo DOCG Colline Teramane,Red Wine,conflict_region,0.97,region,Marche,Abruzzo,montepulciano; montepulciano d abruzzo
+WRW6271AA,Velenosi  Verso Sera Montepulciano d’Abruzzo DOCG Colline Teramane,Red Wine,conflict_region,0.97,subregion,,Montepulciano d’Abruzzo,montepulciano; montepulciano d abruzzo
+WRW4842AA,La Spinetta   Langhe Nebbiolo DOC,Red Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW0418AA,Pian delle Vigne By Antinori  Brunello di Montalcino DOCG,Wine product,fill_region_from_name,0.97,region,,Tuscany,brunello di montalcino; montalcino
+WRW0418AA,Pian delle Vigne By Antinori  Brunello di Montalcino DOCG,Wine product,fill_region_from_name,0.97,subregion,,Brunello di Montalcino,brunello di montalcino; montalcino
+WRW0605AA,Batasiolo  Langhe Rosso,Red Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW5611AA,Wynns  Coonawarra  Estate  Black Label Cabernet Sauvignon,Red Wine,conflict_region,0.95,region,South Australia,Coonawarra,coonawarra
+WWW5227AA,Michele Chiarlo  Roero Arneis Le Madri DOCG,White Wine,fill_subregion_from_name,0.88,subregion,,Roero,roero
+WRW6443AA,Fontanafredda  Langhe Nebbiolo Ebbio DOC,Red Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW0632AA,Antinori  Villa Antinori Chianti Classico Riserva DOCG,Wine product,fill_region_from_name,0.95,region,,Tuscany,chianti classico; chianti
+WRW0632AA,Antinori  Villa Antinori Chianti Classico Riserva DOCG,Wine product,fill_region_from_name,0.95,subregion,,Chianti Classico,chianti classico; chianti
+WRW0424AA,Tenuta Guado al Tasso By Antinori  Il Bruciato Bolgheri,Wine product,fill_region_from_name,0.95,region,,Tuscany,bolgheri; tenuta
+WRW0424AA,Tenuta Guado al Tasso By Antinori  Il Bruciato Bolgheri,Wine product,fill_region_from_name,0.95,subregion,,Bolgheri,bolgheri; tenuta
+WRW6441AA,Fontanafredda  Langhe Rosso Eremo DOC,Red Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW5286AA,Brancaia  Chianti Classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW0411AA,"Antinori  Chianti Classico ""Peppoli"" DOC",Wine product,fill_region_from_name,0.95,region,,Tuscany,chianti classico; chianti
+WRW0411AA,"Antinori  Chianti Classico ""Peppoli"" DOC",Wine product,fill_region_from_name,0.95,subregion,,Chianti Classico,chianti classico; chianti
+WWW0221AA,Batasiolo  Gavi Del Comune Di Gavi Granee,White Wine,fill_subregion_from_name,0.9,subregion,,Gavi,gavi
+WRW6026FJ,Oddero  Langhe Nebbiolo DOC,Red Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW5471FJ,Sartori di Verona  “Corte Bra” Amarone Delle Valpolicella DOCG,Red Wine,fill_subregion_from_name,0.92,subregion,,Amarone della Valpolicella,amarone; valpolicella
+WRW6036FJ,Bindi Surgadi Sur Gardo Chianti Classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+LBD0199AD,Chabot Armagnac  XO Superior (700 ml),Wine product,fill_region_from_name,0.92,region,,Armagnac,armagnac
+LBD0112AD,Chabot Armagnac  VSOP Deluxe (700 ml),Wine product,fill_region_from_name,0.92,region,,Armagnac,armagnac
+WRW3606AD,Pio Cesare  Oltre Langhe DOC,Red Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRS0232AD,Pio Cesare  Langhe Rosy Rose,Rose Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW0326AD,Bodegas Palacios Remondo  Camins del Priorat,Red Wine,conflict_region,0.95,region,Rioja,Priorat,priorat; bodegas
+WRW5903AD,Fattoria Mantellassi  Querciolaia Maremma Alicante,Red Wine,fill_subregion_from_name,0.9,subregion,,Maremma,maremma
+WWW1895AD,Pio Cesare  Piodilei Langhe Chardonnay DOC,White Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW5057AD,Castello di Albola Chianti Classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW0096AD,Chateau du Courlat  Cuvee JB AOC Lussac Saint Emilion,Red Wine,conflict_subregion,0.97,subregion,Saint-Émilion,Lussac-Saint-Emilion,saint emilion; lussac saint emilion; chateau
+WRW0025AD,Castello Banfi  Chianti Classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WWW1730AD,Torres  Pazo Das Bruxas Rias Baixas DO,White Wine,fill_region_from_name,0.95,region,,Rías Baixas,rias baixas
+WWW0252AD,Pio Cesare  Gavi white DOCG,White Wine,fill_subregion_from_name,0.9,subregion,,Gavi,gavi
+WRW0337AD,Carpineto  Chianti Classico,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WWW1894AD,Pio Cesare  L'Altro Langhe Chardonnay DOC,White Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW5834AD,Penfolds  Barossa Valley Explorer Dual Pack,Red Wine,conflict_region,0.95,region,South Australia,Barossa Valley,barossa valley; barossa
+LBD0133AJ,J. Dupont Cognac  Grande Champagne XO Art Deco (700 ml),Wine product,fill_region_from_name,0.92,region,,Cognac,champagne; cognac; champagne
+LBD0132AJ,J. Dupont Cognac  Grande Champagne VSOP Art Nouveau (700 ml),Wine product,fill_region_from_name,0.92,region,,Cognac,champagne; cognac; champagne
+WRW5093AJ,Travaglini Gattinara  Riserva Nebbiolo,Red Wine,fill_subregion_from_name,0.93,subregion,,Gattinara,gattinara
+WWW4882AJ,Giuseppe Cortese  Langhe Chardonnay Scapulin,White Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW5091AJ,Travaglini Gattinara  Nebbiolo,Red Wine,fill_subregion_from_name,0.93,subregion,,Gattinara,gattinara
+WRW6501FT,Chateau Leoville Poyferre Saint-Julien Grand Cru Classé,Wine product,fill_region_from_name,0.95,region,,Bordeaux,saint julien; chateau
+WRW6501FT,Chateau Leoville Poyferre Saint-Julien Grand Cru Classé,Wine product,fill_region_from_name,0.95,subregion,,Saint-Julien,saint julien; chateau
+WRW6498FT,Les Tourelles de Longueville Pauillac,Wine product,fill_region_from_name,0.95,region,,Bordeaux,pauillac
+WRW6498FT,Les Tourelles de Longueville Pauillac,Wine product,fill_region_from_name,0.95,subregion,,Pauillac,pauillac
+WRW6494FT,Chateau Cos Labory  Saint Estephe 5Ème Cru Classé 2021,Red Wine,conflict_subregion,0.95,subregion,Saint-Julien,Saint-Estèphe,saint estephe; chateau
+WRW6500FT,Chateau Talbot  Saint Julien 4Ème Cru Classé,Wine product,fill_region_from_name,0.95,region,,Bordeaux,saint julien; chateau
+WRW6500FT,Chateau Talbot  Saint Julien 4Ème Cru Classé,Wine product,fill_region_from_name,0.95,subregion,,Saint-Julien,saint julien; chateau
+WRW6431FT,Chateau Grand Puy Ducasse  5ème Cru Classé de Pauillac 2018,Wine product,fill_region_from_name,0.95,region,,Bordeaux,pauillac; chateau
+WRW6431FT,Chateau Grand Puy Ducasse  5ème Cru Classé de Pauillac 2018,Wine product,fill_region_from_name,0.95,subregion,,Pauillac,pauillac; chateau
+WRW6303GQ,Chateau Ducru Beaucaillou  Madame de Beaucaillou Haut -Medoc,Wine product,fill_region_from_name,0.95,region,,Bordeaux,haut medoc; medoc; chateau
+WRW6303GQ,Chateau Ducru Beaucaillou  Madame de Beaucaillou Haut -Medoc,Wine product,fill_region_from_name,0.95,subregion,,Haut-Médoc,haut medoc; medoc; chateau
+LBD0122DG,Pierre Ferrand  Original 1840 Cognac (700 ml),Wine product,fill_region_from_name,0.92,region,,Cognac,cognac
+WWW5899GT,Joseph Mellot  Pouilly Fume Le Tronsec,White Wine,fill_subregion_from_name,0.95,subregion,,Pouilly-Fumé,pouilly fume
+WRW5477DW,Castelli del Grevepesa  Castello Di Bibbione Riserva Chianti Classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW5478DW,Castelli del Grevepesa  Castello Di Bibbione Gran Selezione Chianti classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW5267DW,Castelli del Grevepesa  Clemente VII Gran Selezione Chianti Classico DOCG Gran Selezione,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW5266DW,Castelli del Grevepesa  Panzano Gran Selezione Chianti Classico DOCG Gran Selezione,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW5265DW,Castelli del Grevepesa  Clemente VII Riserva Chianti Classico DOCG Riserva,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW1620BS,Castello Di Bolgheri  Bolgheri Superiore DOC,Red Wine,fill_subregion_from_name,0.95,subregion,,Bolgheri,bolgheri
+WRW1608BS,Castellare Di Castellina  Chianti Classico Riserva DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW4244BS,Castello di Bossi  Chianti Classico Riserva Berardo DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW1599BS,Marchesi Di Barolo  Barbera d'Alba Peiragal DOC (Single Vineyard),Red Wine,fill_subregion_from_name,0.95,subregion,,Barolo,barolo; barbera d alba
+WRW1618BS,Marchesi Di Barolo  Barbaresco Serragrilli DOCG (Single Vineyard),Red Wine,conflict_subregion,0.95,subregion,Barbaresco,Barolo,barolo; barbaresco
+WRW1591BS,Cordero Di Montezemolo  Langhe Nebbiolo DOC,Red Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW1311BS,Ricasoli  Rocca Guicciarda Chianti Classico Riserva DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WDW0146BS,Marchesi Di Barolo  Moscato d'Asti DOCG Zagara,Dessert Wine,fill_subregion_from_name,0.95,subregion,,Barolo,barolo; moscato d asti
+WWW1182BS,Marchesi Di Barolo  Gavi di Gavi DOCG,White Wine,fill_subregion_from_name,0.95,subregion,,Barolo,barolo; gavi
+WRW1309BS,Ricasoli  Brolio Chianti Classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WWW1183BS,Cordero Di Montezemolo  Langhe Arneis DOC,White Wine,fill_subregion_from_name,0.88,subregion,,Langhe,langhe
+WRW1596BS,Castello Di Bolgheri  Varvara DOC,Red Wine,fill_subregion_from_name,0.95,subregion,,Bolgheri,bolgheri
+WRW1310BS,Ricasoli  Chianti Classico Gran Selezione Castello di Brolio DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW4308BS,Marchesi Di Barolo  Barbera d'Asti Rure DOCG,Red Wine,fill_subregion_from_name,0.95,subregion,,Barolo,barolo; barbera d asti
+WRW4243BS,Castello di Bossi  Chianti Classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+LBD0151EQ,Camus  Cognac Ile De Re Fine Island (700 ml),Wine product,fill_region_from_name,0.92,region,,Cognac,cognac
+LBD0107EQ,Camus  Cognac VSOP Borderies (700 ml),Wine product,fill_region_from_name,0.92,region,,Cognac,cognac
+LBD0200EQ,Camus  Cognac VSOP Intensity (700 ml),Wine product,fill_region_from_name,0.92,region,,Cognac,cognac
+LBD0017EQ,Camus  Cognac XO Borderies (700 ml),Wine product,fill_region_from_name,0.92,region,,Cognac,cognac
+WWW5441FC,Louis Latour  Chevalier-Montrachet Grand Cru,White Wine,conflict_subregion,0.97,subregion,Puligny-Montrachet,Chevalier-Montrachet,chevalier montrachet
+WWW0409FC,Louis Latour  Corton-Charlemagne Grand Cru,White Wine,conflict_subregion,0.97,subregion,Aloxe-Corton,Corton-Charlemagne,corton charlemagne
+WRW4581FC,Chateau Rauzan-Ségla  Margaux,Wine product,fill_region_from_name,0.92,region,,Bordeaux,margaux; chateau
+WRW4581FC,Chateau Rauzan-Ségla  Margaux,Wine product,fill_region_from_name,0.92,subregion,,Margaux,margaux; chateau
+WRW4272FC,Castello Di Ama  San Lorenzo Chianti Classico Gran Selezione DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW5186FC,Castello Di Ama  Chianti Classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW5193FC,Agricola San Felice  San Felice Chianti Classico DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+WRW5192FC,Agricola San Felice  Bell'Aja Bolgheri DOC,Red Wine,fill_subregion_from_name,0.95,subregion,,Bolgheri,bolgheri
+WRW5187FC,Agricola San Felice  Il Grigio di San Felice Chianti Classico Riserva DOCG,Red Wine,conflict_subregion,0.95,subregion,Chianti,Chianti Classico,chianti classico; chianti
+LBD0041AF,Calvados Pere Magloire  12 Years Old (700 ml),Wine product,fill_region_from_name,0.95,region,,Calvados,calvados
+LBD0042AF,Calvados Pere Magloire  Fine V.S. (700 ml),Wine product,fill_region_from_name,0.95,region,,Calvados,calvados
+LBD0044AF,Calvados Pere Magloire  X.O. (700 ml),Wine product,fill_region_from_name,0.95,region,,Calvados,calvados
+LBD0043AF,Calvados Pere Magloire  V.S.O.P. (700 ml),Wine product,fill_region_from_name,0.95,region,,Calvados,calvados
+WRW5548FT,Chateau Boyd-Cantenac  Margaux,Wine product,fill_region_from_name,0.92,region,,Bordeaux,margaux; chateau
+WRW5548FT,Chateau Boyd-Cantenac  Margaux,Wine product,fill_region_from_name,0.92,subregion,,Margaux,margaux; chateau

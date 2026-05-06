@@ -293,7 +293,7 @@ export function ProductMatrixPage() {
 
       {/* KPI row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard icon={BarChart2}  label="Total Products"   value={matrix.totalProducts}  sub="All categories & statuses" color="#8b5cf6" />
+        <StatCard icon={BarChart2}  label="Total Products"   value={matrix.totalProducts}  sub="All item categories & statuses" color="#8b5cf6" />
         <StatCard icon={Star}       label="Validated"        value={matrix.validated}       sub={`${validPct}% of catalog`}  color="#10b981" />
         <StatCard icon={TrendingUp} label="Needs Review"     value={matrix.needsReview}     sub="Taxonomy flags pending"     color="#f59e0b" />
         <StatCard icon={Globe}      label="Countries"        value={matrix.byCountry.length} sub="Origin countries in catalog" color="#60a5fa" />
@@ -311,11 +311,11 @@ export function ProductMatrixPage() {
           <p className="text-xs text-slate-600 mt-4">High ≥ 75% · Medium 40–74% · Low &lt; 40%</p>
         </div>
 
-        {/* Classification tiers */}
+        {/* Taxonomy classifications */}
         <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
           <div className="flex items-center gap-2 mb-5">
             <Layers size={13} className="text-violet-400" />
-            <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Classification Tiers</h3>
+            <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Classifications</h3>
           </div>
           {matrix.byClassification.length > 0 ? (
             <div className="space-y-2">
@@ -329,11 +329,11 @@ export function ProductMatrixPage() {
         </div>
       </div>
 
-      {/* Category bars */}
+      {/* Item category bars */}
       <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
         <div className="flex items-center gap-2 mb-5">
           <Tag size={13} className="text-violet-400" />
-          <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Product Categories</h3>
+          <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Item Categories</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-2">
           {matrix.byCategory.map(f => (

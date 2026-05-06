@@ -489,7 +489,7 @@ export function TaxonomyQueuePage() {
                   <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm">
                     {[
                       { label: 'Type', value: panelProduct.wine_type || panelProduct.liquor_main_type },
-                      { label: 'Classification', value: panelProduct.classification },
+                      { label: 'Item Category', value: panelProduct.classification },
                       { label: 'Grape / Variety', value: panelProduct.grape_variety },
                       { label: 'Origin', value: panelProduct.origin },
                     ].map(({ label, value }) => (
@@ -654,7 +654,7 @@ export function TaxonomyQueuePage() {
                     <datalist id="subregion-options">{(taxOptions?.subregions ?? []).map(s => <option key={s} value={s} />)}</datalist>
                   </div>
                   <div><label className="text-xs text-slate-400 block mb-1">Origin</label>{txt('origin')}</div>
-                  <div><label className="text-xs text-slate-400 block mb-1">Classification</label>{sel('classification', taxOptions?.classifications ?? [])}</div>
+                  <div><label className="text-xs text-slate-400 block mb-1">Item Category</label>{sel('classification', taxOptions?.classifications ?? [])}</div>
                   <div><label className="text-xs text-slate-400 block mb-1">Grape / Variety</label>{sel('grape_variety', taxOptions?.grapeVarieties ?? [])}</div>
                   {isWine(panelProduct)
                     ? <div><label className="text-xs text-slate-400 block mb-1">Wine type</label>{sel('wine_type', WINE_TYPE_OPTIONS)}</div>

@@ -2,7 +2,10 @@
    Map configuration — MapLibre GL + CartoCDN
    ────────────────────────────────────────────────── */
 
-export const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
+export const MAP_STYLES = {
+  dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+  light: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+} as const;
 
 export const INITIAL_VIEW = {
   latitude: 30,

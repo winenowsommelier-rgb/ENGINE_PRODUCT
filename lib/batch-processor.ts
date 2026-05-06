@@ -177,7 +177,7 @@ export function normalizeRow(rawRow: Record<string, any>, index: number): Normal
     score(is.confidence >= 0.7);
   } else score(false);
 
-  // Classification
+  // Item category
   let classification = String(rawRow.classification || '').trim();
   let classificationSource = 'input';
   if (!classification) {
@@ -186,7 +186,7 @@ export function normalizeRow(rawRow: Record<string, any>, index: number): Normal
     classificationSource = classification ? 'derived' : 'unknown';
   }
   if (!classification) {
-    errors.push('Classification is required');
+    errors.push('Item Category is required');
   }
 
   // Price / cost

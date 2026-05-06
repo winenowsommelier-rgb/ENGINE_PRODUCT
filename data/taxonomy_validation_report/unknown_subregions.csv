@@ -1,0 +1,48 @@
+bucket,country,region,subregion,count
+wine,Italy,Veneto,Prosecco,56
+wine,France,Bordeaux,Saint-Émilion,44
+wine,Italy,Tuscany,Chianti DOCG,41
+wine,France,Bordeaux,Pauillac,38
+wine,Italy,Piedmont,Barolo,37
+wine,Italy,Tuscany,Brunello di Montalcino,32
+wine,Italy,Abruzzo,Montepulciano d’Abruzzo,32
+wine,Italy,Veneto,Amarone della Valpolicella,28
+wine,France,Bordeaux,Margaux,28
+wine,France,Bordeaux,Pomerol,23
+wine,Italy,Tuscany,Rosso di Montalcino,22
+wine,Italy,Piedmont,Barbaresco,19
+wine,France,Bordeaux,Haut-Médoc,18
+wine,France,Bordeaux,Saint-Estèphe,17
+wine,Italy,Veneto,Valpolicella Ripasso,17
+wine,France,Bordeaux,Pessac-Léognan,17
+wine,France,Provence,Les Baux-de-Provence,16
+wine,France,Bordeaux,Saint-Julien,13
+wine,France,Burgundy,Puligny-Montrachet,8
+wine,France,Burgundy,Nuits-Saint-Georges,7
+wine,France,Burgundy,Aloxe-Corton,7
+wine,USA,California,Carneros,5
+wine,France,Burgundy,Gevrey-Chambertin,5
+wine,France,Burgundy,Pouilly-Fuissé,5
+wine,France,Bordeaux,Saint-Emilion,4
+wine,France,Burgundy,Pommard,3
+wine,France,Burgundy,Beaujolais,3
+wine,France,Burgundy,Beaune,3
+wine,France,Burgundy,Chambolle-Musigny,3
+wine,France,Bordeaux,Sauternes,2
+wine,Italy,Piedmont,Gattinara,2
+wine,France,Burgundy,Saint-Véran / Viré-Clessé,2
+wine,France,Burgundy,Vosne-Romanée,2
+wine,France,Burgundy,Chassagne-Montrachet,2
+wine,France,Burgundy,Meursault,2
+wine,France,Burgundy,Volnay,2
+wine,Italy,Tuscany,Chianti Classico,1
+wine,France,Burgundy,Corton-Charlemagne,1
+wine,Italy,Umbria,Montefalco,1
+wine,Italy,Piedmont,Gavi,1
+wine,France,Bordeaux,Lussac-Saint-Emilion,1
+wine,France,Burgundy,Morey-Saint-Denis,1
+wine,Italy,Tuscany,Cirò,1
+wine,France,Burgundy,Mercurey,1
+wine,France,Loire valley,Pouilly-Fumé,1
+wine,France,Burgundy,Chevalier-Montrachet,1
+wine,France,Bordeaux,Côtes de Castillon,1

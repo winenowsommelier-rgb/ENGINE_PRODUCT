@@ -85,6 +85,11 @@ export function getSubregionsForRegion(regionId: number, category: CategoryScope
   return list;
 }
 
+export function getSubregionsForCountry(countryId: number, category: CategoryScope | null): TaxSubregion[] {
+  const regions = regionsByCountryId.get(countryId) ?? [];
+  return regions.flatMap((region) => getSubregionsForRegion(region.id, category));
+}
+
 export function getAppellationsForSubregion(subregionId: number): TaxAppellation[] {
   return appsBySubregionId.get(subregionId) ?? [];
 }

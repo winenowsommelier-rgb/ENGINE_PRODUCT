@@ -39,7 +39,7 @@ const WINE_CHIPS: ChipGroup[] = [
 
 const SPIRITS_CHIPS: ChipGroup[] = [
   {
-    label: "Type",
+    label: "Item Category",
     paramKey: "classification",
     options: ["Whisky", "Gin", "Rum", "Tequila", "Vodka", "Brandy", "Liqueur"],
   },
@@ -47,7 +47,7 @@ const SPIRITS_CHIPS: ChipGroup[] = [
 
 const BEER_CHIPS: ChipGroup[] = [
   {
-    label: "Style",
+    label: "Item Category",
     paramKey: "classification",
     options: ["IPA", "Lager", "Stout", "Ale"],
   },
@@ -55,7 +55,7 @@ const BEER_CHIPS: ChipGroup[] = [
 
 const SAKE_CHIPS: ChipGroup[] = [
   {
-    label: "Style",
+    label: "Item Category",
     paramKey: "classification",
     options: ["Junmai", "Daiginjo", "Honjozo"],
   },
@@ -63,7 +63,7 @@ const SAKE_CHIPS: ChipGroup[] = [
 
 const ALL_CHIPS: ChipGroup[] = [
   {
-    label: "Type",
+    label: "Item Category",
     paramKey: "classification",
     options: [
       "Red Wine",
@@ -101,9 +101,10 @@ function getChipGroups(category: CategoryScope | null): ChipGroup[] {
 interface Props {
   category: CategoryScope | null;
   onChange: (filters: Record<string, string>) => void;
+  theme?: "dark" | "light";
 }
 
-export default function ProductFilters({ category, onChange }: Props) {
+export default function ProductFilters({ category, onChange, theme = "dark" }: Props) {
   const [open, setOpen] = useState(false);
 
   // Selected chips: paramKey -> Set of selected values
@@ -177,16 +178,20 @@ export default function ProductFilters({ category, onChange }: Props) {
     (priceMax ? 1 : 0);
 
   return (
-    <div className="border-b border-white/8">
+    <div className={theme === "light" ? "border-b border-slate-200" : "border-b border-white/8"}>
       {/* Toggle button */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between px-4 py-2 text-xs text-white/50 hover:text-white/70 transition-colors"
+        className={`flex w-full items-center justify-between px-4 py-2 text-xs transition-colors ${
+          theme === "light" ? "text-slate-500 hover:text-slate-800" : "text-white/50 hover:text-white/70"
+        }`}
       >
         <span className="flex items-center gap-1.5">
           Filters
           {activeCount > 0 && (
-            <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-white/15 px-1 text-[10px] font-semibold text-white">
+            <span className={`flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-semibold ${
+              theme === "light" ? "bg-slate-900 text-white" : "bg-white/15 text-white"
+            }`}>
               {activeCount}
             </span>
           )}
@@ -200,7 +205,7 @@ export default function ProductFilters({ category, onChange }: Props) {
           {/* Chip groups */}
           {chipGroups.map((group) => (
             <div key={group.paramKey + group.label}>
-              <p className="mb-1.5 text-[10px] font-medium uppercase tracking-wider text-white/30">
+              <p className={theme === "light" ? "mb-1.5 text-[10px] font-medium uppercase tracking-wider text-slate-400" : "mb-1.5 text-[10px] font-medium uppercase tracking-wider text-white/30"}>
                 {group.label}
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -212,8 +217,12 @@ export default function ProductFilters({ category, onChange }: Props) {
                       onClick={() => toggleChip(group.paramKey, opt)}
                       className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
                         isActive
-                          ? "border-white/30 bg-white/15 text-white"
-                          : "border-white/10 bg-white/5 text-white/50 hover:bg-white/8 hover:text-white/70"
+                          ? theme === "light"
+                            ? "border-slate-900/15 bg-slate-900 text-white"
+                            : "border-white/30 bg-white/15 text-white"
+                          : theme === "light"
+                            ? "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                            : "border-white/10 bg-white/5 text-white/50 hover:bg-white/8 hover:text-white/70"
                       }`}
                     >
                       {opt}
@@ -226,12 +235,12 @@ export default function ProductFilters({ category, onChange }: Props) {
 
           {/* Price range */}
           <div>
-            <p className="mb-1.5 text-[10px] font-medium uppercase tracking-wider text-white/30">
+            <p className={theme === "light" ? "mb-1.5 text-[10px] font-medium uppercase tracking-wider text-slate-400" : "mb-1.5 text-[10px] font-medium uppercase tracking-wider text-white/30"}>
               Price (฿)
             </p>
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[11px] text-white/30">
+                <span className={theme === "light" ? "absolute left-2 top-1/2 -translate-y-1/2 text-[11px] text-slate-400" : "absolute left-2 top-1/2 -translate-y-1/2 text-[11px] text-white/30"}>
                   ฿
                 </span>
                 <input
@@ -242,12 +251,16 @@ export default function ProductFilters({ category, onChange }: Props) {
                   onChange={(e) => setPriceMin(e.target.value)}
                   onBlur={applyPrice}
                   onKeyDown={handlePriceKeyDown}
-                  className="w-full rounded-md border border-white/10 bg-white/5 py-1.5 pl-5 pr-2 text-xs text-white outline-none placeholder:text-white/25 focus:border-white/20"
+                  className={`w-full rounded-md border py-1.5 pl-5 pr-2 text-xs outline-none ${
+                    theme === "light"
+                      ? "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-slate-400"
+                      : "border-white/10 bg-white/5 text-white placeholder:text-white/25 focus:border-white/20"
+                  }`}
                 />
               </div>
-              <span className="text-[10px] text-white/25">&ndash;</span>
+              <span className={theme === "light" ? "text-[10px] text-slate-400" : "text-[10px] text-white/25"}>&ndash;</span>
               <div className="relative flex-1">
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[11px] text-white/30">
+                <span className={theme === "light" ? "absolute left-2 top-1/2 -translate-y-1/2 text-[11px] text-slate-400" : "absolute left-2 top-1/2 -translate-y-1/2 text-[11px] text-white/30"}>
                   ฿
                 </span>
                 <input
@@ -258,7 +271,11 @@ export default function ProductFilters({ category, onChange }: Props) {
                   onChange={(e) => setPriceMax(e.target.value)}
                   onBlur={applyPrice}
                   onKeyDown={handlePriceKeyDown}
-                  className="w-full rounded-md border border-white/10 bg-white/5 py-1.5 pl-5 pr-2 text-xs text-white outline-none placeholder:text-white/25 focus:border-white/20"
+                  className={`w-full rounded-md border py-1.5 pl-5 pr-2 text-xs outline-none ${
+                    theme === "light"
+                      ? "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-slate-400"
+                      : "border-white/10 bg-white/5 text-white placeholder:text-white/25 focus:border-white/20"
+                  }`}
                 />
               </div>
             </div>
@@ -268,7 +285,11 @@ export default function ProductFilters({ category, onChange }: Props) {
           {activeCount > 0 && (
             <button
               onClick={clearAll}
-              className="text-[11px] text-white/40 underline decoration-white/20 underline-offset-2 hover:text-white/60 transition-colors"
+              className={`text-[11px] underline underline-offset-2 transition-colors ${
+                theme === "light"
+                  ? "text-slate-500 decoration-slate-300 hover:text-slate-900"
+                  : "text-white/40 decoration-white/20 hover:text-white/60"
+              }`}
             >
               Clear all filters
             </button>

@@ -17,6 +17,7 @@ interface ProductDetailCardProps {
   product: ExploreProduct;
   category: CategoryScope | null;
   onClose: () => void;
+  theme?: "dark" | "light";
 }
 
 /* ── Helpers ─────────────────────────────────────── */
@@ -55,6 +56,7 @@ export default function ProductDetailCard({
   product,
   category,
   onClose,
+  theme = "dark",
 }: ProductDetailCardProps) {
   const accent = getAccent(category);
   const accentRgb = getAccentRgb(category);
@@ -89,18 +91,24 @@ export default function ProductDetailCard({
   return (
     /* Backdrop */
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm ${
+        theme === "light" ? "bg-slate-900/20" : "bg-black/60"
+      }`}
       onClick={onClose}
     >
       {/* Card */}
       <div
-        className="relative max-h-[90vh] w-full max-w-[480px] overflow-y-auto rounded-2xl border border-white/8 bg-[#12121f] shadow-2xl animate-card-in"
+        className={`relative max-h-[90vh] w-full max-w-[480px] overflow-y-auto rounded-2xl border shadow-2xl animate-card-in ${
+          theme === "light" ? "border-slate-200 bg-white" : "border-white/8 bg-[#12121f]"
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-lg text-white/40 hover:bg-white/10 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none"
+          className={`absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none ${
+            theme === "light" ? "text-slate-400 hover:bg-slate-100 hover:text-slate-900" : "text-white/40 hover:bg-white/10 hover:text-white"
+          }`}
           aria-label="Close detail"
         >
           <X size={16} />
@@ -115,35 +123,35 @@ export default function ProductDetailCard({
             sku={product.sku}
             classification={product.classification}
             size="xl"
-            className="!w-[100px] !h-[140px] rounded-xl border border-white/6"
+            className={`!w-[100px] !h-[140px] rounded-xl border ${theme === "light" ? "border-slate-200" : "border-white/6"}`}
           />
 
           {/* Info */}
           <div className="flex flex-1 flex-col justify-center min-w-0 pr-6">
-            <h2 className="text-base font-semibold text-white leading-snug">
+            <h2 className={theme === "light" ? "text-base font-semibold leading-snug text-slate-900" : "text-base font-semibold text-white leading-snug"}>
               {product.name}
             </h2>
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-white/50">
+            <div className={theme === "light" ? "mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500" : "mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-white/50"}>
               {product.brand && <span>{product.brand}</span>}
               {product.brand && product.vintage && (
-                <span className="text-white/20">·</span>
+                <span className={theme === "light" ? "text-slate-300" : "text-white/20"}>·</span>
               )}
               {product.vintage && <span>{product.vintage}</span>}
             </div>
             {product.grape_variety && (
-              <p className="mt-1 text-xs text-white/40 flex items-center gap-1">
-                <Grape size={11} className="text-white/30" />
+              <p className={theme === "light" ? "mt-1 flex items-center gap-1 text-xs text-slate-500" : "mt-1 text-xs text-white/40 flex items-center gap-1"}>
+                <Grape size={11} className={theme === "light" ? "text-slate-400" : "text-white/30"} />
                 {product.grape_variety}
               </p>
             )}
-            <p className="mt-2 text-lg font-bold text-white">
+            <p className={theme === "light" ? "mt-2 text-lg font-bold text-slate-900" : "mt-2 text-lg font-bold text-white"}>
               ฿{product.price?.toLocaleString() ?? "N/A"}
             </p>
           </div>
         </div>
 
         {/* ── Badges ───────────────────────────────── */}
-        <div className="flex flex-wrap gap-1.5 border-t border-white/6 px-5 py-3">
+        <div className={theme === "light" ? "flex flex-wrap gap-1.5 border-t border-slate-200 px-5 py-3" : "flex flex-wrap gap-1.5 border-t border-white/6 px-5 py-3"}>
           {product.classification && (
             <Badge label={product.classification} accent={accent} />
           )}
@@ -157,8 +165,8 @@ export default function ProductDetailCard({
 
         {/* ── Description ──────────────────────────── */}
         {product.desc_en_short && (
-          <div className="border-t border-white/6 px-5 py-3">
-            <p className="text-xs leading-relaxed text-white/50">
+          <div className={theme === "light" ? "border-t border-slate-200 px-5 py-3" : "border-t border-white/6 px-5 py-3"}>
+            <p className={theme === "light" ? "text-xs leading-relaxed text-slate-600" : "text-xs leading-relaxed text-white/50"}>
               {product.desc_en_short}
             </p>
           </div>

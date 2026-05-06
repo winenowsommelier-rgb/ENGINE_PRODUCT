@@ -184,7 +184,7 @@ function GeographyTab() {
   );
 }
 
-// ── Classification Tab ────────────────────────────────────────────────────────
+// ── Item Category Tab ─────────────────────────────────────────────────────────
 function ClassificationTab() {
   const [search, setSearch] = useState('');
   const [scopeFilter, setScopeFilter] = useState('all');
@@ -218,7 +218,7 @@ function ClassificationTab() {
       <div className="flex flex-wrap gap-2">
         <div className="relative flex-1 min-w-48">
           <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search classifications…"
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search item categories..."
             className="w-full rounded-xl border border-white/10 bg-white/5 pl-8 pr-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none" />
         </div>
         <select value={scopeFilter} onChange={e => setScopeFilter(e.target.value)}
@@ -451,7 +451,7 @@ export function TaxonomyEditor() {
 
   const TABS: { id: TaxTab; label: string; count: string }[] = [
     { id: 'geography', label: 'Geography', count: '28 countries · 83 regions · 129 subregions · 154 origins' },
-    { id: 'classification', label: 'Classification', count: `${classifications.length} entries` },
+    { id: 'classification', label: 'Item Categories', count: `${classifications.length} entries` },
     { id: 'ingredients', label: 'Ingredients & Grapes', count: `${ingredients.length} entries` },
     { id: 'flavours', label: 'Flavour notes', count: `${flavours.length} entries` },
   ];

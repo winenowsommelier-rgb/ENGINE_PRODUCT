@@ -17,6 +17,7 @@ interface Props {
   subregion?: string;
   category: CategoryScope | null;
   onClose: () => void;
+  theme?: "dark" | "light";
 }
 
 type SortOption = "popular" | "price-asc" | "price-desc" | "newest" | "name";
@@ -29,6 +30,7 @@ export default function ProductSidebar({
   subregion,
   category,
   onClose,
+  theme = "dark",
 }: Props) {
   const [products, setProducts] = useState<ExploreProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,21 +97,28 @@ export default function ProductSidebar({
     }
   }, [loading, products.length, totalCount, page, fetchProducts]);
 
+  const shellClass =
+    theme === "light"
+      ? "fixed right-0 top-0 z-40 flex h-full w-[380px] flex-col border-l border-slate-200 bg-white shadow-2xl max-lg:hidden"
+      : "fixed right-0 top-0 z-40 flex h-full w-[380px] flex-col border-l border-white/8 bg-[#12121f] shadow-2xl max-lg:hidden";
+
   return (
-    <div className="fixed right-0 top-0 z-40 flex h-full w-[380px] flex-col border-l border-white/8 bg-[#12121f] shadow-2xl max-lg:hidden">
+    <div className={shellClass}>
       {/* Header */}
-      <div className="border-b border-white/[0.08] px-4 py-4">
+      <div className={theme === "light" ? "border-b border-slate-200 px-4 py-4" : "border-b border-white/[0.08] px-4 py-4"}>
         <div className="flex items-center gap-2">
           <button
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-white/50 hover:bg-white/10 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none"
+            className={`flex h-10 w-10 items-center justify-center rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none ${
+              theme === "light" ? "text-slate-500 hover:bg-slate-100 hover:text-slate-900" : "text-white/50 hover:bg-white/10 hover:text-white"
+            }`}
             aria-label="Close sidebar"
           >
             <ChevronLeft size={18} />
           </button>
           <div className="flex-1 min-w-0">
-            <h2 className="text-sm font-semibold text-white truncate">{locationName}</h2>
-            <p className="text-xs text-white/40">
+            <h2 className={theme === "light" ? "truncate text-sm font-semibold text-slate-900" : "truncate text-sm font-semibold text-white"}>{locationName}</h2>
+            <p className={theme === "light" ? "text-xs text-slate-500" : "text-xs text-white/40"}>
               {totalCount.toLocaleString()} {totalCount === 1 ? "product" : "products"}
             </p>
           </div>
@@ -117,12 +126,14 @@ export default function ProductSidebar({
       </div>
 
       {/* Sort */}
-      <div className="flex items-center gap-2 border-b border-white/8 px-4 py-2">
-        <label className="text-xs text-white/40">Sort:</label>
+      <div className={theme === "light" ? "flex items-center gap-2 border-b border-slate-200 px-4 py-2" : "flex items-center gap-2 border-b border-white/8 px-4 py-2"}>
+        <label className={theme === "light" ? "text-xs text-slate-500" : "text-xs text-white/40"}>Sort:</label>
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as SortOption)}
-          className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-white outline-none"
+          className={`rounded-md border px-2 py-1 text-xs outline-none ${
+            theme === "light" ? "border-slate-200 bg-white text-slate-900" : "border-white/10 bg-white/5 text-white"
+          }`}
         >
           <option value="popular">Popular</option>
           <option value="price-asc">Price: Low to High</option>
@@ -135,6 +146,7 @@ export default function ProductSidebar({
       {/* Filters */}
       <ProductFilters
         category={category}
+        theme={theme}
         onChange={(f) => {
           setFilters(f);
           setPage(1);
@@ -148,11 +160,15 @@ export default function ProductSidebar({
             key={p.id}
             type="button"
             onClick={() => setSelectedProduct(p)}
-            className="group w-full rounded-xl border border-white/[0.06] bg-white/[0.02] p-3 text-left transition-all hover:border-white/[0.12] hover:bg-white/[0.05] focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none"
+            className={`group w-full rounded-xl border p-3 text-left transition-all focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none ${
+              theme === "light"
+                ? "border-slate-200 bg-slate-50/70 hover:border-slate-300 hover:bg-slate-50"
+                : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.05]"
+            }`}
           >
             <div className="flex gap-3">
               {/* Product image */}
-              <div className="h-20 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-white/[0.03] flex items-center justify-center">
+              <div className={`flex h-20 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg ${theme === "light" ? "bg-white" : "bg-white/[0.03]"}`}>
                 <ProductImage
                   src={p.image_url}
                   sku={p.sku}
@@ -164,13 +180,13 @@ export default function ProductSidebar({
 
               {/* Info */}
               <div className="flex flex-1 flex-col min-w-0">
-                <h3 className="text-sm font-semibold text-white leading-snug line-clamp-2 group-hover:text-white">
+                <h3 className={theme === "light" ? "line-clamp-2 text-sm font-semibold leading-snug text-slate-900" : "line-clamp-2 text-sm font-semibold leading-snug text-white group-hover:text-white"}>
                   {p.name}
                 </h3>
                 {p.brand && (
-                  <p className="mt-0.5 text-xs text-white/50 truncate">{p.brand}</p>
+                  <p className={theme === "light" ? "mt-0.5 truncate text-xs text-slate-500" : "mt-0.5 truncate text-xs text-white/50"}>{p.brand}</p>
                 )}
-                <p className="mt-1 text-[11px] text-white/40 truncate">
+                <p className={theme === "light" ? "mt-1 truncate text-[11px] text-slate-500" : "mt-1 truncate text-[11px] text-white/40"}>
                   {[p.grape_variety, p.vintage].filter(Boolean).join(" · ")}
                 </p>
                 <div className="mt-auto flex items-center justify-between gap-2 pt-2">
@@ -184,7 +200,7 @@ export default function ProductSidebar({
                   ) : (
                     <span />
                   )}
-                  <span className="text-sm font-bold text-white whitespace-nowrap">
+                  <span className={theme === "light" ? "whitespace-nowrap text-sm font-bold text-slate-900" : "whitespace-nowrap text-sm font-bold text-white"}>
                     ฿{p.price?.toLocaleString() ?? "—"}
                   </span>
                 </div>
@@ -195,13 +211,13 @@ export default function ProductSidebar({
 
         {loading && (
           <div className="flex items-center justify-center py-8">
-            <Loader2 size={20} className="animate-spin text-white/30" />
+            <Loader2 size={20} className={theme === "light" ? "animate-spin text-slate-400" : "animate-spin text-white/30"} />
           </div>
         )}
 
         {error && (
           <div className="py-8 text-center">
-            <p className="text-sm text-white/50">{error}</p>
+            <p className={theme === "light" ? "text-sm text-slate-500" : "text-sm text-white/50"}>{error}</p>
             <button
               onClick={() => fetchProducts(page)}
               className="mt-2 rounded-lg px-4 py-1.5 text-sm font-medium text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a1a] focus-visible:outline-none"
@@ -213,11 +229,11 @@ export default function ProductSidebar({
         )}
 
         {!loading && !error && products.length === 0 && (
-          <EmptyState category={category} locationName={locationName} />
+          <EmptyState category={category} locationName={locationName} theme={theme} />
         )}
 
         {!loading && products.length > 0 && products.length < totalCount && (
-          <p className="py-2 text-center text-xs text-white/30">
+          <p className={theme === "light" ? "py-2 text-center text-xs text-slate-500" : "py-2 text-center text-xs text-white/30"}>
             Showing {products.length} of {totalCount}
           </p>
         )}
@@ -228,6 +244,7 @@ export default function ProductSidebar({
         <ProductDetailCard
           product={selectedProduct}
           category={category}
+          theme={theme}
           onClose={() => setSelectedProduct(null)}
         />
       )}

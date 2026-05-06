@@ -1,0 +1,41 @@
+brand,sites,product_views_signal,brand_pageviews_signal,users_signal,matched_product_count,representative_paths,priority_score,priority_band,priority_reason,priority_rank
+Penfolds,Wine-Now,299.0,428.0,316.0,7,/penfolds | /penfolds-bin-2.html | /penfolds-bin-389-cabernet-sauvignon-shiraz-nv.html | /penfolds-bin-8-shiraz-cabernet.html,854.4,critical,"Blend of direct product demand, brand-page interest, and browse users.",1
+Jacob's Creek,Wine-Now,211.0,140.0,110.0,3,/jacob-s-creek-classic-cabernet-sauvignon-750-ml.html,394.0,critical,"Blend of direct product demand, brand-page interest, and browse users.",2
+Granmonte,Wine-Now,24.0,129.0,79.0,1,/granmonte,188.15,high,"Blend of direct product demand, brand-page interest, and browse users.",3
+Chandon,Wine-Now,89.0,62.0,46.0,2,/chandon-brut.html,169.5,high,"Blend of direct product demand, brand-page interest, and browse users.",4
+Baron Philippe de Rothschild,Wine-Now,159.0,0.0,0.0,3,,159.0,high,"Blend of direct product demand, brand-page interest, and browse users.",5
+Freixenet,Wine-Now,40.0,61.0,45.0,1,/freixenet,119.15,high,"Blend of direct product demand, brand-page interest, and browse users.",6
+Vigneti Del Salento,Wine-Now,0.0,79.0,67.0,0,/vigneti-del-salento-zolla-primitivo-di-manduria-doc.html,104.25,high,"Blend of direct product demand, brand-page interest, and browse users.",7
+Inchon,LIQ9,0.0,74.0,62.0,0,/inchon,97.5,medium,"Blend of direct product demand, brand-page interest, and browse users.",8
+Ruinart,Wine-Now,0.0,75.0,53.0,0,/ruinart,96.85,medium,"Blend of direct product demand, brand-page interest, and browse users.",9
+Nikka,LIQ9,0.0,64.0,37.0,0,/nikka | /nikka-super-nikka-700-ml.html,81.0,medium,"Blend of direct product demand, brand-page interest, and browse users.",10
+Iron Balls,LIQ9,0.0,53.0,34.0,0,/iron-balls-gin-700-ml.html,67.75,medium,"Blend of direct product demand, brand-page interest, and browse users.",11
+Cantine Leonardo Da Vinci,Wine-Now,60.0,0.0,0.0,1,,60.0,medium,"Blend of direct product demand, brand-page interest, and browse users.",12
+Greywacke,Wine-Now,0.0,45.0,32.0,0,/greywacke,58.15,medium,"Blend of direct product demand, brand-page interest, and browse users.",13
+Hennessy,LIQ9,0.0,44.0,30.0,0,/hennessy | /hennessy-v-s-with-box-700-ml.html,56.6,medium,"Blend of direct product demand, brand-page interest, and browse users.",14
+Moet & Chandon,Wine-Now,52.0,0.0,0.0,2,,52.0,medium,"Blend of direct product demand, brand-page interest, and browse users.",15
+Allegrini,Wine-Now,51.0,0.0,0.0,2,,51.0,medium,"Blend of direct product demand, brand-page interest, and browse users.",16
+Velenosi,Wine-Now,47.0,0.0,0.0,2,,47.0,medium,"Blend of direct product demand, brand-page interest, and browse users.",17
+Tanqueray,LIQ9,0.0,30.0,17.0,0,/tanqueray-flor-de-sevilla-700-ml.html,37.9,watch,"Blend of direct product demand, brand-page interest, and browse users.",18
+Mcguigan,Wine-Now,37.0,0.0,0.0,1,,37.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",19
+Prakaan,LIQ9,0.0,28.0,19.0,0,/prakaan-single-malt-whisky-tribura-series-peated-malt-700-ml.html,36.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",20
+Glenfiddich,LIQ9,0.0,27.0,21.0,0,/glenfiddich-12-years-old-700-ml.html,35.25,watch,"Blend of direct product demand, brand-page interest, and browse users.",21
+Batasiolo,Wine-Now,35.0,0.0,0.0,1,,35.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",22
+Massolino,Wine-Now,35.0,0.0,0.0,1,,35.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",23
+Zonin,Wine-Now,35.0,0.0,0.0,1,,35.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",24
+Fleur de France,Wine-Now,34.0,0.0,0.0,1,,34.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",25
+Angostura,LIQ9,0.0,24.0,20.0,0,/angostura-aromatic-bitters-200-ml.html,31.6,watch,"Blend of direct product demand, brand-page interest, and browse users.",26
+Vecchia Romagna,LIQ9,0.0,23.0,14.0,0,/vecchia-romagna-riserva-tre-botti-brandy-700-ml.html,29.25,watch,"Blend of direct product demand, brand-page interest, and browse users.",27
+Beluga,LIQ9,0.0,21.0,17.0,0,/beluga,27.55,watch,"Blend of direct product demand, brand-page interest, and browse users.",28
+Phraya,LIQ9,0.0,21.0,17.0,0,/phraya-elements-rum-700-ml.html,27.55,watch,"Blend of direct product demand, brand-page interest, and browse users.",29
+Bottega,Wine-Now,27.0,0.0,0.0,1,,27.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",30
+Colina,Wine-Now,27.0,0.0,0.0,1,,27.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",31
+Cantine Pellegrino,Wine-Now,23.0,0.0,0.0,1,,23.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",32
+Champagne Ernest Rapeneau,Wine-Now,23.0,0.0,0.0,1,,23.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",33
+Dom Perignon,Wine-Now,23.0,0.0,0.0,1,,23.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",34
+Hendrick's,LIQ9,0.0,17.0,17.0,0,/hendrick-s-gin-700-ml.html,22.95,watch,"Blend of direct product demand, brand-page interest, and browse users.",35
+Concha Y Toro,Wine-Now,22.0,0.0,0.0,1,,22.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",36
+French Bloom,Wine-Now,22.0,0.0,0.0,1,,22.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",37
+Luce Della Vite,Wine-Now,21.0,0.0,0.0,1,,21.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",38
+Michel Lynch,Wine-Now,21.0,0.0,0.0,1,,21.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",39
+Mumm,Wine-Now,18.0,0.0,0.0,1,,18.0,watch,"Blend of direct product demand, brand-page interest, and browse users.",40

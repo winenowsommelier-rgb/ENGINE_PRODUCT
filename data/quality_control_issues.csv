@@ -1,0 +1,174 @@
+scope,key,severity,issue_type,details,recommendation
+product,LBD0226BU,medium,length_violation_short,Short description is 172 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LBD0238BU,medium,length_violation_short,Short description is 167 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LBE0286AB,medium,length_violation_short,Short description is 165 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LBE0317AB,medium,length_violation_short,Short description is 153 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LGN0316DG,medium,length_violation_short,Short description is 151 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LGN0374AE,medium,length_violation_full,Full description is 525 characters.,Trim repetition and keep the product narrative within the target band.
+product,LGN0380AE,medium,length_violation_short,Short description is 151 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LGP0005AA,medium,length_violation_short,Short description is 167 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LGP0005AA,medium,length_violation_full,Full description is 503 characters.,Trim repetition and keep the product narrative within the target band.
+product,LLQ0063CN,medium,length_violation_short,Short description is 168 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LLQ0247CN,medium,length_violation_short,Short description is 170 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LLQ0267AE,medium,length_violation_short,Short description is 159 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LLQ0468BU,medium,length_violation_short,Short description is 160 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LLQ0480CN,medium,length_violation_short,Short description is 173 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LLQ0487ER,medium,length_violation_short,Short description is 199 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LLQ0487ER,medium,length_violation_full,Full description is 615 characters.,Trim repetition and keep the product narrative within the target band.
+product,LLQ0495CN,medium,length_violation_short,Short description is 175 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LLQ0495CN,medium,length_violation_full,Full description is 540 characters.,Trim repetition and keep the product narrative within the target band.
+product,LLQ0500GW,medium,length_violation_short,Short description is 165 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LOT0038AB,medium,length_violation_short,Short description is 167 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LOT0038AB,medium,length_violation_full,Full description is 580 characters.,Trim repetition and keep the product narrative within the target band.
+product,LOT0085AR,medium,length_violation_short,Short description is 154 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LOT0085AR,medium,length_violation_full,Full description is 539 characters.,Trim repetition and keep the product narrative within the target band.
+product,LOT0086AR,medium,length_violation_short,Short description is 180 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LRM0137AA,medium,length_violation_short,Short description is 164 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LRM0137AA,medium,length_violation_full,Full description is 517 characters.,Trim repetition and keep the product narrative within the target band.
+product,LRM0206CP,medium,length_violation_short,Short description is 188 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LRM0206CP,medium,length_violation_full,Full description is 583 characters.,Trim repetition and keep the product narrative within the target band.
+product,LRM0229GK,medium,length_violation_full,Full description is 602 characters.,Trim repetition and keep the product narrative within the target band.
+product,LRM0242GK,medium,length_violation_short,Short description is 172 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LRM0243GK,medium,length_violation_short,Short description is 193 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LRM0249GK,medium,length_violation_short,Short description is 156 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LRM0250GK,medium,length_violation_short,Short description is 168 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LRM0251GK,medium,length_violation_short,Short description is 170 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LSK0347AD,medium,length_violation_short,Short description is 151 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LSK0480AB,medium,length_violation_short,Short description is 156 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LSK0480AB,medium,length_violation_full,Full description is 501 characters.,Trim repetition and keep the product narrative within the target band.
+product,LSK0483AB,medium,length_violation_full,Full description is 503 characters.,Trim repetition and keep the product narrative within the target band.
+product,LSK0503AB,medium,length_violation_short,Short description is 153 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LSK0503AB,medium,template_language_leak,Copy still contains template-style wording.,"Rewrite in a more natural, product-specific retail voice."
+product,LSK0561AB,medium,length_violation_short,Short description is 165 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LSK0600AB,medium,length_violation_short,Short description is 158 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LTQ0201AD,medium,length_violation_short,Short description is 158 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LVK0071BU,medium,length_violation_short,Short description is 164 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LVK0072BU,medium,length_violation_short,Short description is 175 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LVK0172CN,medium,length_violation_short,Short description is 181 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LVK0180AE,medium,length_violation_short,Short description is 155 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LVK0180AE,medium,length_violation_full,Full description is 534 characters.,Trim repetition and keep the product narrative within the target band.
+product,LVK0214EQ,medium,length_violation_short,Short description is 213 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LVK0214EQ,high,missing_sources,Validated row is missing source URLs.,Add source URLs before publishing the row again.
+product,LVK0216CN,medium,length_violation_short,Short description is 178 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LVK0639AB,medium,length_violation_short,Short description is 170 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LVK0639AB,high,missing_sources,Validated row is missing source URLs.,Add source URLs before publishing the row again.
+product,LVK0646BU,medium,length_violation_short,Short description is 154 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LVK0649GK,medium,length_violation_short,Short description is 166 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LWH0166BU,medium,length_violation_short,Short description is 163 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LWH0166BU,medium,length_violation_full,Full description is 595 characters.,Trim repetition and keep the product narrative within the target band.
+product,LWH0261AD,medium,length_violation_short,Short description is 170 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LWH0261AD,medium,length_violation_full,Full description is 526 characters.,Trim repetition and keep the product narrative within the target band.
+product,LWH0323AH,medium,length_violation_short,Short description is 183 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LWH0323AH,medium,length_violation_full,Full description is 525 characters.,Trim repetition and keep the product narrative within the target band.
+product,LWH0353DG,medium,length_violation_short,Short description is 160 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LWH0353DG,medium,length_violation_full,Full description is 637 characters.,Trim repetition and keep the product narrative within the target band.
+product,LWH0359DB,medium,length_violation_short,Short description is 159 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LWH0359DB,medium,length_violation_full,Full description is 551 characters.,Trim repetition and keep the product narrative within the target band.
+product,LWH0557EQ,medium,length_violation_short,Short description is 187 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LWH1090ER,medium,length_violation_short,Short description is 177 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LWH1090ER,medium,length_violation_full,Full description is 539 characters.,Trim repetition and keep the product narrative within the target band.
+product,LWH1188AB,medium,length_violation_short,Short description is 175 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LWH1188AB,medium,length_violation_full,Full description is 558 characters.,Trim repetition and keep the product narrative within the target band.
+product,LWH1211AE,medium,length_violation_short,Short description is 153 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LWH1211AE,medium,length_violation_full,Full description is 517 characters.,Trim repetition and keep the product narrative within the target band.
+product,LWS0001HE,medium,length_violation_short,Short description is 165 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LWS0001HE,high,missing_sources,Validated row is missing source URLs.,Add source URLs before publishing the row again.
+product,LWS0002HE,medium,length_violation_short,Short description is 160 characters.,Tighten the lead sentence and keep the story hook concise.
+product,LWS0002HE,high,missing_sources,Validated row is missing source URLs.,Add source URLs before publishing the row again.
+product,MNA0114AE,medium,length_violation_short,Short description is 159 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRS0124AE,medium,length_violation_short,Short description is 171 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRS0124AE,medium,length_violation_full,Full description is 510 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRS0233AB,medium,length_violation_short,Short description is 170 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRS0233AB,medium,length_violation_full,Full description is 507 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW0012AD,medium,length_violation_short,Short description is 158 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW0012AD,medium,length_violation_full,Full description is 513 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW0380AD,medium,length_violation_full,Full description is 501 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW0444AA,medium,length_violation_short,Short description is 181 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW0444AA,medium,length_violation_full,Full description is 522 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW0578AD,medium,length_violation_short,Short description is 204 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW0578AD,medium,length_violation_full,Full description is 608 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW1070AA,medium,length_violation_short,Short description is 170 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW1070AA,medium,length_violation_full,Full description is 625 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW1070AA,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW1110AA,medium,length_violation_short,Short description is 173 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW1110AA,medium,length_violation_full,Full description is 659 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW1110AA,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW1323AF,medium,length_violation_short,Short description is 192 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW1323AF,medium,length_violation_full,Full description is 687 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW1323AF,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW1767AE,medium,length_violation_short,Short description is 177 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW1767AE,medium,length_violation_full,Full description is 723 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW1767AE,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW1833AE,medium,length_violation_short,Short description is 205 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW1833AE,medium,length_violation_full,Full description is 677 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW1833AE,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW1855AE,medium,length_violation_short,Short description is 191 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW1855AE,medium,length_violation_full,Full description is 728 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW1855AE,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW1931AC,medium,length_violation_short,Short description is 179 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW1931AC,medium,length_violation_full,Full description is 727 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW2273AB,medium,length_violation_short,Short description is 154 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW2273AB,medium,length_violation_full,Full description is 679 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW2459FS,medium,length_violation_short,Short description is 163 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW2459FS,medium,length_violation_full,Full description is 712 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW2459FS,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW2974BN,medium,length_violation_short,Short description is 190 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW2974BN,medium,length_violation_full,Full description is 784 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW3063BN,medium,length_violation_short,Short description is 158 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW3063BN,medium,length_violation_full,Full description is 746 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW3063BN,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW3496BN,medium,length_violation_short,Short description is 152 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW3496BN,medium,length_violation_full,Full description is 659 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW3497BN,medium,length_violation_full,Full description is 540 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW3497BN,medium,template_language_leak,Copy still contains template-style wording.,"Rewrite in a more natural, product-specific retail voice."
+product,WRW3606AD,medium,length_violation_short,Short description is 175 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW3606AD,medium,length_violation_full,Full description is 684 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW3606AD,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW3651DJ,medium,length_violation_short,Short description is 182 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW3651DJ,medium,length_violation_full,Full description is 656 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW3651DJ,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW4298BU,medium,length_violation_short,Short description is 182 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW4298BU,medium,length_violation_full,Full description is 670 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW4298BU,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW4691AD,medium,length_violation_short,Short description is 163 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW4691AD,medium,length_violation_full,Full description is 713 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW4691AD,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW4744AD,medium,length_violation_short,Short description is 165 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW4744AD,medium,length_violation_full,Full description is 635 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW4744AD,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW5039FS,medium,length_violation_full,Full description is 578 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW5532FJ,medium,length_violation_full,Full description is 501 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW6223FS,medium,length_violation_full,Full description is 549 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW6276AD,medium,length_violation_full,Full description is 551 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW6294GT,medium,length_violation_full,Full description is 509 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW6294GT,low,missing_validation_rationale,Verified row has no explicit review note or validation rationale.,Add a short note on why the row qualifies as verified.
+product,WRW6317FC,medium,length_violation_full,Full description is 566 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW6364FC,medium,length_violation_full,Full description is 606 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW6370FC,medium,length_violation_full,Full description is 652 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW6372FC,medium,length_violation_full,Full description is 644 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW6459AA,medium,length_violation_full,Full description is 618 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW6459AA,medium,template_language_leak,Copy still contains template-style wording.,"Rewrite in a more natural, product-specific retail voice."
+product,WRW6460AA,medium,length_violation_full,Full description is 509 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW6461AA,medium,length_violation_full,Full description is 534 characters.,Trim repetition and keep the product narrative within the target band.
+product,WRW6586AD,medium,length_violation_short,Short description is 153 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WRW6586AD,medium,length_violation_full,Full description is 622 characters.,Trim repetition and keep the product narrative within the target band.
+product,WSP1106BU,medium,length_violation_short,Short description is 167 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WSP1106BU,medium,length_violation_full,Full description is 628 characters.,Trim repetition and keep the product narrative within the target band.
+product,WSP1166AC,medium,length_violation_full,Full description is 568 characters.,Trim repetition and keep the product narrative within the target band.
+product,WSP1298EG,medium,length_violation_short,Short description is 159 characters.,Tighten the lead sentence and keep the story hook concise.
+product,WSP1298EG,medium,length_violation_full,Full description is 618 characters.,Trim repetition and keep the product narrative within the target band.
+product,WSP5780AD,medium,length_violation_full,Full description is 604 characters.,Trim repetition and keep the product narrative within the target band.
+product,WWW4847AF,medium,length_violation_full,Full description is 688 characters.,Trim repetition and keep the product narrative within the target band.
+product,WWW5438FC,medium,length_violation_full,Full description is 520 characters.,Trim repetition and keep the product narrative within the target band.
+live_upload,WRW1110AA,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
+live_upload,WRW1323AF,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
+live_upload,WRW1767AE,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
+live_upload,WRW1833AE,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
+live_upload,WRW1855AE,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
+live_upload,WRW2459FS,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
+live_upload,WRW3063BN,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
+live_upload,WRW3606AD,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
+live_upload,WRW4298BU,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
+live_upload,WRW4691AD,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
+live_upload,WRW4744AD,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
+live_upload,WRW6294GT,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.

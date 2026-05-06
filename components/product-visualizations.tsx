@@ -763,7 +763,7 @@ export function FoodPairingGrid({ product }: { product: Product }) {
 // ══════════════════════════════════════════════════════════════════════════════
 
 const QUALITY_FIELDS = [
-  { key: 'classification', label: 'Classification', weight: 2 },
+  { key: 'classification', label: 'Item Category', weight: 2 },
   { key: 'country', label: 'Country', weight: 2 },
   { key: 'region', label: 'Region', weight: 1 },
   { key: 'grape_variety', label: 'Grape', weight: 1 },

@@ -1,0 +1,12 @@
+{
+  "country_rows": 1,
+  "region_rows": 130,
+  "wine_region_rows": 5,
+  "spirits_region_rows": 119,
+  "other_region_rows": 6,
+  "subregion_rows": 2012,
+  "subregion_fill_clear": 12,
+  "subregion_assess": 1717,
+  "subregion_wait_for_region": 130,
+  "subregion_likely_not_applicable": 153
+}

@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ChevronLeft, ChevronRight, Edit2, X, Search,
   SlidersHorizontal, Layers, MapPin, Star, Tag, Wine, Code2, Eye, FileText,
-  ArrowUpDown, ChevronDown, CheckCircle2, Utensils, BarChart3
+  ArrowUpDown, ChevronDown, CheckCircle2, Utensils, BarChart3, Target, PackagePlus
 } from 'lucide-react';
 import {
   CharacterRadarChart, FlavorWheel, BodySweetnessMatrix,
@@ -88,10 +88,38 @@ type Product = Record<string, unknown>;
 type Facet = { value: string; count: number };
 type Facets = {
   categories: Facet[]; countries: Facet[]; statuses: Facet[];
-  regions: Facet[]; appellations: Facet[]; wineClasses: Facet[];
+  regions: Facet[]; appellations: Facet[]; wineClasses: Facet[]; tiers?: Facet[];
 };
 type CharDimension = { dimension_key: string; label: string; description: string };
 type TaxContext = { term: string; description_short: string };
+type RelatedProduct = {
+  id: string;
+  sku: string;
+  name: string;
+  brand?: string | null;
+  classification?: string | null;
+  country?: string | null;
+  region?: string | null;
+  price?: number | string | null;
+  currency?: string | null;
+  matchReasons?: string[];
+  matchScore?: number;
+};
+type AffinityItem = {
+  rank: number;
+  base_product_code: string;
+  product_name: string;
+  rate: number;
+  id?: string;
+  sku?: string;
+  price?: number | string | null;
+  currency?: string | null;
+};
+type ProductAffinities = {
+  base_product_code: string;
+  co_order_affinities: AffinityItem[];
+  co_customer_affinities: AffinityItem[];
+};
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -134,7 +162,51 @@ const CLASSIFICATION_COLORS: Record<string, string> = {
 function classificationBadge(cls: string | null | undefined) {
   const c = cls ? String(cls) : '';
   const colors = CLASSIFICATION_COLORS[c] ?? 'bg-slate-500/20 text-slate-300 border-slate-500/30';
-  return <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium border ${colors}`}>{c || 'Uncategorized'}</span>;
+  return <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium border ${colors}`}>{c || 'Uncategorized item'}</span>;
+}
+
+const TIER_LABELS: Record<string, string> = {
+  '1': 'T1 - Focus now',
+  '2': 'T2 - High value',
+  '3': 'T3 - Standard',
+  '4': 'T4 - Monitor',
+  '5': 'T5 - Low signal',
+};
+
+function tierValue(product: Product | null): string {
+  if (!product) return '';
+  const raw = product.product_tier ?? product.enrichment_priority;
+  if (raw === null || raw === undefined || raw === '') return '';
+  return String(raw).replace(/^T/i, '');
+}
+
+function tierLabel(product: Product | null): string {
+  const tier = tierValue(product);
+  return tier ? (TIER_LABELS[tier] ?? `T${tier}`) : 'Not tiered';
+}
+
+function tierDefinition(product: Product | null): string {
+  if (!product) return '';
+  const note = product.product_tier_definition ?? product.enrichment_note;
+  if (note) return String(note).replace(/\s*\|\s*/g, ' · ');
+  const tier = tierValue(product);
+  if (tier === '1') return 'Highest BI priority: focus first for content, taxonomy, and merchandising work.';
+  if (tier === '2') return 'Strong BI signal: important product or cluster, but behind T1 urgent focus.';
+  if (tier === '3') return 'Normal catalog priority with useful signals but lower immediate focus.';
+  if (tier === '5') return 'Low current demand signal or no recent sales signal.';
+  return 'No BI priority explanation is attached yet.';
+}
+
+function fieldLabel(field: string): string {
+  if (field === 'classification') return 'Item Category';
+  if (field === 'wine_classification') return 'Classification';
+  return field.replace(/_/g, ' ');
+}
+
+function fmtPct(value: unknown) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return '--';
+  return `${(n * 100).toFixed(1)}%`;
 }
 
 // ── Description block ─────────────────────────────────────────────────────────
@@ -233,6 +305,7 @@ export function ProductsPage() {
   const [classification, setClassification] = useState('');
   const [wineClass, setWineClass] = useState('');
   const [segment, setSegment] = useState('');
+  const [tierFilter, setTierFilter] = useState('');
   const [sortBy, setSortBy] = useState('created');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [showFilters, setShowFilters] = useState(false);
@@ -242,6 +315,8 @@ export function ProductsPage() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [charDimensions, setCharDimensions] = useState<CharDimension[]>([]);
   const [taxContexts, setTaxContexts] = useState<TaxContext[]>([]);
+  const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
+  const [productAffinities, setProductAffinities] = useState<ProductAffinities | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [editFields, setEditFields] = useState<Record<string, string>>({});
   const [note, setNote] = useState('');
@@ -268,16 +343,17 @@ export function ProductsPage() {
     if (cl) params.set('classification', cl);
     if (wc) params.set('wine_classification', wc);
     if (sg) params.set('segment', sg);
+    if (tierFilter) params.set('tier', tierFilter);
     params.set('sort', sb);
     params.set('sortDir', sd);
     const res = await fetch(`/api/products?${params}`);
     setData(await res.json());
-  }, [page, search, country, region, appellation, status, classification, wineClass, segment, sortBy, sortDir]);
+  }, [page, search, country, region, appellation, status, classification, wineClass, segment, tierFilter, sortBy, sortDir]);
 
   useEffect(() => {
     load(page, search, country, region, appellation, status, classification, wineClass, segment, sortBy, sortDir);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, search, country, region, appellation, status, classification, wineClass, segment, sortBy, sortDir]);
+  }, [page, search, country, region, appellation, status, classification, wineClass, segment, tierFilter, sortBy, sortDir]);
 
   async function openProduct(p: Product) {
     setSelected(p);
@@ -285,6 +361,8 @@ export function ProductsPage() {
     setDetailLoading(true);
     setCharDimensions([]);
     setTaxContexts([]);
+    setRelatedProducts([]);
+    setProductAffinities(null);
     setSaveMsg(null);
     try {
       const res = await fetch(`/api/products/${p.id}`);
@@ -295,6 +373,8 @@ export function ProductsPage() {
       }
       if (json.characterDimensions) setCharDimensions(json.characterDimensions);
       if (json.taxonomyContexts) setTaxContexts(json.taxonomyContexts);
+      if (json.relatedProducts) setRelatedProducts(json.relatedProducts);
+      if (json.productAffinities) setProductAffinities(json.productAffinities);
     } catch (_e) { /* keep the initial product data */ }
     setDetailLoading(false);
   }
@@ -321,7 +401,7 @@ export function ProductsPage() {
     return <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${cls}`}>{pct}%</span>;
   };
 
-  const activeFilters = [country, region, appellation, status, classification, wineClass].filter(Boolean).length;
+  const activeFilters = [country, region, appellation, status, classification, wineClass, tierFilter].filter(Boolean).length;
 
   // Price range filter state
   const [priceMin, setPriceMin] = useState('');
@@ -329,9 +409,6 @@ export function ProductsPage() {
 
   // Confidence filter
   const [confFilter, setConfFilter] = useState('');
-
-  // Enrichment tier filter
-  const [tierFilter, setTierFilter] = useState('');
 
   // Group products by sku_base
   const [expandedGroups, setExpandedGroups] = useState(() => new Set<string>());
@@ -354,7 +431,7 @@ export function ProductsPage() {
     }
     // Tier filter
     if (tierFilter) {
-      filtered = filtered.filter(p => String(p.enrichment_priority) === tierFilter);
+      filtered = filtered.filter(p => tierValue(p) === tierFilter);
     }
 
     const map = new Map() as Map<string, Product[]>;
@@ -433,7 +510,7 @@ export function ProductsPage() {
               <SearchableSelect value={classification}
                 onChange={function(v) { setClassification(v); setPage(1); }}
                 options={(facets?.categories ?? []).map(function(f) { return { value: f.value, label: f.value, count: f.count }; })}
-                placeholder="All classifications" />
+                placeholder="All item categories" />
               <SearchableSelect value={country}
                 onChange={function(v) { setCountry(v); setRegion(''); setAppellation(''); setPage(1); }}
                 options={(facets?.countries ?? []).map(function(f) { return { value: f.value, label: f.value, count: f.count }; })}
@@ -453,11 +530,10 @@ export function ProductsPage() {
               </select>
               <select value={tierFilter} onChange={e => setTierFilter(e.target.value)}
                 className="w-full bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white">
-                <option value="">Any enrichment tier</option>
-                <option value="1">T1 - High priority</option>
-                <option value="2">T2 - Medium priority</option>
-                <option value="3">T3 - Standard</option>
-                <option value="5">T5 - Low / No sales</option>
+                <option value="">Any BI tier</option>
+                {(['1', '2', '3', '4', '5'] as const).map(t => (
+                  <option key={t} value={t}>{TIER_LABELS[t]}</option>
+                ))}
               </select>
               {/* Sort */}
               <div className="flex items-center gap-1.5 pt-1 flex-wrap">
@@ -467,6 +543,7 @@ export function ProductsPage() {
                   { id: 'name', label: 'Name' },
                   { id: 'price', label: 'Price' },
                   { id: 'confidence', label: 'Conf.' },
+                  { id: 'tier', label: 'Tier' },
                 ].map(opt => (
                   <button key={opt.id} onClick={() => toggleSort(opt.id)}
                     className={`flex items-center gap-0.5 px-2 py-1 rounded text-[10px] transition-colors ${sortBy === opt.id ? 'bg-violet-500/20 text-violet-300' : 'text-slate-500 hover:text-white hover:bg-white/5'}`}>
@@ -512,6 +589,11 @@ export function ProductsPage() {
                 </div>
                 <div className="flex items-center gap-1.5 mt-1.5">
                   {classificationBadge(p.classification != null ? String(p.classification) : null)}
+                  {tierValue(p) && (
+                    <span className="px-1.5 py-0.5 rounded text-[10px] bg-cyan-500/15 text-cyan-300 font-medium">
+                      T{tierValue(p)}
+                    </span>
+                  )}
                   {group.length > 1 && (
                     <span className="px-1.5 py-0.5 rounded text-[10px] bg-violet-500/15 text-violet-300 font-medium">
                       {group.length} variants
@@ -807,6 +889,136 @@ export function ProductsPage() {
                   </div>
                 )}
 
+                {/* ── Card 5c: BI Priority ── */}
+                <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Target size={14} className="text-violet-400" />
+                    <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">BI Priority</h3>
+                    <span className="ml-auto px-2 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-500/15 text-cyan-300 border border-cyan-500/25">
+                      {tierLabel(selected)}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 leading-relaxed">{tierDefinition(selected)}</p>
+                  {(!!selected.queue_priority || !!selected.priority_band || !!selected.bi_priority_band) && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {!!selected.queue_priority && (
+                        <span className="px-2 py-1 rounded bg-white/5 text-[11px] text-slate-300">Score {String(selected.queue_priority)}</span>
+                      )}
+                      {!!(selected.priority_band || selected.bi_priority_band) && (
+                        <span className="px-2 py-1 rounded bg-white/5 text-[11px] text-slate-300">{String(selected.priority_band ?? selected.bi_priority_band)}</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* ── Card 5d: BI product affinities ── */}
+                <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5">
+                  <div className="flex items-center gap-2 mb-4">
+                    <PackagePlus size={14} className="text-violet-400" />
+                    <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Product Affinities</h3>
+                    {!!productAffinities?.base_product_code && (
+                      <span className="ml-auto text-[10px] text-slate-600 font-mono">{productAffinities.base_product_code}</span>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                    {([
+                      {
+                        title: 'Same Order (Basket Affinity)',
+                        caption: 'Products most often bought in the same order as this one.',
+                        rateLabel: 'Co-order',
+                        rows: productAffinities?.co_order_affinities ?? [],
+                      },
+                      {
+                        title: 'Same Customers Also Buy (Customer Affinity)',
+                        caption: "Products bought by the highest share of this product's customers.",
+                        rateLabel: 'Overlap',
+                        rows: productAffinities?.co_customer_affinities ?? [],
+                      },
+                    ] as const).map(section => (
+                      <div key={section.title} className="rounded-lg border border-white/8 bg-white/[0.025] overflow-hidden">
+                        <div className="px-3 py-3 border-b border-white/8">
+                          <h4 className="text-sm font-semibold text-slate-200">{section.title}</h4>
+                          <p className="mt-1 text-[11px] text-slate-500 leading-relaxed">{section.caption}</p>
+                        </div>
+                        {section.rows.length > 0 ? (
+                          <div className="divide-y divide-white/6">
+                            {section.rows.slice(0, 10).map(item => {
+                              const content = (
+                                <>
+                                  <span className="w-6 shrink-0 text-right text-[11px] text-slate-600">{item.rank}</span>
+                                  <span className="w-20 shrink-0 font-mono text-[11px] text-slate-400">{item.base_product_code}</span>
+                                  <span className="min-w-0 flex-1 truncate text-xs text-slate-200">{item.product_name || '--'}</span>
+                                  <span className="w-16 shrink-0 text-right text-xs font-semibold text-cyan-300">{fmtPct(item.rate)}</span>
+                                </>
+                              );
+                              return item.id ? (
+                                <button
+                                  key={`${section.title}-${item.base_product_code}`}
+                                  onClick={() => openProduct(item as unknown as Product)}
+                                  className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-white/[0.05] transition-colors"
+                                  title={item.product_name}
+                                >
+                                  {content}
+                                </button>
+                              ) : (
+                                <div key={`${section.title}-${item.base_product_code}`} className="flex items-center gap-2 px-3 py-2" title={item.product_name}>
+                                  {content}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="px-4 py-5">
+                            <p className="text-xs text-slate-500 italic">No BI affinity data available</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <p className="mt-3 text-[11px] text-slate-600">
+                    From BI closed-order history. Rates are calculated by base product code, matching the Sales by Item BI app.
+                  </p>
+                </div>
+
+                {/* ── Card 5e: Comparable product suggestions ── */}
+                <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5">
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <PackagePlus size={14} className="text-violet-400" />
+                      <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Comparable Products</h3>
+                    </div>
+                    <p className="mb-3 text-[11px] text-slate-500">Suggested reference SKUs in the same price range where available, using brand, item category, country, region, and SKU family similarity.</p>
+                    {relatedProducts.length > 0 ? (
+                      <div className="space-y-2">
+                        {relatedProducts.map(item => (
+                          <button
+                            key={item.id}
+                            onClick={() => openProduct(item as unknown as Product)}
+                            className="w-full text-left rounded-lg border border-white/8 bg-white/[0.025] px-3 py-2 hover:bg-white/[0.06] transition-colors"
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0">
+                                <p className="text-sm text-white truncate">{item.name}</p>
+                                <p className="text-[11px] text-slate-500 font-mono">{item.sku}</p>
+                              </div>
+                              <span className="text-[11px] text-slate-400 shrink-0">{fmtPrice(item.price, item.currency ?? 'THB')}</span>
+                            </div>
+                            {!!item.matchReasons?.length && (
+                              <p className="mt-1 text-[11px] text-slate-500 truncate">{item.matchReasons.join(' · ')}</p>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="border border-dashed border-white/10 rounded-lg px-4 py-4">
+                        <p className="text-xs text-slate-500 italic">No same-price comparable SKU cluster found yet</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 {/* ── Card 6: Data Quality ── */}
                 <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5">
                   <div className="flex items-center gap-2 mb-3">
@@ -831,7 +1043,7 @@ export function ProductsPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {EDITABLE.map(field => (
                         <div key={field}>
-                          <label className="text-[10px] text-slate-400 block mb-1 capitalize">{field.replace(/_/g, ' ')}</label>
+                          <label className="text-[10px] text-slate-400 block mb-1 capitalize">{fieldLabel(field)}</label>
                           <input
                             value={editFields[field] ?? ''}
                             onChange={e => setEditFields(f => ({ ...f, [field]: e.target.value }))}

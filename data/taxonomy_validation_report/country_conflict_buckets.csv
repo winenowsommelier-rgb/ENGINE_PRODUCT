@@ -1,0 +1,97 @@
+bucket,default_decision,sku,name,classification,stored_country,inferred_country,confidence,rule
+A_scotch_cask_finish,KEEP STORED — Scotch whisky finished in Port/Sherry/Quinta casks is still Scottish,LWH0165BU,Glenmorangie  The Quinta Ruban (Port Wood) - 14 Years (700 ml),Wine product,Scotland,Portugal,0.7,quinta
+A_scotch_cask_finish,KEEP STORED — Scotch whisky finished in Port/Sherry/Quinta casks is still Scottish,LWH0164BU,Glenmorangie  The Lasanta (Sherry Wood)-12 Years  (700 ml),Wine product,Scotland,Spain,0.9,sherry
+A_scotch_cask_finish,KEEP STORED — Scotch whisky finished in Port/Sherry/Quinta casks is still Scottish,LWH1092ER,Wolfburn  Cask Strength  Sherry & Bourbon Cask (700 ml),Wine product,Scotland,Spain,0.9,sherry; bourbon
+A_scotch_cask_finish,KEEP STORED — Scotch whisky finished in Port/Sherry/Quinta casks is still Scottish,LWH1030BU,Chivas Regal  13 Years Sherry Cask Selection Blended Whisky (700 ml),Wine product,Scotland,Spain,0.9,sherry
+A_scotch_cask_finish,KEEP STORED — Scotch whisky finished in Port/Sherry/Quinta casks is still Scottish,LWH1021EQ,Tomintoul  Pedro Ximenez Sherry Cask Finish (700 ml),Wine product,Scotland,Spain,0.9,sherry
+A_scotch_cask_finish,KEEP STORED — Scotch whisky finished in Port/Sherry/Quinta casks is still Scottish,LWH0632AF,Glen Moray  Classic Sherry Cask Finish Single Malt Whisky (700 ml),Wine product,Scotland,Spain,0.9,sherry
+B_accessory_misclassified,"KEEP STORED + suppress name rule — accessory's origin is correct, name keyword describes intended use",ABA0505BM,Koala  Set Champagne - Black,Wine product,Spain,France,0.85,champagne; champagne
+B_accessory_misclassified,"KEEP STORED + suppress name rule — accessory's origin is correct, name keyword describes intended use",LWH1141DD,Lingyun  Singlemalt Whisy Cognac Cask (700 ml),Wine product,China,France,0.92,cognac
+C_newworld_chateau,KEEP STORED — 'Chateau'/'Domaine' is used in New World naming without implying France,WRW6173AE,Chateau de G  Gran Reserva Cabernet Sauvignon D.O.,Red Wine,Chile,France,0.7,chateau
+C_newworld_chateau,KEEP STORED — 'Chateau'/'Domaine' is used in New World naming without implying France,WRW5464FJ,Messenez Family  Chateau M Gran Vin Gold Label,Red Wine,Chile,France,0.7,chateau
+C_newworld_chateau,KEEP STORED — 'Chateau'/'Domaine' is used in New World naming without implying France,WWW5409FJ,Messenez Family  Chateau M Grand Vin Villes Vignes Chardonnay,White Wine,Chile,France,0.7,chateau
+C_newworld_chateau,KEEP STORED — 'Chateau'/'Domaine' is used in New World naming without implying France,WRW5463FJ,Messenez Family  Chateau M Gran Reserva Cabernet Merlot,Red Wine,Chile,France,0.7,chateau
+C_newworld_chateau,KEEP STORED — 'Chateau'/'Domaine' is used in New World naming without implying France,WWW5110FJ,Messenez Family  Chateau M Sauvignon Blanc - Semillon,White Wine,Chile,France,0.7,chateau
+C_newworld_chateau,KEEP STORED — 'Chateau'/'Domaine' is used in New World naming without implying France,WRW1211AD,Chateau Ste. Michelle  Cabernet Sauvignon,Red Wine,USA,France,0.7,chateau
+C_newworld_chateau,KEEP STORED — 'Chateau'/'Domaine' is used in New World naming without implying France,WWW0532AD,Chateau Ste. Michelle  Sauvignon Blanc,White Wine,USA,France,0.7,chateau
+C_newworld_chateau,KEEP STORED — 'Chateau'/'Domaine' is used in New World naming without implying France,WRW1212AD,Chateau Ste. Michelle  Syrah,Red Wine,USA,France,0.7,chateau
+D_new_world_prosecco,KEEP STORED — 'Prosecco' is a grape name used outside Italy (labelling dispute aside),WSP5672GE,Soar  Prosecco,Sparkling Wine,Australia,Italy,0.88,prosecco
+D_new_world_prosecco,KEEP STORED — 'Prosecco' is a grape name used outside Italy (labelling dispute aside),WSP5673GE,Donnavale  Prosecco,Sparkling Wine,Australia,Italy,0.88,prosecco
+D_new_world_prosecco,KEEP STORED — 'Prosecco' is a grape name used outside Italy (labelling dispute aside),WSP5674GE,Kissing Bridge  Prosecco,Sparkling Wine,Australia,Italy,0.88,prosecco
+E_pisco_chile_peru,KEEP STORED — Pisco is produced in both Chile and Peru; either origin is legitimate,LBD0194AA,Capel Pisco  Reservado Moai (1 L),Pisco,Chile,Peru,0.6,pisco
+F_non_italian_grappa,KEEP STORED — grappa-style spirit made outside Italy; retain origin country,LGP0092FX,Granmonte  Red Jungle Grappa (700 ml),Wine product,Thailand,Italy,0.88,grappa
+F_non_italian_grappa,KEEP STORED — grappa-style spirit made outside Italy; retain origin country,LGP0091FX,Granmonte  Red Jungle Grappa (330 ml),Wine product,Thailand,Italy,0.88,grappa
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LLQ0067AD,De Kuyper  Creme de Cassis (700 ml),Wine product,Netherlands,France,0.8,cassis
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW0159AD,Concha Y Toro  Frontera Chardonnay,White Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW0288AD,Concha Y Toro  Frontera Cabernet Sauvignon,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW5761AD,Concha Y Toro  Reservado Merlot,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW5202AD,Concha Y Toro  Reservado Sauvignon Blanc Pedro Jimenez,White Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LTQ0200AD,Tarantula Azul  Tequila (750 ml),Wine product,England,Mexico,0.92,tequila
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW4742AD,Concha Y Toro  Casillero Del Diablo Reserva Cabernet Sauvignon,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW4743AD,Concha Y Toro  Casillero Del Diablo Reserva Carmenere,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW4744AD,Concha Y Toro  Casillero Del Diablo Reserva Merlot,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW4745AD,Concha Y Toro  Casillero Del Diablo Reserva Pinot Noir,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW0195AD,Concha Y Toro  Casillero del Diablo Reserva Chardonnay,White Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW0196AD,Concha Y Toro  Casillero del Diablo Reserva Sauvignon Blanc,White Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LTQ0201AD,Pancho Villa  Gold Tequila (750 ml),Wine product,England,Mexico,0.92,tequila
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW0153AD,Concha Y Toro  Reservado Chardonnay,White Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW5864AD,Concha Y Toro  Marques de Casa Concha Merlot,Red Wine,Chile,Spain,0.85,toro; casa
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW4859AD,Concha Y Toro  Marques de Casa Concha Chardonnay,White Wine,Chile,Spain,0.85,toro; casa
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW0343AD,Concha Y Toro  Marques de Casa Concha Cabernet Sauvignon,Red Wine,Chile,Spain,0.85,toro; casa
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LTQ0001AD,Tequila Rose  Strawberry Cream (750 ml),Wine product,USA,Mexico,0.92,tequila
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW6277AD,Concha Y Toro  Casillero Del Diablo Devil's Carnaval Fabulous Red,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW5635AD,Concha Y Toro  Casillero Del Diablo Dark Red,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW5959AD,Concha Y Toro  Casillero Del Diablo Black Cabernet Sauvignon,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW6570AD,Concha Y Toro  Terrunyo Cabernet Sauvignon,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW5912AD,Concha Y Toro  Terrunyo Sauvignon Blanc,White Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW0282AD,Concha Y Toro  Reservado Cabernet Sauvignon,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LTQ0202AD,Pancho Villa  Silver Tequila (750 ml),Wine product,England,Mexico,0.92,tequila
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW6276AD,Concha Y Toro  Casillero Del Diablo Devil's Carnaval Spectacular Cabernet,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW5426AD,Concha Y Toro  Casillero Del Diablo Devil's Carnaval Phenomenal Sauvignon,White Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW0380AD,Concha Y Toro  Don Melchor,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW6566AD,Concha Y Toro  The Master Cabernet Sauvignon,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WSP2459AD,Concha Y Toro  Casillero Del Diablo Devil's Brut,Sparkling Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW5015AD,Concha Y Toro  Casillero Del Diablo Reserva Privada Cabernet Sauvignon,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW4850AD,Concha Y Toro  Casillero Del Diablo Reserva Privada Sauvignon Blanc,White Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW5014AD,Bodegas Garzon  Reserva Tannat,Red Wine,Uruguay,Spain,0.7,bodegas
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW4849AD,Bodegas Garzon  Reserva Albarino,White Wine,Uruguay,Spain,0.8,albarino; bodegas
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,ABA0154CQ,Jiggers  Absinthe Spoon,Wine product,USA,France,0.55,absinthe
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,ABA0226CQ,Jiggers  Chrome Champagne Saver,Wine product,USA,France,0.85,champagne; champagne
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,ABA0227CQ,Jiggers  Deluxe Chrome Champagne Saver,Wine product,USA,France,0.85,champagne; champagne
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,ABA0754FW,Vacu Vin  Champagne Saver & Server,Wine product,Poland,France,0.85,champagne; champagne
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LRM0200ER,Rum & Cane Merchants  French Overseas XO (700 ml),Wine product,Martinique,France,0.55,french
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LRM0201ER,Rum & Cane Merchants  Spanish Caribbean XO (700 ml),Wine product,Cuba,Spain,0.55,spanish
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LWH0577ER,Omar  Single Malt Sherry Cask Strength Whisky (700 ml),Wine product,Taiwan,Spain,0.9,sherry
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LWH0578ER,Omar  Single Malt Bourbon Cask Strength Whisky (700 ml),Wine product,Taiwan,USA,0.7,bourbon
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LWH0580ER,Omar  Single Malt Bourbon Type Whisky (700 ml),Wine product,Taiwan,USA,0.7,bourbon
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LWH0579ER,Omar  Single Malt Sherry Type Whisky (700 ml),Wine product,Taiwan,Spain,0.9,sherry
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LWH1140DD,Lingyun  Singlemalt Whisky Sherry Cask (700 ml),Wine product,China,Spain,0.9,sherry
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LWH1031BU,Chivas Regal  13 Years Tequila Cask Selection Blended Whisky (700 ml),Wine product,Scotland,Mexico,0.92,tequila
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LWH0267DG,Kavalan  ex-Bourbon Oak Single Malt Whisky (700 ml),Wine product,Taiwan,USA,0.7,bourbon
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LWH0527DG,Kavalan  Oloroso Sherry Oak Single Malt Whisky (700 ml),Wine product,Taiwan,Spain,0.9,sherry
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LAB0014DG,St. George  Absinthe Verte (750 ml),Wine product,USA,France,0.55,absinthe
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LWH0977DG,Kavalan  Concertmaster Sherry Finish (700 ml),Wine product,Taiwan,Spain,0.9,sherry
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LTQ0190CP,Dead Man's Fingers  Tequila Reposado,Wine product,England,Mexico,0.92,tequila
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW5963FS,Toro De Piedra  Reserve Cabernet Sauvignon,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW5298FS,Toro De Piedra  Reserve Sauvignon Blanc,White Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW5964FS,Toro De Piedra  Grand Reserve Cabernet Sauvignon,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW5965FS,Toro De Piedra  Grand Reserve Merlot,Red Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW5299FS,Toro De Piedra  Grand Reserve Chardonnay,White Wine,Chile,Spain,0.85,toro
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW4649DW,Bodega Volcanes de Chile  Parinacota,Red Wine,Chile,Spain,0.7,bodega
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW4810DW,Bodega Volcanes de Chile  Igneo,Red Wine,Chile,Spain,0.7,bodega
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW4651DW,Bodega Volcanes de Chile  Tectonia Grenache-Petite Syrah Mourvedre,Red Wine,Chile,Spain,0.7,bodega
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW5423DW,Bodega Volcanes de Chile  Tectonia Carmenere,Red Wine,Chile,Spain,0.7,bodega
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW2394DW,Bodega Volcanes de Chile  Tectonia Chardonnay,White Wine,Chile,Spain,0.7,bodega
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW3947DW,Bodega Volcanes de Chile  Reserva Cabernet Sauvignon,Red Wine,Chile,Spain,0.7,bodega
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW5424DW,Bodega Volcanes de Chile  Reserva Carmenere,Red Wine,Chile,Spain,0.7,bodega
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW2105DW,Bodega Volcanes de Chile  Reserva Sauvignon Blanc,White Wine,Chile,Spain,0.7,bodega
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LAB0016EQ,R.Jelinek  Premium Absinthe (700 ml),Liqueur,Czech Republic,France,0.55,absinthe
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,LWH1020EQ,Tomintoul  Cognac Cask Finish (700 ml),Wine product,Scotland,France,0.92,cognac
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW6348FC,Bodega Aleanna El Enemigo As Bravas Malbec,Red Wine,Argentina,Spain,0.7,bodega
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW6347FC,Bodega Aleanna  Gran Enemigo Gualtallary,Red Wine,Argentina,Spain,0.7,bodega
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW5397FC,Chateau Musar  Red 2017,Red Wine,Lebanon,France,0.7,chateau
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW5079FC,Chateau Musar  White 2010,White Wine,Lebanon,France,0.7,chateau
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW5394FC,Chateau Musar  Jeune Red,Red Wine,Lebanon,France,0.7,chateau
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW6345FC,Bodega Aleanna El Enemigo  Cabernet Franc,Red Wine,Argentina,Spain,0.7,bodega
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WRW6346FC,Bodega Aleanna El Enemigo  Malbec,Red Wine,Argentina,Spain,0.7,bodega
+Z_needs_individual_review,REVIEW EACH — doesn't fit a pattern; show every row,WWW5078FC,Chateau Musar  Jeune White,White Wine,Lebanon,France,0.7,chateau

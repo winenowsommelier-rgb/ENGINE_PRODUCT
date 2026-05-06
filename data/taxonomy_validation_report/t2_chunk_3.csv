@@ -1,0 +1,101 @@
+brand,country,region,sku_count,top_price
+Chateau Olivier,France,Bordeaux,7,3839.0
+Nickel & Nickel,USA,California,3,5839.0
+Canard Duchene,France,Champagne,2,7100.0
+Sinatra Family,USA,California,2,6940.0
+Domaine de Chevalier,France,Bordeaux,2,4600.0
+Conti Zecca,Italy,Puglia,8,2620.0
+Chateau Lafon-Rochet,France,Bordeaux,2,6870.0
+Chateau Leoville Poyferre,France,Bordeaux,3,5609.0
+Chateau Batailley,France,Bordeaux,2,6799.0
+Livon,Italy,Friuli-Venezia Giulia,8,2260.0
+Chateau Brane Cantenac,France,Bordeaux,3,4700.0
+Twomey,USA,California,3,4109.0
+Castello di Albola,Italy,Tuscany,3,4100.0
+Agricola San Felice,Italy,Tuscany,5,3000.0
+Coup de Foudre,USA,California,3,5400.0
+Antica Terra,USA,California,2,6600.0
+Champagne Eric Rodez,France,Burgundy,5,4149.0
+Domaine Buisson-Charles,France,Burgundy,2,6470.0
+Cirq,USA,California,1,9000.0
+Chateau Gracia,France,Bordeaux,1,8949.0
+Forman,USA,California,3,5160.0
+Corte Rugolin,Italy,Veneto,3,3430.0
+Domaines Ott,France,Provence,3,4400.0
+Sartori di Verona,Italy,Veneto,5,2649.0
+Michel Rolland,France,Bordeaux,4,4439.0
+Barton&Guestier,France,Bordeaux,8,2499.0
+Le Salette,Italy,Veneto,5,3949.0
+Petrolo,Italy,Tuscany,3,5069.0
+Domaine Jeanchartron,France,Burgundy,1,8770.0
+Cecilia Beretta,Italy,Veneto,6,3580.0
+Chateau Latour a Pomerol,France,Bordeaux,1,5800.0
+Castello Di Bolgheri,Italy,Tuscany,2,4100.0
+Chateau Dauzac,France,Bordeaux,4,4319.0
+Chateau Gazin,France,Bordeaux,2,6100.0
+Domaine Philippe Charlopin-Parizot,France,Burgundy,1,8559.0
+Cantine Leonardo Da Vinci,Italy,Tuscany,9,2110.0
+Chateau Lagrezette,France,Bordeaux,1,5600.0
+Chateau Gloria,France,Bordeaux,5,3400.0
+Rocca Delle Macie,Italy,Tuscany,6,3409.0
+Rocca di Montegrossi,Italy,Tuscany,3,3200.0
+Francis Coppola,USA,California,12,2400.0
+Monte Faustino,Italy,Veneto,3,4789.0
+Freemark Abbey,USA,California,3,4100.0
+Two Hands,Australia,South Australia,2,3900.0
+Chateau Premeaux,France,Burgundy,2,3900.0
+Vigneti Del Salento,Italy,Puglia,9,1899.0
+Chateau Desmirail,France,Bordeaux,2,5790.0
+Bera,Italy,Piedmont,10,2570.0
+Vite Colte,Italy,Piedmont,5,2409.0
+Chateau Braniare-Ducru,France,Bordeaux,2,3800.0
+Boscarelli,Italy,Tuscany,5,3599.0
+La Biòca,Italy,Piedmont,5,3590.0
+Louis Michel,France,Burgundy,4,4000.0
+Gérard Bertrand,France,Languedoc-Roussillon,16,2000.0
+William Fevre,France,Burgundy,4,2900.0
+Chateau Rocheyron,France,Bordeaux,1,5300.0
+Villa Sandi,Italy,Veneto,9,2649.0
+Masseria Tagaro,Italy,Puglia,19,1820.0
+Domaine Guy Robin & Fils,France,Burgundy,2,5600.0
+Maxville,USA,California,3,3900.0
+Chateau D'Armailhac,France,Bordeaux,3,3900.0
+Castelli del Grevepesa,Italy,Tuscany,11,1800.0
+Starmont,USA,California,5,2700.0
+Domaine Daniel Etienne Dafaix,France,Burgundy,5,3509.0
+Vivaldi,Italy,Veneto,5,2500.0
+Castello di Bossi,Italy,Tuscany,5,2499.0
+Bouchard Pere & Fils,France,Burgundy,5,3495.0
+Ricasoli,Italy,Tuscany,4,2600.0
+John Duval,Australia,Barossa Valley,4,3900.0
+Dry Creek,USA,California,4,2600.0
+Chateau Faugeres,France,Bordeaux,3,2999.0
+Monsoon Valley,Thailand,Hua Hin,12,1799.0
+Maison Bouey,France,Bordeaux,10,1969.0
+Cheval des Andes,Argentina,Mendoza,1,7719.0
+Pico Maccario,Italy,Piedmont,5,2300.0
+Domaine Vincent Pinard,France,Loire Valley,1,7700.0
+Mcguigan,Australia,South Eastern Australia,11,1699.0
+Casasilva,Chile,Colchagua Valley,8,2709.0
+Chateau Pavie Macquin,France,Bordeaux,1,5100.0
+Kaiken,Argentina,Mendoza,11,2299.0
+Poderi Campopian,Italy,Veneto,3,4390.0
+Prunotto,Italy,Piedmont,5,3400.0
+Clusel - Roch,France,Rhône Valley,3,4359.0
+Domaine du Chardonnay,France,Burgundy,3,2900.0
+Wolf Blass,Australia,South Australia,24,1190.0
+Fratelli Ponte,Italy,Piedmont,9,2500.0
+Famille Perrin,France,Rhône Valley,9,2500.0
+Bodegas Muga,Spain,Rioja,4,2500.0
+Langmeil,Australia,Barossa Valley,5,2375.0
+C.V.N.E.,Spain,Rioja,2,5249.0
+Wynns,Australia,Coonawarra,6,2270.0
+Max Ferd. Richter,Germany,Mosel,8,2199.0
+Velenosi,Italy,Abruzzo,5,2990.0
+Col Solare,USA,California,1,7305.0
+Tor,USA,California,1,7299.0
+Cherry Pie,USA,California,3,4200.0
+Corra,USA,California,1,7220.0
+Glaetzer,Australia,Barossa Valley,4,2400.0
+Aromo,Chile,Maule Valley,16,1200.0
+Fisher,USA,California,2,5090.0

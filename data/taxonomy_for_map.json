@@ -4,7 +4,7 @@
     "counts": {
       "countries": 50,
       "regions": 90,
-      "subregions": 80,
+      "subregions": 78,
       "appellations": 81
     },
     "needs_coords": {
@@ -1760,16 +1760,6 @@
       "grandparent_name": "Chile"
     },
     {
-      "id": 189,
-      "name": "Right Bank",
-      "slug": "right-bank",
-      "latitude": 44.9,
-      "longitude": -0.1,
-      "parent_id": 58,
-      "parent_name": "Bordeaux",
-      "grandparent_name": "France"
-    },
-    {
       "id": 143,
       "name": "Rioja Alavesa",
       "slug": "rioja-alavesa",
@@ -1888,16 +1878,6 @@
       "parent_id": 61,
       "parent_name": "Veneto",
       "grandparent_name": "Italy"
-    },
-    {
-      "id": 138,
-      "name": "Sonoma County",
-      "slug": "sonoma-county",
-      "latitude": 38.5,
-      "longitude": -122.8,
-      "parent_id": 81,
-      "parent_name": "Sonoma County",
-      "grandparent_name": "USA"
     },
     {
       "id": 203,

@@ -1,0 +1,63 @@
+bucket,country,region,count
+wine,Australia,South Eastern Australia,83
+wine,Australia,Barossa Valley,52
+wine,Italy,Friuli-Venezia Giulia,46
+wine,France,Languedoc,41
+wine,France,Others region,40
+wine,Chile,Maule Valley,34
+wine,Italy,Abruzzo,32
+wine,Spain,Others region,24
+wine,Australia,McLaren Vale,23
+wine,Chile,Central Valley,20
+wine,Uruguay,Others region,20
+wine,South Africa,Western Cape,18
+wine,Spain,La Mancha,16
+wine,Austria,Others region,15
+wine,Thailand,Khao Yai,15
+wine,Italy,Marche,15
+wine,Chile,Rapel Valley,14
+wine,Australia,Victoria,13
+wine,Chile,Loncomilla Valley,13
+wine,Italy,Umbria,12
+wine,Thailand,Hua Hin,12
+wine,Italy,Campania,9
+spirit/other,Chile,Central Valley,8
+wine,Chile,Curico Valley,8
+wine,Peru,Others region,8
+wine,Greece,Others region,8
+wine,Italy,Lazio,7
+wine,Italy,Others region,7
+wine,Australia,Coonawarra,7
+wine,Germany,Rheinhessen,6
+wine,Australia,Adelaide Hills,6
+wine,New Zealand,Martinborough,6
+wine,New Zealand,Hawke’s Bay,6
+wine,Chile,Cachapoal Valley,5
+wine,Germany,Franken,5
+wine,Italy,Lombardy,5
+wine,USA,Others region,5
+wine,Australia,Clare Valley,4
+wine,Spain,Toro,4
+spirit/other,South Africa,Western Cape,4
+wine,Slovenia,Others region,4
+wine,Lebanon,Others region,4
+wine,Australia,Others region,3
+wine,Chile,Others region,3
+spirit/other,USA,Kentucky,3
+wine,Italy,Basilicata,3
+wine,New Zealand,Others region,3
+wine,Chile,Aconcagua Valley,2
+spirit/other,Germany,Black Forest,2
+spirit/other,USA,New Jersey,2
+wine,Slovakia,Others region,2
+spirit/other,France,Calvados,2
+wine,Georgia,Others region,2
+wine,Germany,Baden,1
+wine,Portugal,Others region,1
+wine,Italy,Sardinia,1
+wine,Latvia,Others region,1
+spirit/other,UK,London,1
+spirit/other,Italy,Basilicata,1
+wine,Germany,Others region,1
+spirit/other,Spain,Cantabria,1
+wine,Hungary,Others region,1

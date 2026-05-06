@@ -1,0 +1,112 @@
+{
+  "candidate_rows": 73,
+  "selected_rows": 25,
+  "max_rows": 25,
+  "sample": [
+    {
+      "sku": "WRW3191AD",
+      "subregion": "Manduria",
+      "name": "Vigneti del Salento  \"ZOLLA\" Primitivo Di Manduria DOC",
+      "region": "Puglia",
+      "priority_rank": 143
+    },
+    {
+      "sku": "WRW5191AA",
+      "subregion": "Etna",
+      "name": "Tenuta delle Terre Nere  Etna Rosso Prephylloxera La Vigna Di Don Peppino DOC",
+      "region": "Sicily",
+      "priority_rank": 243
+    },
+    {
+      "sku": "WRW6213AD",
+      "subregion": "Gimblett Gravels",
+      "name": "Craggy Range  Sophia Gimblett Gravels, Hawke’s Bay",
+      "region": "Hawke's Bay",
+      "priority_rank": 270
+    },
+    {
+      "sku": "WRW6368FC",
+      "subregion": "Eden Valley",
+      "name": "Two Hands  Yacca Block Shiraz Eden Valley",
+      "region": "South Australia",
+      "priority_rank": 278
+    },
+    {
+      "sku": "WRS0198BS",
+      "subregion": "Salento",
+      "name": "Masseria Li Veli  Askos Susumaniello Rosato Salento IGT",
+      "region": "Puglia",
+      "priority_rank": 416
+    },
+    {
+      "sku": "WRS0241AE",
+      "subregion": "Etna",
+      "name": "Pietradolce  Etna Rosato",
+      "region": "Sicily",
+      "priority_rank": 418
+    },
+    {
+      "sku": "WRW0607AA",
+      "subregion": "Alto Adige",
+      "name": "Alois Lageder  Pinot Noir Alto Adige DOC",
+      "region": "Trentino-Alto Adige",
+      "priority_rank": 438
+    },
+    {
+      "sku": "WRW0671AD",
+      "subregion": "Gimblett Gravels",
+      "name": "Craggy Range  Te Kahu Gimblett Gravels Vineyard",
+      "region": "Hawke's Bay",
+      "priority_rank": 441
+    },
+    {
+      "sku": "WRW1819AE",
+      "subregion": "Etna",
+      "name": "Pietradolce  Archineri Etna Rosso DOC",
+      "region": "Sicily",
+      "priority_rank": 488
+    },
+    {
+      "sku": "WRW3008BN",
+      "subregion": "Bannockburn",
+      "name": "Felton Road  Pinot Noir Bannockburn",
+      "region": "Central Otago",
+      "priority_rank": 523
+    },
+    {
+      "sku": "WRW3192AD",
+      "subregion": "Manduria",
+      "name": "Vigneti del Salento  Vigne Vecchie Leggenda Primitivo Di Manduria",
+      "region": "Puglia",
+      "priority_rank": 536
+    },
+    {
+      "sku": "WRW3233BS",
+      "subregion": "Salento",
+      "name": "“MLV” Masseria Li Veli Salento IGT",
+      "region": "Puglia",
+      "priority_rank": 537
+    },
+    {
+      "sku": "WRW3236BS",
+      "subregion": "Manduria",
+      "name": "Luccarelli  Campo Marina Primitivo di Manduria DOP",
+      "region": "Puglia",
+      "priority_rank": 539
+    },
+    {
+      "sku": "WRW3555DH",
+      "subregion": "Monferrato",
+      "name": "Marchesi Di Gresy  Merlot Da Solo Monferrato Rosso DOC",
+      "region": "Piedmont",
+      "priority_rank": 556
+    },
+    {
+      "sku": "WRW3563AA",
+      "subregion": "Etna",
+      "name": "Tenuta delle Terre Nere  Etna Rosso DOC",
+      "region": "Sicily",
+      "priority_rank": 557
+    }
+  ]
+}

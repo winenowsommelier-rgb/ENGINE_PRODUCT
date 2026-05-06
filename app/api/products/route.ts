@@ -24,6 +24,7 @@ const SORT_COLS: Record<string, string> = {
   name:       'name',
   price:      'price',
   confidence: 'overall_confidence',
+  tier:       'enrichment_priority',
   vintage:    'vintage',
   created:    'created_at',
   sku:        'sku',
@@ -40,6 +41,7 @@ export async function GET(req: NextRequest) {
     const appellation       = searchParams.get('appellation') ?? '';
     const wine_classification = searchParams.get('wine_classification') ?? '';
     const segment           = searchParams.get('segment') ?? '';
+    const tier              = searchParams.get('tier') ?? '';
     const sortBy            = SORT_COLS[searchParams.get('sort') ?? ''] ?? 'created_at';
     const sortDir           = searchParams.get('sortDir') === 'asc' ? 'asc' : 'desc';
     const page              = Math.max(1, parseInt(searchParams.get('page') ?? '1'));
@@ -52,6 +54,7 @@ export async function GET(req: NextRequest) {
     if (region)             filters.push(`region=eq.${encodeURIComponent(region)}`);
     if (appellation)        filters.push(`appellation=eq.${encodeURIComponent(appellation)}`);
     if (wine_classification) filters.push(`wine_classification=eq.${encodeURIComponent(wine_classification)}`);
+    if (tier)               filters.push(`enrichment_priority=eq.${encodeURIComponent(tier)}`);
     if (segment && SEGMENT_FILTERS[segment]) filters.push(SEGMENT_FILTERS[segment]);
     if (search) {
       filters.push(`or=(name.ilike.*${encodeURIComponent(search)}*,sku.ilike.*${encodeURIComponent(search)}*,brand.ilike.*${encodeURIComponent(search)}*)`);
@@ -73,7 +76,11 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: err }, { status: res.status });
     }
 
-    const items = await res.json();
+    const items = (await res.json()).map((item: Record<string, unknown>) => ({
+      ...item,
+      product_tier: item.enrichment_priority == null ? null : `T${item.enrichment_priority}`,
+      product_tier_definition: item.enrichment_note ?? null,
+    }));
     const contentRange = res.headers.get('content-range') ?? '';
     const total = contentRange.includes('/') ? parseInt(contentRange.split('/')[1]) : items.length;
 

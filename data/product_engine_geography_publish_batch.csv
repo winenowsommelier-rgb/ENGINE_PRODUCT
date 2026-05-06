@@ -1,0 +1,38 @@
+sku,country,region,subregion,enrichment_source,enrichment_note
+AWC0138EN,Singapore,,,geography_merge_now_batch,"country: Singapore (country_refresh) - Live catalog pattern match: five sibling Kadeka wine-cellar SKUs in products.json already carry country=Singapore, and this SKU name clearly matches the same Kadeka product family despite the blank brand field."
+LAB0016EQ,,Moravia,,geography_merge_now_batch,region: Moravia (region_lane) - R. Jelinek is centered on Vizovice in Moravia; Moravia is the safest region-level fill.
+LBD0194AA,,Coquimbo,,geography_merge_now_batch,region: Coquimbo (region_lane) - Capel is a Chilean pisco house identified with the Coquimbo pisco zone; this is a straightforward Chilean pisco region fill.
+LBE0770DO,,Phuket,,geography_merge_now_batch,"region: Phuket (region_lane) - Full Moon Brewworks is the Phuket craft brewery behind Chalawan, making Phuket a safe region fill."
+LBE0771DO,,Phuket,,geography_merge_now_batch,"region: Phuket (region_lane) - Full Moon Brewworks is the Phuket craft brewery behind Chatri, making Phuket a safe region fill."
+LGN0069DG,,Cognac,,geography_merge_now_batch,"region: Cognac (region_lane) - Citadelle is produced by Maison Ferrand in Cognac, making Cognac the safest region fill."
+LGN0198DG,,Cognac,,geography_merge_now_batch,region: Cognac (region_lane) - Citadelle is the Ferrand gin from Cognac; Cognac is the clearest publish-safe regional reference for the house.
+LGN0291EQ,,Nagano,,geography_merge_now_batch,"region: Nagano (region_lane) - Senjyo is a Nagano producer, so Nagano is a straightforward regional fill."
+LGN0292EQ,,Riga,,geography_merge_now_batch,"region: Riga (region_lane) - Cross Keys is a Latvian gin brand tied to Riga, which is the safest regional reference."
+LLQ0059AD,,Lower Saxony,,geography_merge_now_batch,region: Lower Saxony (region_lane) - Jagermeister is produced in Wolfenbuettel in Lower Saxony; Lower Saxony is the clearest region-level fill.
+LLQ0293DG,,Cognac,,geography_merge_now_batch,region: Cognac (region_lane) - Pierre Ferrand is a Cognac house and Dry Curacao is anchored to that production base in Cognac.
+LLQ0436EQ,,Riga,,geography_merge_now_batch,region: Riga (region_lane) - Riga Black Balsam is explicitly identified with Riga; region fill is direct and publish-safe.
+LLQ0448EQ,,Moravia,,geography_merge_now_batch,region: Moravia (region_lane) - R. Jelinek is centered on Vizovice in Moravia; Moravia is the safest region-level fill.
+LLQ0449EQ,,Moravia,,geography_merge_now_batch,region: Moravia (region_lane) - R. Jelinek is centered on Vizovice in Moravia; Moravia is the safest region-level fill.
+LOT0072AR,,Hyogo,,geography_merge_now_batch,"region: Hyogo (region_lane) - The product name itself anchors this umeshu to Kobe, so Hyogo is a safe region fill."
+LOT0076AR,,Fukushima,,geography_merge_now_batch,"region: Fukushima (region_lane) - Daishichi is a Fukushima house, so Fukushima is a safe region assignment."
+LOT0160FS,,Ehime,,geography_merge_now_batch,region: Ehime (region_lane) - Umenishiki is an Ehime producer; Ehime is a publish-safe regional fill.
+LRM0236ER,,Veracruz,,geography_merge_now_batch,region: Veracruz (region_lane) - Villa Rica rum is strongly associated with Veracruz and is commonly positioned as a Veracruz rum.
+LSK0406AR,,Miyagi,,geography_merge_now_batch,"region: Miyagi (region_lane) - Hitakami is a Miyagi sake, making Miyagi the clearest publish-safe region."
+LTQ0187EQ,,Jalisco,,geography_merge_now_batch,"region: Jalisco (region_lane) - Tequila is canonically tied to Jalisco, and Rooster Rojo is a Jalisco tequila brand."
+LTQ0229ER,,Jalisco,,geography_merge_now_batch,region: Jalisco (region_lane) - Flavored tequila extension of the same house; Jalisco remains the safe canonical region.
+LTQ0230ER,,Jalisco,,geography_merge_now_batch,region: Jalisco (region_lane) - Hijos de Villa is a tequila label and Jalisco is the safe canonical region for tequila.
+LTQ0231ER,,Jalisco,,geography_merge_now_batch,region: Jalisco (region_lane) - Hijos de Villa is a tequila label and Jalisco is the safe canonical region for tequila.
+LVK0638EQ,,Riga,,geography_merge_now_batch,region: Riga (region_lane) - The Riga Black line is tied to Riga and can safely inherit Riga as the regional fill.
+LWH0563AD,,Yamanashi,,geography_merge_now_batch,"region: Yamanashi (region_lane) - Tenjaku is positioned as a Yamanashi Japanese whisky, making Yamanashi a safe region fill."
+LWH0722CP,,Wales,,geography_merge_now_batch,"region: Wales (region_lane) - Aber Falls is a Welsh distillery; with country stored as UK, Wales is the clearest region-level fill."
+WRW3414AF,,,Cotes du Rhone,geography_merge_now_batch,subregion: Cotes du Rhone (subregion_refresh) - Product name explicitly contains Cotes du Rhone below the current Rhône Valley region.
+WRW3837AF,,,Saint-Joseph,geography_merge_now_batch,subregion: Saint-Joseph (subregion_refresh) - Product name explicitly contains the Saint-Joseph appellation below the current Rhône Valley region.
+WRW5786DD,,,Terrasses du Larzac,geography_merge_now_batch,subregion: Terrasses du Larzac (subregion_refresh) - Product name explicitly contains Terrasses du Larzac below the current Languedoc-Roussillon region.
+WRW6243FJ,,,Sancerre,geography_merge_now_batch,subregion: Sancerre (subregion_refresh) - Product name explicitly contains Sancerre below the current Loire Valley region.
+WWW0204AD,,,Chablis,geography_merge_now_batch,subregion: Chablis (subregion_refresh) - Product name explicitly contains Chablis below the current Burgundy region.
+WWW1085AF,,,Sancerre,geography_merge_now_batch,subregion: Sancerre (subregion_refresh) - Product name explicitly contains Sancerre below the current Loire Valley region.
+WWW1115AD,,,Saint-Joseph,geography_merge_now_batch,subregion: Saint-Joseph (subregion_refresh) - Product name explicitly contains the Saint-Joseph appellation below the current Rhône Valley region.
+WWW2026AF,,,Cotes du Rhone,geography_merge_now_batch,subregion: Cotes du Rhone (subregion_refresh) - Product name explicitly contains Cotes du Rhone below the current Rhône Valley region.
+WWW5072DJ,,,Saint-Veran,geography_merge_now_batch,subregion: Saint-Veran (subregion_refresh) - Product name explicitly contains Saint-Veran below the current Burgundy region.
+WWW5112FJ,,,Sancerre,geography_merge_now_batch,subregion: Sancerre (subregion_refresh) - Product name explicitly contains Sancerre below the current Loire Valley region.
+WWW5406BN,,,Saint-Bris,geography_merge_now_batch,subregion: Saint-Bris (subregion_refresh) - Product name explicitly contains Saint-Bris below the current Burgundy region.

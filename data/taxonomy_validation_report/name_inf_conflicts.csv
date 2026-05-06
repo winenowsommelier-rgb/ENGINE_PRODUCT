@@ -1,0 +1,187 @@
+sku,name,classification,stored_country,stored_region,stored_subregion,inferred_country,inferred_region,inferred_subregion,inferred_confidence,inferred_taxonomy_status,action,matched_rules
+LWH0165BU,Glenmorangie  The Quinta Ruban (Port Wood) - 14 Years (700 ml),Wine product,Scotland,,,Portugal,,,0.7,ok,conflict_country,quinta
+LWH0164BU,Glenmorangie  The Lasanta (Sherry Wood)-12 Years  (700 ml),Wine product,Scotland,,,Spain,Jerez,,0.9,bad_region,conflict_country,sherry
+WWW5918GX,Corryton Burge  Eden Valley Riesling,White Wine,Australia,South Australia,,Australia,Eden Valley,,0.95,bad_region,conflict_region,eden valley
+WRW6590GX,District Series Alexander Valley Cabernet Sauvignon,Red Wine,USA,California,Sonoma County,USA,California,Alexander Valley,0.95,bad_sub,conflict_subregion,alexander valley
+WWW5916GX,District Series Russian River Chardonnay,White Wine,USA,California,Sonoma County,USA,California,Russian River Valley,0.95,bad_sub,conflict_subregion,russian river
+WRW5383DH,Rocca di Montegrossi  Chianti Classico Gran Selezione DOCG Vigneto San Marcellino,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW5381DH,Rocca di Montegrossi  Chianti Classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW2019AC,Coli  Chianti Classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW2021AC,"Coli  ""Villa Montignana"" Chianti Classico Riserva DOCG",Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW2020AC,Coli  Chianti Classico Riserva DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+ABA0505BM,Koala  Set Champagne - Black,Wine product,Spain,,,France,Champagne,,0.85,ok,conflict_country,champagne; champagne
+WRW1829GC,Tedeschi  Capitel Nicalo Valpolicella Superiore DOC,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella
+WRW1774AE,Corte Rugolin  Valpolicella Classico Superiore Ripasso DOC,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella; ripasso
+WRS0142AE,Domaine Houchart  Cotes de Provence A.O.C,Rose Wine,France,Provence,Les Baux-de-Provence,France,Provence,Côtes de Provence,0.93,ok,conflict_subregion,cotes de provence; domaine
+WRW1856AE,Fontodi  Chianti Classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW1737AE,Chateau Tournefeuille  Lalande-de-Pomerol,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Pomerol,0.95,ok,conflict_subregion,pomerol; chateau
+WRW5657AE,Zenato  Podere Prospero Bolgheri Rosso,Red Wine,Italy,Veneto,,Italy,Tuscany,Bolgheri,0.95,ok,conflict_region,bolgheri
+WRW1853AE,Zenato  Ripassa Valpolicella Superiore DOC,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella
+WRW6173AE,Chateau de G  Gran Reserva Cabernet Sauvignon D.O.,Red Wine,Chile,Colchagua Valley,,France,,,0.7,ok,conflict_country,chateau
+LGP0092FX,Granmonte  Red Jungle Grappa (700 ml),Wine product,Thailand,,,Italy,,,0.88,ok,conflict_country,grappa
+LGP0091FX,Granmonte  Red Jungle Grappa (330 ml),Wine product,Thailand,,,Italy,,,0.88,ok,conflict_country,grappa
+WSP5672GE,Soar  Prosecco,Sparkling Wine,Australia,South Eastern Australia,,Italy,Veneto,Prosecco,0.88,ok,conflict_country,prosecco
+WSP5673GE,Donnavale  Prosecco,Sparkling Wine,Australia,South Eastern Australia,,Italy,Veneto,Prosecco,0.88,ok,conflict_country,prosecco
+WSP5674GE,Kissing Bridge  Prosecco,Sparkling Wine,Australia,South Eastern Australia,,Italy,Veneto,Prosecco,0.88,ok,conflict_country,prosecco
+WRW2348BN,Silver Oak  Cabernet Sauvignon Alexander Valley,Red Wine,USA,California,Sonoma County,USA,California,Alexander Valley,0.95,bad_sub,conflict_subregion,alexander valley
+WRW2973BN,Dal Forno Romano  Valpolicella Superiore DOC,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella
+WRW6085BN,Chateau Poujeaux (Moulis-en-Medoc),Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Moulis-en-Médoc,0.9,bad_sub,conflict_subregion,medoc; moulis; chateau
+WRW3064BN,Castello di Fonterutoli  Castello Fonterutoli Chianti Classico Gran Selezione DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW5407BN,Roccolo Grassi  Valpolicella Superiore,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella
+WRW2988BN,Castello di Fonterutoli  Fonterutoli Chianti Classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+LBD0194AA,Capel Pisco  Reservado Moai (1 L),Pisco,Chile,,,Peru,,,0.6,ok,conflict_country,pisco
+WRW0622AA,Corte Giara by Allegrini  Valpolicella DOC,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella
+WRW0009AA,Palazzo Grimani by Allegrini  Valpolicella Ripasso DOC,Red Wine,Italy,Tuscany,,Italy,Veneto,Valpolicella Ripasso,0.95,ok,conflict_region,valpolicella ripasso; valpolicella; ripasso
+WRW5647AA,Baron Philippe de Rothschild  Mouton Cadet Reserve Haut Medoc,Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,conflict_subregion,haut medoc; medoc
+WRW5612AA,Wynns  Coonawarra  Estate  Black Label Shiraz,Red Wine,Australia,South Australia,,Australia,Coonawarra,,0.95,ok,conflict_region,coonawarra
+WRW0623AA,Corte Giara by Allegrini  Valpolicella DOC Ripasso,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella; ripasso
+WWW5151AA,Wynns  Coonawarra  Estate Chardonnay,White Wine,Australia,South Australia,,Australia,Coonawarra,,0.95,ok,conflict_region,coonawarra
+WRW5106AA,Brancaia  Chianti Classico Riserva DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW0615AA,Allegrini  Valpolicella Classico DOC,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella
+WRW5608AA,Wynns  Coonawarra  Estate Cabernet Shiraz Merlot,Red Wine,Australia,South Australia,,Australia,Coonawarra,,0.95,ok,conflict_region,coonawarra
+WRW5609AA,Wynns  Coonawarra  Estate Shiraz,Red Wine,Australia,South Australia,,Australia,Coonawarra,,0.95,ok,conflict_region,coonawarra
+WRW5610AA,Wynns  Coonawarra  Estate  The Siding Cabernet Sauvignon,Red Wine,Australia,South Australia,,Australia,Coonawarra,,0.95,ok,conflict_region,coonawarra
+WRW6271AA,Velenosi  Verso Sera Montepulciano d’Abruzzo DOCG Colline Teramane,Red Wine,Italy,Marche,,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,conflict_region,montepulciano; montepulciano d abruzzo
+WRW5611AA,Wynns  Coonawarra  Estate  Black Label Cabernet Sauvignon,Red Wine,Australia,South Australia,,Australia,Coonawarra,,0.95,ok,conflict_region,coonawarra
+WRW5286AA,Brancaia  Chianti Classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW5464FJ,Messenez Family  Chateau M Gran Vin Gold Label,Red Wine,Chile,Rapel Valley,,France,,,0.7,ok,conflict_country,chateau
+WWW5409FJ,Messenez Family  Chateau M Grand Vin Villes Vignes Chardonnay,White Wine,Chile,Cachapoal Valley,,France,,,0.7,ok,conflict_country,chateau
+WRW5529FJ,Georges Duboeuf  Beaujolais Villages,Red Wine,France,Burgundy,Beaujolais,France,Beaujolais,,0.93,ok,conflict_region,beaujolais
+WRW5463FJ,Messenez Family  Chateau M Gran Reserva Cabernet Merlot,Red Wine,Chile,Rapel Valley,,France,,,0.7,ok,conflict_country,chateau
+WWW5110FJ,Messenez Family  Chateau M Sauvignon Blanc - Semillon,White Wine,Chile,Rapel Valley,,France,,,0.7,ok,conflict_country,chateau
+WRW6036FJ,Bindi Surgadi Sur Gardo Chianti Classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+LLQ0067AD,De Kuyper  Creme de Cassis (700 ml),Wine product,Netherlands,,,France,Provence,Cassis,0.8,ok,conflict_country,cassis
+WWW0159AD,Concha Y Toro  Frontera Chardonnay,White Wine,Chile,Central Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW0288AD,Concha Y Toro  Frontera Cabernet Sauvignon,Red Wine,Chile,Central Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW5761AD,Concha Y Toro  Reservado Merlot,Red Wine,Chile,Central Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WWW5202AD,Concha Y Toro  Reservado Sauvignon Blanc Pedro Jimenez,White Wine,Chile,Central Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+LTQ0200AD,Tarantula Azul  Tequila (750 ml),Wine product,England,,,Mexico,,,0.92,ok,conflict_country,tequila
+WRW1211AD,Chateau Ste. Michelle  Cabernet Sauvignon,Red Wine,USA,California,,France,,,0.7,ok,conflict_country,chateau
+WRW4742AD,Concha Y Toro  Casillero Del Diablo Reserva Cabernet Sauvignon,Red Wine,Chile,Central Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW4743AD,Concha Y Toro  Casillero Del Diablo Reserva Carmenere,Red Wine,Chile,Rapel Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW4744AD,Concha Y Toro  Casillero Del Diablo Reserva Merlot,Red Wine,Chile,Central Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW4745AD,Concha Y Toro  Casillero Del Diablo Reserva Pinot Noir,Red Wine,Chile,Casablanca Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WWW0195AD,Concha Y Toro  Casillero del Diablo Reserva Chardonnay,White Wine,Chile,Cachapoal Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WWW0196AD,Concha Y Toro  Casillero del Diablo Reserva Sauvignon Blanc,White Wine,Chile,Cachapoal Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+LTQ0201AD,Pancho Villa  Gold Tequila (750 ml),Wine product,England,,,Mexico,,,0.92,ok,conflict_country,tequila
+WWW0153AD,Concha Y Toro  Reservado Chardonnay,White Wine,Chile,Central Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW5864AD,Concha Y Toro  Marques de Casa Concha Merlot,Red Wine,Chile,Rapel Valley,,Spain,Toro,,0.85,ok,conflict_country,toro; casa
+WWW4859AD,Concha Y Toro  Marques de Casa Concha Chardonnay,White Wine,Chile,Rapel Valley,,Spain,Toro,,0.85,ok,conflict_country,toro; casa
+WRW0343AD,Concha Y Toro  Marques de Casa Concha Cabernet Sauvignon,Red Wine,Chile,Rapel Valley,,Spain,Toro,,0.85,ok,conflict_country,toro; casa
+LTQ0001AD,Tequila Rose  Strawberry Cream (750 ml),Wine product,USA,,,Mexico,,,0.92,ok,conflict_country,tequila
+WRW6277AD,Concha Y Toro  Casillero Del Diablo Devil's Carnaval Fabulous Red,Red Wine,Chile,Maule Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW5635AD,Concha Y Toro  Casillero Del Diablo Dark Red,Red Wine,Chile,Maipo Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW5959AD,Concha Y Toro  Casillero Del Diablo Black Cabernet Sauvignon,Red Wine,Chile,Maule Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW6570AD,Concha Y Toro  Terrunyo Cabernet Sauvignon,Red Wine,Chile,Maule Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WWW5912AD,Concha Y Toro  Terrunyo Sauvignon Blanc,White Wine,Chile,Maule Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WWW0532AD,Chateau Ste. Michelle  Sauvignon Blanc,White Wine,USA,California,,France,,,0.7,ok,conflict_country,chateau
+WRW0282AD,Concha Y Toro  Reservado Cabernet Sauvignon,Red Wine,Chile,Central Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+LTQ0202AD,Pancho Villa  Silver Tequila (750 ml),Wine product,England,,,Mexico,,,0.92,ok,conflict_country,tequila
+WRW6276AD,Concha Y Toro  Casillero Del Diablo Devil's Carnaval Spectacular Cabernet,Red Wine,Chile,Maule Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WWW5426AD,Concha Y Toro  Casillero Del Diablo Devil's Carnaval Phenomenal Sauvignon,White Wine,Chile,Maule Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW0380AD,Concha Y Toro  Don Melchor,Red Wine,Chile,Maipo Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WWW2335AD,Bodegas Protos   Verdejo Rueda D.O.,White Wine,Spain,Ribera del Duero,,Spain,Rueda,,0.92,ok,conflict_region,rueda; bodegas
+WWW5307AD,Talamonti  Aternum Trebbiano D'Abruzzo,White Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Trebbiano d'Abruzzo,0.95,bad_sub,conflict_subregion,trebbiano d abruzzo
+WRW0139AD,Zonin  Ripasso Valpolicella Superiore DOC,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella; ripasso
+WRW1212AD,Chateau Ste. Michelle  Syrah,Red Wine,USA,California,,France,,,0.7,ok,conflict_country,chateau
+WRW0326AD,Bodegas Palacios Remondo  Camins del Priorat,Red Wine,Spain,Rioja,,Spain,Priorat,,0.95,ok,conflict_region,priorat; bodegas
+WRW5057AD,Castello di Albola Chianti Classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW0096AD,Chateau du Courlat  Cuvee JB AOC Lussac Saint Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Lussac-Saint-Emilion,0.97,ok,conflict_subregion,saint emilion; lussac saint emilion; chateau
+WRW0025AD,Castello Banfi  Chianti Classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW6566AD,Concha Y Toro  The Master Cabernet Sauvignon,Red Wine,Chile,Maule Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WSP2459AD,Concha Y Toro  Casillero Del Diablo Devil's Brut,Sparkling Wine,Chile,Maipo Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW0134AD,Villa Girardi  Valpolicella Classico Superiore,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella
+WRW0337AD,Carpineto  Chianti Classico,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW5015AD,Concha Y Toro  Casillero Del Diablo Reserva Privada Cabernet Sauvignon,Red Wine,Chile,Maipo Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WWW4850AD,Concha Y Toro  Casillero Del Diablo Reserva Privada Sauvignon Blanc,White Wine,Chile,Maipo Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW5014AD,Bodegas Garzon  Reserva Tannat,Red Wine,Uruguay,,,Spain,,,0.7,ok,conflict_country,bodegas
+WWW4849AD,Bodegas Garzon  Reserva Albarino,White Wine,Uruguay,,,Spain,Rías Baixas,,0.8,ok,conflict_country,albarino; bodegas
+WWW4851AD,Talamonti  Trebi Trebbiano D'Abruzzo DOC,White Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Trebbiano d'Abruzzo,0.95,bad_sub,conflict_subregion,trebbiano d abruzzo
+WRW3412AD,Speri  Valpolicella DOC Classico,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella
+WWW2398AD,Penfolds  Bin 51 Eden Valley Riesling,White Wine,Australia,South Australia,,Australia,Eden Valley,,0.95,bad_region,conflict_region,eden valley
+WRS0182AD,Maison de Grand Esprit  L'Etre Magique Cotes De Provence Rose,Rose Wine,France,Provence,Les Baux-de-Provence,France,Provence,Côtes de Provence,0.93,ok,conflict_subregion,cotes de provence; maison
+WRW1043AD,Wolf Blass  Gold Label Barossa Shiraz,Red Wine,Australia,South Australia,,Australia,Barossa Valley,,0.88,ok,conflict_region,barossa
+WRW5834AD,Penfolds  Barossa Valley Explorer Dual Pack,Red Wine,Australia,South Australia,,Australia,Barossa Valley,,0.95,ok,conflict_region,barossa valley; barossa
+ABA0154CQ,Jiggers  Absinthe Spoon,Wine product,USA,,,France,,,0.55,ok,conflict_country,absinthe
+ABA0226CQ,Jiggers  Chrome Champagne Saver,Wine product,USA,,,France,Champagne,,0.85,ok,conflict_country,champagne; champagne
+ABA0227CQ,Jiggers  Deluxe Chrome Champagne Saver,Wine product,USA,,,France,Champagne,,0.85,ok,conflict_country,champagne; champagne
+ABA0754FW,Vacu Vin  Champagne Saver & Server,Wine product,Poland,,,France,Champagne,,0.85,ok,conflict_country,champagne; champagne
+WRW4096AJ,Protest  Sonoma County Red Bland,Red Wine,USA,California,Napa Valley,USA,California,Sonoma,0.88,bad_sub,conflict_subregion,sonoma
+WRW4071AJ,Layer Cake  Cabernet Sauvignon - Alexander Valley,Red Wine,USA,California,Central Coast,USA,California,Alexander Valley,0.95,bad_sub,conflict_subregion,alexander valley
+WRW6494FT,Chateau Cos Labory  Saint Estephe 5Ème Cru Classé 2021,Red Wine,France,Bordeaux,Saint-Julien,France,Bordeaux,Saint-Estèphe,0.95,ok,conflict_subregion,saint estephe; chateau
+LRM0200ER,Rum & Cane Merchants  French Overseas XO (700 ml),Wine product,Martinique,,,France,,,0.55,ok,conflict_country,french
+LRM0201ER,Rum & Cane Merchants  Spanish Caribbean XO (700 ml),Wine product,Cuba,,,Spain,,,0.55,ok,conflict_country,spanish
+LWH1092ER,Wolfburn  Cask Strength  Sherry & Bourbon Cask (700 ml),Wine product,Scotland,,,Spain,Jerez,,0.9,bad_region,conflict_country,sherry; bourbon
+LWH0577ER,Omar  Single Malt Sherry Cask Strength Whisky (700 ml),Wine product,Taiwan,,,Spain,Jerez,,0.9,bad_region,conflict_country,sherry
+LWH0578ER,Omar  Single Malt Bourbon Cask Strength Whisky (700 ml),Wine product,Taiwan,,,USA,Kentucky,,0.7,ok,conflict_country,bourbon
+LWH0580ER,Omar  Single Malt Bourbon Type Whisky (700 ml),Wine product,Taiwan,,,USA,Kentucky,,0.7,ok,conflict_country,bourbon
+LWH0579ER,Omar  Single Malt Sherry Type Whisky (700 ml),Wine product,Taiwan,,,Spain,Jerez,,0.9,bad_region,conflict_country,sherry
+LWH1140DD,Lingyun  Singlemalt Whisky Sherry Cask (700 ml),Wine product,China,,,Spain,Jerez,,0.9,bad_region,conflict_country,sherry
+LWH1141DD,Lingyun  Singlemalt Whisy Cognac Cask (700 ml),Wine product,China,,,France,Cognac,,0.92,ok,conflict_country,cognac
+WRW3353DD,Chateau Branas Grand Poujeaux  Moulis,Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Moulis-en-Médoc,0.9,bad_sub,conflict_subregion,moulis; chateau
+WRW6297GQ,Chateau du Bergey  Fronsac,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Fronsac,0.9,bad_sub,conflict_subregion,fronsac; chateau
+LWH1030BU,Chivas Regal  13 Years Sherry Cask Selection Blended Whisky (700 ml),Wine product,Scotland,,,Spain,Jerez,,0.9,bad_region,conflict_country,sherry
+LWH1031BU,Chivas Regal  13 Years Tequila Cask Selection Blended Whisky (700 ml),Wine product,Scotland,,,Mexico,,,0.92,ok,conflict_country,tequila
+LWH0267DG,Kavalan  ex-Bourbon Oak Single Malt Whisky (700 ml),Wine product,Taiwan,,,USA,Kentucky,,0.7,ok,conflict_country,bourbon
+LWH0527DG,Kavalan  Oloroso Sherry Oak Single Malt Whisky (700 ml),Wine product,Taiwan,,,Spain,Jerez,,0.9,bad_region,conflict_country,sherry
+LAB0014DG,St. George  Absinthe Verte (750 ml),Wine product,USA,,,France,,,0.55,ok,conflict_country,absinthe
+LWH0977DG,Kavalan  Concertmaster Sherry Finish (700 ml),Wine product,Taiwan,,,Spain,Jerez,,0.9,bad_region,conflict_country,sherry
+LTQ0190CP,Dead Man's Fingers  Tequila Reposado,Wine product,England,,,Mexico,,,0.92,ok,conflict_country,tequila
+WRW5963FS,Toro De Piedra  Reserve Cabernet Sauvignon,Red Wine,Chile,Colchagua Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WWW5298FS,Toro De Piedra  Reserve Sauvignon Blanc,White Wine,Chile,Colchagua Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW5964FS,Toro De Piedra  Grand Reserve Cabernet Sauvignon,Red Wine,Chile,Colchagua Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW5965FS,Toro De Piedra  Grand Reserve Merlot,Red Wine,Chile,Colchagua Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WWW5299FS,Toro De Piedra  Grand Reserve Chardonnay,White Wine,Chile,Colchagua Valley,,Spain,Toro,,0.85,ok,conflict_country,toro
+WRW5477DW,Castelli del Grevepesa  Castello Di Bibbione Riserva Chianti Classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW5478DW,Castelli del Grevepesa  Castello Di Bibbione Gran Selezione Chianti classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW5267DW,Castelli del Grevepesa  Clemente VII Gran Selezione Chianti Classico DOCG Gran Selezione,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW4649DW,Bodega Volcanes de Chile  Parinacota,Red Wine,Chile,Maule Valley,,Spain,,,0.7,ok,conflict_country,bodega
+WRW5266DW,Castelli del Grevepesa  Panzano Gran Selezione Chianti Classico DOCG Gran Selezione,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW4810DW,Bodega Volcanes de Chile  Igneo,Red Wine,Chile,Rapel Valley,,Spain,,,0.7,ok,conflict_country,bodega
+WRW4651DW,Bodega Volcanes de Chile  Tectonia Grenache-Petite Syrah Mourvedre,Red Wine,Chile,Rapel Valley,,Spain,,,0.7,ok,conflict_country,bodega
+WRW5423DW,Bodega Volcanes de Chile  Tectonia Carmenere,Red Wine,Chile,Rapel Valley,,Spain,,,0.7,ok,conflict_country,bodega
+WWW2394DW,Bodega Volcanes de Chile  Tectonia Chardonnay,White Wine,Chile,Rapel Valley,,Spain,,,0.7,ok,conflict_country,bodega
+WRW5265DW,Castelli del Grevepesa  Clemente VII Riserva Chianti Classico DOCG Riserva,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WWW5316DW,Domaine du Vieux Bourg  Clos du Vieux Bourg Beaujolais Blanc,White Wine,France,Burgundy,Beaujolais,France,Beaujolais,,0.93,ok,conflict_region,beaujolais; domaine
+WRW3947DW,Bodega Volcanes de Chile  Reserva Cabernet Sauvignon,Red Wine,Chile,Rapel Valley,,Spain,,,0.7,ok,conflict_country,bodega
+WRW5424DW,Bodega Volcanes de Chile  Reserva Carmenere,Red Wine,Chile,Rapel Valley,,Spain,,,0.7,ok,conflict_country,bodega
+WWW2105DW,Bodega Volcanes de Chile  Reserva Sauvignon Blanc,White Wine,Chile,Central Valley,,Spain,,,0.7,ok,conflict_country,bodega
+WRW1608BS,Castellare Di Castellina  Chianti Classico Riserva DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW4244BS,Castello di Bossi  Chianti Classico Riserva Berardo DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW1618BS,Marchesi Di Barolo  Barbaresco Serragrilli DOCG (Single Vineyard),Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barolo,0.95,ok,conflict_subregion,barolo; barbaresco
+WRW5208BS,Tenute Del Cerro  Vino Nobile di Montepulciano Riserva DOCG,Red Wine,Italy,Umbria,Montepulciano,Italy,Tuscany,Vino Nobile di Montepulciano,0.97,bad_sub,conflict_region,vino nobile di montepulciano; montepulciano
+WRW1311BS,Ricasoli  Rocca Guicciarda Chianti Classico Riserva DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW1309BS,Ricasoli  Brolio Chianti Classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW1590BS,Nicolis  Seccal Valpolicella Classico Superiore Ripasso DOC,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella; ripasso
+WRW5207BS,Tenute Del Cerro  Vino Nobile di Montepulciano DOCG,Red Wine,Italy,Umbria,Montepulciano,Italy,Tuscany,Vino Nobile di Montepulciano,0.97,bad_sub,conflict_region,vino nobile di montepulciano; montepulciano
+WRW1310BS,Ricasoli  Chianti Classico Gran Selezione Castello di Brolio DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW4243BS,Castello di Bossi  Chianti Classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW1587BS,Bottega  Valpolicella Superiore Ripasso DOC,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella; ripasso
+WWW1417BS,Caldora  Trebbiano d'Abruzzo DOC,White Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Trebbiano d'Abruzzo,0.95,bad_sub,conflict_subregion,trebbiano d abruzzo
+LAB0016EQ,R.Jelinek  Premium Absinthe (700 ml),Liqueur,Czech Republic,,,France,,,0.55,ok,conflict_country,absinthe
+LWH1020EQ,Tomintoul  Cognac Cask Finish (700 ml),Wine product,Scotland,,,France,Cognac,,0.92,ok,conflict_country,cognac
+LWH1021EQ,Tomintoul  Pedro Ximenez Sherry Cask Finish (700 ml),Wine product,Scotland,,,Spain,Jerez,,0.9,bad_region,conflict_country,sherry
+WWW5441FC,Louis Latour  Chevalier-Montrachet Grand Cru,White Wine,France,Burgundy,Puligny-Montrachet,France,Burgundy,Chevalier-Montrachet,0.97,ok,conflict_subregion,chevalier montrachet
+WWW0409FC,Louis Latour  Corton-Charlemagne Grand Cru,White Wine,France,Burgundy,Aloxe-Corton,France,Burgundy,Corton-Charlemagne,0.97,ok,conflict_subregion,corton charlemagne
+WRW6348FC,Bodega Aleanna El Enemigo As Bravas Malbec,Red Wine,Argentina,Mendoza,,Spain,,,0.7,ok,conflict_country,bodega
+WRW6347FC,Bodega Aleanna  Gran Enemigo Gualtallary,Red Wine,Argentina,Mendoza,,Spain,,,0.7,ok,conflict_country,bodega
+WRW5397FC,Chateau Musar  Red 2017,Red Wine,Lebanon,,,France,,,0.7,ok,conflict_country,chateau
+WWW5079FC,Chateau Musar  White 2010,White Wine,Lebanon,,,France,,,0.7,ok,conflict_country,chateau
+WRW4272FC,Castello Di Ama  San Lorenzo Chianti Classico Gran Selezione DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW6368FC,Two Hands  Yacca Block Shiraz Eden Valley,Red Wine,Australia,South Australia,,Australia,Eden Valley,,0.95,bad_region,conflict_region,eden valley
+WRW5186FC,Castello Di Ama  Chianti Classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW5394FC,Chateau Musar  Jeune Red,Red Wine,Lebanon,,,France,,,0.7,ok,conflict_country,chateau
+WRW6345FC,Bodega Aleanna El Enemigo  Cabernet Franc,Red Wine,Argentina,Mendoza,,Spain,,,0.7,ok,conflict_country,bodega
+WRW6346FC,Bodega Aleanna El Enemigo  Malbec,Red Wine,Argentina,Mendoza,,Spain,,,0.7,ok,conflict_country,bodega
+WRW6356FC,Martin Ray  Pinot Noir Sonoma Coast,Red Wine,USA,California,Sonoma County,USA,California,Sonoma,0.93,bad_sub,conflict_subregion,sonoma coast; sonoma
+WRW6357FC,Martin Ray  Cabernet Napa & Sonoma,Red Wine,USA,California,Sonoma County,USA,California,Sonoma,0.88,bad_sub,conflict_subregion,napa; sonoma
+WRW5193FC,Agricola San Felice  San Felice Chianti Classico DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WRW5625FC,Louis Latour  Mercurey Cote Chalonnaise Rouge,Red Wine,France,Burgundy,Mercurey,France,Burgundy,Côte Chalonnaise,0.93,ok,conflict_subregion,cote chalonnaise
+WRW5187FC,Agricola San Felice  Il Grigio di San Felice Chianti Classico Riserva DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti Classico,0.95,ok,conflict_subregion,chianti classico; chianti
+WSP2495FC,Fantinel  Prosecco One & Only Millesime Rose,Sparkling Wine,Italy,Friuli-Venezia Giulia,,Italy,Veneto,Prosecco,0.88,ok,conflict_region,prosecco
+WWW5453FC,Two Hands  The Boy Riesling Eden Valley,White Wine,Australia,South Australia,,Australia,Eden Valley,,0.95,bad_region,conflict_region,eden valley
+WWW5078FC,Chateau Musar  Jeune White,White Wine,Lebanon,,,France,,,0.7,ok,conflict_country,chateau
+LWH0632AF,Glen Moray  Classic Sherry Cask Finish Single Malt Whisky (700 ml),Wine product,Scotland,,,Spain,Jerez,,0.9,bad_region,conflict_country,sherry
+WRW1405AF,Joseph Drouhin  Santenay,Red Wine,France,Burgundy,Côte de Beaune,France,Burgundy,Santenay,0.92,bad_sub,conflict_subregion,santenay
+WRW1398AF,Joseph Drouhin  Beaujolais Villages,Red Wine,France,Burgundy,Beaujolais,France,Beaujolais,,0.93,ok,conflict_region,beaujolais
+WRW1296AF,"Masi  Valpolicella ""Bonacosta"" Classico DOC",Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella,0.9,ok,conflict_subregion,valpolicella

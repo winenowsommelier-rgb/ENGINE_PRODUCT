@@ -148,7 +148,6 @@ SUBREGION_COORDS = {
     "Pauillac":         [45.2, -0.8],
     "Pessac-Léognan":   [44.7, -0.6],
     "Pomerol":          [44.9, -0.2],
-    "Right Bank":       [44.9, -0.1],
     "Saint-Estèphe":    [45.3, -0.8],
     "Saint-Julien":     [45.2, -0.7],
     "Saint-Émilion":    [44.9, -0.2],

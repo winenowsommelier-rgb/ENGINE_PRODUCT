@@ -169,7 +169,7 @@ export function DataCatalog() {
                   <th className="px-4 py-3 text-left font-semibold text-slate-300">SKU</th>
                   <th className="px-4 py-3 text-left font-semibold text-slate-300">Product Name</th>
                   <th className="px-4 py-3 text-left font-semibold text-slate-300">Country</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-300">Classification</th>
+                  <th className="px-4 py-3 text-left font-semibold text-slate-300">Item Category</th>
                   <th className="px-4 py-3 text-center font-semibold text-slate-300">Confidence</th>
                   <th className="px-4 py-3 text-center font-semibold text-slate-300">Status</th>
                 </tr>
@@ -297,7 +297,7 @@ export function DataCatalog() {
                 </div>
 
                 <div>
-                  <p className="text-xs text-slate-500 mb-1">Classification</p>
+                  <p className="text-xs text-slate-500 mb-1">Item Category</p>
                   <p className="text-sm text-white">{selectedProduct.classification || '—'}</p>
                 </div>
                 <div>

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import champagneRules from "@/data/taxonomy/champagne-subregion-rules.json";
 
 export const runtime = "nodejs";
 
@@ -49,6 +50,61 @@ const SELECT_FIELDS = [
   "food_matching",
 ].join(",");
 
+const CHAMPAGNE_COUNTRY = "France";
+const CHAMPAGNE_REGION = "Champagne";
+const CHAMPAGNE_SUBREGION_NAMES = new Set(champagneRules.subregions.map((item) => item.name));
+const CHAMPAGNE_BLOCKED_PREFIXES = champagneRules.blocked_brand_prefixes.map(normalizeText);
+const CHAMPAGNE_PREFIX_ENTRIES = Object.entries(champagneRules.brand_prefix_map).map(
+  ([prefix, subregion]) => [normalizeText(prefix), subregion] as const,
+);
+
+type ExploreProduct = {
+  id: string | number;
+  sku: string;
+  name: string;
+  brand?: string | null;
+  country?: string | null;
+  region?: string | null;
+  subregion?: string | null;
+  [key: string]: unknown;
+};
+
+function normalizeText(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function inferChampagneSubregion(product: ExploreProduct): string | null {
+  const rawSubregion = String(product.subregion ?? "").trim();
+  if (CHAMPAGNE_SUBREGION_NAMES.has(rawSubregion)) {
+    return rawSubregion;
+  }
+
+  const brand = normalizeText(String(product.brand ?? ""));
+  const name = normalizeText(String(product.name ?? ""));
+  for (const prefix of CHAMPAGNE_BLOCKED_PREFIXES) {
+    if (brand.startsWith(prefix) || name.startsWith(prefix)) {
+      return null;
+    }
+  }
+
+  for (const source of [brand, name]) {
+    for (const [prefix, subregion] of CHAMPAGNE_PREFIX_ENTRIES) {
+      if (source.startsWith(prefix)) {
+        return subregion;
+      }
+    }
+  }
+
+  return null;
+}
+
 export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
   const country = sp.get("country") ?? "";
@@ -59,12 +115,16 @@ export async function GET(req: NextRequest) {
   const page = Math.max(1, Number(sp.get("page") ?? 1));
   const limit = Math.min(50, Math.max(1, Number(sp.get("limit") ?? 20)));
   const offset = (page - 1) * limit;
+  const isChampagneSubregionRequest =
+    country === CHAMPAGNE_COUNTRY &&
+    region === CHAMPAGNE_REGION &&
+    CHAMPAGNE_SUBREGION_NAMES.has(subregion);
 
   const filters: string[] = [];
 
   if (country) filters.push(`country=eq.${encodeURIComponent(country)}`);
   if (region) filters.push(`region=eq.${encodeURIComponent(region)}`);
-  if (subregion) filters.push(`subregion=eq.${encodeURIComponent(subregion)}`);
+  if (subregion && !isChampagneSubregionRequest) filters.push(`subregion=eq.${encodeURIComponent(subregion)}`);
   if (category && SEGMENT_FILTERS[category]) filters.push(SEGMENT_FILTERS[category]);
 
   // Product filters — multi-select fields use PostgREST `in.()` syntax
@@ -97,15 +157,15 @@ export async function GET(req: NextRequest) {
 
   const order = SORT_MAP[sort] ?? SORT_MAP.popular;
 
-  const qs = [
-    `select=${SELECT_FIELDS}`,
-    ...filters,
-    `order=${order}`,
-    `limit=${limit}`,
-    `offset=${offset}`,
-  ].join("&");
-
   try {
+    const qs = [
+      `select=${SELECT_FIELDS}`,
+      ...filters,
+      `order=${order}`,
+      `limit=${isChampagneSubregionRequest ? 1000 : limit}`,
+      `offset=${isChampagneSubregionRequest ? 0 : offset}`,
+    ].join("&");
+
     const res = await fetch(`${SUPABASE_URL}/rest/v1/products?${qs}`, {
       headers: { ...HEADERS, Prefer: "count=exact" },
     });
@@ -116,7 +176,23 @@ export async function GET(req: NextRequest) {
     }
 
     const total = Number(res.headers.get("content-range")?.split("/")[1] ?? 0);
-    const products = await res.json();
+    const products = (await res.json()) as ExploreProduct[];
+
+    if (isChampagneSubregionRequest) {
+      const filteredProducts = products.filter(
+        (product) =>
+          String(product.country ?? "") === CHAMPAGNE_COUNTRY &&
+          String(product.region ?? "") === CHAMPAGNE_REGION &&
+          inferChampagneSubregion(product) === subregion,
+      );
+
+      return NextResponse.json({
+        products: filteredProducts.slice(offset, offset + limit),
+        total: filteredProducts.length,
+        page,
+        limit,
+      });
+    }
 
     return NextResponse.json({ products, total, page, limit });
   } catch (err) {

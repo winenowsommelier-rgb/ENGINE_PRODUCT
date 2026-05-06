@@ -1,0 +1,6 @@
+field,country_from,country_to,region_from,region_to,sub_from,sub_to,products
+country,UK,England,,,,,63
+country,Netherland,Netherlands,,,,,27
+region,France,France,Languedoc,Languedoc-Roussillon,,,41
+subregion,Italy,Italy,Tuscany,Tuscany,Chianti DOCG,Chianti,41
+subregion,France,France,Bordeaux,Bordeaux,Saint-Emilion,Saint-Émilion,4

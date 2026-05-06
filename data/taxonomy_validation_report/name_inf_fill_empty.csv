@@ -1,0 +1,124 @@
+sku,name,classification,stored_country,stored_region,stored_subregion,inferred_country,inferred_region,inferred_subregion,inferred_confidence,inferred_taxonomy_status,action,matched_rules
+WRW6191DH,Olek Bondonio  Langhe Nebbiolo DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WRW6190DH,Olek Bondonio  Barbera D’alba DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Alba,0.95,bad_sub,fill_subregion_from_name,barbera d alba
+WRW6192DH,Olek Bondonio  Barbera D’asti DOCG,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Asti,0.95,bad_sub,fill_subregion_from_name,barbera d asti
+WRW2046AC,Danese  Valpolicella DOC,Red Wine,Italy,Veneto,,Italy,Veneto,Valpolicella,0.9,ok,fill_subregion_from_name,valpolicella
+WRW2045AC,Danese  Bardolino DOC,Red Wine,Italy,Veneto,,Italy,Veneto,Bardolino,0.92,bad_sub,fill_subregion_from_name,bardolino
+WRS0079AC,Zeni  Bardolino Chiaretto Classico DOC,Rose Wine,Italy,Veneto,,Italy,Veneto,Bardolino,0.92,bad_sub,fill_subregion_from_name,bardolino
+WRS0124AE,Zenato  Bardolino Chiaretto DOC,Rose Wine,Italy,Veneto,,Italy,Veneto,Bardolino,0.92,bad_sub,fill_subregion_from_name,bardolino
+WRW1809AE,Massolino  Dolcetto D’Alba DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Dolcetto d'Alba,0.95,bad_sub,fill_subregion_from_name,dolcetto d alba
+WRW1751AE,Bartolo Mascarello  Dolcetto D’Alba DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Dolcetto d'Alba,0.95,bad_sub,fill_subregion_from_name,dolcetto d alba
+WWW5402AE,Massolino  Langhe DOC Chardonnay,White Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WRW5724AE,Passi di Orma Bolgheri DOC,Red Wine,Italy,Tuscany,,Italy,Tuscany,Bolgheri,0.95,ok,fill_subregion_from_name,bolgheri
+WRW1935BN,Chateau Fontenil  Fronsac,Red Wine,France,Bordeaux,,France,Bordeaux,Fronsac,0.9,bad_sub,fill_subregion_from_name,fronsac; chateau
+WRW5408BN,Tenuta Belguardo  Maremma Toscana DOC,Red Wine,Italy,Tuscany,,Italy,Tuscany,Maremma,0.9,ok,fill_subregion_from_name,maremma; tenuta
+LBD0136AA,Courvoisier VSOP Cognac (700 ml),Wine product,France,,,France,Cognac,,0.92,ok,fill_region_from_name,cognac
+LBD0176AA,Chateau du Breuil  Calvados VSOP (700 ml),Wine product,France,,,France,Calvados,,0.95,ok,fill_region_from_name,calvados; chateau
+LGP0012AA,Nonino  Ue Il Prosecco (700 ml),Wine product,Italy,,,Italy,Veneto,Prosecco,0.88,ok,fill_region_from_name,prosecco
+LBD0175AA,Chateau du Breuil  Calvados Fine (700 ml),Wine product,France,,,France,Calvados,,0.95,ok,fill_region_from_name,calvados; chateau
+WWW0201AA,Michele Chiarlo  Gavi Le Marne DOCG,White Wine,Italy,Piedmont,,Italy,Piedmont,Gavi,0.9,ok,fill_subregion_from_name,gavi
+WRW0621AA,Corte Giara by Allegrini  Bardolino DOC,Red Wine,Italy,Veneto,,Italy,Veneto,Bardolino,0.92,bad_sub,fill_subregion_from_name,bardolino
+WWW5482AA,Fontanafredda  Gavi Del Commune Di Gavi DOCG,White Wine,Italy,Piedmont,,Italy,Piedmont,Gavi,0.9,ok,fill_subregion_from_name,gavi
+WRW0410AA,Santa Cristina By Antinori  Chianti Superiore DOCG,Wine product,Italy,,,Italy,Tuscany,Chianti,0.88,ok,fill_region_from_name,chianti
+WSP1453AA,Cavicchioli  Prosecco Extra Dry,Wine product,Italy,,,Italy,Veneto,Prosecco,0.88,ok,fill_region_from_name,prosecco
+WWW4997AA,Ceretto  Langhe Arneis Blange BIO DOC,White Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WSP0074AA,Cavicchioli & Figli  Cavicchioli Lambrusco Emilia Amabile,Wine product,Italy,,,Italy,Emilia-Romagna,,0.88,ok,fill_region_from_name,lambrusco
+WRS0162AA,Tenuta Guado al Tasso By Antinori  Scalabrone Rosato Bolgheri DOC,Wine product,Italy,,,Italy,Tuscany,Bolgheri,0.95,ok,fill_region_from_name,bolgheri; tenuta
+WSP2452AA,Antinori  Marchese Cuvee Royale Franciacorta DOCG,Wine product,Italy,,,Italy,Lombardy,,0.95,ok,fill_region_from_name,franciacorta
+WSP0075AA,Cavicchioli  Lambrusco Grasparossa di Castelvetro Amabile,Wine product,Italy,,,Italy,Emilia-Romagna,,0.88,ok,fill_region_from_name,lambrusco
+WRW5322AA,La Spinetta  Barbera d' Alba Gallina DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Alba,0.95,bad_sub,fill_subregion_from_name,barbera d alba
+WRW4894AA,"Batasiolo  Dolcetto d' Alba ""Arie"" DOC",Red Wine,Italy,Piedmont,,Italy,Piedmont,Dolcetto d'Alba,0.95,bad_sub,fill_subregion_from_name,dolcetto d alba
+WRW5125AA,Ceretto  Langhe Rosso Monsordo BIO DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WWW4828AA,Damilano  Langhe Arneis DOC,White Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WRW3467AA,"Pian delle Vigne By Antinori  Brunello Di Montalcino ""Vignaferrovia"" Riserva DOCG",Wine product,Italy,,,Italy,Tuscany,Brunello di Montalcino,0.97,ok,fill_region_from_name,brunello di montalcino; montalcino
+WRW5108AA,Fattoria Le Pupille  Saffredi Maremma Toscana,Red Wine,Italy,Tuscany,,Italy,Tuscany,Maremma,0.9,ok,fill_subregion_from_name,maremma
+WRW0433AA,Batasiolo  Barbera D'Asti Sabri,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Asti,0.95,bad_sub,fill_subregion_from_name,barbera d asti
+WRW0413AA,Tenuta Guado al Tasso By Antinori  Bolgheri Superiore DOC,Wine product,Italy,,,Italy,Tuscany,Bolgheri,0.95,ok,fill_region_from_name,bolgheri; tenuta
+WRW0422AA,"Antinori  Chianti Classico Riserva ""Badia A Passignano"" DOCG",Wine product,Italy,,,Italy,Tuscany,Chianti Classico,0.95,ok,fill_region_from_name,chianti classico; chianti
+WRW5829AA,Michele Chiarlo  Langhe Il Principe DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WWW5481AA,Fontanafredda  Roero Arneis Pradalupo DOCG,White Wine,Italy,Piedmont,,Italy,Piedmont,Roero,0.88,ok,fill_subregion_from_name,roero
+WRW3474AA,Tenuta Guado al Tasso By Antinori  Matarocchio Bolgheri IGT,Wine product,Italy,,,Italy,Tuscany,Bolgheri,0.95,ok,fill_region_from_name,bolgheri; tenuta
+WRW6442AA,Fontanafredda  Barbera D'Alba Raimonda DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Alba,0.95,bad_sub,fill_subregion_from_name,barbera d alba
+WRW0412AA,"Antinori  Chianti Classico Riserva ""Marchese"" Tignanello DOCG",Wine product,Italy,,,Italy,Tuscany,Chianti Classico,0.95,ok,fill_region_from_name,chianti classico; chianti
+WRW3381AA,Pian delle Vigne By Antinori  Rosso Di Montalcino DOC,Wine product,Italy,,,Italy,Tuscany,Rosso di Montalcino,0.97,ok,fill_region_from_name,rosso di montalcino; montalcino
+WRW4900AA,Tenuta Guado al Tasso By Antinori  COn't Ugo Bolgheri DOC,Wine product,Italy,,,Italy,Tuscany,Bolgheri,0.95,ok,fill_region_from_name,bolgheri; tenuta
+WRW4842AA,La Spinetta   Langhe Nebbiolo DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WRW4841AA,"La Spinetta   Barbera d'Asti ""Ca Di Pian"" DOCG",Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Asti,0.95,bad_sub,fill_subregion_from_name,barbera d asti
+WRW0418AA,Pian delle Vigne By Antinori  Brunello di Montalcino DOCG,Wine product,Italy,,,Italy,Tuscany,Brunello di Montalcino,0.97,ok,fill_region_from_name,brunello di montalcino; montalcino
+WRW0605AA,Batasiolo  Langhe Rosso,Red Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WRW4915AA,Damilano  Dolcetto D' Alba DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Dolcetto d'Alba,0.95,bad_sub,fill_subregion_from_name,dolcetto d alba
+WRW0421AA,La Braccesca By Antinori  Vino Nobile di Montepulciano DOCG,Wine product,Italy,,,Italy,Tuscany,Vino Nobile di Montepulciano,0.97,bad_sub,fill_region_from_name,vino nobile di montepulciano; montepulciano
+WWW5227AA,Michele Chiarlo  Roero Arneis Le Madri DOCG,White Wine,Italy,Piedmont,,Italy,Piedmont,Roero,0.88,ok,fill_subregion_from_name,roero
+WRW4916AA,"Damilano  Barbera D'Alba ""LABLU"" DOC",Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Alba,0.95,bad_sub,fill_subregion_from_name,barbera d alba
+WRW6443AA,Fontanafredda  Langhe Nebbiolo Ebbio DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WRW0632AA,Antinori  Villa Antinori Chianti Classico Riserva DOCG,Wine product,Italy,,,Italy,Tuscany,Chianti Classico,0.95,ok,fill_region_from_name,chianti classico; chianti
+WRW0424AA,Tenuta Guado al Tasso By Antinori  Il Bruciato Bolgheri,Wine product,Italy,,,Italy,Tuscany,Bolgheri,0.95,ok,fill_region_from_name,bolgheri; tenuta
+WRW0339AA,Michele Chiarlo  Barbera d'Asti Le Orme Superiore,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Asti,0.95,bad_sub,fill_subregion_from_name,barbera d asti
+WRW6441AA,Fontanafredda  Langhe Rosso Eremo DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WRW0411AA,"Antinori  Chianti Classico ""Peppoli"" DOC",Wine product,Italy,,,Italy,Tuscany,Chianti Classico,0.95,ok,fill_region_from_name,chianti classico; chianti
+WRW4914AA,Damilano  Barbera D'Asti DOCG,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Asti,0.95,bad_sub,fill_subregion_from_name,barbera d asti
+WWW0221AA,Batasiolo  Gavi Del Comune Di Gavi Granee,White Wine,Italy,Piedmont,,Italy,Piedmont,Gavi,0.9,ok,fill_subregion_from_name,gavi
+WRW6025FJ,Oddero  Barbera D'Alba Superiore DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Alba,0.95,bad_sub,fill_subregion_from_name,barbera d alba
+WRW6026FJ,Oddero  Langhe Nebbiolo DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WRW5471FJ,Sartori di Verona  “Corte Bra” Amarone Delle Valpolicella DOCG,Red Wine,Italy,Veneto,,Italy,Veneto,Amarone della Valpolicella,0.92,ok,fill_subregion_from_name,amarone; valpolicella
+WRW6032FJ,"Vite Colte Barbera d'Asti ""San Nicolao"" DOCG",Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Asti,0.95,bad_sub,fill_subregion_from_name,barbera d asti
+WRW6031FJ,"Vite Colte Dolcetto d'Alba ""Roccabella"" DOC",Red Wine,Italy,Piedmont,,Italy,Piedmont,Dolcetto d'Alba,0.95,bad_sub,fill_subregion_from_name,dolcetto d alba
+WWW5112FJ,"Lucien Crochet  Sancerre Blanc ""Les Calcaires""",White Wine,France,Loire valley,,France,Loire Valley,Sancerre,0.95,bad_sub,fill_subregion_from_name,sancerre
+WRW6243FJ,Lucien Crochet  Sancerre La Croix Du Roy,Red Wine,France,Loire valley,,France,Loire Valley,Sancerre,0.95,bad_sub,fill_subregion_from_name,sancerre
+LBD0199AD,Chabot Armagnac  XO Superior (700 ml),Wine product,France,,,France,Armagnac,,0.92,ok,fill_region_from_name,armagnac
+LBD0112AD,Chabot Armagnac  VSOP Deluxe (700 ml),Wine product,France,,,France,Armagnac,,0.92,ok,fill_region_from_name,armagnac
+LWH1068AD,Tamnavulin  Sherry Cask Edition Single Malt Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,Jerez,,0.95,bad_region,fill_region_from_name,sherry; single malt scotch; scotch whisky
+WRW3606AD,Pio Cesare  Oltre Langhe DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WRS0232AD,Pio Cesare  Langhe Rosy Rose,Rose Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WRW0510AD,Pio Cesare  Dolcetto D'Alba,Red Wine,Italy,Piedmont,,Italy,Piedmont,Dolcetto d'Alba,0.95,bad_sub,fill_subregion_from_name,dolcetto d alba
+WRW3605AD,Pio Cesare  Barbera D'Alba DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Alba,0.95,bad_sub,fill_subregion_from_name,barbera d alba
+WRW0350AD,Carpineto  Vino Nobile di Montepulciano Riserva,Red Wine,Italy,Tuscany,,Italy,Tuscany,Vino Nobile di Montepulciano,0.97,bad_sub,fill_subregion_from_name,vino nobile di montepulciano; montepulciano
+WRW5903AD,Fattoria Mantellassi  Querciolaia Maremma Alicante,Red Wine,Italy,Tuscany,,Italy,Tuscany,Maremma,0.9,ok,fill_subregion_from_name,maremma
+WWW1895AD,Pio Cesare  Piodilei Langhe Chardonnay DOC,White Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WWW1730AD,Torres  Pazo Das Bruxas Rias Baixas DO,White Wine,Spain,,,Spain,Rías Baixas,,0.95,ok,fill_region_from_name,rias baixas
+WWW0252AD,Pio Cesare  Gavi white DOCG,White Wine,Italy,Piedmont,,Italy,Piedmont,Gavi,0.9,ok,fill_subregion_from_name,gavi
+WWW1894AD,Pio Cesare  L'Altro Langhe Chardonnay DOC,White Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+LBD0133AJ,J. Dupont Cognac  Grande Champagne XO Art Deco (700 ml),Wine product,France,,,France,Cognac,,0.92,ok,fill_region_from_name,champagne; cognac; champagne
+LBD0132AJ,J. Dupont Cognac  Grande Champagne VSOP Art Nouveau (700 ml),Wine product,France,,,France,Cognac,,0.92,ok,fill_region_from_name,champagne; cognac; champagne
+WRW5093AJ,Travaglini Gattinara  Riserva Nebbiolo,Red Wine,Italy,Piedmont,,Italy,Piedmont,Gattinara,0.93,ok,fill_subregion_from_name,gattinara
+WRW5088AJ,Giuseppe Cortese  Barbera D'Alba,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Alba,0.95,bad_sub,fill_subregion_from_name,barbera d alba
+WWW4882AJ,Giuseppe Cortese  Langhe Chardonnay Scapulin,White Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WRW5091AJ,Travaglini Gattinara  Nebbiolo,Red Wine,Italy,Piedmont,,Italy,Piedmont,Gattinara,0.93,ok,fill_subregion_from_name,gattinara
+WRW5052AJ,G.D. Vajra  Barbera D'Alba Superiore DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Alba,0.95,bad_sub,fill_subregion_from_name,barbera d alba
+WRW6501FT,Chateau Leoville Poyferre Saint-Julien Grand Cru Classé,Wine product,France,,,France,Bordeaux,Saint-Julien,0.95,ok,fill_region_from_name,saint julien; chateau
+WRW6498FT,Les Tourelles de Longueville Pauillac,Wine product,France,,,France,Bordeaux,Pauillac,0.95,ok,fill_region_from_name,pauillac
+WRW6500FT,Chateau Talbot  Saint Julien 4Ème Cru Classé,Wine product,France,,,France,Bordeaux,Saint-Julien,0.95,ok,fill_region_from_name,saint julien; chateau
+WRW6431FT,Chateau Grand Puy Ducasse  5ème Cru Classé de Pauillac 2018,Wine product,France,,,France,Bordeaux,Pauillac,0.95,ok,fill_region_from_name,pauillac; chateau
+WRW6299GQ,Chateau Du Gazin Cannon Fronsac,Red Wine,France,Bordeaux,,France,Bordeaux,Fronsac,0.9,bad_sub,fill_subregion_from_name,fronsac; chateau
+WRW6303GQ,Chateau Ducru Beaucaillou  Madame de Beaucaillou Haut -Medoc,Wine product,France,,,France,Bordeaux,Haut-Médoc,0.95,ok,fill_region_from_name,haut medoc; medoc; chateau
+LBD0122DG,Pierre Ferrand  Original 1840 Cognac (700 ml),Wine product,France,,,France,Cognac,,0.92,ok,fill_region_from_name,cognac
+LWH1036DG,Glendalough  Calvados XO Cask Finish Single Cask Irish Whiskey (700 ml),Wine product,Ireland,,,Ireland,Calvados,,0.95,bad_region,fill_region_from_name,irish whiskey; calvados
+LWH1034DG,Glendalough  Grand Cru Burgundy Cask Finish Single Cask Irish Whiskey (700 ml),Wine product,Ireland,,,Ireland,Burgundy,,0.95,bad_region,fill_region_from_name,burgundy; irish whiskey
+WWW5899GT,Joseph Mellot  Pouilly Fume Le Tronsec,White Wine,France,Loire valley,,France,Loire Valley,Pouilly-Fumé,0.95,ok,fill_subregion_from_name,pouilly fume
+WRW6294GT,Chateau Du Fort Pontus  Fronsac,Red Wine,France,Bordeaux,,France,Bordeaux,Fronsac,0.9,bad_sub,fill_subregion_from_name,fronsac; chateau
+WRW5900FS,Pico Maccario  Tre Roveri Nizza DOCG (Barbera d'Asti Superiore) (750 ml),Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Asti,0.95,bad_sub,fill_subregion_from_name,barbera d asti
+WRW5899FS,Pico Maccario  Barbera d'Asti Lavignone (750 ml),Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Asti,0.95,bad_sub,fill_subregion_from_name,barbera d asti
+WRW1581BS,Monchiero Carbone  Barbera d'Alba MonBirone DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Alba,0.95,bad_sub,fill_subregion_from_name,barbera d alba
+WRW1620BS,Castello Di Bolgheri  Bolgheri Superiore DOC,Red Wine,Italy,Tuscany,,Italy,Tuscany,Bolgheri,0.95,ok,fill_subregion_from_name,bolgheri
+WRW1599BS,Marchesi Di Barolo  Barbera d'Alba Peiragal DOC (Single Vineyard),Red Wine,Italy,Piedmont,,Italy,Piedmont,Barolo,0.95,ok,fill_subregion_from_name,barolo; barbera d alba
+WRW1591BS,Cordero Di Montezemolo  Langhe Nebbiolo DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WDW0146BS,Marchesi Di Barolo  Moscato d'Asti DOCG Zagara,Dessert Wine,Italy,Piedmont,,Italy,Piedmont,Barolo,0.95,ok,fill_subregion_from_name,barolo; moscato d asti
+WWW1182BS,Marchesi Di Barolo  Gavi di Gavi DOCG,White Wine,Italy,Piedmont,,Italy,Piedmont,Barolo,0.95,ok,fill_subregion_from_name,barolo; gavi
+WWW1183BS,Cordero Di Montezemolo  Langhe Arneis DOC,White Wine,Italy,Piedmont,,Italy,Piedmont,Langhe,0.88,ok,fill_subregion_from_name,langhe
+WRW1596BS,Castello Di Bolgheri  Varvara DOC,Red Wine,Italy,Tuscany,,Italy,Tuscany,Bolgheri,0.95,ok,fill_subregion_from_name,bolgheri
+WRW4308BS,Marchesi Di Barolo  Barbera d'Asti Rure DOCG,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barolo,0.95,ok,fill_subregion_from_name,barolo; barbera d asti
+WRW1588BS,Cordero Di Montezemolo  Barbera d'Alba DOC,Red Wine,Italy,Piedmont,,Italy,Piedmont,Barbera d'Alba,0.95,bad_sub,fill_subregion_from_name,barbera d alba
+LBD0151EQ,Camus  Cognac Ile De Re Fine Island (700 ml),Wine product,France,,,France,Cognac,,0.92,ok,fill_region_from_name,cognac
+LBD0107EQ,Camus  Cognac VSOP Borderies (700 ml),Wine product,France,,,France,Cognac,,0.92,ok,fill_region_from_name,cognac
+LBD0200EQ,Camus  Cognac VSOP Intensity (700 ml),Wine product,France,,,France,Cognac,,0.92,ok,fill_region_from_name,cognac
+LBD0017EQ,Camus  Cognac XO Borderies (700 ml),Wine product,France,,,France,Cognac,,0.92,ok,fill_region_from_name,cognac
+WRW4581FC,Chateau Rauzan-Ségla  Margaux,Wine product,France,,,France,Bordeaux,Margaux,0.92,ok,fill_region_from_name,margaux; chateau
+WRW5192FC,Agricola San Felice  Bell'Aja Bolgheri DOC,Red Wine,Italy,Tuscany,,Italy,Tuscany,Bolgheri,0.95,ok,fill_subregion_from_name,bolgheri
+LBD0041AF,Calvados Pere Magloire  12 Years Old (700 ml),Wine product,France,,,France,Calvados,,0.95,ok,fill_region_from_name,calvados
+LBD0042AF,Calvados Pere Magloire  Fine V.S. (700 ml),Wine product,France,,,France,Calvados,,0.95,ok,fill_region_from_name,calvados
+LBD0044AF,Calvados Pere Magloire  X.O. (700 ml),Wine product,France,,,France,Calvados,,0.95,ok,fill_region_from_name,calvados
+LBD0043AF,Calvados Pere Magloire  V.S.O.P. (700 ml),Wine product,France,,,France,Calvados,,0.95,ok,fill_region_from_name,calvados
+WWW1085AF,Henri Bourgeois  Les Bonnes Bouches Sancerre Blanc,White Wine,France,Loire valley,,France,Loire Valley,Sancerre,0.95,bad_sub,fill_subregion_from_name,sancerre
+WRW5670DJ,"Domaine Jean Fery & Fils  Vougeot 1er Cru ""Les Cras""",Red Wine,France,Burgundy,,France,Burgundy,Vougeot,0.93,bad_sub,fill_subregion_from_name,vougeot; domaine
+WSP1313DJ,Domaine Champalou  Vouvray Brut,Sparkling Wine,France,Loire valley,,France,Loire Valley,Vouvray,0.93,bad_sub,fill_subregion_from_name,vouvray; domaine
+WRW5548FT,Chateau Boyd-Cantenac  Margaux,Wine product,France,,,France,Bordeaux,Margaux,0.92,ok,fill_region_from_name,margaux; chateau

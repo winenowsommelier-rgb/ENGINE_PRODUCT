@@ -1,0 +1,148 @@
+{
+  "total_merge_now_rows": 37,
+  "country_rows": 1,
+  "region_rows": 25,
+  "subregion_rows": 11,
+  "source_breakdown": {
+    "country_refresh": 1,
+    "region_lane": 25,
+    "subregion_refresh": 11
+  },
+  "sample_rows": [
+    {
+      "sku": "AWC0138EN",
+      "field_name": "country",
+      "proposed_value": "Singapore",
+      "confidence": "high",
+      "source_lane": "country_refresh",
+      "publish_safe": "yes",
+      "reasoning": "Live catalog pattern match: five sibling Kadeka wine-cellar SKUs in products.json already carry country=Singapore, and this SKU name clearly matches the same Kadeka product family despite the blank brand field."
+    },
+    {
+      "sku": "LAB0016EQ",
+      "field_name": "region",
+      "proposed_value": "Moravia",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "R. Jelinek is centered on Vizovice in Moravia; Moravia is the safest region-level fill."
+    },
+    {
+      "sku": "LBD0194AA",
+      "field_name": "region",
+      "proposed_value": "Coquimbo",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "Capel is a Chilean pisco house identified with the Coquimbo pisco zone; this is a straightforward Chilean pisco region fill."
+    },
+    {
+      "sku": "LBE0770DO",
+      "field_name": "region",
+      "proposed_value": "Phuket",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "Full Moon Brewworks is the Phuket craft brewery behind Chalawan, making Phuket a safe region fill."
+    },
+    {
+      "sku": "LBE0771DO",
+      "field_name": "region",
+      "proposed_value": "Phuket",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "Full Moon Brewworks is the Phuket craft brewery behind Chatri, making Phuket a safe region fill."
+    },
+    {
+      "sku": "LGN0069DG",
+      "field_name": "region",
+      "proposed_value": "Cognac",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "Citadelle is produced by Maison Ferrand in Cognac, making Cognac the safest region fill."
+    },
+    {
+      "sku": "LGN0198DG",
+      "field_name": "region",
+      "proposed_value": "Cognac",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "Citadelle is the Ferrand gin from Cognac; Cognac is the clearest publish-safe regional reference for the house."
+    },
+    {
+      "sku": "LGN0291EQ",
+      "field_name": "region",
+      "proposed_value": "Nagano",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "Senjyo is a Nagano producer, so Nagano is a straightforward regional fill."
+    },
+    {
+      "sku": "LGN0292EQ",
+      "field_name": "region",
+      "proposed_value": "Riga",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "Cross Keys is a Latvian gin brand tied to Riga, which is the safest regional reference."
+    },
+    {
+      "sku": "LLQ0059AD",
+      "field_name": "region",
+      "proposed_value": "Lower Saxony",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "Jagermeister is produced in Wolfenbuettel in Lower Saxony; Lower Saxony is the clearest region-level fill."
+    },
+    {
+      "sku": "LLQ0293DG",
+      "field_name": "region",
+      "proposed_value": "Cognac",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "Pierre Ferrand is a Cognac house and Dry Curacao is anchored to that production base in Cognac."
+    },
+    {
+      "sku": "LLQ0436EQ",
+      "field_name": "region",
+      "proposed_value": "Riga",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "Riga Black Balsam is explicitly identified with Riga; region fill is direct and publish-safe."
+    },
+    {
+      "sku": "LLQ0448EQ",
+      "field_name": "region",
+      "proposed_value": "Moravia",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "R. Jelinek is centered on Vizovice in Moravia; Moravia is the safest region-level fill."
+    },
+    {
+      "sku": "LLQ0449EQ",
+      "field_name": "region",
+      "proposed_value": "Moravia",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "R. Jelinek is centered on Vizovice in Moravia; Moravia is the safest region-level fill."
+    },
+    {
+      "sku": "LOT0072AR",
+      "field_name": "region",
+      "proposed_value": "Hyogo",
+      "confidence": "high",
+      "source_lane": "region_lane",
+      "publish_safe": "yes",
+      "reasoning": "The product name itself anchors this umeshu to Kobe, so Hyogo is a safe region fill."
+    }
+  ]
+}

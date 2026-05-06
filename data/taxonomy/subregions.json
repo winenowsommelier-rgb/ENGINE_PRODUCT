@@ -773,6 +773,924 @@
       "region_id": 77,
       "name": "Haut-Armagnac",
       "subregion_type": "subzone"
+    },
+    {
+      "id": 130,
+      "region_id": 13,
+      "name": "Prosecco",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 131,
+      "region_id": 1,
+      "name": "Saint-Émilion",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 132,
+      "region_id": 1,
+      "name": "Pauillac",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 133,
+      "region_id": 12,
+      "name": "Barolo",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 134,
+      "region_id": 11,
+      "name": "Brunello di Montalcino",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 135,
+      "region_id": 87,
+      "name": "Montepulciano d’Abruzzo",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 136,
+      "region_id": 13,
+      "name": "Amarone della Valpolicella",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 137,
+      "region_id": 1,
+      "name": "Margaux",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 138,
+      "region_id": 1,
+      "name": "Pomerol",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 139,
+      "region_id": 11,
+      "name": "Rosso di Montalcino",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 140,
+      "region_id": 12,
+      "name": "Barbaresco",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 141,
+      "region_id": 1,
+      "name": "Haut-Médoc",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 142,
+      "region_id": 1,
+      "name": "Saint-Estèphe",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 143,
+      "region_id": 13,
+      "name": "Valpolicella Ripasso",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 144,
+      "region_id": 1,
+      "name": "Pessac-Léognan",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 145,
+      "region_id": 6,
+      "name": "Les Baux-de-Provence",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 146,
+      "region_id": 1,
+      "name": "Saint-Julien",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 147,
+      "region_id": 2,
+      "name": "Puligny-Montrachet",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 148,
+      "region_id": 2,
+      "name": "Nuits-Saint-Georges",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 149,
+      "region_id": 2,
+      "name": "Aloxe-Corton",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 150,
+      "region_id": 31,
+      "name": "Carneros",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 151,
+      "region_id": 2,
+      "name": "Gevrey-Chambertin",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 152,
+      "region_id": 2,
+      "name": "Pouilly-Fuissé",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 153,
+      "region_id": 2,
+      "name": "Pommard",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 154,
+      "region_id": 2,
+      "name": "Beaujolais",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 155,
+      "region_id": 2,
+      "name": "Beaune",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 156,
+      "region_id": 2,
+      "name": "Chambolle-Musigny",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 157,
+      "region_id": 1,
+      "name": "Sauternes",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 158,
+      "region_id": 12,
+      "name": "Gattinara",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 159,
+      "region_id": 2,
+      "name": "Saint-Véran / Viré-Clessé",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 161,
+      "region_id": 2,
+      "name": "Vosne-Romanée",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 162,
+      "region_id": 2,
+      "name": "Chassagne-Montrachet",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 163,
+      "region_id": 2,
+      "name": "Meursault",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 164,
+      "region_id": 2,
+      "name": "Volnay",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 165,
+      "region_id": 11,
+      "name": "Chianti Classico",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 166,
+      "region_id": 2,
+      "name": "Corton-Charlemagne",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 167,
+      "region_id": 97,
+      "name": "Montefalco",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 168,
+      "region_id": 12,
+      "name": "Gavi",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 170,
+      "region_id": 1,
+      "name": "Lussac-Saint-Emilion",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 171,
+      "region_id": 2,
+      "name": "Morey-Saint-Denis",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 172,
+      "region_id": 11,
+      "name": "Cirò",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 173,
+      "region_id": 2,
+      "name": "Mercurey",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 174,
+      "region_id": 5,
+      "name": "Pouilly-Fumé",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 175,
+      "region_id": 2,
+      "name": "Chevalier-Montrachet",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 176,
+      "region_id": 1,
+      "name": "Côtes de Castillon",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 177,
+      "region_id": 126,
+      "name": "Neusiedlersee",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 178,
+      "region_id": 32,
+      "name": "Columbia Gorge",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 179,
+      "region_id": 11,
+      "name": "Vino Nobile di Montepulciano",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 180,
+      "region_id": 31,
+      "name": "Rutherford",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 181,
+      "region_id": 31,
+      "name": "Oakville",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 182,
+      "region_id": 31,
+      "name": "Calistoga",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 183,
+      "region_id": 31,
+      "name": "St. Helena",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 184,
+      "region_id": 31,
+      "name": "Yountville",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 185,
+      "region_id": 31,
+      "name": "Stags Leap District",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 186,
+      "region_id": 31,
+      "name": "Mendocino County",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 187,
+      "region_id": 12,
+      "name": "Asti",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 188,
+      "region_id": 14,
+      "name": "Nero d'Avola",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 189,
+      "region_id": 5,
+      "name": "Sancerre",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 191,
+      "region_id": 25,
+      "name": "Saar",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 192,
+      "region_id": 68,
+      "name": "Helan Mountain East Foothills",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 193,
+      "region_id": 35,
+      "name": "Puente Alto",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 194,
+      "region_id": 31,
+      "name": "Sonoma",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 195,
+      "region_id": 31,
+      "name": "Alexander Valley",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 196,
+      "region_id": 31,
+      "name": "Northern Interior",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 197,
+      "region_id": 31,
+      "name": "Howell Mountain",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 198,
+      "region_id": 31,
+      "name": "Monterey County",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 199,
+      "region_id": 85,
+      "name": "Eden Valley",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 200,
+      "region_id": 40,
+      "name": "Riverland",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 201,
+      "region_id": 40,
+      "name": "Mount Benson",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 202,
+      "region_id": 85,
+      "name": "Roennfeldt Road",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 203,
+      "region_id": 4,
+      "name": "Condrieu",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 204,
+      "region_id": 2,
+      "name": "Côte d'Or",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 205,
+      "region_id": 5,
+      "name": "Anjou",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 206,
+      "region_id": 99,
+      "name": "Irpinia",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 207,
+      "region_id": 93,
+      "name": "Ascoli Piceno",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 208,
+      "region_id": 14,
+      "name": "Ragusa",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 209,
+      "region_id": 11,
+      "name": "Cortona",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 210,
+      "region_id": 11,
+      "name": "Greve in Chianti",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 211,
+      "region_id": 16,
+      "name": "Vallagarina",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 212,
+      "region_id": 106,
+      "name": "Millahue Valley",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 213,
+      "region_id": 37,
+      "name": "Apalta",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 214,
+      "region_id": 35,
+      "name": "Upper Maipo Valley",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 215,
+      "region_id": 90,
+      "name": "Robertson",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 216,
+      "region_id": 43,
+      "name": "Nelson",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 217,
+      "region_id": 68,
+      "name": "Helan Mountain",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 218,
+      "region_id": 7,
+      "name": "Aude",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 219,
+      "region_id": 42,
+      "name": "Witchcliffe",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 220,
+      "region_id": 101,
+      "name": "Civita Bagnoregio",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 221,
+      "region_id": 101,
+      "name": "Gradoli",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 222,
+      "region_id": 95,
+      "name": "Pyrenees",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 223,
+      "region_id": 16,
+      "name": "Val di Peio",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 224,
+      "region_id": 14,
+      "name": "Agrigento",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 225,
+      "region_id": 38,
+      "name": "Valle de Uco",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 226,
+      "region_id": 1,
+      "name": "Côtes de Bordeaux",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 227,
+      "region_id": 1,
+      "name": "Côtes de Bourg",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 228,
+      "region_id": 31,
+      "name": "Mendocino",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 229,
+      "region_id": 31,
+      "name": "Mt. Veeder",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 230,
+      "region_id": 31,
+      "name": "Upper Napa Valley",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 231,
+      "region_id": 109,
+      "name": "Coonawarra / McLaren Vale",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 232,
+      "region_id": 108,
+      "name": "Valtenesi / Benaco Bresciano",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 233,
+      "region_id": 42,
+      "name": "Mt Barker, Porongurup, Frankland River",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 234,
+      "region_id": 5,
+      "name": "Menetou-Salon",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 235,
+      "region_id": 38,
+      "name": "Barrancas",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 236,
+      "region_id": 5,
+      "name": "Pays Nantais",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 237,
+      "region_id": 13,
+      "name": "Bardolino",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 238,
+      "region_id": 11,
+      "name": "Costa Toscana",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 239,
+      "region_id": 1,
+      "name": "Côtes de Blaye",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 240,
+      "region_id": 111,
+      "name": "Vulture",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 241,
+      "region_id": 7,
+      "name": "Limoux",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 242,
+      "region_id": 13,
+      "name": "Tre Venezie",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 243,
+      "region_id": 18,
+      "name": "Rubicone",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 244,
+      "region_id": 15,
+      "name": "Taranto",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 245,
+      "region_id": 108,
+      "name": "Valtellina",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 246,
+      "region_id": 15,
+      "name": "Gioia del Colle",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 247,
+      "region_id": 31,
+      "name": "Lodi",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 248,
+      "region_id": 99,
+      "name": "Taurasi",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 249,
+      "region_id": 1,
+      "name": "Blaye",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 250,
+      "region_id": 31,
+      "name": "Russian River Valley",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 251,
+      "region_id": 99,
+      "name": "Fiano di Avellino",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 252,
+      "region_id": 95,
+      "name": "Grampians",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 253,
+      "region_id": 2,
+      "name": "Romanée-Conti",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 254,
+      "region_id": 92,
+      "name": "Asoke Valley",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 255,
+      "region_id": 13,
+      "name": "Valpolicella Classico",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 257,
+      "region_id": 3,
+      "name": "Massif de Saint-Thierry",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 258,
+      "region_id": 11,
+      "name": "Valdarno",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 260,
+      "region_id": 108,
+      "name": "Franciacorta",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 261,
+      "region_id": 11,
+      "name": "Suvereto",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 262,
+      "region_id": 4,
+      "name": "Châteauneuf-du-Pape",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 263,
+      "region_id": 90,
+      "name": "Paarl",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 264,
+      "region_id": 3,
+      "name": "Côte des Bar",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 265,
+      "region_id": 13,
+      "name": "Conegliano Valdobbiadene",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 267,
+      "region_id": 1,
+      "name": "Côtes de Francs",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 268,
+      "region_id": 31,
+      "name": "Adelaida District",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 269,
+      "region_id": 5,
+      "name": "Vouvray",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 270,
+      "region_id": 1,
+      "name": "Bordeaux Supérieur",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 271,
+      "region_id": 16,
+      "name": "Terlano",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 272,
+      "region_id": 1,
+      "name": "Castillon Côtes de Bordeaux",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 273,
+      "region_id": 11,
+      "name": "Val d'Orcia",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 274,
+      "region_id": 27,
+      "name": "Schweigen",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 275,
+      "region_id": 4,
+      "name": "Vinsobres",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 276,
+      "region_id": 106,
+      "name": "Millahue",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 277,
+      "region_id": 2,
+      "name": "Marsannay",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 278,
+      "region_id": 97,
+      "name": "Torgiano",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 279,
+      "region_id": 26,
+      "name": "Hattenheim",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 280,
+      "region_id": 46,
+      "name": "Simonsberg-Stellenbosch",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 281,
+      "region_id": 4,
+      "name": "Costières de Nîmes",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 282,
+      "region_id": 16,
+      "name": "Trentino",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 283,
+      "region_id": 12,
+      "name": "Barbera d'Asti",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 284,
+      "region_id": 15,
+      "name": "Locorotondo",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 286,
+      "region_id": 68,
+      "name": "Qingtongxia",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 287,
+      "region_id": 2,
+      "name": "Saint-Aubin",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 291,
+      "region_id": 11,
+      "name": "Montecucco",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 292,
+      "region_id": 31,
+      "name": "Knights Valley",
+      "subregion_type": "subregion"
     }
   ]
 }

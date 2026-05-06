@@ -1,0 +1,140 @@
+{
+  "total_fast_lane_rows": 30,
+  "live_rows_with_ids": 29,
+  "priority_bands": {
+    "publish_fast_lane": 19,
+    "ga_brand_cluster": 10
+  },
+  "top_10": [
+    {
+      "id": "row-5124-1774263062980",
+      "sku": "LOT0071AR",
+      "name": "Komasa Jyozo  Akazaru Sparkling (300 ml)",
+      "queue_priority": "90",
+      "enrichment_priority": "1",
+      "validation_status": "needs_review",
+      "enrichment_source": "codex_fast_lane",
+      "enrichment_note": "Codex queue band: publish_fast_lane | Why now: live Product Engine record; repeated producer (6 SKUs); appears in 3 task queues; strong producer reuse; high-frequency country",
+      "priority_band": "publish_fast_lane",
+      "ga_brand_rank": "",
+      "ga_taxonomy_rank": ""
+    },
+    {
+      "id": "row-3073-1774263062966",
+      "sku": "WSP5665AA",
+      "name": "Penfolds  Champagne Rose Thienot x Penfolds",
+      "queue_priority": "89",
+      "enrichment_priority": "2",
+      "validation_status": "needs_review",
+      "enrichment_source": "codex_fast_lane",
+      "enrichment_note": "Codex queue band: ga_brand_cluster | GA brand rank: 1 | Why now: live Product Engine record; top GA brand rank #1; current priority TXT file; high-frequency country",
+      "priority_band": "ga_brand_cluster",
+      "ga_brand_rank": "1",
+      "ga_taxonomy_rank": ""
+    },
+    {
+      "id": "row-3903-1774263062971",
+      "sku": "WWW2401AD",
+      "name": "Penfolds  Max's Chardonnay",
+      "queue_priority": "89",
+      "enrichment_priority": "2",
+      "validation_status": "needs_review",
+      "enrichment_source": "codex_fast_lane",
+      "enrichment_note": "Codex queue band: ga_brand_cluster | GA brand rank: 1 | Why now: live Product Engine record; top GA brand rank #1; current priority TXT file; high-frequency country",
+      "priority_band": "ga_brand_cluster",
+      "ga_brand_rank": "1",
+      "ga_taxonomy_rank": ""
+    },
+    {
+      "id": "row-1845-1774263062962",
+      "sku": "WSP2585BU",
+      "name": "Dom Perignon  P2 2004",
+      "queue_priority": "85",
+      "enrichment_priority": "1",
+      "validation_status": "needs_review",
+      "enrichment_source": "codex_fast_lane",
+      "enrichment_note": "Codex queue band: publish_fast_lane | GA brand rank: 34 | Why now: live Product Engine record; top GA brand rank #34; repeated producer (7 SKUs); appears in 2 task queues; strong producer reuse; high-frequency country",
+      "priority_band": "publish_fast_lane",
+      "ga_brand_rank": "34",
+      "ga_taxonomy_rank": ""
+    },
+    {
+      "id": "row-3570-1774263062969",
+      "sku": "WSP5777AD",
+      "name": "Penfolds  Champagne Cuvee Brut",
+      "queue_priority": "75",
+      "enrichment_priority": "2",
+      "validation_status": "needs_review",
+      "enrichment_source": "codex_fast_lane",
+      "enrichment_note": "Codex queue band: ga_brand_cluster | GA brand rank: 1 | Why now: live Product Engine record; top GA brand rank #1; high-frequency country",
+      "priority_band": "ga_brand_cluster",
+      "ga_brand_rank": "1",
+      "ga_taxonomy_rank": ""
+    },
+    {
+      "id": "row-3278-1774263062967",
+      "sku": "WRW0571AA",
+      "name": "Velenosi  Breciarolo Gold, Rosso Piceno Superiore DOC",
+      "queue_priority": "74",
+      "enrichment_priority": "1",
+      "validation_status": "needs_review",
+      "enrichment_source": "codex_fast_lane",
+      "enrichment_note": "Codex queue band: publish_fast_lane | GA brand rank: 17 | Why now: live Product Engine record; top GA brand rank #17; appears in 2 task queues; high-frequency country",
+      "priority_band": "publish_fast_lane",
+      "ga_brand_rank": "17",
+      "ga_taxonomy_rank": ""
+    },
+    {
+      "id": "row-2921-1774263062966",
+      "sku": "WRW5779AA",
+      "name": "Penfolds  II Dourthe Cabernet Shiraz",
+      "queue_priority": "74",
+      "enrichment_priority": "2",
+      "validation_status": "needs_review",
+      "enrichment_source": "codex_fast_lane",
+      "enrichment_note": "Codex queue band: ga_brand_cluster | GA brand rank: 1 | Why now: live Product Engine record; top GA brand rank #1; high-frequency country",
+      "priority_band": "ga_brand_cluster",
+      "ga_brand_rank": "1",
+      "ga_taxonomy_rank": ""
+    },
+    {
+      "id": "row-2954-1774263062966",
+      "sku": "WRW6618AA",
+      "name": "Baron Philippe de Rothschild  Mouton Cadet Bordeaux Rouge Bio \"Pierre\"",
+      "queue_priority": "70",
+      "enrichment_priority": "2",
+      "validation_status": "needs_review",
+      "enrichment_source": "codex_fast_lane",
+      "enrichment_note": "Codex queue band: ga_brand_cluster | GA brand rank: 5 | Why now: live Product Engine record; top GA brand rank #5; high-frequency country",
+      "priority_band": "ga_brand_cluster",
+      "ga_brand_rank": "5",
+      "ga_taxonomy_rank": ""
+    },
+    {
+      "id": "row-3027-1774263062966",
+      "sku": "WWW5149AA",
+      "name": "Baron Philippe de Rothschild  Mouton Cadet Reserve Sauternes",
+      "queue_priority": "70",
+      "enrichment_priority": "2",
+      "validation_status": "needs_review",
+      "enrichment_source": "codex_fast_lane",
+      "enrichment_note": "Codex queue band: ga_brand_cluster | GA brand rank: 5 | Why now: live Product Engine record; top GA brand rank #5; high-frequency country",
+      "priority_band": "ga_brand_cluster",
+      "ga_brand_rank": "5",
+      "ga_taxonomy_rank": ""
+    },
+    {
+      "id": "row-3001-1774263062966",
+      "sku": "WWW5423AA",
+      "name": "Baron Philippe de Rothschild  Mouton Cadet Bordeaux Blanc BIO \"Nathan\"",
+      "queue_priority": "70",
+      "enrichment_priority": "2",
+      "validation_status": "needs_review",
+      "enrichment_source": "codex_fast_lane",
+      "enrichment_note": "Codex queue band: ga_brand_cluster | GA brand rank: 5 | Why now: live Product Engine record; top GA brand rank #5; high-frequency country",
+      "priority_band": "ga_brand_cluster",
+      "ga_brand_rank": "5",
+      "ga_taxonomy_rank": ""
+    }
+  ]
+}

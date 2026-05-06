@@ -1,0 +1,25 @@
+{
+  "live_baseline": {
+    "country_missing": 215,
+    "region_missing": 2230,
+    "subregion_missing": 9391
+  },
+  "country_lane": {
+    "old_rows": 81,
+    "current_live_overlap": 7,
+    "status": "stale_except_current_overlap"
+  },
+  "region_lane": {
+    "old_rows": 36,
+    "current_live_overlap": 9,
+    "publish_safe_yes": 0,
+    "publish_safe_no": 9,
+    "status": "still_usable"
+  },
+  "subregion_lane": {
+    "old_rows": 2500,
+    "old_clear_fill_merge_now": 292,
+    "current_live_overlap": 257,
+    "status": "stale_clear_fill_set"
+  }
+}

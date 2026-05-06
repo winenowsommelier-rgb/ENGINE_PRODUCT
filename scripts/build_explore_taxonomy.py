@@ -30,6 +30,44 @@ from typing import Optional
 
 ROOT = Path(__file__).parent.parent
 DATA = ROOT / "data"
+CHAMPAGNE_RULES_PATH = DATA / "taxonomy" / "champagne-subregion-rules.json"
+CHAMPAGNE_COUNTRY = "France"
+CHAMPAGNE_REGION = "Champagne"
+
+COUNTRY_ALIASES = {
+    "Netherland": "Netherlands",
+    "Trinidad & Tobago": "Trinidad",
+    "Siberia": "Russia",
+}
+
+INJECTED_COUNTRIES = [
+    {"name": "Korea", "slug": "korea", "latitude": 36.5, "longitude": 127.9},
+    {"name": "Denmark", "slug": "denmark", "latitude": 56.0, "longitude": 10.0},
+    {"name": "Iceland", "slug": "iceland", "latitude": 64.9, "longitude": -18.6},
+    {"name": "India", "slug": "india", "latitude": 22.6, "longitude": 79.0},
+    {"name": "Finland", "slug": "finland", "latitude": 64.5, "longitude": 26.0},
+    {"name": "Latvia", "slug": "latvia", "latitude": 56.9, "longitude": 24.6},
+    {"name": "Slovakia", "slug": "slovakia", "latitude": 48.7, "longitude": 19.7},
+    {"name": "Panama", "slug": "panama", "latitude": 8.6, "longitude": -80.0},
+    {"name": "Guyana", "slug": "guyana", "latitude": 5.0, "longitude": -58.9},
+    {"name": "Cambodia", "slug": "cambodia", "latitude": 12.6, "longitude": 104.9},
+    {"name": "Philippines", "slug": "philippines", "latitude": 12.8, "longitude": 121.8},
+    {"name": "Fiji", "slug": "fiji", "latitude": -17.8, "longitude": 178.1},
+    {"name": "Lebanon", "slug": "lebanon", "latitude": 33.9, "longitude": 35.8},
+    {"name": "Anguilla", "slug": "anguilla", "latitude": 18.2, "longitude": -63.1},
+    {"name": "Grenada", "slug": "grenada", "latitude": 12.1, "longitude": -61.7},
+    {"name": "Monaco", "slug": "monaco", "latitude": 43.7, "longitude": 7.4},
+]
+
+INJECTED_REGIONS = [
+    {"country": "Thailand", "name": "Khao Yai", "slug": "khao-yai", "latitude": 14.55, "longitude": 101.37},
+    {"country": "Uruguay", "name": "Canelones", "slug": "canelones", "latitude": -34.6, "longitude": -56.3},
+    {"country": "England", "name": "Sussex", "slug": "sussex", "latitude": 50.9, "longitude": -0.2},
+    {"country": "Peru", "name": "Ica", "slug": "ica", "latitude": -14.1, "longitude": -75.7},
+    {"country": "Germany", "name": "Baden", "slug": "baden", "latitude": 48.5, "longitude": 8.9},
+    {"country": "Germany", "name": "Franken", "slug": "franken", "latitude": 49.8, "longitude": 10.2},
+    {"country": "Greece", "name": "Macedonia", "slug": "macedonia", "latitude": 40.7, "longitude": 22.9},
+]
 
 # ============================================================
 # SKU → scope mapping (matches app/api/products/route.ts logic)
@@ -128,13 +166,14 @@ REGION_ALIASES = {
     "Nagano": "Jalisco",            # Same — these are Japanese wine regions not in our taxonomy
     "Yamanashi": "Jalisco",
     "Hua Hin Hills": "Khao Yai",    # Thai wine region — approximate
+    "Hawke’s Bay": "Hawke's Bay",
     "South West France": "Languedoc",
     "Vinho Verde": "Douro",         # Portugal grouping
     "Goriška Brda": None,           # Slovenia — too specific
     "Limarí Valley": "Aconcagua Valley",
     "Loncomilla Valley": "Central Valley",
     "South Island": "Central Otago", # NZ South Island → Central Otago
-    "Sussex": "Champagne",          # English sparkling, no matching region
+    "Sussex": "Sussex",
     "Corsica": "Provence",          # Close enough geographically
     "Willamette": "Willamette Valley",
     # ── Subregions that appear as regions in product data ──
@@ -144,9 +183,9 @@ REGION_ALIASES = {
     "Calabria": None,               # Same
     "Liguria": None,                # Same
     "Galicia": None,                # Spanish — Rías Baixas is the region
-    "Macedonia": None,              # Greek — not in taxonomy
-    "Franken": None,                # German — not in taxonomy
-    "Baden": None,                  # German — not in taxonomy
+    "Macedonia": "Macedonia",
+    "Franken": "Franken",
+    "Baden": "Baden",
     "Trentino": "Trentino-Alto Adige",
     "Alto Adige": "Trentino-Alto Adige",
     "Burgenland": "Kamptal",        # Austrian grouping
@@ -158,11 +197,11 @@ REGION_ALIASES = {
     "Caribbean": None,              # Not a country
     "Guyana": None,                 # Country
     "Demerara": None,               # In Guyana
-    "Canelones": None,              # Uruguay — not in taxonomy
+    "Canelones": "Canelones",
     "Colonia": None,                # Uruguay
-    "Ica": None,                    # Peru
+    "Ica": "Ica",
     "Baja California": None,        # Mexico — not in taxonomy
-    "Khao Yai": None,               # Thailand — subregion not in taxonomy
+    "Khao Yai": "Khao Yai",
 }
 
 # Fix Japanese regions — map to None since they're not wine regions in our taxonomy
@@ -183,6 +222,189 @@ SUBREGION_ALIASES = {
 def load_json(path):
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def normalize_text(value: str) -> str:
+    """Lowercase and normalize punctuation/accents for loose product matching."""
+    if not value:
+        return ""
+
+    replacements = str.maketrans({
+        "é": "e",
+        "è": "e",
+        "ê": "e",
+        "ë": "e",
+        "ô": "o",
+        "ö": "o",
+        "ü": "u",
+        "û": "u",
+        "â": "a",
+        "à": "a",
+        "ä": "a",
+        "î": "i",
+        "ï": "i",
+        "ç": "c",
+        "ñ": "n",
+        "ã": "a",
+        "í": "i",
+        "ó": "o",
+        "ú": "u",
+        "\u2019": "'",
+        "\u2018": "'",
+        "\u2013": "-",
+        "\u2014": "-",
+    })
+    normalized = value.lower().translate(replacements)
+    normalized = re.sub(r"[^a-z0-9]+", " ", normalized)
+    return re.sub(r"\s+", " ", normalized).strip()
+
+
+def load_champagne_rules():
+    raw = load_json(CHAMPAGNE_RULES_PATH)
+    subregions = raw.get("subregions", [])
+    canonical_names = {item["name"] for item in subregions}
+    brand_prefix_map = {
+        normalize_text(prefix): subregion
+        for prefix, subregion in raw.get("brand_prefix_map", {}).items()
+        if subregion in canonical_names
+    }
+    blocked_prefixes = {
+        normalize_text(prefix)
+        for prefix in raw.get("blocked_brand_prefixes", [])
+        if prefix
+    }
+    return {
+        "subregions": subregions,
+        "canonical_names": canonical_names,
+        "brand_prefix_map": brand_prefix_map,
+        "blocked_prefixes": blocked_prefixes,
+    }
+
+
+def normalize_country_name(country_name: str) -> str:
+    if not country_name:
+        return ""
+    return COUNTRY_ALIASES.get(country_name, country_name)
+
+
+def inject_missing_countries(tax):
+    existing_names = {country["name"] for country in tax["countries"]}
+    next_id = max((item["id"] for item in tax["countries"]), default=0) + 1
+
+    for country in INJECTED_COUNTRIES:
+        if country["name"] in existing_names:
+            continue
+        tax["countries"].append({
+            "id": next_id,
+            "name": country["name"],
+            "slug": country["slug"],
+            "latitude": country["latitude"],
+            "longitude": country["longitude"],
+            "scopes": ["wine", "spirits", "beer", "sake"],
+        })
+        existing_names.add(country["name"])
+        next_id += 1
+
+
+def inject_missing_regions(tax):
+    country_by_name = {country["name"]: country for country in tax["countries"]}
+    existing_keys = {(region["parent_name"], region["name"]) for region in tax["regions"]}
+    next_id = max((item["id"] for item in tax["regions"]), default=0) + 1
+
+    for region in INJECTED_REGIONS:
+        key = (region["country"], region["name"])
+        if key in existing_keys:
+            continue
+        parent = country_by_name.get(region["country"])
+        if not parent:
+            continue
+        tax["regions"].append({
+            "id": next_id,
+            "name": region["name"],
+            "slug": region["slug"],
+            "latitude": region["latitude"],
+            "longitude": region["longitude"],
+            "parent_id": parent["id"],
+            "parent_name": parent["name"],
+            "scopes": ["wine", "spirits", "beer", "sake"],
+        })
+        existing_keys.add(key)
+        next_id += 1
+
+
+def inject_champagne_subregions(tax, champagne_rules):
+    """Ensure canonical Champagne subregions exist even if source taxonomy is incomplete."""
+    france = next((c for c in tax["countries"] if c["name"] == CHAMPAGNE_COUNTRY), None)
+    champagne_region = next(
+        (
+            r for r in tax["regions"]
+            if r["name"] == CHAMPAGNE_REGION and r.get("parent_name") == CHAMPAGNE_COUNTRY
+        ),
+        None,
+    )
+    if not france or not champagne_region:
+        return
+
+    existing_names = {
+        sr["name"]
+        for sr in tax["subregions"]
+        if sr.get("parent_name") == CHAMPAGNE_REGION and sr.get("grandparent_name") == CHAMPAGNE_COUNTRY
+    }
+    next_id = max((item["id"] for item in tax["subregions"]), default=0) + 1
+
+    for subregion in champagne_rules["subregions"]:
+        if subregion["name"] in existing_names:
+            continue
+        tax["subregions"].append({
+            "id": next_id,
+            "name": subregion["name"],
+            "slug": subregion.get("slug", slugify(subregion["name"])),
+            "latitude": subregion["latitude"],
+            "longitude": subregion["longitude"],
+            "parent_id": champagne_region["id"],
+            "parent_name": CHAMPAGNE_REGION,
+            "grandparent_name": CHAMPAGNE_COUNTRY,
+            "scopes": ["wine"],
+        })
+        existing_names.add(subregion["name"])
+        next_id += 1
+
+
+def infer_champagne_subregion(product, champagne_rules):
+    """Infer Champagne subregion from product fields using curated producer rules."""
+    brand = normalize_text((product.get("brand") or "").strip())
+    name = normalize_text((product.get("name") or "").strip())
+    raw_subregion = (product.get("subregion") or "").strip()
+
+    if raw_subregion in champagne_rules["canonical_names"]:
+        return raw_subregion
+
+    for prefix in champagne_rules["blocked_prefixes"]:
+        if brand.startswith(prefix) or name.startswith(prefix):
+            return None
+
+    for source in (brand, name):
+        for prefix, subregion in champagne_rules["brand_prefix_map"].items():
+            if source.startswith(prefix):
+                return subregion
+
+    return None
+
+
+def should_handle_as_champagne(product, scope):
+    return (
+        scope == "wine"
+        and (product.get("country") or "").strip() == CHAMPAGNE_COUNTRY
+        and (product.get("region") or "").strip() == CHAMPAGNE_REGION
+    )
+
+
+def is_champagne_taxonomy_region(region_entry):
+    return (
+        region_entry
+        and region_entry.get("name") == CHAMPAGNE_REGION
+        and region_entry.get("parent_name") == CHAMPAGNE_COUNTRY
+    )
 
 
 def empty_counts():
@@ -303,6 +525,10 @@ def load_masterfile_csv(path):
 def main():
     print("Loading source data...")
     tax = load_json(DATA / "taxonomy_for_map.json")
+    champagne_rules = load_champagne_rules()
+    inject_missing_countries(tax)
+    inject_missing_regions(tax)
+    inject_champagne_subregions(tax, champagne_rules)
 
     # Use masterfile CSV (19K+ products) instead of products.json (4K subset)
     masterfile = DATA / "masterfile_all_tiers.csv"
@@ -354,9 +580,13 @@ def main():
             price = float(raw_price) if raw_price else None
         except (ValueError, TypeError):
             price = None
-        country_name = (p.get("country") or "").strip()
+        country_name = normalize_country_name((p.get("country") or "").strip())
         region_name = (p.get("region") or "").strip()
         sub_name = (p.get("subregion") or "").strip()
+        if should_handle_as_champagne(p, scope):
+            inferred_subregion = infer_champagne_subregion(p, champagne_rules)
+            if inferred_subregion:
+                sub_name = inferred_subregion
 
         stats["total"] += 1
 
@@ -379,6 +609,8 @@ def main():
 
         # --- Region ---
         region_entry = resolve_region(region_name, country_name, region_by_name, region_by_name_only)
+        if is_champagne_taxonomy_region(region_entry) and not should_handle_as_champagne(p, scope):
+            region_entry = None
         if region_entry:
             rid = region_entry["id"]
             region_counts[rid][scope] += 1

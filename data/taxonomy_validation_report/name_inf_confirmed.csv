@@ -1,0 +1,1104 @@
+sku,name,classification,stored_country,stored_region,stored_subregion,inferred_country,inferred_region,inferred_subregion,inferred_confidence,inferred_taxonomy_status,action,matched_rules
+WRW5570FP,El Coto Rioja  Crianza,Red Wine,Spain,Rioja,,Spain,Rioja,,0.92,ok,confirm,rioja
+WRW5562FP,Les Coteaux  Cotes du Rhone Red,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone
+WRW5557FP,Chateau Lamothe Bergeron  Haut-Medoc,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,confirm,haut medoc; medoc; chateau
+WWW5358FP,Schieferkopf  Pfalz Gewurztraminer Trocken Sec,White Wine,Germany,Pfalz,,Germany,,,0.92,ok,confirm,pfalz
+WWW5335FP,Rainer Wess  Gruner Veltliner,White Wine,Austria,,,Austria,,,0.75,ok,confirm,gruner veltliner
+WWW5357FP,Schieferkopf  Baden Riesling Trocken Sec,White Wine,Germany,Baden,,Germany,Baden,,0.85,ok,confirm,baden
+WRS0200FP,La Collection by Maison Boutinot  Cotes de Thau Rose,Rose Wine,France,Languedoc-Roussillon,,France,,,0.55,ok,confirm,maison
+WRW5728FP,Domaine Lafage  Authentique Cotes Du Roussillon,Red Wine,France,Languedoc-Roussillon,,France,,,0.7,ok,confirm,domaine
+WSP1270CI,Tosti  Prosecco DOC Extra Dry,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW3528CI,Granducato  Chianti Classico,Red Wine,Italy,Tuscany,Chianti Classico,Italy,Tuscany,Chianti Classico,0.95,ok,confirm,chianti classico; chianti
+WWW1866CI,Brotte  Grand Vallon Cotes Du Rhone Blanc,White Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone
+WRW3109CI,Chateau La Petite Borie  Bordeaux,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+LWH0671BU,Johnnie Walker  Black Label Highland Origin (1 L),Wine product,Scotland,,,Scotland,,,0.85,ok,confirm,highland
+LWH0383BU,Bulleit  Bourbon (700 ml),Wine product,USA,,,USA,Kentucky,,0.7,ok,confirm,bourbon
+LTQ0239BU,Don Julio  Ultima Reserva Tequila (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+WSP5706BU,Krug  Champagne Brut 2006 (750 ml),Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW6596GX,Corryton Burge  The Brigadier Barossa Cabernet Sauvignon,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.88,ok,confirm,barossa
+WRW6597GX,Corryton Burge  Percival Norman Barossa Shiraz,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.88,ok,confirm,barossa
+WWW5914GX,Tornatore  Etna Bianco Pietrarizzo,White Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna
+WRW4210GX,Little Beauty  Marlborough 'Black Edition' Sauvignon Blanc,Wine product,New Zealand,,,New Zealand,,,0.92,ok,confirm,marlborough
+WRW6577GX,Tornatore  Etna Rosso Trimarchisa,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna
+WWW2174GX,Little Beauty  Marlborough 'Limited Edition' Sauvignon Blanc,White Wine,New Zealand,Marlborough,,New Zealand,,,0.92,ok,confirm,marlborough
+WRW4209GX,Little Beauty  Marlborough 'Limited Edition' Pinot Noir,Red Wine,New Zealand,Marlborough,,New Zealand,,,0.92,ok,confirm,marlborough
+WRW6567GX,Riporta  Nero D'Avola Sicilia,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,nero d avola
+WSP5787GX,Borga  Prosecco Treviso Brut Millesimato,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW6576GX,Tornatore  Etna Rosso,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna
+WWW5913GX,Tornatore  Etna Bianco,White Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna
+WRW6578GX,Tornatore  Etna Rosso Riserva,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna
+WRW6592GX,Corryton Burge  South Australian Cabernet Sauvignon,Red Wine,Australia,South Australia,,Australia,,,0.55,ok,confirm,australian
+WRW6594GX,Corryton Burge  South Australian Shiraz,Red Wine,Australia,South Australia,,Australia,,,0.55,ok,confirm,australian
+WRW6591GX,District Series Napa Valley Cabernet Sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW6593GX,Corryton Burge  Barossa Shiraz,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.88,ok,confirm,barossa
+WRW6595GX,Corryton Burge  Barossa Cabernet,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.88,ok,confirm,barossa
+WRW4211GX,Little Beauty  Marlborough 'Black Edition' Pinot Noir,Red Wine,New Zealand,Marlborough,,New Zealand,,,0.92,ok,confirm,marlborough
+WRW5380DH,Pian dell'Orino  Brunello di Montalcino Bassolino di Sopra DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW6606DH,Siro Pacenti  Brunello Di Montalcino Vecchie Vigne DOCG 2018,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WSP2633DH,Champagne Albert Lebrun  Blanc de Noir Extra Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW5718DH,Castello Romitorio  Brunello Di Montalcino Riserva DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WWW1858DH,Domaine Huet  Le Clos Du Bourg Moelleux1Er Trie,White Wine,France,Loire valley,,France,,,0.7,ok,confirm,domaine
+WRW3588DH,Siro Pacenti  Brunello Di Montalcino Vecchie Vigne DOCG 2016,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW6605DH,Siro Pacenti  Brunello Di Montalcino Vecchie Vigne DOCG 2017,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW3587DH,Siro Pacenti  Brunello di Montalcino Pelagrilli DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW5161DH,Chateau Tenein  Bordeaux Superieur,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WWW1860DH,Domaine Huet  Le Mont Moelleux,White Wine,France,Loire valley,,France,,,0.7,ok,confirm,domaine
+WRW3557DH,Marchesi Di Gresy  Camp Gros Barbaresco Riserva DOCG,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WWW5008DH,Tenuta Di Valgiano  Palistorti Bianco IGT,White Wine,Italy,Tuscany,,Italy,,,0.7,ok,confirm,tenuta
+WRW5372DH,Tenuta di Biserno  Insoglio del Cinghiale DOCG,Wine product,Italy,,,Italy,,,0.7,ok,confirm,tenuta
+WRW3558DH,Marchesi Di Gresy  Gaiun Barbaresco DOCG,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WRW5379DH,Pian dell'Orino  Brunello di Montalcino Vigneti del Versante DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW3492DH,Chateau L'Ecuyer,Red Wine,France,Bordeaux,Pomerol,France,,,0.7,ok,confirm,chateau
+WRW6189DH,Olek Bondonio  Barbaresco Roncagliette DOCG,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WWW1836DH,Domaine Albert Mann  Pinot Gris,White Wine,France,Alsace,,France,,,0.7,ok,confirm,domaine
+WSP1267DH,Champagne  Autreau  Grand Cru Brut Blanc De Blanc,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WWW1888DH,Pieropan  Soave Classico La Rocca Doc,White Wine,Italy,Veneto,Soave,Italy,Veneto,Soave,0.92,ok,confirm,soave
+WSP1266DH,Champagne  Autreau  Premier Cru Brut Rose,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW5159DH,Tenuta di Campriano Buccia Nera  Chianti Riserva DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti,0.9,ok,confirm,chianti riserva; chianti; tenuta
+WSP1256DH,Champagne Charles Collin  Brut Blanc De Noir,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW3403AC,Chateau Haut Fourat  Bordeaux,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WSP1164AC,Breganze  Prosecco Spumante Extra Dry,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WWW2219AC,Apopo  Marlborough Sauvignon Blanc,White Wine,New Zealand,Marlborough,,New Zealand,,,0.92,ok,confirm,marlborough
+WSP2473AC,Dumangin Champagne  La Cuvee 17 Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WSP2474AC,Dumangin Champagne  L'Extra Brut Premier Cru,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WSP2475AC,Dumangin Champagne  Le Rose Brut Premier Cru,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW2048AC,Danese  Chianti DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti,0.88,ok,confirm,chianti
+WRW3402AC,Chateau Timberlay  Bordeaux Superieur,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW1955AC,Chateau Tourtirac  Castillon Cotes de Bordeaux,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW1978AC,Chateau Le Boscq  Cru Bourgeois - AOC Saint-Estèphe,Red Wine,France,Bordeaux,Saint-Estèphe,France,Bordeaux,Saint-Estèphe,0.95,ok,confirm,saint estephe; chateau
+WRW2023AC,Zeni  Amarone Della Valpolicella Classico Vigne Alte DOC,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW1954AC,Chateau Timberlay  Prestige Red,Red Wine,France,Bordeaux,,France,,,0.7,ok,confirm,chateau
+WRW1830GC,Tedeschi  Amarone Della Valpolicella Classico Riserva Capitel Monte Olmi,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW1669GC,Chateau Labarthe Bordeaux,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WSP5675GC,Champagne Gardet  Tradition Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW4565GC,Chateau Meyre  Cru Bourgeois Haut-Medoc,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,confirm,haut medoc; medoc; chateau
+WSP5676GC,Champagne Gardet  Blanc de Noirs Brut Premier Cru,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WWW4888GC,Maxville  Sauvingon Blanc Napa Valley,White Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW5953GC,Tedeschi  Marne 180 Amarone della Valpolicella,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW6171GC,Chateau Meyre  M De Haut Medoc,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,confirm,haut medoc; medoc; chateau
+WRW4567GC,Chateau Meyre Gallen De Margaux,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW5954GC,Tedeschi  La Fabriseria Amarone della Valpolicella Classico Riserva 2015,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW5114GC,Maxville  Cabernet Sauvingon Napa Valley,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WWW5292GC,Domaine Nathalie & Gilles  Fevre Chablis Grand Cru Les Preuses,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis; domaine
+WSP2428AE,Pitars  Prosecco Gold Spumante Extra Dry Millesimato,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WSP2430AE,Pitars  Prosecco Brut Millesimato DOC,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WWW1262AE,Cantina Terlano  Winkl Sauvignon Blanc DOC,White Wine,Italy,Trentino-Alto Adige,,Italy,,,0.65,ok,confirm,cantina
+WWW5457AE,Pietradolce  Etna Bianco,White Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna
+WRW1682AE,"Chateau Ducru-Beaucaillou  Le Petit Caillou, St Julien",Red Wine,France,Bordeaux,Saint-Julien,France,Bordeaux,Saint-Julien,0.92,ok,confirm,st julien; chateau
+WRW6380AE,Pietradolce  Contrada Santo Spirito Etna Rosso,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna
+WRW1852AE,Zenato  Amarone della Valpolicella Classico DOC,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW1819AE,Pietradolce  Archineri Etna Rosso DOC,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna
+WRW1817AE,Orma by Tenuta Sette Ponti  Bolgheri IGT,Red Wine,Italy,Tuscany,Bolgheri,Italy,Tuscany,Bolgheri,0.95,ok,confirm,bolgheri; tenuta
+WRW1834AE,Tenuta Sette Ponti  Oreno,Red Wine,Italy,Tuscany,,Italy,,,0.7,ok,confirm,tenuta
+WWW5017AE,Conti Zecca  Donna Marzia Vermentino Bianco,White Wine,Italy,Puglia,,Italy,Sardinia,,0.55,ok,confirm,vermentino
+WSP1140AE,Follador  Prosecco Farder treviso Extra Dry Gold DOC,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WDW0073AE,Massolino  Moscato D'Asti DOCG,White Wine,Italy,Piedmont,,Italy,Piedmont,,0.93,ok,confirm,moscato d asti
+WRW6376AE,Poggio Al Lupo  Morellino Di Scansano,Red Wine,Italy,Tuscany,,Italy,,,0.6,ok,confirm,poggio
+WSP2502AE,Follador  Prosecco Xzero Valdobbiadene Superiore Extra Brut DOCG,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WSP5714AE,Follador  Ruiol Castei Valdobbiadene Prosecco Superiore Millesimato DOCG Extra Dry,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW1838AE,Cantina Terlano  Monticol Riserva DOC,Red Wine,Italy,Trentino-Alto Adige,,Italy,,,0.65,ok,confirm,cantina
+WWW1255AE,Cantina Terlano  Pinot Grigio DOC,White Wine,Italy,Trentino-Alto Adige,,Italy,,,0.65,ok,confirm,cantina
+WRW6377AE,Poggio Al Lupo  Cabernet Sauvignon,Red Wine,Italy,Tuscany,,Italy,,,0.6,ok,confirm,poggio
+WRW6378AE,Pietradolce  Etna Rosso,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna
+WRW6379AE,Pietradolce  Contrada Rampante Etna Rosso,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna
+WRW1775AE,"Corte Rugolin  Amarone Valpolicella Classico ""Crosara de le Strie"" DOC",Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.92,ok,confirm,amarone; valpolicella
+WRW1836AE,Tenuta Sette Ponti  Chianti Vigna di Pallino DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti,0.88,ok,confirm,chianti; tenuta
+WSP1139AE,Follador  Prosecco Runier treviso Extra Dry Silver DOC,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WSP5712AE,Follador  El Brolo Prosecco DOC Treviso Brut,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW5952AE,Corte Rugolin  Amarone Monte Danieli DOCG,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.92,ok,confirm,amarone
+WWW5449AE,Primosic  Collio Chardonnay Reserva,White Wine,Italy,Friuli-Venezia Giulia,,Italy,Friuli-Venezia Giulia,,0.88,ok,confirm,collio
+WSP1137AE,Champagne Lombard  Extra Brut Premier Cru,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WWW1261AE,Cantina Terlano  Quarz Sauvignon Blanc DOC,White Wine,Italy,Trentino-Alto Adige,,Italy,,,0.65,ok,confirm,cantina
+WWW1257AE,Cantina Terlano  Chardonnay DOC,White Wine,Italy,Trentino-Alto Adige,,Italy,,,0.65,ok,confirm,cantina
+WRW1758AE,Casanova di Neri  Brunello di Montalcino DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW5344AE,Domaine Duseigneur  Catarina Chateauneuf du Pape,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape; domaine
+WRW1761AE,Casanova di Neri  Rosso di Montalcino DOC,Red Wine,Italy,Tuscany,Rosso di Montalcino,Italy,Tuscany,Rosso di Montalcino,0.97,ok,confirm,rosso di montalcino; montalcino
+WWW1256AE,Cantina Terlano  Gewurztraminer DOC,White Wine,Italy,Trentino-Alto Adige,,Italy,,,0.65,ok,confirm,cantina
+WRW6181AE,Massolino  Barbaresco DOCG,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WRW1845AE,Zenato  Amarone Riserva Sergio DOCG,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.92,ok,confirm,amarone
+WRW1811AE,Massolino  Barolo DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW3294AE,Casanova di Neri  Brunello di Montalcino Tenuta Nuova DOCG 2017,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino; tenuta
+WRW1766AE,Casanova di Neri  Brunello di Montalcino Cerretalto DOCG 2016,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW1833AE,Tenuta Sette Ponti  Crognolo,Red Wine,Italy,Tuscany,,Italy,,,0.7,ok,confirm,tenuta
+WRW3920AE,Ca' Momi  Napa Valley Cabernet Sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW6182AE,Ca' Momi  Napa Valley Pinot  Noir,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WSP1138AE,Follador  Torri di Credazzo Cru Valdobbiadene Prosecco Superiore DOCG Extra Brut,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRS0241AE,Pietradolce  Etna Rosato,Rose Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna
+WSP5711AE,Ca' Momi  Sparkling Brut California,Sparkling Wine,USA,California,,USA,California,,0.8,ok,confirm,california
+WRW5942GE,2:am  Shiraz Barossa Valley,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.95,ok,confirm,barossa valley; barossa
+WWW5091BN,Domaine Leflaive  Bienvenues Batard Montrachet Grand Cru,White Wine,France,Burgundy,Puligny-Montrachet,France,,,0.7,ok,confirm,domaine
+WWW5090BN,Domaine Leflaive  Batard Montrachet Grand Cru,White Wine,France,Burgundy,Puligny-Montrachet,France,,,0.7,ok,confirm,domaine
+WWW5088BN,Domaine Fontaine-Gagnard  Le Montrachet,White Wine,France,Burgundy,Puligny-Montrachet,France,,,0.7,ok,confirm,domaine
+WRW6524BN,Chateau Mouton Rothschild  2019 (Premiers Crus),Wine product,France,,,France,,,0.7,ok,confirm,chateau
+WRW2974BN,Dal Forno Romano  Amarone della Valpolicella 2017,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW6064BN,Chateau Trotanoy  Pomerol 2017,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW6058BN,Chateau Pichon Longueville Comtesse de Lalande 2000,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW6232BN,Chateau Palmer  Margaux 2015,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW2568BN,Chateau Figeac  2018,Red Wine,France,Bordeaux,Saint-Émilion,France,,,0.7,ok,confirm,chateau
+WRW4724BN,Chateau Palmer  Margaux 2018,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW6231BN,Chateau Palmer  Margaux 2010,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WWW4741BN,Domaine Bonneau du Martray  Corton-Charlemagne Grand Cru,White Wine,France,Burgundy,Corton-Charlemagne,France,Burgundy,Corton-Charlemagne,0.97,ok,confirm,corton charlemagne; domaine
+WRW6084BN,Chateau Leoville Las Cases  Saint-Julien 2018,Red Wine,France,Bordeaux,Saint-Julien,France,Bordeaux,Saint-Julien,0.95,ok,confirm,saint julien; chateau
+WWW5087BN,Domaine Fontaine-Gagnard  Criots Batard Montrachet,White Wine,France,Burgundy,Puligny-Montrachet,France,,,0.7,ok,confirm,domaine
+WRW6052BN,Chateau Pedesclaux Pauillac,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac; chateau
+WRW5351BN,Silver Oak  Cabernet Sauvignon Napa Valley 2018,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW6234BN,Chateau Pichon Longueville Comtesse de Lalande 2018,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW1389BN,Chateau La Conseillante  Pomerol 2018,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW2902BN,Domaine Du Pegau  Chateauneuf du Pape da Capo 2016,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape; domaine
+WRW5341BN,Domaine de la Vieille Julienne  Chateauneuf du Pape Reserve,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape; domaine
+WRW5352BN,Chateau Ducru Beaucaillou  2018,Red Wine,France,Bordeaux,Saint-Julien,France,,,0.7,ok,confirm,chateau
+WRW6260BN,Chateau Cos D'Estournel  Saint-Estephe 2018,Red Wine,France,Bordeaux,Saint-Estèphe,France,Bordeaux,Saint-Estèphe,0.95,ok,confirm,saint estephe; chateau
+WRW6060BN,Chateau La Fleur-Petrus  Pomerol,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW6602BN,Chateau Canon  2020,Red Wine,France,Bordeaux,Saint-Émilion,France,,,0.7,ok,confirm,chateau
+WRW6070BN,Chateau La Gaffeliere  Saint-Emilion 2018,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WRW1384BN,Chateau Gazin  Pomerol 2018,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW2504BN,Chateau Certan De May  Pomerol 2018,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW6233BN,Chateau Pichon Longueville Comtesse de Lalande 2017,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW1570BN,Chateau Latour  A Pomerol 2018,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW6259BN,Chateau Pape Clement  2018,Red Wine,France,Bordeaux,Pessac-Léognan,France,,,0.7,ok,confirm,chateau
+WRW5497BN,Chateau Montrose  2017,Red Wine,France,Bordeaux,Saint-Estèphe,France,,,0.7,ok,confirm,chateau
+WRW6066BN,Chateau Belair Monange  Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WRW6538BN,Chateau Lynch Bages  AOC Pauillac 2020,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac; chateau
+WRW2444BN,Chateau Haut Bailly  Grand Cru Classe 2016,Red Wine,France,Bordeaux,Graves,France,,,0.7,ok,confirm,chateau
+WRW6059BN,Chateau Hosanna  Pomerol,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW2505BN,Chateau Certan De May  Pomerol 2014,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW6071BN,Chateau Magrez Fombrauge  Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WRW6073BN,Chateau Peby Faugeres  Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WRW5484BN,Chateau Duhart Milon Rothschild 2018,Wine product,France,,,France,,,0.7,ok,confirm,chateau
+WRW3497BN,Chateau Laforge  St.Emillion Grand Cru,Red Wine,France,Bordeaux,Saint-Émilion,France,,,0.7,ok,confirm,chateau
+WWW2427BN,Twomey  Sauvignon Blanc Napa Valley,White Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW4236BN,Roccolo Grassi  Amarone della Valpolicella,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW6077BN,Clos de L'Oratoire  Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion
+WRW6072BN,Chateau Pavie Macquin  Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WRW2901BN,Domaine Du Pegau  Chateauneuf du Pape Laurence,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape; domaine
+WRW6079BN,Petit Figeac  Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion
+WRW6082BN,Chateau Branaire-Ducru  Saint-Julien 2018,Red Wine,France,Bordeaux,Saint-Julien,France,Bordeaux,Saint-Julien,0.95,ok,confirm,saint julien; chateau
+WRW3496BN,Chateau Teyssier  St.Emillion Grand Cru,Red Wine,France,Bordeaux,Saint-Émilion,France,,,0.7,ok,confirm,chateau
+WRW4779BN,Argiano  Rosso di Montalcino,Red Wine,Italy,Tuscany,Rosso di Montalcino,Italy,Tuscany,Rosso di Montalcino,0.97,ok,confirm,rosso di montalcino; montalcino
+WRW6065BN,Chateau Barrail Du Blanc  Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WRW6074BN,Chateau Peymouton  Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WWW1195BN,Weingut Robert Weil  Riesling Kiedricher Trocken,White Wine,Germany,Rheingau,,Germany,,,0.75,ok,confirm,weingut
+WRW2458BN,Domaine de Chevalier  Pessac-Leognan 2020,Red Wine,France,Bordeaux,Pessac-Léognan,France,Bordeaux,Pessac-Léognan,0.95,ok,confirm,pessac leognan; domaine
+WWW5266BN,William Fevre  Chablis Premier Cru,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis
+WWW5267BN,William Fevre  Chablis Premier Cru Vaillons,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis
+WRW6081BN,Chateau La Dame de Montrose  Saint-Estephe,Red Wine,France,Bordeaux,Saint-Estèphe,France,Bordeaux,Saint-Estèphe,0.95,ok,confirm,saint estephe; chateau
+WRW6559BN,Chateau Kirwan 2021,Red Wine,France,Bordeaux,Margaux,France,,,0.7,ok,confirm,chateau
+WRW5535BN,Argiano  Brunello di Montalcino,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW6051BN,Chateau Malescot St. Exupery Margaux 2010,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW6076BN,Chateau Rocheyron  Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WRW6078BN,Clos La Madeleine  Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion
+WRW6562BN,Chateau Faugeres  Saint Emilion Grand Cru 2020,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WRW6048BN,Le Colombier De Brown Pessac-Leognan AOC,Red Wine,France,Bordeaux,Pessac-Léognan,France,Bordeaux,Pessac-Léognan,0.95,ok,confirm,pessac leognan
+WRW2613BN,Chateau Quinault L' Enclos  2018,Red Wine,France,Bordeaux,Saint-Émilion,France,,,0.7,ok,confirm,chateau
+WRW6069BN,Chateau Grand Mayne  Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WRW2440BN,Chateau De Fieuzal  2020,Red Wine,France,Bordeaux,Pessac-Léognan,France,,,0.7,ok,confirm,chateau
+WRW6050BN,Chateau Labegorce Margaux,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW6049BN,Chateau Cantenac Brown 2018,Red Wine,France,Bordeaux,Margaux,France,,,0.7,ok,confirm,chateau
+WWW1523BN,Louis Michel  Chablis Grand Cru Vaudesir,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis
+WRW2452BN,Chateau Malartic Lagraviere,Red Wine,France,Bordeaux,Graves,France,,,0.7,ok,confirm,chateau
+WRW6227BN,Chateau Bourgneuf  Pomerol,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WWW5368BN,Weingut Robert Weil  Riesling Rheingau Tradition,White Wine,Germany,Rheingau,,Germany,,,0.93,ok,confirm,rheingau; weingut
+WRW4871BN,Amiral de Beychevelle  Saint Julien,Red Wine,France,Bordeaux,Saint-Julien,France,Bordeaux,Saint-Julien,0.95,ok,confirm,saint julien
+WRW1382BN,Chateau Bel-Air  Pomerol,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW4993BN,Chateau Siran 2019,Wine product,France,,,France,,,0.7,ok,confirm,chateau
+WRW6063BN,Chateau Plince  Pomerol,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW4861BN,Ronan by Clinet  Bordeaux AOC Red,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WRW2642BN,Chateau De Pez  Saint-Estèphe 2021,Red Wine,France,Bordeaux,Saint-Estèphe,France,Bordeaux,Saint-Estèphe,0.95,ok,confirm,saint estephe; chateau
+WRW2706BN,Chateau Carignan  Prima (Premieres Cotes de bordeaux),Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW5639BN,Chateau De Pez  2nd Pez Saint-Estèphe,Red Wine,France,Bordeaux,Saint-Estèphe,France,Bordeaux,Saint-Estèphe,0.95,ok,confirm,saint estephe; chateau
+WWW1520BN,Louis Michel  Chablis,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis
+WRW5457BN,Domaine Du Pegau  Cotes du Rhone Cuvee Setier Villages Rouge,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone; domaine
+WRW4863BN,Chateau Carignan (Cadillac Cotes de Bordeaux),Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW4864BN,Chateau Brisson  Castillon Cotes de Bordeaux AOC,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WWW1616BN,Martinborough  Vineyard Sauvignon Blanc Te Tera,White Wine,New Zealand,Martinborough,,New Zealand,Martinborough,,0.95,ok,confirm,martinborough
+WRW2996BN,Tasca d'Almerita  Regaleali Nero d'Avola,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,nero d avola
+LWH0177AA,Tullamore D.E.W.  Irish Whiskey (700 ml),Wine product,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LWH0173AA,Monkey Shoulder  Blended Malt Scotch Whisky (700ml),Wine product,Scotland,,,Scotland,,,0.92,ok,confirm,scotch whisky
+LTQ0135AA,Se Busca  Mezcal Joven (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,mezcal
+LTQ0137AA,Se Busca  Mezcal Anejo (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,mezcal
+NNA0009AA,Monin  Blackcurrant (Cream de Cassis) (700 ml),Wine product,France,,,France,Provence,Cassis,0.8,ok,confirm,cassis
+NNA0041AA,Monin  French Vanilla (700 ml),Wine product,France,,,France,,,0.55,ok,confirm,french
+LTQ0136AA,Se Busca  Mezcal Reposado (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,mezcal
+LTQ0181AA,Buen Amigo  Tequila Anejo  (1 L),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0140AA,Cenote  Tequila Anejo (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0182AA,Buen Amigo  Tequila Silver (1 L),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0139AA,Cenote  Tequila Reposado (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0212AA,Cenote  Tequila Sac Actun (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LWH1010AA,Kentucky Owl  Batch 11 Kentucky Straight Bourbon Whiskey (700 ml),Wine product,USA,,,USA,Kentucky,,0.7,ok,confirm,bourbon
+LWH1009AA,Kentucky Owl  Confiscated Kentucky Straight Bourbon Whiskey (700 ml),Wine product,USA,,,USA,Kentucky,,0.7,ok,confirm,bourbon
+LLQ0324AA,Drambuie Scotch Whisky Liqueur (700 ml),Wine product,Scotland,,,Scotland,,,0.92,ok,confirm,scotch whisky
+LTQ0213AA,Cenote  Tequila Ahumado (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0039AA,Milagro Tequila  Reposado (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0211AA,Cenote  Tequila Green Orange (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LWH1007AA,Kentucky Owl  The Wiseman Kentucky Straight Bourbon Whiskey (700 ml),Wine product,USA,,,USA,Kentucky,,0.7,ok,confirm,bourbon
+LTQ0138AA,Cenote  Tequila Blanco (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LGP0007AA,Nonino  Grappa Chardonnay in Barriques (700 ml),Wine product,Italy,,,Italy,,,0.88,ok,confirm,grappa
+LGP0008AA,Nonino  Grappa Il Merlot (700 ml),Wine product,Italy,,,Italy,,,0.88,ok,confirm,grappa
+LGP0009AA,Nonino  Grappa Il Moscato (700 ml),Wine product,Italy,,,Italy,,,0.88,ok,confirm,grappa
+LTQ0038AA,Milagro Tequila  Anejo (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0040AA,Milagro Tequila  Silver (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LGP0004AA,Nonino  Grappa Vendemmia Riserva Di Annata (700 ml),Wine product,Italy,,,Italy,,,0.88,ok,confirm,grappa
+LGP0005AA,Nonino  Grappa Tradizione  (1 L),Wine product,Italy,,,Italy,,,0.88,ok,confirm,grappa
+LGP0006AA,Nonino  Grappa Vuisnar Riserva (700 ml),Wine product,Italy,,,Italy,,,0.88,ok,confirm,grappa
+LGP0003AA,Nonino  Grappa Friulana Alla Ruta (700 ml),Wine product,Italy,,,Italy,,,0.88,ok,confirm,grappa
+LGP0002AA,Nonino  Grappa Friulana (700 ml),Wine product,Italy,,,Italy,,,0.88,ok,confirm,grappa
+LLQ0419AA,Chateau du Breuil  Pommeau De Normandie  (700 ml),Wine product,France,,,France,,,0.7,ok,confirm,chateau
+LTQ0188AA,Mex  Strawberry Cream with Tequila (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0189AA,Mex  Mango Cream with Tequila,Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+WSP0141AA,7 Cascine  Conegliano Valdobbiadene Prosecco Superiore DOCG,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW6120AA,Tenuta dell'Ornellaia  Ornellaia Bolgheri DOC 2021,Red Wine,Italy,Tuscany,Bolgheri,Italy,Tuscany,Bolgheri,0.95,ok,confirm,bolgheri; tenuta
+WRW3060AA,Tenuta dell'Ornellaia  Le Serre Nuove dell’Ornellaia,Red Wine,Italy,Tuscany,Bolgheri,Italy,,,0.7,ok,confirm,tenuta
+WRW6446AA,Fontanafredda  Vigna La Rosa Barolo DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW6445AA,Fontanafredda  Barolo DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW3396AA,Luce Della Vite  Luce Brunello di Montalcino DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW3000AA,Tenuta dell'Ornellaia  Le Volte dell’Ornellaia,Red Wine,Italy,Tuscany,Bolgheri,Italy,,,0.7,ok,confirm,tenuta
+WSP0009AA,7 Cascine  Prosecco Extra Dry Spumante,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW5777AA,Penfolds  Bin 600 California Collection Cabernet Shiraz,Red Wine,USA,California,,USA,California,,0.8,ok,confirm,california
+WWW0120AA,Baron Philippe de Rothschild  Mouton Cadet Bordeaux Blanc,White Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WRW5778AA,Penfolds  Bin 704 Napa Valley Cabernet Sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW0255AA,Baron Philippe de Rothschild  Mouton Cadet Bordeaux Rouge,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WDW0520AA,Fontanafredda  Moscato D'Asti Briccotondo DOCG,Dessert Wine,Italy,Piedmont,,Italy,Piedmont,,0.93,ok,confirm,moscato d asti
+WRS0188AA,Château Routas  Coteaux Varois en Provence Rosé,Rose Wine,France,Provence,Les Baux-de-Provence,France,,,0.7,ok,confirm,chateau
+WRW6463AA,Idi Di Marzo Amarne Montepulciano D'Abruzzo DOC - Organic,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,confirm,montepulciano; montepulciano d abruzzo
+WWW5122AA,7 Cascine  Moscato d'Asti DOCG,White Wine,Italy,Piedmont,,Italy,Piedmont,,0.93,ok,confirm,moscato d asti
+WRW5597AA,Baron Philippe de Rothschild  Mouton Cadet Selection Bordeaux Rouge,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WSP5776AA,Freixenet  Prosecco Extra Dry DOC,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW4919AA,"Damilano  Barolo ""Cannubi"" DOCG",Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW6618AA,"Baron Philippe de Rothschild  Mouton Cadet Bordeaux Rouge Bio ""Pierre""",Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WRS0002AA,Chateau La Tour L'Eveque Pétale de Rose Rosé AOP,Rose Wine,France,Provence,Les Baux-de-Provence,France,,,0.7,ok,confirm,chateau
+WRW0253AA,Baron Philippe de Rothschild  Mouton Cadet Reserve Graves Rouge,Red Wine,France,Bordeaux,Graves,France,Bordeaux,Graves,0.8,ok,confirm,graves
+WSP0065AA,Salon Delamotte  Champagne Delamotte  Blanc de Blanc Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WSP0064AA,Delamotte  Champagne Rose,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WSP1132AA,Nua  Prosecco Vino Spumante Extra Dry,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WDW0514AA,Michele Chiarlo  Moscato D'Asti Nivole,Dessert Wine,Italy,Piedmont,,Italy,Piedmont,,0.93,ok,confirm,moscato d asti
+WWW5434AA,Baron Philippe de Rothschild  Baronne Charlotte AOC Graves,White Wine,France,Bordeaux,Graves,France,Bordeaux,Graves,0.8,ok,confirm,graves
+WRW1710AA,S De Siran  2nd label of Chateau Siran Margaux,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW3563AA,Tenuta delle Terre Nere  Etna Rosso DOC,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna; tenuta
+WRW6312AA,Baron Philippe de Rothschild  Baron Henri AOC Medoc,Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Médoc,0.88,ok,confirm,medoc
+WWW5013AA,Tenuta delle Terre Nere  Etna Bianco DOC,White Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna; tenuta
+WRW5833AA,Michele Chiarlo  Barolo Cannubi DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WSP5666AA,V8+  Prosecco Brut Berto DOC,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WSP5667AA,V8+  Prosecco Brut Millesimato DOC,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WSP5669AA,V8+  Prosecco Brut Rose Lele DOC,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW0254AA,Baron Philippe de Rothschild  Mouton Cadet Reserve Medoc,Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Médoc,0.88,ok,confirm,medoc
+WSP0085AA,"Nino Franco  Prosecco Spumante Superiore ""Brut"" DOCG",Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW0377AA,Michele Chiarlo  Barolo Tortoniano,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WWW5423AA,"Baron Philippe de Rothschild  Mouton Cadet Bordeaux Blanc BIO ""Nathan""",White Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WRW5398AA,Cantine Leonardo Da Vinci  Da Vinci I Capolavori Chianti DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti,0.88,ok,confirm,chianti
+WRW5832AA,Michele Chiarlo  Barbaresco Faset DOCG,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WRW3077AA,Louis Max  Bourgogne Pinot Noir Beaucharme AOC,Red Wine,France,Burgundy,,France,Burgundy,,0.8,ok,confirm,bourgogne
+WRW3382AA,Fattoria Le Pupille  Poggio Valente Rosso IGT,Red Wine,Italy,Tuscany,Rosso di Montalcino,Italy,,,0.6,ok,confirm,poggio
+WRW0555AA,Chateau Moulin De Mallet  Bordeaux AOC Rouge,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WSP0094AA,Corte Giara by Allegrini  Treviso Prosecco DOC,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW5330AA,Velenosi  Passo Adagio Montepulciano d' Abruzzo DOC,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,confirm,montepulciano; montepulciano d abruzzo
+WWW5149AA,Baron Philippe de Rothschild  Mouton Cadet Reserve Sauternes,White Wine,France,Bordeaux,Sauternes,France,Bordeaux,Sauternes,0.93,ok,confirm,sauternes
+WRW4959AA,"Paul Jaboulet  Chateauneuf du Pape ""Les Cèdres"" Red",Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape
+WRW6313AA,Baron Philippe de Rothschild  Baron Carl AOC Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion
+WSP2568AA,Palazzo Grimani by Allegrini  Prosecco DOC Millesimato Dry,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW3565AA,Tenuta delle Terre Nere  Etna Rosso Feudo Di Mezzo Il Quadro delle Rose DOC,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna; tenuta
+WWW2259AA,Eugenio Collavini  Collio Broy DOC,White Wine,Italy,Friuli-Venezia Giulia,,Italy,Friuli-Venezia Giulia,,0.88,ok,confirm,collio
+WRW6444AA,Fontanafredda  Barolo Del Commune di Serralunga D'Alba DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW4938AA,"Rapitala by Giv  ""Hugonis"" Cabernet Sauvignon & Nero D' Avola IGT",Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,nero d avola
+WRW5329AA,Cantine Leonardo Da Vinci  Da Vinci I Capolavori Brunello di Montalcino DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW4232AA,Santi  Amarone Valpolicella Santi DOCG,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.92,ok,confirm,amarone; valpolicella
+WDW0518AA,Baron Philippe de Rothschild  Baronne Paulinne AOC Sauternes,Dessert Wine,France,Bordeaux,Sauternes,France,Bordeaux,Sauternes,0.93,ok,confirm,sauternes
+WRW0498AA,Mastrojanni  Rosso di Montalcino DOCG,Red Wine,Italy,Tuscany,Rosso di Montalcino,Italy,Tuscany,Rosso di Montalcino,0.97,ok,confirm,rosso di montalcino; montalcino
+WRW5451AA,"Folonari  Amarone della Valpolicella ""Folonari"" DOCG",Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW5189AA,Tenuta delle Terre Nere  Etna Rosso Santo Spirito DOC,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna; tenuta
+WSP1212AA,Mionetto  Prosecco Treviso Brut DOC,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WSP5775AA,Mionetto  Prosecco Rose Extra Dry DOC,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW4233AA,Santi  Amarone Valpolicella Proemi DOCG,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.92,ok,confirm,amarone; valpolicella
+WRW5495AA,Baron Philippe de Rothschild  Mouton Cadet Reserve Margaux,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux
+WRW3564AA,Tenuta delle Terre Nere  Etna Rosso Calderara Sottana DOC,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna; tenuta
+WSP5665AA,Penfolds  Champagne Rose Thienot x Penfolds,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW0406AA,San Polo  Brunello Di Montalcino DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW4844AA,"La Spinetta   Barolo ""Garretti"" DOCG",Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW5128AA,"Ceretto  Barbaresco ""Bernadot"" BIO DOCG",Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WDW0521AA,Fontanafredda  Moscato D'Asti Le Fronde DOCG,Dessert Wine,Italy,Piedmont,,Italy,Piedmont,,0.93,ok,confirm,moscato d asti
+WRW5180AA,San Polo  Brunello di Montalcino Podernovi DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW5130AA,"Ceretto  Barolo ""Prapo"" BIO DOCG",Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WSP0084AA,"Nino Franco  Prosecco Spumante Superiore ""Primo Franco""",Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW5830AA,Michele Chiarlo  Barbaresco Reyna DOCG,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WRW5191AA,Tenuta delle Terre Nere  Etna Rosso Prephylloxera La Vigna Di Don Peppino DOC,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna; tenuta
+WRW4846AA,"La Spinetta   Barbaresco ""Gallina"" DOCG",Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WRW6314AA,Baron Philippe de Rothschild  Baron Nathaniel AOC Pauillac,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac
+WRW6382AA,Lacroix Martillac  Pessac Leognan AOC,Red Wine,France,Bordeaux,Pessac-Léognan,France,Bordeaux,Pessac-Léognan,0.95,ok,confirm,pessac leognan
+WRW4845AA,"La Spinetta   Barbaresco ""Bordini"" DOCG",Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WRW0517AA,Poggio Al Tesoro  Sondraia DOC,Red Wine,Italy,Tuscany,,Italy,,,0.6,ok,confirm,poggio
+WRW0442AA,Batasiolo  Barolo Briccolina DOC,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW5132AA,"Ceretto  Barolo ""Bricco Rocche""  DOCG",Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW0444AA,Batasiolo  Barolo Riserva,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WSP0083AA,"Nino Franco  Prosecco Spumante Superiore ""Rustico""",Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW0047AA,Mastrojanni  Brunello di Montalcino Vigna Schiena D'Asino DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW0499AA,Mastrojanni  Brunello di Montalcino Vigna Loreto DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW5126AA,"Ceretto  Nebbiolo d' Alba ""Bernardina"" BIO DOC",Red Wine,Italy,Piedmont,,Italy,Piedmont,,0.9,ok,confirm,nebbiolo d alba
+WRW5323AA,La Spinetta  Barbaresco Starderi DOCG,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WRW4917AA,"Damilano  Barolo ""Lecinquevigne"" DOCG",Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW5324AA,La Spinetta  Barbaresco Valeirano DOCG,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WRW4903AA,Allegrini  Amarone Classico Reserva Fieramonte DOCG,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.92,ok,confirm,amarone
+WRW0518AA,Poggio Al Tesoro  W DedIcato A Walter,Red Wine,Italy,Tuscany,,Italy,,,0.6,ok,confirm,poggio
+WRW0396AA,Mastrojanni  Brunello di Montalcino DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW5129AA,"Ceretto  Barolo ""Brunate"" BIO DOCG",Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW5493AA,Baron Philippe de Rothschild  Mouton Cadet Reserve Pauillac,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac
+WRW4920AA,"Damilano  Barolo ""Cannubi"" Riserva DOCG",Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WDW0141AA,La Spinetta   Bricco Quaglia Moscato D'Asti,Dessert Wine,Italy,Piedmont,,Italy,Piedmont,,0.93,ok,confirm,moscato d asti
+WRW0381AA,Michele Chiarlo  Barolo Cerequio,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRS0189AA,Château Routas  Coteaux Varois en Provence Rosé (1.5 L),Rose Wine,France,Provence,Les Baux-de-Provence,France,,,0.7,ok,confirm,chateau
+WSP5668AA,V8+  Prosecco Brut Millesimato DOC (1.5 L),Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW4918AA,"Damilano  Barolo ""Liste"" DOCG",Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW4847AA,"La Spinetta   Barolo ""Campe"" DOCG",Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW4983AA,"Fluer De Pedesclaux  ""Le 2nd Vin De Chateau Pedesclaux""",Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW0618AA,Allegrini  Amarone della Valpolicella Classico DOC,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW5190AA,Tenuta delle Terre Nere  Etna Rosso San Lorenzo DOC,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,etna; tenuta
+WRW0574AA,Velenosi  Montepulciano D' Abruzzo The Year of the Rabbit,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,confirm,montepulciano; montepulciano d abruzzo
+WDW0143AA,Poggio Al Tesoro - (Bolgheri)  Teos Passito IGT,Dessert Wine,Italy,Tuscany,Bolgheri,Italy,Tuscany,Bolgheri,0.95,ok,confirm,bolgheri; poggio
+WRW0441AA,Batasiolo  Barolo Vigneto Cerequio,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW0443AA,Batasiolo  Barolo Vigneto Boscareto,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW3475AA,Batasiolo  Barolo Brunate DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WWW4837AA,Monteverro  Vermentino IGT,White Wine,Italy,Tuscany,,Italy,Sardinia,,0.55,ok,confirm,vermentino
+WRW1729AA,Domaine Faiveley  Pommard,Red Wine,France,Burgundy,Pommard,France,Burgundy,Pommard,0.93,ok,confirm,pommard; domaine
+WRW5127AA,Ceretto  Barbaresco BIO DOCG,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WRW5831AA,Michele Chiarlo  Barbaresco Asili DOCG,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WWW5148AA,Baron Philippe de Rothschild  Mouton Cadet Selection Bordeaux Blanc,White Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WRW5598AA,Baron Philippe de Rothschild  Mouton Cadet Heritage Bordeaux Rouge,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WWW4791AA,Livon  Collio Pinot Grigio DOC,White Wine,Italy,Friuli-Venezia Giulia,,Italy,Friuli-Venezia Giulia,,0.88,ok,confirm,collio
+WWW4792AA,Livon  Collio Sauvignon Blanc DOC,White Wine,Italy,Friuli-Venezia Giulia,,Italy,Friuli-Venezia Giulia,,0.88,ok,confirm,collio
+WWW4793AA,Livon  Collio Chardonnay DOC,White Wine,Italy,Friuli-Venezia Giulia,,Italy,Friuli-Venezia Giulia,,0.88,ok,confirm,collio
+WWW2120AA,Fattoria Le Pupille  Poggio Argentato Toscana IGT,White Wine,Italy,Tuscany,,Italy,,,0.6,ok,confirm,poggio
+WWW4794AA,Livon  Collio Friulano DOC,White Wine,Italy,Friuli-Venezia Giulia,,Italy,Friuli-Venezia Giulia,,0.88,ok,confirm,collio
+WRW0420AA,"La Braccesca By Antinori  Rosso di Montepulciano ""Sabazio"" DOC",Wine product,Italy,,,Italy,Tuscany,Montepulciano,0.75,ok,confirm,montepulciano
+WRW4998AA,Clos La Gaffelière  Saint-Emilion Grand Cru (Second wine of château La Gaffelière),Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WWW0119AA,Baron Philippe de Rothschild  Mouton Cadet Reserve Graves Blanc,White Wine,France,Bordeaux,,France,Bordeaux,Graves,0.8,ok,confirm,graves
+WRW0405AA,Palazzo Grimani by Allegrini  Amarone Della Valpolicella DOC,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WWW4885AA,Sella & Mosca  Vermentino di Gallura Superiore Monteoro,White Wine,Italy,Sardinia,,Italy,Sardinia,,0.55,ok,confirm,vermentino
+WRW0624AA,"Corte Giara by Allegrini  Amarone Della Valpolicella ""La Groletta"" DOCG",Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW4904AA,Poggio Al Tesoro - (Bolgheri)  IL Seggio DOC,Red Wine,Italy,Tuscany,Bolgheri,Italy,Tuscany,Bolgheri,0.95,ok,confirm,bolgheri; poggio
+WRW5494AA,Baron Philippe de Rothschild  Mouton Cadet Reserve Saint-Estephe,Red Wine,France,Bordeaux,Saint-Estèphe,France,Bordeaux,Saint-Estèphe,0.95,ok,confirm,saint estephe
+WRW5496AA,Baron Philippe de Rothschild  Mouton Cadet Reserve Pessac-Leognan,Red Wine,France,Bordeaux,Pessac-Léognan,France,Bordeaux,Pessac-Léognan,0.95,ok,confirm,pessac leognan
+WRW0556AA,La Dame De Malescot Margaux (Second wine of Château Malescot St-Exupéry),Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW0001AA,Gran Sasso  Montepulciano D' Abruzzo DOC,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,confirm,montepulciano; montepulciano d abruzzo
+WRW0582AA,Vigneti Di Zabu  Chiantari Nero D' Avola IGT,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,nero d avola
+WWW0300AA,Allegrini  Soave Classico DOC,White Wine,Italy,Veneto,Soave,Italy,Veneto,Soave,0.92,ok,confirm,soave
+WRW1726AA,Domaine Faiveley  Bourgogne Pinot Noir,Red Wine,France,Burgundy,,France,Burgundy,,0.8,ok,confirm,bourgogne; domaine
+WRW1141AA,Baron Philippe de Rothschild  Mouton Cadet Reserve St.Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.92,ok,confirm,st emilion
+WRW5328AA,Cantine Leonardo Da Vinci  Da Vinci I Capolavori Rosso Di Montalcino DOC,Red Wine,Italy,Tuscany,Rosso di Montalcino,Italy,Tuscany,Rosso di Montalcino,0.97,ok,confirm,rosso di montalcino; montalcino
+WRW0481AA,Cantine Leonardo Da Vinci  Chianti Leonardo DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti,0.88,ok,confirm,chianti
+WRW5333AA,Velenosi  Montepulciano D' Abruzzo DOC Circum,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,confirm,montepulciano; montepulciano d abruzzo
+WRW6462AA,Idi Di Marzo  Vulgaris Montepulciano D'Abruzzo DOC,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,confirm,montepulciano; montepulciano d abruzzo
+WRW0024AA,Poggio Al Tesoro  Mediterra,Red Wine,Italy,Tuscany,,Italy,,,0.6,ok,confirm,poggio
+WDW0012AA,Batasiolo  Moscato D'Asti Bosc D'la Rei,Dessert Wine,Italy,Piedmont,,Italy,Piedmont,,0.93,ok,confirm,moscato d asti
+WRS0163AA,Poggio Al Tesoro - (Bolgheri)  Cassiopea Rosato DOC,Rose Wine,Italy,Tuscany,Bolgheri,Italy,Tuscany,Bolgheri,0.95,ok,confirm,bolgheri; poggio
+WRW4848AA,Livon  Collio Merlot DOC,Red Wine,Italy,Friuli-Venezia Giulia,,Italy,Friuli-Venezia Giulia,,0.88,ok,confirm,collio
+WRW4850AA,Livon  Collio Cabernet Sauvignon DOC,Red Wine,Italy,Friuli-Venezia Giulia,,Italy,Friuli-Venezia Giulia,,0.88,ok,confirm,collio
+WRW5327AA,Cantine Leonardo Da Vinci  Da Vinci I Capolavori Chianti Riserva DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti,0.9,ok,confirm,chianti riserva; chianti
+WRW6023FJ,Sartori di Verona Regolo Valpolicella Ripasso Superiore DOC,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella Ripasso,0.95,ok,confirm,valpolicella ripasso; valpolicella; ripasso
+WRW5465FJ,Chris Ringland  Barossa Shiraz,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.88,ok,confirm,barossa
+WSP2644FJ,Botter  Prosecco DOC Rose,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRS0212FJ,Chateau Maris  Rose Syrah Grenache (Organic),Rose Wine,France,Languedoc-Roussillon,,France,,,0.7,ok,confirm,chateau
+WRW6240FJ,Chateau Maris  Merlot Syrah (Organic),Red Wine,France,Languedoc-Roussillon,,France,,,0.7,ok,confirm,chateau
+WWW5412FJ,Chateau Maris  Viognier Grenache (Organic),White Wine,France,Languedoc-Roussillon,,France,,,0.7,ok,confirm,chateau
+WSP5724FJ,Botter Prosecco DOCG Valdobbiadene,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW5472FJ,Poggio Al Tufo  Rompicollo Toscana IGT,Red Wine,Italy,Tuscany,,Italy,,,0.6,ok,confirm,poggio
+WWW5312FJ,"Vite Colte  Gavi  ""Aureliana"" DOCG",White Wine,Italy,Piedmont,Gavi,Italy,Piedmont,Gavi,0.9,ok,confirm,gavi
+WRW6002FJ,Beau Reve De Tradition Bordeaux AOC,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WWW5420FJ,Beau Reve De Tradition  Blanc Bordeaux Aoc,White Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WWW5421FJ,Beau Reve De Tradition  Moelleux Bordeaux Aoc,White Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WSP5723FJ,Botter Prosecco DOC Extra Dry,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WSP2560FJ,Sartori di Verona  “Erfo” Prosecco Spumante Brut DOC,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW6248FJ,Cantina Tollo Primitivo Puglia,Red Wine,Italy,Puglia,,Italy,,,0.65,ok,confirm,cantina
+WRW6249FJ,Orapiena  Montepulciano D'Abruzzo,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,confirm,montepulciano; montepulciano d abruzzo
+WRW6014FJ,Chateau Passe Craby Bordeaux Superieur AOC,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW6015FJ,Chateau Saint-Yzans Médoc AOC,Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Médoc,0.88,ok,confirm,medoc; chateau
+WRW6018FJ,Bosquet des Boiron Cotes du Rhone,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone
+WRW6010FJ,Chateau Grand Lartigues St.Emilion Gran Cru AOC,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.92,ok,confirm,st emilion; chateau
+WRW6011FJ,Chateau Du Mont Haut-médoc AOC,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,confirm,haut medoc; medoc; chateau
+WRW6012FJ,Chateau Moulin de la Bridane Saint-Julien AOC,Red Wine,France,Bordeaux,Saint-Julien,France,Bordeaux,Saint-Julien,0.95,ok,confirm,saint julien; chateau
+WWW5254FJ,Fraser Gallop  Margaret River Parterre Chardonnay,White Wine,Australia,Margaret River,,Australia,Margaret River,,0.95,ok,confirm,margaret river
+WRW6021FJ,Caleo Nero d'Avola Sicilia DOC,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,nero d avola
+WRW6022FJ,Caleo Montepulciano d'Abruzzo DOC,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,confirm,montepulciano; montepulciano d abruzzo
+WRW6019FJ,Bosquet des Papes Chateauneuf-du-Pape Tradition Rouge,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape
+WWW5411FJ,Bosquet des Papes Chateauneuf-du-Pape Tradition Blanc,White Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape
+WRW6033FJ,"Vite Colte Barolo del Comune di Serralunga d'Alba ""Essenze"" DOCG",Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW6016FJ,Chateau Franc-Maillet Le Secret de Franc Maillet Pomerol AOC,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW6017FJ,Memoire de Maison Bouey Pauillac AOC,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac; maison
+WRW6238FJ,Mr.Riggs  J.F.R. McLaren Vale Shiraz,Red Wine,Australia,McLaren Vale,,Australia,McLaren Vale,,0.95,ok,confirm,mclaren vale
+WRW6013FJ,Chateau Du Grand Soussan Margaux AOC,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW5961FJ,Crono  Chianti Riserva DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti,0.9,ok,confirm,chianti riserva; chianti
+WRW6029FJ,Pian delle Querce Rosso di Montalcino DOC,Red Wine,Italy,Tuscany,Rosso di Montalcino,Italy,Tuscany,Rosso di Montalcino,0.97,ok,confirm,rosso di montalcino; montalcino
+WSP2577FJ,Champagne Duval Leroy  Fleur de Premier Cru,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW5469FJ,Oddero  Barolo DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW5906FJ,Casisano  Rosso di Montalcino DOC,Red Wine,Italy,Tuscany,Rosso di Montalcino,Italy,Tuscany,Rosso di Montalcino,0.97,ok,confirm,rosso di montalcino; montalcino
+WSP5726FJ,Heim  Cremant D'Alsace Brut Imperial,Sparkling Wine,France,Alsace,,France,Alsace,,0.9,ok,confirm,alsace
+WRW5461FJ,Casisano  Brunello di Montalcino DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW6245FJ,Bindi Surgadi La Boncia Chianti DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti,0.88,ok,confirm,chianti
+WWW5413FJ,Domaine De La Cornasse  Chablis,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis; domaine
+WRW5909FJ,Fraser Gallop  Margaret River Parterre Cabernet Sauvignon,Red Wine,Australia,Margaret River,,Australia,Margaret River,,0.95,ok,confirm,margaret river
+WRW6030FJ,Pian delle Querci Brunello di Montalcino Riserva DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW6235FJ,Chris Ringland  North Barossa Shiraz,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.88,ok,confirm,barossa
+WSP5722FJ,Champagne Duval Leroy Brut Reserve,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW5462FJ,Casisano  Colombaiolo Brunello di Montalcino DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW5459FJ,Bosquet Des Papes  Chateauneuf-du-Pape Chante Le Merle,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape
+WSP2643FJ,Champagne Duval Leroy Rose Prestige,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WSP5721FJ,Champagne Duval Leroy Blanc De Blance Grand Cru Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW6247FJ,"Vite Colte Barolo ""Paesi Tuoi"" DOCG",Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW5468FJ,Oddero  Barolo Bussia Vigna Mondaca Riserva DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WSP5720FJ,Champagne Duval Leroy  Femme De Champagne Grand Cru,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW6246FJ,Pian Delle Querci  Brunello Di Montalcino DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW6005FJ,Fraser Gallop Estate Margaret River Cabernet Merlot,Red Wine,Australia,Margaret River,,Australia,Margaret River,,0.95,ok,confirm,margaret river
+WWW5309FJ,Fraser Gallop Estate Margaret River Chardonnay,White Wine,Australia,Margaret River,,Australia,Margaret River,,0.95,ok,confirm,margaret river
+WRW6024FJ,Sartori di Verona Reius Amarone della Valpolicella Classico DOCG,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+LWH0312AD,Teeling  Small Batch Irish Whiskey (700 ml),Wine product,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LWH0314AD,Teeling  Single Malt Irish Whiskey (700 ml),Wine product,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LWH0313AD,Teeling  Single Grain Irish Whiskey (700 ml),Wine product,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LWH1129AD,The Dalmore  King Alexander III Highland single Malt Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.95,ok,confirm,highland; single malt scotch; scotch whisky
+WRW0725AD,Torres  Sangre de Toro Red (5.5% Low Alcohol),Red Wine,Spain,Toro,,Spain,Toro,,0.85,ok,confirm,toro
+WRS0141AD,Chateau Paradis  AOP Coteaux D'Aix En Provence,Rose Wine,France,Provence,Les Baux-de-Provence,France,,,0.7,ok,confirm,chateau
+LWH0546AD,Tamnavulin  Double Cask Speyside single Malt Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.95,ok,confirm,speyside; single malt scotch; scotch whisky
+LWH1069AD,The Irishman  The Harvest Irish Whiskey (700 ml),Wine product,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LWH1128AD,The Dalmore  Cigar Malt Reserve Highland single Malt Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.95,ok,confirm,highland; single malt scotch; scotch whisky
+LWH1070AD,The Irishman  Single Malt Irish Whiskey (700 ml),Wine product,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LWH0205AD,Evan Williams Bourbon Black (750 ml),Wine product,USA,,,USA,Kentucky,,0.7,ok,confirm,bourbon
+WSP1167AD,Champagne Ruinart Blanc de Blancs,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+LTQ0132AD,Kah  Tequila Blanco (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+WSP0042AD,Zonin  Prosecco Brut,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+LSK0348AD,Tamanohikari  Junmai Ginjo Shuraku Sake (1.8 L),Wine product,Japan,,,Japan,,,0.88,ok,confirm,sake
+WRW1483AD,St. Hallett  Barossa Faith Shiraz,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.88,ok,confirm,barossa
+LWH0448AD,John Barr  Reserve Black Label Blended Scotch Whisky (1 L),Wine product,Scotland,,,Scotland,,,0.92,ok,confirm,scotch whisky
+WRW5279AD,Beaulieu Vineyard  Napa Valley Cabernet Sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW1959AD,Barton&Guestier  Medoc,Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Médoc,0.88,ok,confirm,medoc
+LTQ0134AD,Kah  Tequila Anejo (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+WRW1940AD,Barton&Guestier  1725 Bordeaux Reserve Rouge,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WSP5777AD,Penfolds  Champagne Cuvee Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW5320AD,Chateau la Croix de Mouchet  Montagne St.Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.92,ok,confirm,st emilion; chateau
+WRW0136AD,Zonin  Chianti DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti,0.88,ok,confirm,chianti
+WRW0114AD,Michel Lynch  Bordeaux Rouge,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WRW1472AD,E.Guigal  Cote-Rotie Brune Et Blonde De Guigal,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.93,ok,confirm,cote rotie
+LWH0630AD,Lower East Side  Blended Malt Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.92,ok,confirm,scotch whisky
+WRW5096AD,Torres  Sangre de Toro Red,Red Wine,Spain,Toro,,Spain,Toro,,0.85,ok,confirm,toro
+LSK0347AD,Tamanohikari  Junmai Ginjo Shuraku Sake (720 ml),Wine product,Japan,,,Japan,,,0.88,ok,confirm,sake
+WWW0022AD,Chateau Villa Bel Air Blanc,White Wine,France,Bordeaux,,France,,,0.7,ok,confirm,chateau
+WRS0005AD,Michel Lynch  Bordeaux Rose,Rose Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+LTQ0133AD,Kah  Tequila Reposado (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+WRW5869AD,Bodegas Protos  27 Ribera del Duero,Red Wine,Spain,Ribera del Duero,,Spain,Ribera del Duero,,0.95,ok,confirm,ribera del duero; bodegas
+WSP2558AD,Champagne Ernest Rapeneau  Brut Magnum (1.5 L),Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WWW0204AD,Domaine Laroche  Chablis Domaine Saint Martin AOC,White Wine,France,Burgundy,,France,Burgundy,,0.95,ok,confirm,chablis; domaine
+WRW1470AD,E.Guigal  Chateauneuf du Pape Rouge AOC,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape
+WRW6586AD,E. Guigal  Cote-Rotie La Landonne,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.93,ok,confirm,cote rotie
+WRW6587AD,E. Guigal  Cote Rotie La Mouline,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.93,ok,confirm,cote rotie
+WRW6588AD,E. Guigal  Cote Rotie La Turque,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.93,ok,confirm,cote rotie
+WRW0299AD,Conte Placido  Placido Chianti DOCG,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti,0.88,ok,confirm,chianti
+WRW5865AD,Baron de Lestac Bordeaux Rouge,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WWW5237AD,Baron de Lestac Bordeaux Blanc,White Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WRW6505AD,Fantini Casale Vecchio Montepulciano D'Abruzzo,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,confirm,montepulciano; montepulciano d abruzzo
+WWW5058AD,Marques de Caceres  Albarino Deusa Nai,White Wine,Spain,Rioja,,Spain,Rías Baixas,,0.8,ok,confirm,albarino
+WRW3411AD,Speri  Amarone Valpolicella Classico Vigneto Monte Sant' Urbano DOCG,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.92,ok,confirm,amarone; valpolicella
+WRW0135AD,Villa Girardi  Amarone delta Valplicella Classico,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.92,ok,confirm,amarone
+WWW0202AD,Domaine Laroche  Chablis Les Chanoines AOC,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis; domaine
+WRW4309AD,Barton&Guestier  Bordeaux Rouge,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WRS0139AD,Clarendelle  Bordeaux Rose Inspired by Haut-Brion AOC,Rose Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WSP2526AD,Champagne Drappier  Rose de Saignee,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW1951AD,Chateau Barrail Laussac Bordeaux,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW0579AD,Vigneti Di Zabu  Nero D' Avola Sicilia IGT,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,nero d avola
+WRW0137AD,"Zonin  ""Ventiterre"" Nero d'Avola / Merlot",Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,nero d avola
+WWW5121AD,Altano  Vinho Branco Douro DOC,White Wine,Portugal,Douro,,Portugal,,,0.9,ok,confirm,douro
+WRW3607AD,Pio Cesare  Barolo DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WSP5693AD,Contadi Castaldi  Franciacorta Brut Rose,Sparkling Wine,Italy,Lombardy,,Italy,Lombardy,,0.95,ok,confirm,franciacorta
+WSP2525AD,Champagne Drappier  Carte D'Or,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WSP2527AD,Champagne Drappier  Brut Nature Zero Dosage,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WWW1018AD,Laurenz V.  Charming Gruner Veltliner,White Wine,Austria,,,Austria,,,0.75,ok,confirm,gruner veltliner
+WRW5893AD,Chateau Magnol Haut Medoc,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,confirm,haut medoc; medoc; chateau
+WSP0057AD,Bisol & Figli  Jeio Prosecco Extra Dry,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WSP2555AD,Champagne Gremillet  Blanc de Blancs Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WWW4786AD,Torres  Sangre de Toro White,White Wine,Spain,Toro,,Spain,Toro,,0.85,ok,confirm,toro
+WRW1477AD,Chateau Jalousie  Bordeaux Superieur AOC,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW6213AD,"Craggy Range  Sophia Gimblett Gravels, Hawke’s Bay",Red Wine,New Zealand,Hawke's Bay,,New Zealand,Hawke's Bay,,0.95,ok,confirm,hawke s bay
+WRW6214AD,"Craggy Range  Syrah Gimblett Gravels Vineyard, Hawke’s Bay",Red Wine,New Zealand,Hawke's Bay,,New Zealand,Hawke's Bay,,0.95,ok,confirm,hawke s bay
+WRW0033AD,Craggy Range  Te Muna Pinot Noir Martinborough,Red Wine,New Zealand,Martinborough,,New Zealand,Martinborough,,0.95,ok,confirm,martinborough
+WRW1468AD,E.Guigal  Crozes Hermitage Rouge AOC,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.9,ok,confirm,hermitage
+WSP5692AD,Contadi Castaldi  Franciacorta Brut,Sparkling Wine,Italy,Lombardy,,Italy,Lombardy,,0.95,ok,confirm,franciacorta
+WRW3609AD,Pio Cesare  Barolo Ornato DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW3608AD,Pio Cesare  Barbaresco DOCG,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WWW0012AD,Craggy Range  Te Muna Sauvignon Blanc Martinborough,White Wine,New Zealand,Martinborough,,New Zealand,Martinborough,,0.95,ok,confirm,martinborough
+WRW5340AD,E.Guigal  Chateauneuf du Pape Chateau De Nalys - Grand Vin,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape; chateau
+WRW1476AD,"Michel Lynch  Nature Merlot Bordeaux ""Organic"" AOC",Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WRW4251AD,Castello Banfi  Rosso Di Montalcino DOC,Red Wine,Italy,Tuscany,Rosso di Montalcino,Italy,Tuscany,Rosso di Montalcino,0.97,ok,confirm,rosso di montalcino; montalcino
+WRW0113AD,Michel Lynch  Medoc Reserve Red,Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Médoc,0.88,ok,confirm,medoc
+WSP0058AD,Champagne Ernest Rapeneau  Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW3610AD,Pio Cesare  Barbaresco il Bricco DOCG,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WRW4254AD,Planeta  Santa Cecilia Nero d'Avola DOC,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,nero d avola
+WRW5031AD,Pio Cesare  Barolo Mosconi DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW0090AD,Castello Banfi  Brunello di Montalcino DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WSP2554AD,Champagne Gremillet  Selection Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WSP2557AD,Champagne Gremillet  Brut Millesime,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW0289AD,Carpineto  Brunello Di Montalcino DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WSP2528AD,Champagne Drappier  Millesime Exception 2013,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW1473AD,E.Guigal  Cote-Rotie Chateau D' Ampuis,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.93,ok,confirm,cote rotie; chateau
+WSP5694AD,Contadi Castaldi  Franciacorta Brut Race Ducati,Sparkling Wine,Italy,Lombardy,,Italy,Lombardy,,0.95,ok,confirm,franciacorta
+WRW0384AD,Castello Banfi  Brunello di Montalcino DOCG Poggio alle Mura,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino; poggio
+WRW5017AD,Talamonti  Tre Saggi Montepulciano,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Tuscany,Montepulciano,0.75,ok,confirm,montepulciano
+WRW5321AD,"Confidences De Prieure-Linchine  2014  ""Le 2nd Vin De Chateau Prieure-Lichine""",Red Wine,France,Bordeaux,Margaux,France,,,0.7,ok,confirm,chateau
+WRW1015AD,E.Guigal  Gigondas AOC,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.95,ok,confirm,gigondas
+WRW5955AD,Escarpment  Pinot Noir Martinborough,Red Wine,New Zealand,Martinborough,,New Zealand,Martinborough,,0.95,ok,confirm,martinborough
+WSP2529AD,Champagne Ernest Rapeneau  Rose,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW4522AD,Bodegas Protos  Crianza Ribera del Duero D.O.,Red Wine,Spain,Ribera del Duero,,Spain,Ribera del Duero,,0.95,ok,confirm,ribera del duero; bodegas
+WRW5016AD,Castello Banfi  Aska Bolgheri DOC,Red Wine,Italy,Tuscany,Bolgheri,Italy,Tuscany,Bolgheri,0.95,ok,confirm,bolgheri
+WWW5296AD,Escarpment  Chardonnay Martinborough,White Wine,New Zealand,Martinborough,,New Zealand,Martinborough,,0.95,ok,confirm,martinborough
+WWW1735AD,Castello del Poggio  Moscato Di Pavia IGT,White Wine,Italy,Lombardy,,Italy,,,0.6,ok,confirm,poggio
+WSP5686AD,Pares Balta  Cava Brut Organic,Sparkling Wine,Spain,Catalunya,,Spain,Catalunya,,0.85,ok,confirm,cava
+WRW4521AD,Bodegas Protos  Roble Ribera del Duero D.O.,Red Wine,Spain,Ribera del Duero,,Spain,Ribera del Duero,,0.95,ok,confirm,ribera del duero; bodegas
+WSP2613AD,Champagne Ruinart Rose,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW5997AD,Bell' Agio  Chianti DOCG Fiasco,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti,0.88,ok,confirm,chianti
+WRW1024AD,E.Guigal  Cotes du Rhone Rouge,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone
+WWW1114AD,E.Guigal  Cotes du Rhone Blanc,White Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone
+WRW5861AD,Langmeil  Barossa Valley Floor Shiraz,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.95,ok,confirm,barossa valley; barossa
+WSP1231AD,Bodegas Codorniu Raventos  Codorniu Clasico,Sparkling Wine,Spain,Catalunya,,Spain,,,0.7,ok,confirm,bodegas
+WRW6504AD,Fantini Montepulciano D'Abruzzo,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,confirm,montepulciano; montepulciano d abruzzo
+WRW0303AD,Bodegas Palacios Remondo  La Vendimia Rioja,Red Wine,Spain,Rioja,,Spain,Rioja,,0.92,ok,confirm,rioja; bodegas
+WRW0296AD,Ogier  Cotes du Rhone Gentilhomme Red,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone
+WWW0165AD,Ogier  Cotes du Rhone Gentilhomme White,White Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone
+WSP2500AD,Bisol & Figli  Belstar Prosecco Brut,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW6612AD,Clarendelle  Medoc Red,Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Médoc,0.88,ok,confirm,medoc
+WRW1984AD,Barton&Guestier  Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion
+WRW1730AD,Torres  Ibericos Crianza La Rioja DOC,Red Wine,Spain,Rioja,,Spain,Rioja,,0.92,ok,confirm,rioja
+WRW0720AD,Torres  Celeste Ribera Del Duero,Red Wine,Spain,Ribera del Duero,,Spain,Ribera del Duero,,0.95,ok,confirm,ribera del duero
+WRW0012AD,Castello Banfi  Chianti,Red Wine,Italy,Tuscany,Chianti,Italy,Tuscany,Chianti,0.88,ok,confirm,chianti
+WRS0057AD,Domaine L'Ostal Cazes  Rose,Rose Wine,France,Languedoc-Roussillon,,France,,,0.7,ok,confirm,domaine
+WRW3618AD,Michel Lynch  Prestige St.Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.92,ok,confirm,st emilion
+WRW1475AD,Pighin  Merlot Grave Del Friuli DOC,Red Wine,Italy,Friuli-Venezia Giulia,,Italy,Friuli-Venezia Giulia,,0.88,ok,confirm,friuli
+WWW1117AD,Pighin  Pinot Grigio Grave Del Friuli DOC,White Wine,Italy,Friuli-Venezia Giulia,,Italy,Friuli-Venezia Giulia,,0.88,ok,confirm,friuli
+WRW1002AD,Zonin  Lambrusco,Sparkling Wine,Italy,Emilia-Romagna,,Italy,Emilia-Romagna,,0.88,ok,confirm,lambrusco
+WRW0298AD,Feudo Principi de Butera  Surya Nero d'Avola Merlot,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,nero d avola
+WRW0297AD,Talamonti  Moda' Montepulciano D'Abruzzo Doc,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,confirm,montepulciano; montepulciano d abruzzo
+WRW6000AD,Altano  Tinto Reserva Douro Red DOC,Red Wine,Portugal,Douro,,Portugal,,,0.9,ok,confirm,douro
+WRW1215AD,Planeta  Plumbago Nero d'Avola IGT Sicilia,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,nero d avola
+WSP1230AD,Bodegas Codorniu Raventos  Delapierre Tradicion Brut,Sparkling Wine,Spain,Catalunya,,Spain,,,0.7,ok,confirm,bodegas
+WRW6613AD,Clarendelle  Saint-Emilion Red,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion
+WWW1020AD,Laurenz V.  Singing Gruner Veltliner,White Wine,Austria,,,Austria,,,0.75,ok,confirm,gruner veltliner
+WSP1232AD,Bodegas Codorniu Raventos  Cava Codorniu Anna Blanc de Blancs Reserva Brut,Sparkling Wine,Spain,Catalunya,,Spain,Catalunya,,0.85,ok,confirm,cava; bodegas
+WSP1049AD,Prego Nero  Prosecco Brut,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW0318AD,Domaine L'Ostal Cazes  Estibals Minervois AOC,Red Wine,France,Languedoc-Roussillon,,France,Languedoc-Roussillon,,0.92,ok,confirm,minervois; domaine
+WWW4813AD,Ogier  Chateauneuf du Pape Clos de l'Oratoire des Papes Blanc,White Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape
+WRW0039AD,Chateau Villa Bel Air  Rouge,Red Wine,France,Bordeaux,Graves,France,,,0.7,ok,confirm,chateau
+WRW3197AD,Domaine Laroche  Pinot Noir de la Chevaliere IGT,Red Wine,France,Burgundy,,France,,,0.7,ok,confirm,domaine
+WRW0118AD,Ogier  Chateauneuf du Pape Clos de l'Oratoire des Papes,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape
+WRW5269AD,Maison de Grand Esprit  La Miraculeuse Bordeaux,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; maison
+WRW5024AD,Wolf Blass  Gold Label Coonawarra Cabernet Sauvignon,Red Wine,Australia,Coonawarra,,Australia,Coonawarra,,0.95,ok,confirm,coonawarra
+WWW4858AD,Wolf Blass  Gold Label Adelaide Hills Chardonnay,White Wine,Australia,Adelaide Hills,,Australia,Adelaide Hills,,0.95,ok,confirm,adelaide hills
+WRW5270AD,Maison de Grand Esprit  L'Etre Magique Bordeaux,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; maison
+WWW2403AD,Beringer  Napa Valley Chardonnay,White Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW5271AD,Maison de Grand Esprit  L'Etre Magique Bourgogne,Red Wine,France,Burgundy,,France,Burgundy,,0.8,ok,confirm,bourgogne; maison
+WRW5273AD,Maison de Grand Esprit  La Mysteriale Chateauneuf du Pape,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape; maison
+WRW5277AD,Sterling  Vintner Napa Valley Cabernet Sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WSP2517AD,Maison de Grand Esprit  La Mysteriale Champagne Cuvee Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; maison; champagne
+WRW4682AD,Penfolds  Bin 138 Barossa Valley GMS,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.95,ok,confirm,barossa valley; barossa
+WRW5272AD,Maison de Grand Esprit  La Mysteriale Lussac Saint Emilion,Red Wine,France,Bordeaux,Lussac-Saint-Emilion,France,Bordeaux,Lussac-Saint-Emilion,0.97,ok,confirm,saint emilion; lussac saint emilion; maison
+WWW5043AD,Beringer  Private Reserve Napa Valley Chardonnay,White Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW4697AD,Beringer  Napa Valley Cabernet sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW5027AD,Wolf Blass  Platinum Label Barossa Shiraz,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.88,ok,confirm,barossa
+WRW4698AD,Beringer  Private Reserve Napa Valley Cabernet Sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW6454AD,Penfolds  RWT Bin 798 Shiraz Barossa Valley Limited Relese Lunar New Year Snake Edition,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.95,ok,confirm,barossa valley; barossa
+WSP2431AD,Maison de Grand Esprit  L'Etre Magique Cremant De Bourgogne,Sparkling Wine,France,Burgundy,,France,Burgundy,,0.8,ok,confirm,bourgogne; maison
+WRW3201CU,"bodegas Valduero  Reserva Premium "" 6 Anos""",Red Wine,Spain,Ribera del Duero,,Spain,,,0.7,ok,confirm,bodegas
+WRW6585CU,Altos de Rioja  Altos R Reserva,Red Wine,Spain,Rioja,,Spain,Rioja,,0.92,ok,confirm,rioja
+WRW3199CU,Bodegas Valduero  Una Cepa,Red Wine,Spain,Ribera del Duero,,Spain,,,0.7,ok,confirm,bodegas
+WRW5226CU,Altos de Rioja  Altos R Crianza,Red Wine,Spain,Rioja,,Spain,Rioja,,0.92,ok,confirm,rioja
+WRW5225CU,Altos de Rioja  Altos R Tempranillo,Red Wine,Spain,Rioja,,Spain,Rioja,,0.92,ok,confirm,rioja
+WWW5204CU,Bodegas Granbazan  Contrapunto Albarino,White Wine,Spain,,,Spain,Rías Baixas,,0.8,ok,confirm,albarino; bodegas
+WRW4118AJ,Staglin Family Vineyard  Napa Valley Cabernet Sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW4101AJ,Realm Cellars  'The Bard' Napa Valley,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW4207AJ,San Filippo  Brunello di Montalcino Le Lucere,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW5090AJ,Giuseppe Cortese  Barbaresco Riserva Rabaja,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WRW5487AJ,San Filippo  Brunello di Montalcino Riserva Le Lucere,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW4225AJ,Bodegas Muga  Reserva Rioja DOC,Red Wine,Spain,Rioja,,Spain,Rioja,,0.92,ok,confirm,rioja; bodegas
+WRW4229AJ,Chateau Roquefort  Rouge Grand Vin de Bordeaux,Wine product,France,,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW5094AJ,Travaglini Gattinara  IL Sogno,Red Wine,Italy,Piedmont,Gattinara,Italy,Piedmont,Gattinara,0.93,ok,confirm,gattinara
+WRW4128AJ,The Journal  Napa Valley Pinot Noir,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW4160AJ,Mollydooker  'Carnival of Love' Shiraz - McLaren Vale,Red Wine,Australia,McLaren Vale,,Australia,McLaren Vale,,0.95,ok,confirm,mclaren vale
+WRW5089AJ,Giuseppe Cortese  Barbaresco Rabaja,Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WWW2315AJ,Merryvale  Napa Valley Sauvignon Blanc,White Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW4159AJ,Mollydooker  'Enchanted Path' Shiraz Cabernet - McLaren Vale,Red Wine,Australia,McLaren Vale,,Australia,McLaren Vale,,0.95,ok,confirm,mclaren vale
+WRW5309AJ,Bodegas San Roman  Prima,Red Wine,Spain,Toro,,Spain,,,0.7,ok,confirm,bodegas
+WRW4079AJ,Merryvale  Napa Valley Cabernet Sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW4103AJ,Reference Book  Napa Valley Red Wine,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW4226AJ,Bodegas Muga  Selección Especial Rioja DOC,Red Wine,Spain,Rioja,,Spain,Rioja,,0.92,ok,confirm,rioja; bodegas
+WRW4206AJ,San Filippo  Brunello di Montalcino DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW4124AJ,Starmont  Napa Valley Cabernet Sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW5050AJ,G.D. Vajra  Barolo Albe DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW4180AJ,Manara  Postera Amarone della Valpolicella Classico DOC,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW4080AJ,Merryvale  Napa Valley Merlot,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW4053AJ,Freemark Abbey  Napa Valley Cabernet Sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW5051AJ,G.D. Vajra  Barolo Bricco delle Viole DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WWW2152AJ,Starmont  Napa Valley Sauvignon Blanc,White Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW4054AJ,Freemark Abbey  Napa Valley Merlot,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW4740AJ,Chateau Les Reuilles  Bordeaux rouge AOC,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW4132AJ,Z88.88 Napa Valley Red Wine,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WWW2145AJ,Freemark Abbey  Napa Valley Chardonnay,White Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW5092AJ,Travaglini Gattinara  Tre Vigne,Red Wine,Italy,Piedmont,Gattinara,Italy,Piedmont,Gattinara,0.93,ok,confirm,gattinara
+WRW4230AJ,Chateau Julien  Haut-Medoc,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,confirm,haut medoc; medoc; chateau
+WRW4231AJ,Chateau Les Cabannes  St.Emilion Grand Cru AOC,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.92,ok,confirm,st emilion; chateau
+WRW5486AJ,San Filippo  Brunello di Montalcino Lo Scorno,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WWW2178AJ,Bodegas Muga  Blanco Rioja DOC,White Wine,Spain,Rioja,,Spain,Rioja,,0.92,ok,confirm,rioja; bodegas
+WRS0183AJ,Bodegas Muga  Rose Rioja DOC,Rose Wine,Spain,Rioja,,Spain,Rioja,,0.92,ok,confirm,rioja; bodegas
+WRW6280AJ,Maison 1982  'Atlantique' Bordeaux,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; maison
+WRW5124AJ,Kressmann Bordeaux 'Monopole' Rouge AOC,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WWW4996AJ,Kressmann Bordeaux 'Monopole' Blanc AOC,White Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WRW6489FT,L'Esprit de Chevalier Pessac Leognan Second wine of Domaine de Chevalier,Red Wine,France,Bordeaux,Pessac-Léognan,France,Bordeaux,Pessac-Léognan,0.95,ok,confirm,pessac leognan; domaine
+WRW6435FT,Chateau Cantenac Brown 2020,Wine product,France,,,France,,,0.7,ok,confirm,chateau
+WRW6499FT,Chateau Lagrezette Paragon Malbec,Red Wine,France,Bordeaux,,France,,,0.7,ok,confirm,chateau
+WSP2646FT,Champagne Ruinart  Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW3351FT,Chateau Plantey  Pauillac Cru Bourgeois,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac; chateau
+WRW6485FT,Chateau d'Aiguilhe Castillon Cotes De Bordeaux,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW6486FT,Relais De La Dominique Saint Emilion Grand Cru Second wine of Chateau La Dominique,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WRW6491FT,Les Fiefs De Lagrange Saint-Julien Second wine of Chateau Lagrange,Red Wine,France,Bordeaux,Saint-Julien,France,Bordeaux,Saint-Julien,0.95,ok,confirm,saint julien; chateau
+WRW6495FT,Chevalier De Lascombes Second wine of Chateau Lascombes,Red Wine,France,Bordeaux,Margaux,France,,,0.7,ok,confirm,chateau
+WRW5969FT,Clémentin de Pape  Clément Pessac-Léognan,Red Wine,France,Bordeaux,Pessac-Léognan,France,Bordeaux,Pessac-Léognan,0.95,ok,confirm,pessac leognan
+WRW6478FT,Château Morin  Saint Estephe,Red Wine,France,Bordeaux,Saint-Estèphe,France,Bordeaux,Saint-Estèphe,0.95,ok,confirm,saint estephe; chateau
+WRW6226FT,Le Merle De Peby Faugeres  Saint Emilion Grand Cru,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion
+WRW6027FT,Chateau Graves de Pez  Saint-Estephe,Red Wine,France,Bordeaux,Saint-Estèphe,France,Bordeaux,Saint-Estèphe,0.95,ok,confirm,saint estephe; graves; chateau
+WRW6497FT,Château Montviel  Pomerol,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW6484FT,Calice De Faugeres Saint Emilion Grand Cru Second wine of Chateau Faugeres,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WRW6432FT,Echo de Lynch Bages AOC Pauillac 2020,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac
+WRW6433FT,Chateau Ormes De Pez Saint Estephe,Red Wine,France,Bordeaux,Saint-Estèphe,France,Bordeaux,Saint-Estèphe,0.95,ok,confirm,saint estephe; chateau
+WRW5007FT,"Fugue De Nenin  ""Le 2nd Vin De Chateau Nenin""",Red Wine,France,Bordeaux,Pomerol,France,,,0.7,ok,confirm,chateau
+WRW6482FT,Château Du Couvent  Pomerol,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW6488FT,Pomerol By Clinet,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol
+WRW6041FT,Blason d'Issan  Margaux,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux
+WRW4971FT,Goulee by Cos d'Estournel Medoc AOC,Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Médoc,0.88,ok,confirm,medoc
+WRW6490FT,Les Hauts de Lynch-Moussas Second wine of Chateau Lynch-Moussas,Red Wine,France,Bordeaux,Haut-Médoc,France,,,0.7,ok,confirm,chateau
+WRW0559FT,Chateaux Cantemerle  Haut Medoc 2021,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,confirm,haut medoc; medoc
+WRW6496FT,Chateau Pibran Pauillac,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac; chateau
+WRW6487FT,Ballade De La Pointe Pomerol Second wine of Chateau La Pointe,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW6479FT,Château Citran  Cru Bourgeois Haut Medoc,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,confirm,haut medoc; medoc; chateau
+WRW6493FT,Sarget De Gruaud Larose Saint-Julien Second wine of Chateau Gruaud Larose,Red Wine,France,Bordeaux,Saint-Julien,France,Bordeaux,Saint-Julien,0.95,ok,confirm,saint julien; chateau
+WRW0087FT,Baron de Brane  Margaux,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux
+WRW6492FT,Duluc De Branaire Ducru Saint-Julien Second wine of Chateau Branaire-Ducru,Red Wine,France,Bordeaux,Saint-Julien,France,Bordeaux,Saint-Julien,0.95,ok,confirm,saint julien; chateau
+WRW6481FT,L”Orme De Rauzan Gassies Haut Medoc,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,confirm,haut medoc; medoc
+WRW4734FT,Les Allées de Cantemerle Haut-Médoc,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,confirm,haut medoc; medoc
+WRW6480FT,La Demoiselle de Sociando Mallet Second wine of Château Sociando Mallet,Red Wine,France,Bordeaux,Haut-Médoc,France,,,0.7,ok,confirm,chateau
+WRW6434FT,"Confidences De Prieure-Linchine 2019 ""Le 2nd Vin De Chateau Prieure-Lichine""",Red Wine,France,Bordeaux,Margaux,France,,,0.7,ok,confirm,chateau
+WRW2446FT,Chateau Haut Bergey  Pessac Leognan,Red Wine,France,Bordeaux,Pessac-Léognan,France,Bordeaux,Pessac-Léognan,0.95,ok,confirm,pessac leognan; chateau
+WRW6477FT,Chateau De Camparian Pessac Leognan,Red Wine,France,Bordeaux,Pessac-Léognan,France,Bordeaux,Pessac-Léognan,0.95,ok,confirm,pessac leognan; chateau
+LTQ0169ER,Código 1530  Tequila Resposado (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0167ER,Código 1530  Tequila Blanco (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0168ER,Código 1530  Tequila Rosa (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LWH0592ER,Moonshine Runners  Straight Bourbon Whiskey (700 ml),Wine product,USA,,,USA,Kentucky,,0.7,ok,confirm,bourbon
+LTQ0170ER,Código 1530  Tequila Anejo (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0146ER,Casa Maestri  Flask Tequila (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila; casa
+LTQ0227ER,Código 1530  Mezcal Artesanal (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,mezcal
+LTQ0145ER,Casa Maestri  Flask Tequila (200 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila; casa
+LTQ0241ER,Dos Companeros  Silver Tequila (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LWH1107ER,Moonshine Runners  Irish Whiskey (700 ml),Whiskey,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LWH1094ER,Moonshine Runners  Blended Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.92,ok,confirm,scotch whisky
+WRW3265DD,Chateau Vircoulon  Bordeaux Superieur,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WWW1779DD,Chateau Vircoulon  Bordeaux Blanc AOC,White Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW3336DD,Angove  Family Crest Mclaren Vale Shiraz,Red Wine,Australia,McLaren Vale,,Australia,McLaren Vale,,0.95,ok,confirm,mclaren vale
+WRW3337DD,Angove  Family Crest Mclaren Vale Cabernet Sauvignon,Red Wine,Australia,McLaren Vale,,Australia,McLaren Vale,,0.95,ok,confirm,mclaren vale
+WRW3348DD,Chateau Lassus  Medoc Cru Bourgeois,Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Médoc,0.88,ok,confirm,medoc; chateau
+WRW3347DD,Chateau La Rose Gadis  Bordeaux Rouge,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW5769DD,"Grand Napa Vineyards  ""Stone Crib"" Rutherford Estate Cabernet Sauvignon",Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.85,ok,confirm,napa
+WRW4884DD,Chateau Deyrem Valentin  Margaux,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW5886DD,Chateau Gloria  Esprit de Gloria Saint-Julien,Red Wine,France,Bordeaux,Saint-Julien,France,Bordeaux,Saint-Julien,0.95,ok,confirm,saint julien; chateau
+WWW5243DD,Domaine de la Motte  Chablis Premier Cru 'Vau Ligneau',White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis; domaine
+WWW5471DD,Domaine De Rochebin  Macon IGE,White Wine,France,,,France,,,0.7,ok,confirm,domaine
+WRW5780DD,Domaine De Rochebin  Vieilles Vignes Bourgogne Pinot Noir,Red Wine,France,,,France,Burgundy,,0.8,ok,confirm,bourgogne; domaine
+WWW5207DD,Domaine De Rochebin  Vieilles Vignes Chardonnay,White Wine,France,,,France,,,0.7,ok,confirm,domaine
+WRW6412DD,Cellier Des Princes  Cotes du Rhone Selection Vieilles Vigues,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone
+WRW5884DD,Chateau Meillier  Cuvee Prestige Bordeaux Superieur,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW6413DD,La Chasse Des Princes  Chateauneuf du pape,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape
+WSP5766DD,Champagne Charles Orban  Blanc de Blancs Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW6387DD,Grand Napa Vineyards  Oakville Cabernet sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.85,ok,confirm,napa
+WSP2533DD,Champagne Charles Orban  Blanc de Noirs Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WSP2532DD,Champagne Charles Orban  Brut Rose,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WSP2534DD,Champagne Charles Orban  Carte Noire Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WWW5244DD,Domaine de la Motte  Chablis Premier Cru 'Beauroy',White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis; domaine
+WRW5789DD,Vivaldi Amarone della Valpolicella Classico D.O.C.G,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WWW5470DD,Domaine De Rochebin  Macon Villages,White Wine,France,Rhône Valley,,France,,,0.7,ok,confirm,domaine
+WRW6414DD,La Chasse Des Princes  Gigondas,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.95,ok,confirm,gigondas
+WRW5770DD,Grand Napa Vineyards  Reserve Cabernet Sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.85,ok,confirm,napa
+WSP2414DD,Barocco  Prosecco Spumante DOC,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WSP2586DD,Barocco  Prosecco Spumante Rose DOC,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW5781DD,Domaine De Rochebin  Bourgogne Pinot Noir,Red Wine,France,,,France,Burgundy,,0.8,ok,confirm,bourgogne; domaine
+WWW5208DD,Domaine De Rochebin  Bourgogne Chardonnay,White Wine,France,,,France,Burgundy,,0.8,ok,confirm,bourgogne; domaine
+WRW3354DD,Chateau Andron-Blanquet  St.Estephe AOC,Red Wine,France,Bordeaux,Saint-Estèphe,France,Bordeaux,Saint-Estèphe,0.92,ok,confirm,st estephe; chateau
+WRW6410DD,Cellier Des Princes  Chateauneuf Du pape Rouge - Biologique,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape
+WRW5790DD,Vivaldi Amarone della Valpolicella D.O.C.G,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW5791DD,Vivaldi Valpolicella Ripasso Classico,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella Ripasso,0.95,ok,confirm,valpolicella ripasso; valpolicella; ripasso
+WRW3284DD,Chateau Tour Saint Vincent  Cru Bourgeois,Red Wine,France,Bordeaux,Saint-Julien,France,,,0.7,ok,confirm,chateau
+WSP2531DD,Champagne Charles Orban  Cuvee Speciale Millesime,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW6415DD,La Chasse Des Princes  Vacqueyras,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.95,ok,confirm,vacqueyras
+WRW5771DD,"Grand Napa Vineyards  ""Master Red"" Red Wine",Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.85,ok,confirm,napa
+WRW1359DD,Chateau Bel Air  Haut-Medoc Cru Bourgeois,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,confirm,haut medoc; medoc; chateau
+WWW5246DD,Domaine de la Motte  Chablis,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis; domaine
+WWW5461DD,Grand Napa Vineyards  Los Carneros Chardonnay,White Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.85,ok,confirm,napa
+WRW6386DD,Grand Napa Vineyards  Los Carneros Pinot Noir,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.85,ok,confirm,napa
+WRW6411DD,Cellier Des Princes  Cotes du Rhone Grande Reserve,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone
+WWW5245DD,Domaine de la Motte  Chablis Vieilles Vignes,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis; domaine
+WWW5469DD,Domaine De Rochebin  Bourgogne Aligote,White Wine,France,,,France,Burgundy,,0.8,ok,confirm,bourgogne; domaine
+WRW5887DD,Les Vignerons du Sommierois  Les Arcades Languedoc,Red Wine,France,Languedoc-Roussillon,,France,Languedoc-Roussillon,,0.88,ok,confirm,languedoc
+WRW3356DD,Château Les Gravettes  Blaye Cotes De Bordeaux Rouge,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW5885DD,Chateau Lauzanet   Bordeaux Rouge,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW3350DD,Chateau Côtes De Chambeau  Montagne Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WWW5468DD,Cellier Des Princes  Cotes du Rhone Selection Selection Blanc,White Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone
+WWW5211DD,Notte Rossa  Vermentino  Salento IGP,White Wine,Italy,Puglia,,Italy,Sardinia,,0.55,ok,confirm,vermentino
+WRW6298GQ,Chateau La Douce  Medoc,Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Médoc,0.88,ok,confirm,medoc; chateau
+WRW6300GQ,Chateau Marjosse  Grand Vin de Bordeaux Entre deux-Mers,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW6301GQ,Chateau Lafaurie Puisseguin-Saint-Emilion,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WSP5740GQ,Champagne H.Blin  Brut Rose,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW6307GQ,Chateau Premeaux  Nuits Saint Georges,Red Wine,France,Burgundy,Nuits-Saint-Georges,France,Burgundy,Nuits-Saint-Georges,0.97,ok,confirm,nuits saint georges; chateau
+WSP5735GQ,Champagne Colin  Parallele Vertus Premier Cru Extra Brut Blanc de Blancs,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WWW5433GQ,Domaine du Chardonnay  Chablis Les Lys,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis; domaine
+WRW6310GQ,Domaine Marchand -Grillot  Gevrey-Chambertin 'Enjouise',Red Wine,France,Burgundy,Gevrey-Chambertin,France,Burgundy,Gevrey-Chambertin,0.97,ok,confirm,gevrey chambertin; domaine
+WRW6308GQ,Arnaud Pellertier  Morey Saint Denis,Red Wine,France,Burgundy,Morey-Saint-Denis,France,Burgundy,Morey-Saint-Denis,0.97,ok,confirm,morey saint denis
+WWW5431GQ,Domaine du Chardonnay  Chablis Paradis,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis; domaine
+WSP5736GQ,Champagne Colin  Extravertu Vertus Premier Cru Extra Dry Blanc de Blancs,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW6306GQ,Chateau Premeaux  Cote de Nuits Villages,Red Wine,France,Burgundy,Côte de Nuits,France,Burgundy,Côte de Nuits,0.93,ok,confirm,cote de nuits; chateau
+WSP5741GQ,Champagne H.Blin  Blanc de Noirs Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WSP5739GQ,Champagne H.Blin  Brut Tradition,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WWW5432GQ,Domaine du Chardonnay  Chablis ler Cru Montmain,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis; domaine
+WRW6537GU,Chateau Fleur la Mothe Medoc Cru Bourgeois,Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Médoc,0.88,ok,confirm,medoc; chateau
+WRW6529GU,Chateau Cazauviel Margaux,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW6528GU,Chateau La Croix Meunier Saint -Emilion Grand Cru,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WRW6536GU,Domaine Pierre-André Dumas Alchimie Cote de Brouilly,Red Wine,France,Burgundy,,France,,,0.7,ok,confirm,domaine
+WRW6530GU,Domaine Boyer de Bar Pinot Noir - Les Rives de l'Estang,Red Wine,France,Languedoc-Roussillon,,France,,,0.7,ok,confirm,domaine
+WRW6535GU,Domaine Pierre-André Dumas Les Pierreuses Brouilly,Red Wine,France,Burgundy,,France,,,0.7,ok,confirm,domaine
+WRW6534GU,Chateau La fon Du Berger Pauillac,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac; chateau
+WRW6532GU,Antichello Valpolicella Ripasso DOC Superiore,Red Wine,Italy,Veneto,Valpolicella Ripasso,Italy,Veneto,Valpolicella Ripasso,0.95,ok,confirm,valpolicella ripasso; valpolicella; ripasso
+WRW6531GU,Domaine Boyer de Bar Cabernet Sauvignon - Combe Croze,Red Wine,France,Languedoc-Roussillon,,France,,,0.7,ok,confirm,domaine
+WRW6533GU,Chateau de la Graveirette Bon ju Red,Red Wine,France,Rhône Valley,,France,,,0.7,ok,confirm,chateau
+WRW6526GU,Casal Bordino Collezione Bordino Montepulciano d'Abruzzo DOC,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,confirm,montepulciano; montepulciano d abruzzo
+WWW5907GU,Ruppertsber Riesling Dry Pfalz,White Wine,Germany,Pfalz,,Germany,,,0.92,ok,confirm,pfalz
+WSP5785GU,Franzini Prosecco DOC Extra Dry,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WSP5784GU,Villa Calappiano Prosecco DOC Treviso Extra Dry,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+LWH0660FK,Fettercairn  12 Year Old Single Malt Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.95,ok,confirm,single malt scotch; scotch whisky
+LWH0661FK,Shackleton  Blended Malt Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.92,ok,confirm,scotch whisky
+LWH0658FK,Jura  Seven Wood Single Malt Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.95,ok,confirm,single malt scotch; scotch whisky
+LWH1066BU,Jameson  Irish Whiskey (4.5 L),Wine product,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LWH1054BU,Chivas Regal  Ultis XX Blended Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.92,ok,confirm,scotch whisky
+LWH0319BU,Jameson  Irish Whiskey (700 ml),Wine product,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LWH1109BU,The Deacon  Blended Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.92,ok,confirm,scotch whisky
+LWH0337BU,Jameson  Irish Whiskey (1 L),Wine product,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+WRW4299BU,St. Hugo  Coonawarra Cabernet Sauvignon (750 ml),Red Wine,Australia,Coonawarra,,Australia,Coonawarra,,0.95,ok,confirm,coonawarra
+LTQ0116BU,Olmeca  Gold Tequila (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LWH1110BU,Jameson  18 Years Irish Whiskey (700 ml),Wine product,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LTQ0209GH,818 Tequila  Eight Reserve (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0207GH,818 Tequila  Reposado (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0206GH,818 Tequila  Blanco (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0208GH,818 Tequila  Añejo (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+WSP5750EI,French Bloom  Le Rose Organic French Bubbly (750 ml) (Alcohol-Free),Sparkling Wine,France,,,France,,,0.55,ok,confirm,french
+WSP5751EI,French Bloom  Le Blanc Organic French Bubbly (375 ml) (Alcohol-Free),Sparkling Wine,France,,,France,,,0.55,ok,confirm,french
+WSP5749EI,French Bloom  Le Blanc Organic French Bubbly (750 ml) (Alcohol-Free),Sparkling Wine,France,,,France,,,0.55,ok,confirm,french
+WSP5752EI,French Bloom  Le Rose Organic French Bubbly (375 ml) (Alcohol-Free),Sparkling Wine,France,,,France,,,0.55,ok,confirm,french
+LTQ0107DG,Los Danzantes  Anejo Mezcal (750ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,mezcal
+LTQ0105DG,Los Danzantes  Blanco Mezcal (750ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,mezcal
+LWH1032DG,Glendalough  Pot Still Irish Whiskey (700 ml),Wine product,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LTQ0108DG,Alipus  San Baltazar Mezcal (750ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,mezcal
+LTQ0110DG,Alipus  San Juan Mezcal (750ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,mezcal
+LTQ0109DG,Alipus  San Luis Mezcal (750ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,mezcal
+LTQ0106DG,Los Danzantes  Reposado Mezcal (750ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,mezcal
+LVK0202DG,St. George  California Citrus Vodka (750 ml),Wine product,USA,,,USA,California,,0.8,ok,confirm,california
+LRM0187DG,Black Tears  Spiced Cuban Rum (700 ml),Rum,Cuba,,,Cuba,,,0.95,ok,confirm,cuban rum
+LWH0298DG,Rebel Yell  Kentucky Straight Bourbon (700 ml),Wine product,USA,,,USA,Kentucky,,0.7,ok,confirm,bourbon
+LWH1035DG,Glendalough  Canteiro Aged Madeira Cask Finish Single Cask Irish Whiskey (700 ml),Wine product,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LWH1033DG,Glendalough  Double Barrel Irish Whiskey (700 ml),Wine product,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LTQ0151DG,Arquitecto  Tequila (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LLQ0294DG,Mathilde  Cassis Liqueur (350 ml),Wine product,France,,,France,Provence,Cassis,0.8,ok,confirm,cassis
+WRW6521GT,Duchesse De Pauillac,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac
+WRW6518GT,Chateau Bellevue St.Emillion Grand Cru Classe 2017,Red Wine,France,Bordeaux,Saint-Émilion,France,,,0.7,ok,confirm,chateau
+WWW5895GT,Maison Jaffelin  Chablis,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis; maison
+WRW6517GT,Chateau La Renaissance Pomerol 2017,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WSP5781GT,Yannick Prevoteau Champagne Perle Des Treilles Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW6512GT,Maison Jaffelin  Bourgogne Hautes-Cotes de Beaune Rouge,Red Wine,France,Burgundy,Côte de Beaune,France,Burgundy,,0.8,ok,confirm,beaune; bourgogne; maison
+WRW6520GT,Chateau Laujac  Cru Bourgeois (Médoc),Red Wine,France,Bordeaux,Médoc,France,Bordeaux,Médoc,0.88,ok,confirm,medoc; chateau
+WWW5893GT,Maison Jaffelin  Saint-Veran Blanc,White Wine,France,Burgundy,Saint-Véran / Viré-Clessé,France,,,0.55,ok,confirm,maison
+WRW6519GT,Chateau Lafleur Du Roy Pomerol,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW6511GT,Maison Jaffelin  Chorey Les Beaune Rouge,Red Wine,France,Burgundy,Beaune,France,Burgundy,,0.7,ok,confirm,beaune; maison
+WRW6513GT,Maison Jaffelin  Morgon Rouge,Red Wine,France,Burgundy,,France,,,0.55,ok,confirm,maison
+WRW6516GT,Chateau Fombrion  Cuvee La Griveliere,Red Wine,France,Bordeaux,,France,,,0.7,ok,confirm,chateau
+WRW6560GT,Chateau Grand Sorillon  Bordeaux Superior,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+LWH0418CP,The Pogues  Irish Whiskey (700 ml),Whiskey,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LOT0082AR,Kobayashi Shuzou Honten  Meromero Hokkaido Melon (720 ml),Wine product,Japan,,,Japan,,,0.85,ok,confirm,hokkaido
+LSK0013AR,Fukuju  Awasaki Sparkling Sake (300 ml),Wine product,Japan,,,Japan,,,0.88,ok,confirm,sake
+LSK0024AR,Fukuju  Frozen sake plum (150 ml),Wine product,Japan,,,Japan,,,0.88,ok,confirm,sake
+WRW5074FS,Chateau Latour  2015,Wine product,France,,,France,,,0.7,ok,confirm,chateau
+WRW6543FS,Chateau Haut-Brion  1er Grand Cru Classe 2019,Red Wine,France,Bordeaux,Pessac-Léognan,France,,,0.7,ok,confirm,chateau
+WRW6544FS,Chateau Haut-Brion  1er Grand Cru Classe 2020,Red Wine,France,Bordeaux,Pessac-Léognan,France,,,0.7,ok,confirm,chateau
+WRW6101FS,Chateau Mouton Rothschild  2015 (Premiers Crus),Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW6215FS,Chateau Mouton Rothschild  2018 (Premiers Crus),Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW6548FS,Chateau La Mission Haut-Brion  Grand Cru Classe 2017,Red Wine,France,Bordeaux,Graves,France,,,0.7,ok,confirm,chateau
+WRW6545FS,Chateau Haut-Brion  Le Clarence de Haut-Brion 2015,Red Wine,France,Bordeaux,Pessac-Léognan,France,,,0.7,ok,confirm,chateau
+WRW5987FS,Chateau Pichon  Longueville Baron 2017,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW6221FS,Chateau Latour  Les Forts de Latour Pauillac,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac; chateau
+WRW6546FS,Chateau Haut-Brion  Le Clarence de Haut-Brion 2020,Red Wine,France,Bordeaux,Pessac-Léognan,France,,,0.7,ok,confirm,chateau
+WRW6547FS,Chateau Haut-Brion  Le Clarence de Haut-Brion 2019,Red Wine,France,Bordeaux,Pessac-Léognan,France,,,0.7,ok,confirm,chateau
+WRW5868FS,Chateau Clerc Milon  2019,Wine product,France,,,France,,,0.7,ok,confirm,chateau
+WRW6381FS,Chateau Clerc Milon  2020,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW6222FS,Chateau Pichon  Longueville Baron 2019,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW4874FS,Chateau Clerc Milon  2015,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW5037FS,Chateau Clerc Milon  2016,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW2459FS,Chateau Lynch Bages  AOC Pauillac 2018,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac; chateau
+WRW5039FS,Chateau Lynch Bages  AOC Pauillac 2013,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac; chateau
+WRW6223FS,Chateau Lynch Bages  AOC Pauillac 2011,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac; chateau
+WRW6224FS,Chateau Lynch Bages  AOC Pauillac 2019,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac; chateau
+WRW2278FS,Chateau Lafite-Rothschild  2015,Wine product,France,,,France,,,0.7,ok,confirm,chateau
+WRW1005FS,"Alter Ego de Palmer, Margaux 2019",Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux
+WRW6216FS,Chateau Clerc Milon  2021,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW6552FS,Chateau Calon Segur  3eme Cru Classe 2017,Red Wine,France,Bordeaux,Saint-Estèphe,France,,,0.7,ok,confirm,chateau
+WRW2455FS,Chateau Smith Haut Lafitte  Pessac-Leognan,Red Wine,France,Bordeaux,Pessac-Léognan,France,Bordeaux,Pessac-Léognan,0.95,ok,confirm,pessac leognan; chateau
+WRW6550FS,Echo de Lynch Bages AOC Pauillac 2018,Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac
+WRW6217FS,"Pastourelle De Clerc Milon  ""Le 2nd Vin De Chateau Clerc Milon"" 2016",Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW6195FS,Chateau D'Armailhac  2020,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+LSK0445FS,Hakutsuru  Purupuru Sparkling Jelly Sake Peach (190 ml) (Pack 30 Can),Wine product,Japan,,,Japan,,,0.88,ok,confirm,sake
+LSK0446FS,Hakutsuru  Purupuru Sparkling Jelly Sake Apple (190 ml) (Pack 30 Can),Wine product,Japan,,,Japan,,,0.88,ok,confirm,sake
+LSK0447FS,Hakutsuru  Purupuru Sparkling Jelly Sake Plum (190 ml) (Pack 30 Can),Wine product,Japan,,,Japan,,,0.88,ok,confirm,sake
+WRW6218FS,Chateau D'Armailhac  2019,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW5902FS,Pico Maccario  Barolo (750 ml),Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW6549FS,"Chateau Le Marquis De Calon Segur  ""Le 2nd Vin De Chateau Calon Segur"" 2014",Red Wine,France,Bordeaux,Saint-Estèphe,France,,,0.7,ok,confirm,chateau
+WRW5968FS,Sichel  Margaux,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux
+WRW6553FS,Chateau Haut-Bages Monpelou Pauillac (Cru Bourgeois Superieur),Red Wine,France,Bordeaux,Pauillac,France,Bordeaux,Pauillac,0.95,ok,confirm,pauillac; chateau
+WRW5901FS,Pico Maccario  Barbaresco DOCG (750 ml),Red Wine,Italy,Piedmont,Barbaresco,Italy,Piedmont,Barbaresco,0.95,ok,confirm,barbaresco
+WRW5967FS,Sirius  AOC Bordeaux Red by Maison Sichel,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; maison
+WWW5300FS,Sirius  AOC Bordeaux White by Maison Sichel,White Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; maison
+WRW5966FS,Sichel  AOC Bordeaux Red,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+LSK0436FS,Hakutsuru  Sayuri Nigori Sake (300 ml),Wine product,Japan,,,Japan,,,0.88,ok,confirm,sake
+LSK0442FS,Kunizakari Yuzu Sake (500 ml),Wine product,Japan,,,Japan,,,0.88,ok,confirm,sake
+LSK0441FS,Kunizakari  Tanrei Yuzu Sake (1 L),Wine product,Japan,,,Japan,,,0.88,ok,confirm,sake
+LSK0440FS,Hakutsuru  Nama Sake (Draft Sake) (300 ml),Wine product,Japan,,,Japan,,,0.88,ok,confirm,sake
+LWH0179BU,Buffalo Trace  Bourbon Whisky (750 ml),Wine product,USA,,,USA,Kentucky,,0.7,ok,confirm,bourbon
+WRW5476DW,Castelli del Grevepesa  Col Silente Nobile di Montepulciano DOCG,Red Wine,Italy,Tuscany,Montepulciano,Italy,Tuscany,Montepulciano,0.75,ok,confirm,montepulciano
+WRW6172DW,Castelli del Grevepesa  UN-IO BIO Nobile di Montepulciano DOCG,Red Wine,Italy,Tuscany,Montepulciano,Italy,Tuscany,Montepulciano,0.75,ok,confirm,montepulciano
+WRW6197DW,Chateau La Fleur De Bouard  Le Lion De La Fleur De Bouard,Red Wine,France,Bordeaux,Pomerol,France,,,0.7,ok,confirm,chateau
+WRW6087DW,Domaine du Vieux Bourg  Morgon Cinq Terres,Red Wine,France,Burgundy,,France,,,0.7,ok,confirm,domaine
+WRW6088DW,Domaine du Vieux Bourg  Chenas Au Bois Retour,Red Wine,France,Burgundy,,France,,,0.7,ok,confirm,domaine
+WSP1188BS,Bottega  Prosecco Gold Brut Jeroboam (3 L),Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW3375BS,Renieri  Brunello di Montalcino Riserva DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW5110BS,Cordero Di Montezemolo  Barolo Bricco Gattera DOCG (Single Vineyard),Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW2238BS,Castellare Di Castellina  Poggio ai Merli IGT,Red Wine,Italy,Tuscany,Chianti,Italy,,,0.6,ok,confirm,poggio
+WRW1630BS,Marchesi Di Barolo  Barolo Sarmassa DOCG (Single Vineyard),Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW1632BS,Nicolis  Ambrosan Amarone della Valpolicella Classico DOC,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW4725BS,Marchesi Di Barolo  Barolo DOCG Cannubi (Single Vineyard),Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW6103BS,Renieri  Brunello di Montalcino DOCG 2018,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WSP1161BS,Bottega  Prosecco Gold Brut (1.5 L),Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW1633BS,Cordero Di Montezemolo  Barolo Enrico VI DOCG (Single Vineyard),Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW3649BS,Tenuta Lunelli  Carapace Sagrantino,Red Wine,Italy,Umbria,,Italy,,,0.7,ok,confirm,tenuta
+WRW1624BS,"Cordero Di Montezemolo  ""Monfalletto"" Barolo DOCG",Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WRW1595BS,Feudi Del Pisciotto  Versace Nero d'Avola,Red Wine,Italy,Sicily,,Italy,Sicily,,0.85,ok,confirm,nero d avola
+WSP1089BS,Bottega  Prosecco Gold Brut,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WWW1187BS,Monchiero Carbone  Roero Arneis Cecu d la Biunda DOCG,White Wine,Italy,Piedmont,Roero,Italy,Piedmont,Roero,0.88,ok,confirm,roero
+WRW1628BS,Nicolis  Amarone della Valpolicella Classico DOCG,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW5111BS,Alta Mora Etna Rosso,Red Wine,Italy,Sicily,Etna,Italy,Sicily,,0.85,ok,confirm,etna
+WWW4887BS,Alta Mora  Etna Bianco,White Wine,Italy,Sicily,Etna,Italy,Sicily,,0.85,ok,confirm,etna
+WRW5113BS,Marchesi Di Barolo  Barolo di Barolo DOCG,Red Wine,Italy,Piedmont,Barolo,Italy,Piedmont,Barolo,0.95,ok,confirm,barolo
+WSP2427BS,Bottega  Prosecco Gold Brut (200 ml),Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WRW1641BS,Caldora  Yume Montepulciano D'Abruzzo DOC,Red Wine,Italy,Abruzzo,Montepulciano d’Abruzzo,Italy,Abruzzo,Montepulciano d’Abruzzo,0.97,ok,confirm,montepulciano; montepulciano d abruzzo
+WWW1184BS,Rocca Di Frassinello  Vermentino IGT,White Wine,Italy,Tuscany,,Italy,Sardinia,,0.55,ok,confirm,vermentino
+WRW1622BS,Monchiero Carbone  Roero Printi Riserva DOCG,Red Wine,Italy,Piedmont,Roero,Italy,Piedmont,Roero,0.88,ok,confirm,roero
+WRW1621BS,Bottega  Amarone della Valpolicella DOC,Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.97,ok,confirm,amarone della valpolicella; amarone; valpolicella
+WRW6335BS,Rocca di Frassinello  Poggio alla Guardia,Red Wine,Italy,Tuscany,,Italy,,,0.6,ok,confirm,poggio
+WRW5209BS,Tenuta Lunelli  Ziggurat Montefalco Rosso DOC,Red Wine,Italy,Umbria,,Italy,,,0.7,ok,confirm,tenuta
+WRW5479BS,Villa di Corlo  Lambrusco Grasparossa di Castelvetro Corleto DOC,Sparkling Wine,Italy,Emilia-Romagna,,Italy,Emilia-Romagna,,0.88,ok,confirm,lambrusco
+WSP1085BS,Bottega  Prosecco DOC Brut,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WSP5659BS,Bottega  Prosecco Rose DOC Brut,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WWW2049BS,Tenuta Lunelli  Pietragrande,White Wine,Italy,Trentino-Alto Adige,,Italy,,,0.7,ok,confirm,tenuta
+LTQ0173EQ,Rooster Rojo  Tequila Blanco (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LTQ0174EQ,Rooster Rojo  Tequila Reposado (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LWH0203EQ,Cutty Sark  Blended Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.92,ok,confirm,scotch whisky
+LTQ0237EQ,Orendain  Blanco Tequila (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+WRW5896EQ,Chateau La Grave Figeac Saint-Emilion 2019,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+LWH0561EQ,Glen Turner  Heritage Single Malt Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.95,ok,confirm,single malt scotch; scotch whisky
+WRW5898EQ,Chateau Haute Brande Bordeaux 2018,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+LWH0562EQ,Glen Turner  12 Year Single Malt Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.95,ok,confirm,single malt scotch; scotch whisky
+LWH0559EQ,Lambay  Small Batch Blend Irish whiskey (700 ml),Whiskey,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+LWH1113EQ,Old Virginia  Original Bourbon Whiskey (700 ml),Wine product,USA,,,USA,Kentucky,,0.7,ok,confirm,bourbon
+LTQ0238EQ,Orendain  Reposado Tequila (750 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+LWH0557EQ,Cutty Sark  Prohibition Blended Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.92,ok,confirm,scotch whisky
+LWH0649EQ,Lambay  Blended Malt Irish whiskey (700 ml),Whiskey,Ireland,,,Ireland,,,0.95,ok,confirm,irish whiskey
+WRW5897EQ,Chateau Soudars Haut-Medoc 2018,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,confirm,haut medoc; medoc; chateau
+LWH0650EQ,Glen Turner  Rum Cask Finish Single Malt Scotch Whisky (700 ml),Wine product,Scotland,,,Scotland,,,0.95,ok,confirm,single malt scotch; scotch whisky
+WSP5716EQ,Martinotti  Prosecco Spumante Brut,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+LWH1162EQ,Douglas Laing's Double Barrel Islay & Highland (700 ml),Wine product,Scotland,,,Scotland,,,0.95,ok,confirm,islay; highland
+LTQ0175EQ,Rooster Rojo  Tequila Anejo (700 ml),Wine product,Mexico,,,Mexico,,,0.92,ok,confirm,tequila
+WRW6374FC,Chateau Palmer  Margaux 2017,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WWW5439FC,Louis Latour  Puligny-Montrachet Chalumeaux 1er,White Wine,France,Burgundy,Puligny-Montrachet,France,Burgundy,Puligny-Montrachet,0.97,ok,confirm,puligny montrachet
+WRW6373FC,Two Hands  Ares Shiraz Barossa Valley,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.95,ok,confirm,barossa valley; barossa
+WRW6320FC,Louis Latour  Nuits Saint Georges Damodes 1er Cru,Red Wine,France,Burgundy,Nuits-Saint-Georges,France,Burgundy,Nuits-Saint-Georges,0.97,ok,confirm,nuits saint georges
+WRW6321FC,Louis Latour  Vosne-Romanee Chaumes 1er Cru,Red Wine,France,Burgundy,Vosne-Romanée,France,Burgundy,Vosne-Romanée,0.97,ok,confirm,vosne romanee
+WWW0411FC,Louis Latour  Chassagne-Montrachet 1erCru,White Wine,France,Burgundy,Chassagne-Montrachet,France,Burgundy,Chassagne-Montrachet,0.97,ok,confirm,chassagne montrachet
+WRW6323FC,Louis Latour  Chateau Corton Grancey Grand Cru,Red Wine,France,Burgundy,Aloxe-Corton,France,,,0.7,ok,confirm,chateau
+WRW5626FC,"Louis Latour  Corton Grand Cru ""Domaine Latour"" 2017",Red Wine,France,Burgundy,Aloxe-Corton,France,,,0.7,ok,confirm,domaine
+WRW5313FC,Bodegas LAN  Rioja Gran Reserva,Red Wine,Spain,Rioja,,Spain,Rioja,,0.92,ok,confirm,rioja; bodegas
+WWW0369FC,Louis Latour  Chablis 1er Cru Montmains,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis
+WRW6319FC,Louis Latour  Les Epenots Pommard 1er Cru,Red Wine,France,Burgundy,Pommard,France,Burgundy,Pommard,0.93,ok,confirm,pommard
+WRW6360FC,Martin Ray  Mount Veeder Cabernet Sauvignon Napa Valley,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WWW5437FC,Louis Latour  Genevrieres Meursault 1er Cru,White Wine,France,Burgundy,Meursault,France,Burgundy,Meursault,0.95,ok,confirm,meursault
+WWW5154FC,Louis Latour  Chablis Chanfleure,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis
+WRW6316FC,Louis Latour  Les Chaillots Aloxe-Corton 1er Cru,Red Wine,France,Burgundy,Aloxe-Corton,France,Burgundy,Aloxe-Corton,0.95,ok,confirm,aloxe corton
+WRW6317FC,Louis Latour  Chassagne-Montrachet Rouge,Red Wine,France,Burgundy,Chassagne-Montrachet,France,Burgundy,Chassagne-Montrachet,0.97,ok,confirm,chassagne montrachet
+WRW6318FC,Louis Latour  Chambolle-Musigny,Red Wine,France,Burgundy,Chambolle-Musigny,France,Burgundy,Chambolle-Musigny,0.97,ok,confirm,chambolle musigny
+WWW5436FC,Louis Latour  Chateau De Blagny Meursault 1er Cru,White Wine,France,Burgundy,Meursault,France,Burgundy,Meursault,0.95,ok,confirm,meursault; chateau
+WWW5456FC,F.X. Pichler  Grüner Veltliner Kellerberg,White Wine,Austria,,,Austria,,,0.75,ok,confirm,gruner veltliner
+WWW5438FC,Louis Latour  Puligny-Montrachet,White Wine,France,Burgundy,Puligny-Montrachet,France,Burgundy,Puligny-Montrachet,0.97,ok,confirm,puligny montrachet
+WWW0412FC,Louis Latour  Pouilly-Fuisse 1er Cru,White Wine,France,Burgundy,Pouilly-Fuissé,France,Burgundy,,0.93,ok,confirm,pouilly fuisse
+WWW5455FC,F.X. Pichler  Grüner Veltliner Liebenberg,White Wine,Austria,,,Austria,,,0.75,ok,confirm,gruner veltliner
+WRW6358FC,Martin Ray  Synthesis Cabernet Sauvignon Napa Valley,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW6369FC,Two Hands  Holy Grail Shiraz Barossa,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.88,ok,confirm,barossa
+WRW6371FC,Two Hands  Coach House Block Shiraz Barossa,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.88,ok,confirm,barossa
+WRW6372FC,Two Hands  Secret Block Shiraz Barossa,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.88,ok,confirm,barossa
+WRW0964FC,Louis Latour  Pinot Noir Domaine de Valmoissine,Red Wine,France,Burgundy,,France,,,0.7,ok,confirm,domaine
+WRW5311FC,Bodegas LAN  Rioja Crianza,Red Wine,Spain,Rioja,,Spain,Rioja,,0.92,ok,confirm,rioja; bodegas
+WSP2518FC,Juvé & Camps  Cava Brut Rose Pinot Noir,Sparkling Wine,Spain,Catalunya,,Spain,Catalunya,,0.85,ok,confirm,cava
+WSP2519FC,Juvé & Camps  Cava Brut Nature Gran Reserva,Sparkling Wine,Spain,Catalunya,,Spain,Catalunya,,0.85,ok,confirm,cava
+WRW5312FC,Bodegas LAN  Rioja Reserva,Red Wine,Spain,Rioja,,Spain,Rioja,,0.92,ok,confirm,rioja; bodegas
+WRW5306FC,Bodegas Piqueras  Black Label,Red Wine,Spain,,,Spain,,,0.7,ok,confirm,bodegas
+WRW6367FC,Two Hands  Bella's Garden Shiraz Barossa,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.88,ok,confirm,barossa
+WRW6355FC,Angeline Vineyards  California Pinot Noir,Red Wine,USA,California,,USA,California,,0.8,ok,confirm,california
+WSP0077FC,Fantinel  Prosecco Extra Dry,Sparkling Wine,Italy,Veneto,Prosecco,Italy,Veneto,Prosecco,0.88,ok,confirm,prosecco
+WWW5451FC,Angeline Vineyards  California Chardonnay,White Wine,USA,California,,USA,California,,0.8,ok,confirm,california
+WRW1106FC,Louis Latour  Marsannay Cote de Nuits,Red Wine,France,Burgundy,Côte de Nuits,France,Burgundy,Côte de Nuits,0.93,ok,confirm,cote de nuits
+WWW2418FC,F.X. Pichler  Grüner Veltliner Loibner,White Wine,Austria,,,Austria,,,0.75,ok,confirm,gruner veltliner
+WWW5454FC,F.X. Pichler  Grüner Veltliner Klostersatz,White Wine,Austria,,,Austria,,,0.75,ok,confirm,gruner veltliner
+WWW2419FC,F.X. Pichler  Grüner Veltliner Dürnsteiner,White Wine,Austria,,,Austria,,,0.75,ok,confirm,gruner veltliner
+WRW1107FC,Louis Latour  Bourgogne Pinot Noir,Red Wine,France,Burgundy,,France,Burgundy,,0.8,ok,confirm,bourgogne
+WWW5050FC,Royal Tokaji  Furmint Dry Vineyard Selection (750 ml),White Wine,Hungary,,,Hungary,,,0.95,ok,confirm,tokaji
+WWW5054FC,Santiago Ruiz  Albarino,White Wine,Spain,Catalunya,,Spain,Rías Baixas,,0.8,ok,confirm,albarino
+WWW5155FC,Louis Latour  Bourgogne Chardonnay,White Wine,France,Burgundy,,France,Burgundy,,0.8,ok,confirm,bourgogne
+WWW5460FC,Simonnet-Febvre  Petit Chablis,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis
+WRW6363FC,Two Hands  Gnarly Dudes Shiraz Barossa,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.88,ok,confirm,barossa
+WRW6365FC,Two Hands  Brave Faces GMS Barossa Valley,Red Wine,Australia,Barossa Valley,,Australia,Barossa Valley,,0.95,ok,confirm,barossa valley; barossa
+WRW4332FC,Campogiovanni  Rosso Di Montalcino DOC,Red Wine,Italy,Tuscany,Rosso di Montalcino,Italy,Tuscany,Rosso di Montalcino,0.97,ok,confirm,rosso di montalcino; montalcino
+WRW1452FC,Louis Latour  Cote de Nuits-Villages (375 ml),Red Wine,France,Burgundy,Côte de Nuits,France,Burgundy,Côte de Nuits,0.93,ok,confirm,cote de nuits
+WRW5915FC,Domaine de Pellehaut  Harmonie De Gascogne Rouge,Red Wine,France,,,France,,,0.7,ok,confirm,domaine
+WWW5255FC,Domaine de Pellehaut  Harmonie De Gascogne Blanc,White Wine,France,,,France,,,0.7,ok,confirm,domaine
+WWW5055FC,Bodegas Piqueras  White Label,White Wine,Spain,,,Spain,,,0.7,ok,confirm,bodegas
+WRW4706AF,Chateau Mouton Rothschild  2012 (Premiers Crus),Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW1390AF,Chateau L'Evangile  Pomerol 2015,Red Wine,France,Bordeaux,Pomerol,France,Bordeaux,Pomerol,0.95,ok,confirm,pomerol; chateau
+WRW5085AF,Chateau Petrus  2011,Red Wine,France,Bordeaux,Pomerol,France,,,0.7,ok,confirm,chateau
+WRW3248AF,Chateau Calon Segur  3eme Cru Classe 2019,Red Wine,France,Bordeaux,Saint-Estèphe,France,,,0.7,ok,confirm,chateau
+WRW3230AF,Chateau Cheval Blanc 1er Grand Cru Classe A 2008,Red Wine,France,Bordeaux,Saint-Émilion,France,,,0.7,ok,confirm,chateau
+WRW4257AF,Chateau Pavie  1er Grand Cru Classe A,Red Wine,France,Bordeaux,Saint-Émilion,France,,,0.7,ok,confirm,chateau
+LGP0055AF,POLI  Grappa Jacopo Poli (Torcolato Bottle) Amorosa Di Diecembre (500 ml),Wine product,Italy,,,Italy,,,0.88,ok,confirm,grappa
+LGP0056AF,POLI  Grappa Jacopo Poli (Vespaiolo Bottle) Amorosa Di Settembre (500 ml),Wine product,Italy,,,Italy,,,0.88,ok,confirm,grappa
+WRW4973AF,Chateau De Camensac  Haut Medoc Grand Cru Classe,Red Wine,France,Bordeaux,Haut-Médoc,France,Bordeaux,Haut-Médoc,0.95,ok,confirm,haut medoc; medoc; chateau
+WRW5002AF,Chateau Fonroque  Grand Cru Classe,Wine product,France,,,France,,,0.7,ok,confirm,chateau
+WRW3841AF,Heitz Cellar  Napa Valley Cabernet Sauvignon,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+LBD0045AF,Calvados Roger  Groult 15 Years Old (700 ml),Calvados,France,Calvados,,France,Calvados,,0.95,ok,confirm,calvados
+LSJ0005AF,IICHIKO  Silhouette Barley Shochu (720 ml),Wine product,Japan,,,Japan,,,0.9,ok,confirm,shochu
+LSJ0006AF,IICHIKO  Hita Zenkouji Barley Shochu (720 ml),Wine product,Japan,,,Japan,,,0.9,ok,confirm,shochu
+LBD0046AF,Calvados Roger  Groult 8 Years Old (700 ml),Calvados,France,Calvados,,France,Calvados,,0.95,ok,confirm,calvados
+LGP0093AF,Grappa di Sassicaia  (Single-Vintage) (Barrel Aged) (500 ml),Wine product,Italy,,,Italy,,,0.88,ok,confirm,grappa
+WRW6626AF,"Tenuta dell'Ornellaia  Ornellaia Bolgheri DOC ""La Proportione"" (Artist Label) 2020",Red Wine,Italy,Tuscany,Bolgheri,Italy,Tuscany,Bolgheri,0.95,ok,confirm,bolgheri; tenuta
+WRW6600AF,Tenuta San Guido  Sassicaia 2020,Red Wine,Italy,Tuscany,,Italy,,,0.7,ok,confirm,tenuta
+WRW6601AF,Tenuta San Guido  Sassicaia 2021,Red Wine,Italy,Tuscany,,Italy,,,0.7,ok,confirm,tenuta
+WRW5373AF,Tenuta San Guido  Sassicaia 2019,Red Wine,Italy,Tuscany,,Italy,,,0.7,ok,confirm,tenuta
+WRW6625AF,"Tenuta dell'Ornellaia  Ornellaia Bolgheri DOC ""La Generosità"" (Artist Label) 2021",Red Wine,Italy,Tuscany,Bolgheri,Italy,Tuscany,Bolgheri,0.95,ok,confirm,bolgheri; tenuta
+WRW1415AF,Joseph Drouhin  Cote De Nuits Villages,Red Wine,France,Burgundy,Côte de Nuits,France,Burgundy,Côte de Nuits,0.93,ok,confirm,cote de nuits
+WRW4968AF,"La Capitelle De Baronaques  ""Le 2nd Vin De Domaine De Baronaques By Baron Phillip De Rothschild""",Wine product,France,,,France,,,0.7,ok,confirm,domaine
+WRW1410AF,Joseph Drouhin  Aloxe Corton,Red Wine,France,Burgundy,Aloxe-Corton,France,Burgundy,Aloxe-Corton,0.95,ok,confirm,aloxe corton
+WRW4976AF,"Les Pensees De La Tour Carnet ""Les 2nd Vin De Chateau La Tour Carnet""",Red Wine,France,Bordeaux,Haut-Médoc,France,,,0.7,ok,confirm,chateau
+WRW1298AF,Chateau Meyney  Cru Bourgeois Superieur,Red Wine,France,Bordeaux,Saint-Estèphe,France,,,0.7,ok,confirm,chateau
+WWW4847AF,"Domaine De Baronaques  ""Chardonnay"" By Baron Phillippe De Rothschild",Wine product,France,,,France,,,0.7,ok,confirm,domaine
+WRW3332AF,Silverado Vineyards  Cabernet Sauvignon Napa Valley,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WWW2028AF,Heitz Cellar  Napa Valley Chardonnay,White Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW5004AF,Chateau D'Arcole  Grand Cru,Red Wine,France,Bordeaux,Saint-Émilion,France,,,0.7,ok,confirm,chateau
+WRW1290AF,"Masi  Amarone Riserva ""Costasera"" Classico DOC",Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.92,ok,confirm,amarone
+WWW1079AF,Joseph Drouhin  Pouilly Fuisse,White Wine,France,Burgundy,Pouilly-Fuissé,France,Burgundy,,0.93,ok,confirm,pouilly fuisse
+WWW1818AF,Joseph Drouhin  Bourgogne Aligote,White Wine,France,Burgundy,,France,Burgundy,,0.8,ok,confirm,bourgogne
+WRW1288AF,"Masi  Amarone ""Costasera"" Classico DOC",Red Wine,Italy,Veneto,Amarone della Valpolicella,Italy,Veneto,Amarone della Valpolicella,0.92,ok,confirm,amarone
+WRW1312AF,Fattoria dei Barbi  Brunello Di Montalcino DOCG,Red Wine,Italy,Tuscany,Brunello di Montalcino,Italy,Tuscany,Brunello di Montalcino,0.97,ok,confirm,brunello di montalcino; montalcino
+WRW1403AF,Joseph Drouhin  Laforet Bourgogne Pinot Noir,Red Wine,France,Burgundy,,France,Burgundy,,0.8,ok,confirm,bourgogne
+WRW4972AF,Chateau Chasse-Spleen,Red Wine,France,Bordeaux,Médoc,France,,,0.7,ok,confirm,chateau
+WRW1313AF,Fattoria dei Barbi  Rosso Di Montalcino DOC,Red Wine,Italy,Tuscany,Rosso di Montalcino,Italy,Tuscany,Rosso di Montalcino,0.97,ok,confirm,rosso di montalcino; montalcino
+WRW1352AF,"Chateau Bonnet  ""Reserve"" Bordeaux",Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WWW1066AF,Joseph Drouhin  Vaudon  Chablis,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis
+WRW4975AF,"Chateau Bel-Orme Tronquoy De Lalande ""The Second Estate Of Château Rauzan-Gassies""",Red Wine,France,Bordeaux,Haut-Médoc,France,,,0.7,ok,confirm,chateau
+WRW4980AF,Chateau Lilian Ladouys  Saint-Estephe 2015,Red Wine,France,Bordeaux,Saint-Estèphe,France,Bordeaux,Saint-Estèphe,0.95,ok,confirm,saint estephe; chateau
+WRW3427AF,Chateau Lynch-Moussas  Grand Cru Classé AOC Pauilac 2021,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW3414AF,Delas  Cotes Du Rhone Saint Esprit Rouge,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone
+WWW2026AF,Delas  Cotes Du Rhone Saint Esprit Blanc,White Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone
+WWW1086AF,Henri Bourgeois  En Travetin Pouilly Fume,White Wine,France,Loire valley,Pouilly-Fumé,France,Loire Valley,Pouilly-Fumé,0.95,ok,confirm,pouilly fume
+WRW1406AF,Joseph Drouhin  Savigny Les Beaune,Red Wine,France,Burgundy,Beaune,France,Burgundy,,0.7,ok,confirm,beaune
+WRW4981AF,"Connetable Talbot  ""Le 2nd Vin De Chateau Talbot""",Red Wine,France,Bordeaux,Saint-Julien,France,,,0.7,ok,confirm,chateau
+WRW1412AF,Joseph Drouhin  Pommard,Red Wine,France,Burgundy,Pommard,France,Burgundy,Pommard,0.93,ok,confirm,pommard
+WRW3840AF,"Delas  Hermitage ""Domaine des Tourettes""",Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.9,ok,confirm,hermitage; domaine
+WRW5001AF,Chateau Fombrauge  Grand Cru Classe,Red Wine,France,Bordeaux,Saint-Émilion,France,,,0.7,ok,confirm,chateau
+WWW1067AF,"Joseph Drouhin  Vaudon  Chablis ""Reserve De Vaudon""",White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis
+WWW1749AF,Joseph Drouhin  Laforet Chardonny de Bourgogne,White Wine,France,Burgundy,,France,Burgundy,,0.8,ok,confirm,bourgogne
+WRW3838AF,"Delas  Gigondas ""Les Reinages""",Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.95,ok,confirm,gigondas
+WRW1323AF,Tenuta San Guido  Le Difese,Red Wine,Italy,Tuscany,,Italy,,,0.7,ok,confirm,tenuta
+WRW3839AF,"Delas  Chateauneuf du pape ""Haute Pierre""",Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape
+WRW1404AF,Joseph Drouhin  Cotes De Beaune Villages,Red Wine,France,Burgundy,Côte de Beaune,France,Burgundy,,0.7,ok,confirm,beaune
+WRW1368AF,Chateau Laffitte Carcasset  Cru Bourgeois,Red Wine,France,Bordeaux,Saint-Estèphe,France,,,0.7,ok,confirm,chateau
+WRW1332AF,"Sandrone  Nebbiolo D'Alba ""Valmaggiore"" DOC",Red Wine,Italy,Piedmont,,Italy,Piedmont,,0.9,ok,confirm,nebbiolo d alba
+WRW3417AF,"Delas  Crozes Hermitage ""Domaine des Grands Chemins""",Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.9,ok,confirm,hermitage; domaine
+WRW1341AF,"Chateau Riviere ""Cuvee Prestige""",Red Wine,France,Languedoc-Roussillon,,France,,,0.7,ok,confirm,chateau
+WRW3287AF,Chateau Caruel  (Cotes de Bourg AOC),Red Wine,France,Bordeaux,,France,,,0.7,ok,confirm,chateau
+WRW3415AF,Delas  Vacqueyras Domain des Genets,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.95,ok,confirm,vacqueyras
+WSP2550DJ,Champagne Philipponnat  Clos des Goisses Extra Brut 2013,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WSP1295DJ,Champagne Philipponnat  Clos des Goisses Extra Brut Rose 2012,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW6556DJ,"Domaine Thibault Liger-Belair  Nuits Saint Georges 1er Cru """"les Saint Georges""""",Red Wine,France,Burgundy,Nuits-Saint-Georges,France,Burgundy,Nuits-Saint-Georges,0.97,ok,confirm,nuits saint georges; domaine
+WWW1930DJ,Domaine Philippe Colin  Chevalier-Montrachet Grand Cru,White Wine,France,Burgundy,Chevalier-Montrachet,France,Burgundy,Chevalier-Montrachet,0.97,ok,confirm,chevalier montrachet; domaine
+WRW3778DJ,Chateau Le Puy  Barthelemy,Red Wine,France,Bordeaux,Saint-Émilion,France,,,0.7,ok,confirm,chateau
+WRW5573DJ,Benjamin Le-roux  Gevrey Chambertin,Red Wine,France,Burgundy,Gevrey-Chambertin,France,Burgundy,Gevrey-Chambertin,0.97,ok,confirm,gevrey chambertin
+WRW5674DJ,Domaine de La Pousse d’Or  Chambolle-Musigny 1er Cru “les Feusselottes”,Red Wine,France,Burgundy,Chambolle-Musigny,France,Burgundy,Chambolle-Musigny,0.97,ok,confirm,chambolle musigny; domaine
+WWW5165DJ,"Albert Bichot  Domaine Long-Depaquit Chablis Grand Cru ""Moutonne"" Monopole",White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis; domaine
+WRW6476DJ,"Albert Bichot  Chambolle-Musigny 1er Cru ""les Chabiots""",Red Wine,France,Burgundy,Chambolle-Musigny,France,Burgundy,Chambolle-Musigny,0.97,ok,confirm,chambolle musigny
+WRW4731DJ,Ferraton Pere & Fils  Cote-Rotie Lieu-dit “Montmain”,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.93,ok,confirm,cote rotie
+WWW1942DJ,Albert Bichot  Domaine Long-Depaquit  Chablis,White Wine,France,Burgundy,Chablis,France,Burgundy,,0.95,ok,confirm,chablis; domaine
+WWW1994DJ,Domaine Ostertag  Clos Mathis - Riesling,White Wine,France,Alsace,,France,,,0.7,ok,confirm,domaine
+WRW3755DJ,Chateau Haut-Cardinal  Saint-Emilion Grand Cru,Red Wine,France,Bordeaux,Saint-Émilion,France,Bordeaux,Saint-Émilion,0.95,ok,confirm,saint emilion; chateau
+WRW4730DJ,Ferraton Pere & Fils  Cornas Lieu-dit Patou,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.93,ok,confirm,cornas
+WSP2545DJ,Champagne Philipponnat Royal Reserve Rose,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW6278DJ,Ferraton Pere & Fils  Hermitage “les Miaux” Rouge,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.9,ok,confirm,hermitage
+WRW5668DJ,"Domaine Jean Fery & Fils  Gevrey-Chambertin ""Les Crais""",Red Wine,France,Burgundy,Gevrey-Chambertin,France,Burgundy,Gevrey-Chambertin,0.97,ok,confirm,gevrey chambertin; domaine
+WRW5675DJ,"Domaine de La Pousse d’Or  Volnay 1er Cru ""Clos des la Bousse d´Or"" Cuvee Amphore - Monopole",Red Wine,France,Burgundy,Volnay,France,Burgundy,Volnay,0.93,ok,confirm,volnay; domaine
+WRW3776DJ,Chateau Le Puy  Emilien (1.5 L),Red Wine,France,Bordeaux,Saint-Émilion,France,,,0.7,ok,confirm,chateau
+WRW3648DJ,"Domaine Lafarge-Vial  Fleurie ""Clos Vernay""",Red Wine,France,Burgundy,,France,,,0.7,ok,confirm,domaine
+WRW3798DJ,Domaine Giraud  Chateauneuf du Pape - Tradition,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape; domaine
+WWW5073DJ,"La Soufrandiere  Pouilly-Fuisse Climat ""En Chatenay""",White Wine,France,Burgundy,Pouilly-Fuissé,France,Burgundy,,0.93,ok,confirm,pouilly fuisse
+WRS0243DJ,"Domaine de la Mordorée  Vin de France ""La Reine des Bois Tavel"" - Rosé",Rose Wine,France,Rhône Valley,,France,,,0.7,ok,confirm,domaine
+WRW3754DJ,Chateau Poupille - Cotes de Castillon,Red Wine,France,Bordeaux,,France,,,0.7,ok,confirm,chateau
+WRW3792DJ,Domaine de la Mordorée  Lirac La Dame Rousse Rouge,Red Wine,France,Rhône Valley,,France,,,0.7,ok,confirm,domaine
+WRW6417DJ,"Domaine de la Mordorée  ""Lirac La Reine des Bois"" Rouge",Red Wine,France,Rhône Valley,,France,,,0.7,ok,confirm,domaine
+WWW2198DJ,"Domaine Thibault Liger-Belair  Bourgogne Aligote ""Clos des Perrieres la Combe""",White Wine,France,Burgundy,,France,Burgundy,,0.8,ok,confirm,bourgogne; domaine
+WRW5676DJ,"Domaine de La Pousse d’Or  Volnay 1er Cru ""Clos des 60 Ouvrees"" - Monopole",Red Wine,France,Burgundy,Volnay,France,Burgundy,Volnay,0.93,ok,confirm,volnay; domaine
+WRW6474DJ,"Albert Bichot  Gevrey Chambertin 1er Cru ""Petite Chapelle""",Red Wine,France,Burgundy,Gevrey-Chambertin,France,Burgundy,Gevrey-Chambertin,0.97,ok,confirm,gevrey chambertin
+WRW6351DJ,Domaine Thibault Liger-Belair  Nuits Saint Georges La Charmotte,Red Wine,France,Burgundy,Nuits-Saint-Georges,France,Burgundy,Nuits-Saint-Georges,0.97,ok,confirm,nuits saint georges; domaine
+WRW6418DJ,"Domaine de la Mordorée  Chateauneuf-du-Pape Cuvee de ""La Reine des Bois""",Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape; domaine
+WSP2548DJ,Champagne Philipponnat  Grand Blanc Extra Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW4268DJ,"Domaine Thibault Liger-Belair  Hautes-Cotes De Nuits ""La Roche""",Red Wine,France,Burgundy,Nuits-Saint-Georges,France,,,0.7,ok,confirm,domaine
+WWW5489DJ,Domaines Albert Bichot  Pouilly Fuisse,Wine,France,Burgundy,,France,Burgundy,,0.93,ok,confirm,pouilly fuisse
+WRW3801DJ,"Domaine Giraud  Cotes-du-Rhone ""Lirac les Sables d'Arenes"" - Rouge",Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.92,ok,confirm,cotes du rhone; domaine
+WRW3764DJ,Chateau Falfas   Le Chevalier,Red Wine,France,,,France,,,0.7,ok,confirm,chateau
+WRW3799DJ,Domaine Giraud  Chateauneuf du Pape - Les Grenaches de Pierre,Red Wine,France,Rhône Valley,,France,Rhône Valley,,0.97,ok,confirm,chateauneuf du pape; domaine
+WRW3775DJ,Chateau Le Puy  Emilien,Red Wine,France,Bordeaux,Saint-Émilion,France,,,0.7,ok,confirm,chateau
+WSP2549DJ,Champagne Philipponnat Blanc De Noirs Extra Brut  2018,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW4267DJ,Domaine Thibault Liger-Belair  Bourgogne Rouge “les Grands Chaillots”,Red Wine,France,Burgundy,,France,Burgundy,,0.8,ok,confirm,bourgogne; domaine
+WWW5472DJ,"Domaine de la Mordorée  ""Lirac La Reine des Bois"" Blanc",White Wine,France,Rhône Valley,,France,,,0.7,ok,confirm,domaine
+WRW5665DJ,"Domaine Jean Fery & Fils  Pernand-Vergelesses 1er Cru ""les Vergelesses""",Red Wine,France,Burgundy,Beaune,France,,,0.7,ok,confirm,domaine
+WSP1288DJ,Champagne Philipponnat Royal Reserve Brut,Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WWW1974DJ,Chateau Reynon- Blanc - Cadillac,White Wine,France,Bordeaux,,France,,,0.7,ok,confirm,chateau
+WRW3647DJ,Domaine Lafarge-Vial  Fleurie,Red Wine,France,Burgundy,,France,,,0.7,ok,confirm,domaine
+WWW1996DJ,Domaine Ostertag  Zellberg - Pinot Gris,White Wine,France,Alsace,,France,,,0.7,ok,confirm,domaine
+WWW1925DJ,"Domaine Michel Lafarge  Bourgogne Aligote ""Raisins Dores""",White Wine,France,Burgundy,,France,Burgundy,,0.8,ok,confirm,bourgogne; domaine
+WWW5487DJ,Domaines Albert Bichot  Secret de Famille Bourgogne Cote d'Or Chardonnay,White Wine,France,Burgundy,,France,Burgundy,,0.8,ok,confirm,bourgogne
+WRW6419DJ,"Domaine de la Mordorée  Vin de France ""La Remise"" Rouge ""Sans Sulfites""",Red Wine,France,Rhône Valley,,France,,,0.7,ok,confirm,domaine
+WRS0115DJ,"Domaine de la Mordorée  Vin de France ""La Remise"" Rose",Rose Wine,France,Rhône Valley,,France,,,0.7,ok,confirm,domaine
+WRW3763DJ,Bernard Magrez  La Reference Cepage Merlot Languedoc ( Oustric ),Red Wine,France,Languedoc-Roussillon,,France,Languedoc-Roussillon,,0.88,ok,confirm,languedoc
+WRW5452EG,Chateau Clerc Milon  2018,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW5520EG,Chateau Grand-Puy-Lacoste  2016,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WSP1082EG,"Gosset Champagne ""Grand Reserve Brut""",Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WSP1485EG,Perrier-Jouet  Grand Brut Champagne (750 ml),Champagne,France,Champagne,,France,Champagne,,0.85,ok,confirm,champagne; champagne
+WRW6584FO,Chateau Margaux  2000,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW6583FO,Chateau Margaux  2010,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW6582FO,Chateau Margaux  2018,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW6581FO,Chateau Margaux  2001,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW6580FO,Chateau Margaux  2020,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW6579FO,Chateau Margaux  2021,Red Wine,France,Bordeaux,Margaux,France,Bordeaux,Margaux,0.92,ok,confirm,margaux; chateau
+WRW4093FO,Opus One  'Overture' Napa Valley Red Wine,Red Wine,USA,California,Napa Valley,USA,California,Napa Valley,0.95,ok,confirm,napa valley; napa
+WRW6624FO,Chateau Lafite-Rothschild  2020,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW6623FO,Chateau Lafite-Rothschild  2019,Red Wine,France,Bordeaux,Pauillac,France,,,0.7,ok,confirm,chateau
+WRW6554WN,Chateau La Gasquerie AOP Bordeaux Rouge,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW6184WN,Chateau Pericou  AOP Bordeaux Rouge,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW6186WN,Chateau de la Vieille Tour  Bordeaux Supérieur AOP,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW6185WN,Chateau la Croix D'Hourquet  AOP Bordeaux Rouge,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau
+WRW6187WN,Vinum Terra  Bordeaux AOP (No Sulfites),Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux
+WRW6188WN,Reserve Tradition du Chateau de la Vieille Tour Bordeaux Supérieur AOP,Red Wine,France,Bordeaux,,France,Bordeaux,,0.75,ok,confirm,bordeaux; chateau

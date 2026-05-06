@@ -1,0 +1,1103 @@
+{
+  "add_countries": [
+    {
+      "id": 29,
+      "name": "Sweden",
+      "iso": "SE",
+      "products": 33,
+      "from_value": "Sweden"
+    },
+    {
+      "id": 30,
+      "name": "Norway",
+      "iso": "NO",
+      "products": 29,
+      "from_value": "Norway"
+    },
+    {
+      "id": 31,
+      "name": "Belgium",
+      "iso": "BE",
+      "products": 24,
+      "from_value": "Belgium"
+    },
+    {
+      "id": 32,
+      "name": "Russia",
+      "iso": "RU",
+      "products": 21,
+      "from_value": "Russia"
+    },
+    {
+      "id": 33,
+      "name": "Taiwan",
+      "iso": "TW",
+      "products": 13,
+      "from_value": "Taiwan"
+    },
+    {
+      "id": 34,
+      "name": "India",
+      "iso": "IN",
+      "products": 10,
+      "from_value": "India"
+    },
+    {
+      "id": 35,
+      "name": "Barbados",
+      "iso": "BB",
+      "products": 10,
+      "from_value": "Barbados"
+    },
+    {
+      "id": 36,
+      "name": "Peru",
+      "iso": "PE",
+      "products": 8,
+      "from_value": "Peru"
+    },
+    {
+      "id": 37,
+      "name": "Jamaica",
+      "iso": "JM",
+      "products": 7,
+      "from_value": "Jamaica"
+    },
+    {
+      "id": 38,
+      "name": "Poland",
+      "iso": "PL",
+      "products": 7,
+      "from_value": "Poland"
+    },
+    {
+      "id": 39,
+      "name": "Iceland",
+      "iso": "IS",
+      "products": 7,
+      "from_value": "Iceland"
+    },
+    {
+      "id": 40,
+      "name": "Philippines",
+      "iso": "PH",
+      "products": 6,
+      "from_value": "Philippines"
+    },
+    {
+      "id": 41,
+      "name": "Vietnam",
+      "iso": "VN",
+      "products": 5,
+      "from_value": "Vietnam"
+    },
+    {
+      "id": 42,
+      "name": "Martinique",
+      "iso": "MQ",
+      "products": 5,
+      "from_value": "Martinique"
+    },
+    {
+      "id": 43,
+      "name": "Czech Republic",
+      "iso": "CZ",
+      "products": 5,
+      "from_value": "Czech Republic"
+    },
+    {
+      "id": 44,
+      "name": "Singapore",
+      "iso": "SG",
+      "products": 5,
+      "from_value": "Singapore"
+    },
+    {
+      "id": 45,
+      "name": "Anguilla",
+      "iso": "AI",
+      "products": 4,
+      "from_value": "Anguilla"
+    },
+    {
+      "id": 46,
+      "name": "Latvia",
+      "iso": "LV",
+      "products": 4,
+      "from_value": "Latvia"
+    },
+    {
+      "id": 47,
+      "name": "Cuba",
+      "iso": "CU",
+      "products": 4,
+      "from_value": "Cuba"
+    },
+    {
+      "id": 48,
+      "name": "Slovenia",
+      "iso": "SI",
+      "products": 4,
+      "from_value": "Slovenia"
+    },
+    {
+      "id": 49,
+      "name": "Trinidad & Tobago",
+      "iso": "TT",
+      "products": 3,
+      "from_value": "Trinidad & Tobago"
+    },
+    {
+      "id": 50,
+      "name": "Slovakia",
+      "iso": "SK",
+      "products": 3,
+      "from_value": "Slovakia"
+    },
+    {
+      "id": 51,
+      "name": "Guatemala",
+      "iso": "GT",
+      "products": 2,
+      "from_value": "Guatemala"
+    },
+    {
+      "id": 52,
+      "name": "Indonesia",
+      "iso": "ID",
+      "products": 2,
+      "from_value": "Indonesia"
+    },
+    {
+      "id": 53,
+      "name": "Grenada",
+      "iso": "GD",
+      "products": 1,
+      "from_value": "Grenada"
+    },
+    {
+      "id": 54,
+      "name": "Panama",
+      "iso": "PA",
+      "products": 1,
+      "from_value": "Panama"
+    },
+    {
+      "id": 55,
+      "name": "Venezuela",
+      "iso": "VE",
+      "products": 1,
+      "from_value": "Venezuela"
+    },
+    {
+      "id": 56,
+      "name": "Dominican Republic",
+      "iso": "DO",
+      "products": 1,
+      "from_value": "Dominican Republic"
+    },
+    {
+      "id": 57,
+      "name": "Fiji",
+      "iso": "FJ",
+      "products": 1,
+      "from_value": "Fiji"
+    },
+    {
+      "id": 58,
+      "name": "Nicaragua",
+      "iso": "NI",
+      "products": 1,
+      "from_value": "Nicaragua"
+    }
+  ],
+  "add_regions": [
+    {
+      "id": 84,
+      "country_id": 9,
+      "country": "Australia",
+      "name": "South Eastern Australia",
+      "products": 83,
+      "from_value": "Australia / South Eastern Australia"
+    },
+    {
+      "id": 85,
+      "country_id": 9,
+      "country": "Australia",
+      "name": "Barossa Valley",
+      "products": 52,
+      "from_value": "Australia / Barossa Valley"
+    },
+    {
+      "id": 86,
+      "country_id": 7,
+      "country": "Chile",
+      "name": "Maule Valley",
+      "products": 34,
+      "from_value": "Chile / Maule Valley"
+    },
+    {
+      "id": 87,
+      "country_id": 2,
+      "country": "Italy",
+      "name": "Abruzzo",
+      "products": 32,
+      "from_value": "Italy / Abruzzo"
+    },
+    {
+      "id": 88,
+      "country_id": 7,
+      "country": "Chile",
+      "name": "Central Valley",
+      "products": 28,
+      "from_value": "Chile / Central Valley"
+    },
+    {
+      "id": 89,
+      "country_id": 9,
+      "country": "Australia",
+      "name": "McLaren Vale",
+      "products": 23,
+      "from_value": "Australia / McLaren Vale"
+    },
+    {
+      "id": 90,
+      "country_id": 11,
+      "country": "South Africa",
+      "name": "Western Cape",
+      "products": 22,
+      "from_value": "South Africa / Western Cape"
+    },
+    {
+      "id": 91,
+      "country_id": 3,
+      "country": "Spain",
+      "name": "La Mancha",
+      "products": 16,
+      "from_value": "Spain / La Mancha"
+    },
+    {
+      "id": 92,
+      "country_id": 27,
+      "country": "Thailand",
+      "name": "Khao Yai",
+      "products": 15,
+      "from_value": "Thailand / Khao Yai"
+    },
+    {
+      "id": 93,
+      "country_id": 2,
+      "country": "Italy",
+      "name": "Marche",
+      "products": 15,
+      "from_value": "Italy / Marche"
+    },
+    {
+      "id": 94,
+      "country_id": 7,
+      "country": "Chile",
+      "name": "Rapel Valley",
+      "products": 14,
+      "from_value": "Chile / Rapel Valley"
+    },
+    {
+      "id": 95,
+      "country_id": 9,
+      "country": "Australia",
+      "name": "Victoria",
+      "products": 13,
+      "from_value": "Australia / Victoria"
+    },
+    {
+      "id": 96,
+      "country_id": 7,
+      "country": "Chile",
+      "name": "Loncomilla Valley",
+      "products": 13,
+      "from_value": "Chile / Loncomilla Valley"
+    },
+    {
+      "id": 97,
+      "country_id": 2,
+      "country": "Italy",
+      "name": "Umbria",
+      "products": 12,
+      "from_value": "Italy / Umbria"
+    },
+    {
+      "id": 98,
+      "country_id": 27,
+      "country": "Thailand",
+      "name": "Hua Hin",
+      "products": 12,
+      "from_value": "Thailand / Hua Hin"
+    },
+    {
+      "id": 99,
+      "country_id": 2,
+      "country": "Italy",
+      "name": "Campania",
+      "products": 9,
+      "from_value": "Italy / Campania"
+    },
+    {
+      "id": 100,
+      "country_id": 7,
+      "country": "Chile",
+      "name": "Curico Valley",
+      "products": 8,
+      "from_value": "Chile / Curico Valley"
+    },
+    {
+      "id": 101,
+      "country_id": 2,
+      "country": "Italy",
+      "name": "Lazio",
+      "products": 7,
+      "from_value": "Italy / Lazio"
+    },
+    {
+      "id": 102,
+      "country_id": 9,
+      "country": "Australia",
+      "name": "Coonawarra",
+      "products": 7,
+      "from_value": "Australia / Coonawarra"
+    },
+    {
+      "id": 103,
+      "country_id": 4,
+      "country": "Germany",
+      "name": "Rheinhessen",
+      "products": 6,
+      "from_value": "Germany / Rheinhessen"
+    },
+    {
+      "id": 104,
+      "country_id": 9,
+      "country": "Australia",
+      "name": "Adelaide Hills",
+      "products": 6,
+      "from_value": "Australia / Adelaide Hills"
+    },
+    {
+      "id": 105,
+      "country_id": 10,
+      "country": "New Zealand",
+      "name": "Martinborough",
+      "products": 6,
+      "from_value": "New Zealand / Martinborough"
+    },
+    {
+      "id": 106,
+      "country_id": 7,
+      "country": "Chile",
+      "name": "Cachapoal Valley",
+      "products": 5,
+      "from_value": "Chile / Cachapoal Valley"
+    },
+    {
+      "id": 107,
+      "country_id": 4,
+      "country": "Germany",
+      "name": "Franken",
+      "products": 5,
+      "from_value": "Germany / Franken"
+    },
+    {
+      "id": 108,
+      "country_id": 2,
+      "country": "Italy",
+      "name": "Lombardy",
+      "products": 5,
+      "from_value": "Italy / Lombardy"
+    },
+    {
+      "id": 109,
+      "country_id": 9,
+      "country": "Australia",
+      "name": "Clare Valley",
+      "products": 4,
+      "from_value": "Australia / Clare Valley"
+    },
+    {
+      "id": 110,
+      "country_id": 3,
+      "country": "Spain",
+      "name": "Toro",
+      "products": 4,
+      "from_value": "Spain / Toro"
+    },
+    {
+      "id": 111,
+      "country_id": 2,
+      "country": "Italy",
+      "name": "Basilicata",
+      "products": 4,
+      "from_value": "Italy / Basilicata"
+    },
+    {
+      "id": 112,
+      "country_id": 6,
+      "country": "USA",
+      "name": "Kentucky",
+      "products": 3,
+      "from_value": "USA / Kentucky"
+    },
+    {
+      "id": 113,
+      "country_id": 7,
+      "country": "Chile",
+      "name": "Aconcagua Valley",
+      "products": 2,
+      "from_value": "Chile / Aconcagua Valley"
+    },
+    {
+      "id": 114,
+      "country_id": 4,
+      "country": "Germany",
+      "name": "Black Forest",
+      "products": 2,
+      "from_value": "Germany / Black Forest"
+    },
+    {
+      "id": 115,
+      "country_id": 6,
+      "country": "USA",
+      "name": "New Jersey",
+      "products": 2,
+      "from_value": "USA / New Jersey"
+    },
+    {
+      "id": 116,
+      "country_id": 1,
+      "country": "France",
+      "name": "Calvados",
+      "products": 2,
+      "from_value": "France / Calvados"
+    },
+    {
+      "id": 117,
+      "country_id": 4,
+      "country": "Germany",
+      "name": "Baden",
+      "products": 1,
+      "from_value": "Germany / Baden"
+    },
+    {
+      "id": 118,
+      "country_id": 2,
+      "country": "Italy",
+      "name": "Sardinia",
+      "products": 1,
+      "from_value": "Italy / Sardinia"
+    },
+    {
+      "id": 119,
+      "country_id": 3,
+      "country": "Spain",
+      "name": "Cantabria",
+      "products": 1,
+      "from_value": "Spain / Cantabria"
+    },
+    {
+      "id": 120,
+      "country_id": 21,
+      "country": "England",
+      "name": "London",
+      "products": 1,
+      "from_value": "UK/London"
+    }
+  ],
+  "add_subregions": [
+    {
+      "id": 130,
+      "region_id": 13,
+      "region": "Veneto",
+      "country": "Italy",
+      "name": "Prosecco",
+      "products": 56,
+      "from_value": "Italy/Veneto/Prosecco"
+    },
+    {
+      "id": 131,
+      "region_id": 1,
+      "region": "Bordeaux",
+      "country": "France",
+      "name": "Saint-Émilion",
+      "products": 44,
+      "from_value": "France/Bordeaux/Saint-Émilion"
+    },
+    {
+      "id": 132,
+      "region_id": 1,
+      "region": "Bordeaux",
+      "country": "France",
+      "name": "Pauillac",
+      "products": 38,
+      "from_value": "France/Bordeaux/Pauillac"
+    },
+    {
+      "id": 133,
+      "region_id": 12,
+      "region": "Piedmont",
+      "country": "Italy",
+      "name": "Barolo",
+      "products": 37,
+      "from_value": "Italy/Piedmont/Barolo"
+    },
+    {
+      "id": 134,
+      "region_id": 11,
+      "region": "Tuscany",
+      "country": "Italy",
+      "name": "Brunello di Montalcino",
+      "products": 32,
+      "from_value": "Italy/Tuscany/Brunello di Montalcino"
+    },
+    {
+      "id": 135,
+      "region_id": 87,
+      "region": "Abruzzo",
+      "country": "Italy",
+      "name": "Montepulciano d’Abruzzo",
+      "products": 32,
+      "from_value": "Italy/Abruzzo/Montepulciano d’Abruzzo"
+    },
+    {
+      "id": 136,
+      "region_id": 13,
+      "region": "Veneto",
+      "country": "Italy",
+      "name": "Amarone della Valpolicella",
+      "products": 28,
+      "from_value": "Italy/Veneto/Amarone della Valpolicella"
+    },
+    {
+      "id": 137,
+      "region_id": 1,
+      "region": "Bordeaux",
+      "country": "France",
+      "name": "Margaux",
+      "products": 28,
+      "from_value": "France/Bordeaux/Margaux"
+    },
+    {
+      "id": 138,
+      "region_id": 1,
+      "region": "Bordeaux",
+      "country": "France",
+      "name": "Pomerol",
+      "products": 23,
+      "from_value": "France/Bordeaux/Pomerol"
+    },
+    {
+      "id": 139,
+      "region_id": 11,
+      "region": "Tuscany",
+      "country": "Italy",
+      "name": "Rosso di Montalcino",
+      "products": 22,
+      "from_value": "Italy/Tuscany/Rosso di Montalcino"
+    },
+    {
+      "id": 140,
+      "region_id": 12,
+      "region": "Piedmont",
+      "country": "Italy",
+      "name": "Barbaresco",
+      "products": 19,
+      "from_value": "Italy/Piedmont/Barbaresco"
+    },
+    {
+      "id": 141,
+      "region_id": 1,
+      "region": "Bordeaux",
+      "country": "France",
+      "name": "Haut-Médoc",
+      "products": 18,
+      "from_value": "France/Bordeaux/Haut-Médoc"
+    },
+    {
+      "id": 142,
+      "region_id": 1,
+      "region": "Bordeaux",
+      "country": "France",
+      "name": "Saint-Estèphe",
+      "products": 17,
+      "from_value": "France/Bordeaux/Saint-Estèphe"
+    },
+    {
+      "id": 143,
+      "region_id": 13,
+      "region": "Veneto",
+      "country": "Italy",
+      "name": "Valpolicella Ripasso",
+      "products": 17,
+      "from_value": "Italy/Veneto/Valpolicella Ripasso"
+    },
+    {
+      "id": 144,
+      "region_id": 1,
+      "region": "Bordeaux",
+      "country": "France",
+      "name": "Pessac-Léognan",
+      "products": 17,
+      "from_value": "France/Bordeaux/Pessac-Léognan"
+    },
+    {
+      "id": 145,
+      "region_id": 6,
+      "region": "Provence",
+      "country": "France",
+      "name": "Les Baux-de-Provence",
+      "products": 16,
+      "from_value": "France/Provence/Les Baux-de-Provence"
+    },
+    {
+      "id": 146,
+      "region_id": 1,
+      "region": "Bordeaux",
+      "country": "France",
+      "name": "Saint-Julien",
+      "products": 13,
+      "from_value": "France/Bordeaux/Saint-Julien"
+    },
+    {
+      "id": 147,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Puligny-Montrachet",
+      "products": 8,
+      "from_value": "France/Burgundy/Puligny-Montrachet"
+    },
+    {
+      "id": 148,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Nuits-Saint-Georges",
+      "products": 7,
+      "from_value": "France/Burgundy/Nuits-Saint-Georges"
+    },
+    {
+      "id": 149,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Aloxe-Corton",
+      "products": 7,
+      "from_value": "France/Burgundy/Aloxe-Corton"
+    },
+    {
+      "id": 150,
+      "region_id": 31,
+      "region": "California",
+      "country": "USA",
+      "name": "Carneros",
+      "products": 5,
+      "from_value": "USA/California/Carneros"
+    },
+    {
+      "id": 151,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Gevrey-Chambertin",
+      "products": 5,
+      "from_value": "France/Burgundy/Gevrey-Chambertin"
+    },
+    {
+      "id": 152,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Pouilly-Fuissé",
+      "products": 5,
+      "from_value": "France/Burgundy/Pouilly-Fuissé"
+    },
+    {
+      "id": 153,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Pommard",
+      "products": 3,
+      "from_value": "France/Burgundy/Pommard"
+    },
+    {
+      "id": 154,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Beaujolais",
+      "products": 3,
+      "from_value": "France/Burgundy/Beaujolais"
+    },
+    {
+      "id": 155,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Beaune",
+      "products": 3,
+      "from_value": "France/Burgundy/Beaune"
+    },
+    {
+      "id": 156,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Chambolle-Musigny",
+      "products": 3,
+      "from_value": "France/Burgundy/Chambolle-Musigny"
+    },
+    {
+      "id": 157,
+      "region_id": 1,
+      "region": "Bordeaux",
+      "country": "France",
+      "name": "Sauternes",
+      "products": 2,
+      "from_value": "France/Bordeaux/Sauternes"
+    },
+    {
+      "id": 158,
+      "region_id": 12,
+      "region": "Piedmont",
+      "country": "Italy",
+      "name": "Gattinara",
+      "products": 2,
+      "from_value": "Italy/Piedmont/Gattinara"
+    },
+    {
+      "id": 159,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Saint-Véran / Viré-Clessé",
+      "products": 2,
+      "from_value": "France/Burgundy/Saint-Véran / Viré-Clessé"
+    },
+    {
+      "id": 160,
+      "region_id": 97,
+      "region": "Umbria",
+      "country": "Italy",
+      "name": "Montepulciano",
+      "products": 2,
+      "from_value": "Italy/Umbria/Montepulciano"
+    },
+    {
+      "id": 161,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Vosne-Romanée",
+      "products": 2,
+      "from_value": "France/Burgundy/Vosne-Romanée"
+    },
+    {
+      "id": 162,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Chassagne-Montrachet",
+      "products": 2,
+      "from_value": "France/Burgundy/Chassagne-Montrachet"
+    },
+    {
+      "id": 163,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Meursault",
+      "products": 2,
+      "from_value": "France/Burgundy/Meursault"
+    },
+    {
+      "id": 164,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Volnay",
+      "products": 2,
+      "from_value": "France/Burgundy/Volnay"
+    },
+    {
+      "id": 165,
+      "region_id": 11,
+      "region": "Tuscany",
+      "country": "Italy",
+      "name": "Chianti Classico",
+      "products": 1,
+      "from_value": "Italy/Tuscany/Chianti Classico"
+    },
+    {
+      "id": 166,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Corton-Charlemagne",
+      "products": 1,
+      "from_value": "France/Burgundy/Corton-Charlemagne"
+    },
+    {
+      "id": 167,
+      "region_id": 97,
+      "region": "Umbria",
+      "country": "Italy",
+      "name": "Montefalco",
+      "products": 1,
+      "from_value": "Italy/Umbria/Montefalco"
+    },
+    {
+      "id": 168,
+      "region_id": 12,
+      "region": "Piedmont",
+      "country": "Italy",
+      "name": "Gavi",
+      "products": 1,
+      "from_value": "Italy/Piedmont/Gavi"
+    },
+    {
+      "id": 169,
+      "region_id": 11,
+      "region": "Tuscany",
+      "country": "Italy",
+      "name": "Chianti",
+      "products": 1,
+      "from_value": "Italy/Friuli-Venezia Giulia/Chianti"
+    },
+    {
+      "id": 170,
+      "region_id": 1,
+      "region": "Bordeaux",
+      "country": "France",
+      "name": "Lussac-Saint-Emilion",
+      "products": 1,
+      "from_value": "France/Bordeaux/Lussac-Saint-Emilion"
+    },
+    {
+      "id": 171,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Morey-Saint-Denis",
+      "products": 1,
+      "from_value": "France/Burgundy/Morey-Saint-Denis"
+    },
+    {
+      "id": 172,
+      "region_id": 11,
+      "region": "Tuscany",
+      "country": "Italy",
+      "name": "Cirò",
+      "products": 1,
+      "from_value": "Italy/Tuscany/Cirò"
+    },
+    {
+      "id": 173,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Mercurey",
+      "products": 1,
+      "from_value": "France/Burgundy/Mercurey"
+    },
+    {
+      "id": 174,
+      "region_id": 5,
+      "region": "Loire Valley",
+      "country": "France",
+      "name": "Pouilly-Fumé",
+      "products": 1,
+      "from_value": "France/Loire valley/Pouilly-Fumé"
+    },
+    {
+      "id": 175,
+      "region_id": 2,
+      "region": "Burgundy",
+      "country": "France",
+      "name": "Chevalier-Montrachet",
+      "products": 1,
+      "from_value": "France/Burgundy/Chevalier-Montrachet"
+    },
+    {
+      "id": 176,
+      "region_id": 1,
+      "region": "Bordeaux",
+      "country": "France",
+      "name": "Côtes de Castillon",
+      "products": 1,
+      "from_value": "France/Bordeaux/Côtes de Castillon"
+    }
+  ],
+  "country_aliases": [
+    {
+      "from": "UK",
+      "to": "England",
+      "products": 63
+    },
+    {
+      "from": "Netherland",
+      "to": "Netherlands",
+      "products": 27
+    }
+  ],
+  "region_aliases": [
+    {
+      "country": "France",
+      "from": "Languedoc",
+      "to_country": "France",
+      "to_region": "Languedoc-Roussillon",
+      "products": 41
+    }
+  ],
+  "subregion_aliases": [
+    {
+      "from": [
+        "Italy",
+        "Tuscany",
+        "Chianti DOCG"
+      ],
+      "to": [
+        "Italy",
+        "Tuscany",
+        "Chianti"
+      ],
+      "products": 41
+    },
+    {
+      "from": [
+        "France",
+        "Bordeaux",
+        "Saint-Emilion"
+      ],
+      "to": [
+        "France",
+        "Bordeaux",
+        "Saint-Émilion"
+      ],
+      "products": 4
+    }
+  ],
+  "clear_placeholders": [
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "France",
+      "products": 40
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Spain",
+      "products": 24
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Uruguay",
+      "products": 20
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Austria",
+      "products": 15
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Peru",
+      "products": 8
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Greece",
+      "products": 8
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Italy",
+      "products": 7
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "USA",
+      "products": 5
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Slovenia",
+      "products": 4
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Lebanon",
+      "products": 4
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Australia",
+      "products": 3
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Chile",
+      "products": 3
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "New Zealand",
+      "products": 3
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Slovakia",
+      "products": 2
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Georgia",
+      "products": 2
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Portugal",
+      "products": 1
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Latvia",
+      "products": 1
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Germany",
+      "products": 1
+    },
+    {
+      "field": "region",
+      "value": "Others region",
+      "country": "Hungary",
+      "products": 1
+    }
+  ],
+  "unresolved": []
+}

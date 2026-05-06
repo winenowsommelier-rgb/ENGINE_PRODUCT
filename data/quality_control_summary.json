@@ -1,0 +1,17 @@
+{
+  "product_master": {
+    "short_length": 77,
+    "full_length": 63,
+    "template_language": 3,
+    "missing_sources": 4,
+    "verified_without_note": 14,
+    "completed_rows": 119
+  },
+  "country_taxonomy": {
+    "expert_reviewed_countries": 51
+  },
+  "live_upload": {
+    "weak_publish_rationale": 12,
+    "live_upload_rows": 48
+  }
+}

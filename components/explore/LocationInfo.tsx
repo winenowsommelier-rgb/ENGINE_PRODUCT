@@ -80,6 +80,7 @@ interface LocationInfoProps {
   countrySlug?: string;
   regionSlug?: string;
   subregionSlug?: string;
+  theme?: "dark" | "light";
 }
 
 /* ── Component ───────────────────────────────────────── */
@@ -97,6 +98,7 @@ export default function LocationInfo({
   countrySlug,
   regionSlug,
   subregionSlug,
+  theme = "dark",
 }: LocationInfoProps) {
   const [context, setContext] = useState<LocationContext | null>(null);
   const [loading, setLoading] = useState(true);
@@ -238,14 +240,18 @@ export default function LocationInfo({
   return (
     <aside
       aria-label={`${name} information`}
-      className="fixed left-0 top-0 z-30 hidden h-full w-[380px] animate-slide-in-left border-r border-white/[0.08] bg-[#12121f] shadow-[8px_0_32px_rgba(0,0,0,0.4)] lg:block"
+      className={`fixed left-0 top-0 z-30 hidden h-full w-[380px] animate-slide-in-left lg:block ${
+        theme === "light"
+          ? "border-r border-slate-200 bg-white shadow-[8px_0_32px_rgba(15,23,42,0.10)]"
+          : "border-r border-white/[0.08] bg-[#12121f] shadow-[8px_0_32px_rgba(0,0,0,0.4)]"
+      }`}
     >
       {/* Scrollable content */}
       <div className="flex h-full flex-col overflow-y-auto">
         {/* Header */}
         <div className="flex items-start justify-between p-5 pb-3">
           <div className="min-w-0 flex-1">
-            <h2 className="flex items-center gap-2 text-xl font-semibold text-white">
+            <h2 className={theme === "light" ? "flex items-center gap-2 text-xl font-semibold text-slate-900" : "flex items-center gap-2 text-xl font-semibold text-white"}>
               {type !== "world" && (
                 <span className="text-2xl leading-none" aria-hidden="true">
                   {flag}
@@ -257,11 +263,11 @@ export default function LocationInfo({
               <span className="truncate">{type === "world" ? "Explore" : name}</span>
             </h2>
             {type === "world" ? (
-              <p className="mt-1 text-sm text-white/50">
+              <p className={theme === "light" ? "mt-1 text-sm text-slate-500" : "mt-1 text-sm text-white/50"}>
                 Discover wines, spirits, beer &amp; sake by region
               </p>
             ) : (
-            <p className="mt-1 text-sm text-white/50">
+            <p className={theme === "light" ? "mt-1 text-sm text-slate-500" : "mt-1 text-sm text-white/50"}>
               {parentName && <span>{parentName} &middot; </span>}
               <span
                 className="inline-block rounded-full px-2 py-0.5 text-xs font-medium"
@@ -277,7 +283,9 @@ export default function LocationInfo({
           </div>
           <button
             onClick={onClose}
-            className="ml-2 shrink-0 rounded-lg p-1.5 text-white/40 hover:bg-white/10 hover:text-white transition-colors"
+            className={`ml-2 shrink-0 rounded-lg p-1.5 transition-colors ${
+              theme === "light" ? "text-slate-400 hover:bg-slate-100 hover:text-slate-900" : "text-white/40 hover:bg-white/10 hover:text-white"
+            }`}
             aria-label="Close location info"
           >
             <X size={18} />
@@ -287,21 +295,21 @@ export default function LocationInfo({
         {/* Loading skeleton */}
         {loading && (
           <div className="space-y-3 px-5 py-4">
-            <div className="h-3 w-full animate-pulse rounded bg-white/[0.06]" />
-            <div className="h-3 w-4/5 animate-pulse rounded bg-white/[0.06]" />
-            <div className="h-3 w-3/5 animate-pulse rounded bg-white/[0.06]" />
+            <div className={theme === "light" ? "h-3 w-full animate-pulse rounded bg-slate-100" : "h-3 w-full animate-pulse rounded bg-white/[0.06]"} />
+            <div className={theme === "light" ? "h-3 w-4/5 animate-pulse rounded bg-slate-100" : "h-3 w-4/5 animate-pulse rounded bg-white/[0.06]"} />
+            <div className={theme === "light" ? "h-3 w-3/5 animate-pulse rounded bg-slate-100" : "h-3 w-3/5 animate-pulse rounded bg-white/[0.06]"} />
             <div className="mt-4 flex gap-2">
-              <div className="h-6 w-20 animate-pulse rounded-full bg-white/[0.06]" />
-              <div className="h-6 w-16 animate-pulse rounded-full bg-white/[0.06]" />
-              <div className="h-6 w-24 animate-pulse rounded-full bg-white/[0.06]" />
+              <div className={theme === "light" ? "h-6 w-20 animate-pulse rounded-full bg-slate-100" : "h-6 w-20 animate-pulse rounded-full bg-white/[0.06]"} />
+              <div className={theme === "light" ? "h-6 w-16 animate-pulse rounded-full bg-slate-100" : "h-6 w-16 animate-pulse rounded-full bg-white/[0.06]"} />
+              <div className={theme === "light" ? "h-6 w-24 animate-pulse rounded-full bg-slate-100" : "h-6 w-24 animate-pulse rounded-full bg-white/[0.06]"} />
             </div>
           </div>
         )}
 
         {/* Description */}
         {!loading && hasDescription && (
-          <div className="border-t border-white/[0.06] px-5 py-4">
-            <p className="text-sm leading-relaxed text-white/65">
+          <div className={theme === "light" ? "border-t border-slate-200 px-5 py-4" : "border-t border-white/[0.06] px-5 py-4"}>
+            <p className={theme === "light" ? "text-sm leading-relaxed text-slate-600" : "text-sm leading-relaxed text-white/65"}>
               {showFull && context?.description_full
                 ? context.description_full
                 : context?.description_short}
@@ -327,17 +335,52 @@ export default function LocationInfo({
           </div>
         )}
 
+        {/* World-level guide */}
+        {type === "world" && (
+          <div className={theme === "light" ? "border-t border-slate-200 px-5 py-4" : "border-t border-white/[0.06] px-5 py-4"}>
+            <h3 className={theme === "light" ? "mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500" : "mb-3 text-xs font-semibold uppercase tracking-wider text-white/40"}>
+              How It Works
+            </h3>
+            <div className="space-y-2">
+              {[
+                "Choose a category lens or keep the global view.",
+                "Select a country to drill into its key regions.",
+                "Open a region or subregion to browse matching products.",
+              ].map((step, index) => (
+                <div
+                  key={step}
+                  className={`flex items-start gap-3 rounded-xl px-3 py-3 ${theme === "light" ? "bg-slate-50" : "bg-white/[0.03]"}`}
+                >
+                  <span
+                    className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold"
+                    style={{
+                      background: `rgba(${accentRgb},0.15)`,
+                      color: accent,
+                    }}
+                  >
+                    {index + 1}
+                  </span>
+                  <p className={theme === "light" ? "text-sm leading-relaxed text-slate-700" : "text-sm leading-relaxed text-white/70"}>{step}</p>
+                </div>
+              ))}
+            </div>
+            <p className={theme === "light" ? "mt-3 text-xs leading-relaxed text-slate-500" : "mt-3 text-xs leading-relaxed text-white/45"}>
+              Tip: use search in the top bar if you already know the country, region, or subregion you want.
+            </p>
+          </div>
+        )}
+
         {/* Key Grapes */}
         {!loading && hasGrapes && (
-          <div className="border-t border-white/[0.06] px-5 py-4">
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-white/40">
+          <div className={theme === "light" ? "border-t border-slate-200 px-5 py-4" : "border-t border-white/[0.06] px-5 py-4"}>
+            <h3 className={theme === "light" ? "mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500" : "mb-2 text-xs font-semibold uppercase tracking-wider text-white/40"}>
               Key Grapes
             </h3>
             <div className="flex flex-wrap gap-1.5">
               {context!.key_grapes.map((g) => (
                 <span
                   key={g}
-                  className="rounded-full bg-white/[0.08] px-2.5 py-1 text-xs font-medium text-white/70"
+                  className={theme === "light" ? "rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700" : "rounded-full bg-white/[0.08] px-2.5 py-1 text-xs font-medium text-white/70"}
                 >
                   {g}
                 </span>
@@ -348,8 +391,8 @@ export default function LocationInfo({
 
         {/* Key Styles */}
         {!loading && hasStyles && (
-          <div className="border-t border-white/[0.06] px-5 py-4">
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-white/40">
+          <div className={theme === "light" ? "border-t border-slate-200 px-5 py-4" : "border-t border-white/[0.06] px-5 py-4"}>
+            <h3 className={theme === "light" ? "mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500" : "mb-2 text-xs font-semibold uppercase tracking-wider text-white/40"}>
               Key Styles
             </h3>
             <div className="flex flex-wrap gap-1.5">
@@ -371,43 +414,45 @@ export default function LocationInfo({
 
         {/* Climate */}
         {!loading && context?.climate && (
-          <div className="border-t border-white/[0.06] px-5 py-4">
-            <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-white/40">
+          <div className={theme === "light" ? "border-t border-slate-200 px-5 py-4" : "border-t border-white/[0.06] px-5 py-4"}>
+            <h3 className={theme === "light" ? "mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500" : "mb-1 text-xs font-semibold uppercase tracking-wider text-white/40"}>
               Climate
             </h3>
-            <p className="text-sm text-white/65">{context.climate}</p>
+            <p className={theme === "light" ? "text-sm text-slate-600" : "text-sm text-white/65"}>{context.climate}</p>
           </div>
         )}
 
         {/* Stats (hide at world level) */}
         {type !== "world" && (
-        <div className="border-t border-white/[0.06] px-5 py-4">
-          <p className="text-sm text-white/70">
-            <span className="font-semibold text-white">{count}</span>{" "}
+        <div className={theme === "light" ? "border-t border-slate-200 px-5 py-4" : "border-t border-white/[0.06] px-5 py-4"}>
+          <p className={theme === "light" ? "text-sm text-slate-600" : "text-sm text-white/70"}>
+            <span className={theme === "light" ? "font-semibold text-slate-900" : "font-semibold text-white"}>{count}</span>{" "}
             product{count !== 1 ? "s" : ""}
             {priceStr && (
-              <span className="ml-2 text-white/40">{priceStr}</span>
+              <span className={theme === "light" ? "ml-2 text-slate-500" : "ml-2 text-white/40"}>{priceStr}</span>
             )}
           </p>
         </div>
         )}
 
-        {/* Clickable children (regions / subregions / appellations) */}
+        {/* Clickable children (countries / regions / subregions / appellations) */}
         {children.items.length > 0 && (
-          <div className="border-t border-white/[0.06] px-5 py-4">
-            <h3 className="mb-3 flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-white/40">
+          <div className={theme === "light" ? "border-t border-slate-200 px-5 py-4" : "border-t border-white/[0.06] px-5 py-4"}>
+            <h3 className={theme === "light" ? "mb-3 flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-slate-500" : "mb-3 flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-white/40"}>
               <span>{children.label}</span>
-              <span className="text-white/30">{children.items.length}</span>
+              <span className={theme === "light" ? "text-slate-400" : "text-white/30"}>{children.items.length}</span>
             </h3>
             <ul className="flex flex-col gap-1">
               {children.items.map((c) => (
                 <li key={c.slug}>
                   <Link
                     href={c.href}
-                    className="group flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/[0.06] focus-visible:bg-white/[0.06] focus-visible:outline-none"
+                    className={`group flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-none ${
+                      theme === "light" ? "hover:bg-slate-100 focus-visible:bg-slate-100" : "hover:bg-white/[0.06] focus-visible:bg-white/[0.06]"
+                    }`}
                   >
-                    <span className="truncate text-white/85 group-hover:text-white">{c.name}</span>
-                    <span className="flex shrink-0 items-center gap-1.5 text-xs text-white/40 group-hover:text-white/60">
+                    <span className={theme === "light" ? "truncate text-slate-800 group-hover:text-slate-900" : "truncate text-white/85 group-hover:text-white"}>{c.name}</span>
+                    <span className={theme === "light" ? "flex shrink-0 items-center gap-1.5 text-xs text-slate-500 group-hover:text-slate-700" : "flex shrink-0 items-center gap-1.5 text-xs text-white/40 group-hover:text-white/60"}>
                       {c.count > 0 && <span>{c.count}</span>}
                       <ChevronRight size={12} />
                     </span>
@@ -420,7 +465,7 @@ export default function LocationInfo({
 
         {/* CTA (hide at world level) */}
         {type !== "world" && count > 0 && (
-          <div className="border-t border-white/[0.06] px-5 py-4">
+          <div className={theme === "light" ? "border-t border-slate-200 px-5 py-4" : "border-t border-white/[0.06] px-5 py-4"}>
             <button
               onClick={onExploreProducts}
               className="flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-sm font-semibold text-white transition-all hover:brightness-110"

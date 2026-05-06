@@ -1,0 +1,101 @@
+brand,country,region,sku_count,top_price
+Silverado Vineyards,USA,California,4,3199.0
+Paolo Scavino,Italy,Piedmont,3,4149.0
+Meroi,Italy,Friuli-Venezia Giulia,5,3210.0
+Le Macchiole,Italy,Tuscany,1,7149.0
+Josef Leitz,Germany,Rheingau,5,3179.0
+Chateau Rauzan-Ségla,France,Bordeaux,1,7100.0
+Montevetrano,Italy,Campania,3,4089.0
+Lillian,USA,California,1,4700.0
+Duca di Salaparuta,Italy,Sicily,1,7049.0
+Two Hands,Australia,McLaren Vale,3,2700.0
+Concha Y Toro,Chile,Maule Valley,8,1799.0
+De Bortoli,Australia,South Eastern Australia,19,1169.0
+Chateau La Lagune,France,Bordeaux,1,6949.0
+Dry River,New Zealand,Martinborough,5,3089.0
+Reference Book,USA,California,1,4600.0
+Domaine Marchand-Grillot,France,Burgundy,1,4600.0
+Joel Gott,USA,California,6,2800.0
+Cristo Di Campobello,Italy,Sicily,7,1900.0
+Monchiero Carbone,Italy,Piedmont,3,2600.0
+Chateau d'Arcole,France,Bordeaux,1,4500.0
+Arnaud Pellertier,France,Burgundy,1,4500.0
+Lanson,France,Champagne,4,3359.0
+Podere Sapaio,Italy,Tuscany,2,3800.0
+Baigorri,Spain,Rioja,5,2999.0
+PB Valley,Thailand,Khao Yai,7,2525.0
+Crocker & Starr,USA,California,2,4699.0
+Tinazzi,Italy,Veneto,10,2090.0
+Chateau Carbonnieux,France,Bordeaux,2,4669.0
+Little Beauty,New Zealand,Marlborough,4,2400.0
+Domaine Nathalie & Gilles,France,Burgundy,1,4400.0
+Manara,Italy,Veneto,3,3800.0
+Jean Foillard,France,Burgundy,4,3279.0
+Chateau Talbot,France,Bordeaux,2,3700.0
+Santi,Italy,Veneto,2,3080.0
+Girard,USA,California,5,2900.0
+Loacker,Italy,Tuscany,7,2450.0
+Chateau Haut-Batailley,France,Bordeaux,2,4580.0
+Paul Jaboulet,France,Rhône Valley,4,2580.0
+Terrazas,Argentina,Mendoza,6,2099.0
+San Leonardo,Italy,Trentino-Alto Adige,4,3210.0
+Coppo,Italy,Piedmont,4,3200.0
+Belle Glos,USA,California,4,3200.0
+Domaine Ostertag,France,Alsace,2,3000.0
+Domaine Lafarge-Vial,France,Burgundy,2,3000.0
+Chateau Lynch-Moussas,France,Bordeaux,2,3000.0
+Champagne Andre Clouet,France,Champagne,2,4500.0
+Echeverria,Chile,Maipo Valley,2,3580.0
+Poggio Antico,Italy,Tuscany,2,4460.0
+Penfolds,France,Champagne,2,3565.0
+Bollinger,France,Champagne,1,4200.0
+Tenuta Di Valgiano,Italy,Tuscany,3,3620.0
+Drew,USA,California,5,2800.0
+Sterling Vineyard,USA,California,4,2495.0
+Pian delle Querce,Italy,Tuscany,3,2399.0
+Chateau Cantenac Brown,France,Bordeaux,2,4400.0
+Framingham,New Zealand,Marlborough,5,1850.0
+Whitehall Lane,USA,California,4,3100.0
+Naudin Père & Fils,France,Burgundy,4,3100.0
+Gustave Lorentz,France,Alsace,7,2340.0
+Le Coste,Italy,Lazio,4,2750.0
+Jean Leon,Spain,Catalunya,2,4369.0
+chateau Pericou,France,Bordeaux,2,3488.0
+Chateau La Gasquerie,France,Bordeaux,2,3488.0
+Altivo,Argentina,Mendoza,10,1499.0
+Fattoria dei Barbi,Italy,Tuscany,2,2900.0
+Henri Jouan,France,Burgundy,1,6100.0
+Schloss Vollrads,Germany,Rheingau,6,2490.0
+Kongsgaard,USA,California,1,6099.0
+Francis Boulard,France,Champagne,3,3519.0
+Deutz,France,Champagne,3,3500.0
+Kendall Jackson,USA,California,8,1799.0
+Cantina Di Montalcino,Italy,Tuscany,5,2700.0
+Chateau Meyney,France,Bordeaux,2,3400.0
+Z88.88,USA,California,1,4000.0
+Mas Martinet,Spain,Priorat,1,4000.0
+Chateau Montviel,France,Bordeaux,1,4000.0
+De Stefani,Italy,Veneto,4,1999.0
+Marc Kreydenweiss,France,Alsace,3,3460.0
+Leon Beyer,France,Alsace,3,3459.0
+Domaine Anne Et Hervé Sigaut,France,Burgundy,1,5990.0
+Game of Thrones,USA,California,3,3449.0
+Dumangin,France,Champagne,3,2299.0
+Karthäuserhof,Germany,Mosel,5,1900.0
+Mount Mary,Australia,Yarra Valley,1,5940.0
+Château Routas,France,Provence,3,3425.0
+Right Bank,France,Bordeaux,1,5919.0
+Valdubon,Spain,Ribera del Duero,5,2399.0
+Les heritiers du Comtes Lafon,France,Burgundy,4,2949.0
+Roccolo Grassi,Italy,Veneto,3,3400.0
+Chateau La Louviere,France,Bordeaux,2,4159.0
+Nik Weis,Germany,Mosel,6,2400.0
+Pierre Peters,France,Champagne,1,5859.0
+Radikon,Italy,Friuli-Venezia Giulia,6,2390.0
+Two Hands,Australia,Adelaide Hills,1,3900.0
+Gosset,France,Champagne,1,3900.0
+Chateau L'Ecuyer,France,Bordeaux,1,3900.0
+Chateau Haut-Cardinal,France,Bordeaux,1,3900.0
+Backstage,USA,California,1,5819.0
+Revana,USA,California,1,5799.0
+Domaine Des Roches Neuves,France,Loire Valley,3,3330.0

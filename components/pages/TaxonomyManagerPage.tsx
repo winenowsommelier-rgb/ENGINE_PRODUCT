@@ -35,7 +35,7 @@ const TABS: Array<{ id: Entity; label: string }> = [
   { id: 'countries', label: 'Countries' },
   { id: 'regions', label: 'Regions' },
   { id: 'subregions', label: 'Sub-regions' },
-  { id: 'classifications', label: 'Classifications' },
+  { id: 'classifications', label: 'Item Categories' },
   { id: 'brands', label: 'Brands' },
 ];
 
@@ -357,7 +357,7 @@ export function TaxonomyManagerPage() {
                     </div>
                   )}
 
-                  {/* Classification-specific: show the classification description field */}
+                  {/* Item-category-specific: show the description field */}
                   {tab === 'classifications' && item.description && (
                     <div className="mt-3 pt-3 border-t border-white/5">
                       <p className="text-[10px] text-slate-600 uppercase tracking-wider font-medium mb-1">Taxonomy Description</p>

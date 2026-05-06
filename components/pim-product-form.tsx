@@ -3,7 +3,7 @@
 /**
  * pim-product-form.tsx
  * Full PIM product attribute form using master taxonomy hierarchy.
- * Cascading selects: Category → Country → Region → Sub-region → Origin → Classification → Ingredient → Flavours
+ * Cascading selects: Category → Country → Region → Sub-region → Origin → Item Category → Ingredient → Flavours
  */
 
 import { useMemo, useState } from 'react';
@@ -404,11 +404,11 @@ export function PIMProductForm({
         )}
       </section>
 
-      {/* ── Section 4: Classification ── */}
+      {/* ── Section 4: Item Category ── */}
       {availableClassifications.length > 0 && (
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-4">
-          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Classification</p>
-          <Field label={`Classification (${activeScope} scope)`}>
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Item Category</p>
+          <Field label={`Item Category (${activeScope} scope)`}>
             <Select value={form.classificationId?.toString() ?? ''} onChange={v => {
               const id = Number(v) || null;
               const c = availableClassifications.find(x => x.classification_id === id);
