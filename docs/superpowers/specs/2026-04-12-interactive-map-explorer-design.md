@@ -572,7 +572,7 @@ Custom Mapbox style — dark, desaturated base:
 | Vintage | — | — | — |
 
 ### Sort Options
-- Popular (default — sort by `enrichment_priority` field DESC; products without this field sort last, then by `price` DESC as tiebreaker)
+- Popular (default — sort by sales-derived `popularity_score` DESC; products without this field sort last, then by `popularity_orders_90d` DESC and `price` DESC as tiebreakers)
 - Price: Low → High
 - Price: High → Low
 - Newest (vintage or addition date)
