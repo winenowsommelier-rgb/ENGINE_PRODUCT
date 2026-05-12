@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { Package, TrendingUp, AlertTriangle, CheckCircle2, MapPin, Wine, Grape, FileText, RefreshCw, ArrowRight, Layers } from 'lucide-react';
+import { Package, TrendingUp, AlertTriangle, CheckCircle2, MapPin, Wine, Grape, FileText, RefreshCw, ArrowRight, Layers, FileCheck2 } from 'lucide-react';
 
 interface Overview {
   counts: {
@@ -138,7 +138,13 @@ export function DashboardHomePage({ onNavigate }: { onNavigate: (section: string
 
       {/* Gaps quick actions */}
       <div className="rounded-xl border border-white/8 bg-white/3 p-4">
-        <h3 className="text-sm font-medium text-white mb-3">Priority Gaps</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-medium text-white">Priority Gaps</h3>
+          <button onClick={function () { onNavigate('publish_readiness'); }}
+            className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 transition-colors">
+            Publish Readiness <FileCheck2 size={12} />
+          </button>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           <GapCard label="Missing Description" count={typeof gaps.missingDescription === 'number' ? gaps.missingDescription : 0}
             onClick={function () { onNavigate('products'); }} />

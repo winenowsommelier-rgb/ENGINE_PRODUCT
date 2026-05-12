@@ -14,6 +14,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import fs from 'fs';
 import path from 'path';
+import { parseCsvText } from '../lib/taxonomy/maps';
 
 const DRY_RUN  = process.argv.includes('--dry-run');
 const LIMIT    = (() => { const m = process.argv.find(a => a.startsWith('--limit=')); return m ? parseInt(m.split('=')[1]) : 0; })();
@@ -64,6 +65,33 @@ function getTemplate(classification: string): string {
   return TEMPLATE_MAP[classification.toLowerCase()] ?? 'wine';
 }
 
+// Load expert-reviewed brand stories from CSV to inject as context
+let brandLibrary: Map<string, string> | null = null;
+function getBrandStory(brandName: string | null | undefined): string {
+  if (!brandName) return '';
+  if (!brandLibrary) {
+    brandLibrary = new Map();
+    const csvPath = path.join(process.cwd(), 'data', 'brand_description_library.csv');
+    if (fs.existsSync(csvPath)) {
+      const rows = parseCsvText(fs.readFileSync(csvPath, 'utf-8'));
+      if (rows.length > 1) {
+        const headers = rows[0].map((h: string) => h.trim());
+        const nameIdx = headers.indexOf('entity_name');
+        const fullIdx = headers.indexOf('description_full_en');
+        const statusIdx = headers.indexOf('copy_status');
+        if (nameIdx >= 0 && fullIdx >= 0) {
+          for (let i = 1; i < rows.length; i++) {
+            if (rows[i][statusIdx] === 'expert_reviewed' && rows[i][fullIdx]) {
+              brandLibrary.set(rows[i][nameIdx].toLowerCase().trim(), rows[i][fullIdx].trim());
+            }
+          }
+        }
+      }
+    }
+  }
+  return brandLibrary.get(brandName.toLowerCase().trim()) || '';
+}
+
 async function sbFetch(url: string, opts: RequestInit = {}, retries = 3): Promise<Response> {
   for (let i = 0; i < retries; i++) {
     try {
@@ -108,6 +136,10 @@ Existing data (KNOWN = do not change; NULL = infer from name and descriptions):
 Source descriptions (raw — may be brand voice, HTML, or empty):
   Short: "${row.short_description_en ?? ''}"
   Full:  "${row.description_en_text ?? ''}"
+
+Producer Heritage / Brand Context (EXPERT REVIEWED):
+  "${getBrandStory(row.brand) || 'No specific brand story available in library. Rely on general knowledge.'}"
+  (If a specific brand context is provided above, elegantly incorporate elements of this heritage into the product description to add prestige and depth.)
 
 Write the full description using the HTML template for ${template}.
 Return a JSON object with these exact keys:

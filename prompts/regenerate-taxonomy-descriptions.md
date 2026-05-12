@@ -35,12 +35,13 @@ I will give you a CSV with taxonomy entries that need descriptions rewritten. Th
    - NO catalog-speak like "core origin in the WNLQ9 catalog" or "represented most strongly through"
    - Write as if for a consumer browsing a wine shop
 
-2. **description_full_en** (3-5 sentences, max 500 chars):
-   - Expand on the short description with expert context
+2. **description_full_en** (5-8 sentences, max 1000 chars):
+   - Expand on the short description with rich expert context (this acts as a knowledge base for downstream product description generation).
    - For wine regions: terroir, climate, signature styles, notable appellations
    - For spirit regions: production traditions, signature expressions
    - For classifications: what defines this category, quality expectations
-   - For brands: history, signature products, reputation
+   - For brands: history, production philosophy, signature products, and reputation.
+   - **Copywriting Constraint:** Make the first sentence a strong value proposition or statement of prestige (social proof). Dedicate the final sentence strictly to the sensory profile (what it tastes/feels like) to drive consumer craving.
    - Professional but accessible tone — informative, not academic
    - NO template phrases like "appears in the assortment" or "merchandising perspective"
 
@@ -63,8 +64,8 @@ I will give you a CSV with taxonomy entries that need descriptions rewritten. Th
 - Full: "Single malt whisky represents the pinnacle of Scotch whisky craftsmanship. Each distillery develops a unique house style influenced by water source, barley, yeast, still shape, and maturation casks. Scotland's main whisky regions — Speyside, Highland, Islay, Lowland, and Campbeltown — each contribute distinct flavor profiles, from the delicate floral notes of Speyside to the peaty intensity of Islay."
 
 **Brand: Penfolds (Australia)**
-- Short: "Penfolds is Australia's most iconic wine producer, famous for Grange and a portfolio spanning everyday to ultra-premium wines."
-- Full: "Founded in 1844 in Adelaide, Penfolds has become synonymous with Australian winemaking excellence. The flagship Grange is consistently ranked among the world's greatest wines. The portfolio ranges from accessible Koonunga Hill and Bin series to the collectible RWT, St Henri, and Grange, primarily featuring Shiraz and Cabernet Sauvignon from South Australia's premier vineyards."
+- Short: "Australia's most iconic wine producer, Penfolds is celebrated globally for its historic multi-regional blends and the legendary Grange."
+- Full: "Considered the pinnacle of Australian winemaking, Penfolds commands an unrivaled reputation among wine collectors worldwide. Founded in 1844 in Adelaide, the estate defined the modern era of Australian wine by championing a multi-regional blending philosophy to achieve a perfectly consistent house style, rather than focusing strictly on single vineyards. Their portfolio spans from the highly accessible Koonunga Hill to the globally celebrated Bin series, culminating in their flagship Grange. With a masterful approach to oak maturation, Penfolds consistently delivers a heavy-hitting signature profile of rich dark fruits, dense chocolate, and warm baking spices."
 
 ### Now rewrite this CSV:
 

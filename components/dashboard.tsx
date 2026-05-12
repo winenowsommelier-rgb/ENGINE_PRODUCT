@@ -1,17 +1,19 @@
 'use client';
 import React, { Suspense, useState } from 'react';
-import { ClipboardCheck, Globe, Grid3X3, History, Home, Library, Package, Settings, Upload, type LucideIcon } from 'lucide-react';
+import { ClipboardCheck, Database, FileCheck2, Globe, Grid3X3, History, Home, Library, Package, Settings, Upload, type LucideIcon } from 'lucide-react';
 
 const DashboardHomePage = React.lazy(() => import('@/components/pages/DashboardHomePage').then(m => ({ default: m.DashboardHomePage })));
 const ProductsPage      = React.lazy(() => import('@/components/pages/ProductsPage').then(m => ({ default: m.ProductsPage })));
 const ProductMatrixPage = React.lazy(() => import('@/components/pages/ProductMatrixPage').then(m => ({ default: m.ProductMatrixPage })));
 const KnowledgeLibraryPage = React.lazy(() => import('@/components/pages/KnowledgeLibraryPage').then(m => ({ default: m.KnowledgeLibraryPage })));
+const ResearchLibraryPage = React.lazy(() => import('@/components/pages/ResearchLibraryPage').then(m => ({ default: m.ResearchLibraryPage })));
+const PublishReadinessPage = React.lazy(() => import('@/components/pages/PublishReadinessPage').then(m => ({ default: m.PublishReadinessPage })));
 const ValidationDashboardPage = React.lazy(() => import('@/components/pages/ValidationDashboardPage').then(m => ({ default: m.ValidationDashboardPage })));
 const ChangeLogPage = React.lazy(() => import('@/components/pages/ChangeLogPage').then(m => ({ default: m.ChangeLogPage })));
 const ImportHubPage = React.lazy(() => import('@/components/pages/ImportHubPage').then(m => ({ default: m.ImportHubPage })));
 const SettingsPage      = React.lazy(() => import('@/components/pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
 
-type Section = 'home' | 'products' | 'matrix' | 'knowledge_library' | 'validation' | 'changelog' | 'import' | 'settings';
+type Section = 'home' | 'products' | 'matrix' | 'knowledge_library' | 'research_library' | 'publish_readiness' | 'validation' | 'changelog' | 'import' | 'settings';
 
 interface NavGroup {
   label: string;
@@ -31,11 +33,13 @@ const NAV_GROUPS: NavGroup[] = [
       { id: 'products',         label: 'Products',           Icon: Package },
       { id: 'matrix',           label: 'Product Matrix',     Icon: Grid3X3 },
       { id: 'knowledge_library', label: 'Knowledge Library', Icon: Library },
+      { id: 'research_library', label: 'Research Library',   Icon: Database },
     ],
   },
   {
     label: 'Operations',
     items: [
+      { id: 'publish_readiness', label: 'Publish Readiness', Icon: FileCheck2 },
       { id: 'validation', label: 'Data Validation', Icon: ClipboardCheck },
       { id: 'changelog',  label: 'Change Log',      Icon: History },
     ],
@@ -130,6 +134,8 @@ export function Dashboard() {
     products:         <ProductsPage />,
     matrix:           <ProductMatrixPage />,
     knowledge_library: <KnowledgeLibraryPage />,
+    research_library: <ResearchLibraryPage />,
+    publish_readiness: <PublishReadinessPage />,
     validation:       <ValidationDashboardPage />,
     changelog:        <ChangeLogPage />,
     import:           <ImportHubPage />,

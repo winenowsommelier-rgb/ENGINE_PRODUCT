@@ -9,7 +9,10 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "verify": "npm run typecheck",
-    "bulk-process": "tsx scripts/bulk-process-magento.ts"
+    "bulk-process": "tsx scripts/bulk-process-magento.ts",
+    "import:winesensed": "tsx scripts/import-winesensed-research.ts",
+    "research:geo-evidence": "tsx scripts/build-winesensed-geography-evidence.ts",
+    "research:authority-tier-report": "tsx scripts/export-authority-tier-report.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",

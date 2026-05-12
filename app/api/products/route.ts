@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Authorization, Content-Type, X-Source',
+};
+
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
 
@@ -10,8 +16,6 @@ const HEADERS = {
   Authorization: `Bearer ${SUPABASE_KEY}`,
   'Content-Type': 'application/json',
 };
-
-const PAGE_SIZE = 50;
 
 const SEGMENT_FILTERS: Record<string, string> = {
   wine:        'sku=like.W*',
@@ -30,10 +34,22 @@ const SORT_COLS: Record<string, string> = {
   sku:        'sku',
 };
 
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 200, headers: CORS_HEADERS });
+}
+
 export async function GET(req: NextRequest) {
   try {
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      return NextResponse.json(
+        { error: 'Server configuration error: Supabase credentials missing' },
+        { status: 500, headers: CORS_HEADERS }
+      );
+    }
+
     const { searchParams } = new URL(req.url);
     const search            = searchParams.get('search') ?? '';
+    const brand             = searchParams.get('brand') ?? '';
     const country           = searchParams.get('country') ?? '';
     const validation_status = searchParams.get('validation_status') ?? '';
     const classification    = searchParams.get('classification') ?? '';
@@ -45,9 +61,12 @@ export async function GET(req: NextRequest) {
     const sortBy            = SORT_COLS[searchParams.get('sort') ?? ''] ?? 'created_at';
     const sortDir           = searchParams.get('sortDir') === 'asc' ? 'asc' : 'desc';
     const page              = Math.max(1, parseInt(searchParams.get('page') ?? '1'));
-    const offset            = (page - 1) * PAGE_SIZE;
+    const limit             = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') ?? '50')));
+    const explicitOffset    = searchParams.get('offset');
+    const offset            = explicitOffset ? parseInt(explicitOffset) : (page - 1) * limit;
 
     const filters: string[] = [];
+    if (brand)              filters.push(`brand=ilike.*${encodeURIComponent(brand)}*`);
     if (country)            filters.push(`country=eq.${encodeURIComponent(country)}`);
     if (validation_status)  filters.push(`validation_status=eq.${encodeURIComponent(validation_status)}`);
     if (classification)     filters.push(`classification=eq.${encodeURIComponent(classification)}`);
@@ -63,7 +82,7 @@ export async function GET(req: NextRequest) {
     const qs = [
       ...filters,
       `order=${sortBy}.${sortDir}.nullslast`,
-      `limit=${PAGE_SIZE}`,
+      `limit=${limit}`,
       `offset=${offset}`,
     ].join('&');
 
@@ -73,7 +92,10 @@ export async function GET(req: NextRequest) {
 
     if (!res.ok) {
       const err = await res.text();
-      return NextResponse.json({ error: err }, { status: res.status });
+      return NextResponse.json(
+        { error: err },
+        { status: res.status, headers: CORS_HEADERS }
+      );
     }
 
     const items = (await res.json()).map((item: Record<string, unknown>) => ({
@@ -88,13 +110,15 @@ export async function GET(req: NextRequest) {
       items,
       total,
       page,
-      pageSize: PAGE_SIZE,
-      totalPages: Math.ceil(total / PAGE_SIZE),
+      pageSize: limit,
+      totalPages: Math.ceil(total / limit),
+    }, {
+      headers: CORS_HEADERS
     });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Request failed' },
-      { status: 500 }
+      { status: 500, headers: CORS_HEADERS }
     );
   }
 }

@@ -13,15 +13,15 @@ Usage:
     python scripts/fix_data_consistency.py --dry-run
     python scripts/fix_data_consistency.py
 """
-import json, argparse, re, sys, time, html
+import os, json, argparse, re, sys, time, html
 from urllib import request, parse
 from collections import Counter
 
 # ---------------------------------------------------------------------------
 # Supabase config
 # ---------------------------------------------------------------------------
-BASE = "https://xfcvliyxxguhihehqwkg.supabase.co"
-KEY = "sb_publishable_tJDrdH6t-CWBXgdv7bhvHQ_3bDFGdel"
+BASE = os.environ.get("NEXT_PUBLIC_SUPABASE_URL", "https://xfcvliyxxguhihehqwkg.supabase.co")
+KEY = os.environ.get("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "sb_publishable_tJDrdH6t-CWBXgdv7bhvHQ_3bDFGdel")
 H = {"apikey": KEY, "Authorization": f"Bearer {KEY}", "Prefer": "count=none"}
 
 FIELDS = (

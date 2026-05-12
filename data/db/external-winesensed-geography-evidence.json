@@ -1,0 +1,1387 @@
+{
+  "summary": {
+    "generated_at": "2026-05-09T13:21:22.148Z",
+    "source_records": 5000,
+    "evidence_rows": 31,
+    "matched": 19,
+    "ambiguous": 0,
+    "needs_classification": 12,
+    "by_suggested_type": {
+      "unknown": 2,
+      "subregion": 5,
+      "appellation": 10,
+      "region": 14
+    },
+    "top_needs_classification": [
+      {
+        "id": "winesensed-geo-spain-vino-de-espana",
+        "source": "winesensed",
+        "usage_policy": "research_only",
+        "license": "CC BY-NC-ND 4.0",
+        "observed_name": "Vino de España",
+        "normalized_name": "vino de espana",
+        "observed_country": "Spain",
+        "evidence_count": 49,
+        "review_count": 30,
+        "avg_rating": 4.19,
+        "avg_price": 13.16,
+        "top_grapes": [
+          {
+            "name": "Shiraz/Syrah",
+            "count": 49
+          }
+        ],
+        "matched_entity_type": null,
+        "matched_entity_id": null,
+        "matched_entity_name": null,
+        "match_status": "needs_classification",
+        "suggested_target_type": "unknown",
+        "sample_review_signals": [
+          "Weinig tannines, niet straf, met een Toets vanille, lekker bij pizza",
+          "♥️",
+          "🙏🏼"
+        ],
+        "source_notes": [
+          "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+          "Source field is named region, but observed values may represent region, subregion, or appellation."
+        ]
+      },
+      {
+        "id": "winesensed-geo-italy-vino-d-italia",
+        "source": "winesensed",
+        "usage_policy": "research_only",
+        "license": "CC BY-NC-ND 4.0",
+        "observed_name": "Vino d'Italia",
+        "normalized_name": "vino d italia",
+        "observed_country": "Italy",
+        "evidence_count": 34,
+        "review_count": 13,
+        "avg_rating": 4.1,
+        "avg_price": 9.66,
+        "top_grapes": [
+          {
+            "name": "Merlot",
+            "count": 34
+          }
+        ],
+        "matched_entity_type": null,
+        "matched_entity_id": null,
+        "matched_entity_name": null,
+        "match_status": "needs_classification",
+        "suggested_target_type": "unknown",
+        "sample_review_signals": [
+          "Подышать 10 минут минимум, лучше 20. После этого начнет раскрываться черная смородина, резиново-дымные нотки, приторная сладость сахарной ваты и звёздная пыль. И вот вроде глубокое, полнотелое, нетривиальное на вкус и даже созвучное интригующему названию, но мне почему-то не зашло. \n\n4 поставлю, заслужило, но второй раз не возьму. Разочарован своим разочарованием, если можно так сказать.\n\nP.S. Девочкам понравится.",
+          "3,35⭐ это пожалуй максимум! Да, с учётом цены многие ставят более высокие оценки, но это не правильно. Песня из 3х блатных аккордов, вот такая ассоция. Просто, но заходит не плохо. Хороший винный материал, я бы так описал. Нет ничего выраженного и Астрального, но и сильно отталкивающего тоже. 🤷‍♂️",
+          "Bit of bite in the end / after a few glasses .. not as smooth as 4stars would make you think"
+        ],
+        "source_notes": [
+          "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+          "Source field is named region, but observed values may represent region, subregion, or appellation."
+        ]
+      },
+      {
+        "id": "winesensed-geo-spain-sardon-de-duero",
+        "source": "winesensed",
+        "usage_policy": "research_only",
+        "license": "CC BY-NC-ND 4.0",
+        "observed_name": "Sardón de Duero",
+        "normalized_name": "sardon de duero",
+        "observed_country": "Spain",
+        "evidence_count": 5,
+        "review_count": 1,
+        "avg_rating": 4.4,
+        "avg_price": 46.19,
+        "top_grapes": [
+          {
+            "name": "Tempranillo",
+            "count": 5
+          }
+        ],
+        "matched_entity_type": null,
+        "matched_entity_id": null,
+        "matched_entity_name": null,
+        "match_status": "needs_classification",
+        "suggested_target_type": "subregion",
+        "sample_review_signals": [
+          "Nunca me canso de este vino, aunque no sea un Ribera… 😁"
+        ],
+        "source_notes": [
+          "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+          "Source field is named region, but observed values may represent region, subregion, or appellation."
+        ]
+      },
+      {
+        "id": "winesensed-geo-italy-costa-toscana",
+        "source": "winesensed",
+        "usage_policy": "research_only",
+        "license": "CC BY-NC-ND 4.0",
+        "observed_name": "Costa Toscana",
+        "normalized_name": "costa toscana",
+        "observed_country": "Italy",
+        "evidence_count": 5,
+        "review_count": 5,
+        "avg_rating": 4.2,
+        "avg_price": 20.86,
+        "top_grapes": [
+          {
+            "name": "Merlot",
+            "count": 5
+          }
+        ],
+        "matched_entity_type": null,
+        "matched_entity_id": null,
+        "matched_entity_name": null,
+        "match_status": "needs_classification",
+        "suggested_target_type": "appellation",
+        "sample_review_signals": [
+          "The usual hyper value of the worst Italian critics! This is a Osteria Wine !",
+          "Tuscan 100% Merlot. Ruby colour. M intensity nose of berry fruits and stewed plums, hint of red fruits and vanilla. Palete delivers much more, juicy berry medley, cranberry, hints of herbaceous notes. Tannins quite nicely integrated already, combining with 14% ABV for a solid m++ finish. 4.3* based on vfm and potential to improve 🍷👏👏",
+          "Fully body merlot with undertone of cherry taste!!"
+        ],
+        "source_notes": [
+          "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+          "Source field is named region, but observed values may represent region, subregion, or appellation."
+        ]
+      },
+      {
+        "id": "winesensed-geo-france-montagne-saint-emilion",
+        "source": "winesensed",
+        "usage_policy": "research_only",
+        "license": "CC BY-NC-ND 4.0",
+        "observed_name": "Montagne-Saint-Émilion",
+        "normalized_name": "montagne saint emilion",
+        "observed_country": "France",
+        "evidence_count": 4,
+        "review_count": 4,
+        "avg_rating": 4,
+        "avg_price": 15.3,
+        "top_grapes": [
+          {
+            "name": "Cabernet Sauvignon",
+            "count": 4
+          }
+        ],
+        "matched_entity_type": null,
+        "matched_entity_id": null,
+        "matched_entity_name": null,
+        "match_status": "needs_classification",
+        "suggested_target_type": "appellation",
+        "sample_review_signals": [
+          "Traditional red from Bordeaux. Nothing to write home about. Let it breathe and it'll open up. Doesn't overwhelm the meal.",
+          "Dry, fruit w oak and tobacco. It’s the soil of st Emilion",
+          "Firm structure with steely berry fruit and extremely dry"
+        ],
+        "source_notes": [
+          "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+          "Source field is named region, but observed values may represent region, subregion, or appellation."
+        ]
+      },
+      {
+        "id": "winesensed-geo-argentina-salta",
+        "source": "winesensed",
+        "usage_policy": "research_only",
+        "license": "CC BY-NC-ND 4.0",
+        "observed_name": "Salta",
+        "normalized_name": "salta",
+        "observed_country": "Argentina",
+        "evidence_count": 4,
+        "review_count": 4,
+        "avg_rating": 4.3,
+        "avg_price": 31.96,
+        "top_grapes": [
+          {
+            "name": "Malbec",
+            "count": 4
+          }
+        ],
+        "matched_entity_type": null,
+        "matched_entity_id": null,
+        "matched_entity_name": null,
+        "match_status": "needs_classification",
+        "suggested_target_type": "region",
+        "sample_review_signals": [
+          "Un exquisito logro..",
+          "Grand Tour da Grand Cru no Museu do Vinho.",
+          "Excellent and to my taste one of the best Argentine wines. Made with 85% Malbec and 15% Cabernet Sauvignon from Cafayate, Salta. Aged for 15 months in new French oak barrels. Aromas of blackberry, plum, blueberry, plum, chocolate, oak, earth, spices and vanilla. On the palate medium + body, structured,well balanced, good complexity and acidity. Rounded tannins. Long and seductive finish. Highly recommended!!!"
+        ],
+        "source_notes": [
+          "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+          "Source field is named region, but observed values may represent region, subregion, or appellation."
+        ]
+      },
+      {
+        "id": "winesensed-geo-italy-taurasi",
+        "source": "winesensed",
+        "usage_policy": "research_only",
+        "license": "CC BY-NC-ND 4.0",
+        "observed_name": "Taurasi",
+        "normalized_name": "taurasi",
+        "observed_country": "Italy",
+        "evidence_count": 2,
+        "review_count": 0,
+        "avg_rating": 3.9,
+        "avg_price": 36.26,
+        "top_grapes": [
+          {
+            "name": "Aglianico",
+            "count": 2
+          }
+        ],
+        "matched_entity_type": null,
+        "matched_entity_id": null,
+        "matched_entity_name": null,
+        "match_status": "needs_classification",
+        "suggested_target_type": "appellation",
+        "sample_review_signals": [],
+        "source_notes": [
+          "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+          "Source field is named region, but observed values may represent region, subregion, or appellation."
+        ]
+      },
+      {
+        "id": "winesensed-geo-portugal-peninsula-de-setubal",
+        "source": "winesensed",
+        "usage_policy": "research_only",
+        "license": "CC BY-NC-ND 4.0",
+        "observed_name": "Península de Setúbal",
+        "normalized_name": "peninsula de setubal",
+        "observed_country": "Portugal",
+        "evidence_count": 2,
+        "review_count": 1,
+        "avg_rating": 4.2,
+        "avg_price": 9.33,
+        "top_grapes": [
+          {
+            "name": "Touriga Nacional",
+            "count": 2
+          }
+        ],
+        "matched_entity_type": null,
+        "matched_entity_id": null,
+        "matched_entity_name": null,
+        "match_status": "needs_classification",
+        "suggested_target_type": "region",
+        "sample_review_signals": [
+          "Smooth and full"
+        ],
+        "source_notes": [
+          "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+          "Source field is named region, but observed values may represent region, subregion, or appellation."
+        ]
+      },
+      {
+        "id": "winesensed-geo-south africa-stellenbosch",
+        "source": "winesensed",
+        "usage_policy": "research_only",
+        "license": "CC BY-NC-ND 4.0",
+        "observed_name": "Stellenbosch",
+        "normalized_name": "stellenbosch",
+        "observed_country": "South Africa",
+        "evidence_count": 2,
+        "review_count": 1,
+        "avg_rating": 4.3,
+        "avg_price": 28.28,
+        "top_grapes": [
+          {
+            "name": "Cabernet Franc",
+            "count": 2
+          }
+        ],
+        "matched_entity_type": null,
+        "matched_entity_id": null,
+        "matched_entity_name": null,
+        "match_status": "needs_classification",
+        "suggested_target_type": "region",
+        "sample_review_signals": [
+          "Well balanced blend, wow now but give it three more years👍👍"
+        ],
+        "source_notes": [
+          "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+          "Source field is named region, but observed values may represent region, subregion, or appellation."
+        ]
+      },
+      {
+        "id": "winesensed-geo-portugal-alentejo",
+        "source": "winesensed",
+        "usage_policy": "research_only",
+        "license": "CC BY-NC-ND 4.0",
+        "observed_name": "Alentejo",
+        "normalized_name": "alentejo",
+        "observed_country": "Portugal",
+        "evidence_count": 2,
+        "review_count": 0,
+        "avg_rating": 4,
+        "avg_price": 7.29,
+        "top_grapes": [
+          {
+            "name": "Alicante Bouschet",
+            "count": 2
+          }
+        ],
+        "matched_entity_type": null,
+        "matched_entity_id": null,
+        "matched_entity_name": null,
+        "match_status": "needs_classification",
+        "suggested_target_type": "region",
+        "sample_review_signals": [],
+        "source_notes": [
+          "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+          "Source field is named region, but observed values may represent region, subregion, or appellation."
+        ]
+      },
+      {
+        "id": "winesensed-geo-italy-biferno",
+        "source": "winesensed",
+        "usage_policy": "research_only",
+        "license": "CC BY-NC-ND 4.0",
+        "observed_name": "Biferno",
+        "normalized_name": "biferno",
+        "observed_country": "Italy",
+        "evidence_count": 1,
+        "review_count": 1,
+        "avg_rating": 4,
+        "avg_price": 9.66,
+        "top_grapes": [
+          {
+            "name": "Montepulciano",
+            "count": 1
+          }
+        ],
+        "matched_entity_type": null,
+        "matched_entity_id": null,
+        "matched_entity_name": null,
+        "match_status": "needs_classification",
+        "suggested_target_type": "appellation",
+        "sample_review_signals": [
+          "Super"
+        ],
+        "source_notes": [
+          "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+          "Source field is named region, but observed values may represent region, subregion, or appellation."
+        ]
+      },
+      {
+        "id": "winesensed-geo-italy-terre-siciliane",
+        "source": "winesensed",
+        "usage_policy": "research_only",
+        "license": "CC BY-NC-ND 4.0",
+        "observed_name": "Terre Siciliane",
+        "normalized_name": "terre siciliane",
+        "observed_country": "Italy",
+        "evidence_count": 1,
+        "review_count": 1,
+        "avg_rating": 4.2,
+        "avg_price": 10.22,
+        "top_grapes": [
+          {
+            "name": "Cabernet Sauvignon",
+            "count": 1
+          }
+        ],
+        "matched_entity_type": null,
+        "matched_entity_id": null,
+        "matched_entity_name": null,
+        "match_status": "needs_classification",
+        "suggested_target_type": "appellation",
+        "sample_review_signals": [
+          "After 6 month I tasted the wine again during a nice evenning with friends. This time astonishingly good. Maybe bra cause of a good company or the first wine of the night which did not stolen our hearts. I was pleased with bold plum and blueberry notes and tannic finish. Deserves 4 stars ⭐️"
+        ],
+        "source_notes": [
+          "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+          "Source field is named region, but observed values may represent region, subregion, or appellation."
+        ]
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "id": "winesensed-geo-spain-vino-de-espana",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Vino de España",
+      "normalized_name": "vino de espana",
+      "observed_country": "Spain",
+      "evidence_count": 49,
+      "review_count": 30,
+      "avg_rating": 4.19,
+      "avg_price": 13.16,
+      "top_grapes": [
+        {
+          "name": "Shiraz/Syrah",
+          "count": 49
+        }
+      ],
+      "matched_entity_type": null,
+      "matched_entity_id": null,
+      "matched_entity_name": null,
+      "match_status": "needs_classification",
+      "suggested_target_type": "unknown",
+      "sample_review_signals": [
+        "Weinig tannines, niet straf, met een Toets vanille, lekker bij pizza",
+        "♥️",
+        "🙏🏼"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-vino-d-italia",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Vino d'Italia",
+      "normalized_name": "vino d italia",
+      "observed_country": "Italy",
+      "evidence_count": 34,
+      "review_count": 13,
+      "avg_rating": 4.1,
+      "avg_price": 9.66,
+      "top_grapes": [
+        {
+          "name": "Merlot",
+          "count": 34
+        }
+      ],
+      "matched_entity_type": null,
+      "matched_entity_id": null,
+      "matched_entity_name": null,
+      "match_status": "needs_classification",
+      "suggested_target_type": "unknown",
+      "sample_review_signals": [
+        "Подышать 10 минут минимум, лучше 20. После этого начнет раскрываться черная смородина, резиново-дымные нотки, приторная сладость сахарной ваты и звёздная пыль. И вот вроде глубокое, полнотелое, нетривиальное на вкус и даже созвучное интригующему названию, но мне почему-то не зашло. \n\n4 поставлю, заслужило, но второй раз не возьму. Разочарован своим разочарованием, если можно так сказать.\n\nP.S. Девочкам понравится.",
+        "3,35⭐ это пожалуй максимум! Да, с учётом цены многие ставят более высокие оценки, но это не правильно. Песня из 3х блатных аккордов, вот такая ассоция. Просто, но заходит не плохо. Хороший винный материал, я бы так описал. Нет ничего выраженного и Астрального, но и сильно отталкивающего тоже. 🤷‍♂️",
+        "Bit of bite in the end / after a few glasses .. not as smooth as 4stars would make you think"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-spain-sardon-de-duero",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Sardón de Duero",
+      "normalized_name": "sardon de duero",
+      "observed_country": "Spain",
+      "evidence_count": 5,
+      "review_count": 1,
+      "avg_rating": 4.4,
+      "avg_price": 46.19,
+      "top_grapes": [
+        {
+          "name": "Tempranillo",
+          "count": 5
+        }
+      ],
+      "matched_entity_type": null,
+      "matched_entity_id": null,
+      "matched_entity_name": null,
+      "match_status": "needs_classification",
+      "suggested_target_type": "subregion",
+      "sample_review_signals": [
+        "Nunca me canso de este vino, aunque no sea un Ribera… 😁"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-costa-toscana",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Costa Toscana",
+      "normalized_name": "costa toscana",
+      "observed_country": "Italy",
+      "evidence_count": 5,
+      "review_count": 5,
+      "avg_rating": 4.2,
+      "avg_price": 20.86,
+      "top_grapes": [
+        {
+          "name": "Merlot",
+          "count": 5
+        }
+      ],
+      "matched_entity_type": null,
+      "matched_entity_id": null,
+      "matched_entity_name": null,
+      "match_status": "needs_classification",
+      "suggested_target_type": "appellation",
+      "sample_review_signals": [
+        "The usual hyper value of the worst Italian critics! This is a Osteria Wine !",
+        "Tuscan 100% Merlot. Ruby colour. M intensity nose of berry fruits and stewed plums, hint of red fruits and vanilla. Palete delivers much more, juicy berry medley, cranberry, hints of herbaceous notes. Tannins quite nicely integrated already, combining with 14% ABV for a solid m++ finish. 4.3* based on vfm and potential to improve 🍷👏👏",
+        "Fully body merlot with undertone of cherry taste!!"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-france-montagne-saint-emilion",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Montagne-Saint-Émilion",
+      "normalized_name": "montagne saint emilion",
+      "observed_country": "France",
+      "evidence_count": 4,
+      "review_count": 4,
+      "avg_rating": 4,
+      "avg_price": 15.3,
+      "top_grapes": [
+        {
+          "name": "Cabernet Sauvignon",
+          "count": 4
+        }
+      ],
+      "matched_entity_type": null,
+      "matched_entity_id": null,
+      "matched_entity_name": null,
+      "match_status": "needs_classification",
+      "suggested_target_type": "appellation",
+      "sample_review_signals": [
+        "Traditional red from Bordeaux. Nothing to write home about. Let it breathe and it'll open up. Doesn't overwhelm the meal.",
+        "Dry, fruit w oak and tobacco. It’s the soil of st Emilion",
+        "Firm structure with steely berry fruit and extremely dry"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-argentina-salta",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Salta",
+      "normalized_name": "salta",
+      "observed_country": "Argentina",
+      "evidence_count": 4,
+      "review_count": 4,
+      "avg_rating": 4.3,
+      "avg_price": 31.96,
+      "top_grapes": [
+        {
+          "name": "Malbec",
+          "count": 4
+        }
+      ],
+      "matched_entity_type": null,
+      "matched_entity_id": null,
+      "matched_entity_name": null,
+      "match_status": "needs_classification",
+      "suggested_target_type": "region",
+      "sample_review_signals": [
+        "Un exquisito logro..",
+        "Grand Tour da Grand Cru no Museu do Vinho.",
+        "Excellent and to my taste one of the best Argentine wines. Made with 85% Malbec and 15% Cabernet Sauvignon from Cafayate, Salta. Aged for 15 months in new French oak barrels. Aromas of blackberry, plum, blueberry, plum, chocolate, oak, earth, spices and vanilla. On the palate medium + body, structured,well balanced, good complexity and acidity. Rounded tannins. Long and seductive finish. Highly recommended!!!"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-taurasi",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Taurasi",
+      "normalized_name": "taurasi",
+      "observed_country": "Italy",
+      "evidence_count": 2,
+      "review_count": 0,
+      "avg_rating": 3.9,
+      "avg_price": 36.26,
+      "top_grapes": [
+        {
+          "name": "Aglianico",
+          "count": 2
+        }
+      ],
+      "matched_entity_type": null,
+      "matched_entity_id": null,
+      "matched_entity_name": null,
+      "match_status": "needs_classification",
+      "suggested_target_type": "appellation",
+      "sample_review_signals": [],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-portugal-peninsula-de-setubal",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Península de Setúbal",
+      "normalized_name": "peninsula de setubal",
+      "observed_country": "Portugal",
+      "evidence_count": 2,
+      "review_count": 1,
+      "avg_rating": 4.2,
+      "avg_price": 9.33,
+      "top_grapes": [
+        {
+          "name": "Touriga Nacional",
+          "count": 2
+        }
+      ],
+      "matched_entity_type": null,
+      "matched_entity_id": null,
+      "matched_entity_name": null,
+      "match_status": "needs_classification",
+      "suggested_target_type": "region",
+      "sample_review_signals": [
+        "Smooth and full"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-south africa-stellenbosch",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Stellenbosch",
+      "normalized_name": "stellenbosch",
+      "observed_country": "South Africa",
+      "evidence_count": 2,
+      "review_count": 1,
+      "avg_rating": 4.3,
+      "avg_price": 28.28,
+      "top_grapes": [
+        {
+          "name": "Cabernet Franc",
+          "count": 2
+        }
+      ],
+      "matched_entity_type": null,
+      "matched_entity_id": null,
+      "matched_entity_name": null,
+      "match_status": "needs_classification",
+      "suggested_target_type": "region",
+      "sample_review_signals": [
+        "Well balanced blend, wow now but give it three more years👍👍"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-portugal-alentejo",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Alentejo",
+      "normalized_name": "alentejo",
+      "observed_country": "Portugal",
+      "evidence_count": 2,
+      "review_count": 0,
+      "avg_rating": 4,
+      "avg_price": 7.29,
+      "top_grapes": [
+        {
+          "name": "Alicante Bouschet",
+          "count": 2
+        }
+      ],
+      "matched_entity_type": null,
+      "matched_entity_id": null,
+      "matched_entity_name": null,
+      "match_status": "needs_classification",
+      "suggested_target_type": "region",
+      "sample_review_signals": [],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-biferno",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Biferno",
+      "normalized_name": "biferno",
+      "observed_country": "Italy",
+      "evidence_count": 1,
+      "review_count": 1,
+      "avg_rating": 4,
+      "avg_price": 9.66,
+      "top_grapes": [
+        {
+          "name": "Montepulciano",
+          "count": 1
+        }
+      ],
+      "matched_entity_type": null,
+      "matched_entity_id": null,
+      "matched_entity_name": null,
+      "match_status": "needs_classification",
+      "suggested_target_type": "appellation",
+      "sample_review_signals": [
+        "Super"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-terre-siciliane",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Terre Siciliane",
+      "normalized_name": "terre siciliane",
+      "observed_country": "Italy",
+      "evidence_count": 1,
+      "review_count": 1,
+      "avg_rating": 4.2,
+      "avg_price": 10.22,
+      "top_grapes": [
+        {
+          "name": "Cabernet Sauvignon",
+          "count": 1
+        }
+      ],
+      "matched_entity_type": null,
+      "matched_entity_id": null,
+      "matched_entity_name": null,
+      "match_status": "needs_classification",
+      "suggested_target_type": "appellation",
+      "sample_review_signals": [
+        "After 6 month I tasted the wine again during a nice evenning with friends. This time astonishingly good. Maybe bra cause of a good company or the first wine of the night which did not stolen our hearts. I was pleased with bold plum and blueberry notes and tannic finish. Deserves 4 stars ⭐️"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-abruzzo",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Abruzzo",
+      "normalized_name": "abruzzo",
+      "observed_country": "Italy",
+      "evidence_count": 4760,
+      "review_count": 4516,
+      "avg_rating": 4.3,
+      "avg_price": 22.26,
+      "top_grapes": [
+        {
+          "name": "Sangiovese",
+          "count": 4760
+        }
+      ],
+      "matched_entity_type": "region",
+      "matched_entity_id": 98,
+      "matched_entity_name": "Abruzzo",
+      "match_status": "matched",
+      "suggested_target_type": "region",
+      "sample_review_signals": [
+        "Recomendo demais!",
+        "Klasse vin. Fyldig og drikke venlig. Helt igennem tilfreds. Bedre vin til pengene findes snart ikke",
+        "Soft & sweat smell"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-veneto",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Veneto",
+      "normalized_name": "veneto",
+      "observed_country": "Italy",
+      "evidence_count": 39,
+      "review_count": 33,
+      "avg_rating": 4.08,
+      "avg_price": 8.66,
+      "top_grapes": [
+        {
+          "name": "Corvina",
+          "count": 38
+        },
+        {
+          "name": "Montepulciano",
+          "count": 1
+        }
+      ],
+      "matched_entity_type": "region",
+      "matched_entity_id": 61,
+      "matched_entity_name": "Veneto",
+      "match_status": "matched",
+      "suggested_target_type": "region",
+      "sample_review_signals": [
+        "Promo foire aux vins carrefour Belgique 2+1 gratuit ! La bouteille revient alors à 6,55€ excellent rapport qualité prix",
+        "Rapport qualité prix exceptionnel, le nez cependant est discret, marqué par un compoté de fruits noirs, la bouche est envahissante , boisé, à juste pour point, un délice sur des plats en sauce et de la viande rouge. On oubliera pas les fromages, camembert, Livarot, fromages puissants etc, impératif d'avoir dans sa cave à moins de dix €....sensationnel !",
+        "A red wine Katie is willing to drink!"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-toscana",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Toscana",
+      "normalized_name": "toscana",
+      "observed_country": "Italy",
+      "evidence_count": 18,
+      "review_count": 18,
+      "avg_rating": 4,
+      "avg_price": 11.06,
+      "top_grapes": [
+        {
+          "name": "Merlot",
+          "count": 18
+        }
+      ],
+      "matched_entity_type": "region",
+      "matched_entity_id": 68,
+      "matched_entity_name": "Tuscany",
+      "match_status": "matched",
+      "suggested_target_type": "region",
+      "sample_review_signals": [
+        "Very nice wine for a very fair rate. This differs from most Italians I've tried, specifically in that it's one of the sweetest I've encountered. It's a lot like biting into a perfectly ripe plum. Cherry flavor is also notable. \n\nGreat flavors, great nose, medium structure, and an overall nice experience",
+        "Great value , rare example of Tuscan Red I enjoyed",
+        "Fruity with rich tannins and fairly long finish. Due to the price in deserves 4 stars at least ..!"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation.",
+        "Matched by conservative geography alias: Toscana → Tuscany."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-puglia",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Puglia",
+      "normalized_name": "puglia",
+      "observed_country": "Italy",
+      "evidence_count": 12,
+      "review_count": 12,
+      "avg_rating": 4,
+      "avg_price": 9.34,
+      "top_grapes": [
+        {
+          "name": "Primitivo",
+          "count": 12
+        }
+      ],
+      "matched_entity_type": "region",
+      "matched_entity_id": 85,
+      "matched_entity_name": "Puglia",
+      "match_status": "matched",
+      "suggested_target_type": "region",
+      "sample_review_signals": [
+        "3.7 very smooth and fruity but lacks some depth.",
+        "Hard to decide whether to rate this one 4.0 or 4.5. Ultimately settled on 4.5, since at merely 8 euros she (he??) definitely merits an opkontje (pardon my Dutch) over the 4.0 crowd that isn’t really all that exciting. Still, there are a significant number of 4.5 members (obviously also at the 8/10 euro price point, I mean) that are better than this one, and whose tastes are simply deeper and richer. So 4.25 would have been the most appropriate score and I’m pleased to help this Coppiere get there averagely!",
+        "Fantastic drop at £11. Bold nose, followed by a palate filling mix of dark fruit, smoke and a touch of pepper. Fully rounded tannins and very smooth. In short, eminently drinkable!"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-chianti-classico",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Chianti Classico",
+      "normalized_name": "chianti classico",
+      "observed_country": "Italy",
+      "evidence_count": 9,
+      "review_count": 3,
+      "avg_rating": 4.1,
+      "avg_price": 30.66,
+      "top_grapes": [
+        {
+          "name": "Sangiovese",
+          "count": 9
+        }
+      ],
+      "matched_entity_type": "appellation",
+      "matched_entity_id": 220,
+      "matched_entity_name": "Chianti Classico",
+      "match_status": "matched",
+      "suggested_target_type": "appellation",
+      "sample_review_signals": [
+        "칠링이 좀 안되서 아쉬웠고 탄닌감이 지배적인 와인. 특별한 감흥이나 도드라지는 산미는 없음. 재구매 놉",
+        "Great wine smooth finish",
+        "Light, cherry, dry versatile."
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-spain-ribera-del-duero",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Ribera del Duero",
+      "normalized_name": "ribera del duero",
+      "observed_country": "Spain",
+      "evidence_count": 7,
+      "review_count": 4,
+      "avg_rating": 3.96,
+      "avg_price": 27.69,
+      "top_grapes": [
+        {
+          "name": "Tempranillo",
+          "count": 7
+        }
+      ],
+      "matched_entity_type": "region",
+      "matched_entity_id": 74,
+      "matched_entity_name": "Ribera del Duero",
+      "match_status": "matched",
+      "suggested_target_type": "region",
+      "sample_review_signals": [
+        "Super good. Smooth, fruity. You just want more :)\nWell balanced, i usually prefer heavy onces but this was good.",
+        "De color oscuro intenso,sin duda en nariz destacamos el aroma a frutas negras maduras tiene una aceptable acidez en boca y tiene una marcado final, me ha gustado.",
+        "Like it - could be a little more body"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-portugal-douro",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Douro",
+      "normalized_name": "douro",
+      "observed_country": "Portugal",
+      "evidence_count": 7,
+      "review_count": 2,
+      "avg_rating": 4,
+      "avg_price": 19.46,
+      "top_grapes": [
+        {
+          "name": "Tinta Roriz",
+          "count": 7
+        }
+      ],
+      "matched_entity_type": "region",
+      "matched_entity_id": 60,
+      "matched_entity_name": "Douro",
+      "match_status": "matched",
+      "suggested_target_type": "region",
+      "sample_review_signals": [
+        "Excelente vinho da famosa Casa Ferreirinha com presença de frutas vermelhas (nenhuma relação com figos, mas sim ameixa e amoras) e taninos macios. Final persistente e aromático, lembrando cominho e cardamomo, muito sutil e muito aveludado. Um excepcional vinho para sopas e pratos com baixa acidez e alguma gordura.",
+        "Fruity full bodied wine 13.5% with dark fruit flavours. Excellent with roasted meat."
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-bolgheri",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Bolgheri",
+      "normalized_name": "bolgheri",
+      "observed_country": "Italy",
+      "evidence_count": 7,
+      "review_count": 2,
+      "avg_rating": 4.2,
+      "avg_price": 33.46,
+      "top_grapes": [
+        {
+          "name": "Cabernet Sauvignon",
+          "count": 7
+        }
+      ],
+      "matched_entity_type": "subregion",
+      "matched_entity_id": 211,
+      "matched_entity_name": "Bolgheri",
+      "match_status": "matched",
+      "suggested_target_type": "subregion",
+      "sample_review_signals": [
+        "Стабильно хорошая Тоскана",
+        "Fer der priis hüere heftig"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-france-saint-emilion-grand-cru",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Saint-Émilion Grand Cru",
+      "normalized_name": "saint emilion grand cru",
+      "observed_country": "France",
+      "evidence_count": 6,
+      "review_count": 4,
+      "avg_rating": 4.12,
+      "avg_price": 25.39,
+      "top_grapes": [
+        {
+          "name": "Merlot",
+          "count": 6
+        }
+      ],
+      "matched_entity_type": "appellation",
+      "matched_entity_id": 255,
+      "matched_entity_name": "Saint-Émilion Grand Cru",
+      "match_status": "matched",
+      "suggested_target_type": "appellation",
+      "sample_review_signals": [
+        "Excellent en apéro.",
+        "Good balanced wine. Fine tannins and plenty of fruit. Red fruit, cherry and blackberry complimented by oak and earthy notes.",
+        "Богатые ягоды"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-australia-barossa-valley",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Barossa Valley",
+      "normalized_name": "barossa valley",
+      "observed_country": "Australia",
+      "evidence_count": 5,
+      "review_count": 3,
+      "avg_rating": 3.96,
+      "avg_price": 27.58,
+      "top_grapes": [
+        {
+          "name": "Shiraz/Syrah",
+          "count": 5
+        }
+      ],
+      "matched_entity_type": "region",
+      "matched_entity_id": 95,
+      "matched_entity_name": "Barossa Valley",
+      "match_status": "matched",
+      "suggested_target_type": "region",
+      "sample_review_signals": [
+        "Fruity light, your go to wine for fine dining",
+        "18에 비하면 산도가 도드라져 약간의 인상을 지푸리게 하는 부분이 있지만 역시나 훌륭하다.",
+        "blackberry plum oak pepper vanilla chocolate cherry blueberry smoke"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-united states-napa-valley",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Napa Valley",
+      "normalized_name": "napa valley",
+      "observed_country": "United States",
+      "evidence_count": 4,
+      "review_count": 4,
+      "avg_rating": 4,
+      "avg_price": 13.86,
+      "top_grapes": [
+        {
+          "name": "Pinot Noir",
+          "count": 4
+        }
+      ],
+      "matched_entity_type": "appellation",
+      "matched_entity_id": 231,
+      "matched_entity_name": "Napa Valley",
+      "match_status": "matched",
+      "suggested_target_type": "appellation",
+      "sample_review_signals": [
+        "a little too sweet for me but grows on you",
+        "Delicious and nice fruit flavors.",
+        "Good but nothing special. Only but again if on sale"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-salento",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Salento",
+      "normalized_name": "salento",
+      "observed_country": "Italy",
+      "evidence_count": 4,
+      "review_count": 1,
+      "avg_rating": 4,
+      "avg_price": 19.46,
+      "top_grapes": [
+        {
+          "name": "Primitivo",
+          "count": 4
+        }
+      ],
+      "matched_entity_type": "appellation",
+      "matched_entity_id": 221,
+      "matched_entity_name": "Salento",
+      "match_status": "matched",
+      "suggested_target_type": "appellation",
+      "sample_review_signals": [
+        "エノテカハッピーワインで3000\n当たり\n華やかさ、チョコっぽさもありつつ、いちご、ベリーの果実味強し\nコスパ考えると4.4"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-australia-barossa",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Barossa",
+      "normalized_name": "barossa",
+      "observed_country": "Australia",
+      "evidence_count": 3,
+      "review_count": 1,
+      "avg_rating": 4.2,
+      "avg_price": 13.86,
+      "top_grapes": [
+        {
+          "name": "Shiraz/Syrah",
+          "count": 3
+        }
+      ],
+      "matched_entity_type": "region",
+      "matched_entity_id": 78,
+      "matched_entity_name": "Barossa",
+      "match_status": "matched",
+      "suggested_target_type": "region",
+      "sample_review_signals": [
+        "I love Grant Burge wine"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-langhe",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Langhe",
+      "normalized_name": "langhe",
+      "observed_country": "Italy",
+      "evidence_count": 2,
+      "review_count": 1,
+      "avg_rating": 3.9,
+      "avg_price": 19.59,
+      "top_grapes": [
+        {
+          "name": "Nebbiolo",
+          "count": 2
+        }
+      ],
+      "matched_entity_type": "subregion",
+      "matched_entity_id": 150,
+      "matched_entity_name": "Langhe",
+      "match_status": "matched",
+      "suggested_target_type": "subregion",
+      "sample_review_signals": [
+        "Cherry, liquorice, herbal,cedar\nMedium acidity and tannin, high alcohol, medium- body. M+ intensity and finish."
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-piemonte",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Piemonte",
+      "normalized_name": "piemonte",
+      "observed_country": "Italy",
+      "evidence_count": 2,
+      "review_count": 1,
+      "avg_rating": 3.9,
+      "avg_price": 8.4,
+      "top_grapes": [
+        {
+          "name": "Barbera",
+          "count": 2
+        }
+      ],
+      "matched_entity_type": "region",
+      "matched_entity_id": 56,
+      "matched_entity_name": "Piedmont",
+      "match_status": "matched",
+      "suggested_target_type": "region",
+      "sample_review_signals": [
+        "Go"
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation.",
+        "Matched by conservative geography alias: Piemonte → Piedmont."
+      ]
+    },
+    {
+      "id": "winesensed-geo-italy-brunello-di-montalcino",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Brunello di Montalcino",
+      "normalized_name": "brunello di montalcino",
+      "observed_country": "Italy",
+      "evidence_count": 1,
+      "review_count": 0,
+      "avg_rating": 4.5,
+      "avg_price": 83.41,
+      "top_grapes": [
+        {
+          "name": "Sangiovese",
+          "count": 1
+        }
+      ],
+      "matched_entity_type": "appellation",
+      "matched_entity_id": 238,
+      "matched_entity_name": "Brunello di Montalcino",
+      "match_status": "matched",
+      "suggested_target_type": "appellation",
+      "sample_review_signals": [],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-spain-rioja",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Rioja",
+      "normalized_name": "rioja",
+      "observed_country": "Spain",
+      "evidence_count": 1,
+      "review_count": 1,
+      "avg_rating": 3.9,
+      "avg_price": 13.99,
+      "top_grapes": [
+        {
+          "name": "Tempranillo",
+          "count": 1
+        }
+      ],
+      "matched_entity_type": "region",
+      "matched_entity_id": 73,
+      "matched_entity_name": "Rioja",
+      "match_status": "matched",
+      "suggested_target_type": "region",
+      "sample_review_signals": [
+        "Dry, bold and somewhat acidic. Deep red color with a heavy plum aroma. Long finish. Good value."
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-spain-rioja-alta",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Rioja Alta",
+      "normalized_name": "rioja alta",
+      "observed_country": "Spain",
+      "evidence_count": 1,
+      "review_count": 0,
+      "avg_rating": 4.3,
+      "avg_price": 22.26,
+      "top_grapes": [
+        {
+          "name": "Tempranillo",
+          "count": 1
+        }
+      ],
+      "matched_entity_type": "subregion",
+      "matched_entity_id": 149,
+      "matched_entity_name": "Rioja Alta",
+      "match_status": "matched",
+      "suggested_target_type": "subregion",
+      "sample_review_signals": [],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    },
+    {
+      "id": "winesensed-geo-argentina-uco-valley",
+      "source": "winesensed",
+      "usage_policy": "research_only",
+      "license": "CC BY-NC-ND 4.0",
+      "observed_name": "Uco Valley",
+      "normalized_name": "uco valley",
+      "observed_country": "Argentina",
+      "evidence_count": 1,
+      "review_count": 1,
+      "avg_rating": 4.2,
+      "avg_price": 29.45,
+      "top_grapes": [
+        {
+          "name": "Cabernet Sauvignon",
+          "count": 1
+        }
+      ],
+      "matched_entity_type": "subregion",
+      "matched_entity_id": 190,
+      "matched_entity_name": "Uco Valley",
+      "match_status": "matched",
+      "suggested_target_type": "subregion",
+      "sample_review_signals": [
+        "93 percent Malbec, 5 percent cab Sav, 2 percent Syrah. This wine shows how aging in French barrels can make a wine smooth. The harshness of Malbec is gone in this wine due to French Oak barrels. Grab this."
+      ],
+      "source_notes": [
+        "External WineSensed geography evidence; review-only before canonical taxonomy changes.",
+        "Source field is named region, but observed values may represent region, subregion, or appellation."
+      ]
+    }
+  ]
+}

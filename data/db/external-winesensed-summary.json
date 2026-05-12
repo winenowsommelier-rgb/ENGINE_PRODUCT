@@ -1,0 +1,201 @@
+{
+  "source": "winesensed",
+  "source_url": "https://huggingface.co/datasets/Dakhoo/L2T-NeurIPS-2023",
+  "paper_url": "https://arxiv.org/abs/2308.16900",
+  "license": "CC BY-NC-ND 4.0",
+  "usage_policy": "research_only",
+  "imported_at": "2026-05-09T13:08:27.984Z",
+  "source_file": "data/research/winesensed_wt_session.jsonl",
+  "imported_rows": 5000,
+  "rows_with_review": 4668,
+  "rows_with_country": 5000,
+  "rows_with_region": 5000,
+  "rows_with_grape": 5000,
+  "rows_with_rating": 5000,
+  "top_countries": [
+    {
+      "name": "Italy",
+      "count": 4897
+    },
+    {
+      "name": "Spain",
+      "count": 63
+    },
+    {
+      "name": "Portugal",
+      "count": 11
+    },
+    {
+      "name": "France",
+      "count": 10
+    },
+    {
+      "name": "Australia",
+      "count": 8
+    },
+    {
+      "name": "Argentina",
+      "count": 5
+    },
+    {
+      "name": "United States",
+      "count": 4
+    },
+    {
+      "name": "South Africa",
+      "count": 2
+    }
+  ],
+  "top_grapes": [
+    {
+      "name": "Sangiovese",
+      "count": 4770
+    },
+    {
+      "name": "Merlot",
+      "count": 63
+    },
+    {
+      "name": "Shiraz/Syrah",
+      "count": 57
+    },
+    {
+      "name": "Corvina",
+      "count": 38
+    },
+    {
+      "name": "Primitivo",
+      "count": 16
+    },
+    {
+      "name": "Tempranillo",
+      "count": 14
+    },
+    {
+      "name": "Cabernet Sauvignon",
+      "count": 13
+    },
+    {
+      "name": "Tinta Roriz",
+      "count": 7
+    },
+    {
+      "name": "Pinot Noir",
+      "count": 4
+    },
+    {
+      "name": "Malbec",
+      "count": 4
+    },
+    {
+      "name": "Montepulciano",
+      "count": 2
+    },
+    {
+      "name": "Nebbiolo",
+      "count": 2
+    },
+    {
+      "name": "Aglianico",
+      "count": 2
+    },
+    {
+      "name": "Touriga Nacional",
+      "count": 2
+    },
+    {
+      "name": "Cabernet Franc",
+      "count": 2
+    },
+    {
+      "name": "Alicante Bouschet",
+      "count": 2
+    },
+    {
+      "name": "Barbera",
+      "count": 2
+    }
+  ],
+  "top_regions": [
+    {
+      "name": "Abruzzo",
+      "count": 4760
+    },
+    {
+      "name": "Vino de España",
+      "count": 49
+    },
+    {
+      "name": "Veneto",
+      "count": 39
+    },
+    {
+      "name": "Vino d'Italia",
+      "count": 34
+    },
+    {
+      "name": "Toscana",
+      "count": 18
+    },
+    {
+      "name": "Puglia",
+      "count": 12
+    },
+    {
+      "name": "Chianti Classico",
+      "count": 9
+    },
+    {
+      "name": "Ribera del Duero",
+      "count": 7
+    },
+    {
+      "name": "Douro",
+      "count": 7
+    },
+    {
+      "name": "Bolgheri",
+      "count": 7
+    },
+    {
+      "name": "Saint-Émilion Grand Cru",
+      "count": 6
+    },
+    {
+      "name": "Barossa Valley",
+      "count": 5
+    },
+    {
+      "name": "Sardón de Duero",
+      "count": 5
+    },
+    {
+      "name": "Costa Toscana",
+      "count": 5
+    },
+    {
+      "name": "Napa Valley",
+      "count": 4
+    },
+    {
+      "name": "Salento",
+      "count": 4
+    },
+    {
+      "name": "Montagne-Saint-Émilion",
+      "count": 4
+    },
+    {
+      "name": "Salta",
+      "count": 4
+    },
+    {
+      "name": "Barossa",
+      "count": 3
+    },
+    {
+      "name": "Langhe",
+      "count": 2
+    }
+  ]
+}

@@ -1,6 +1,12 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Authorization, Content-Type, X-Source',
+};
+
 const QUERIES = [
   "What are the best online wine shops in Thailand for delivery?",
   "Where can I buy imported wine online in Thailand?",
@@ -180,6 +186,10 @@ async function runAEO(site: string): Promise<AEOResult> {
   };
 }
 
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 200, headers: CORS_HEADERS });
+}
+
 export async function GET(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
   const site = searchParams.get("site") ?? "winenow";
@@ -191,7 +201,7 @@ export async function GET(request: Request): Promise<NextResponse> {
         error:
           'Invalid site parameter. Must be "winenow" or "liq9".',
       },
-      { status: 400 }
+      { status: 400, headers: CORS_HEADERS }
     );
   }
 
@@ -201,7 +211,7 @@ export async function GET(request: Request): Promise<NextResponse> {
         error:
           "ANTHROPIC_API_KEY is not configured. Please set this environment variable to enable AEO analysis.",
       },
-      { status: 503 }
+      { status: 503, headers: CORS_HEADERS }
     );
   }
 
@@ -212,7 +222,7 @@ export async function GET(request: Request): Promise<NextResponse> {
       ...cached.data,
       cached: true,
       cacheAge: Math.round((Date.now() - cached.timestamp) / 1000),
-    });
+    }, { headers: CORS_HEADERS });
   }
 
   try {
@@ -223,12 +233,12 @@ export async function GET(request: Request): Promise<NextResponse> {
       timestamp: Date.now(),
     };
 
-    return NextResponse.json({ ...result, cached: false });
+    return NextResponse.json({ ...result, cached: false }, { headers: CORS_HEADERS });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json(
       { error: `AEO analysis failed: ${message}` },
-      { status: 500 }
+      { status: 500, headers: CORS_HEADERS }
     );
   }
 }

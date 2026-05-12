@@ -1,0 +1,24 @@
+{
+  "winesensed-geo-spain-vino-de-espana": {
+    "evidence_id": "winesensed-geo-spain-vino-de-espana",
+    "status": "needs_research",
+    "reviewer": "",
+    "notes": "Generic national designation; confirm whether to keep as origin designation rather than canonical region.",
+    "source_urls": [],
+    "confirmed_name": null,
+    "confirmed_parent_name": null,
+    "promoted_entity_id": null,
+    "updated_at": "2026-05-09T13:51:58.790Z"
+  },
+  "winesensed-geo-argentina-salta": {
+    "evidence_id": "winesensed-geo-argentina-salta",
+    "status": "confirmed_region",
+    "reviewer": "",
+    "notes": "Candidate region; requires authority-source review before apply.",
+    "source_urls": [],
+    "confirmed_name": "Salta",
+    "confirmed_parent_name": null,
+    "promoted_entity_id": null,
+    "updated_at": "2026-05-09T13:57:49.970Z"
+  }
+}

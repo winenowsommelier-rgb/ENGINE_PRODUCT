@@ -70,7 +70,16 @@ or the Supabase SQL editor. See `docs/supabase-setup.md` for the full flow.
 - `lib/render-validation.ts` – UI safety checks before rendering.
 - `lib/supabase/config.ts` – environment-based Supabase project configuration.
 - `lib/supabase/client.ts` – Supabase REST helpers for sync.
+- `app/api/publish-readiness/route.ts` – read-only operational readiness summary for QC, fast-lane, GA priority, and publish batches.
+- `app/api/research-library/winesensed/route.ts` – research-only WineSensed dataset browser API.
+- `app/api/research-library/geography-evidence/route.ts` – region/subregion/appellation evidence queue derived from WineSensed research rows.
+- `app/api/research-library/authority-validation/route.ts` – validation queue for missing product geography before taxonomy or product updates.
+- `app/api/research-library/authority-product-candidates/route.ts` – read-only product update preview for authority-approved geography decisions.
+- `app/api/research-library/geography-candidates/route.ts` – read-only product canonicalization candidate gate for confirmed geography evidence.
 - `supabase/schema.sql` – database schema for products, taxonomy, and import run tracking.
+- `docs/publish-readiness.md` – daily publish-readiness operating workflow.
+- `docs/research-library.md` – external research dataset import and usage boundaries.
+- `docs/authority-validation-progress.md` – running progress log for authority-reviewed taxonomy/product geography decisions.
 - `docs/excel-import-process.md` – step-by-step Excel import process.
 - `docs/supabase-setup.md` – project-specific Supabase setup instructions.
 - `public/templates/winenow-import-template.csv` – starter import template.

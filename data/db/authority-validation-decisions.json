@@ -1,0 +1,361 @@
+{
+  "authority-geo-WWW1122BU": {
+    "candidate_id": "authority-geo-WWW1122BU",
+    "status": "published",
+    "authority_urls": [
+      "https://www.terrazasdelosandes.com/en-us/our-wines/reserva-chardonnay-2024"
+    ],
+    "authority_notes": "Producer page for Terrazas Reserva Chardonnay states Mendoza vineyards / Mendoza wine; WineSensed country signal compared but did not provide product-level region.",
+    "reviewer": "codex-authority-batch-1",
+    "validated_value": "Mendoza",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-09T16:04:30.030Z"
+  },
+  "authority-geo-WRW0415AA": {
+    "candidate_id": "authority-geo-WRW0415AA",
+    "status": "published",
+    "authority_urls": [
+      "https://www.antinori.it/vino/tignanello-en/"
+    ],
+    "authority_notes": "Official Antinori Tignanello page places the wine in the Chianti Classico area; product name is Tignanello IGT and canonical region is Tuscany. WineSensed showed generic Italy/Toscana signal only.",
+    "reviewer": "codex-authority-batch-1",
+    "validated_value": "Tuscany",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-09T16:04:32.768Z"
+  },
+  "authority-geo-WWW0009AA": {
+    "candidate_id": "authority-geo-WWW0009AA",
+    "status": "published",
+    "authority_urls": [
+      "https://www.antinori.it/en/vino/villa-antinori-bianco-en/?wineyear=master"
+    ],
+    "authority_notes": "Official Antinori Villa Antinori Bianco page states Villa Antinori Bianco IGT Toscana; canonical region is Tuscany. Product field was blank.",
+    "reviewer": "codex-authority-batch-1",
+    "validated_value": "Tuscany",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-09T16:04:34.177Z"
+  },
+  "authority-geo-WRW0429AA": {
+    "candidate_id": "authority-geo-WRW0429AA",
+    "status": "published",
+    "authority_urls": [
+      "https://www.santacristina.wine/wp-content/uploads/2021/06/FATTORIA-LE-MAESTRELLE-2020-ENG-1.pdf"
+    ],
+    "authority_notes": "Santa Cristina technical sheet gives Fattoria Le Maestrelle classification as Toscana IGT; canonical region is Tuscany. Confidence medium because source is a technical PDF for 2020 while local product vintage is unspecified.",
+    "reviewer": "codex-authority-batch-1",
+    "validated_value": "Tuscany",
+    "validated_field": "region",
+    "confidence": "medium",
+    "updated_at": "2026-05-09T16:04:33.130Z"
+  },
+  "authority-geo-WRW4901AA": {
+    "candidate_id": "authority-geo-WRW4901AA",
+    "status": "published",
+    "authority_urls": [
+      "https://www.antinori.it/en/vino/bramasole-en/",
+      "https://www.antinori.it/en/tenuta/estates-italy/la-braccesca-estate/"
+    ],
+    "authority_notes": "Official Antinori Bramasole/La Braccesca pages place the wine/estate in Cortona; canonical region is Tuscany. Product name includes Cortona Syrah DOC.",
+    "reviewer": "codex-authority-batch-1",
+    "validated_value": "Tuscany",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-09T16:04:46.391Z"
+  },
+  "authority-geo-WWW0434AA": {
+    "candidate_id": "authority-geo-WWW0434AA",
+    "status": "published",
+    "authority_urls": [
+      "https://haraswines.com/en/wines/chardonnay-en/"
+    ],
+    "authority_notes": "User confirmed Chile. Official Haras de Pirque Chardonnay page places Haras de Pirque in Maipo, Chile and describes Chardonnay expression from Casablanca. First correct country from Italy to Chile; region needs separate validation after country is fixed.",
+    "reviewer": "codex-authority-chile-fix",
+    "validated_value": "Chile",
+    "validated_field": "country",
+    "confidence": "high",
+    "updated_at": "2026-05-09T16:04:50.134Z"
+  },
+  "authority-geo-WRW1144AA": {
+    "candidate_id": "authority-geo-WRW1144AA",
+    "status": "published",
+    "authority_urls": [
+      "https://haraswines.com/en/wines/hussonet-en/"
+    ],
+    "authority_notes": "User confirmed Chile. Official Haras de Pirque Hussonet page states Cabernet Sauvignon from Haras de Pirque vineyards in Maipo Valley; Maipo Valley is in Chile. First correct country from Italy to Chile, then validate region Maipo Valley after country is fixed.",
+    "reviewer": "codex-authority-chile-fix",
+    "validated_value": "Chile",
+    "validated_field": "country",
+    "confidence": "high",
+    "updated_at": "2026-05-09T16:05:02.478Z"
+  },
+  "authority-geo-WWW5236FJ": {
+    "candidate_id": "authority-geo-WWW5236FJ",
+    "status": "needs_authority_source",
+    "authority_urls": [
+      "https://www.vivino.com/US/en/colina-gvdbs-chardonnay/w/10573242"
+    ],
+    "authority_notes": "Sales tier S1 review. Available online evidence identifies Colina Chardonnay as Chile / Wine of Chile only, which is too generic for canonical region fill. Do not fill region until producer, importer, label, or regulatory source confirms a specific Chilean region.",
+    "reviewer": "codex-sales-tier-s1",
+    "validated_value": null,
+    "validated_field": "region",
+    "confidence": "low",
+    "updated_at": "2026-05-10T07:31:20.181Z"
+  },
+  "authority-geo-WRW4210GX": {
+    "candidate_id": "authority-geo-WRW4210GX",
+    "status": "published",
+    "authority_urls": [
+      "https://littlebeauty.co.nz/wp-content/uploads/2025/05/Little-Beauty-Black-Edition-Sauvignon-Blanc-2019-Technical-Note.pdf"
+    ],
+    "authority_notes": "S3 batch. Official Little Beauty technical note places Black Edition Sauvignon Blanc at a single vineyard in Waihopai Valley, Marlborough. Canonical region is Marlborough.",
+    "reviewer": "codex-sales-tier-s3-batch-1",
+    "validated_value": "Marlborough",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:40:04.655Z"
+  },
+  "authority-geo-WRW6524BN": {
+    "candidate_id": "authority-geo-WRW6524BN",
+    "status": "published",
+    "authority_urls": [
+      "https://www.chateau-mouton-rothschild.com/chateau-mouton-rothschild/chateau-mouton-rothschild-2019",
+      "https://www.wine.com/product/chateau-mouton-rothschild-2019/583806"
+    ],
+    "authority_notes": "S3 batch. Official Mouton page confirms the 2019 wine; Wine.com lists region as Pauillac, Bordeaux, France. Region foundation is Bordeaux; appellation Pauillac comes later.",
+    "reviewer": "codex-sales-tier-s3-batch-1",
+    "validated_value": "Bordeaux",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:40:16.416Z"
+  },
+  "authority-geo-WRW5484BN": {
+    "candidate_id": "authority-geo-WRW5484BN",
+    "status": "published",
+    "authority_urls": [
+      "https://www.wine.com/product/chateau-duhart-milon-2018/520446",
+      "https://bordeauxpremium.com/chateau-duhart-milon-2018/"
+    ],
+    "authority_notes": "S3 batch. Wine.com lists Duhart-Milon 2018 as Pauillac, Bordeaux, France; Bordeaux Premium also categorizes it as Pauillac / Bordeaux. Region foundation is Bordeaux.",
+    "reviewer": "codex-sales-tier-s3-batch-1",
+    "validated_value": "Bordeaux",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:40:15.213Z"
+  },
+  "authority-geo-WRW0427AA": {
+    "candidate_id": "authority-geo-WRW0427AA",
+    "status": "published",
+    "authority_urls": [
+      "https://tormaresca.it/en/wines/masseria-maime/",
+      "https://www.antinori.it/en/tenuta/estates-italy/tormaresca-estate/"
+    ],
+    "authority_notes": "S3 batch. Official Tormaresca Masseria Maime page gives Salento IGT; Antinori Tormaresca estate page places the estate in Apulia/Puglia. Region foundation is Puglia.",
+    "reviewer": "codex-sales-tier-s3-batch-1",
+    "validated_value": "Puglia",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:40:26.988Z"
+  },
+  "authority-geo-WRW4993BN": {
+    "candidate_id": "authority-geo-WRW4993BN",
+    "status": "published",
+    "authority_urls": [
+      "https://www.wine.com/product/chateau-siran-2019/583864",
+      "https://www.cavissima.com/en/products/chateau-siran-2019"
+    ],
+    "authority_notes": "S3 batch. Wine.com lists Chateau Siran 2019 as Margaux, Bordeaux, France; Cavissima lists region Bordeaux and appellation Margaux. Region foundation is Bordeaux.",
+    "reviewer": "codex-sales-tier-s3-batch-1",
+    "validated_value": "Bordeaux",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:40:27.646Z"
+  },
+  "authority-geo-WRW4902AA": {
+    "candidate_id": "authority-geo-WRW4902AA",
+    "status": "published",
+    "authority_urls": [
+      "https://store.tormaresca.it/prodotto/trentangeli/?lang=en",
+      "https://www.antinori.it/en/tenuta/estates-italy/tormaresca-estate/"
+    ],
+    "authority_notes": "S3 batch. Tormaresca/Antinori sources place Trentangeli in Castel del Monte DOC and Tormaresca in Apulia/Puglia. Region foundation is Puglia.",
+    "reviewer": "codex-sales-tier-s3-batch-1",
+    "validated_value": "Puglia",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:40:37.456Z"
+  },
+  "authority-geo-WWW0216AA": {
+    "candidate_id": "authority-geo-WWW0216AA",
+    "status": "published",
+    "authority_urls": [
+      "https://www.antinori.it/it/vino/cervaro-della-sala/",
+      "https://www.antinori.it/en/tenuta/estates-antinori/castello-della-sala-estate/"
+    ],
+    "authority_notes": "S3 batch 2. Product name includes Umbria IGT; official Antinori/Castello della Sala sources place the estate in Umbria near Orvieto. Region foundation is Umbria.",
+    "reviewer": "codex-sales-tier-s3-batch-2",
+    "validated_value": "Umbria",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:43:34.521Z"
+  },
+  "authority-geo-WWW0214AA": {
+    "candidate_id": "authority-geo-WWW0214AA",
+    "status": "published",
+    "authority_urls": [
+      "https://www.antinori.it/en/tenuta/estates-antinori/castello-della-sala-estate/"
+    ],
+    "authority_notes": "S3 batch 2. Product name is Orvieto Classico; Antinori Castello della Sala estate source places the estate in Umbria near Orvieto. Region foundation is Umbria.",
+    "reviewer": "codex-sales-tier-s3-batch-2",
+    "validated_value": "Umbria",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:43:34.541Z"
+  },
+  "authority-geo-WRW6119AA": {
+    "candidate_id": "authority-geo-WRW6119AA",
+    "status": "published",
+    "authority_urls": [
+      "https://www.antinori.it/en/vino/solaia-en/?wineyear=2018"
+    ],
+    "authority_notes": "S3 batch 2. Official Antinori Solaia 2018 page places the Solaia vineyard at Tenuta Tignanello in Chianti Classico. Region foundation is Tuscany.",
+    "reviewer": "codex-sales-tier-s3-batch-2",
+    "validated_value": "Tuscany",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:43:34.557Z"
+  },
+  "authority-geo-WRW6561AA": {
+    "candidate_id": "authority-geo-WRW6561AA",
+    "status": "published",
+    "authority_urls": [
+      "https://www.antinori.it/en/vino/solaia-en/"
+    ],
+    "authority_notes": "S3 batch 2. Official Antinori Solaia page places the Solaia vineyard at Tenuta Tignanello in Chianti Classico. Region foundation is Tuscany.",
+    "reviewer": "codex-sales-tier-s3-batch-2",
+    "validated_value": "Tuscany",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:43:34.569Z"
+  },
+  "authority-geo-WRW0423AA": {
+    "candidate_id": "authority-geo-WRW0423AA",
+    "status": "published",
+    "authority_urls": [
+      "https://www.antinori.it/en/vino/pinot-nero-en/il-castello-della-sala/"
+    ],
+    "authority_notes": "S3 batch 2. Official Antinori Pinot Nero/Castello della Sala source states Castello della Sala is located in Umbria. Region foundation is Umbria.",
+    "reviewer": "codex-sales-tier-s3-batch-2",
+    "validated_value": "Umbria",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:43:34.581Z"
+  },
+  "authority-geo-WWW0215AA": {
+    "candidate_id": "authority-geo-WWW0215AA",
+    "status": "published",
+    "authority_urls": [
+      "https://www.antinori.it/en/vino/bramito-en/",
+      "https://www.antinori.it/en/tenuta/estates-antinori/castello-della-sala-estate/"
+    ],
+    "authority_notes": "S3 batch 2. Bramito is produced from vineyards around Castello della Sala; official estate page places Castello della Sala in Umbria. Region foundation is Umbria.",
+    "reviewer": "codex-sales-tier-s3-batch-2",
+    "validated_value": "Umbria",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:43:34.592Z"
+  },
+  "authority-geo-WRW0421AA": {
+    "candidate_id": "authority-geo-WRW0421AA",
+    "status": "published",
+    "authority_urls": [
+      "https://www.antinori.it/en/vino/la-braccesca-nobile-di-montepulciano-en/"
+    ],
+    "authority_notes": "S3 batch 2. Official Antinori La Braccesca source gives Vino Nobile di Montepulciano and estate vineyards at Montepulciano/Cortona. Region foundation is Tuscany.",
+    "reviewer": "codex-sales-tier-s3-batch-2",
+    "validated_value": "Tuscany",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:43:34.604Z"
+  },
+  "authority-geo-WRW5337AA": {
+    "candidate_id": "authority-geo-WRW5337AA",
+    "status": "published",
+    "authority_urls": [
+      "https://tormaresca.it/en/wines/neprica-primitivo/"
+    ],
+    "authority_notes": "S3 batch 2. Official Tormaresca source lists Neprica Primitivo as Primitivo IGT Puglia. Region foundation is Puglia.",
+    "reviewer": "codex-sales-tier-s3-batch-2",
+    "validated_value": "Puglia",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:43:34.616Z"
+  },
+  "authority-geo-WRW5338AA": {
+    "candidate_id": "authority-geo-WRW5338AA",
+    "status": "published",
+    "authority_urls": [
+      "https://tormaresca.it/en/wines/neprica-negroamaro/"
+    ],
+    "authority_notes": "S3 batch 2. Official Tormaresca source lists Neprica Negroamaro as Negroamaro IGT Puglia. Region foundation is Puglia.",
+    "reviewer": "codex-sales-tier-s3-batch-2",
+    "validated_value": "Puglia",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:43:34.627Z"
+  },
+  "authority-geo-WWW0218AA": {
+    "candidate_id": "authority-geo-WWW0218AA",
+    "status": "published",
+    "authority_urls": [
+      "https://tormaresca.it/en/wines/chardonnay/"
+    ],
+    "authority_notes": "S3 batch 2. Official Tormaresca source lists Chardonnay as Puglia IGT. Region foundation is Puglia.",
+    "reviewer": "codex-sales-tier-s3-batch-2",
+    "validated_value": "Puglia",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:43:34.639Z"
+  },
+  "authority-geo-WRW0425AA": {
+    "candidate_id": "authority-geo-WRW0425AA",
+    "status": "published",
+    "authority_urls": [
+      "https://tormaresca.it/en/wines/torcicoda/"
+    ],
+    "authority_notes": "S3 batch 2. Official Tormaresca source lists Torcicoda as Primitivo del Salento IGT and describes it as an Apulian wine. Region foundation is Puglia.",
+    "reviewer": "codex-sales-tier-s3-batch-2",
+    "validated_value": "Puglia",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:43:34.648Z"
+  },
+  "authority-geo-WRW4898AA": {
+    "candidate_id": "authority-geo-WRW4898AA",
+    "status": "published",
+    "authority_urls": [
+      "https://www.antinori.it/it/vino/botrosecco/"
+    ],
+    "authority_notes": "S3 batch 2. Official Antinori Botrosecco page places Fattoria Le Mortelle in Maremma Toscana. Region foundation is Tuscany.",
+    "reviewer": "codex-sales-tier-s3-batch-2",
+    "validated_value": "Tuscany",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:43:34.658Z"
+  },
+  "authority-geo-WRW4899AA": {
+    "candidate_id": "authority-geo-WRW4899AA",
+    "status": "published",
+    "authority_urls": [
+      "https://www.antinori.it/it/vino/vie-cave/fattoria-aldobrandesca/"
+    ],
+    "authority_notes": "S3 batch 2. Official Antinori Vie Cave/Fattoria Aldobrandesca source places the estate in Toscana, Maremma del Sud. Region foundation is Tuscany.",
+    "reviewer": "codex-sales-tier-s3-batch-2",
+    "validated_value": "Tuscany",
+    "validated_field": "region",
+    "confidence": "high",
+    "updated_at": "2026-05-10T07:43:34.669Z"
+  }
+}

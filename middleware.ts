@@ -1,42 +1,60 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-/**
- * CORS middleware — allows browser-based clients (Claude artifacts, external
- * dashboards) to call our API endpoints directly via fetch().
- *
- * Only applies to /api/* routes. Page routes are unaffected.
- */
-export function middleware(req: NextRequest) {
-  // Only handle API routes
-  if (!req.nextUrl.pathname.startsWith('/api/')) {
-    return NextResponse.next();
+export function middleware(request: NextRequest) {
+  const isApiRoute = request.nextUrl.pathname.startsWith('/api/');
+
+  if (isApiRoute) {
+    // Intercept OPTIONS preflight requests immediately
+    if (request.method === 'OPTIONS') {
+      return new NextResponse(null, {
+        status: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+          'Access-Control-Allow-Headers': 'Authorization, Content-Type, X-Source',
+        },
+      });
+    }
+
+    const expectedToken = process.env.PIM_API_TOKEN;
+    const isDev = process.env.NODE_ENV === 'development';
+
+    // Enforce token check in production, or in dev ONLY if the environment variable is actively set
+    if (!isDev || expectedToken) {
+      const authHeader = request.headers.get('authorization');
+
+      if (!expectedToken) {
+        return NextResponse.json(
+          { error: 'Server configuration error: PIM_API_TOKEN is missing.' },
+          { 
+            status: 500,
+            headers: { 'Access-Control-Allow-Origin': '*' }
+          }
+        );
+      }
+
+      if (authHeader !== `Bearer ${expectedToken}`) {
+        return NextResponse.json(
+          { error: 'Unauthorized. Please provide a valid Bearer token.' },
+          { 
+            status: 401,
+            headers: { 'Access-Control-Allow-Origin': '*' }
+          }
+        );
+      }
+    }
   }
 
-  // Handle preflight OPTIONS
-  if (req.method === 'OPTIONS') {
-    return new NextResponse(null, {
-      status: 204,
-      headers: corsHeaders(req),
-    });
+  // Proceed with the request and attach CORS headers to the response
+  const response = NextResponse.next();
+  
+  if (isApiRoute) {
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    response.headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-Source');
   }
 
-  // Add CORS headers to actual response
-  const res = NextResponse.next();
-  for (const [key, value] of Object.entries(corsHeaders(req))) {
-    res.headers.set(key, value);
-  }
-  return res;
-}
-
-function corsHeaders(req: NextRequest): Record<string, string> {
-  const origin = req.headers.get('origin') ?? '*';
-  return {
-    'Access-Control-Allow-Origin': origin,
-    'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Source',
-    'Access-Control-Max-Age': '86400',
-  };
+  return response;
 }
 
 export const config = {
