@@ -155,10 +155,12 @@ Pure Python batch pipeline with a thin CLI driver. Lib modules are pure function
 | `grape_blend_type` | text | Select. Indexed for Magento facet. |
 | `wine_production_style` | text[] | Multiselect. GIN-indexed. |
 | `enrichment_confidence` | numeric(4,3) | Last enrichment confidence. |
+| `enrichment_source` | text | Provenance: `'ai_high_conf'`, `'ai_proposal_approved'`, etc. |
+| `enrichment_note` | text | Compact summary stamped on direct write (model + tier + evidence brief). |
 | `enriched_at` | timestamptz | Last enrichment timestamp. |
 | `enriched_by` | text | Model id (e.g. `claude-haiku-4-5-20251001`). |
 
-`desc_en_short` may already exist — migration is idempotent (`ADD COLUMN IF NOT EXISTS`).
+`desc_en_short`, `enrichment_source`, and `enrichment_note` may already exist on `products` — migration is idempotent (`ADD COLUMN IF NOT EXISTS`).
 
 ### 5.4 New `enrichment_cache` table
 
@@ -183,7 +185,7 @@ Pure Python batch pipeline with a thin CLI driver. Lib modules are pure function
 | `superseded_at` | timestamptz | Non-null when newer row replaces this one. |
 
 **Indexes:**
-- `(sku, prompt_hash, evidence_hash) WHERE superseded_at IS NULL` — cache-hit lookup.
+- `UNIQUE (sku, prompt_hash, evidence_hash) WHERE superseded_at IS NULL` — cache-hit lookup AND enforces at-most-one active row per (sku, prompt, evidence) at the DB level. Supersede must run inside the same transaction as a new insert.
 - `(created_at)` — daily activity queries.
 
 ### 5.5 New `enrichment_proposals` table
@@ -295,7 +297,7 @@ Retry policy: 3 attempts with exponential backoff (1s, 2s, 4s) on 429/5xx. Hard 
 4. **Counts.** `flavor_tags` 5–10, `food_matching` 3–6.
 5. **Lengths.** `desc_en_short` ≤ 160 chars; `full_description` 200–1200 chars.
 6. **HTML safety.** Only `p, br, strong, em, ul, li` allowed in `full_description`; everything else stripped.
-7. **Citation integrity.** Every cited `winesensed_record_id` must exist in `evidence.winesensed_matches` (catches hallucinated IDs).
+7. **Citation integrity.** Every cited `winesensed_record_id` must exist in `evidence.winesensed_matches`. Action on hallucinated ID: **strip** the bad ID from the `citations.winesensed_record_ids` array, mark validation outcome `repaired`, add a note to `validation_issues`. The rest of the response is still used (the hallucinated citation doesn't poison the matrix).
 8. **Confidence range.** Must be in [0, 1].
 
 ### 7.4 Validation outcomes
@@ -463,7 +465,8 @@ v1 ships with a single threshold. If pilot shows uneven quality, a per-field thr
 ```
 --priority {popularity, brand_tier_s1, brand_tier_s2, all}  default: popularity
 --limit N                                                    default: 50
---tier {1, 2}
+--tier {1, 2}        # repeatable: `--tier 1 --tier 2` selects S1 ∪ S2 brands.
+                     # argparse `action='append'`. Omit for no tier filter.
 --write-threshold N                                          default: 0.85
 --model MODEL                                                default: claude-haiku-4-5-20251001
 --dry-run            # no API calls
