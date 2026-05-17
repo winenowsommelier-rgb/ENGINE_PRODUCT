@@ -23,15 +23,17 @@ The pipeline replaces the current manually-copied, unvalidated product matrix da
 ## 2. Scope
 
 **In scope (this spec — Wine category v1):**
-- 8 enriched fields per wine SKU:
-  - `wine_body`, `wine_acidity`, `wine_tannin` (4-value enums)
-  - `grape_variety` (normalized multiselect, names with optional percentages)
-  - `grape_blend_type` (7-value select)
-  - `wine_production_style` (7-value multiselect)
-  - `flavor_tags` (5–10 items)
-  - `food_matching` (3–6 items from `food-pairing-taxonomy.json`)
-  - `desc_en_short` (≤160 chars)
-  - `full_description` (200–1200 chars, simple HTML)
+
+10 customer-facing output fields per wine SKU, plus `confidence` + `citations` metadata:
+
+- `wine_body`, `wine_acidity`, `wine_tannin` (4-value enums)
+- `grape_variety` (normalized multiselect, names with optional percentages)
+- `grape_blend_type` (11-value select — see §5.2)
+- `wine_production_style` (multiselect **tag-bag**; mixes farming/winemaking/dietary axes — see §5.2)
+- `flavor_tags` (5–10 items)
+- `food_matching` (3–6 items from `food-pairing-taxonomy.json`)
+- `desc_en_short` (≤160 chars)
+- `full_description` (200–1200 chars, simple HTML)
 - Two new Supabase tables: `enrichment_cache`, `enrichment_proposals`.
 - Three new product columns: `grape_blend_type`, `wine_production_style`, plus `enrichment_confidence`/`enriched_at`/`enriched_by` audit fields.
 - One curated food-pairing taxonomy file (`data/db/food-pairing-taxonomy.json`).
@@ -87,7 +89,7 @@ data/lib/enrichment/
 
 data/enrich_wines.py         # CLI driver (~80 lines)
 
-data/db/food-pairing-taxonomy.json    # ~40 curated food categories
+data/db/food-pairing-taxonomy.json    # 43 curated food categories
 
 data/migrations/2026-05-12_wine_enrichment.sql
                                       # Migration: 3 new product columns + 2 new tables
@@ -144,8 +146,10 @@ Pure Python batch pipeline with a thin CLI driver. Lib modules are pure function
 | `wine_body` | Light · Medium · Medium-Full · Full |
 | `wine_acidity` | Low · Medium · Medium-High · High |
 | `wine_tannin` | Low · Medium · Medium-High · High |
-| `grape_blend_type` | Single Varietal · Bordeaux Blend · Rhône Blend (GSM) · Champagne Blend · Field Blend · Proprietary Blend · Unknown Blend |
-| `wine_production_style` | Conventional · Natural · Biodynamic · Organic · Orange · Pet-Nat · Vegan |
+| `grape_blend_type` (11 values) | Single Varietal · Bordeaux Red Blend · Bordeaux White Blend · Rhône North Blend · Rhône South Blend (GSM) · Champagne Blend · Super Tuscan · Port-Style Blend · Sherry-Style Blend · Field Blend · Proprietary Blend · Unknown Blend |
+| `wine_production_style` (multiselect tag-bag) | Conventional · Natural · Biodynamic · Organic · Orange · Pet-Nat · Vegan |
+
+**Note on `wine_production_style`:** This is a multiselect **tag-bag**, not a single category. The 7 values mix three orthogonal axes — **farming method** (Conventional / Organic / Biodynamic), **winemaking method** (Conventional / Natural / Orange / Pet-Nat), and **dietary** (Vegan). A single wine can legitimately carry multiple tags (e.g. `["Organic", "Pet-Nat", "Vegan"]`). Magento facet behaviour: a single multi-select attribute returns the union of all wines holding ANY of the selected tags — by-design intersection-flavoured behaviour requires the customer to multi-select. Document this in the customer-facing facet UI as a "Production tags" facet, not "Wine style".
 | `food_matching` items | 40 entries — see §10 (food pairing taxonomy) |
 
 ### 5.3 New `products` columns
@@ -253,6 +257,14 @@ Each match contains `record_id, year, region, grape, rating, review_text (first 
 | **B — silver** | ≥1 Winesensed match (any type), OR brand library entry (any tier) | 0.90 |
 | **C — bronze** | Heuristics only | 0.75 |
 
+**Realistic tier distribution caveat.** The Winesensed dataset is 4,897 / 5,000 (98%) Italian wines. For your catalog of ~6,375 wines:
+
+- **Italian wines** (~5% of catalog) — likely Tier A.
+- **Non-Italian wines with a Tier-1 brand library entry** (likely ~25% of catalog) — likely Tier B.
+- **Long-tail non-Italian wines** (likely ~70% of catalog) — likely Tier C (heuristics only).
+
+This means **Tier C will dominate** for the full-catalog run. The 0.75 multiplier on Tier C ensures most of those go to staged proposals rather than direct write, which is the desired safety behaviour. Pilot results will confirm or refine these proportions; if Tier C is too punitive, raise multiplier from 0.75 → 0.80 after evidence quality is measured.
+
 ### 6.4 Evidence hash
 
 `evidence_hash = sha256(json.dumps({facts, winesensed_record_ids, brand_match, heuristic_profile}, sort_keys=True))`. Used in §8 to detect cache validity.
@@ -283,9 +295,11 @@ client.messages.create(
     max_tokens=1500,
     system=[{"type": "text", "text": SYSTEM, "cache_control": {"type": "ephemeral"}}],
     messages=[{"role": "user", "content": user_message}],
-    temperature=0.3,
+    temperature=0.1,
 )
 ```
+
+**Temperature 0.1** (not 0.3) — for structured classification + JSON shape, low temperature reduces validator-fail / repair rates significantly. Reserve higher temperature for creative-only fields if we ever split the call.
 
 Retry policy: 3 attempts with exponential backoff (1s, 2s, 4s) on 429/5xx. Hard fail on 401/400.
 
@@ -297,7 +311,9 @@ Retry policy: 3 attempts with exponential backoff (1s, 2s, 4s) on 429/5xx. Hard 
 4. **Counts.** `flavor_tags` 5–10, `food_matching` 3–6.
 5. **Lengths.** `desc_en_short` ≤ 160 chars; `full_description` 200–1200 chars.
 6. **HTML safety.** Only `p, br, strong, em, ul, li` allowed in `full_description`; everything else stripped.
-7. **Citation integrity.** Every cited `winesensed_record_id` must exist in `evidence.winesensed_matches`. Action on hallucinated ID: **strip** the bad ID from the `citations.winesensed_record_ids` array, mark validation outcome `repaired`, add a note to `validation_issues`. The rest of the response is still used (the hallucinated citation doesn't poison the matrix).
+7. **Citation integrity.**
+   - Every cited `winesensed_record_id` must exist in `evidence.winesensed_matches`. Action on hallucinated ID: **strip** the bad ID from the `citations.winesensed_record_ids` array, mark validation outcome `repaired`, add a note to `validation_issues`. The rest of the response is still used (the hallucinated citation doesn't poison the matrix).
+   - If `citations.brand_library_match` is non-null, it must match `evidence.brand_description.name` (or be `None`). Action on mismatch: **null out** the field, mark `repaired`, log the mismatch in `validation_issues`. Catches AI inventing producer relationships.
 8. **Confidence range.** Must be in [0, 1].
 
 ### 7.4 Validation outcomes
@@ -414,7 +430,7 @@ v1 ships with a single threshold. If pilot shows uneven quality, a per-field thr
 
 ## 10. Food pairing taxonomy
 
-`data/db/food-pairing-taxonomy.json` — 40 curated categories in 10 groups. AI MUST select from this list.
+`data/db/food-pairing-taxonomy.json` — 43 curated categories in 10 groups. AI MUST select from this list.
 
 ### 10.1 Schema
 
@@ -438,16 +454,23 @@ v1 ships with a single threshold. If pilot shows uneven quality, a per-field thr
 
 | Group | Categories |
 |---|---|
-| **Red Meat** (5) | Grilled red meat · Lamb dishes · Game meats · Beef stew & braised · Charcuterie & cured meats |
+| **Red Meat** (6) | Grilled red meat · Lamb dishes · Game meats · Beef stew & braised · Charcuterie & cured meats · Pâté & terrine |
 | **Poultry & Pork** (3) | Roast chicken · Duck (breast/confit) · Pork dishes |
 | **Seafood** (5) | Grilled fish · Oily fish (salmon, tuna) · Shellfish (lobster, crab, prawn) · Oysters & raw seafood · Sushi & sashimi |
-| **Pasta & Risotto** (3) | Tomato-based pasta · Cream-based pasta & risotto · Pesto & oil-based pasta |
+| **Pasta, Rice & Grains** (3) | Tomato-based pasta · Cream-based pasta & risotto · Pesto & oil-based pasta |
 | **Cheese** (4) | Soft fresh cheese · Aged hard cheese · Blue cheese · Goat cheese |
 | **Vegetables** (3) | Grilled vegetables · Leafy salads · Mushroom dishes |
-| **Asian** (6) | Thai food (spicy & sour) · Chinese cuisine · Japanese cuisine · Korean BBQ · Indian curry · Vietnamese cuisine |
+| **Asian** (8) | Thai food (spicy & sour) · Chinese cuisine · Japanese cuisine · Korean BBQ · Indian curry · Vietnamese cuisine · Hot pot & Shabu Shabu · Dim Sum |
 | **Other Dishes** (5) | Pizza & flatbreads · Mexican & Tex-Mex · Tapas & small plates · BBQ & smoky grills · Mediterranean cuisine |
 | **Desserts** (3) | Dark chocolate · Fruit desserts · Creamy desserts & pastries |
-| **Casual** (3) | Apéritif & hors d'oeuvres · Cocktail snacks · Easy weekday dinners |
+| **Casual** (3) | Apéritif & hors d'oeuvres · Cocktail snacks · Comfort food (pasta bakes, casseroles, roasts) |
+
+**Total: 43 categories** (up from 40). Notable changes from v0:
+
+- **Pasta & Risotto → Pasta, Rice & Grains** (risotto is rice, not pasta — original name was a misnomer).
+- **Pâté & terrine** added (classic wine pairing missing from v0).
+- **Hot pot & Shabu Shabu** + **Dim Sum** added (high-relevance for Thai/Asian customer base).
+- **"Easy weekday dinners"** (vague to AI) → **"Comfort food (pasta bakes, casseroles, roasts)"** (concrete examples for grounding).
 
 ### 10.3 Why this list
 
