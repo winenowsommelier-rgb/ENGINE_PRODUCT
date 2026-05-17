@@ -20,6 +20,8 @@ Build an AI-driven enrichment pipeline that, for every wine SKU:
 
 The pipeline replaces the current manually-copied, unvalidated product matrix data with consistent, evidence-grounded, AI-generated content backed by full audit trail.
 
+**On the source of wine knowledge.** Claude Haiku 4.5's prior wine knowledge — encoded from its training data (producer websites, critic reviews, Vivino-style aggregations, wine blogs, academic texts) — is the **primary intelligence source** for matrix and description generation. The three explicit grounding sources (Winesense, brand library, taxonomy heuristics) serve to **anchor Claude to SKU-specific truth and prevent hallucination**, not to be the sole source of facts. This is why a ~5,000-record Italian-heavy Winesense dataset is sufficient as one of three anchors for a 6,375-wine catalog — it's a quality gate, not a coverage primary.
+
 ## 2. Scope
 
 **In scope (this spec — Wine category v1):**
@@ -578,8 +580,13 @@ python3 data/enrich_wines.py --tier 1 --tier 2 --limit 5000
 4. **Multi-provider fallback** — call GPT-4o-mini or Gemini Flash for cross-validation on low-confidence SKUs.
 5. **Per-field thresholds** — if pilot shows uneven quality, per-field threshold config in `taxonomies.py`.
 6. **Wine production-style enrichment via label data** — image-based label parsing for `Organic/Biodynamic/Natural` certifications.
-7. **Food pairing taxonomy v2** — granular Asian subcuisines (Hot pot, Dim sum, Bistro classics) if pilot shows demand.
-8. **Magento attribute auto-sync** — push the static option lists to Magento programmatically rather than manual admin import.
+7. **Magento attribute auto-sync** — push the static option lists to Magento programmatically rather than manual admin import.
+8. **Phase 2 grounding expansion** — driven by pilot evidence, not speculation. If pilot reveals classes of SKUs with persistent low confidence (e.g. Australian boutique producers, very recent vintages, obscure Greek wines), evaluate:
+   - Expand `brand_description_library.csv` via curated team additions + earlier AI-assisted research passes (cheapest, most controllable).
+   - Expand taxonomy heuristic combos in `taxonomies.py` (catch more grape+region tail cases).
+   - License a paid critic-data feed (e.g. Wine Spectator, Vivino API) for scores + tasting notes — useful for premium SKUs.
+   - Selective producer-website scraping for high-priority brands only (robots.txt-respecting, rate-limited, focused — never a blanket crawler).
+   Decide per gap class after the pilot, not in advance.
 
 ## 14. Open items deferred to plan
 
