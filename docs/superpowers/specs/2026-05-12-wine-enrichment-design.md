@@ -28,7 +28,7 @@ The pipeline replaces the current manually-copied, unvalidated product matrix da
 
 - `wine_body`, `wine_acidity`, `wine_tannin` (4-value enums)
 - `grape_variety` (normalized multiselect, names with optional percentages)
-- `grape_blend_type` (11-value select — see §5.2)
+- `grape_blend_type` (12-value select — see §5.2)
 - `wine_production_style` (multiselect **tag-bag**; mixes farming/winemaking/dietary axes — see §5.2)
 - `flavor_tags` (5–10 items)
 - `food_matching` (3–6 items from `food-pairing-taxonomy.json`)
@@ -123,7 +123,7 @@ Pure Python batch pipeline with a thin CLI driver. Lib modules are pure function
   "wine_acidity":         "Medium",
   "wine_tannin":          "Medium-High",
   "grape_variety":        ["Cabernet Sauvignon", "Merlot", "Petit Verdot"],
-  "grape_blend_type":     "Bordeaux Blend",
+  "grape_blend_type":     "Bordeaux Red Blend",
   "wine_production_style": ["Conventional"],
   "flavor_tags":          ["Blackcurrant", "Cedar", "Tobacco", "Dark Cherry", "Vanilla"],
   "food_matching":        ["Grilled red meat", "Aged hard cheese", "Dark chocolate"],
@@ -146,11 +146,11 @@ Pure Python batch pipeline with a thin CLI driver. Lib modules are pure function
 | `wine_body` | Light · Medium · Medium-Full · Full |
 | `wine_acidity` | Low · Medium · Medium-High · High |
 | `wine_tannin` | Low · Medium · Medium-High · High |
-| `grape_blend_type` (11 values) | Single Varietal · Bordeaux Red Blend · Bordeaux White Blend · Rhône North Blend · Rhône South Blend (GSM) · Champagne Blend · Super Tuscan · Port-Style Blend · Sherry-Style Blend · Field Blend · Proprietary Blend · Unknown Blend |
+| `grape_blend_type` (12 values) | Single Varietal · Bordeaux Red Blend · Bordeaux White Blend · Rhône North Blend · Rhône South Blend (GSM) · Champagne Blend · Super Tuscan · Port-Style Blend · Sherry-Style Blend · Field Blend · Proprietary Blend · Unknown Blend |
 | `wine_production_style` (multiselect tag-bag) | Conventional · Natural · Biodynamic · Organic · Orange · Pet-Nat · Vegan |
 
 **Note on `wine_production_style`:** This is a multiselect **tag-bag**, not a single category. The 7 values mix three orthogonal axes — **farming method** (Conventional / Organic / Biodynamic), **winemaking method** (Conventional / Natural / Orange / Pet-Nat), and **dietary** (Vegan). A single wine can legitimately carry multiple tags (e.g. `["Organic", "Pet-Nat", "Vegan"]`). Magento facet behaviour: a single multi-select attribute returns the union of all wines holding ANY of the selected tags — by-design intersection-flavoured behaviour requires the customer to multi-select. Document this in the customer-facing facet UI as a "Production tags" facet, not "Wine style".
-| `food_matching` items | 40 entries — see §10 (food pairing taxonomy) |
+| `food_matching` items | 43 entries — see §10 (food pairing taxonomy) |
 
 ### 5.3 New `products` columns
 
@@ -220,7 +220,7 @@ For Magento sync:
 | Supabase column | Magento attribute code | Type | Options source |
 |---|---|---|---|
 | `grape_variety` | `wine_grape_variety` | multiselect | Dynamic from distinct catalog values. |
-| `grape_blend_type` | `wine_grape_blend_type` | select | Static (7 options from §5.2). |
+| `grape_blend_type` | `wine_grape_blend_type` | select | Static (12 options from §5.2). |
 | `wine_production_style` | `wine_production_style` | multiselect | Static (7 options from §5.2). |
 | `wine_body` | `wine_body` | select | Static (4 options). |
 | `wine_acidity` | `wine_acidity` | select | Static (4 options). |
@@ -450,7 +450,7 @@ v1 ships with a single threshold. If pilot shows uneven quality, a per-field thr
 }
 ```
 
-### 10.2 Categories (40 entries in 10 groups)
+### 10.2 Categories (43 entries in 10 groups)
 
 | Group | Categories |
 |---|---|
