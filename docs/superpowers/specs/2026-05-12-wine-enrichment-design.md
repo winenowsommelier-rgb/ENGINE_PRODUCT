@@ -43,9 +43,9 @@ The pipeline replaces the current manually-copied, unvalidated product matrix da
 - `food_matching` (3–6 items from `food-pairing-taxonomy.json`)
 - `desc_en_short` (≤160 chars)
 - `full_description` (200–1200 chars, simple HTML)
-- One new Supabase table: `enrichment_cache` (full audit trail; idempotent re-runs).
+- Two new Supabase tables: `enrichment_cache` (audit trail) and `critic_scores` (sommelier-curated numeric scores from major critics — facts, not prose).
 - One Magento-ready CSV export per run (`data/exports/wine-enrichment-{timestamp}.csv`) — the human review + Magento-upload interface.
-- Three new product columns: `grape_blend_type`, `wine_production_style`, plus `enrichment_confidence`/`enriched_at`/`enriched_by` audit fields.
+- Five new product columns: `grape_blend_type`, `wine_production_style`, `score_max` (top critic score for facet filtering), `score_summary` (formatted PDP display), plus `enrichment_confidence`/`enriched_at`/`enriched_by` audit fields.
 - One curated food-pairing taxonomy file (`data/db/food-pairing-taxonomy.json`).
 - Batch CLI driver (`data/enrich_wines.py`) with `--dry-run`, `--limit`, `--priority`, `--tier`, `--write-threshold`, `--no-cache`, `--no-write`, `--sku` flags.
 - Per-category Python library structure (`data/lib/enrichment/wine/` + shared `data/lib/enrichment/shared/`) to anticipate spirits/beer/sake categories later.
@@ -105,7 +105,11 @@ data/exports/                          # Per-run CSVs land here, gitignored
    wine-enrichment-{timestamp}.csv     # Magento-ready export (see §14)
 
 data/migrations/2026-05-12_wine_enrichment.sql
-                                      # Migration: 3 new product columns + 1 new table (cache)
+                                      # Migration: 5 new product columns
+                                      #   + 2 new tables (enrichment_cache, critic_scores)
+
+data/db/critic_scores_seed.csv        # Optional sommelier-curated starter rows
+                                      # (can be empty for v1; manual entry over time)
 
 tests/test_wine_enrichment_evidence.py
 tests/test_wine_enrichment_prompt.py
@@ -171,6 +175,8 @@ Pure Python batch pipeline with a thin CLI driver. Lib modules are pure function
 |---|---|---|
 | `grape_blend_type` | text | Select. Indexed for Magento facet. |
 | `wine_production_style` | text[] | Multiselect. GIN-indexed. |
+| `score_max` | numeric(4,1) | Top critic score across `critic_scores` table for this SKU. Indexed for Magento "rated 90+" facet. **Derived** — recomputed on every enrichment run from `critic_scores`. |
+| `score_summary` | text | Formatted PDP display, e.g. `"JS 95 · WA 92 · WS 90"`. **Derived** — recomputed on every enrichment run. |
 | `enrichment_confidence` | numeric(4,3) | Last enrichment confidence. |
 | `enrichment_source` | text | Provenance: `'ai_high_conf'`, `'ai_proposal_approved'`, etc. |
 | `enrichment_note` | text | Compact summary stamped on direct write (model + tier + evidence brief). |
@@ -205,7 +211,32 @@ Pure Python batch pipeline with a thin CLI driver. Lib modules are pure function
 - `UNIQUE (sku, prompt_hash, evidence_hash) WHERE superseded_at IS NULL` — cache-hit lookup AND enforces at-most-one active row per (sku, prompt, evidence) at the DB level. Supersede must run inside the same transaction as a new insert.
 - `(created_at)` — daily activity queries.
 
-### 5.5 Output routing — CSV-as-review (no proposals table)
+### 5.5 New `critic_scores` table
+
+Sommelier-curated **scores only** (numeric facts, not copyrighted prose). The table starts empty and accumulates rows over time via manual entry. Re-running enrichment after new rows are added invalidates the cache (because `evidence_hash` changes) and produces refreshed AI outputs that incorporate the new scores. The AI uses scores as calibration grounding; it must NEVER quote or paraphrase any critic's review prose.
+
+| Column | Type | Purpose |
+|---|---|---|
+| `id` | uuid PK | |
+| `sku` | text | FK loosely → products.sku. |
+| `critic` | text | Critic name. Suggested controlled set (no enum to allow future additions): `James Suckling` · `Wine Advocate` · `Wine Spectator` · `Decanter` · `Jancis Robinson` · `Vinous` · `Wine Enthusiast` · `Burghound`. |
+| `score` | numeric(4,1) | The number itself, e.g. `95.0`, `92.5`. |
+| `score_max` | numeric(4,1) DEFAULT 100 | Score scale max — usually 100; Jancis Robinson uses 20. |
+| `vintage` | text | Optional. Match score to a specific vintage if relevant; null = vintage-agnostic. |
+| `tasting_year` | integer | Optional. When the critic tasted/published. |
+| `source_url` | text | Citation link (best-practice attribution). |
+| `notes` | text | Internal sommelier notes — NEVER displayed customer-facing. |
+| `added_by` | text | Who entered the row. |
+| `added_at` | timestamptz default now() | |
+
+**Indexes:**
+
+- `(sku)` — fast evidence lookup during enrichment.
+- `(critic, score)` — for "top wines by Suckling" type queries.
+
+**Legal note.** Per Feist v. Rural Telephone (1991), facts aren't copyrightable. A critic's score is a fact about what they published. Storing the number + attribution is legally clean and analogous to "the temperature in London yesterday was 18°C." We do NOT store any of the critic's prose (descriptions, tasting notes, justifications) — those ARE copyrighted.
+
+### 5.6 Output routing — CSV-as-review (no proposals table)
 
 **Decision (2026-05-18 expert review):** the staged-proposals UI track was dropped. Reason: the team's existing Magento-upload workflow is CSV-based — that CSV is a natural review interface. Building a separate proposal-review UI would be dead weight unless someone commits to reviewing 1,000+ rows in it weekly. The CSV column listing all confidence scores is the simpler, lower-friction alternative.
 
@@ -230,6 +261,8 @@ For Magento sync:
 | `wine_tannin` | `wine_tannin` | select | Static (4 options). |
 | `flavor_tags` | `wine_flavor_tags` | multiselect | Dynamic (top-N curated from catalog). |
 | `food_matching` | `wine_food_pairing` | multiselect | Static from `food-pairing-taxonomy.json`. |
+| `score_max` | `wine_critic_score_max` | decimal | Numeric, indexed — drives "rated 90+" facet. |
+| `score_summary` | `wine_critic_scores_display` | text | Pre-formatted string for PDP display. |
 
 ## 6. Evidence collection
 
@@ -241,6 +274,7 @@ For Magento sync:
 2. **Winesensed records** — `data/db/external-winesensed-records.json` (5,000 records, mostly Italian wines; CC BY-NC-ND research license used for *grounding only*, never copied verbatim into customer-facing fields).
 3. **Brand description library** — `data/brand_description_library.csv` with `description_short_en`, `description_full_en`, and tier S1/S2/S3.
 4. **Taxonomy heuristics** — typical grape+region profiles encoded in `taxonomies.py` (~40 common combos: Barossa Shiraz, Burgundy Pinot Noir, Napa Cab, etc., plus grape-only and classification-only fallbacks).
+5. **Critic scores** (NEW v1) — rows from `critic_scores` table for this SKU, ordered by `tasting_year DESC`. Used as numerical anchors only — the AI sees "James Suckling: 95, Wine Advocate: 92" and calibrates intensity / age-worthiness / quality language accordingly. **The AI never sees critic prose** because we don't store any. Empty table → this source contributes nothing; pipeline falls back gracefully.
 
 ### 6.2 Winesensed matching algorithm
 
@@ -256,9 +290,11 @@ Each match contains `record_id, year, region, grape, rating, review_text (first 
 
 | Tier | Trigger | Multiplier (§7) |
 |---|---|---|
-| **A — gold** | ≥2 tight Winesensed matches, OR (≥1 tight + brand-library Tier-1) | 1.00 |
-| **B — silver** | ≥1 Winesensed match (any type), OR brand library entry (any tier) | 0.90 |
-| **C — bronze** | Heuristics only | 0.75 |
+| **A — gold** | ≥2 tight Winesensed matches, OR (≥1 tight + brand-library Tier-1), OR **≥2 critic scores in `critic_scores` for this SKU** | 1.00 |
+| **B — silver** | ≥1 Winesensed match (any type), OR brand library entry (any tier), OR **≥1 critic score** | 0.90 |
+| **C — bronze** | Heuristics only — no Winesensed, no brand library, no critic scores | 0.75 |
+
+**Critic scores act as a tier upgrade signal** — a SKU with 0 Winesensed matches but 3 critic scores becomes Tier A, lifting its final confidence and increasing the chance of direct write. This is the high-leverage payoff of the curated scores library: every score the sommelier team enters lifts that SKU's enrichment quality on the next run.
 
 **Realistic tier distribution caveat.** The Winesensed dataset is 4,897 / 5,000 (98%) Italian wines. For your catalog of ~6,375 wines:
 
@@ -297,6 +333,7 @@ This means **Tier C will dominate** for the full-catalog run. The 0.75 multiplie
 - `# Evidence — Winesensed real-world tasting notes` — up to 5 matched records.
 - `# Evidence — Brand library` — short + full curated brand description (if present).
 - `# Evidence — Taxonomy heuristic` — typical profile string.
+- `# Evidence — Expert critic scores` (NEW) — pipe-formatted list, e.g. `"James Suckling: 95 (2021) · Wine Advocate: 92 (2020) · Wine Spectator: 90 (2021)"`. Up to 6 most recent scores. Empty line if no scores exist for this SKU. Instruction line included: *"Calibration only — do NOT invent scores; do NOT reproduce any critic's tasting-note prose; cite which scores anchored your judgement in `citations.critic_scores`."*
 - `# Your task` — produce matrix JSON with citations; be honest about confidence.
 
 ### 7.2 Anthropic call
@@ -599,9 +636,12 @@ python3 data/enrich_wines.py --tier 1 --tier 2 --limit 5000
 8. **Phase 2 grounding expansion** — driven by pilot evidence, not speculation. If pilot reveals classes of SKUs with persistent low confidence (e.g. Australian boutique producers, very recent vintages, obscure Greek wines), evaluate:
    - Expand `brand_description_library.csv` via curated team additions + earlier AI-assisted research passes (cheapest, most controllable).
    - Expand taxonomy heuristic combos in `taxonomies.py` (catch more grape+region tail cases).
-   - License a paid critic-data feed (e.g. Wine Spectator, Vivino API) for scores + tasting notes — useful for premium SKUs.
+   - **Expand `critic_scores` table coverage** — v1 ships the schema + AI prompt slot empty; sommelier team manually enters rows over time. Each row added boosts that SKU's evidence tier on the next re-run.
+   - License a paid critic-data feed (e.g. Wine-Searcher / Vivino API) — automated bulk score ingestion if manual entry is too slow.
    - Selective producer-website scraping for high-priority brands only (robots.txt-respecting, rate-limited, focused — never a blanket crawler).
    Decide per gap class after the pilot, not in advance.
+
+9. **Critic-prose review library (separate from critic_scores)** — store the verbatim prose of expert tasting notes for internal AI grounding only (never displayed verbatim customer-facing). Requires either curated manual entry (legally clean as internal research) OR a licensed feed. NOT pursued in v1 because the scores alone (§5.5) carry ~80% of the value at zero copyright risk.
 
 ## 14. Magento CSV export contract
 
@@ -624,6 +664,8 @@ The pipeline writes one CSV per run at `data/exports/wine-enrichment-{timestamp}
 | `food_matching` | Haiku output | Pipe-delimited; values must match `food-pairing-taxonomy.json` labels. |
 | `desc_en_short` | Haiku output | ≤160 chars. |
 | `full_description` | Haiku output | HTML (escaped for CSV). |
+| `score_max` | derived from `critic_scores` | Top critic score (e.g. `95.0`); empty when no scores exist for SKU. For Magento "rated 90+" facet. |
+| `score_summary` | derived from `critic_scores` | Formatted PDP display, e.g. `"JS 95 · WA 92 · WS 90"`. |
 | `enrichment_note` | scoring | `"Haiku 4.5 / tier A / 4 winesensed records / Mondavi brand"` — explains *why* this confidence. |
 | `current_wine_body` | products.wine_body (live) | Side-by-side diff column for review. |
 | `current_food_matching` | products.food_matching (live) | Side-by-side diff column for review. |
