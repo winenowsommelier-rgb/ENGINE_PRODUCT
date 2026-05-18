@@ -53,7 +53,7 @@ The pipeline replaces the current manually-copied, unvalidated product matrix da
 
 **Out of scope (future phases):**
 - Spirits, beer, sake enrichment (separate spec per category; shared lib re-used).
-- TypeScript admin UI for reviewing staged proposals (manual SQL `UPDATE enrichment_proposals SET status='approved' WHERE …` for v1).
+- TypeScript admin UI for inline re-enrichment from product admin page — the CSV review flow in §14 is v1's human-in-the-loop. Only build a UI later if spreadsheet review proves too slow.
 - API endpoint `/api/products/{id}/enrich` for one-off re-runs from a future admin button (Phase 2).
 - Multi-provider abstraction (OpenAI, Gemini). Haiku 4.5 only for v1.
 - Image generation or label scanning.
@@ -102,7 +102,7 @@ data/enrich_wines.py         # CLI driver (~80 lines)
 data/db/food-pairing-taxonomy.json    # 43 curated food categories
 
 data/exports/                          # Per-run CSVs land here, gitignored
-   wine-enrichment-{timestamp}.csv     # Magento-ready export (see §15)
+   wine-enrichment-{timestamp}.csv     # Magento-ready export (see §14)
 
 data/migrations/2026-05-12_wine_enrichment.sql
                                       # Migration: 3 new product columns + 1 new table (cache)
@@ -112,7 +112,7 @@ tests/test_wine_enrichment_prompt.py
 tests/test_wine_enrichment_validator.py
 tests/test_wine_enrichment_scoring.py
 tests/test_wine_enrichment_cache.py
-tests/test_wine_enrichment_proposals.py
+tests/test_wine_enrichment_output.py
 tests/test_enrich_wines.py
 tests/fixtures/wine_pilot_skus.json   # 5-SKU offline fixture
 ```
@@ -266,7 +266,7 @@ Each match contains `record_id, year, region, grape, rating, review_text (first 
 - **Non-Italian wines with a Tier-1 brand library entry** (likely ~25% of catalog) — likely Tier B.
 - **Long-tail non-Italian wines** (likely ~70% of catalog) — likely Tier C (heuristics only).
 
-This means **Tier C will dominate** for the full-catalog run. The 0.75 multiplier on Tier C ensures most of those go to staged proposals rather than direct write, which is the desired safety behaviour. Pilot results will confirm or refine these proportions; if Tier C is too punitive, raise multiplier from 0.75 → 0.80 after evidence quality is measured.
+This means **Tier C will dominate** for the full-catalog run. The 0.75 multiplier on Tier C ensures most of those are CSV-only (no Supabase write) rather than auto-published to `/explore`, which is the desired safety behaviour — they still appear in the CSV for spreadsheet review and Magento upload. Pilot results will confirm or refine these proportions; if Tier C is too punitive, raise multiplier from 0.75 → 0.80 after evidence quality is measured.
 
 ### 6.4 Evidence hash
 
@@ -374,7 +374,7 @@ collect_evidence(sku) → Evidence (with evidence_hash)
          scoring.combine → final_confidence
                  │
                  ▼
-         proposals.route (direct write vs staged)
+         output.route (Supabase write + CSV append; see §8.3)
 ```
 
 ### 8.2 Cache supersede
@@ -396,7 +396,7 @@ def route(sku, response_json, final_confidence, cache_id, csv_writer, threshold=
                           enriched_at=now())
 
     # Always append to CSV — every SKU enriched, with confidence column,
-    # for spreadsheet review + manual Magento upload (see §15).
+    # for spreadsheet review + manual Magento upload (see §14).
     csv_writer.writerow(build_csv_row(sku, fields, final_confidence, cache_id,
                                        current_values=read_products_row(sku)))
 ```
@@ -430,7 +430,7 @@ final_confidence = ai_confidence × tier_multiplier × validator_multiplier
 **Default 0.85.** Configurable via `--write-threshold N` CLI flag.
 
 - `final ≥ 0.85` → direct write to `products`.
-- `final < 0.85` → staged in `enrichment_proposals`.
+- `final < 0.85` → CSV-only (no Supabase write); appears in the CSV with low confidence for spreadsheet review. See §14.
 
 ### 9.3 Audit fields stamped on direct write
 
@@ -529,16 +529,16 @@ v1 ships with a single threshold. If pilot shows uneven quality, a per-field thr
 SKUs processed:           50
   Cache hits:             8
   API calls:              42
-  Direct writes:          37
-  Staged proposals:       11
+  Supabase direct writes: 37  (final_confidence ≥ 0.85)
+  CSV-only (no Supabase): 13  (final_confidence < 0.85)
   Validation failures:    2
 Cost (this run):          $0.21
 By evidence tier:         A: 32  B: 14  C: 4
-Top staged SKUs:          WRW2106AC (0.71), WSP1140AE (0.68), ...
+Lowest-confidence SKUs:   WRW2106AC (0.71), WSP1140AE (0.68), ...
 
   ✓ enrichment_cache:        50 new rows written
-  ✓ products:                37 rows updated
-  ✓ enrichment_proposals:    11 rows inserted
+  ✓ products (Supabase):     37 rows updated
+  ✓ data/exports/wine-enrichment-2026-05-18T15:00Z.csv:  50 rows written
 ```
 
 ## 12. Testing strategy
@@ -552,7 +552,7 @@ One per module, fully offline (mocks Anthropic SDK):
 - `test_validator.py` — Vocab repair (`Medium-Heavy` → `Medium-Full`), reject out-of-vocab food tags, reject hallucinated winesensed IDs, HTML sanitization.
 - `test_scoring.py` — Multiplier math, threshold routing, edge cases.
 - `test_cache.py` — Hit/miss/supersede behaviour (sqlite in-memory mock for Supabase).
-- `test_proposals.py` — Direct-write vs staged routing, multi-field proposals from one response.
+- `test_output.py` — Direct-write threshold gating, CSV row construction, diff-column population, multi-field output from one response.
 
 Each ~30–100 lines.
 
@@ -567,9 +567,10 @@ Runs driver with `--no-write` and a mocked Anthropic client returning canned JSO
 ```
 python3 data/enrich_wines.py --limit 50 --priority popularity --dry-run   # confirm selection
 python3 data/enrich_wines.py --limit 50 --priority popularity              # ~$0.25, ~5min
-# → eyeball 10 random enrichment_cache.response_json rows
-# → eyeball 5 enrichment_proposals rows
-# → manually approve/reject 5 proposals via SQL
+# → open data/exports/wine-enrichment-*.csv in Numbers/Excel
+# → sort by confidence ascending; eyeball the 5-10 lowest-confidence rows
+# → spot-check 3 high-confidence rows for quality
+# → save edited CSV; upload to Magento manually if quality looks good
 python3 data/enrich_wines.py --limit 500                                   # if pilot OK, ~$2.50
 python3 data/enrich_wines.py --tier 1 --tier 2 --limit 5000                # full S1+S2 ~$26
 ```
@@ -606,7 +607,7 @@ python3 data/enrich_wines.py --tier 1 --tier 2 --limit 5000
 
 The pipeline writes one CSV per run at `data/exports/wine-enrichment-{timestamp}.csv`. This file is the human-review interface AND the Magento upload artifact. The team opens it in Excel/Numbers/Google Sheets, sorts by `confidence`, eyeballs flagged rows, edits in place, drops rows they want to skip, and uploads the trimmed file to Magento via the existing manual Magento product CSV import.
 
-### 15.1 CSV columns (in order)
+### 14.1 CSV columns (in order)
 
 | Column | Source | Purpose |
 |---|---|---|
@@ -631,7 +632,7 @@ The pipeline writes one CSV per run at `data/exports/wine-enrichment-{timestamp}
 | `enriched_at` | now() | ISO timestamp. |
 | `enriched_by` | model id | `claude-haiku-4-5-...`. |
 
-### 15.2 CSV write conventions
+### 14.2 CSV write conventions
 
 - UTF-8 with BOM (Excel-friendly).
 - Quoting: `csv.QUOTE_ALL` — every field quoted, no ambiguity on commas/newlines in descriptions.
@@ -639,7 +640,7 @@ The pipeline writes one CSV per run at `data/exports/wine-enrichment-{timestamp}
 - Empty cells: empty string, not `null`/`None`.
 - Pipe-delimited multiselect: `value1|value2|value3` (Magento's native CSV multiselect format).
 
-### 15.3 Sample review workflow
+### 14.3 Sample review workflow
 
 1. **Run:** `python3 data/enrich_wines.py --limit 50 --priority popularity`
 2. **Open:** `data/exports/wine-enrichment-2026-05-18T15:00Z.csv` in Numbers / Excel
@@ -650,7 +651,7 @@ The pipeline writes one CSV per run at `data/exports/wine-enrichment-{timestamp}
 7. **Save as** `wine-enrichment-2026-05-18-reviewed.csv`
 8. **Upload** to Magento admin → System → Import → Products → CSV. Magento's "Update only" mode applies the new attribute values without touching prices/stock.
 
-### 15.4 Why this beats a custom review UI
+### 14.4 Why this beats a custom review UI
 
 - **Zero new tools to learn** — team already lives in spreadsheets.
 - **Built-in bulk editing** — find/replace across 1,000 rows is a Cmd-F away.
@@ -662,7 +663,7 @@ The pipeline writes one CSV per run at `data/exports/wine-enrichment-{timestamp}
 
 Pure implementation details, decided during writing-plans:
 
-- Exact Python class names for evidence/prompt/validator/scoring/cache/proposals modules.
+- Exact Python class names for evidence/prompt/validator/scoring/cache/output modules.
 - Specific column types for jsonb fields (jsonb vs text[] for `flavor_tags`).
 - Whether `desc_en_short` already exists on `products` (migration is idempotent regardless).
 - Exact set of "common known combos" in `taxonomies.heuristic_for()` (initial ~40, expand from pilot).
