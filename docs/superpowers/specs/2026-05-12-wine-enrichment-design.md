@@ -16,9 +16,16 @@ Build an AI-driven enrichment pipeline that, for every wine SKU:
 3. Validates the JSON response against strict schemas (body/acidity/tannin enums, grape blend type, food-pairing taxonomy).
 4. Computes a final confidence score from three signals (AI self-assessment × evidence-tier × validator outcome).
 5. Caches the full call (prompt + response + cost) in Supabase so re-runs cost ~$0.
-6. Routes high-confidence outputs (≥0.85) directly to the `products` table; low-confidence outputs to a staged `enrichment_proposals` table for human review.
+6. **Writes high-confidence outputs (≥0.85) to the Supabase `products` table** (powering the live `/explore` site).
+7. **Exports all outputs — every confidence tier — to a Magento-ready CSV** which the team reviews in spreadsheet form (edit / approve / drop rows) before manual upload to Magento. The CSV review IS the human-in-the-loop step; no separate proposal-review UI is built.
 
 The pipeline replaces the current manually-copied, unvalidated product matrix data with consistent, evidence-grounded, AI-generated content backed by full audit trail.
+
+**Success metric: better customer experience.** Validated, accurate data enables:
+
+- **(a) Validated filter facets in Magento** — grape blend, body, food pairing, production style — so customers can find wines that match what they want.
+- **(b) Higher-quality PDP descriptions** — short hooks + full descriptions written in a consistent expert sommelier voice.
+- **(c) Richer recommendations on `/explore`** — body/tannin/food matrix unlock "wines like this" and "wines for this meal" suggestions.
 
 **On the source of wine knowledge.** Claude Haiku 4.5's prior wine knowledge — encoded from its training data (producer websites, critic reviews, Vivino-style aggregations, wine blogs, academic texts) — is the **primary intelligence source** for matrix and description generation. The three explicit grounding sources (Winesense, brand library, taxonomy heuristics) serve to **anchor Claude to SKU-specific truth and prevent hallucination**, not to be the sole source of facts. This is why a ~5,000-record Italian-heavy Winesense dataset is sufficient as one of three anchors for a 6,375-wine catalog — it's a quality gate, not a coverage primary.
 
@@ -36,7 +43,8 @@ The pipeline replaces the current manually-copied, unvalidated product matrix da
 - `food_matching` (3–6 items from `food-pairing-taxonomy.json`)
 - `desc_en_short` (≤160 chars)
 - `full_description` (200–1200 chars, simple HTML)
-- Two new Supabase tables: `enrichment_cache`, `enrichment_proposals`.
+- One new Supabase table: `enrichment_cache` (full audit trail; idempotent re-runs).
+- One Magento-ready CSV export per run (`data/exports/wine-enrichment-{timestamp}.csv`) — the human review + Magento-upload interface.
 - Three new product columns: `grape_blend_type`, `wine_production_style`, plus `enrichment_confidence`/`enriched_at`/`enriched_by` audit fields.
 - One curated food-pairing taxonomy file (`data/db/food-pairing-taxonomy.json`).
 - Batch CLI driver (`data/enrich_wines.py`) with `--dry-run`, `--limit`, `--priority`, `--tier`, `--write-threshold`, `--no-cache`, `--no-write`, `--sku` flags.
@@ -58,7 +66,7 @@ Locked during brainstorming (2026-05-11 → 2026-05-12).
 | # | Decision | Choice | Rationale |
 |---|---|---|---|
 | Q1 | Matrix scope | Wine sensory matrix only (Option A) + category-by-category architecture | Wines are 60% of catalog; matrix vocabulary is mature. Architecture supports future spirits/beer. |
-| Q2 | Output routing | Hybrid confidence-gated (Option C): ≥0.85 → direct write; <0.85 → staged for review | Fast wins on confident cases; human eyes on uncertain cases. |
+| Q2 | Output routing | Hybrid confidence-gated: ≥0.85 → direct write to Supabase (`/explore` live); **all SKUs → CSV export for manual Magento upload** (the spreadsheet IS the review step). Staged-proposals table dropped after expert review on 2026-05-18. | Fast wins on confident cases; user's existing spreadsheet workflow becomes the human-in-the-loop. |
 | Q3 | Trigger model | Batch script (Option A) first; API endpoint (Option D) Phase 2 | Matches existing enrichment pipeline pattern; admin UI doesn't yet exist. |
 | Q4 | Evidence cache | Supabase `enrichment_cache` table (Option C) | Fast indexed lookup; no git bloat; queryable for cost auditing. |
 | Q5 | SKU prioritization | Top sellers by `popularity_score` (Option A); 50-SKU pilot first | Highest customer-visible ROI; popularity data already exists. |
@@ -86,15 +94,18 @@ data/lib/enrichment/
     ├── prompt.py            # Prompt builder + JSON output schema
     ├── validator.py         # Schema + controlled-vocab validation
     ├── scoring.py           # Final confidence formula
-    ├── proposals.py         # Direct-write vs staged routing
+    ├── output.py            # Routes: high-conf → Supabase products write; all → CSV append
     └── taxonomies.py        # Blend types, production styles, body/acidity/tannin enums
 
 data/enrich_wines.py         # CLI driver (~80 lines)
 
 data/db/food-pairing-taxonomy.json    # 43 curated food categories
 
+data/exports/                          # Per-run CSVs land here, gitignored
+   wine-enrichment-{timestamp}.csv     # Magento-ready export (see §15)
+
 data/migrations/2026-05-12_wine_enrichment.sql
-                                      # Migration: 3 new product columns + 2 new tables
+                                      # Migration: 3 new product columns + 1 new table (cache)
 
 tests/test_wine_enrichment_evidence.py
 tests/test_wine_enrichment_prompt.py
@@ -194,26 +205,16 @@ Pure Python batch pipeline with a thin CLI driver. Lib modules are pure function
 - `UNIQUE (sku, prompt_hash, evidence_hash) WHERE superseded_at IS NULL` — cache-hit lookup AND enforces at-most-one active row per (sku, prompt, evidence) at the DB level. Supersede must run inside the same transaction as a new insert.
 - `(created_at)` — daily activity queries.
 
-### 5.5 New `enrichment_proposals` table
+### 5.5 Output routing — CSV-as-review (no proposals table)
 
-| Column | Type | Purpose |
-|---|---|---|
-| `id` | uuid PK | |
-| `sku` | text | |
-| `category` | text | `'wine'`. |
-| `field_name` | text | `wine_body`, `flavor_tags`, etc. |
-| `proposed_value` | jsonb | What the AI suggests. |
-| `current_value` | jsonb | Current value (for diff UI). |
-| `confidence` | numeric(4,3) | Inherited from cache row. |
-| `cache_id` | uuid FK → enrichment_cache(id) | Audit trail. |
-| `status` | text | `pending` / `approved` / `rejected` / `superseded`. |
-| `reviewer` | text | Null until reviewed. |
-| `reviewed_at` | timestamptz | |
-| `created_at` | timestamptz default now() | |
+**Decision (2026-05-18 expert review):** the staged-proposals UI track was dropped. Reason: the team's existing Magento-upload workflow is CSV-based — that CSV is a natural review interface. Building a separate proposal-review UI would be dead weight unless someone commits to reviewing 1,000+ rows in it weekly. The CSV column listing all confidence scores is the simpler, lower-friction alternative.
 
-**Index:** `(status) WHERE status = 'pending'` — drives the future review UI.
+**Routing now:**
 
-One AI call produces multiple proposal rows (one per field). Fine-grained acceptance: reviewer can approve `wine_body` while rejecting `food_matching`.
+- **All SKUs** → row appended to per-run CSV at `data/exports/wine-enrichment-{timestamp}.csv` with `confidence` column. Team reviews in spreadsheet, edits as needed, uploads to Magento manually.
+- **High-confidence SKUs (≥0.85)** → also written to Supabase `products` table so the live `/explore` site benefits immediately without waiting for Magento upload.
+
+See §14 for the CSV column contract.
 
 ### 5.6 Magento attribute mapping
 
@@ -275,11 +276,20 @@ This means **Tier C will dominate** for the full-catalog run. The 0.75 multiplie
 
 ### 7.1 Prompt structure
 
-**System prompt (~250 tokens, cached via Anthropic prompt-cache `cache_control`):**
+**System prompt (~350 tokens, cached via Anthropic prompt-cache `cache_control`):**
 
-- Role definition: expert sommelier, third-party voice, JSON-only output.
+- Role definition: expert sommelier, third-party voice, JSON-only output. Customer-facing descriptions must be wholly original prose generated by Claude from its own knowledge.
 - Controlled vocabulary block (body/acidity/tannin/blend-type/production-style enums).
 - Food-pairing taxonomy block (~400 tokens, also cached).
+- **License-safe usage rule for Winesensed evidence** (verbatim text injected into system prompt):
+
+  > Winesensed records are provided as STRUCTURAL grounding ONLY:
+  >
+  > - Use them to confirm that the grape+region combination is plausible and the rating range looks normal.
+  > - You MAY cite a Winesensed record ID in `citations.winesensed_record_ids` when its grape/region anchors your judgement.
+  > - You MUST NOT quote, paraphrase, or restate Winesensed review text in `flavor_tags`, `desc_en_short`, or `full_description`.
+  > - You MUST NOT attribute opinions to specific Winesensed reviewers.
+  > - Generate all customer-facing prose from your own wine knowledge (training data on producer websites, critic vocabulary, classical wine literature). The Winesensed dataset is research-licensed (CC BY-NC-ND 4.0) and any direct restatement is not permitted.
 
 **User message (~1,200 tokens per SKU):**
 
@@ -338,7 +348,7 @@ Retry policy: 3 attempts with exponential backoff (1s, 2s, 4s) on 429/5xx. Hard 
 | Re-prompt overhead (10% of calls) | | | +$0.0008 avg |
 | **Realistic** | | | **~$0.005** |
 
-## 8. Cache + proposals routing
+## 8. Cache + output routing
 
 ### 8.1 Cache flow per SKU
 
@@ -371,24 +381,27 @@ collect_evidence(sku) → Evidence (with evidence_hash)
 
 Before inserting a new row for an SKU, mark the previous active row's `superseded_at = now()`. Append-only history; never delete.
 
-### 8.3 Proposals routing
+### 8.3 Output routing (CSV-as-review)
 
 ```python
-def route(sku, response_json, final_confidence, cache_id, threshold=0.85):
+def route(sku, response_json, final_confidence, cache_id, csv_writer, threshold=0.85):
+    fields = fields_from_response(response_json)
+
+    # Conditional Supabase write — only high-confidence rows reach the live /explore site
     if final_confidence >= threshold:
-        write_to_products(sku, fields_from_response(response_json),
+        write_to_products(sku, fields,
                           enrichment_source='ai_high_conf',
                           enrichment_confidence=final_confidence,
                           enriched_by=model_id,
                           enriched_at=now())
-    else:
-        for field, proposed in fields_from_response(response_json).items():
-            current = read_products_field(sku, field)
-            insert_proposal(sku, field, proposed, current,
-                           final_confidence, cache_id)
+
+    # Always append to CSV — every SKU enriched, with confidence column,
+    # for spreadsheet review + manual Magento upload (see §15).
+    csv_writer.writerow(build_csv_row(sku, fields, final_confidence, cache_id,
+                                       current_values=read_products_row(sku)))
 ```
 
-Approving a proposal triggers the same `write_to_products` path.
+The CSV row carries the `confidence` column, the `cache_id` for audit lookup, and every current value alongside the proposed value (diff-style). The team sorts/filters the CSV in a spreadsheet — focusing first on rows below threshold — edits anything they disagree with, drops rows they want to skip, then uploads the file to Magento via the existing manual Magento import.
 
 ### 8.4 Idempotence
 
@@ -496,9 +509,10 @@ v1 ships with a single threshold. If pilot shows uneven quality, a per-field thr
 --model MODEL                                                default: claude-haiku-4-5-20251001
 --dry-run            # no API calls
 --no-cache           # bypass enrichment_cache (force fresh)
---no-write           # call + validate + cache but no product/proposal writes
+--no-write           # call + validate + cache but no Supabase writes / no CSV
+--no-supabase        # skip Supabase products writes; CSV-only mode
 --sku SKU [--sku SKU ...]  # specific SKUs only
---review-staged      # print pending proposals (read-only)
+--csv-output PATH    # explicit CSV path; default: data/exports/wine-enrichment-{timestamp}.csv
 ```
 
 ### 11.2 Per-SKU stdout
@@ -575,7 +589,7 @@ python3 data/enrich_wines.py --tier 1 --tier 2 --limit 5000
 ## 13. Future work (tracked, not part of this spec)
 
 1. **Spirits enrichment** — separate spec; reuses `data/lib/enrichment/shared/` + new `data/lib/enrichment/spirits/`.
-2. **TypeScript admin UI** for reviewing staged proposals (`/admin/enrichment-review`).
+2. **TypeScript admin UI** for inline re-enrichment from product admin page — would replace today's CSV → Magento workflow only if the team finds spreadsheet review too slow. Not building proactively.
 3. **API endpoint** `/api/products/{id}/enrich` triggered from product admin page "Regenerate" button.
 4. **Multi-provider fallback** — call GPT-4o-mini or Gemini Flash for cross-validation on low-confidence SKUs.
 5. **Per-field thresholds** — if pilot shows uneven quality, per-field threshold config in `taxonomies.py`.
@@ -588,7 +602,63 @@ python3 data/enrich_wines.py --tier 1 --tier 2 --limit 5000
    - Selective producer-website scraping for high-priority brands only (robots.txt-respecting, rate-limited, focused — never a blanket crawler).
    Decide per gap class after the pilot, not in advance.
 
-## 14. Open items deferred to plan
+## 14. Magento CSV export contract
+
+The pipeline writes one CSV per run at `data/exports/wine-enrichment-{timestamp}.csv`. This file is the human-review interface AND the Magento upload artifact. The team opens it in Excel/Numbers/Google Sheets, sorts by `confidence`, eyeballs flagged rows, edits in place, drops rows they want to skip, and uploads the trimmed file to Magento via the existing manual Magento product CSV import.
+
+### 15.1 CSV columns (in order)
+
+| Column | Source | Purpose |
+|---|---|---|
+| `sku` | products.sku | Primary key — must match an existing Magento product. |
+| `confidence` | scoring.combine | 0–1; **sort by this column ascending to surface review-worthy rows first.** |
+| `confidence_tier` | scoring | `A` / `B` / `C` — quick visual filter. |
+| `wine_body` | Haiku output | Magento attribute value (one of 4 enums). |
+| `wine_acidity` | Haiku output | one of 4 enums. |
+| `wine_tannin` | Haiku output | one of 4 enums. |
+| `grape_variety` | Haiku output | Pipe-delimited string `"Cabernet Sauvignon|Merlot|Petit Verdot"` (Magento multiselect import format). |
+| `grape_blend_type` | Haiku output | one of 12 enums. |
+| `wine_production_style` | Haiku output | Pipe-delimited (multiselect). Empty when `Conventional`-only and you don't want to clutter Magento. |
+| `flavor_tags` | Haiku output | Pipe-delimited. |
+| `food_matching` | Haiku output | Pipe-delimited; values must match `food-pairing-taxonomy.json` labels. |
+| `desc_en_short` | Haiku output | ≤160 chars. |
+| `full_description` | Haiku output | HTML (escaped for CSV). |
+| `enrichment_note` | scoring | `"Haiku 4.5 / tier A / 4 winesensed records / Mondavi brand"` — explains *why* this confidence. |
+| `current_wine_body` | products.wine_body (live) | Side-by-side diff column for review. |
+| `current_food_matching` | products.food_matching (live) | Side-by-side diff column for review. |
+| `current_full_description` | products.full_description (live) | Side-by-side diff column for review. |
+| `cache_id` | enrichment_cache.id | Audit trail — paste this into Supabase to see the full prompt + response. |
+| `enriched_at` | now() | ISO timestamp. |
+| `enriched_by` | model id | `claude-haiku-4-5-...`. |
+
+### 15.2 CSV write conventions
+
+- UTF-8 with BOM (Excel-friendly).
+- Quoting: `csv.QUOTE_ALL` — every field quoted, no ambiguity on commas/newlines in descriptions.
+- Line endings: `\r\n` (Magento expects Windows-style; Excel preserves these).
+- Empty cells: empty string, not `null`/`None`.
+- Pipe-delimited multiselect: `value1|value2|value3` (Magento's native CSV multiselect format).
+
+### 15.3 Sample review workflow
+
+1. **Run:** `python3 data/enrich_wines.py --limit 50 --priority popularity`
+2. **Open:** `data/exports/wine-enrichment-2026-05-18T15:00Z.csv` in Numbers / Excel
+3. **Sort** ascending by `confidence` column
+4. **Eyeball** top ~20 rows (low-confidence) — edit any field you disagree with
+5. **Spot-check** 5 random high-confidence rows to confirm quality
+6. **Delete rows** you want to skip (e.g., a SKU about to be delisted)
+7. **Save as** `wine-enrichment-2026-05-18-reviewed.csv`
+8. **Upload** to Magento admin → System → Import → Products → CSV. Magento's "Update only" mode applies the new attribute values without touching prices/stock.
+
+### 15.4 Why this beats a custom review UI
+
+- **Zero new tools to learn** — team already lives in spreadsheets.
+- **Built-in bulk editing** — find/replace across 1,000 rows is a Cmd-F away.
+- **Reviewer's choice of platform** — Numbers / Excel / Google Sheets, all work the same.
+- **No deployment maintenance** — one Python writer, no React app, no auth.
+- **Magento format is the output natively** — no second export step.
+
+## 15. Open items deferred to plan
 
 Pure implementation details, decided during writing-plans:
 
