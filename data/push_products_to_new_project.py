@@ -66,31 +66,33 @@ def load_env(path: Path) -> dict[str, str]:
     return out
 
 
+NUMERIC_FIELDS = {
+    "price", "cost", "special_price", "b2b_price",
+    "b2b_margin_thb", "margin_thb", "wn_stock", "quantity_in_stock",
+    "sold_orders", "sold_qty", "queue_priority",
+    "popularity_score", "popularity_qty_90d", "popularity_orders_90d",
+    "popularity_revenue_90d", "popularity_window_days",
+    "score_max", "enrichment_confidence",
+    "overall_confidence", "taxonomy_confidence", "description_confidence",
+}
+TS_FIELDS = {
+    "popularity_synced_at", "enriched_at", "synced_at", "created_at", "updated_at",
+}
+
+
 def normalize_row(row: dict) -> dict:
-    """Keep only known columns; coerce empty strings on numeric fields to null."""
-    NUMERIC_FIELDS = {
-        "price", "cost", "special_price", "b2b_price",
-        "b2b_margin_thb", "margin_thb", "wn_stock", "quantity_in_stock",
-        "sold_orders", "sold_qty", "queue_priority",
-        "popularity_score", "popularity_qty_90d", "popularity_orders_90d",
-        "popularity_revenue_90d", "popularity_window_days",
-        "score_max", "enrichment_confidence",
-        "overall_confidence", "taxonomy_confidence", "description_confidence",
-    }
-    TS_FIELDS = {
-        "popularity_synced_at", "enriched_at", "synced_at", "created_at", "updated_at",
-    }
-    out = {}
+    """Return a row that has EVERY ALLOWED_COLUMNS key (None for missing).
+
+    PostgREST bulk POST requires all rows in a chunk to have the same key set.
+    """
+    out: dict = {col: None for col in ALLOWED_COLUMNS}
     for k, v in row.items():
         if k not in ALLOWED_COLUMNS:
             continue
-        if k in NUMERIC_FIELDS and (v == "" or v is None):
+        if (k in NUMERIC_FIELDS or k in TS_FIELDS) and (v == "" or v is None):
             out[k] = None
-            continue
-        if k in TS_FIELDS and (v == "" or v is None):
-            out[k] = None
-            continue
-        out[k] = v
+        else:
+            out[k] = v
     return out
 
 
