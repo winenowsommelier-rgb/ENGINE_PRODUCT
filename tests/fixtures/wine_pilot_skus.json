@@ -1,0 +1,73 @@
+[
+  {
+    "id": "fixture-wine-1",
+    "sku": "FX-BORDEAUX-001",
+    "name": "Château Test Premier Cru",
+    "brand": "Château Test",
+    "vintage": "2015",
+    "bottle_size": "750ml",
+    "classification": "Red Wine",
+    "country": "France",
+    "region": "Bordeaux",
+    "subregion": "Pauillac",
+    "grape_variety": "Cabernet Sauvignon, Merlot, Petit Verdot",
+    "price": 8500,
+    "alcohol": "13.5%"
+  },
+  {
+    "id": "fixture-wine-2",
+    "sku": "FX-NAPACAB-001",
+    "name": "Test Napa Estate Cabernet",
+    "brand": "Test Napa Estate",
+    "vintage": "2020",
+    "bottle_size": "750ml",
+    "classification": "Red Wine",
+    "country": "USA",
+    "region": "Napa Valley",
+    "grape_variety": "Cabernet Sauvignon",
+    "price": 4500,
+    "alcohol": "14.5%"
+  },
+  {
+    "id": "fixture-wine-3",
+    "sku": "FX-AUSSHIRAZ-001",
+    "name": "Test Shiraz",
+    "brand": "Test Australian Winery",
+    "vintage": "2021",
+    "bottle_size": "750ml",
+    "classification": "Red Wine",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "grape_variety": "Shiraz",
+    "price": 1200,
+    "alcohol": "14%"
+  },
+  {
+    "id": "fixture-wine-4",
+    "sku": "FX-NZSAUV-001",
+    "name": "Test Marlborough Sauvignon",
+    "brand": "Test NZ Winery",
+    "vintage": "2023",
+    "bottle_size": "750ml",
+    "classification": "White Wine",
+    "country": "New Zealand",
+    "region": "Marlborough",
+    "grape_variety": "Sauvignon Blanc",
+    "price": 900,
+    "alcohol": "12.5%"
+  },
+  {
+    "id": "fixture-wine-5",
+    "sku": "FX-SICILIAN-001",
+    "name": "Test Sicilian Red",
+    "brand": "Obscure Sicilian Cantina",
+    "vintage": "2020",
+    "bottle_size": "750ml",
+    "classification": "Red Wine",
+    "country": "Italy",
+    "region": "Sicily",
+    "grape_variety": "Nero d'Avola",
+    "price": 750,
+    "alcohol": "13%"
+  }
+]
