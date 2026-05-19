@@ -35,3 +35,6 @@ public/spec-preview.md
 data/backups/
 data/db/backups/
 data/taxonomy/backups/
+
+# Wine enrichment per-run CSV exports
+data/exports/
