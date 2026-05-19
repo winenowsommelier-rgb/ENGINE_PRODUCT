@@ -54,6 +54,12 @@ const SELECT_FIELDS = [
   "popularity_revenue_90d",
   "popularity_window_days",
   "popularity_synced_at",
+  // Wine enrichment pipeline outputs (2026-05-12 spec):
+  "grape_blend_type",
+  "wine_production_style",
+  "score_max",
+  "score_summary",
+  "full_description",
 ].join(",");
 
 const CHAMPAGNE_COUNTRY = "France";

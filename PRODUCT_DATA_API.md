@@ -22,6 +22,7 @@ Multiple systems write to the product catalog. To avoid conflicts, each field ha
 | `is_in_stock`, `custom_stock_status`, `wn_stock` | **BI** | BI sync |
 | `sold_orders`, `sold_qty`, `consign` | **BI** | BI sync (sales/inventory) |
 | `popularity_score`, `popularity_qty_90d`, `popularity_orders_90d`, `popularity_revenue_90d`, `popularity_window_days`, `popularity_synced_at` | **BI** | `data/sync_popularity_from_bi.py` (daily 04:00 launchd) |
+| `wine_body`, `wine_acidity`, `wine_tannin`, `grape_blend_type`, `wine_production_style`, `flavor_tags`, `food_matching`, `desc_en_short`, `full_description`, `score_max`, `score_summary`, `enrichment_confidence`, `enriched_at`, `enriched_by` | **PIM** (wine enrichment) | `data/enrich_wines.py` (see [docs/superpowers/specs/2026-05-12-wine-enrichment-design.md](docs/superpowers/specs/2026-05-12-wine-enrichment-design.md)) |
 | `country`, `region`, `subregion`, `appellation` | **PIM** | AI enrichment / manual edit |
 | `classification`, `wine_classification` | **PIM** | AI enrichment / taxonomy queue |
 | `grape_variety`, `liquor_main_type`, `other_type` | **PIM** | AI enrichment |
