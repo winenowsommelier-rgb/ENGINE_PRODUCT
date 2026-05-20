@@ -71,14 +71,30 @@ def fetch_critic_scores(supabase_url: str, api_key: str, skus: list[str]) -> dic
     return dict(out)
 
 
+def _needs_enrichment(p: dict) -> bool:
+    """A SKU needs enrichment if it's flagged for review OR missing matrix fields."""
+    if (p.get("validation_status") or "") == "needs_review":
+        return True
+    # Missing any of the 4 key matrix fields → needs enrichment
+    required = ("wine_body", "wine_acidity", "food_matching", "full_description")
+    if any(not (p.get(f) or "") for f in required):
+        return True
+    return False
+
+
 def select_skus(
-    products: list[dict], priority: str, tier: list[int] | None, limit: int, sku_filter: list[str] | None
+    products: list[dict], priority: str, tier: list[int] | None, limit: int,
+    sku_filter: list[str] | None, only_needs: bool = True,
 ) -> list[dict]:
     WINE_CLS = {"Red Wine", "White Wine", "Rose Wine", "Sparkling Wine", "Dessert Wine"}
     wines = [p for p in products if p.get("classification") in WINE_CLS]
     if sku_filter:
         sf = set(sku_filter)
         return [p for p in wines if p.get("sku") in sf][:limit]
+
+    # Pre-filter: skip already-good SKUs (saves ~60% on full catalog runs)
+    if only_needs:
+        wines = [p for p in wines if _needs_enrichment(p)]
 
     if tier:
         from collections import Counter
@@ -127,6 +143,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--no-cache", action="store_true")
     p.add_argument("--no-write", action="store_true")
     p.add_argument("--no-supabase", action="store_true")
+    p.add_argument("--all-skus", action="store_true",
+                   help="Disable the default needs-enrichment filter and run on every wine SKU.")
     p.add_argument("--sku", action="append", dest="skus")
     p.add_argument("--csv-output", type=Path)
     p.add_argument("--products-file", type=Path, default=DEFAULT_PRODUCTS_FILE)
@@ -150,7 +168,7 @@ def main(argv: list[str] | None = None) -> int:
     if isinstance(products, dict):
         products = products.get("records", [])
 
-    selected = select_skus(products, args.priority, args.tier, args.limit, args.skus)
+    selected = select_skus(products, args.priority, args.tier, args.limit, args.skus, only_needs=not args.all_skus)
     if not selected:
         print("No SKUs to process.")
         return 0
@@ -229,7 +247,7 @@ def main(argv: list[str] | None = None) -> int:
                 est = len(user.split()) * 1.3
                 print(f"[{i}/{len(selected)}] {sku}  tier={evidence.quality_tier}  [dry-run] would call Haiku (~{est:.0f} tokens user)")
                 continue
-            gen = haiku.generate(system=system, user=user, max_tokens=1500, temperature=0.1)
+            gen = haiku.generate(system=system, user=user, max_tokens=1000, temperature=0.1)
             stats["api_calls"] += 1
             total_cost_thb += gen.cost_thb
             cost_thb = gen.cost_thb
@@ -245,7 +263,7 @@ def main(argv: list[str] | None = None) -> int:
             result = val.validate(response, evidence, food_tax)
             if result.outcome == "rejected" and result.can_retry:
                 correction = f"\n\n[Correction required — your previous response had these issues: {result.issues}. Please regenerate following the schema exactly.]"
-                gen2 = haiku.generate(system=system, user=user + correction, max_tokens=1500, temperature=0.1)
+                gen2 = haiku.generate(system=system, user=user + correction, max_tokens=1000, temperature=0.1)
                 total_cost_thb += gen2.cost_thb
                 cost_thb += gen2.cost_thb
                 stats["api_calls"] += 1

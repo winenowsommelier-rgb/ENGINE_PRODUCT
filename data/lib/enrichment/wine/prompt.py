@@ -44,7 +44,7 @@ OUTPUT JSON SCHEMA:
   "flavor_tags": ["5 to 10 short tasting notes"],
   "food_matching": ["3 to 6 labels from taxonomy"],
   "desc_en_short": "<=160 char hook",
-  "full_description": "<p>200-1200 char HTML (only p/br/strong/em/ul/li)</p>",
+  "full_description": "<p>200-800 char HTML (only p/br/strong/em/ul/li)</p>",
   "confidence": 0.0-1.0,
   "confidence_notes": "...",
   "citations": {{

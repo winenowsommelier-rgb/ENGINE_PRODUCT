@@ -137,8 +137,8 @@ def validate(response_json: dict, evidence: Evidence, food_tax: FoodTaxonomy) ->
         return ValidationResult("rejected", repaired, ["desc_en_short is empty"], can_retry=True)
 
     full = str(repaired.get("full_description") or "")
-    if len(full) < 200 or len(full) > 1200:
-        return ValidationResult("rejected", repaired, [f"full_description length {len(full)} not in [200,1200]"], can_retry=True)
+    if len(full) < 200 or len(full) > 800:
+        return ValidationResult("rejected", repaired, [f"full_description length {len(full)} not in [200,800]"], can_retry=True)
     cleaned_full, html_modified = _strip_disallowed_html(full)
     if html_modified:
         repaired["full_description"] = cleaned_full
