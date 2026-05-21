@@ -33,6 +33,7 @@ DEFAULT_PRODUCTS_FILE = REPO_ROOT / "data" / "db" / "products.json"
 DEFAULT_WINESENSED_FILE = REPO_ROOT / "data" / "db" / "external-winesensed-records.json"
 DEFAULT_BRAND_LIBRARY_FILE = REPO_ROOT / "data" / "brand_description_library.csv"
 DEFAULT_EXPORTS_DIR = REPO_ROOT / "data" / "exports"
+DEFAULT_DB_PATH = REPO_ROOT / "data" / "db" / "products.db"
 
 
 def load_env(path: Path) -> dict[str, str]:
@@ -152,6 +153,10 @@ def main(argv: list[str] | None = None) -> int:
                    help="Override products source: load fixture JSON file with SKU records.")
     p.add_argument("--winesensed-file", type=Path, default=DEFAULT_WINESENSED_FILE)
     p.add_argument("--brand-library-file", type=Path, default=DEFAULT_BRAND_LIBRARY_FILE)
+    p.add_argument("--db", type=Path, default=DEFAULT_DB_PATH,
+                   help="Path to local SQLite store (default: data/db/products.db).")
+    p.add_argument("--also-push-supabase", action="store_true",
+                   help="Legacy: also write to Supabase. Default OFF — use scripts/sync_to_supabase.py.")
     args = p.parse_args(argv)
 
     env = load_env(REPO_ROOT / ".env.local")
@@ -197,9 +202,9 @@ def main(argv: list[str] | None = None) -> int:
         critic_scores_by_sku=critic_scores_by_sku,
     )
     food_tax = food_pairing.load_default()
-    cache_client = None
-    if not args.no_supabase and supabase_url and supabase_key and not args.no_cache:
-        cache_client = CacheClient(supabase_url=supabase_url, api_key=supabase_key)
+    from data.lib.enrichment.shared.local_store import LocalCache, FailureLogger
+    cache_client = None if args.no_cache else LocalCache(db_path=args.db)
+    failure_logger = FailureLogger(db_path=args.db)
 
     haiku = None
     if not args.dry_run:
@@ -219,8 +224,10 @@ def main(argv: list[str] | None = None) -> int:
         supabase_url=supabase_url, api_key=supabase_key,
         csv_writer=csv_writer, write_threshold=args.write_threshold,
     )
+    from data.lib.enrichment.wine.local_router import LocalRouter
+    local_router = LocalRouter(db_path=args.db, write_threshold=args.write_threshold)
 
-    stats = {"cache_hits": 0, "api_calls": 0, "supabase_writes": 0, "csv_only": 0, "validation_failures": 0, "by_tier": {"A": 0, "B": 0, "C": 0}}
+    stats = {"cache_hits": 0, "api_calls": 0, "local_writes": 0, "csv_only": 0, "validation_failures": 0, "by_tier": {"A": 0, "B": 0, "C": 0}}
     total_cost_thb = 0.0
     for i, sku_row in enumerate(selected, start=1):
         sku = sku_row["sku"]
@@ -258,12 +265,37 @@ def main(argv: list[str] | None = None) -> int:
                 response = json.loads(raw[start : end + 1])
             except Exception as e:
                 print(f"[{i}/{len(selected)}] {sku}  PARSE FAIL: {e}", file=sys.stderr)
+                failure_logger.log(
+                    sku=sku, failure_type="parse",
+                    raw_response=gen.text, validation_issues=[str(e)],
+                    prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
+                    model=gen.model, tokens_in=gen.tokens_in, tokens_out=gen.tokens_out,
+                    cost_thb=gen.cost_thb,
+                )
                 stats["validation_failures"] += 1
                 continue
             result = val.validate(response, evidence, food_tax)
             if result.outcome == "rejected" and result.can_retry:
+                failure_logger.log(
+                    sku=sku, failure_type="validation_first",
+                    raw_response=gen.text, validation_issues=result.issues,
+                    prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
+                    model=gen.model, tokens_in=gen.tokens_in, tokens_out=gen.tokens_out,
+                    cost_thb=gen.cost_thb,
+                )
                 correction = f"\n\n[Correction required — your previous response had these issues: {result.issues}. Please regenerate following the schema exactly.]"
-                gen2 = haiku.generate(system=system, user=user + correction, max_tokens=1000, temperature=0.1)
+                try:
+                    gen2 = haiku.generate(system=system, user=user + correction, max_tokens=1000, temperature=0.1)
+                except Exception as e:
+                    print(f"[{i}/{len(selected)}] {sku}  RETRY GENERATION FAILED: {e}", file=sys.stderr)
+                    failure_logger.log(
+                        sku=sku, failure_type="validation_retry",
+                        raw_response=None, validation_issues=[f"retry generation failed: {e}"],
+                        prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
+                        model=args.model, tokens_in=None, tokens_out=None, cost_thb=None,
+                    )
+                    stats["validation_failures"] += 1
+                    continue
                 total_cost_thb += gen2.cost_thb
                 cost_thb += gen2.cost_thb
                 stats["api_calls"] += 1
@@ -272,12 +304,26 @@ def main(argv: list[str] | None = None) -> int:
                     response = json.loads(raw2[raw2.find("{") : raw2.rfind("}") + 1])
                     result = val.validate(response, evidence, food_tax)
                     if result.outcome == "rejected":
+                        failure_logger.log(
+                            sku=sku, failure_type="validation_retry",
+                            raw_response=gen2.text, validation_issues=result.issues,
+                            prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
+                            model=gen2.model, tokens_in=gen2.tokens_in, tokens_out=gen2.tokens_out,
+                            cost_thb=gen2.cost_thb,
+                        )
                         validation_status_for_scoring = "failed"
                         stats["validation_failures"] += 1
                         continue
                     else:
                         validation_status_for_scoring = "failed_then_retried"
-                except Exception:
+                except Exception as e2:
+                    failure_logger.log(
+                        sku=sku, failure_type="validation_retry",
+                        raw_response=gen2.text, validation_issues=[str(e2)],
+                        prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
+                        model=gen2.model, tokens_in=gen2.tokens_in, tokens_out=gen2.tokens_out,
+                        cost_thb=gen2.cost_thb,
+                    )
                     stats["validation_failures"] += 1
                     continue
             elif result.outcome == "rejected":
@@ -311,21 +357,37 @@ def main(argv: list[str] | None = None) -> int:
         score_max, score_summary = compute_score_aggregates(critic_scores_by_sku.get(sku, []))
 
         if not args.no_write:
+            enriched_at = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
             try:
-                wrote = router.route(
+                wrote_local = local_router.update_product(
+                    products_id=sku_row.get("id", ""),
+                    response=response, final_confidence=final_conf,
+                    model=args.model, enrichment_note=f"Haiku/{evidence.quality_tier}",
+                    enriched_at=enriched_at,
+                    score_max=score_max, score_summary=score_summary,
+                )
+                if wrote_local:
+                    stats["local_writes"] += 1
+                else:
+                    stats["csv_only"] += 1
+                if wrote_local and args.also_push_supabase:
+                    router._write_to_products(
+                        sku_row.get("id", ""), response, final_conf, args.model,
+                        f"Haiku/{evidence.quality_tier}", enriched_at, score_max, score_summary,
+                    )
+            except Exception as e:
+                print(f"WARN: local route failed for {sku}: {e}", file=sys.stderr)
+            try:
+                router.route(
                     sku=sku, products_id=sku_row.get("id", ""),
                     response=response, final_confidence=final_conf,
                     tier=evidence.quality_tier, cache_id=cache_id,
                     current_values=sku_row, enrichment_note=f"Haiku/{evidence.quality_tier}",
-                    model=args.model, enriched_at=datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
+                    model=args.model, enriched_at=enriched_at,
                     score_max=score_max, score_summary=score_summary,
                 )
-                if wrote:
-                    stats["supabase_writes"] += 1
-                else:
-                    stats["csv_only"] += 1
             except Exception as e:
-                print(f"WARN: route failed for {sku}: {e}", file=sys.stderr)
+                print(f"WARN: csv route failed for {sku}: {e}", file=sys.stderr)
 
         decision = "DIRECT WRITE" if final_conf >= args.write_threshold else "CSV ONLY"
         print(f"[{i}/{len(selected)}] {sku}  tier={evidence.quality_tier}  ai_conf={ai_conf:.2f}  final={final_conf:.2f}  → {decision}  (THB {cost_thb:.4f})")
@@ -337,7 +399,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"SKUs processed:           {len(selected)}")
     print(f"  Cache hits:             {stats['cache_hits']}")
     print(f"  API calls:              {stats['api_calls']}")
-    print(f"  Supabase direct writes: {stats['supabase_writes']}")
+    print(f"  Local DB writes:        {stats['local_writes']}")
     print(f"  CSV-only:               {stats['csv_only']}")
     print(f"  Validation failures:    {stats['validation_failures']}")
     print(f"Cost (this run):          THB {total_cost_thb:.2f}")
