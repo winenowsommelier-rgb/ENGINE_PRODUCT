@@ -141,15 +141,11 @@ class OutputRouter:
         score_max: float | None = None,
         score_summary: str = "",
     ) -> bool:
-        """Returns True if direct Supabase write happened, False if CSV-only."""
-        wrote_supabase = False
-        if final_confidence >= self.write_threshold and products_id:
-            self._write_to_products(
-                products_id, response, final_confidence, model,
-                enrichment_note, enriched_at, score_max, score_summary,
-            )
-            wrote_supabase = True
+        """Writes CSV row only. Returns False (Supabase PATCH moved to LocalRouter).
 
+        _write_to_products() is preserved for the optional --also-push-supabase
+        legacy path called directly from enrich_wines.py.
+        """
         row = build_csv_row(
             sku=sku, response=response,
             final_confidence=final_confidence, tier=tier,
@@ -159,4 +155,4 @@ class OutputRouter:
             score_max=score_max, score_summary=score_summary,
         )
         self.csv_writer.writerow(row)
-        return wrote_supabase
+        return False

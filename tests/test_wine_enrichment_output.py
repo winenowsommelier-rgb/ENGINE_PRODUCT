@@ -49,7 +49,9 @@ class TestCsvRow:
 
 class TestRouting:
     @patch("data.lib.enrichment.wine.output.urllib.request.urlopen")
-    def test_above_threshold_writes_to_supabase(self, mock_urlopen):
+    def test_route_is_csv_only_regardless_of_confidence(self, mock_urlopen):
+        """route() is now CSV-only; Supabase PATCH moved to _write_to_products() called
+        directly from the CLI (--also-push-supabase). Always returns False."""
         mock_resp = MagicMock()
         mock_resp.__enter__.return_value = mock_resp
         mock_resp.read.return_value = b""
@@ -72,8 +74,8 @@ class TestRouting:
             enrichment_note="haiku tier A",
             model="haiku-4-5", enriched_at="2026-05-12T15:00:00Z",
         )
-        assert wrote is True
-        assert mock_urlopen.called
+        # route() is now CSV-only — never calls Supabase, row must appear in CSV
+        assert mock_urlopen.call_count == 0
         assert "WX-1" in csv_buf.getvalue()
 
     @patch("data.lib.enrichment.wine.output.urllib.request.urlopen")
@@ -94,6 +96,30 @@ class TestRouting:
             enrichment_note="haiku tier C",
             model="haiku-4-5", enriched_at="2026-05-12T15:00:00Z",
         )
-        assert wrote is False
         assert mock_urlopen.call_count == 0
         assert "WX-2" in csv_buf.getvalue()
+
+    @patch("data.lib.enrichment.wine.output.urllib.request.urlopen")
+    def test_write_to_products_calls_supabase(self, mock_urlopen):
+        """_write_to_products() (legacy push) still calls Supabase PATCH."""
+        mock_resp = MagicMock()
+        mock_resp.__enter__.return_value = mock_resp
+        mock_resp.read.return_value = b""
+        mock_resp.status = 204
+        mock_urlopen.return_value = mock_resp
+
+        csv_buf = io.StringIO()
+        writer = csv.DictWriter(csv_buf, fieldnames=o.CSV_COLUMNS, quoting=csv.QUOTE_ALL)
+        writer.writeheader()
+
+        router = o.OutputRouter(
+            supabase_url="https://x.supabase.co", api_key="k",
+            csv_writer=writer, write_threshold=0.85,
+        )
+        router._write_to_products(
+            products_id="prod-1", response=_good_response(),
+            final_confidence=0.91, model="haiku-4-5",
+            enrichment_note="haiku tier A", enriched_at="2026-05-12T15:00:00Z",
+            score_max=95.0, score_summary="JS 95",
+        )
+        assert mock_urlopen.called

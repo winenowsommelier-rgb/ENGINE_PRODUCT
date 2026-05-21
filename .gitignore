@@ -38,3 +38,9 @@ data/taxonomy/backups/
 
 # Wine enrichment per-run CSV exports
 data/exports/
+
+# Local SQLite enrichment database
+data/db/products.db
+data/db/products.db-journal
+data/db/products.db-wal
+data/db/products.db-shm
