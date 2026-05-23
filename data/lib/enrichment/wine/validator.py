@@ -16,8 +16,17 @@ _LABEL_GLOSS_RE = re.compile(r"\s*[\(\[].*?[\)\]]\s*$")
 
 
 def _strip_label_gloss(s: str) -> str:
-    """Remove a trailing (...) or [...] gloss from a food-pairing label."""
-    return _LABEL_GLOSS_RE.sub("", str(s)).strip()
+    """Remove surrounding double quotes and a trailing (...) or [...] gloss
+    from a food-pairing label (defensive against Haiku copying the prompt's
+    label-quoting verbatim).
+
+    Quotes are stripped first so that a trailing gloss sitting inside outer
+    quotes (e.g. '"Label [gloss]"') is exposed before the regex runs.
+    """
+    out = str(s).strip()
+    if len(out) >= 2 and out.startswith('"') and out.endswith('"'):
+        out = out[1:-1].strip()
+    return _LABEL_GLOSS_RE.sub("", out).strip()
 
 
 @dataclass
