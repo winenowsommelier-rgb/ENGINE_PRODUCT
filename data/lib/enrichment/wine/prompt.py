@@ -31,7 +31,7 @@ CONTROLLED VOCABULARY (use ONLY these exact values):
 - wine_tannin: {tannin_enum}
 - grape_blend_type: {blend_enum}
 - wine_production_style (multiselect): {prod_enum}
-- food_matching: pick 3-6 EXACT labels from FOOD PAIRING TAXONOMY below
+- food_matching: pick 3-6 labels. Use ONLY the QUOTED label string (e.g. "Grilled red meat"), NEVER the bracketed examples/pairing gloss.
 
 OUTPUT JSON SCHEMA:
 {{
