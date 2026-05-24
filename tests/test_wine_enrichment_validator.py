@@ -120,3 +120,62 @@ class TestConfidenceRange:
         r["confidence"] = 1.5
         result = v.validate(r, _empty_evidence(), FOOD_TAX)
         assert result.outcome == "rejected"
+
+
+def test_food_matching_strips_parenthetical_gloss():
+    """Haiku returns glossed labels → validator strips the gloss and matches the bare label."""
+    r = _good_response()
+    r["food_matching"] = [
+        "Grilled red meat (e.g. steak, ribeye; pairs with Full red)",
+        "Lamb dishes (e.g. rack of lamb; pairs with Full red)",
+        "Aged hard cheese (e.g. parmesan, manchego; pairs with Full red)",
+    ]
+    result = v.validate(r, _empty_evidence(), FOOD_TAX)
+    assert result.outcome != "rejected", f"validator rejected glossed labels: {result.issues}"
+    assert result.repaired_json["food_matching"] == ["Grilled red meat", "Lamb dishes", "Aged hard cheese"]
+
+
+def test_food_matching_strips_bracketed_gloss():
+    """New renderer uses [examples: ...] — validator should also strip that."""
+    r = _good_response()
+    r["food_matching"] = [
+        "Grilled red meat [examples: steak, ribeye; pairs with Full red]",
+        "Lamb dishes [examples: rack of lamb]",
+        "Aged hard cheese [examples: parmesan]",
+    ]
+    result = v.validate(r, _empty_evidence(), FOOD_TAX)
+    assert result.outcome != "rejected", f"validator rejected glossed labels: {result.issues}"
+    assert result.repaired_json["food_matching"] == ["Grilled red meat", "Lamb dishes", "Aged hard cheese"]
+
+
+def test_food_matching_exact_match_still_works():
+    """Bare labels (no gloss) still match exactly — no regression."""
+    r = _good_response()
+    # _good_response already uses bare labels; just verify it still passes
+    result = v.validate(r, _empty_evidence(), FOOD_TAX)
+    assert result.outcome == "passed"
+    assert result.repaired_json["food_matching"] == ["Grilled red meat", "Aged hard cheese", "Lamb dishes"]
+
+
+def test_food_matching_strips_surrounding_quotes():
+    """If Haiku copies the prompt's quoted label format verbatim
+    ('"Grilled red meat"'), the validator should strip the quotes and match."""
+    r = _good_response()
+    r["food_matching"] = ['"Grilled red meat"', '"Lamb dishes"', '"Aged hard cheese"']
+    result = v.validate(r, _empty_evidence(), FOOD_TAX)
+    assert result.outcome != "rejected", f"validator rejected quoted labels: {result.issues}"
+    assert result.repaired_json["food_matching"] == ["Grilled red meat", "Lamb dishes", "Aged hard cheese"]
+
+
+def test_food_matching_strips_quotes_AND_gloss():
+    """Worst case: Haiku emits both surrounding quotes AND the bracketed gloss.
+    Validator should strip both and recover."""
+    r = _good_response()
+    r["food_matching"] = [
+        '"Grilled red meat [examples: steak; pairs with Full red]"',
+        '"Lamb dishes [examples: rack of lamb]"',
+        '"Aged hard cheese [examples: parmesan]"',
+    ]
+    result = v.validate(r, _empty_evidence(), FOOD_TAX)
+    assert result.outcome != "rejected", f"validator rejected quote+gloss labels: {result.issues}"
+    assert result.repaired_json["food_matching"] == ["Grilled red meat", "Lamb dishes", "Aged hard cheese"]

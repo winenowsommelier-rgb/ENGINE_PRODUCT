@@ -33,7 +33,7 @@ class FoodTaxonomy:
                 lines.append(f"\n{c.group}:")
                 current_group = c.group
             hint = " / ".join(c.wine_style_hint)
-            lines.append(f"  - {c.label} (e.g. {c.examples}; pairs with {hint})")
+            lines.append(f'  - "{c.label}"  [examples: {c.examples}; pairs with {hint}]')
         return "\n".join(lines)
 
 

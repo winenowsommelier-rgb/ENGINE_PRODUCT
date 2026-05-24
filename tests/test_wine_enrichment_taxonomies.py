@@ -64,3 +64,19 @@ class TestFuzzyVocabRepair:
     def test_blend_type_gsm_repairs(self):
         assert tax.repair_blend_type("GSM") == "Rhône South Blend (GSM)"
         assert tax.repair_blend_type("Rhone Blend") == "Rhône South Blend (GSM)"
+
+
+def test_food_taxonomy_prompt_block_wraps_label_in_quotes():
+    """The rendered prompt block must visually distinguish the bare label
+    from the descriptive gloss so Haiku doesn't copy the whole line.
+    Labels are wrapped in double quotes; glosses use [brackets] (not parens)."""
+    from data.lib.enrichment.shared.taxonomies.food_pairing import load_default
+
+    block = load_default().prompt_block()
+    # Spot-check the 'Grilled red meat' entry
+    assert '"Grilled red meat"' in block
+    # Old (e.g. ...; pairs with ...) form should be GONE
+    assert "Grilled red meat (e.g." not in block
+    # New bracketed form should be present
+    assert "[examples:" in block
+    assert "pairs with" in block  # still mentions the wine-style hint

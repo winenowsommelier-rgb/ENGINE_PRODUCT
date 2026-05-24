@@ -12,6 +12,22 @@ from data.lib.enrichment.shared.taxonomies.food_pairing import FoodTaxonomy
 ALLOWED_HTML_TAGS = {"p", "br", "strong", "em", "ul", "li"}
 HTML_TAG_RE = re.compile(r"</?([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>")
 
+_LABEL_GLOSS_RE = re.compile(r"\s*[\(\[].*?[\)\]]\s*$")
+
+
+def _strip_label_gloss(s: str) -> str:
+    """Remove surrounding double quotes and a trailing (...) or [...] gloss
+    from a food-pairing label (defensive against Haiku copying the prompt's
+    label-quoting verbatim).
+
+    Quotes are stripped first so that a trailing gloss sitting inside outer
+    quotes (e.g. '"Label [gloss]"') is exposed before the regex runs.
+    """
+    out = str(s).strip()
+    if len(out) >= 2 and out.startswith('"') and out.endswith('"'):
+        out = out[1:-1].strip()
+    return _LABEL_GLOSS_RE.sub("", out).strip()
+
 
 @dataclass
 class ValidationResult:
@@ -109,17 +125,27 @@ def validate(response_json: dict, evidence: Evidence, food_tax: FoodTaxonomy) ->
     food_labels = food_tax.labels
     food_valid = []
     for f in food_in:
-        if f in food_labels:
-            food_valid.append(f)
-        else:
-            ci_match = next((l for l in food_labels if l.lower() == str(f).lower()), None)
-            if ci_match:
-                food_valid.append(ci_match)
-                issues.append(f"food_matching repaired: {f!r} -> {ci_match!r}")
-                repaired_count += 1
-            else:
-                issues.append(f"food_matching dropped (not in taxonomy): {f!r}")
-                repaired_count += 1
+        f_str = str(f)
+        # 1. exact match
+        if f_str in food_labels:
+            food_valid.append(f_str)
+            continue
+        # 2. strip gloss and match
+        stripped = _strip_label_gloss(f_str)
+        if stripped in food_labels:
+            food_valid.append(stripped)
+            issues.append(f"food_matching repaired (stripped gloss): {f!r} -> {stripped!r}")
+            repaired_count += 1
+            continue
+        # 3. case-insensitive match on stripped value
+        ci_match = next((l for l in food_labels if l.lower() == stripped.lower()), None)
+        if ci_match:
+            food_valid.append(ci_match)
+            issues.append(f"food_matching repaired (case+gloss): {f!r} -> {ci_match!r}")
+            repaired_count += 1
+            continue
+        issues.append(f"food_matching dropped (not in taxonomy): {f!r}")
+        repaired_count += 1
     if len(food_valid) < 3 or len(food_valid) > 6:
         issues.append(f"food_matching count {len(food_valid)} not in [3, 6]")
         return ValidationResult("rejected", repaired, issues, can_retry=True)
