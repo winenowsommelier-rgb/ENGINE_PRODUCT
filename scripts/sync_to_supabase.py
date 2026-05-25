@@ -31,7 +31,10 @@ PRODUCT_SYNC_COLUMNS = [
     "score_max", "score_summary",
     "enrichment_confidence", "enrichment_source", "enrichment_note",
     "enriched_at", "enriched_by", "updated_at",
+    "taste_profile", "taste_profile_override",
 ]
+
+_JSON_COLUMNS = {"wine_production_style", "taste_profile", "taste_profile_override"}
 
 
 def _get_sync_state(conn: sqlite3.Connection, table: str) -> str | None:
@@ -66,8 +69,9 @@ def plan_product_deltas(db_path: Path, since: str | None) -> list[dict]:
     out = []
     for r in rows:
         d = dict(r)
-        if d.get("wine_production_style"):
-            d["wine_production_style"] = json.loads(d["wine_production_style"])
+        for col in _JSON_COLUMNS:
+            if col in d and d[col]:
+                d[col] = json.loads(d[col])
         out.append(d)
     return out
 
@@ -116,7 +120,65 @@ def _upsert_cache(supabase_url: str, api_key: str, row: dict) -> None:
         pass
 
 
-def sync_products(db_path: Path, supabase_url: str, api_key: str, dry_run: bool = False) -> int:
+def _fetch_local_taste_notes(db_path: Path, product_id: str) -> list[dict]:
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute(
+        "SELECT product_id, note, tier, intensity, note_family FROM product_taste_notes WHERE product_id=?",
+        (product_id,),
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def sync_product_taste_notes(
+    db_path: Path, supabase_url: str, api_key: str, product_id: str
+) -> None:
+    """DELETE all taste notes for product_id on Supabase, then INSERT fresh rows from local."""
+    base = supabase_url.rstrip("/")
+    headers_base = {
+        "apikey": api_key,
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+
+    # DELETE existing rows
+    del_url = f"{base}/rest/v1/product_taste_notes?product_id=eq.{urllib.parse.quote(product_id)}"
+    del_req = urllib.request.Request(del_url, method="DELETE", headers={
+        **headers_base, "Prefer": "return=minimal",
+    })
+    with urllib.request.urlopen(del_req, timeout=30):
+        pass
+
+    # INSERT fresh rows (bulk)
+    rows = _fetch_local_taste_notes(db_path, product_id)
+    if not rows:
+        return
+    ins_url = f"{base}/rest/v1/product_taste_notes"
+    body = json.dumps(rows).encode("utf-8")
+    ins_req = urllib.request.Request(ins_url, data=body, method="POST", headers={
+        **headers_base, "Prefer": "return=minimal",
+    })
+    with urllib.request.urlopen(ins_req, timeout=30):
+        pass
+
+
+def enqueue_similarity_dirty(supabase_url: str, api_key: str, product_id: str) -> None:
+    """Insert product_id into Supabase product_similar_dirty (ON CONFLICT DO NOTHING)."""
+    url = f"{supabase_url.rstrip('/')}/rest/v1/product_similar_dirty"
+    body = json.dumps({"product_id": product_id}).encode("utf-8")
+    req = urllib.request.Request(url, data=body, method="POST", headers={
+        "apikey": api_key,
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "Prefer": "resolution=merge-duplicates,return=minimal",
+    })
+    with urllib.request.urlopen(req, timeout=30):
+        pass
+
+
+def sync_products(db_path: Path, supabase_url: str, api_key: str, dry_run: bool = False,
+                  skip_taste_notes: bool = False) -> int:
     conn = sqlite3.connect(db_path)
     since = _get_sync_state(conn, "products")
     conn.close()
@@ -129,8 +191,13 @@ def sync_products(db_path: Path, supabase_url: str, api_key: str, dry_run: bool 
     had_failure = False
     for d in deltas:
         ts = d.get("updated_at")
+        pid = d.get("id")
+        has_taste = bool(d.get("taste_profile"))
         try:
             _patch_product(supabase_url, api_key, dict(d))
+            if not skip_taste_notes and has_taste:
+                sync_product_taste_notes(db_path, supabase_url, api_key, pid)
+                enqueue_similarity_dirty(supabase_url, api_key, pid)
             count += 1
             if not had_failure and ts and (latest_ts is None or ts > latest_ts):
                 latest_ts = ts
@@ -191,6 +258,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--products-only", action="store_true")
     p.add_argument("--cache-only", action="store_true")
+    p.add_argument("--skip-taste-notes", action="store_true",
+                   help="Skip syncing product_taste_notes rows (emergency bypass).")
     args = p.parse_args(argv)
 
     env = _load_env(REPO_ROOT / ".env.local")
@@ -202,7 +271,8 @@ def main(argv: list[str] | None = None) -> int:
 
     n_prod = n_cache = 0
     if not args.cache_only:
-        n_prod = sync_products(args.db, supabase_url, api_key, dry_run=args.dry_run)
+        n_prod = sync_products(args.db, supabase_url, api_key, dry_run=args.dry_run,
+                               skip_taste_notes=args.skip_taste_notes)
     if not args.products_only:
         n_cache = sync_cache(args.db, supabase_url, api_key, dry_run=args.dry_run)
     print(f"products synced: {n_prod}  cache synced: {n_cache}")
