@@ -179,3 +179,100 @@ def test_food_matching_strips_quotes_AND_gloss():
     result = v.validate(r, _empty_evidence(), FOOD_TAX)
     assert result.outcome != "rejected", f"validator rejected quote+gloss labels: {result.issues}"
     assert result.repaired_json["food_matching"] == ["Grilled red meat", "Lamb dishes", "Aged hard cheese"]
+
+
+# ---------------------------------------------------------------------------
+# Taste-profile unit tests (Task 1.2)
+# ---------------------------------------------------------------------------
+
+from pathlib import Path
+from data.lib.enrichment.shared.vocab_loader import VocabLoader
+
+VOCAB_FIXTURE = Path(__file__).parent / "fixtures" / "taste_vocab_min.yml"
+
+
+def _load_fixture_vocab() -> VocabLoader:
+    return VocabLoader.from_path(VOCAB_FIXTURE)
+
+
+def _wine_payload(taste_profile: dict) -> dict:
+    """Build a full v1-style payload with taste_profile attached for integration use."""
+    payload = _good_response()
+    payload["taste_profile"] = taste_profile
+    return payload
+
+
+def _tiered_tp(primary=None, secondary=None, tertiary=None) -> dict:
+    return {
+        "schema_version": "2.0",
+        "structure": "tiered",
+        "tiers": {
+            "primary": primary or [],
+            "secondary": secondary or [],
+            "tertiary": tertiary or [],
+        },
+        "structural": {},
+        "confidence": 0.9,
+        "prompt_version": "v2.0",
+        "enriched_at": "2026-05-25T00:00:00Z",
+    }
+
+
+class TestValidateTasteProfile:
+    def test_taste_profile_canonical_notes_pass(self):
+        vocab = _load_fixture_vocab()
+        tp = _tiered_tp(
+            primary=[{"note": "Blackcurrant", "intensity": 3}],
+            secondary=[{"note": "Cedar", "intensity": 2}],
+            tertiary=[{"note": "Tobacco", "intensity": 1}],
+        )
+        result = v._validate_taste_profile(tp, vocab, classification="Red Wine")
+        assert result["ok"] is True
+        assert result["unknown_notes"] == []
+
+    def test_taste_profile_alias_is_repaired(self):
+        vocab = _load_fixture_vocab()
+        tp = _tiered_tp(
+            primary=[{"note": "cassis", "intensity": 3}],
+        )
+        result = v._validate_taste_profile(tp, vocab, classification="Red Wine")
+        assert result["ok"] is True
+        assert tp["tiers"]["primary"][0]["note"] == "Blackcurrant"
+        assert any("Blackcurrant" in r for r in result["repairs"])
+
+    def test_taste_profile_unknown_note_rejected(self):
+        vocab = _load_fixture_vocab()
+        tp = _tiered_tp(
+            primary=[{"note": "Dragonfruit", "intensity": 2}],
+        )
+        result = v._validate_taste_profile(tp, vocab, classification="Red Wine")
+        assert result["ok"] is False
+        assert "Dragonfruit" in result["unknown_notes"]
+
+    def test_taste_profile_intensity_out_of_range_rejected(self):
+        vocab = _load_fixture_vocab()
+        tp = _tiered_tp(
+            primary=[{"note": "Blackcurrant", "intensity": 5}],
+        )
+        result = v._validate_taste_profile(tp, vocab, classification="Red Wine")
+        assert result["ok"] is False
+
+    def test_taste_profile_minimum_content_enforced(self):
+        vocab = _load_fixture_vocab()
+        tp = _tiered_tp()  # all tiers empty
+        result = v._validate_taste_profile(tp, vocab, classification="Red Wine")
+        assert result["ok"] is False
+
+    def test_taste_profile_auto_sorts_within_tier(self):
+        vocab = _load_fixture_vocab()
+        tp = _tiered_tp(
+            primary=[
+                {"note": "Blackcurrant", "intensity": 1},
+                {"note": "Cedar", "intensity": 3},
+            ],
+        )
+        result = v._validate_taste_profile(tp, vocab, classification="Red Wine")
+        assert result["ok"] is True
+        notes = tp["tiers"]["primary"]
+        assert notes[0]["note"] == "Cedar"
+        assert notes[1]["note"] == "Blackcurrant"

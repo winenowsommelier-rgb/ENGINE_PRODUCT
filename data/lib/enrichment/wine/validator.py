@@ -3,13 +3,26 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from functools import lru_cache
+from pathlib import Path
 from typing import Literal
 
 from data.lib.enrichment.wine import taxonomies
 from data.lib.enrichment.wine.evidence import Evidence
 from data.lib.enrichment.shared.taxonomies.food_pairing import FoodTaxonomy
+from data.lib.enrichment.shared.vocab_loader import VocabLoader
+from data.lib.enrichment.wine.schemas import CATEGORY_TO_STRUCTURE
 
 ALLOWED_HTML_TAGS = {"p", "br", "strong", "em", "ul", "li"}
+
+_VALID_INTENSITIES = {1, 2, 3}
+_TIER_NAMES = ("primary", "secondary", "tertiary")
+_VOCAB_PATH = Path(__file__).resolve().parents[2] / "shared" / "taste_vocab.yml"
+
+
+@lru_cache(maxsize=1)
+def _vocab_singleton() -> VocabLoader:
+    return VocabLoader.from_path(_VOCAB_PATH)
 HTML_TAG_RE = re.compile(r"</?([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>")
 
 _LABEL_GLOSS_RE = re.compile(r"\s*[\(\[].*?[\)\]]\s*$")
@@ -47,6 +60,76 @@ def _strip_disallowed_html(s: str) -> tuple[str, bool]:
         modified = True
         return ""
     return HTML_TAG_RE.sub(_replace, s), modified
+
+
+def _validate_taste_profile(tp: dict, vocab: VocabLoader, classification: str) -> dict:
+    """Validate and repair a taste_profile dict in-place.
+
+    Returns a result dict with keys:
+        ok           bool   — False if any hard errors remain after repairs
+        repairs      list[str] — descriptions of alias repairs applied
+        unknown_notes list[str] — note names that could not be resolved
+        issues       list[str] — structural / intensity / min-content failures
+    """
+    repairs: list[str] = []
+    unknown_notes: list[str] = []
+    issues: list[str] = []
+
+    # 1. Check classification is known
+    expected_structure = CATEGORY_TO_STRUCTURE.get(classification)
+    if expected_structure is None:
+        issues.append(f"classification '{classification}' not in CATEGORY_TO_STRUCTURE")
+        return {"ok": False, "repairs": repairs, "unknown_notes": unknown_notes, "issues": issues}
+
+    # 2. Check structure field matches expected
+    actual_structure = tp.get("structure")
+    if actual_structure != expected_structure:
+        issues.append(
+            f"taste_profile structure '{actual_structure}' != expected '{expected_structure}' "
+            f"for classification '{classification}'"
+        )
+        return {"ok": False, "repairs": repairs, "unknown_notes": unknown_notes, "issues": issues}
+
+    def _process_notes(notes: list[dict], tier_label: str) -> None:
+        for n in notes:
+            # Intensity check
+            intensity = n.get("intensity")
+            if intensity not in _VALID_INTENSITIES:
+                issues.append(f"{tier_label}: intensity {intensity!r} not in {{1,2,3}}")
+                continue
+            # Vocab lookup
+            raw_name = n.get("note", "")
+            canon = vocab.lookup(raw_name)
+            if canon is None:
+                unknown_notes.append(raw_name)
+            elif canon.name != raw_name:
+                # Alias → repair in-place
+                repairs.append(f"{tier_label}: '{raw_name}' -> '{canon.name}'")
+                n["note"] = canon.name
+
+    if actual_structure == "tiered":
+        tiers = tp.get("tiers", {})
+        for tier_name in _TIER_NAMES:
+            tier_notes = tiers.get(tier_name) or []
+            _process_notes(tier_notes, tier_name)
+            # Sort intensity descending in-place
+            tier_notes.sort(key=lambda n: n.get("intensity", 0), reverse=True)
+
+        # Min-content: at least one tier non-empty
+        total = sum(len(tiers.get(t) or []) for t in _TIER_NAMES)
+        if total == 0:
+            issues.append("taste_profile tiered: all tiers empty (minimum 1 note required)")
+
+    else:  # flat
+        flat_tags = tp.get("flat_tags") or []
+        _process_notes(flat_tags, "flat_tags")
+        flat_tags.sort(key=lambda n: n.get("intensity", 0), reverse=True)
+
+        if len(flat_tags) < 3:
+            issues.append(f"taste_profile flat: {len(flat_tags)} notes < minimum 3")
+
+    ok = (not unknown_notes) and (not issues)
+    return {"ok": ok, "repairs": repairs, "unknown_notes": unknown_notes, "issues": issues}
 
 
 def validate(response_json: dict, evidence: Evidence, food_tax: FoodTaxonomy) -> ValidationResult:
@@ -201,6 +284,30 @@ def validate(response_json: dict, evidence: Evidence, food_tax: FoodTaxonomy) ->
     if not (0.0 <= conf_f <= 1.0):
         return ValidationResult("rejected", repaired, [f"confidence out of [0,1]: {conf_f}"], can_retry=True)
     repaired["confidence"] = conf_f
+
+    # Taste-profile validation (optional field; only when classification is known)
+    if "taste_profile" in repaired and evidence.facts.get("classification") in CATEGORY_TO_STRUCTURE:
+        vocab = _vocab_singleton()
+        tp_result = _validate_taste_profile(
+            repaired["taste_profile"],
+            vocab,
+            classification=evidence.facts["classification"],
+        )
+        if not tp_result["ok"]:
+            combined_issues = [
+                *issues,
+                *tp_result["issues"],
+                *(f"unknown note: {n}" for n in tp_result["unknown_notes"]),
+            ]
+            return ValidationResult(
+                outcome="rejected",
+                repaired_json=repaired,
+                issues=combined_issues,
+                can_retry=True,
+            )
+        if tp_result["repairs"]:
+            issues.extend(f"taste_profile repair: {r}" for r in tp_result["repairs"])
+            repaired_count += len(tp_result["repairs"])
 
     outcome: Literal["passed", "repaired"] = "passed" if repaired_count == 0 else "repaired"
     return ValidationResult(outcome=outcome, repaired_json=repaired, issues=issues)
