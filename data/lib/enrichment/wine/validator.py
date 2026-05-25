@@ -17,7 +17,7 @@ ALLOWED_HTML_TAGS = {"p", "br", "strong", "em", "ul", "li"}
 
 _VALID_INTENSITIES = {1, 2, 3}
 _TIER_NAMES = ("primary", "secondary", "tertiary")
-_VOCAB_PATH = Path(__file__).resolve().parents[2] / "shared" / "taste_vocab.yml"
+_VOCAB_PATH = Path(__file__).resolve().parents[1] / "shared" / "taste_vocab.yml"
 
 
 @lru_cache(maxsize=1)

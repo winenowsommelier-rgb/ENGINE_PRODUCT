@@ -90,8 +90,12 @@ def select_skus(
     products: list[dict], priority: str, tier: list[int] | None, limit: int,
     sku_filter: list[str] | None, only_needs: bool = True,
 ) -> list[dict]:
-    WINE_CLS = {"Red Wine", "White Wine", "Rose Wine", "Sparkling Wine", "Dessert Wine"}
-    wines = [p for p in products if p.get("classification") in WINE_CLS]
+    # v2: include every classification covered by the taste-taxonomy schema
+    # (wine + brown/white spirits + beer + liqueur + RTD). Classifications not
+    # in CATEGORY_TO_STRUCTURE (Cigar, Mineral Water, Accessories, …) are skipped.
+    from data.lib.enrichment.wine.schemas import CATEGORY_TO_STRUCTURE
+    in_scope = set(CATEGORY_TO_STRUCTURE.keys())
+    wines = [p for p in products if p.get("classification") in in_scope]
     if sku_filter:
         sf = set(sku_filter)
         return [p for p in wines if p.get("sku") in sf][:limit]
