@@ -1101,22 +1101,19 @@ def test_taste_profile_auto_sorts_within_tier():
         "schema_version": "2.0", "structure": "tiered",
         "tiers": {
             "primary": [
-                {"note": "Blackcurrant", "intensity": 1},  # subtle
-                {"note": "Blackcurrant", "intensity": 3},  # dominant — would be a dupe key in real data; use 2 distinct
+                {"note": "Blackcurrant", "intensity": 1},  # subtle (will sort second)
+                {"note": "Cedar",        "intensity": 3},  # dominant (will sort first)
             ],
             "secondary": [], "tertiary": [],
         },
         "structural": {"body": "Full", "acidity": "Medium", "tannin": "High", "sweetness": "Dry"},
         "confidence": 0.7,
     }
-    # Adjust test to use two distinct notes if needed; for this stub, just test the sort path
-    tp["tiers"]["primary"] = [
-        {"note": "Blackcurrant", "intensity": 1},
-        {"note": "Cedar",        "intensity": 3},
-    ]
     result = validator._validate_taste_profile(tp, vocab, classification="Red Wine")
+    assert result["ok"] is True
     # After auto-sort, intensity 3 should come first
     assert tp["tiers"]["primary"][0]["intensity"] == 3
+    assert tp["tiers"]["primary"][0]["note"] == "Cedar"
 ```
 
 - [ ] **Step 1.2.2: Run tests to verify they fail**
@@ -2404,10 +2401,12 @@ git commit -m "feat(ui): dismissible note-filter chip on /explore"
 
 - [ ] **Step 4.6.1: Update prompt to emit pairing_rationale**
 
+> **Note:** `pairing_rationale` is a **top-level field on the enrichment output**, NOT inside the `taste_profile` object. It's a sibling to `food_matching` (which already exists). The `TasteProfile` TypedDict in `schemas.py` does NOT need to change.
+
 Extend the existing food-pairing schema in `prompt.py`:
 
 ```python
-# In the OUTPUT JSON SCHEMA section, add:
+# In the OUTPUT JSON SCHEMA section (top-level, alongside food_matching), add:
 # "pairing_rationale": "1-2 sentences grounded in specific tier notes, e.g. 'The blackcurrant primary calls for lamb; cedar secondary suggests rosemary.'"
 ```
 
