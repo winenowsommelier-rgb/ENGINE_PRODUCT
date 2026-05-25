@@ -42,6 +42,8 @@ export async function GET(req: NextRequest) {
     const status = sp.get('validation_status') ?? '';
     const minPrice = sp.get('price_min') ?? '';
     const maxPrice = sp.get('price_max') ?? '';
+    const note = sp.get('note') ?? '';          // v2: click-a-note discovery — bare taste-vocab label
+    const tier = sp.get('tier') ?? '';          // optional: 'primary'|'secondary'|'tertiary'|'flat'
     const hasField = sp.get('has') ?? '';       // e.g. has=region — only return products that HAVE this field filled
     const missingField = sp.get('missing') ?? ''; // e.g. missing=region — only return products MISSING this field
     const sort = sp.get('sort') ?? 'name';
@@ -68,6 +70,30 @@ export async function GET(req: NextRequest) {
     // Price range
     if (minPrice) filters.push(`price=gte.${Number(minPrice)}`);
     if (maxPrice) filters.push(`price=lte.${Number(maxPrice)}`);
+
+    // v2 click-a-note discovery: resolve product_ids first via product_taste_notes,
+    // then add `id=in.(...)` filter to the main products query. Cross-category
+    // by default; the user can narrow with classification=... if desired.
+    if (note) {
+      const nq: string[] = [`select=product_id`, `note=eq.${encodeURIComponent(note)}`];
+      if (tier) nq.push(`tier=eq.${encodeURIComponent(tier)}`);
+      nq.push(`limit=1000`);
+      const noteRes = await fetch(`${SUPABASE_URL}/rest/v1/product_taste_notes?${nq.join('&')}`, {
+        headers: HEADERS,
+      });
+      if (!noteRes.ok) {
+        return NextResponse.json({ error: `note lookup failed: ${noteRes.status}` }, { status: 502 });
+      }
+      const noteRows = (await noteRes.json()) as Array<{ product_id: string }>;
+      const ids = noteRows.map((r) => r.product_id);
+      if (ids.length === 0) {
+        // No matches — short-circuit with empty result rather than fetching all products
+        return NextResponse.json({ products: [], total: 0, limit, offset, hasMore: false });
+      }
+      // PostgREST `in` filter: id=in.(id1,id2,...) — quote each value for safety
+      const inList = ids.map((id) => `"${id.replace(/"/g, '\\"')}"`).join(',');
+      filters.push(`id=in.(${inList})`);
+    }
 
     // Field presence filters — useful for finding gaps
     if (hasField) {
