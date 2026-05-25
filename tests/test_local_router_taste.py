@@ -170,6 +170,47 @@ def test_update_product_with_no_taste_profile_unchanged(db_with_v2_schema, vocab
 # Test 3 — refresh replaces prior notes (DELETE-then-INSERT semantics)
 # ---------------------------------------------------------------------------
 
+def test_update_product_writes_taste_profile_below_threshold(db_with_v2_schema, vocab):
+    """v2 taste data must land regardless of the v1 descriptive write threshold.
+
+    Tier-B SKUs commonly score final_confidence ~0.5-0.7, well below the 0.85
+    threshold that gates the v1 descriptive fields. The taste_profile JSON +
+    product_taste_notes + dirty queue must still be written.
+    """
+    router = _make_router(db_with_v2_schema)
+    wrote = router.update_product(
+        products_id="row-1",
+        response=_SAMPLE_RESPONSE,
+        final_confidence=0.50,            # below 0.85 threshold
+        model="claude-haiku-4-5",
+        enrichment_note="Haiku/B",
+        enriched_at="2026-05-25T10:00:00Z",
+        taste_profile=_SAMPLE_TASTE,
+        vocab=vocab,
+    )
+    # Legacy return: False means the high-conf descriptive write did NOT happen.
+    assert wrote is False
+
+    conn = sqlite3.connect(db_with_v2_schema)
+    # But taste_profile DID land
+    tp_raw = conn.execute("SELECT taste_profile FROM products WHERE id='row-1'").fetchone()[0]
+    assert tp_raw is not None
+    assert json.loads(tp_raw)["structure"] == "tiered"
+    # And v1 descriptive fields stayed untouched (no wine_body etc. forced in)
+    wine_body = conn.execute("SELECT wine_body FROM products WHERE id='row-1'").fetchone()[0]
+    assert wine_body is None
+    # Notes + dirty queue both populated
+    n_notes = conn.execute(
+        "SELECT COUNT(*) FROM product_taste_notes WHERE product_id='row-1'"
+    ).fetchone()[0]
+    assert n_notes == 3
+    n_dirty = conn.execute(
+        "SELECT COUNT(*) FROM product_similar_dirty WHERE product_id='row-1'"
+    ).fetchone()[0]
+    assert n_dirty == 1
+    conn.close()
+
+
 def test_update_product_taste_profile_refresh_replaces_prior(db_with_v2_schema, vocab):
     router = _make_router(db_with_v2_schema)
 

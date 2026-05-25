@@ -27,46 +27,81 @@ class LocalRouter:
         taste_profile: Optional[dict] = None,
         vocab: Optional[VocabLoader] = None,
     ) -> bool:
-        """Returns True if a direct UPDATE happened, False if skipped."""
-        if final_confidence < self.write_threshold or not products_id:
+        """Write enriched fields to local SQLite.
+
+        Two gates, independent:
+        - High-confidence write (final_confidence >= write_threshold):
+          updates the v1 descriptive fields (wine_body, full_description, etc.)
+        - Taste-profile write (taste_profile is not None):
+          always writes taste_profile JSON + refreshes product_taste_notes
+          + enqueues similarity recompute, regardless of confidence. v2
+          taste data is valuable even for sub-threshold rows.
+
+        Returns True if the high-conf descriptive write happened (legacy
+        contract — the caller's stats counter only tracks high-conf writes).
+        """
+        if not products_id:
             return False
 
-        payload = {
-            "wine_body": response.get("wine_body"),
-            "wine_acidity": response.get("wine_acidity"),
-            "wine_tannin": response.get("wine_tannin"),
-            "grape_variety": ", ".join(response.get("grape_variety", [])) or None,
-            "grape_blend_type": response.get("grape_blend_type"),
-            "wine_production_style": json.dumps(response.get("wine_production_style") or []),
-            "flavor_tags": json.dumps(response.get("flavor_tags") or []),
-            "food_matching": ", ".join(response.get("food_matching", [])) or None,
-            "desc_en_short": response.get("desc_en_short"),
-            "full_description": response.get("full_description"),
-            "score_max": score_max,
-            "score_summary": score_summary or None,
-            "enrichment_confidence": round(final_confidence, 3),
-            "enrichment_source": "ai_high_conf",
-            "enrichment_note": enrichment_note,
-            "enriched_at": enriched_at,
-            "enriched_by": model,
-            "updated_at": enriched_at,
-        }
-        if taste_profile is not None:
-            payload["taste_profile"] = json.dumps(taste_profile)
+        has_threshold_write = final_confidence >= self.write_threshold
+        has_taste_write = taste_profile is not None
+        if not has_threshold_write and not has_taste_write:
+            return False
 
-        sets = ", ".join(f"{k}=?" for k in payload.keys())
         conn = sqlite3.connect(self.db_path)
         try:
             with conn:
-                conn.execute(
-                    f"UPDATE products SET {sets} WHERE id=?",
-                    list(payload.values()) + [products_id],
-                )
-                if taste_profile is not None:
+                if has_threshold_write:
+                    payload = {
+                        "wine_body": response.get("wine_body"),
+                        "wine_acidity": response.get("wine_acidity"),
+                        "wine_tannin": response.get("wine_tannin"),
+                        "grape_variety": ", ".join(response.get("grape_variety", [])) or None,
+                        "grape_blend_type": response.get("grape_blend_type"),
+                        "wine_production_style": json.dumps(response.get("wine_production_style") or []),
+                        "flavor_tags": json.dumps(response.get("flavor_tags") or []),
+                        "food_matching": ", ".join(response.get("food_matching", [])) or None,
+                        "desc_en_short": response.get("desc_en_short"),
+                        "full_description": response.get("full_description"),
+                        "score_max": score_max,
+                        "score_summary": score_summary or None,
+                        "enrichment_confidence": round(final_confidence, 3),
+                        "enrichment_source": "ai_high_conf",
+                        "enrichment_note": enrichment_note,
+                        "enriched_at": enriched_at,
+                        "enriched_by": model,
+                        "updated_at": enriched_at,
+                    }
+                    if has_taste_write:
+                        payload["taste_profile"] = json.dumps(taste_profile)
+                    sets = ", ".join(f"{k}=?" for k in payload.keys())
+                    conn.execute(
+                        f"UPDATE products SET {sets} WHERE id=?",
+                        list(payload.values()) + [products_id],
+                    )
+                elif has_taste_write:
+                    # Sub-threshold: write ONLY taste_profile + minimal metadata.
+                    # Preserve existing v1 fields (wine_body, full_description, etc.)
+                    # since we don't trust them yet.
+                    conn.execute(
+                        "UPDATE products SET taste_profile=?, enriched_at=?, enriched_by=?,"
+                        "                    enrichment_confidence=?, updated_at=?"
+                        " WHERE id=?",
+                        (
+                            json.dumps(taste_profile),
+                            enriched_at,
+                            model,
+                            round(final_confidence, 3),
+                            enriched_at,
+                            products_id,
+                        ),
+                    )
+
+                if has_taste_write:
                     self._refresh_taste_notes(conn, products_id, taste_profile, vocab)
         finally:
             conn.close()
-        return True
+        return has_threshold_write
 
     def _refresh_taste_notes(
         self,

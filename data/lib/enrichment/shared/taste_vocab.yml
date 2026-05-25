@@ -20,6 +20,8 @@ notes:
   - { name: Raspberry,     default_tier: primary,   family: fruit.red,    aliases: [raspberries],                           applies_to: [wine] }
   - { name: Strawberry,    default_tier: primary,   family: fruit.red,    aliases: [strawberries],                          applies_to: [wine] }
   - { name: Cranberry,     default_tier: primary,   family: fruit.red,    aliases: [],                                       applies_to: [wine] }
+  - { name: Red Fruit,     default_tier: primary,   family: fruit.red,    aliases: [red fruits, red berries, red berry],     applies_to: [wine] }
+  - { name: Dark Fruit,    default_tier: primary,   family: fruit.black,  aliases: [dark fruits, black fruit, black fruits], applies_to: [wine, brown_spirit] }
   - { name: Green Apple,   default_tier: primary,   family: fruit.tree,   aliases: [granny smith, apple, tart apple],       applies_to: [wine] }
   - { name: Pear,          default_tier: primary,   family: fruit.tree,   aliases: [pears],                                  applies_to: [wine] }
   - { name: Stone Fruit,   default_tier: primary,   family: fruit.stone,  aliases: [stonefruit],                             applies_to: [wine] }
@@ -44,6 +46,7 @@ notes:
   - { name: Bell Pepper,   default_tier: primary,   family: herbal,       aliases: [green pepper, capsicum, green bell],    applies_to: [wine] }
   - { name: Grass,         default_tier: primary,   family: herbal,       aliases: [grassy, fresh grass, cut grass],        applies_to: [wine] }
   - { name: Tomato Leaf,   default_tier: primary,   family: herbal,       aliases: [tomato vine],                            applies_to: [wine] }
+  - { name: Herbaceous,    default_tier: primary,   family: herbal,       aliases: [herbal, herby, herbal notes],            applies_to: [wine, brown_spirit, white_spirit] }
 
   # ===== PRIMARY — Spice (some are tertiary in old wines but default to primary) =====
   - { name: Black Pepper,  default_tier: primary,   family: spice.pepper, aliases: [pepper, peppercorn],                    applies_to: [wine, brown_spirit] }
@@ -78,6 +81,7 @@ notes:
   - { name: Wet Stone,     default_tier: primary,   family: mineral,      aliases: [stone, flint, gravel],                   applies_to: [wine] }
   - { name: Sea Salt,      default_tier: primary,   family: mineral,      aliases: [salinity, briny, oyster shell],          applies_to: [wine] }
   - { name: Slate,         default_tier: primary,   family: mineral,      aliases: [],                                       applies_to: [wine] }
+  - { name: Minerality,    default_tier: primary,   family: mineral,      aliases: [mineral, mineral notes],                 applies_to: [wine] }
 
   # ===== BEER =====
   - { name: Citrus Hops,   default_tier: primary,   family: hops,         aliases: [hoppy citrus, citra, hop citrus],        applies_to: [beer] }
