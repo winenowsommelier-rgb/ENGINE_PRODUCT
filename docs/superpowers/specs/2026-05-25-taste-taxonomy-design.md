@@ -211,7 +211,7 @@ The user already plans to re-enrich the catalog. Rather than introduce a separat
 | `data/lib/enrichment/wine/prompt.py` | **MODIFY** | Output schema includes `taste_profile`. New helper `_taste_section(classification)` injects category-specific tier definitions and vocab subset. |
 | `data/lib/enrichment/wine/validator.py` | **MODIFY** | Adds vocab + tier + intensity rule checks (existing structural validation kept). |
 | `data/lib/enrichment/wine/taxonomies.py` | **KEEP** | Existing structural enums (BODY_VALUES, ACIDITY_VALUES, TANNIN_VALUES) reused as `structural` field values. |
-| `data/enrich_wines.py` | **MODIFY** | Writes `taste_profile` JSON to `products` row; on each write, refreshes `product_taste_notes` rows for that product. No new flags. |
+| `data/enrich_wines.py` | **MODIFY** | Writes `taste_profile` JSON to `products` row; on each write, refreshes `product_taste_notes` rows for that product (transactional); enqueues the product for incremental similarity recompute (see F1 cold-start below). No new CLI flags. |
 
 Eventual cleanup: `data/lib/enrichment/wine/` should be renamed to `core/` or `taste/` since it serves all classifications. **Not in scope for this work** — a separate rename PR after launch.
 
@@ -303,15 +303,23 @@ Wireframes in this spec are engineer-mockup grade. Production implementation goe
 
 ### F1 — "More like this" rail
 
-**Algorithm:** Weighted Jaccard on `product_taste_notes`. For each note shared between products A and B:
+**Algorithm:** Weighted overlap on `product_taste_notes`. For each note shared between products A and B:
 
 ```
-score(A, B) = Σ over matches:
-              3.0 × min(intA, intB)      # same-tier same-note (strongest signal)
-            + 1.5 × min(intA, intB)      # cross-tier same-note (e.g. Cedar primary on A, secondary on B)
-            + 1.0 × min(intA, intB)      # same-family different-note (e.g. Vanilla / Mocha both wood)
-... normalized 0–1 by sum-of-possible.
+raw_score(A, B) = Σ over matches:
+                  3.0 × min(intA, intB)   # same-tier same-note (strongest signal)
+                + 1.5 × min(intA, intB)   # cross-tier same-note (e.g. Cedar primary on A, secondary on B)
+                + 1.0 × min(intA, intB)   # same-family different-note (e.g. Vanilla / Mocha both wood)
+
+# Self-score is what a product would score against itself, using the
+# same formula (every note is a same-tier same-note match against itself):
+self_score(P) = Σ over notes in P: 3.0 × intensity
+
+# Normalize by the smaller of the two self-scores (Tanimoto-style):
+normalized = raw_score / min(self_score(A), self_score(B))
 ```
+
+Score range 0–1. Using `min(self_score)` (not max or average) means a small-vocabulary product can still score 1.0 against a perfectly-matching larger-vocabulary product — useful when a 4-note Beaujolais matches a richer Burgundy on every note it has.
 
 Worked example (two Coonawarra Cabs): score 0.84 → "very similar." Rail threshold: ≥ 0.5.
 
@@ -347,8 +355,8 @@ The user's existing plan to re-enrich the catalog provides the cadence. Taste da
 
 | Phase | Deliverables | Gate before next |
 |---|---|---|
-| **0. Spec + foundations** | Design doc committed (this). `taste_vocab.yml` seeded ~300 notes. Migration: `taste_profile` JSONB column + `product_taste_notes` + `product_similar` tables (Supabase + local SQLite mirror). Drop placeholder `flavor_profile` / `character_traits` columns. | Migration applied; vocab loader unit tests green. |
-| **1. Pipeline evolution** | `data/lib/enrichment/wine/prompt.py` + `validator.py` modified. `schemas.py` + `vocab_loader.py` added. `enrich_wines.py` writes `taste_profile` + refreshes `product_taste_notes`. | 10-SKU dry run across wine + brown spirits + white spirits + beer. Inspect output by eye. |
+| **0. Spec + foundations** | Design doc committed (this). `taste_vocab.yml` seeded ~300 notes. `vocab_loader.py` built (foundational — both prompt and validator depend on it). Migration: `taste_profile` JSONB column + `taste_profile_override` JSONB column (for QA-driven corrections) + `product_taste_notes` + `product_similar` tables (Supabase + local SQLite mirror). Drop placeholder `flavor_profile` / `character_traits` columns. | Migration applied; vocab loader unit tests green. |
+| **1. Pipeline evolution** | `data/lib/enrichment/wine/prompt.py` + `validator.py` modified. `schemas.py` added. `enrich_wines.py` writes `taste_profile` + refreshes `product_taste_notes` + enqueues incremental similarity recompute. | 10-SKU dry run across wine + brown spirits + white spirits + beer. Inspect output by eye. |
 | **2. Frontend components** | `<TasteWheel>`, `<TasteChipCard>`, `<StructuralGauges>`, `<TasteNote>`, `<TasteProfileSection>`. Mounted in `ProductDetailCard.tsx`. Storybook entries. | Components render correctly against hand-built sample `taste_profile` fixtures. Feature flag default off. |
 | **3. Smoke-test re-enrichment** | Run on **top 500 most-viewed products**. Spot-check 20 products by eye. | ≥ 80% of the 500 at confidence ≥ 0.6. Vocab repair log < 10% of total notes. Smoke-test sample looks right. |
 | **4. AI features** | `scripts/compute_similarity.py` + Vercel cron entry. `/api/products/[id]/similar` route. `<SimilarProductsRail>` mounted. `/api/products/search` extended with `?note=&tier=`. Filter chip in `<ProductSidebar>`. Pairing rationale render. | Integration tests green; manual smoke test on top 500. |
@@ -437,6 +445,6 @@ A `Cigar` / `Mineral Water` / `Non-Alcoholic` / `Accessories` etc. page: no tast
 ## Open implementation decisions (resolve during planning)
 
 1. **Vercel cron vs Supabase scheduled function for similarity recompute** — depends on where compute runs cheapest; both work.
-2. **`taste_profile_override` JSONB column for manual QA edits** — included in spec as a risk mitigation; may or may not need its own UI in v1 (could be DB-edit-only initially).
+2. **QA-edit UI for `taste_profile_override`** — the column itself is added in Phase 0 (decided). Whether to ship an admin UI for editing it in v1, or rely on direct DB edits initially, is open. Lean: defer the UI to phase 2 unless QA volume justifies it.
 3. **Renaming `data/lib/enrichment/wine/` → `core/`** — out of scope; track as follow-up cleanup PR.
 4. **Where the `family` taxonomy hierarchy is defined** (a separate `families.yml` or inline in `taste_vocab.yml`) — pick during phase 0; inline is simpler if family list stays small (<40 entries).
