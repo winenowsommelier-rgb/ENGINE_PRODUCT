@@ -60,6 +60,10 @@ const SELECT_FIELDS = [
   "score_max",
   "score_summary",
   "full_description",
+  // Taste taxonomy v2 (2026-05-24): structured taste profile + food pairing rationale
+  "taste_profile",
+  "taste_profile_override",
+  "pairing_rationale",
 ].join(",");
 
 const CHAMPAGNE_COUNTRY = "France";

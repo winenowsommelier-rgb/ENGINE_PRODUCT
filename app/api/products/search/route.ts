@@ -28,6 +28,8 @@ const SELECT_FIELDS = [
   'bottle_size', 'price', 'cost_price', 'currency',
   'validation_status', 'overall_confidence',
   'image_url',
+  // Taste taxonomy v2 (2026-05-24): structured taste profile + food pairing rationale
+  'taste_profile', 'taste_profile_override', 'pairing_rationale',
 ].join(',');
 
 export async function GET(req: NextRequest) {
