@@ -121,4 +121,7 @@ export interface ExploreProduct {
   wine_tannin?: string;
   flavor_tags?: string;
   food_matching?: string;
+  // v2 taste taxonomy — null when not yet enriched or out-of-scope classification.
+  // Discriminated by `structure: "tiered" | "flat"`; see components/product/TasteProfileSection.tsx
+  taste_profile?: unknown;
 }

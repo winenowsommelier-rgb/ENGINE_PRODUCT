@@ -12,6 +12,7 @@ import {
 import type { ExploreProduct, CategoryScope } from "@/lib/explore/types";
 import { getAccent, getAccentRgb } from "@/lib/explore/category-config";
 import { ProductImage } from "@/components/ProductImage";
+import { TasteProfileSection, type TasteProfile } from "@/components/product/TasteProfileSection";
 
 interface ProductDetailCardProps {
   product: ExploreProduct;
@@ -252,6 +253,12 @@ export default function ProductDetailCard({
             </div>
           </div>
         )}
+
+        {/* ── v2 Taste Profile (feature-flagged, default off) ──────── */}
+        <TasteProfileSection
+          profile={(product.taste_profile as TasteProfile | null) ?? null}
+          productId={product.id}
+        />
       </div>
 
     </div>
