@@ -1,0 +1,6 @@
+version: 1
+notes:
+  - { name: Blackcurrant, default_tier: primary,   family: fruit.black, aliases: [cassis, black currant], applies_to: [wine] }
+  - { name: Cedar,        default_tier: secondary, family: wood,        aliases: [cedarwood],             applies_to: [wine] }
+  - { name: Tobacco,      default_tier: tertiary,  family: earth.aged,  aliases: [],                      applies_to: [wine] }
+  - { name: Citrus Hops,  default_tier: primary,   family: hops,        aliases: [citra],                 applies_to: [beer] }
