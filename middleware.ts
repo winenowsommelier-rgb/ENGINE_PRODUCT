@@ -20,14 +20,25 @@ export function middleware(request: NextRequest) {
     const expectedToken = process.env.PIM_API_TOKEN;
     const isDev = process.env.NODE_ENV === 'development';
 
-    // Enforce token check in production, or in dev ONLY if the environment variable is actively set
-    if (!isDev || expectedToken) {
+    // Same-origin browser requests (from the local dashboard UI) are always allowed —
+    // they have no way to include a server-side token. Only gate external API consumers.
+    const origin = request.headers.get('origin') ?? '';
+    const referer = request.headers.get('referer') ?? '';
+    const host = request.headers.get('host') ?? '';
+    const isSameOrigin =
+      origin.includes(host) ||
+      referer.includes(host) ||
+      (!origin && !referer); // server-side Next.js fetch (RSC / API → API)
+
+    // Enforce token check only for cross-origin requests (external API consumers),
+    // or in production when there is no same-origin signal.
+    if (!isDev && !isSameOrigin) {
       const authHeader = request.headers.get('authorization');
 
       if (!expectedToken) {
         return NextResponse.json(
           { error: 'Server configuration error: PIM_API_TOKEN is missing.' },
-          { 
+          {
             status: 500,
             headers: { 'Access-Control-Allow-Origin': '*' }
           }
@@ -37,7 +48,21 @@ export function middleware(request: NextRequest) {
       if (authHeader !== `Bearer ${expectedToken}`) {
         return NextResponse.json(
           { error: 'Unauthorized. Please provide a valid Bearer token.' },
-          { 
+          {
+            status: 401,
+            headers: { 'Access-Control-Allow-Origin': '*' }
+          }
+        );
+      }
+    } else if (!isDev && isSameOrigin) {
+      // Production same-origin: still allow, no token needed from internal UI
+    } else if (isDev && expectedToken && !isSameOrigin) {
+      // Dev + token set + cross-origin: enforce token for external callers
+      const authHeader = request.headers.get('authorization');
+      if (authHeader !== `Bearer ${expectedToken}`) {
+        return NextResponse.json(
+          { error: 'Unauthorized. Please provide a valid Bearer token.' },
+          {
             status: 401,
             headers: { 'Access-Control-Allow-Origin': '*' }
           }

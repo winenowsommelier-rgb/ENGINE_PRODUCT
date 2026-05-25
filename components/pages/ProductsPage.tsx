@@ -347,7 +347,10 @@ export function ProductsPage() {
     params.set('sort', sb);
     params.set('sortDir', sd);
     const res = await fetch(`/api/products?${params}`);
-    setData(await res.json());
+    if (res.ok) {
+      const json = await res.json();
+      if (json && typeof json.total === 'number') setData(json);
+    }
   }, [page, search, country, region, appellation, status, classification, wineClass, segment, tierFilter, sortBy, sortDir]);
 
   useEffect(() => {
@@ -483,7 +486,7 @@ export function ProductsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-base font-semibold text-white">Products</h1>
-              {data && <p className="text-[11px] text-slate-500">{data.total.toLocaleString()} products</p>}
+              {data && data.total != null && <p className="text-[11px] text-slate-500">{data.total.toLocaleString()} products</p>}
             </div>
             <button
               onClick={() => setShowFilters(f => !f)}
