@@ -33,6 +33,9 @@ notes:
   - { name: Lime,          default_tier: primary,   family: fruit.citrus, aliases: [],                                       applies_to: [wine, white_spirit] }
   - { name: Citrus,        default_tier: primary,   family: fruit.citrus, aliases: [citrus notes, citrus fruit, citrusy],    applies_to: [wine, white_spirit, beer] }
   - { name: Citrus Zest,   default_tier: primary,   family: fruit.citrus, aliases: [citrus peel, zest, lemon zest, lime zest], applies_to: [wine, white_spirit, liqueur] }
+  - { name: Black Cherry,  default_tier: primary,   family: fruit.black,  aliases: [black cherries],                         applies_to: [wine] }
+  - { name: Berry,         default_tier: primary,   family: fruit.red,    aliases: [berries, mixed berry, mixed berries],    applies_to: [wine] }
+  - { name: Lychee,        default_tier: primary,   family: fruit.tropical, aliases: [lychees],                              applies_to: [wine, liqueur] }
   - { name: Tropical,      default_tier: primary,   family: fruit.tropical, aliases: [tropical fruit, exotic fruit],        applies_to: [wine, beer] }
   - { name: Pineapple,     default_tier: primary,   family: fruit.tropical, aliases: [],                                    applies_to: [wine] }
   - { name: Mango,         default_tier: primary,   family: fruit.tropical, aliases: [],                                    applies_to: [wine, beer] }
@@ -43,6 +46,7 @@ notes:
   - { name: Jasmine,       default_tier: primary,   family: floral,       aliases: [],                                       applies_to: [wine] }
   - { name: Elderflower,   default_tier: primary,   family: floral,       aliases: [],                                       applies_to: [wine, white_spirit] }
   - { name: Honeysuckle,   default_tier: primary,   family: floral,       aliases: [],                                       applies_to: [wine] }
+  - { name: Floral,        default_tier: primary,   family: floral,       aliases: [floral notes, flowery, blossom],         applies_to: [wine, white_spirit] }
   - { name: Mint,          default_tier: primary,   family: herbal,       aliases: [spearmint],                              applies_to: [wine] }
   - { name: Eucalyptus,    default_tier: primary,   family: herbal,       aliases: [],                                       applies_to: [wine] }
   - { name: Sage,          default_tier: primary,   family: herbal,       aliases: [],                                       applies_to: [wine] }
@@ -57,6 +61,9 @@ notes:
   - { name: Clove,         default_tier: primary,   family: spice.warm,   aliases: [cloves],                                 applies_to: [wine, brown_spirit] }
   - { name: Cinnamon,      default_tier: primary,   family: spice.warm,   aliases: [],                                       applies_to: [wine, brown_spirit] }
   - { name: Anise,         default_tier: primary,   family: spice.warm,   aliases: [aniseed, star anise],                    applies_to: [wine, liqueur] }
+  - { name: Spice,         default_tier: primary,   family: spice.warm,   aliases: [spicy, spice notes, spices],             applies_to: [wine, brown_spirit] }
+  - { name: Licorice,      default_tier: primary,   family: spice.warm,   aliases: [liquorice, anise root],                  applies_to: [wine] }
+  - { name: Tar,           default_tier: tertiary,  family: earth.aged,   aliases: [tarry, asphalt],                         applies_to: [wine] }
 
   # ===== SECONDARY — Winemaking / production =====
   - { name: Cedar,         default_tier: secondary, family: wood,         aliases: [cedarwood],                              applies_to: [wine, brown_spirit] }
