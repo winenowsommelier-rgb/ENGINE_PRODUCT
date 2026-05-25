@@ -82,3 +82,39 @@ class TestPromptHash:
         _, _, h1 = pr.build_prompt(bordeaux, food_pairing.load_default())
         _, _, h2 = pr.build_prompt(napa, food_pairing.load_default())
         assert h1 == h2
+
+
+class TestTasteSection:
+    """Tests for per-classification taste_profile block in the system prompt."""
+
+    def _load_vocab(self):
+        from pathlib import Path
+        from data.lib.enrichment.shared.vocab_loader import VocabLoader
+        vocab_path = Path(__file__).resolve().parent.parent / "data/lib/enrichment/shared/taste_vocab.yml"
+        return VocabLoader.from_path(vocab_path)
+
+    def test_wine_prompt_includes_tiered_schema(self):
+        bordeaux = next(s for s in SKUS if s["sku"] == "FX-BORDEAUX-001")
+        evidence = _make_evidence(bordeaux)
+        vocab = self._load_vocab()
+        system, user, prompt_hash = pr.build_prompt(
+            evidence, food_pairing.load_default(), vocab=vocab, classification="Red Wine"
+        )
+        assert '"structure": "tiered"' in system
+        assert "primary" in system
+        assert "secondary" in system
+        assert "tertiary" in system
+        assert "Blackcurrant" in system
+        assert "Citrus Hops" not in system
+
+    def test_beer_prompt_includes_flat_schema(self):
+        bordeaux = next(s for s in SKUS if s["sku"] == "FX-BORDEAUX-001")
+        evidence = _make_evidence(bordeaux)
+        vocab = self._load_vocab()
+        system, user, prompt_hash = pr.build_prompt(
+            evidence, food_pairing.load_default(), vocab=vocab, classification="Beer"
+        )
+        assert '"structure": "flat"' in system
+        assert "flat_tags" in system
+        assert "Citrus Hops" in system
+        assert "Blackcurrant" not in system
