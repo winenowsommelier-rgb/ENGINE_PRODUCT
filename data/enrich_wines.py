@@ -23,11 +23,14 @@ if str(REPO_ROOT) not in sys.path:
 from data.lib.enrichment.shared.client import AnthropicClient, USD_TO_THB  # noqa: E402
 from data.lib.enrichment.shared.cache import CacheClient  # noqa: E402
 from data.lib.enrichment.shared.taxonomies import food_pairing  # noqa: E402
+from data.lib.enrichment.shared.vocab_loader import VocabLoader  # noqa: E402
 from data.lib.enrichment.wine import evidence as ev  # noqa: E402
 from data.lib.enrichment.wine import prompt as pr  # noqa: E402
 from data.lib.enrichment.wine import validator as val  # noqa: E402
 from data.lib.enrichment.wine import scoring as sc  # noqa: E402
 from data.lib.enrichment.wine.output import OutputRouter, CSV_COLUMNS  # noqa: E402
+
+DEFAULT_TASTE_VOCAB_FILE = REPO_ROOT / "data" / "lib" / "enrichment" / "shared" / "taste_vocab.yml"
 
 DEFAULT_PRODUCTS_FILE = REPO_ROOT / "data" / "db" / "products.json"
 DEFAULT_WINESENSED_FILE = REPO_ROOT / "data" / "db" / "external-winesensed-records.json"
@@ -202,6 +205,7 @@ def main(argv: list[str] | None = None) -> int:
         critic_scores_by_sku=critic_scores_by_sku,
     )
     food_tax = food_pairing.load_default()
+    vocab = VocabLoader.from_path(DEFAULT_TASTE_VOCAB_FILE) if DEFAULT_TASTE_VOCAB_FILE.exists() else None
     from data.lib.enrichment.shared.local_store import LocalCache, FailureLogger
     cache_client = None if args.no_cache else LocalCache(db_path=args.db)
     failure_logger = FailureLogger(db_path=args.db)
@@ -233,7 +237,10 @@ def main(argv: list[str] | None = None) -> int:
         sku = sku_row["sku"]
         evidence = collector.collect_evidence(sku, sku_row)
         stats["by_tier"][evidence.quality_tier] += 1
-        system, user, prompt_hash = pr.build_prompt(evidence, food_tax)
+        classification = sku_row.get("classification")
+        system, user, prompt_hash = pr.build_prompt(
+            evidence, food_tax, vocab=vocab, classification=classification
+        )
 
         cached = None
         validation_status_for_scoring = "passed"
@@ -365,6 +372,8 @@ def main(argv: list[str] | None = None) -> int:
                     model=args.model, enrichment_note=f"Haiku/{evidence.quality_tier}",
                     enriched_at=enriched_at,
                     score_max=score_max, score_summary=score_summary,
+                    taste_profile=response.get("taste_profile"),
+                    vocab=vocab,
                 )
                 if wrote_local:
                     stats["local_writes"] += 1
