@@ -127,6 +127,8 @@ export async function GET(req: NextRequest) {
   const region = sp.get("region") ?? "";
   const subregion = sp.get("subregion") ?? "";
   const category = sp.get("category") ?? "";
+  const note = sp.get("note") ?? "";            // click-a-note discovery — filter by product_taste_notes index
+  const tier = sp.get("tier") ?? "";            // optional, only used with note (e.g. primary|secondary|tertiary)
   const sort = sp.get("sort") ?? "popular";
   const page = Math.max(1, Number(sp.get("page") ?? 1));
   const limit = Math.min(50, Math.max(1, Number(sp.get("limit") ?? 20)));
@@ -137,6 +139,27 @@ export async function GET(req: NextRequest) {
     CHAMPAGNE_SUBREGION_NAMES.has(subregion);
 
   const filters: string[] = [];
+
+  // Click-a-note discovery: pre-fetch matching product IDs from product_taste_notes, then filter products by id IN (...)
+  if (note) {
+    const tierClause = tier ? `&tier=eq.${encodeURIComponent(tier)}` : "";
+    const noteUrl = `${SUPABASE_URL}/rest/v1/product_taste_notes?select=product_id&note=eq.${encodeURIComponent(note)}${tierClause}&order=intensity.desc`;
+    try {
+      const noteRes = await fetch(noteUrl, { headers: HEADERS });
+      if (!noteRes.ok) {
+        const text = await noteRes.text();
+        return NextResponse.json({ error: "upstream_error", detail: text }, { status: 502 });
+      }
+      const noteRows: { product_id: string }[] = await noteRes.json();
+      const productIds = noteRows.map((r) => r.product_id);
+      if (productIds.length === 0) {
+        return NextResponse.json({ products: [], total: 0, page, limit });
+      }
+      filters.push(`id=in.(${productIds.map(encodeURIComponent).join(",")})`);
+    } catch (err) {
+      return NextResponse.json({ error: "fetch_failed" }, { status: 500 });
+    }
+  }
 
   if (country) filters.push(`country=eq.${encodeURIComponent(country)}`);
   if (region) filters.push(`region=eq.${encodeURIComponent(region)}`);
