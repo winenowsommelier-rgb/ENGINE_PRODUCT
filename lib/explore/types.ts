@@ -124,4 +124,7 @@ export interface ExploreProduct {
   // v2 taste taxonomy — null when not yet enriched or out-of-scope classification.
   // Discriminated by `structure: "tiered" | "flat"`; see components/product/TasteProfileSection.tsx
   taste_profile?: unknown;
+  // v2 smarter food-pairing prose grounded in specific tier notes (optional,
+  // emitted by the v2 enrichment prompt alongside food_matching chips).
+  pairing_rationale?: string | null;
 }

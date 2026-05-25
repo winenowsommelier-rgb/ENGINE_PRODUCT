@@ -236,22 +236,29 @@ export default function ProductDetailCard({
         )}
 
         {/* ── Food Matching ────────────────────────── */}
-        {foodTags.length > 0 && (
+        {(foodTags.length > 0 || product.pairing_rationale) && (
           <div className="border-t border-white/6 px-5 py-3 pb-5">
             <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-white/30 flex items-center gap-1">
               <UtensilsCrossed size={11} />
               Food Pairing
             </h3>
-            <div className="flex flex-wrap gap-1.5">
-              {foodTags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-white/6 px-2.5 py-0.5 text-[10px] text-white/45 border border-white/8"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+            {foodTags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {foodTags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full bg-white/6 px-2.5 py-0.5 text-[10px] text-white/45 border border-white/8"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+            {product.pairing_rationale && (
+              <p className="mt-2 text-[11px] leading-relaxed text-white/55 italic">
+                {product.pairing_rationale}
+              </p>
+            )}
           </div>
         )}
 
