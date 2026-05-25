@@ -254,6 +254,20 @@ def validate(response_json: dict, evidence: Evidence, food_tax: FoodTaxonomy) ->
         issues.append("full_description stripped disallowed HTML tags")
         repaired_count += 1
 
+    # v2 optional pairing_rationale: 1-2 sentence prose grounded in tier notes.
+    # Truncate at 500 chars (non-fatal repair); accept null/missing.
+    pr_value = repaired.get("pairing_rationale")
+    if pr_value is not None:
+        pr_str = str(pr_value).strip()
+        if not pr_str:
+            repaired["pairing_rationale"] = None
+        elif len(pr_str) > 500:
+            repaired["pairing_rationale"] = pr_str[:500].rsplit(" ", 1)[0]
+            issues.append(f"pairing_rationale truncated to {len(repaired['pairing_rationale'])} chars")
+            repaired_count += 1
+        else:
+            repaired["pairing_rationale"] = pr_str
+
     citations = repaired.get("citations") or {}
     if not isinstance(citations, dict):
         return ValidationResult("rejected", repaired, ["citations must be an object"], can_retry=True)

@@ -138,6 +138,7 @@ OUTPUT JSON SCHEMA:
   "wine_production_style": ["..."],
   "flavor_tags": ["5 to 10 short tasting notes"],
   "food_matching": ["3 to 6 labels from taxonomy"],
+  "pairing_rationale": "1-2 sentences grounding the food pairing in specific tier notes (optional but encouraged when taste_profile is tiered)",
   "desc_en_short": "<=160 char hook",
   "full_description": "<p>200-800 char HTML (only p/br/strong/em/ul/li)</p>",
   "confidence": 0.0-1.0,
@@ -162,6 +163,15 @@ CRITIC SCORES RULE:
 - Use scores (when shown) as calibration anchors — higher scores → more premium language.
 - DO NOT invent scores. DO NOT reproduce any critic's tasting-note prose.
 - Cite which scores anchored your judgement in citations.critic_scores.
+
+PAIRING RATIONALE RULE (optional but encouraged for tiered structures):
+- pairing_rationale is a 1-2 sentence paragraph (max 500 chars) tying the
+  food_matching recommendation to SPECIFIC tier notes from taste_profile.
+- Use tier language explicitly. Example:
+  "The blackcurrant primary calls for lamb; the cedar secondary suggests
+   rosemary; the tobacco tertiary loves smoked brisket."
+- Skip the field (or set null) for flat structures (Beer/Liqueur/RTD) — no
+  tier language to ground in. Pure prose; no list, no markdown.
 
 FOOD PAIRING TAXONOMY:
 {food_tax.prompt_block()}

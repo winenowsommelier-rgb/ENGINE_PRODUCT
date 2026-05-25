@@ -276,3 +276,31 @@ class TestValidateTasteProfile:
         notes = tp["tiers"]["primary"]
         assert notes[0]["note"] == "Cedar"
         assert notes[1]["note"] == "Blackcurrant"
+
+
+def test_pairing_rationale_accepted_when_under_500_chars():
+    """Optional pairing_rationale field passes through when present + sized OK."""
+    r = _good_response()
+    r["pairing_rationale"] = "The blackcurrant primary calls for lamb; cedar secondary suggests rosemary."
+    result = v.validate(r, _empty_evidence(), FOOD_TAX)
+    assert result.outcome in ("passed", "repaired")
+    assert result.repaired_json["pairing_rationale"].startswith("The blackcurrant primary")
+
+
+def test_pairing_rationale_truncated_when_over_500_chars():
+    """500+ char rationale is truncated (non-fatal repair, not rejection)."""
+    r = _good_response()
+    long_text = "The blackcurrant primary calls for lamb. " * 20  # ~820 chars
+    r["pairing_rationale"] = long_text
+    result = v.validate(r, _empty_evidence(), FOOD_TAX)
+    assert result.outcome in ("passed", "repaired")
+    assert len(result.repaired_json["pairing_rationale"]) <= 500
+    assert "truncated" in " ".join(result.issues)
+
+
+def test_pairing_rationale_absent_passes():
+    """No pairing_rationale field is fine — it's optional."""
+    r = _good_response()
+    r.pop("pairing_rationale", None)
+    result = v.validate(r, _empty_evidence(), FOOD_TAX)
+    assert result.outcome in ("passed", "repaired")
