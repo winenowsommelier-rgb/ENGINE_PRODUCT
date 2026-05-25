@@ -13,7 +13,8 @@ interface SimilarProductRef {
 
 interface SimilarRow {
   similar_id: string;
-  score: number;
+  // PostgREST returns NUMERIC as a string — handle both shapes.
+  score: number | string;
   matching_notes: unknown;
   products: SimilarProductRef | null;
 }
@@ -77,12 +78,19 @@ export function SimilarProductsRail({ productId }: { productId: string }) {
         {items.map((item) => {
           const p = item.products;
           if (!p) return null;
+          // No /products/[sku] route exists yet; ideally this rail accepts an
+          // onProductClick(sku) callback so the parent ProductDetailCard can
+          // swap to the clicked product in place. For now land the user on
+          // /explore with a search query so the click doesn't 404.
+          const href = `/explore?q=${encodeURIComponent(p.sku)}`;
+          // PostgREST NUMERIC returns as string — coerce before arithmetic.
+          const matchPct = Math.round(Number(item.score) * 100);
           return (
             <a
               key={item.similar_id}
-              href={`/products/${encodeURIComponent(p.sku)}`}
+              href={href}
               className="flex-shrink-0 w-28 rounded-md bg-white/4 border border-white/6 p-2 hover:bg-white/8 transition-colors"
-              aria-label={`${p.name ?? p.sku} — ${Math.round(item.score * 100)}% match`}
+              aria-label={`${p.name ?? p.sku} — ${matchPct}% match`}
             >
               {p.image_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -104,7 +112,7 @@ export function SimilarProductsRail({ productId }: { productId: string }) {
                 </div>
               )}
               <div className="text-[9px] text-white/35 mt-0.5">
-                {Math.round(item.score * 100)}% match
+                {matchPct}% match
               </div>
             </a>
           );
