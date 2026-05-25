@@ -16,6 +16,7 @@ notes:
   - { name: Blackcurrant,  default_tier: primary,   family: fruit.black,  aliases: [black currant, cassis, blackcurrants], applies_to: [wine, brown_spirit] }
   - { name: Blackberry,    default_tier: primary,   family: fruit.black,  aliases: [black berry, brambleberry],            applies_to: [wine] }
   - { name: Dark Plum,     default_tier: primary,   family: fruit.black,  aliases: [black plum, dark plums],                applies_to: [wine] }
+  - { name: Plum,          default_tier: primary,   family: fruit.stone,  aliases: [plums, fresh plum, red plum],            applies_to: [wine] }
   - { name: Cherry,        default_tier: primary,   family: fruit.red,    aliases: [cherries, red cherry],                  applies_to: [wine] }
   - { name: Raspberry,     default_tier: primary,   family: fruit.red,    aliases: [raspberries],                           applies_to: [wine] }
   - { name: Strawberry,    default_tier: primary,   family: fruit.red,    aliases: [strawberries],                          applies_to: [wine] }
@@ -30,6 +31,8 @@ notes:
   - { name: Lemon,         default_tier: primary,   family: fruit.citrus, aliases: [lemons],                                 applies_to: [wine, brown_spirit, white_spirit] }
   - { name: Grapefruit,    default_tier: primary,   family: fruit.citrus, aliases: [],                                       applies_to: [wine] }
   - { name: Lime,          default_tier: primary,   family: fruit.citrus, aliases: [],                                       applies_to: [wine, white_spirit] }
+  - { name: Citrus,        default_tier: primary,   family: fruit.citrus, aliases: [citrus notes, citrus fruit, citrusy],    applies_to: [wine, white_spirit, beer] }
+  - { name: Citrus Zest,   default_tier: primary,   family: fruit.citrus, aliases: [citrus peel, zest, lemon zest, lime zest], applies_to: [wine, white_spirit, liqueur] }
   - { name: Tropical,      default_tier: primary,   family: fruit.tropical, aliases: [tropical fruit, exotic fruit],        applies_to: [wine, beer] }
   - { name: Pineapple,     default_tier: primary,   family: fruit.tropical, aliases: [],                                    applies_to: [wine] }
   - { name: Mango,         default_tier: primary,   family: fruit.tropical, aliases: [],                                    applies_to: [wine, beer] }
@@ -82,6 +85,12 @@ notes:
   - { name: Sea Salt,      default_tier: primary,   family: mineral,      aliases: [salinity, briny, oyster shell],          applies_to: [wine] }
   - { name: Slate,         default_tier: primary,   family: mineral,      aliases: [],                                       applies_to: [wine] }
   - { name: Minerality,    default_tier: primary,   family: mineral,      aliases: [mineral, mineral notes],                 applies_to: [wine] }
+
+  # ===== WHITE SPIRIT — Juniper / gin botanicals =====
+  - { name: Juniper,       default_tier: secondary, family: botanical,    aliases: [juniper berry, junipers, gin botanical], applies_to: [white_spirit] }
+  - { name: Coriander,     default_tier: secondary, family: botanical,    aliases: [coriander seed],                         applies_to: [white_spirit] }
+  - { name: Cardamom,      default_tier: secondary, family: botanical,    aliases: [],                                       applies_to: [white_spirit] }
+  - { name: Angelica,      default_tier: secondary, family: botanical,    aliases: [angelica root],                          applies_to: [white_spirit] }
 
   # ===== BEER =====
   - { name: Citrus Hops,   default_tier: primary,   family: hops,         aliases: [hoppy citrus, citra, hop citrus],        applies_to: [beer] }
