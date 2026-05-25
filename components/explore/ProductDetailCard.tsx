@@ -13,6 +13,7 @@ import type { ExploreProduct, CategoryScope } from "@/lib/explore/types";
 import { getAccent, getAccentRgb } from "@/lib/explore/category-config";
 import { ProductImage } from "@/components/ProductImage";
 import { TasteProfileSection, type TasteProfile } from "@/components/product/TasteProfileSection";
+import { SimilarProductsRail } from "@/components/product/SimilarProductsRail";
 
 interface ProductDetailCardProps {
   product: ExploreProduct;
@@ -259,6 +260,9 @@ export default function ProductDetailCard({
           profile={(product.taste_profile as TasteProfile | null) ?? null}
           productId={product.id}
         />
+
+        {/* ── v2 Similar Products rail (returns null when no data) ── */}
+        <SimilarProductsRail productId={product.id} />
       </div>
 
     </div>
