@@ -10,9 +10,11 @@ import csv
 import json
 import os
 import sys
+import threading
 import urllib.parse
 import urllib.request
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -164,6 +166,8 @@ def main(argv: list[str] | None = None) -> int:
                    help="Path to local SQLite store (default: data/db/products.db).")
     p.add_argument("--also-push-supabase", action="store_true",
                    help="Legacy: also write to Supabase. Default OFF — use scripts/sync_to_supabase.py.")
+    p.add_argument("--workers", type=int, default=8,
+                   help="Parallel Anthropic-call workers (default 8). Use 1 to debug sequentially.")
     args = p.parse_args(argv)
 
     env = load_env(REPO_ROOT / ".env.local")
@@ -237,10 +241,21 @@ def main(argv: list[str] | None = None) -> int:
 
     stats = {"cache_hits": 0, "api_calls": 0, "local_writes": 0, "csv_only": 0, "validation_failures": 0, "by_tier": {"A": 0, "B": 0, "C": 0}}
     total_cost_thb = 0.0
-    for i, sku_row in enumerate(selected, start=1):
+    db_lock = threading.Lock()  # Serializes SQLite + CSV writes + stats mutation + print
+
+    def process_sku(idx: int, sku_row: dict) -> None:
+        """Worker: runs Haiku call (network) outside the lock, takes db_lock for writes.
+
+        All state mutation (stats, total_cost_thb, csv_writer, sqlite via
+        local_router/cache_client/failure_logger) happens inside `db_lock`.
+        Anthropic SDK calls are thread-safe and stay outside the lock so workers
+        actually run in parallel — that's the whole point.
+        """
+        nonlocal total_cost_thb
         sku = sku_row["sku"]
         evidence = collector.collect_evidence(sku, sku_row)
-        stats["by_tier"][evidence.quality_tier] += 1
+        with db_lock:
+            stats["by_tier"][evidence.quality_tier] += 1
         classification = sku_row.get("classification")
         system, user, prompt_hash = pr.build_prompt(
             evidence, food_tax, vocab=vocab, classification=classification
@@ -252,19 +267,22 @@ def main(argv: list[str] | None = None) -> int:
             try:
                 cached = cache_client.lookup(sku=sku, prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash)
             except Exception as e:
-                print(f"WARN: cache lookup failed for {sku}: {e}", file=sys.stderr)
+                with db_lock:
+                    print(f"WARN: cache lookup failed for {sku}: {e}", file=sys.stderr)
 
         if cached:
             response = cached["response_json"]
             validation_status_for_scoring = cached.get("validation_status", "passed")
-            stats["cache_hits"] += 1
+            with db_lock:
+                stats["cache_hits"] += 1
             cache_id = cached["id"]
             cost_thb = 0.0
         else:
             if args.dry_run:
                 est = len(user.split()) * 1.3
-                print(f"[{i}/{len(selected)}] {sku}  tier={evidence.quality_tier}  [dry-run] would call Haiku (~{est:.0f} tokens user)")
-                continue
+                with db_lock:
+                    print(f"[{idx}/{len(selected)}] {sku}  tier={evidence.quality_tier}  [dry-run] would call Haiku (~{est:.0f} tokens user)")
+                return
             try:
                 gen = haiku.generate(system=system, user=user, max_tokens=2000, temperature=0.1)
             except Exception as e:
@@ -272,111 +290,122 @@ def main(argv: list[str] | None = None) -> int:
                 # (network, rate-limit, 5xx), log and skip this SKU rather than
                 # killing the whole batch. The CLI can be re-run later and the
                 # cache will cover already-successful SKUs.
-                print(f"[{i}/{len(selected)}] {sku}  API CALL FAILED: {type(e).__name__}: {e}", file=sys.stderr)
-                try:
-                    failure_logger.log(
-                        sku=sku, failure_type="api_error",
-                        raw_response=None, validation_issues=[f"{type(e).__name__}: {e}"],
-                        prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
-                        model=args.model, tokens_in=None, tokens_out=None, cost_thb=None,
-                    )
-                except Exception:
-                    pass
-                stats["validation_failures"] += 1
-                continue
-            stats["api_calls"] += 1
-            total_cost_thb += gen.cost_thb
+                with db_lock:
+                    print(f"[{idx}/{len(selected)}] {sku}  API CALL FAILED: {type(e).__name__}: {e}", file=sys.stderr)
+                    try:
+                        failure_logger.log(
+                            sku=sku, failure_type="api_error",
+                            raw_response=None, validation_issues=[f"{type(e).__name__}: {e}"],
+                            prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
+                            model=args.model, tokens_in=None, tokens_out=None, cost_thb=None,
+                        )
+                    except Exception:
+                        pass
+                    stats["validation_failures"] += 1
+                return
+            with db_lock:
+                stats["api_calls"] += 1
+                total_cost_thb += gen.cost_thb
             cost_thb = gen.cost_thb
             try:
                 raw = gen.text
-                start = raw.find("{")
-                end = raw.rfind("}")
-                response = json.loads(raw[start : end + 1])
+                start_idx = raw.find("{")
+                end_idx = raw.rfind("}")
+                response = json.loads(raw[start_idx : end_idx + 1])
             except Exception as e:
-                print(f"[{i}/{len(selected)}] {sku}  PARSE FAIL: {e}", file=sys.stderr)
-                failure_logger.log(
-                    sku=sku, failure_type="parse",
-                    raw_response=gen.text, validation_issues=[str(e)],
-                    prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
-                    model=gen.model, tokens_in=gen.tokens_in, tokens_out=gen.tokens_out,
-                    cost_thb=gen.cost_thb,
-                )
-                stats["validation_failures"] += 1
-                continue
+                with db_lock:
+                    print(f"[{idx}/{len(selected)}] {sku}  PARSE FAIL: {e}", file=sys.stderr)
+                    failure_logger.log(
+                        sku=sku, failure_type="parse",
+                        raw_response=gen.text, validation_issues=[str(e)],
+                        prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
+                        model=gen.model, tokens_in=gen.tokens_in, tokens_out=gen.tokens_out,
+                        cost_thb=gen.cost_thb,
+                    )
+                    stats["validation_failures"] += 1
+                return
             result = val.validate(response, evidence, food_tax)
             if result.outcome == "rejected" and result.can_retry:
-                failure_logger.log(
-                    sku=sku, failure_type="validation_first",
-                    raw_response=gen.text, validation_issues=result.issues,
-                    prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
-                    model=gen.model, tokens_in=gen.tokens_in, tokens_out=gen.tokens_out,
-                    cost_thb=gen.cost_thb,
-                )
+                with db_lock:
+                    failure_logger.log(
+                        sku=sku, failure_type="validation_first",
+                        raw_response=gen.text, validation_issues=result.issues,
+                        prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
+                        model=gen.model, tokens_in=gen.tokens_in, tokens_out=gen.tokens_out,
+                        cost_thb=gen.cost_thb,
+                    )
                 correction = f"\n\n[Correction required — your previous response had these issues: {result.issues}. Please regenerate following the schema exactly.]"
                 try:
                     gen2 = haiku.generate(system=system, user=user + correction, max_tokens=2000, temperature=0.1)
                 except Exception as e:
-                    print(f"[{i}/{len(selected)}] {sku}  RETRY GENERATION FAILED: {e}", file=sys.stderr)
-                    failure_logger.log(
-                        sku=sku, failure_type="validation_retry",
-                        raw_response=None, validation_issues=[f"retry generation failed: {e}"],
-                        prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
-                        model=args.model, tokens_in=None, tokens_out=None, cost_thb=None,
-                    )
-                    stats["validation_failures"] += 1
-                    continue
-                total_cost_thb += gen2.cost_thb
+                    with db_lock:
+                        print(f"[{idx}/{len(selected)}] {sku}  RETRY GENERATION FAILED: {e}", file=sys.stderr)
+                        failure_logger.log(
+                            sku=sku, failure_type="validation_retry",
+                            raw_response=None, validation_issues=[f"retry generation failed: {e}"],
+                            prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
+                            model=args.model, tokens_in=None, tokens_out=None, cost_thb=None,
+                        )
+                        stats["validation_failures"] += 1
+                    return
+                with db_lock:
+                    total_cost_thb += gen2.cost_thb
+                    stats["api_calls"] += 1
                 cost_thb += gen2.cost_thb
-                stats["api_calls"] += 1
                 try:
                     raw2 = gen2.text
                     response = json.loads(raw2[raw2.find("{") : raw2.rfind("}") + 1])
                     result = val.validate(response, evidence, food_tax)
                     if result.outcome == "rejected":
+                        with db_lock:
+                            failure_logger.log(
+                                sku=sku, failure_type="validation_retry",
+                                raw_response=gen2.text, validation_issues=result.issues,
+                                prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
+                                model=gen2.model, tokens_in=gen2.tokens_in, tokens_out=gen2.tokens_out,
+                                cost_thb=gen2.cost_thb,
+                            )
+                            stats["validation_failures"] += 1
+                        validation_status_for_scoring = "failed"
+                        return
+                    else:
+                        validation_status_for_scoring = "failed_then_retried"
+                except Exception as e2:
+                    with db_lock:
                         failure_logger.log(
                             sku=sku, failure_type="validation_retry",
-                            raw_response=gen2.text, validation_issues=result.issues,
+                            raw_response=gen2.text, validation_issues=[str(e2)],
                             prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
                             model=gen2.model, tokens_in=gen2.tokens_in, tokens_out=gen2.tokens_out,
                             cost_thb=gen2.cost_thb,
                         )
-                        validation_status_for_scoring = "failed"
                         stats["validation_failures"] += 1
-                        continue
-                    else:
-                        validation_status_for_scoring = "failed_then_retried"
-                except Exception as e2:
-                    failure_logger.log(
-                        sku=sku, failure_type="validation_retry",
-                        raw_response=gen2.text, validation_issues=[str(e2)],
-                        prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
-                        model=gen2.model, tokens_in=gen2.tokens_in, tokens_out=gen2.tokens_out,
-                        cost_thb=gen2.cost_thb,
-                    )
-                    stats["validation_failures"] += 1
-                    continue
+                    return
             elif result.outcome == "rejected":
-                stats["validation_failures"] += 1
-                continue
+                with db_lock:
+                    stats["validation_failures"] += 1
+                return
             else:
                 validation_status_for_scoring = result.outcome
             response = result.repaired_json
 
             if cache_client:
                 try:
-                    cache_id = cache_client.write(
-                        sku=sku, category="wine",
-                        prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
-                        prompt_text=user, response_json=response,
-                        response_raw=gen.text, model=gen.model,
-                        tokens_in=gen.tokens_in, tokens_out=gen.tokens_out,
-                        cost_thb=cost_thb,
-                        confidence=float(response.get("confidence", 0)),
-                        validation_status=validation_status_for_scoring,
-                        validation_issues=result.issues,
-                    )
+                    with db_lock:
+                        cache_id = cache_client.write(
+                            sku=sku, category="wine",
+                            prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
+                            prompt_text=user, response_json=response,
+                            response_raw=gen.text, model=gen.model,
+                            tokens_in=gen.tokens_in, tokens_out=gen.tokens_out,
+                            cost_thb=cost_thb,
+                            confidence=float(response.get("confidence", 0)),
+                            validation_status=validation_status_for_scoring,
+                            validation_issues=result.issues,
+                        )
                 except Exception as e:
-                    print(f"WARN: cache write failed for {sku}: {e}", file=sys.stderr)
+                    with db_lock:
+                        print(f"WARN: cache write failed for {sku}: {e}", file=sys.stderr)
                     cache_id = ""
             else:
                 cache_id = ""
@@ -388,40 +417,58 @@ def main(argv: list[str] | None = None) -> int:
         if not args.no_write:
             enriched_at = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
             try:
-                wrote_local = local_router.update_product(
-                    products_id=sku_row.get("id", ""),
-                    response=response, final_confidence=final_conf,
-                    model=args.model, enrichment_note=f"Haiku/{evidence.quality_tier}",
-                    enriched_at=enriched_at,
-                    score_max=score_max, score_summary=score_summary,
-                    taste_profile=response.get("taste_profile"),
-                    vocab=vocab,
-                )
-                if wrote_local:
-                    stats["local_writes"] += 1
-                else:
-                    stats["csv_only"] += 1
-                if wrote_local and args.also_push_supabase:
-                    router._write_to_products(
-                        sku_row.get("id", ""), response, final_conf, args.model,
-                        f"Haiku/{evidence.quality_tier}", enriched_at, score_max, score_summary,
+                with db_lock:
+                    wrote_local = local_router.update_product(
+                        products_id=sku_row.get("id", ""),
+                        response=response, final_confidence=final_conf,
+                        model=args.model, enrichment_note=f"Haiku/{evidence.quality_tier}",
+                        enriched_at=enriched_at,
+                        score_max=score_max, score_summary=score_summary,
+                        taste_profile=response.get("taste_profile"),
+                        vocab=vocab,
+                    )
+                    if wrote_local:
+                        stats["local_writes"] += 1
+                    else:
+                        stats["csv_only"] += 1
+                    if wrote_local and args.also_push_supabase:
+                        router._write_to_products(
+                            sku_row.get("id", ""), response, final_conf, args.model,
+                            f"Haiku/{evidence.quality_tier}", enriched_at, score_max, score_summary,
+                        )
+            except Exception as e:
+                with db_lock:
+                    print(f"WARN: local route failed for {sku}: {e}", file=sys.stderr)
+            try:
+                with db_lock:
+                    router.route(
+                        sku=sku, products_id=sku_row.get("id", ""),
+                        response=response, final_confidence=final_conf,
+                        tier=evidence.quality_tier, cache_id=cache_id,
+                        current_values=sku_row, enrichment_note=f"Haiku/{evidence.quality_tier}",
+                        model=args.model, enriched_at=enriched_at,
+                        score_max=score_max, score_summary=score_summary,
                     )
             except Exception as e:
-                print(f"WARN: local route failed for {sku}: {e}", file=sys.stderr)
-            try:
-                router.route(
-                    sku=sku, products_id=sku_row.get("id", ""),
-                    response=response, final_confidence=final_conf,
-                    tier=evidence.quality_tier, cache_id=cache_id,
-                    current_values=sku_row, enrichment_note=f"Haiku/{evidence.quality_tier}",
-                    model=args.model, enriched_at=enriched_at,
-                    score_max=score_max, score_summary=score_summary,
-                )
-            except Exception as e:
-                print(f"WARN: csv route failed for {sku}: {e}", file=sys.stderr)
+                with db_lock:
+                    print(f"WARN: csv route failed for {sku}: {e}", file=sys.stderr)
 
         decision = "DIRECT WRITE" if final_conf >= args.write_threshold else "CSV ONLY"
-        print(f"[{i}/{len(selected)}] {sku}  tier={evidence.quality_tier}  ai_conf={ai_conf:.2f}  final={final_conf:.2f}  → {decision}  (THB {cost_thb:.4f})")
+        with db_lock:
+            print(f"[{idx}/{len(selected)}] {sku}  tier={evidence.quality_tier}  ai_conf={ai_conf:.2f}  final={final_conf:.2f}  → {decision}  (THB {cost_thb:.4f})")
+
+    if args.workers <= 1:
+        for i, sku_row in enumerate(selected, start=1):
+            process_sku(i, sku_row)
+    else:
+        with ThreadPoolExecutor(max_workers=args.workers) as ex:
+            futures = [ex.submit(process_sku, i, sku_row) for i, sku_row in enumerate(selected, start=1)]
+            for fut in as_completed(futures):
+                try:
+                    fut.result()
+                except Exception as e:
+                    with db_lock:
+                        print(f"WORKER CRASH: {type(e).__name__}: {e}", file=sys.stderr)
 
     csv_file.close()
 
