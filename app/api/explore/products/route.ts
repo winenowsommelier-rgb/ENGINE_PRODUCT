@@ -343,7 +343,20 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Local fallback
+    // Local fallback. If a note filter is active but Supabase failed, the
+    // local path has no way to honor it (product_taste_notes lives only on
+    // Supabase). Surface empty rather than ignoring the filter.
+    if (note) {
+      return NextResponse.json({
+        products: [],
+        total: 0,
+        page,
+        limit,
+        source: "local",
+        note: "note filter requires Supabase; not available locally",
+      });
+    }
+
     return NextResponse.json({
       products: localFiltered.slice(offset, offset + limit),
       total: localFiltered.length,
