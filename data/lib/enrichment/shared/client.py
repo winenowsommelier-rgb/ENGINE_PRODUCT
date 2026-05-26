@@ -53,8 +53,15 @@ class AnthropicClient:
         user: str,
         max_tokens: int = 1500,
         temperature: float = 0.1,
-        max_retries: int = 3,
+        max_retries: int = 5,
     ) -> GenerationResult:
+        """Generate with exponential backoff on transient errors.
+
+        Retries on rate-limit, server-side API errors, AND connection errors
+        (the latter has bitten two consecutive Phase 5 runs — transient
+        network blips killing 8000-SKU batches mid-flight). 5 retries with
+        2^attempt seconds backoff gives ~31s total tolerance per call.
+        """
         last_err: Exception | None = None
         for attempt in range(max_retries):
             try:
@@ -75,7 +82,12 @@ class AnthropicClient:
                     cost_usd=cost_usd,
                     cost_thb=cost_usd * USD_TO_THB,
                 )
-            except (anthropic.RateLimitError, anthropic.APIStatusError) as e:
+            except (
+                anthropic.RateLimitError,
+                anthropic.APIStatusError,
+                anthropic.APIConnectionError,
+                anthropic.APITimeoutError,
+            ) as e:
                 last_err = e
                 if attempt < max_retries - 1:
                     time.sleep(2 ** attempt)

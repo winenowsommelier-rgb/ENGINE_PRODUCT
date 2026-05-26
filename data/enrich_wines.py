@@ -265,7 +265,25 @@ def main(argv: list[str] | None = None) -> int:
                 est = len(user.split()) * 1.3
                 print(f"[{i}/{len(selected)}] {sku}  tier={evidence.quality_tier}  [dry-run] would call Haiku (~{est:.0f} tokens user)")
                 continue
-            gen = haiku.generate(system=system, user=user, max_tokens=2000, temperature=0.1)
+            try:
+                gen = haiku.generate(system=system, user=user, max_tokens=2000, temperature=0.1)
+            except Exception as e:
+                # Per-SKU safety net: if AnthropicClient retries are exhausted
+                # (network, rate-limit, 5xx), log and skip this SKU rather than
+                # killing the whole batch. The CLI can be re-run later and the
+                # cache will cover already-successful SKUs.
+                print(f"[{i}/{len(selected)}] {sku}  API CALL FAILED: {type(e).__name__}: {e}", file=sys.stderr)
+                try:
+                    failure_logger.log(
+                        sku=sku, failure_type="api_error",
+                        raw_response=None, validation_issues=[f"{type(e).__name__}: {e}"],
+                        prompt_hash=prompt_hash, evidence_hash=evidence.evidence_hash,
+                        model=args.model, tokens_in=None, tokens_out=None, cost_thb=None,
+                    )
+                except Exception:
+                    pass
+                stats["validation_failures"] += 1
+                continue
             stats["api_calls"] += 1
             total_cost_thb += gen.cost_thb
             cost_thb = gen.cost_thb
