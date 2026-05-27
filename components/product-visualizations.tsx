@@ -214,9 +214,7 @@ const CATEGORY_COLORS_OUTER: Record<FlavorCategory | string, string> = {
 
 function classifyFlavor(tag: string): FlavorMapping {
   const s = tag.toLowerCase().trim();
-  // Direct match
   if (FLAVOR_TAXONOMY[s]) return FLAVOR_TAXONOMY[s];
-  // Partial match
   for (const [key, mapping] of Object.entries(FLAVOR_TAXONOMY)) {
     if (s.includes(key) || key.includes(s)) return mapping;
   }
@@ -262,7 +260,6 @@ function deriveDimensionFromFlavors(product: Product, dimKey: string): number {
       return Math.min(5, Math.max(1, 2 + iCount - lCount));
     }
     case 'complexity': {
-      // More distinct flavors = more complex
       const uniqueCats = new Set(tags.map(t => classifyFlavor(t).category));
       if (tags.length === 0) return 0;
       const complexWords = ['complex', 'layered', 'nuanced', 'intricate', 'multifaceted'];
@@ -312,10 +309,8 @@ function deriveDimensionFromFlavors(product: Product, dimKey: string): number {
 }
 
 function getCharacterValue(product: Product, dimKey: string): number {
-  // First try the explicit product field
   const explicit = dimensionValue(product, dimKey);
   if (explicit > 0) return explicit;
-  // Derive from flavor tags and descriptions
   return deriveDimensionFromFlavors(product, dimKey);
 }
 
@@ -382,48 +377,56 @@ export function CharacterRadarChart({
       .filter(d => d.value > 0);
   }, [product, charDimensions, scope]);
 
-  if (radarData.length < 3) {
-    if (radarData.length === 0) return null;
-    // Show as horizontal bars for < 3 data points
+  // Scope accent colors — vivid enough to read on dark bg
+  const scopeColors: Record<string, { stroke: string; fill: string; dot: string }> = {
+    wine:    { stroke: 'rgba(251,113,133,1)',   fill: 'rgba(251,113,133,0.18)', dot: '#fb7185' },
+    spirits: { stroke: 'rgba(251,191,36,1)',    fill: 'rgba(251,191,36,0.18)',  dot: '#fbbf24' },
+    sake:    { stroke: 'rgba(129,140,248,1)',   fill: 'rgba(129,140,248,0.18)', dot: '#818cf8' },
+    other:   { stroke: 'rgba(167,139,250,1)',   fill: 'rgba(167,139,250,0.18)', dot: '#a78bfa' },
+  };
+  const accent = scopeColors[scope] ?? scopeColors.other;
+
+  if (radarData.length === 0) {
     return (
-      <div className="space-y-3">
+      <div className="flex items-center justify-center py-6">
+        <p className="text-sm text-slate-400 italic">No character data available yet</p>
+      </div>
+    );
+  }
+
+  if (radarData.length < 3) {
+    // Bar fallback for < 3 points
+    return (
+      <div className="space-y-3 py-2">
         {radarData.map(d => (
           <div key={d.dimension} className="flex items-center gap-3">
-            <span className="text-xs text-slate-400 w-24 shrink-0 text-right">{d.dimension}</span>
-            <div className="flex-1 h-2 bg-white/[0.06] rounded-full overflow-hidden">
+            <span className="text-xs text-slate-300 w-24 shrink-0 text-right font-medium">{d.dimension}</span>
+            <div className="flex-1 h-2.5 bg-white/[0.08] rounded-full overflow-hidden">
               <div
-                className="h-2 rounded-full"
+                className="h-2.5 rounded-full transition-all"
                 style={{
                   width: `${(d.value / 5) * 100}%`,
-                  background: 'linear-gradient(90deg, rgba(139,92,246,0.6), rgba(139,92,246,1))',
+                  background: `linear-gradient(90deg, ${accent.fill.replace('0.18', '0.6')}, ${accent.stroke})`,
                 }}
               />
             </div>
-            <span className="text-[11px] text-slate-500 w-6 text-right font-mono">{d.value.toFixed(1)}</span>
+            <span className="text-xs text-slate-300 w-8 text-right font-mono tabular-nums">{d.value.toFixed(1)}</span>
           </div>
         ))}
       </div>
     );
   }
 
-  // Scope accent colors
-  const scopeColors: Record<string, { stroke: string; fill: string }> = {
-    wine:    { stroke: 'rgba(225,29,72,0.85)', fill: 'rgba(225,29,72,0.15)' },
-    spirits: { stroke: 'rgba(245,158,11,0.85)', fill: 'rgba(245,158,11,0.15)' },
-    sake:    { stroke: 'rgba(99,102,241,0.85)', fill: 'rgba(99,102,241,0.15)' },
-    other:   { stroke: 'rgba(139,92,246,0.85)', fill: 'rgba(139,92,246,0.15)' },
-  };
-  const accent = scopeColors[scope] ?? scopeColors.other;
-
   return (
     <div className="flex flex-col sm:flex-row items-center gap-4">
+      {/* Radar chart */}
       <div className="w-[280px] h-[240px] shrink-0">
         <ResponsiveContainer width="100%" height="100%">
-          <RadarChart cx="50%" cy="50%" outerRadius="72%" data={radarData}>
-            <PolarGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" />
+          <RadarChart cx="50%" cy="50%" outerRadius="68%" data={radarData}>
+            <PolarGrid stroke="rgba(255,255,255,0.1)" strokeDasharray="3 3" />
             <PolarAngleAxis
               dataKey="dimension"
-              tick={{ fill: 'rgba(148,163,184,0.9)', fontSize: 11, fontWeight: 500 }}
+              tick={{ fill: 'rgba(226,232,240,0.85)', fontSize: 11, fontWeight: 500 }}
               tickLine={false}
             />
             <PolarRadiusAxis
@@ -438,40 +441,43 @@ export function CharacterRadarChart({
               stroke={accent.stroke}
               fill={accent.fill}
               strokeWidth={2}
-              dot={{ r: 3, fill: accent.stroke, strokeWidth: 0 }}
+              dot={{ r: 3.5, fill: accent.dot, strokeWidth: 0 }}
             />
             <Tooltip
               contentStyle={{
-                background: 'rgba(15,23,42,0.95)',
-                border: '1px solid rgba(255,255,255,0.1)',
+                background: 'rgba(15,23,42,0.97)',
+                border: `1px solid ${accent.stroke}40`,
                 borderRadius: '8px',
                 fontSize: '12px',
                 color: '#e2e8f0',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
               }}
-              formatter={(value: number) => [value.toFixed(1), '']}
+              formatter={(value: number, name: string) => [`${value.toFixed(1)} / 5`, name]}
             />
           </RadarChart>
         </ResponsiveContainer>
       </div>
-      <div className="flex-1 space-y-2 min-w-0">
+
+      {/* Bar legend */}
+      <div className="flex-1 space-y-2.5 min-w-0 w-full sm:w-auto">
         {radarData.map(d => (
           <div key={d.dimension} className="flex items-center gap-3">
-            <span className="text-xs text-slate-400 w-20 shrink-0">{d.dimension}</span>
+            <span className="text-xs text-slate-300 w-20 shrink-0 font-medium">{d.dimension}</span>
             <div className="flex-1 flex gap-[3px]">
               {[1, 2, 3, 4, 5].map(dot => (
                 <div
                   key={dot}
-                  className="h-[6px] flex-1 rounded-sm transition-colors"
+                  className="h-[7px] flex-1 rounded-sm transition-all"
                   style={{
                     background: d.value >= dot
                       ? accent.stroke
-                      : 'rgba(255,255,255,0.06)',
+                      : 'rgba(255,255,255,0.08)',
+                    opacity: d.value >= dot ? (dot <= Math.floor(d.value) ? 1 : 0.5) : 1,
                   }}
                 />
               ))}
             </div>
-            <span className="text-[11px] text-slate-500 w-6 text-right font-mono">
+            <span className="text-xs text-slate-300 w-8 text-right font-mono tabular-nums">
               {d.value.toFixed(1)}
             </span>
           </div>
@@ -491,13 +497,11 @@ export function FlavorWheel({ product }: { product: Product }) {
   const { innerData, outerData } = useMemo(() => {
     if (flavorTags.length === 0) return { innerData: [], outerData: [] };
 
-    // Classify each tag
     const classified = flavorTags.map(tag => ({
       tag,
       ...classifyFlavor(tag),
     }));
 
-    // Group by category for inner ring
     const catGroups = new Map<string, { tags: string[]; subcats: Set<string> }>();
     for (const c of classified) {
       if (!catGroups.has(c.category)) catGroups.set(c.category, { tags: [], subcats: new Set() });
@@ -512,7 +516,6 @@ export function FlavorWheel({ product }: { product: Product }) {
       fill: CATEGORY_COLORS[cat] ?? CATEGORY_COLORS.Other,
     }));
 
-    // Outer ring: individual flavors grouped by category
     const outer = classified.map(c => ({
       name: c.tag,
       value: 1,
@@ -520,21 +523,61 @@ export function FlavorWheel({ product }: { product: Product }) {
       fill: CATEGORY_COLORS_OUTER[c.category] ?? CATEGORY_COLORS_OUTER.Other,
     }));
 
-    // Sort both rings so categories align
     const catOrder = inner.map(d => d.name);
-    outer.sort((a, b) => {
-      const ai = catOrder.indexOf(a.category);
-      const bi = catOrder.indexOf(b.category);
-      return ai - bi;
-    });
+    outer.sort((a, b) => catOrder.indexOf(a.category) - catOrder.indexOf(b.category));
 
     return { innerData: inner, outerData: outer };
   }, [flavorTags]);
 
   if (flavorTags.length === 0) return null;
 
+  // For many tags, show chip list instead of wheel (wheel labels become unreadable)
+  if (flavorTags.length > 14) {
+    return (
+      <div>
+        {/* Category summary badges */}
+        <div className="flex flex-wrap gap-2 mb-3">
+          {innerData.map(d => (
+            <span
+              key={d.name}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+              style={{
+                background: `${d.fill}22`,
+                color: d.fill,
+                border: `1px solid ${d.fill}50`,
+              }}
+            >
+              <span className="w-2 h-2 rounded-full inline-block" style={{ background: d.fill }} />
+              {d.name} · {d.value}
+            </span>
+          ))}
+        </div>
+        {/* Flavor chips */}
+        <div className="flex flex-wrap gap-1.5">
+          {flavorTags.map(tag => {
+            const mapping = classifyFlavor(tag);
+            const color = CATEGORY_COLORS_OUTER[mapping.category] ?? '#94a3b8';
+            return (
+              <span
+                key={tag}
+                className="px-2.5 py-0.5 rounded-full text-xs font-medium capitalize"
+                style={{
+                  background: `${color}20`,
+                  color: color,
+                  border: `1px solid ${color}45`,
+                }}
+              >
+                {tag}
+              </span>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center gap-3">
       <div className="w-[280px] h-[280px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -544,13 +587,13 @@ export function FlavorWheel({ product }: { product: Product }) {
               dataKey="value"
               cx="50%"
               cy="50%"
-              innerRadius={40}
-              outerRadius={70}
+              innerRadius={38}
+              outerRadius={68}
               paddingAngle={2}
               strokeWidth={0}
             >
               {innerData.map((entry, i) => (
-                <Cell key={i} fill={entry.fill} opacity={0.85} />
+                <Cell key={i} fill={entry.fill} opacity={0.9} />
               ))}
             </Pie>
             {/* Outer ring: individual flavors */}
@@ -559,23 +602,23 @@ export function FlavorWheel({ product }: { product: Product }) {
               dataKey="value"
               cx="50%"
               cy="50%"
-              innerRadius={75}
-              outerRadius={110}
+              innerRadius={73}
+              outerRadius={108}
               paddingAngle={1}
               strokeWidth={0}
               label={({ name, cx: cxVal, cy: cyVal, midAngle, outerRadius: outerR }) => {
-                if (outerData.length > 12) return null;
+                if (outerData.length > 10) return null;
                 const RADIAN = Math.PI / 180;
-                const radius = (outerR as number) + 14;
+                const radius = (outerR as number) + 16;
                 const x = (cxVal as number) + radius * Math.cos(-midAngle * RADIAN);
                 const y = (cyVal as number) + radius * Math.sin(-midAngle * RADIAN);
                 return (
                   <text
                     x={x} y={y}
-                    fill="rgba(148,163,184,0.8)"
+                    fill="rgba(203,213,225,0.9)"
                     textAnchor={x > (cxVal as number) ? 'start' : 'end'}
                     dominantBaseline="central"
-                    fontSize={9}
+                    fontSize={10}
                     fontWeight={500}
                   >
                     {name}
@@ -584,30 +627,54 @@ export function FlavorWheel({ product }: { product: Product }) {
               }}
             >
               {outerData.map((entry, i) => (
-                <Cell key={i} fill={entry.fill} opacity={0.7} />
+                <Cell key={i} fill={entry.fill} opacity={0.8} />
               ))}
             </Pie>
             <Tooltip
               contentStyle={{
-                background: 'rgba(15,23,42,0.95)',
-                border: '1px solid rgba(255,255,255,0.1)',
+                background: 'rgba(15,23,42,0.97)',
+                border: '1px solid rgba(255,255,255,0.15)',
                 borderRadius: '8px',
                 fontSize: '12px',
                 color: '#e2e8f0',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
               }}
+              formatter={(value: number, name: string) => [name, '']}
             />
           </PieChart>
         </ResponsiveContainer>
       </div>
+
       {/* Legend */}
-      <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-2">
+      <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5">
         {innerData.map(d => (
           <div key={d.name} className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full" style={{ background: d.fill }} />
-            <span className="text-[10px] text-slate-400">{d.name} ({d.value})</span>
+            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: d.fill }} />
+            <span className="text-xs text-slate-300 font-medium">{d.name}</span>
+            <span className="text-xs text-slate-500">({d.value})</span>
           </div>
         ))}
+      </div>
+
+      {/* Raw tags */}
+      <div className="flex flex-wrap justify-center gap-1.5 w-full">
+        {flavorTags.map(tag => {
+          const mapping = classifyFlavor(tag);
+          const color = CATEGORY_COLORS_OUTER[mapping.category] ?? '#94a3b8';
+          return (
+            <span
+              key={tag}
+              className="px-2.5 py-0.5 rounded-full text-xs font-medium capitalize"
+              style={{
+                background: `${color}20`,
+                color: color,
+                border: `1px solid ${color}45`,
+              }}
+            >
+              {tag}
+            </span>
+          );
+        })}
       </div>
     </div>
   );
@@ -622,71 +689,132 @@ export function BodySweetnessMatrix({ product }: { product: Product }) {
   const isSpirit = scope === 'spirits';
 
   const body = getCharacterValue(product, 'body');
-  const yVal = isSpirit
-    ? (getCharacterValue(product, 'smoke') || getCharacterValue(product, 'sweetness'))
-    : getCharacterValue(product, 'sweetness');
+  const smokeVal = getCharacterValue(product, 'smoke');
+  const sweetnessVal = getCharacterValue(product, 'sweetness');
 
-  const yLabel = isSpirit
-    ? (getCharacterValue(product, 'smoke') > 0 ? 'Smoke' : 'Sweetness')
-    : 'Sweetness';
+  const yVal = isSpirit ? (smokeVal > 0 ? smokeVal : sweetnessVal) : sweetnessVal;
+  const yLabel = isSpirit ? (smokeVal > 0 ? 'Smoke' : 'Sweetness') : 'Sweetness';
 
-  if (body === 0 && yVal === 0) return null;
+  if (body === 0 && yVal === 0) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <p className="text-sm text-slate-400 italic">No style data available yet</p>
+      </div>
+    );
+  }
 
-  // Normalize to 0-100 range for positioning
-  const xPct = Math.max(5, Math.min(95, (body / 5) * 100));
-  const yPct = Math.max(5, Math.min(95, 100 - (yVal / 5) * 100)); // invert Y so high = top
+  const xPct = Math.max(8, Math.min(92, (body / 5) * 100));
+  const yPct = Math.max(8, Math.min(92, 100 - (yVal / 5) * 100));
 
   const quadrants = isSpirit
-    ? ['Light & Mild', 'Full & Mild', 'Light & Intense', 'Full & Intense']
-    : ['Light & Dry', 'Full & Dry', 'Light & Sweet', 'Full & Sweet'];
+    ? [
+        { label: 'Light & Mild',    pos: 'bottom-left'  },
+        { label: 'Full & Mild',     pos: 'bottom-right' },
+        { label: 'Light & Intense', pos: 'top-left'     },
+        { label: 'Full & Intense',  pos: 'top-right'    },
+      ]
+    : [
+        { label: 'Light & Dry',   pos: 'bottom-left'  },
+        { label: 'Full & Dry',    pos: 'bottom-right' },
+        { label: 'Light & Sweet', pos: 'top-left'     },
+        { label: 'Full & Sweet',  pos: 'top-right'    },
+      ];
+
+  // Determine which quadrant the dot is in
+  const inRight = xPct > 50;
+  const inTop   = yPct < 50;
+  const activeQ = inTop
+    ? (inRight ? 'top-right' : 'top-left')
+    : (inRight ? 'bottom-right' : 'bottom-left');
 
   return (
-    <div className="relative">
-      <div className="relative w-full aspect-square max-w-[260px] mx-auto bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden">
-        {/* Grid lines */}
-        <div className="absolute inset-0">
-          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/[0.06]" />
-          <div className="absolute top-1/2 left-0 right-0 h-px bg-white/[0.06]" />
+    <div>
+      <div className="relative w-full aspect-square max-w-[260px] mx-auto rounded-xl overflow-hidden border border-white/10 bg-slate-900/50">
+
+        {/* Quadrant backgrounds — subtle tint on active quadrant */}
+        <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 pointer-events-none">
+          {quadrants.map(q => (
+            <div
+              key={q.pos}
+              className="transition-all"
+              style={{
+                background: activeQ === q.pos
+                  ? 'rgba(167,139,250,0.08)'
+                  : 'transparent',
+              }}
+            />
+          ))}
         </div>
 
-        {/* Quadrant labels */}
-        <span className="absolute top-2 left-3 text-[9px] text-slate-600">{quadrants[2]}</span>
-        <span className="absolute top-2 right-3 text-[9px] text-slate-600">{quadrants[3]}</span>
-        <span className="absolute bottom-2 left-3 text-[9px] text-slate-600">{quadrants[0]}</span>
-        <span className="absolute bottom-2 right-3 text-[9px] text-slate-600">{quadrants[1]}</span>
+        {/* Grid lines */}
+        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/10 pointer-events-none" />
+        <div className="absolute top-1/2 left-0 right-0 h-px bg-white/10 pointer-events-none" />
+
+        {/* Quadrant labels — readable contrast */}
+        {quadrants.map(q => {
+          const isActive = activeQ === q.pos;
+          const [vert, horiz] = q.pos.split('-') as ['top' | 'bottom', 'left' | 'right'];
+          return (
+            <span
+              key={q.pos}
+              className={`absolute text-[10px] font-medium leading-tight max-w-[70px] text-center transition-colors pointer-events-none ${
+                isActive ? 'text-violet-300' : 'text-slate-500'
+              }`}
+              style={{
+                [vert]: '8px',
+                [horiz]: '8px',
+                textAlign: horiz === 'left' ? 'left' : 'right',
+              }}
+            >
+              {q.label}
+            </span>
+          );
+        })}
+
+        {/* Crosshair lines from dot */}
+        <div
+          className="absolute top-0 bottom-0 w-px pointer-events-none"
+          style={{ left: `${xPct}%`, background: 'rgba(167,139,250,0.2)' }}
+        />
+        <div
+          className="absolute left-0 right-0 h-px pointer-events-none"
+          style={{ top: `${yPct}%`, background: 'rgba(167,139,250,0.2)' }}
+        />
 
         {/* Product dot */}
         <div
-          className="absolute w-4 h-4 -ml-2 -mt-2 rounded-full shadow-lg shadow-violet-500/30"
+          className="absolute w-5 h-5 rounded-full shadow-lg"
           style={{
             left: `${xPct}%`,
-            top: `${yPct}%`,
-            background: 'radial-gradient(circle, rgba(139,92,246,1) 0%, rgba(139,92,246,0.6) 100%)',
-          }}
-        />
-        {/* Pulse ring */}
-        <div
-          className="absolute w-8 h-8 -ml-4 -mt-4 rounded-full animate-ping opacity-20"
-          style={{
-            left: `${xPct}%`,
-            top: `${yPct}%`,
-            background: 'rgba(139,92,246,0.3)',
+            top:  `${yPct}%`,
+            transform: 'translate(-50%, -50%)',
+            background: 'radial-gradient(circle at 35% 35%, rgba(196,181,253,1) 0%, rgba(139,92,246,1) 100%)',
+            boxShadow: '0 0 0 3px rgba(139,92,246,0.25), 0 0 12px rgba(139,92,246,0.5)',
           }}
         />
 
         {/* Axis labels */}
-        <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-slate-500 font-medium">Body</span>
-        <span className="absolute left-1 top-1/2 -translate-y-1/2 text-[9px] text-slate-500 font-medium writing-mode-vertical"
-          style={{ writingMode: 'vertical-rl', transform: 'translateY(-50%) rotate(180deg)' }}>
-          {yLabel}
+        <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 font-medium pointer-events-none select-none">
+          ← Light &nbsp; Body &nbsp; Full →
+        </span>
+        <span
+          className="absolute left-2 top-1/2 text-[10px] text-slate-400 font-medium pointer-events-none select-none"
+          style={{ writingMode: 'vertical-rl', transform: 'translateY(-50%) rotate(180deg)' }}
+        >
+          ← Low &nbsp;{yLabel}&nbsp; High →
         </span>
       </div>
-      <div className="flex justify-between mt-2 px-1">
-        <span className="text-[9px] text-slate-600">Light</span>
-        <span className="text-[10px] text-slate-400 font-medium">
-          Body {body.toFixed(1)} / {yLabel} {yVal.toFixed(1)}
-        </span>
-        <span className="text-[9px] text-slate-600">Full</span>
+
+      {/* Values below */}
+      <div className="flex justify-center gap-6 mt-2.5">
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs text-slate-500">Body</span>
+          <span className="text-xs font-semibold text-slate-200 tabular-nums">{body.toFixed(1)}<span className="text-slate-500">/5</span></span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs text-slate-500">{yLabel}</span>
+          <span className="text-xs font-semibold text-slate-200 tabular-nums">{yVal.toFixed(1)}<span className="text-slate-500">/5</span></span>
+        </div>
       </div>
     </div>
   );
@@ -697,15 +825,15 @@ export function BodySweetnessMatrix({ product }: { product: Product }) {
 // ══════════════════════════════════════════════════════════════════════════════
 
 const FOOD_CATEGORIES: { key: string; label: string; keywords: string[]; icon: React.ElementType }[] = [
-  { key: 'meat',     label: 'Meat',     keywords: ['meat', 'beef', 'lamb', 'pork', 'steak', 'veal', 'game', 'venison', 'duck', 'bbq', 'grill', 'roast'], icon: Beef },
-  { key: 'poultry',  label: 'Poultry',  keywords: ['poultry', 'chicken', 'turkey', 'fowl', 'quail'], icon: Egg },
-  { key: 'seafood',  label: 'Seafood',  keywords: ['seafood', 'fish', 'salmon', 'tuna', 'shrimp', 'prawn', 'lobster', 'crab', 'oyster', 'shellfish', 'sushi', 'sashimi', 'scallop'], icon: Fish },
-  { key: 'cheese',   label: 'Cheese',   keywords: ['cheese', 'brie', 'camembert', 'gouda', 'cheddar', 'parmesan', 'blue cheese', 'goat cheese', 'manchego'], icon: Milk },
-  { key: 'vegetable',label: 'Vegetable',keywords: ['vegetable', 'salad', 'mushroom', 'truffle', 'asparagus', 'artichoke', 'vegetarian', 'vegan'], icon: Salad },
-  { key: 'pasta',    label: 'Pasta & Grain', keywords: ['pasta', 'rice', 'risotto', 'noodle', 'pizza', 'bread', 'grain'], icon: Wheat },
-  { key: 'dessert',  label: 'Dessert',  keywords: ['dessert', 'chocolate', 'cake', 'pastry', 'fruit', 'tart', 'pie', 'sweet', 'ice cream', 'pudding'], icon: Cake },
-  { key: 'appetizer',label: 'Appetizer',keywords: ['appetizer', 'charcuterie', 'tapas', 'antipasto', 'snack', 'nuts', 'olives', 'bruschetta', 'canapé'], icon: Grape },
-  { key: 'asian',    label: 'Asian',    keywords: ['asian', 'thai', 'japanese', 'chinese', 'korean', 'indian', 'curry', 'spicy', 'stir-fry', 'dim sum', 'pad thai', 'ramen'], icon: Shell },
+  { key: 'meat',      label: 'Meat',          keywords: ['meat', 'beef', 'lamb', 'pork', 'steak', 'veal', 'game', 'venison', 'duck', 'bbq', 'grill', 'roast'], icon: Beef },
+  { key: 'poultry',   label: 'Poultry',       keywords: ['poultry', 'chicken', 'turkey', 'fowl', 'quail'], icon: Egg },
+  { key: 'seafood',   label: 'Seafood',        keywords: ['seafood', 'fish', 'salmon', 'tuna', 'shrimp', 'prawn', 'lobster', 'crab', 'oyster', 'shellfish', 'sushi', 'sashimi', 'scallop'], icon: Fish },
+  { key: 'cheese',    label: 'Cheese',        keywords: ['cheese', 'brie', 'camembert', 'gouda', 'cheddar', 'parmesan', 'blue cheese', 'goat cheese', 'manchego'], icon: Milk },
+  { key: 'vegetable', label: 'Vegetables',    keywords: ['vegetable', 'salad', 'mushroom', 'truffle', 'asparagus', 'artichoke', 'vegetarian', 'vegan'], icon: Salad },
+  { key: 'pasta',     label: 'Pasta & Grain', keywords: ['pasta', 'rice', 'risotto', 'noodle', 'pizza', 'bread', 'grain'], icon: Wheat },
+  { key: 'dessert',   label: 'Dessert',       keywords: ['dessert', 'chocolate', 'cake', 'pastry', 'fruit', 'tart', 'pie', 'sweet', 'ice cream', 'pudding'], icon: Cake },
+  { key: 'appetizer', label: 'Appetizer',     keywords: ['appetizer', 'charcuterie', 'tapas', 'antipasto', 'snack', 'nuts', 'olives', 'bruschetta'], icon: Grape },
+  { key: 'asian',     label: 'Asian',         keywords: ['asian', 'thai', 'japanese', 'chinese', 'korean', 'indian', 'curry', 'spicy', 'stir-fry', 'dim sum', 'pad thai', 'ramen'], icon: Shell },
 ];
 
 export function FoodPairingGrid({ product }: { product: Product }) {
@@ -727,7 +855,8 @@ export function FoodPairingGrid({ product }: { product: Product }) {
 
   return (
     <div>
-      <div className="grid grid-cols-3 gap-2">
+      {/* Icon grid */}
+      <div className="grid grid-cols-3 gap-2 mb-3">
         {FOOD_CATEGORIES.map(cat => {
           const isMatched = matchedCategories.has(cat.key);
           const Icon = cat.icon;
@@ -736,20 +865,26 @@ export function FoodPairingGrid({ product }: { product: Product }) {
               key={cat.key}
               className={`flex flex-col items-center gap-1.5 p-3 rounded-lg border transition-all ${
                 isMatched
-                  ? 'bg-emerald-500/10 border-emerald-500/25 text-emerald-300'
-                  : 'bg-white/[0.015] border-white/[0.04] text-slate-600'
+                  ? 'bg-emerald-500/12 border-emerald-500/35 text-emerald-300'
+                  : 'bg-white/[0.02] border-white/[0.06] text-slate-500'
               }`}
             >
-              <Icon size={16} strokeWidth={1.5} />
-              <span className="text-[10px] font-medium">{cat.label}</span>
+              <Icon size={18} strokeWidth={1.5} />
+              <span className={`text-[10px] font-medium leading-tight text-center ${isMatched ? 'text-emerald-300' : 'text-slate-500'}`}>
+                {cat.label}
+              </span>
             </div>
           );
         })}
       </div>
-      {/* Show raw tags below */}
-      <div className="flex flex-wrap gap-1.5 mt-3">
+
+      {/* Raw pairing tags */}
+      <div className="flex flex-wrap gap-1.5">
         {foodTags.map(t => (
-          <span key={t} className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 capitalize">
+          <span
+            key={t}
+            className="px-2.5 py-0.5 rounded-full text-xs font-medium capitalize bg-emerald-500/12 text-emerald-300 border border-emerald-500/25"
+          >
             {t}
           </span>
         ))}
@@ -764,17 +899,17 @@ export function FoodPairingGrid({ product }: { product: Product }) {
 
 const QUALITY_FIELDS = [
   { key: 'classification', label: 'Item Category', weight: 2 },
-  { key: 'country', label: 'Country', weight: 2 },
-  { key: 'region', label: 'Region', weight: 1 },
-  { key: 'grape_variety', label: 'Grape', weight: 1 },
-  { key: 'vintage', label: 'Vintage', weight: 1 },
-  { key: 'wine_body', label: 'Body', weight: 1 },
-  { key: 'wine_acidity', label: 'Acidity', weight: 1 },
-  { key: 'flavor_tags', label: 'Flavors', weight: 2 },
-  { key: 'food_matching', label: 'Pairing', weight: 1 },
-  { key: 'desc_en_short', label: 'Short Desc', weight: 1 },
-  { key: 'desc_en_full', label: 'Full Desc', weight: 1 },
-  { key: 'price', label: 'Price', weight: 2 },
+  { key: 'country',        label: 'Country',       weight: 2 },
+  { key: 'region',         label: 'Region',        weight: 1 },
+  { key: 'grape_variety',  label: 'Grape',         weight: 1 },
+  { key: 'vintage',        label: 'Vintage',       weight: 1 },
+  { key: 'wine_body',      label: 'Body',          weight: 1 },
+  { key: 'wine_acidity',   label: 'Acidity',       weight: 1 },
+  { key: 'flavor_tags',    label: 'Flavors',       weight: 2 },
+  { key: 'food_matching',  label: 'Pairing',       weight: 1 },
+  { key: 'desc_en_short',  label: 'Short Desc',    weight: 1 },
+  { key: 'desc_en_full',   label: 'Full Desc',     weight: 1 },
+  { key: 'price',          label: 'Price',         weight: 2 },
 ];
 
 export function DataQualityGauge({ product }: { product: Product }) {
@@ -790,86 +925,91 @@ export function DataQualityGauge({ product }: { product: Product }) {
   }, [product]);
 
   const filledCount = fieldStatus.filter(f => f.filled).length;
-  const totalCount = fieldStatus.length;
+  const totalCount  = fieldStatus.length;
   const completeness = Math.round((filledCount / totalCount) * 100);
 
-  // Arc gauge SVG
+  // Arc gauge
   const radius = 52;
-  const strokeWidth = 8;
-  const circumference = Math.PI * radius; // half circle
+  const strokeWidth = 9;
+  const circumference = Math.PI * radius;
   const offset = circumference - (pct / 100) * circumference;
 
-  const gaugeColor = pct >= 75 ? '#10b981' : pct >= 50 ? '#f59e0b' : '#ef4444';
-  const gaugeColorFaded = pct >= 75 ? 'rgba(16,185,129,0.15)' : pct >= 50 ? 'rgba(245,158,11,0.15)' : 'rgba(239,68,68,0.15)';
+  const gaugeColor =
+    pct >= 75 ? '#10b981' :
+    pct >= 50 ? '#f59e0b' : '#ef4444';
+  const gaugeLabel =
+    pct >= 75 ? 'High' :
+    pct >= 50 ? 'Medium' : 'Low';
 
   return (
     <div>
       {/* Arc gauge */}
-      <div className="flex justify-center mb-4">
-        <div className="relative w-[140px] h-[80px]">
-          <svg viewBox="0 0 140 80" className="w-full h-full">
-            {/* Background arc */}
+      <div className="flex flex-col items-center mb-5">
+        <div className="relative w-[150px] h-[86px]">
+          <svg viewBox="0 0 150 86" className="w-full h-full overflow-visible">
+            {/* Track */}
             <path
-              d="M 10 75 A 55 55 0 0 1 130 75"
+              d="M 14 80 A 57 57 0 0 1 136 80"
               fill="none"
-              stroke="rgba(255,255,255,0.06)"
+              stroke="rgba(255,255,255,0.08)"
               strokeWidth={strokeWidth}
               strokeLinecap="round"
             />
-            {/* Value arc */}
+            {/* Value */}
             <path
-              d="M 10 75 A 55 55 0 0 1 130 75"
+              d="M 14 80 A 57 57 0 0 1 136 80"
               fill="none"
               stroke={gaugeColor}
               strokeWidth={strokeWidth}
               strokeLinecap="round"
               strokeDasharray={`${circumference}`}
               strokeDashoffset={offset}
-              style={{ transition: 'stroke-dashoffset 0.6s ease' }}
+              style={{ transition: 'stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1)' }}
             />
           </svg>
-          <div className="absolute inset-0 flex items-end justify-center pb-0">
-            <span className="text-2xl font-bold" style={{ color: gaugeColor }}>{pct}%</span>
+          <div className="absolute inset-0 flex flex-col items-center justify-end pb-1">
+            <span className="text-3xl font-bold leading-none tabular-nums" style={{ color: gaugeColor }}>{pct}%</span>
+            <span className="text-[11px] font-semibold mt-0.5" style={{ color: gaugeColor }}>{gaugeLabel} confidence</span>
           </div>
         </div>
       </div>
 
-      {/* Field completeness bar */}
-      <div className="mb-3">
-        <div className="flex justify-between text-[10px] mb-1">
-          <span className="text-slate-500">Field completeness</span>
-          <span className="text-slate-400">{filledCount}/{totalCount} ({completeness}%)</span>
+      {/* Completeness bar */}
+      <div className="mb-4">
+        <div className="flex justify-between text-xs mb-1.5">
+          <span className="text-slate-400 font-medium">Field completeness</span>
+          <span className="text-slate-300 font-semibold tabular-nums">{filledCount}/{totalCount} ({completeness}%)</span>
         </div>
-        <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+        <div className="h-2 bg-white/[0.07] rounded-full overflow-hidden">
           <div
-            className="h-1.5 rounded-full transition-all"
+            className="h-2 rounded-full transition-all duration-700"
             style={{
               width: `${completeness}%`,
-              background: `linear-gradient(90deg, ${gaugeColorFaded}, ${gaugeColor})`,
+              background: `linear-gradient(90deg, ${gaugeColor}80, ${gaugeColor})`,
             }}
           />
         </div>
       </div>
 
-      {/* Missing fields */}
+      {/* Field status chips */}
       <div className="flex flex-wrap gap-1.5">
         {fieldStatus.map(f => (
           <span
             key={f.key}
-            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] border ${
+            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium border ${
               f.filled
-                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                ? 'bg-emerald-500/12 border-emerald-500/30 text-emerald-300'
                 : f.weight >= 2
-                  ? 'bg-rose-500/10 border-rose-500/20 text-rose-400'
-                  : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                  ? 'bg-rose-500/12 border-rose-500/30 text-rose-300'
+                  : 'bg-amber-500/12 border-amber-500/30 text-amber-300'
             }`}
           >
             {f.filled ? (
-              <CheckCircle2 size={8} />
+              <CheckCircle2 size={9} />
             ) : f.weight >= 2 ? (
-              <AlertTriangle size={8} />
+              <AlertTriangle size={9} />
             ) : (
-              <Info size={8} />
+              <Info size={9} />
             )}
             {f.label}
           </span>
@@ -888,64 +1028,71 @@ export function VintageTimeline({ product }: { product: Product }) {
 
   if (!vintage || isNaN(vintage)) return null;
 
-  // Show a range around the vintage year
   const currentYear = new Date().getFullYear();
+  const age = currentYear - vintage;
   const rangeStart = Math.min(vintage - 3, currentYear - 8);
-  const rangeEnd = Math.max(vintage + 3, currentYear + 1);
+  const rangeEnd   = Math.max(vintage + 3, currentYear + 1);
   const years = Array.from({ length: rangeEnd - rangeStart + 1 }, (_, i) => rangeStart + i);
 
   return (
     <div>
-      <div className="relative">
-        {/* Timeline track */}
-        <div className="h-px bg-white/[0.08] absolute top-1/2 left-0 right-0" />
+      <div className="relative pt-3 pb-6">
+        {/* Track */}
+        <div className="h-px bg-white/[0.1] absolute top-[18px] left-0 right-0" />
 
-        <div className="flex items-center justify-between relative">
+        <div className="flex items-start justify-between relative">
           {years.map(year => {
             const isCurrent = year === vintage;
-            const isNow = year === currentYear;
+            const isNow     = year === currentYear;
             return (
               <div key={year} className="flex flex-col items-center relative">
                 {/* Dot */}
                 <div
                   className={`w-3 h-3 rounded-full border-2 transition-all ${
                     isCurrent
-                      ? 'bg-violet-500 border-violet-400 shadow-lg shadow-violet-500/40'
+                      ? 'bg-violet-500 border-violet-300 shadow-lg shadow-violet-500/50 scale-125'
                       : isNow
-                        ? 'bg-white/20 border-white/30'
-                        : 'bg-transparent border-white/10'
+                        ? 'bg-slate-400 border-slate-300'
+                        : 'bg-transparent border-white/15'
                   }`}
                 />
                 {/* Year label */}
                 <span
-                  className={`text-[9px] mt-1.5 ${
+                  className={`text-[9px] mt-2 select-none ${
                     isCurrent
                       ? 'text-violet-300 font-bold'
                       : isNow
-                        ? 'text-slate-400'
-                        : 'text-slate-600'
+                        ? 'text-slate-300 font-semibold'
+                        : 'text-slate-500'
                   }`}
                 >
                   {year}
                 </span>
-                {/* "Current" label */}
+                {/* Tags */}
                 {isCurrent && (
-                  <span className="text-[8px] text-violet-400 font-medium mt-0.5">Vintage</span>
+                  <span className="text-[8px] text-violet-400 font-semibold mt-0.5 whitespace-nowrap">Vintage</span>
                 )}
                 {isNow && !isCurrent && (
-                  <span className="text-[8px] text-slate-500 mt-0.5">Now</span>
+                  <span className="text-[8px] text-slate-400 mt-0.5">Now</span>
                 )}
               </div>
             );
           })}
         </div>
       </div>
-      {/* Age note */}
-      <div className="flex items-center gap-1.5 mt-3">
-        <Clock size={10} className="text-slate-500" />
-        <span className="text-[10px] text-slate-500">
-          {currentYear - vintage} year{currentYear - vintage !== 1 ? 's' : ''} old
+
+      {/* Age line */}
+      <div className="flex items-center gap-2 mt-1">
+        <Clock size={11} className="text-slate-400 shrink-0" />
+        <span className="text-xs text-slate-300 font-medium">
+          {age} year{age !== 1 ? 's' : ''} old
         </span>
+        {age >= 10 && (
+          <span className="text-xs text-violet-400 font-semibold">· Aged</span>
+        )}
+        {age >= 20 && (
+          <span className="text-xs text-amber-400 font-semibold">· Grand cru territory</span>
+        )}
       </div>
     </div>
   );

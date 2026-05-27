@@ -44,12 +44,37 @@ function hasWineDimensions(p: ExploreProduct): boolean {
   return !!(p.wine_body || p.wine_acidity || p.wine_tannin);
 }
 
-function parseTags(raw?: string): string[] {
+function parseTags(raw?: string | string[] | null): string[] {
   if (!raw) return [];
-  return raw
+  if (Array.isArray(raw)) {
+    return raw.map((t) => String(t).trim()).filter(Boolean);
+  }
+  return String(raw)
     .split(",")
     .map((t) => t.trim())
     .filter(Boolean);
+}
+
+/* ── Section heading ─────────────────────────────── */
+function SectionHeading({
+  children,
+  theme,
+  icon,
+}: {
+  children: React.ReactNode;
+  theme: "dark" | "light";
+  icon?: React.ReactNode;
+}) {
+  return (
+    <h3
+      className={`mb-2.5 text-[11px] font-semibold uppercase tracking-wider flex items-center gap-1.5 ${
+        theme === "light" ? "text-slate-500" : "text-slate-400"
+      }`}
+    >
+      {icon}
+      {children}
+    </h3>
+  );
 }
 
 /* ── Component ───────────────────────────────────── */
@@ -76,19 +101,38 @@ export default function ProductDetailCard({
   }, [handleEscape]);
 
   const flavorTags = parseTags(product.flavor_tags);
-  const foodTags = parseTags(product.food_matching);
+  const foodTags   = parseTags(product.food_matching);
 
   const radarData = hasWineDimensions(product)
     ? [
-        { name: "Body", value: scaleTier(product.wine_body) },
+        { name: "Body",    value: scaleTier(product.wine_body) },
         { name: "Acidity", value: scaleTier(product.wine_acidity) },
-        { name: "Tannin", value: scaleTier(product.wine_tannin) },
-      ]
+        { name: "Tannin",  value: scaleTier(product.wine_tannin) },
+      ].filter((d) => d.value > 0)
     : null;
 
   const isWine =
     (product.classification || "").toLowerCase().includes("wine") ||
     (product.classification || "").toLowerCase().includes("champagne");
+
+  /* ── Theme tokens ────────────────────────────── */
+  const t = {
+    card:         theme === "light" ? "border-slate-200 bg-white"        : "border-white/[0.08] bg-[#111827]",
+    divider:      theme === "light" ? "border-slate-100"                 : "border-white/[0.07]",
+    nameText:     theme === "light" ? "text-slate-900"                   : "text-white",
+    metaText:     theme === "light" ? "text-slate-500"                   : "text-slate-400",
+    dotSep:       theme === "light" ? "text-slate-300"                   : "text-slate-600",
+    descText:     theme === "light" ? "text-slate-600"                   : "text-slate-300",
+    sectionBg:    theme === "light" ? "bg-slate-50"                      : "bg-white/[0.02]",
+    radarLabel:   theme === "light" ? "rgba(71,85,105,0.9)"              : "rgba(226,232,240,0.85)",
+    radarGrid:    theme === "light" ? "rgba(0,0,0,0.08)"                 : "rgba(255,255,255,0.1)",
+    radarValText: theme === "light" ? "text-slate-500"                   : "text-slate-400",
+    tagBg:        theme === "light" ? "bg-slate-100 text-slate-700 border-slate-200" : "",
+    foodTagBg:    theme === "light" ? "bg-slate-100 text-slate-700 border-slate-200" : "bg-white/[0.06] text-slate-300 border-white/10",
+    pairingText:  theme === "light" ? "text-slate-600"                   : "text-slate-300",
+    closeBtn:     theme === "light" ? "text-slate-400 hover:bg-slate-100 hover:text-slate-900" : "text-slate-400 hover:bg-white/10 hover:text-white",
+    imageBorder:  theme === "light" ? "border-slate-200"                 : "border-white/[0.06]",
+  };
 
   return (
     /* Backdrop */
@@ -100,17 +144,13 @@ export default function ProductDetailCard({
     >
       {/* Card */}
       <div
-        className={`relative max-h-[90vh] w-full max-w-[480px] overflow-y-auto rounded-2xl border shadow-2xl animate-card-in ${
-          theme === "light" ? "border-slate-200 bg-white" : "border-white/8 bg-[#12121f]"
-        }`}
+        className={`relative max-h-[90vh] w-full max-w-[480px] overflow-y-auto rounded-2xl border shadow-2xl animate-card-in ${t.card}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className={`absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none ${
-            theme === "light" ? "text-slate-400 hover:bg-slate-100 hover:text-slate-900" : "text-white/40 hover:bg-white/10 hover:text-white"
-          }`}
+          className={`absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none ${t.closeBtn}`}
           aria-label="Close detail"
         >
           <X size={16} />
@@ -118,181 +158,215 @@ export default function ProductDetailCard({
 
         {/* ── Hero section ─────────────────────────── */}
         <div className="flex gap-4 p-5 pb-4">
-          {/* Image */}
           <ProductImage
             src={product.image_url}
             alt={product.name}
             sku={product.sku}
             classification={product.classification}
             size="xl"
-            className={`!w-[100px] !h-[140px] rounded-xl border ${theme === "light" ? "border-slate-200" : "border-white/6"}`}
+            className={`!w-[100px] !h-[140px] rounded-xl border ${t.imageBorder}`}
           />
 
-          {/* Info */}
           <div className="flex flex-1 flex-col justify-center min-w-0 pr-6">
-            <h2 className={theme === "light" ? "text-base font-semibold leading-snug text-slate-900" : "text-base font-semibold text-white leading-snug"}>
+            <h2 className={`text-base font-semibold leading-snug ${t.nameText}`}>
               {product.name}
             </h2>
-            <div className={theme === "light" ? "mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500" : "mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-white/50"}>
-              {product.brand && <span>{product.brand}</span>}
-              {product.brand && product.vintage && (
-                <span className={theme === "light" ? "text-slate-300" : "text-white/20"}>·</span>
-              )}
-              {product.vintage && <span>{product.vintage}</span>}
-            </div>
+
+            {(product.brand || product.vintage) && (
+              <div className={`mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs ${t.metaText}`}>
+                {product.brand && <span>{product.brand}</span>}
+                {product.brand && product.vintage && (
+                  <span className={t.dotSep}>·</span>
+                )}
+                {product.vintage && <span>{product.vintage}</span>}
+              </div>
+            )}
+
             {product.grape_variety && (
-              <p className={theme === "light" ? "mt-1 flex items-center gap-1 text-xs text-slate-500" : "mt-1 text-xs text-white/40 flex items-center gap-1"}>
-                <Grape size={11} className={theme === "light" ? "text-slate-400" : "text-white/30"} />
+              <p className={`mt-1.5 flex items-center gap-1 text-xs ${t.metaText}`}>
+                <Grape size={11} className={t.metaText} />
                 {product.grape_variety}
               </p>
             )}
-            <p className={theme === "light" ? "mt-2 text-lg font-bold text-slate-900" : "mt-2 text-lg font-bold text-white"}>
+
+            <p className={`mt-2.5 text-lg font-bold ${t.nameText}`}>
               ฿{product.price?.toLocaleString() ?? "N/A"}
             </p>
           </div>
         </div>
 
         {/* ── Badges ───────────────────────────────── */}
-        <div className={theme === "light" ? "flex flex-wrap gap-1.5 border-t border-slate-200 px-5 py-3" : "flex flex-wrap gap-1.5 border-t border-white/6 px-5 py-3"}>
+        <div className={`flex flex-wrap gap-1.5 border-t ${t.divider} px-5 py-3`}>
           {product.classification && (
-            <Badge label={product.classification} accent={accent} />
+            <Badge label={product.classification} accent={accent} theme={theme} />
           )}
-          {product.wine_color && (
-            <Badge label={product.wine_color} />
-          )}
-          {product.country && <Badge label={product.country} />}
-          {product.region && <Badge label={product.region} />}
-          {product.subregion && <Badge label={product.subregion} />}
+          {product.wine_color && <Badge label={product.wine_color} theme={theme} />}
+          {product.country   && <Badge label={product.country}    theme={theme} />}
+          {product.region    && <Badge label={product.region}     theme={theme} />}
+          {product.subregion && <Badge label={product.subregion}  theme={theme} />}
         </div>
 
         {/* ── Description ──────────────────────────── */}
         {product.desc_en_short && (
-          <div className={theme === "light" ? "border-t border-slate-200 px-5 py-3" : "border-t border-white/6 px-5 py-3"}>
-            <p className={theme === "light" ? "text-xs leading-relaxed text-slate-600" : "text-xs leading-relaxed text-white/50"}>
+          <div className={`border-t ${t.divider} px-5 py-3`}>
+            <p className={`text-xs leading-relaxed ${t.descText}`}>
               {product.desc_en_short}
             </p>
           </div>
         )}
 
-        {/* ── Flavor Radar ─────────────────────────── */}
-        {radarData && isWine && (
-          <div className="border-t border-white/6 px-5 py-4">
-            <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-white/30">
-              Wine Profile
-            </h3>
-            <div className="mx-auto" style={{ width: 220, height: 180 }}>
+        {/* ── Wine Profile Radar ───────────────────── */}
+        {radarData && radarData.length >= 2 && isWine && (
+          <div className={`border-t ${t.divider} px-5 py-4`}>
+            <SectionHeading theme={theme}>Wine Profile</SectionHeading>
+            <div className="mx-auto" style={{ width: 240, height: 190 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="70%">
-                  <PolarGrid stroke="rgba(255,255,255,0.08)" />
+                <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="68%">
+                  <PolarGrid stroke={t.radarGrid} />
                   <PolarAngleAxis
                     dataKey="name"
-                    tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 11 }}
+                    tick={{ fill: t.radarLabel, fontSize: 12, fontWeight: 500 }}
                   />
                   <Radar
                     dataKey="value"
                     stroke={accent}
-                    fill={`rgba(${accentRgb},0.25)`}
+                    fill={`rgba(${accentRgb},0.22)`}
                     fillOpacity={1}
-                    strokeWidth={1.5}
-                    dot={{ r: 3, fill: accent }}
+                    strokeWidth={2}
+                    dot={{ r: 3.5, fill: accent, strokeWidth: 0 }}
                   />
                 </RadarChart>
               </ResponsiveContainer>
             </div>
-            <div className="mt-1 flex justify-center gap-4 text-[10px] text-white/35">
-              {product.wine_body && <span>Body: {product.wine_body}</span>}
-              {product.wine_acidity && (
-                <span>Acidity: {product.wine_acidity}</span>
-              )}
-              {product.wine_tannin && (
-                <span>Tannin: {product.wine_tannin}</span>
-              )}
+            <div className={`mt-2 flex justify-center gap-5 text-[11px] font-medium ${t.radarValText}`}>
+              {product.wine_body    && <span>Body: <span className={t.nameText}>{product.wine_body}</span></span>}
+              {product.wine_acidity && <span>Acidity: <span className={t.nameText}>{product.wine_acidity}</span></span>}
+              {product.wine_tannin  && <span>Tannin: <span className={t.nameText}>{product.wine_tannin}</span></span>}
             </div>
           </div>
         )}
 
-        {/* ── Flavor Tags ──────────────────────────── */}
+        {/* ── Flavor Notes ─────────────────────────── */}
         {flavorTags.length > 0 && (
-          <div className="border-t border-white/6 px-5 py-3">
-            <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-white/30">
-              Flavor Notes
-            </h3>
+          <div className={`border-t ${t.divider} px-5 py-3`}>
+            <SectionHeading theme={theme}>Flavor Notes</SectionHeading>
             <div className="flex flex-wrap gap-1.5">
-              {flavorTags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full px-2.5 py-0.5 text-[10px] font-medium"
-                  style={{
-                    background: `rgba(${accentRgb},0.15)`,
-                    color: accent,
-                    border: `1px solid rgba(${accentRgb},0.25)`,
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
+              {flavorTags.map((tag) =>
+                theme === "light" ? (
+                  <span
+                    key={tag}
+                    className="rounded-full px-2.5 py-0.5 text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200"
+                  >
+                    {tag}
+                  </span>
+                ) : (
+                  <span
+                    key={tag}
+                    className="rounded-full px-2.5 py-0.5 text-xs font-medium"
+                    style={{
+                      background: `rgba(${accentRgb},0.15)`,
+                      color: accent,
+                      border: `1px solid rgba(${accentRgb},0.3)`,
+                    }}
+                  >
+                    {tag}
+                  </span>
+                )
+              )}
             </div>
           </div>
         )}
 
-        {/* ── Food Matching ────────────────────────── */}
+        {/* ── Food Pairing ─────────────────────────── */}
         {(foodTags.length > 0 || product.pairing_rationale) && (
-          <div className="border-t border-white/6 px-5 py-3 pb-5">
-            <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-white/30 flex items-center gap-1">
-              <UtensilsCrossed size={11} />
+          <div className={`border-t ${t.divider} px-5 py-3 pb-5`}>
+            <SectionHeading theme={theme} icon={<UtensilsCrossed size={11} />}>
               Food Pairing
-            </h3>
+            </SectionHeading>
+
             {foodTags.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {foodTags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full bg-white/6 px-2.5 py-0.5 text-[10px] text-white/45 border border-white/8"
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-medium border ${t.foodTagBg}`}
                   >
                     {tag}
                   </span>
                 ))}
               </div>
             )}
+
             {product.pairing_rationale && (
-              <p className="mt-2 text-[11px] leading-relaxed text-white/55 italic">
+              <p className={`mt-2.5 text-xs leading-relaxed italic ${t.pairingText}`}>
                 {product.pairing_rationale}
               </p>
             )}
           </div>
         )}
 
-        {/* ── v2 Taste Profile (feature-flagged, default off) ──────── */}
+        {/* ── v2 Taste Profile (feature-flagged) ───── */}
         <TasteProfileSection
           profile={(product.taste_profile as TasteProfile | null) ?? null}
           productId={product.id}
         />
 
-        {/* ── v2 Similar Products rail (returns null when no data) ── */}
+        {/* ── Similar Products rail ─────────────────── */}
         <SimilarProductsRail productId={product.id} />
       </div>
-
     </div>
   );
 }
 
 /* ── Badge sub-component ─────────────────────────── */
 
-function Badge({ label, accent }: { label: string; accent?: string }) {
+function Badge({
+  label,
+  accent,
+  theme,
+}: {
+  label: string;
+  accent?: string;
+  theme: "dark" | "light";
+}) {
+  if (theme === "light") {
+    return (
+      <span
+        className="rounded-full px-2.5 py-0.5 text-[11px] font-medium border"
+        style={
+          accent
+            ? {
+                background: `${accent}18`,
+                color: accent,
+                borderColor: `${accent}35`,
+              }
+            : {
+                background: "#f1f5f9",
+                color: "#475569",
+                borderColor: "#e2e8f0",
+              }
+        }
+      >
+        {label}
+      </span>
+    );
+  }
+
+  // dark
   return (
     <span
-      className="rounded-full px-2 py-0.5 text-[10px] font-medium"
+      className="rounded-full px-2.5 py-0.5 text-[11px] font-medium border"
       style={
         accent
           ? {
-              background: `${accent}20`,
+              background: `${accent}18`,
               color: accent,
-              border: `1px solid ${accent}30`,
+              borderColor: `${accent}35`,
             }
           : {
-              background: "rgba(255,255,255,0.06)",
-              color: "rgba(255,255,255,0.5)",
-              border: "1px solid rgba(255,255,255,0.08)",
+              background: "rgba(255,255,255,0.07)",
+              color: "rgba(226,232,240,0.85)",
+              borderColor: "rgba(255,255,255,0.12)",
             }
       }
     >

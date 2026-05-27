@@ -57,7 +57,7 @@ function SearchableSelect({ value, onChange, options, placeholder }: {
               <input ref={inputRef} type="text" value={query}
                 onChange={function (e) { setQuery(e.target.value); }}
                 placeholder="Type to filter..."
-                className="w-full bg-slate-900 border border-white/10 rounded px-2 py-1 text-xs text-white placeholder:text-slate-600 outline-none" />
+                className="w-full bg-slate-900 border border-white/10 rounded px-2 py-1 text-xs text-white placeholder:text-slate-500 outline-none" />
             </div>
           )}
           <div className="max-h-52 overflow-y-auto p-1">
@@ -70,12 +70,12 @@ function SearchableSelect({ value, onChange, options, placeholder }: {
                 <button key={o.value} onClick={function () { onChange(o.value); setOpen(false); }}
                   className={'w-full text-left rounded px-2 py-1.5 text-xs transition-colors flex items-center justify-between ' + (value === o.value ? 'bg-violet-500/15 text-violet-300' : 'text-slate-300 hover:bg-white/5 hover:text-white')}>
                   <span className="truncate">{o.label}</span>
-                  {o.count !== undefined && <span className="text-slate-600 ml-1 shrink-0">{o.count}</span>}
+                  {o.count !== undefined && <span className="text-slate-400 ml-1 shrink-0">{o.count}</span>}
                 </button>
               );
             })}
             {filtered.length === 0 && (
-              <p className="px-2 py-3 text-center text-xs text-slate-600">No matches</p>
+              <p className="px-2 py-3 text-center text-xs text-slate-400">No matches</p>
             )}
           </div>
         </div>
@@ -503,7 +503,7 @@ export function ProductsPage() {
               placeholder="Search name or SKU..."
               value={search}
               onChange={e => { setSearch(e.target.value); setPage(1); }}
-              className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-sm text-white placeholder:text-slate-600"
+              className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-sm text-white placeholder:text-slate-500"
             />
           </div>
 
@@ -520,9 +520,9 @@ export function ProductsPage() {
                 placeholder="All countries" />
               <div className="flex gap-2">
                 <input placeholder="Price min" value={priceMin} onChange={e => setPriceMin(e.target.value)}
-                  className="flex-1 bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-slate-600" />
+                  className="flex-1 bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-slate-500" />
                 <input placeholder="Price max" value={priceMax} onChange={e => setPriceMax(e.target.value)}
-                  className="flex-1 bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-slate-600" />
+                  className="flex-1 bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-slate-500" />
               </div>
               <select value={confFilter} onChange={e => setConfFilter(e.target.value)}
                 className="w-full bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white">
@@ -610,7 +610,7 @@ export function ProductsPage() {
             <div className="px-4 py-12 text-center text-slate-500 text-sm">No products found</div>
           )}
           {!data && (
-            <div className="px-4 py-12 text-center text-slate-600 text-sm">Loading...</div>
+            <div className="px-4 py-12 text-center text-slate-400 text-sm">Loading...</div>
           )}
         </div>
 
@@ -634,7 +634,7 @@ export function ProductsPage() {
         {!selected ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <Wine size={40} className="text-slate-700 mx-auto mb-3" />
+              <Wine size={40} className="text-slate-500 mx-auto mb-3" />
               <p className="text-slate-500 text-sm">Select a product to view details</p>
             </div>
           </div>
@@ -757,7 +757,7 @@ export function ProductsPage() {
                         >
                           {String(loc.val)}
                         </button>
-                        {i < arr.length - 1 && <span className="text-slate-600 text-xs">/</span>}
+                        {i < arr.length - 1 && <span className="text-slate-400 text-xs">/</span>}
                       </span>
                     ))}
                     {!selected.country && <span className="text-sm text-slate-500 italic">Origin unknown</span>}
@@ -781,7 +781,7 @@ export function ProductsPage() {
                     <BarChart3 size={14} className="text-violet-400" />
                     <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Character Profile</h3>
                     {charDimensions.length > 0 && (
-                      <span className="text-[10px] text-slate-600 ml-auto">{charDimensions.length} dimensions</span>
+                      <span className="text-[10px] text-slate-400 ml-auto">{charDimensions.length} dimensions</span>
                     )}
                   </div>
                   <CharacterRadarChart product={selected} charDimensions={charDimensions} />
@@ -920,7 +920,7 @@ export function ProductsPage() {
                     <PackagePlus size={14} className="text-violet-400" />
                     <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Product Affinities</h3>
                     {!!productAffinities?.base_product_code && (
-                      <span className="ml-auto text-[10px] text-slate-600 font-mono">{productAffinities.base_product_code}</span>
+                      <span className="ml-auto text-[10px] text-slate-400 font-mono">{productAffinities.base_product_code}</span>
                     )}
                   </div>
 
@@ -949,7 +949,7 @@ export function ProductsPage() {
                             {section.rows.slice(0, 10).map(item => {
                               const content = (
                                 <>
-                                  <span className="w-6 shrink-0 text-right text-[11px] text-slate-600">{item.rank}</span>
+                                  <span className="w-6 shrink-0 text-right text-[11px] text-slate-400">{item.rank}</span>
                                   <span className="w-20 shrink-0 font-mono text-[11px] text-slate-400">{item.base_product_code}</span>
                                   <span className="min-w-0 flex-1 truncate text-xs text-slate-200">{item.product_name || '--'}</span>
                                   <span className="w-16 shrink-0 text-right text-xs font-semibold text-cyan-300">{fmtPct(item.rate)}</span>
@@ -980,7 +980,7 @@ export function ProductsPage() {
                     ))}
                   </div>
 
-                  <p className="mt-3 text-[11px] text-slate-600">
+                  <p className="mt-3 text-[11px] text-slate-400">
                     From BI closed-order history. Rates are calculated by base product code, matching the Sales by Item BI app.
                   </p>
                 </div>
@@ -1061,7 +1061,7 @@ export function ProductsPage() {
                         value={note}
                         onChange={e => setNote(e.target.value)}
                         placeholder="Reason for this change..."
-                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white placeholder:text-slate-600"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white placeholder:text-slate-500"
                       />
                     </div>
                     <div className="mt-4 flex items-center gap-3">
