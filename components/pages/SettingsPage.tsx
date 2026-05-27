@@ -1,9 +1,29 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, FileCheck2, FolderSymlink, Plus, Trash2 } from 'lucide-react';
 
 type Brand = { id: string; name: string };
 type SyncStatus = { last_synced_at: string | null; last_synced_count: number };
+type SupplierProblem = {
+  supplier_code: string;
+  supplier_name: string;
+  drive_supplier_folder_name: string;
+  normalization_readiness: string;
+  blocker_or_risk: string;
+  recommended_solution: string;
+  master_sku_count: string;
+};
+type SupplierIntakeSummary = {
+  generated_at: string;
+  total_supplier_codes: number;
+  problem_supplier_codes: number;
+  readiness_counts: Record<string, number>;
+  profiled_supplier_codes: number;
+  mapped_folder_supplier_codes: number;
+  master_sku_rows_represented: number;
+  top_problem_suppliers: SupplierProblem[];
+  ready_supplier_codes: SupplierProblem[];
+};
 
 export function SettingsPage() {
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -11,6 +31,7 @@ export function SettingsPage() {
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
   const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(null);
+  const [supplierIntake, setSupplierIntake] = useState<SupplierIntakeSummary | null>(null);
 
   async function loadBrands() {
     const res = await fetch('/api/settings/brands');
@@ -21,6 +42,10 @@ export function SettingsPage() {
   useEffect(() => {
     loadBrands();
     fetch('/api/settings/sync').then(r => r.json()).then(setSyncStatus).catch(() => {});
+    fetch('/api/settings/supplier-intake')
+      .then(r => r.json())
+      .then(json => setSupplierIntake(json.summary ?? null))
+      .catch(() => {});
   }, []);
 
   async function addBrand() {
@@ -55,8 +80,96 @@ export function SettingsPage() {
   }
 
   return (
-    <div className="p-8 max-w-xl">
+    <div className="p-8 max-w-6xl">
       <h1 className="text-xl font-semibold text-white mb-8">Settings</h1>
+
+      <section className="mb-10">
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <div>
+            <h2 className="text-sm font-medium text-slate-300 mb-1">Supplier intake validation</h2>
+            <p className="text-xs text-slate-500">Evidence-first intake, normalized CSV readiness, product identity matching, and review blockers.</p>
+          </div>
+          {supplierIntake?.generated_at && (
+            <span className="text-[11px] text-slate-500">
+              Generated {new Date(supplierIntake.generated_at).toLocaleString()}
+            </span>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
+            <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-300">
+              <CheckCircle2 size={17} />
+            </div>
+            <p className="text-2xl font-semibold text-white">{((supplierIntake?.readiness_counts.normalizable ?? 0) + (supplierIntake?.readiness_counts.normalizable_with_rules ?? 0)).toLocaleString()}</p>
+            <p className="text-xs text-slate-500">Ready or rule-ready suppliers</p>
+          </div>
+          <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
+            <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-md bg-amber-500/10 text-amber-300">
+              <FileCheck2 size={17} />
+            </div>
+            <p className="text-2xl font-semibold text-white">{(supplierIntake?.readiness_counts.draft_extract_then_review ?? 0).toLocaleString()}</p>
+            <p className="text-xs text-slate-500">PDF draft then review</p>
+          </div>
+          <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
+            <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-md bg-sky-500/10 text-sky-300">
+              <FolderSymlink size={17} />
+            </div>
+            <p className="text-2xl font-semibold text-white">{(supplierIntake?.readiness_counts.needs_profile ?? 0).toLocaleString()}</p>
+            <p className="text-xs text-slate-500">Mapped folders needing profile</p>
+          </div>
+          <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
+            <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-md bg-rose-500/10 text-rose-300">
+              <AlertTriangle size={17} />
+            </div>
+            <p className="text-2xl font-semibold text-white">{(supplierIntake?.readiness_counts.blocked ?? 0).toLocaleString()}</p>
+            <p className="text-xs text-slate-500">Supplier codes missing folder map</p>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1.2fr]">
+          <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">Process coverage</h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-slate-400">Supplier codes</span>
+                <span className="font-medium text-white">{supplierIntake?.total_supplier_codes.toLocaleString() ?? '0'}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-slate-400">Mapped folders</span>
+                <span className="font-medium text-white">{supplierIntake?.mapped_folder_supplier_codes.toLocaleString() ?? '0'}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-slate-400">Profiled supplier codes</span>
+                <span className="font-medium text-white">{supplierIntake?.profiled_supplier_codes.toLocaleString() ?? '0'}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-slate-400">Master SKU rows represented</span>
+                <span className="font-medium text-white">{supplierIntake?.master_sku_rows_represented.toLocaleString() ?? '0'}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">Highest-impact blockers</h3>
+            <div className="space-y-2">
+              {(supplierIntake?.top_problem_suppliers ?? []).slice(0, 6).map(problem => (
+                <div key={`${problem.supplier_code}-${problem.normalization_readiness}`} className="rounded-md bg-slate-950/60 px-3 py-2">
+                  <div className="mb-1 flex items-center justify-between gap-3">
+                    <span className="text-sm font-medium text-white">{problem.supplier_code} · {problem.supplier_name}</span>
+                    <span className="shrink-0 text-xs text-slate-500">{Number(problem.master_sku_count || 0).toLocaleString()} SKUs</span>
+                  </div>
+                  <p className="text-xs text-slate-400">{problem.normalization_readiness.replaceAll('_', ' ')}</p>
+                  <p className="mt-1 text-xs text-slate-500">{problem.recommended_solution}</p>
+                </div>
+              ))}
+              {!supplierIntake?.top_problem_suppliers?.length && (
+                <p className="text-xs text-slate-500">Supplier intake summary has not been generated yet.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="mb-10">
         <h2 className="text-sm font-medium text-slate-300 mb-1">Reputable brand list</h2>
