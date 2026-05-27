@@ -18,9 +18,11 @@ def test_appellation_mosel():
     assert result["confidence"] >= 0.85
 
 def test_grape_in_name():
-    result = infer_grape("Barossa Valley Shiraz 2019", "Red Wine")
-    assert "Shiraz" in result["grapes"]
+    # Use a name with no recognized appellation so keyword branch fires
+    result = infer_grape("Margaret River Cabernet Sauvignon 2020", "Red Wine")
+    assert "Cabernet Sauvignon" in result["grapes"]
     assert result["confidence"] >= 0.75
+    assert result["source"] == "name_keyword"
 
 def test_unknown_returns_empty():
     result = infer_grape("Some Mystery Label XYZ", "Red Wine")

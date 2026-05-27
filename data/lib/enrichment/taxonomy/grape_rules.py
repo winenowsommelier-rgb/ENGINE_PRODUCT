@@ -38,7 +38,7 @@ _GRAPE_KEYWORDS: list[tuple[str, str]] = [
     ("Grüner Veltliner",   r"\bgr[uü]ner\s+veltliner\b"),
     ("Chenin Blanc",       r"\bchenin\s+blanc\b|\bchenin\b"),
     ("Muscat",             r"\bmuscat\b|\bmoscato\b"),
-    ("Zinfandel",          r"\bzinfandel\b|\bprimitivo\b"),
+    ("Zinfandel",          r"\bzinfandel\b"),
     ("Touriga Nacional",   r"\btouriga\s+nacional\b"),
     ("Carménère",          r"\bcarmenere\b|carménère"),
     ("Petit Verdot",       r"\bpetit\s+verdot\b"),
@@ -124,7 +124,7 @@ _GRAPE_COMPILED = [
 _APPELLATION_COMPILED = [
     (
         re.compile(
-            rf"\b{re.escape(kw)}\b".replace(r"\.", r"[\s\-]"),
+            rf"\b{re.escape(kw)}\b".replace(r"\.", r"[\s\.\-]"),
             re.IGNORECASE,
         ),
         grapes,
