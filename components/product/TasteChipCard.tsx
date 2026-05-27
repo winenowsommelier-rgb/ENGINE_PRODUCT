@@ -4,11 +4,12 @@ import { TasteNote } from './TasteNote';
 
 interface Note { note: string; intensity: 1 | 2 | 3; }
 
-export function TasteChipCard({ flatTags }: { flatTags: Note[] }) {
+export function TasteChipCard({ flatTags }: { flatTags: Note[] | undefined }) {
+  const safe = flatTags ?? [];
   const groups: Record<string, Note[]> = {
-    Dominant:   flatTags.filter(n => n.intensity === 3),
-    Supporting: flatTags.filter(n => n.intensity === 2),
-    Subtle:     flatTags.filter(n => n.intensity === 1),
+    Dominant:   safe.filter(n => n.intensity === 3),
+    Supporting: safe.filter(n => n.intensity === 2),
+    Subtle:     safe.filter(n => n.intensity === 1),
   };
   return (
     <div className="taste-chip-card">

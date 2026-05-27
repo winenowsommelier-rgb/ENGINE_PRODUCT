@@ -6,6 +6,7 @@ import {
   RadarChart,
   PolarGrid,
   PolarAngleAxis,
+  PolarRadiusAxis,
   Radar,
   ResponsiveContainer,
 } from "recharts";
@@ -24,8 +25,13 @@ interface ProductDetailCardProps {
 
 /* ── Helpers ─────────────────────────────────────── */
 
-function scaleTier(val?: string): number {
+function scaleTier(val?: string | null): number {
   if (!val) return 0;
+  // Map every value the AI can produce per data/lib/enrichment/wine/taxonomies.py:
+  //   body:    Light | Medium | Medium-Full | Full
+  //   acidity: Low   | Medium | Medium-High | High
+  //   tannin:  Low   | Medium | Medium-High | High
+  // Plus legacy v1 spellings (medium-, medium+, medium minus/plus).
   const map: Record<string, number> = {
     low: 1,
     light: 1,
@@ -34,6 +40,8 @@ function scaleTier(val?: string): number {
     medium: 2,
     "medium+": 2.5,
     "medium plus": 2.5,
+    "medium-high": 2.5,
+    "medium-full": 2.5,
     high: 3,
     full: 3,
   };
@@ -103,12 +111,18 @@ export default function ProductDetailCard({
   const flavorTags = parseTags(product.flavor_tags);
   const foodTags   = parseTags(product.food_matching);
 
+  // Always render all three axes when ANY structural dimension is populated.
+  // Previously this filtered out axes scoring 0, which (a) hid axes whose
+  // values weren't in the legacy scaleTier map (e.g. "Medium-Full"), and
+  // (b) collapsed the radar into a wedge for white wines where tannin is
+  // legitimately null. The radar shape should communicate "Body N, Acidity
+  // M, Tannin 0" honestly rather than vanish axes.
   const radarData = hasWineDimensions(product)
     ? [
         { name: "Body",    value: scaleTier(product.wine_body) },
         { name: "Acidity", value: scaleTier(product.wine_acidity) },
         { name: "Tannin",  value: scaleTier(product.wine_tannin) },
-      ].filter((d) => d.value > 0)
+      ]
     : null;
 
   const isWine =
@@ -216,7 +230,7 @@ export default function ProductDetailCard({
         )}
 
         {/* ── Wine Profile Radar ───────────────────── */}
-        {radarData && radarData.length >= 2 && isWine && (
+        {radarData && radarData.filter((d) => d.value > 0).length >= 2 && isWine && (
           <div className={`border-t ${t.divider} px-5 py-4`}>
             <SectionHeading theme={theme}>Wine Profile</SectionHeading>
             <div className="mx-auto" style={{ width: 240, height: 190 }}>
@@ -227,6 +241,10 @@ export default function ProductDetailCard({
                     dataKey="name"
                     tick={{ fill: t.radarLabel, fontSize: 12, fontWeight: 500 }}
                   />
+                  {/* Fixed 0-3 domain so Body=Medium looks the same across wines —
+                      otherwise recharts auto-scales each chart to its own max
+                      and a Medium-bodied wine would look full-bodied. */}
+                  <PolarRadiusAxis domain={[0, 3]} tick={false} axisLine={false} />
                   <Radar
                     dataKey="value"
                     stroke={accent}

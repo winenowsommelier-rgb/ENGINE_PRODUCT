@@ -43,7 +43,9 @@ export function TasteWheel({ tiers, size = 240 }: TasteWheelProps) {
     <div className="taste-wheel">
       <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} role="img" aria-label="Taste profile wheel">
         {RINGS.map(({ key, rOuter, rInner }) => {
-          const notes = tiers[key];
+          // Phase-5 enrichments occasionally omit a tier (e.g. only primary+secondary
+          // for low-evidence SKUs). Treat missing tier as empty notes, not crash.
+          const notes = tiers[key] ?? [];
           const ROuter = r * rOuter;
           const RInner = r * rInner;
           const totalWeight = notes.reduce((s, n) => s + n.intensity, 0) || 1;
@@ -79,7 +81,7 @@ export function TasteWheel({ tiers, size = 240 }: TasteWheelProps) {
           <div key={tier} className={`taste-wheel-legend-row taste-wheel-legend-${tier}`}>
             <span className="taste-wheel-legend-label">{tier.charAt(0).toUpperCase() + tier.slice(1)}</span>
             <div className="taste-notes-row">
-              {tiers[tier].map((n, i) => (
+              {(tiers[tier] ?? []).map((n, i) => (
                 <TasteNote key={`${tier}-${i}`} note={n.note} tier={tier} intensity={n.intensity} />
               ))}
             </div>

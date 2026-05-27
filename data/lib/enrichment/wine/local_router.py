@@ -29,29 +29,35 @@ class LocalRouter:
     ) -> bool:
         """Write enriched fields to local SQLite.
 
-        Two gates, independent:
-        - High-confidence write (final_confidence >= write_threshold):
-          updates the v1 descriptive fields (wine_body, full_description, etc.)
-        - Taste-profile write (taste_profile is not None):
-          always writes taste_profile JSON + refreshes product_taste_notes
-          + enqueues similarity recompute, regardless of confidence. v2
-          taste data is valuable even for sub-threshold rows.
+        ALWAYS writes the descriptive payload (desc_en_short, full_description,
+        wine_body, flavor_tags, food_matching, etc.) whenever an enrichment
+        response is provided. The `enrichment_source` column records confidence
+        tier so the UI/downstream can filter to high-conf rows when needed.
 
-        Returns True if the high-conf descriptive write happened (legacy
-        contract — the caller's stats counter only tracks high-conf writes).
+        Prior behavior (≤ 2026-05-27): the descriptive write was gated behind
+        `final_confidence >= write_threshold` (0.85). Phase 5 SKUs typically
+        scored 0.55-0.74, so every descriptive payload was silently dropped —
+        the products table got NULL desc/body/flavors despite paying Anthropic
+        for ~$56 worth of complete enrichments. The data was only in
+        enrichment_cache and the CSV export. This regression is now fixed.
+
+        Returns True if a descriptive write happened (any non-empty response).
         """
         if not products_id:
             return False
 
-        has_threshold_write = final_confidence >= self.write_threshold
+        has_descriptive_write = bool(response)
         has_taste_write = taste_profile is not None
-        if not has_threshold_write and not has_taste_write:
+        if not has_descriptive_write and not has_taste_write:
             return False
+
+        # Confidence tier marker on the row so UI can filter if needed.
+        source_tier = "ai_high_conf" if final_confidence >= self.write_threshold else "ai_low_conf"
 
         conn = sqlite3.connect(self.db_path)
         try:
             with conn:
-                if has_threshold_write:
+                if has_descriptive_write:
                     payload = {
                         "wine_body": response.get("wine_body"),
                         "wine_acidity": response.get("wine_acidity"),
@@ -66,7 +72,7 @@ class LocalRouter:
                         "score_max": score_max,
                         "score_summary": score_summary or None,
                         "enrichment_confidence": round(final_confidence, 3),
-                        "enrichment_source": "ai_high_conf",
+                        "enrichment_source": source_tier,
                         "enrichment_note": enrichment_note,
                         "enriched_at": enriched_at,
                         "enriched_by": model,
@@ -80,9 +86,8 @@ class LocalRouter:
                         list(payload.values()) + [products_id],
                     )
                 elif has_taste_write:
-                    # Sub-threshold: write ONLY taste_profile + minimal metadata.
-                    # Preserve existing v1 fields (wine_body, full_description, etc.)
-                    # since we don't trust them yet.
+                    # No descriptive response but taste_profile provided
+                    # (e.g. taste-only re-run path). Write taste + metadata only.
                     conn.execute(
                         "UPDATE products SET taste_profile=?, enriched_at=?, enriched_by=?,"
                         "                    enrichment_confidence=?, updated_at=?"
@@ -101,7 +106,7 @@ class LocalRouter:
                     self._refresh_taste_notes(conn, products_id, taste_profile, vocab)
         finally:
             conn.close()
-        return has_threshold_write
+        return has_descriptive_write
 
     def _refresh_taste_notes(
         self,
