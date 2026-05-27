@@ -34,7 +34,7 @@ EXPORT_COLS = [
     "desc_en_short", "full_description",
     "taste_profile",
     "wine_color", "image_url",
-    "validation_status", "enrichment_confidence",
+    "validation_status", "enrichment_confidence", "enrichment_quality_grade",
     "popularity_score", "popularity_orders_90d", "popularity_revenue_90d",
     "popularity_qty_90d", "popularity_window_days", "popularity_synced_at",
     "created_at", "updated_at",
