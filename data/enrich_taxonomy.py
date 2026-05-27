@@ -188,6 +188,7 @@ def main(argv: list[str] | None = None) -> int:
     stats = {
         "layer1": 0,
         "layer2": 0,
+        "mixed_filled": 0,
         "unresolved": 0,
         "dry_run": 0,
         "api_calls": 0,
@@ -311,10 +312,14 @@ def main(argv: list[str] | None = None) -> int:
                 return
 
             if updates:
-                if layer1_contributed and not layer2_contributed:
+                if layer1_contributed and layer2_contributed:
                     stats["layer1"] += 1
+                    stats["layer2"] += 1
+                    stats["mixed_filled"] += 1
                 elif layer2_contributed:
                     stats["layer2"] += 1
+                else:
+                    stats["layer1"] += 1
             else:
                 stats["unresolved"] += 1
 
@@ -355,17 +360,20 @@ def main(argv: list[str] | None = None) -> int:
                         print(f"WORKER CRASH: {type(e).__name__}: {e}", file=sys.stderr)
 
     # ── Write JSON once at the end ────────────────────────────────────────────
-    should_write_json = (
-        not args.dry_run
-        and not args.no_write_json
-        and args.skus_file.resolve() == DEFAULT_PRODUCTS_FILE.resolve()
-    )
-    if should_write_json:
-        try:
-            updated_list = list(products_by_sku.values())
-            source_path.write_text(json.dumps(updated_list, ensure_ascii=False, indent=2))
-        except Exception as e:
-            print(f"WARN: JSON write-back failed: {e}", file=sys.stderr)
+    if not args.dry_run and not args.no_write_json:
+        if args.skus_file.resolve() == DEFAULT_PRODUCTS_FILE.resolve():
+            try:
+                updated_list = list(products_by_sku.values())
+                source_path.write_text(json.dumps(updated_list, ensure_ascii=False, indent=2))
+                print(f"\n✓ products.json updated in place.")
+            except Exception as e:
+                print(f"WARN: JSON write-back failed: {e}", file=sys.stderr)
+        else:
+            print(
+                f"NOTE: --skus-file points to a non-default path; JSON not written back automatically. "
+                f"Use --no-write-json to suppress this message.",
+                file=sys.stderr,
+            )
 
     # ── Summary ───────────────────────────────────────────────────────────────
     print()
@@ -373,6 +381,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"SKUs processed:         {total}")
     print(f"  Layer 1 filled:       {stats['layer1']}")
     print(f"  Layer 2 (Haiku):      {stats['layer2']}")
+    print(f"  Mixed (both layers):  {stats['mixed_filled']}")
     print(f"  Unresolved:           {stats['unresolved']}")
     print(f"  Dry-run (not written):{stats['dry_run']}")
     print(f"  API calls:            {stats['api_calls']}")
