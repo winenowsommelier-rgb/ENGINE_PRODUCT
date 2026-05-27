@@ -171,11 +171,13 @@ def test_update_product_with_no_taste_profile_unchanged(db_with_v2_schema, vocab
 # ---------------------------------------------------------------------------
 
 def test_update_product_writes_taste_profile_below_threshold(db_with_v2_schema, vocab):
-    """v2 taste data must land regardless of the v1 descriptive write threshold.
+    """v2 taste data + v1 descriptive payload BOTH land regardless of threshold.
 
     Tier-B SKUs commonly score final_confidence ~0.5-0.7, well below the 0.85
-    threshold that gates the v1 descriptive fields. The taste_profile JSON +
-    product_taste_notes + dirty queue must still be written.
+    threshold. Pre-2026-05-27 the descriptive payload was silently dropped
+    for these (cost us ~$56 on Phase 5). The new contract: ALWAYS write the
+    descriptive payload when a response is provided; write_threshold drives
+    only the `enrichment_source` tier label.
     """
     router = _make_router(db_with_v2_schema)
     wrote = router.update_product(
@@ -188,17 +190,21 @@ def test_update_product_writes_taste_profile_below_threshold(db_with_v2_schema, 
         taste_profile=_SAMPLE_TASTE,
         vocab=vocab,
     )
-    # Legacy return: False means the high-conf descriptive write did NOT happen.
-    assert wrote is False
+    # New contract: descriptive write happened (wrote == True) even though
+    # final_confidence is below threshold.
+    assert wrote is True
 
     conn = sqlite3.connect(db_with_v2_schema)
-    # But taste_profile DID land
     tp_raw = conn.execute("SELECT taste_profile FROM products WHERE id='row-1'").fetchone()[0]
     assert tp_raw is not None
     assert json.loads(tp_raw)["structure"] == "tiered"
-    # And v1 descriptive fields stayed untouched (no wine_body etc. forced in)
-    wine_body = conn.execute("SELECT wine_body FROM products WHERE id='row-1'").fetchone()[0]
-    assert wine_body is None
+    # And v1 descriptive fields are NOW populated, tagged with the low-conf tier
+    row = conn.execute(
+        "SELECT wine_body, desc_en_short, enrichment_source FROM products WHERE id='row-1'"
+    ).fetchone()
+    assert row[0] is not None, "wine_body must be written even for sub-threshold rows"
+    assert row[1] is not None, "desc_en_short must be written even for sub-threshold rows"
+    assert row[2] == "ai_low_conf"
     # Notes + dirty queue both populated
     n_notes = conn.execute(
         "SELECT COUNT(*) FROM product_taste_notes WHERE product_id='row-1'"
