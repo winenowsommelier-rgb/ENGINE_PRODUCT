@@ -30,6 +30,7 @@ def build_prompt(
     needs: list[str],
 ) -> tuple[str, str]:
     """Return (system_text, user_text). `needs` is the list of field names to fill."""
+    assert needs, "build_prompt requires at least one field in needs"
     field_lines = "\n".join(
         f'  "{f}": <{_FIELD_DESCRIPTIONS.get(f, f)}>'
         for f in needs
@@ -49,7 +50,13 @@ def build_prompt(
 
 
 def parse_response(raw: str, needs: list[str]) -> dict:
-    """Parse Haiku JSON response. Returns dict with valid=True/False."""
+    """Parse Haiku JSON response. Returns dict with valid=True/False.
+
+    `needs` is accepted for call-site symmetry with build_prompt but does not
+    filter the returned keys — all four fields are always present in the result.
+    """
+    if not raw:
+        return {"valid": False, "region": "", "subregion": "", "grape_variety": [], "confidence": 0.0}
     try:
         start = raw.find("{")
         end = raw.rfind("}")
