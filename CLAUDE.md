@@ -1,4 +1,97 @@
-# Ruflo — Claude Code Configuration
+# WN/LIQ9 Product Engine — Operating Rules
+
+## ABSOLUTE RULES (do not violate — they exist because of past costly failures)
+
+### Rule 1 — Verify, don't infer, that paid work landed where it should
+Whenever you spend money calling an external API (Anthropic, OpenAI, any
+paid LLM), do not declare the run "complete" or report progress until you
+have **verified the data actually arrived in the user-facing destination**.
+
+Counting cache rows, log lines, or "X/N processed" is NOT verification.
+Run a direct query against the final destination (products table, the UI
+endpoint, Supabase) and confirm the field you paid to populate is actually
+populated. Show the user a SQL count or a curl response. If the field is
+NULL or empty, the work is NOT done — re-investigate before claiming success.
+
+History: in May 2026, ~$56 of Anthropic credit was wasted on Phase 5
+enrichment because the descriptive payload was silently dropped by a
+threshold gate in LocalRouter. Progress was reported as "33% enriched"
+based on taste_profile rows, while desc_en_short / wine_body / flavor_tags
+were 0/3,807. The user paid for data that the UI never showed.
+
+### Rule 2 — Log-line warnings are warnings; investigate them
+If the pipeline prints status like "→ CSV ONLY", "skipped", "below
+threshold", "fallback used", or any non-success state for the majority of
+items, STOP and explain to the user why. Do not let "CSV ONLY" appear on
+hundreds of lines without asking what it means.
+
+### Rule 3 — Inherited thresholds & magic numbers are NOT validated by the caller
+Constants from prior versions (e.g. write_threshold=0.85 in LocalRouter)
+were tuned for a different data distribution. When you add a new
+classification, category, or pipeline stage, audit every threshold for
+whether it still makes sense — especially confidence cutoffs, retry caps,
+and timeout values. Don't assume the previous engineer got it right.
+
+### Rule 4 — Cost reports require a "what shipped to users" line
+Every cost summary must include:
+- Total spend
+- Number of API calls
+- **Number of rows where the final user-facing fields are populated**
+- Per-successful-row cost
+
+Spend-without-shipping is the failure mode this rule prevents.
+
+### Rule 5 — Tests that lock in a bug are anti-tests; rewrite them
+If a unit test asserts behavior that turns out to be the bug
+(e.g. `assert wine_body is None  # unchanged` on a sub-threshold row),
+do not keep it green by preserving the bug. Update the test to assert
+the correct behavior, add a regression-guard comment explaining the
+history, and verify the new behavior fixes the user-visible problem.
+
+### Rule 6 — End-to-end invariants are NOT optional
+For any pipeline that writes to a user-facing table, write an integration
+test that asserts the invariant:
+**if upstream cache/state has data for record X, then the user-facing
+table has the corresponding field populated for record X**.
+See `tests/test_enrichment_db_invariants.py` for the canonical pattern.
+Run it after every bulk write.
+
+### Rule 7 — UI changes require browser verification
+For ANY change that affects the UI (component, API endpoint, data shape):
+- Start the dev server
+- Open the actual URL the user would visit
+- Click through the user journey end-to-end
+- Verify the change renders, doesn't crash, and looks right
+
+"TypeScript compiles" / "tests pass" is necessary but NOT sufficient.
+A working UI is the only proof a UI change works.
+
+### Rule 8 — When the user is angry, fix what they're angry about first
+Do not lecture, do not over-explain, do not add unrelated work.
+Identify the smallest action that produces visible improvement for them.
+Execute that action. Show them the result. Then continue.
+
+### Rule 9 — There are TWO data sources; know which one you're reading
+The explore UI reads `data/live_products_export.json`, NOT the SQLite DB
+directly. Bulk writes to products.db must be followed by:
+
+    .venv/bin/python scripts/refresh_live_export.py
+
+If users say "I don't see the change", check that file's age first.
+
+### Rule 10 — Pre-flight checklist before any bulk paid run
+Before kicking off any Phase-5-style bulk enrichment that will spend money:
+1. Backup the target table (`cp products.db products.db.bak-pre-X`)
+2. Run on a 5-SKU canary; verify in the UI before scaling up
+3. Confirm the success/skip ratio on the canary matches expectations
+4. Estimate full-run cost from canary's per-SKU rate; show user the number
+5. Get user sign-off on the estimate
+6. Run the full job
+7. Verify with a count query AND a UI walkthrough that the data shipped
+
+Skipping any step is how money gets wasted.
+
+## Ruflo — Claude Code Configuration
 
 ## Rules
 
