@@ -42,7 +42,7 @@ Extend `ExploreProduct` with the following optional fields (already fetched by t
 ```ts
 grape_blend_type?: string;
 wine_production_style?: string;
-score_max?: number | string;
+score_max?: number;  // adapter narrows to number via Number() + isFinite(); never a string after adaptation
 score_summary?: string;
 full_description?: string;
 // Internal/catalog fields (present when loaded from /api/products/:id):
@@ -71,7 +71,7 @@ cost_price?: number;
 
 **Adapter function:** `toExploreProduct(raw: Record<string, unknown>): ExploreProduct`
 
-A simple cast helper in `lib/explore/types.ts` that maps `ProductsPage`'s `Record<string, unknown>` to `ExploreProduct`. Does field narrowing via `String()`, `Number()`, and nullish coalescing.
+A simple cast helper in `lib/explore/adapters.ts` (new file — keeps `lib/explore/types.ts` domain-pure) that maps `ProductsPage`'s `Record<string, unknown>` to `ExploreProduct`. Does field narrowing via `String()`, `Number()`, and nullish coalescing. Numeric fields (`overall_confidence`, `cost_price`, `price`, `score_max`) are narrowed with `Number()` and validated with `isFinite()` before assignment — never passed as raw strings to avoid display bugs downstream.
 
 ---
 
@@ -84,13 +84,24 @@ A simple cast helper in `lib/explore/types.ts` that maps `ProductsPage`'s `Recor
 interface ProductDetailPanelProps {
   product: ExploreProduct;
   theme?: "dark" | "light";
+  category?: CategoryScope | null;  // for accent colors (radar, badges, chips)
   // Optional extra data — only passed from ProductsPage context
   charDimensions?: CharDimension[];
-  taxContextMap?: Map<string, string>;
+  taxContextMap?: Map<string, string>;  // derived in ProductsPage, passed down
   relatedProducts?: RelatedProduct[];
   productAffinities?: ProductAffinities | null;
 }
 ```
+
+The `category` prop enables accent-coloured radar strokes, badge highlights, and flavor chip colours via `getAccent(category)` / `getAccentRgb(category)`. When absent (e.g. ProductsPage context), accent colours fall back to the violet defaults already used in ProductsPage today. `ProductDetailCard` forwards its existing `category` prop to `ProductDetailPanel`.
+
+**Type sharing:** `CharDimension`, `RelatedProduct`, `AffinityItem`, and `ProductAffinities` are currently defined locally in `ProductsPage.tsx`. They must be extracted to `lib/explore/types.ts` and imported by both `ProductsPage` and `ProductDetailPanel` so the build does not break. (`lib/products/` already exists but is for field-validation/ownership logic — keeping product-catalogue types in `lib/explore/types.ts` keeps the import graph flat.)
+
+**Visualization component casting:** `CharacterRadarChart`, `FlavorWheel`, `BodySweetnessMatrix`, `FoodPairingGrid`, `DataQualityGauge`, and `VintageTimeline` all accept `product: Record<string, unknown>`. `ProductDetailPanel` holds `product: ExploreProduct`. Pass as `product as Record<string, unknown>` at each call site — do not change the visualization component signatures.
+
+**Origin card interactivity:** The Origin card breadcrumb buttons in `ProductsPage` currently call `setCountry` / `setRegion` / `setAppellation` to filter the list. `ProductDetailPanel` has no access to those callbacks. The Origin card in the panel renders location values as **plain non-interactive text** (no buttons, no filter callbacks). The filter-by-location feature stays as-is in the ProductsPage header bar and is not part of this refactor.
+
+**`taxContextMap` guard:** `taxContextMap` is an optional prop (undefined in explore context). All access in the panel must use optional chaining: `(taxContextMap?.size ?? 0) > 0` and `taxContextMap ? Array.from(taxContextMap.entries()) : []`. Never call `.size` or `.entries()` without the guard.
 
 **Sections rendered (in order):**
 
@@ -111,13 +122,17 @@ interface ProductDetailPanelProps {
 | 13 | Comparable Products | relatedProducts prop | "No comparable SKU cluster found yet" |
 | 14 | Data Quality (`DataQualityGauge`) | validation_status, overall_confidence | always shown |
 
-Cards 12 and 13 render their empty states when no data is passed (i.e. in explore context). They are **not hidden** — the user sees the empty state, which is consistent with the catalog view.
+Cards 12 and 13 render their empty states when no data is passed (i.e. in explore context). They are **not hidden** — the user sees the same empty state message they would see in the catalog view for a product with no BI data. Note: in catalog context the empty state appears after a fetch returns no results; in explore context the fetch is not made and the empty state is immediate. The visual output is identical when data is absent.
 
 **Theming:**  
 All dark/light conditional class strings follow the same pattern as `ProductDetailCard` today. The `theme` prop defaults to `"dark"` (explore context) and can be overridden.
 
 **Scrolling:**  
-The panel is a plain `<div className="flex-col space-y-5 px-6 py-5 max-w-4xl">` — no fixed height — so it adapts to its host container's scroll context.
+The panel is a plain `<div className="flex-col space-y-5 px-6 py-5">` — no fixed height, no `max-w` on the panel itself. Width is controlled entirely by the host container:
+- In `ProductsPage`: the right panel's `overflow-y-auto` div already has `max-w-4xl` applied at the wrapping level.
+- In `ProductDetailCard`: the modal card enforces `max-w-[480px]`; the panel fills it naturally.
+
+This removes the need for a `disableMaxWidth` prop — the panel is always 100% of its host width.
 
 ---
 
@@ -136,7 +151,7 @@ Removes:
 
 Renders:
 ```tsx
-<ProductDetailPanel product={product} theme={theme} />
+<ProductDetailPanel product={product} theme={theme} category={category} />
 ```
 
 ---
@@ -167,10 +182,11 @@ The `openProduct` function, pagination, filter, and edit logic are **unchanged**
 
 | File | Change |
 |---|---|
-| `lib/explore/types.ts` | Add optional fields to `ExploreProduct`; add `toExploreProduct()` adapter |
+| `lib/explore/types.ts` | Add optional fields to `ExploreProduct`; extract `CharDimension`, `RelatedProduct`, `AffinityItem`, `ProductAffinities` types |
+| `lib/explore/adapters.ts` | **New** — `toExploreProduct()` adapter function |
 | `components/product/ProductDetailPanel.tsx` | **New** — shared detail panel |
-| `components/explore/ProductDetailCard.tsx` | Slim down to modal shell only |
-| `components/pages/ProductsPage.tsx` | Replace inline detail JSX with `ProductDetailPanel` |
+| `components/explore/ProductDetailCard.tsx` | Slim down to modal shell; forward `category` to panel |
+| `components/pages/ProductsPage.tsx` | Import shared types; replace inline detail JSX with `ProductDetailPanel` |
 
 **No other files changed.** `ProductSidebar` and `BottomPanel` continue to use `ProductDetailCard` unchanged.
 
@@ -189,7 +205,11 @@ The `openProduct` function, pagination, filter, and edit logic are **unchanged**
 
 - [ ] Clicking a product in map (desktop sidebar or mobile bottom panel) opens the same rich detail as the Products catalog
 - [ ] All enrichment fields from the explore API (`taste_profile`, `pairing_rationale`, `full_description`, etc.) render correctly in the modal
-- [ ] ProductsPage detail panel renders identically to before
-- [ ] Dark and light themes both work in explore context
-- [ ] No TypeScript errors; build passes
+- [ ] ProductsPage detail panel renders identically to before (when the same data props are available)
+- [ ] Dark and light themes both work in explore context; accent colors from `category` prop display correctly in the explore modal
+- [ ] No TypeScript errors; `npm run build` passes
 - [ ] `TasteProfileSection` still only renders when `NEXT_PUBLIC_TASTE_PROFILE_ENABLED=true`
+- [ ] `ProductSidebar` and `BottomPanel` render correctly without code changes — only `ProductDetailCard` is modified
+- [ ] `toExploreProduct` adapter does not corrupt numeric fields — `overall_confidence`, `price`, `cost_price`, `score_max` remain numbers after adaptation
+- [ ] Mobile bottom-panel scroll and close behavior unchanged after `ProductDetailCard` refactor
+- [ ] Panel has no `max-w` class of its own — width is 100% of host container in both ProductsPage and the explore modal
