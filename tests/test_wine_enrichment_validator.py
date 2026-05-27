@@ -304,3 +304,108 @@ def test_pairing_rationale_absent_passes():
     r.pop("pairing_rationale", None)
     result = v.validate(r, _empty_evidence(), FOOD_TAX)
     assert result.outcome in ("passed", "repaired")
+
+
+def _beer_evidence() -> Evidence:
+    return Evidence(
+        sku="BEER-1",
+        facts={"classification": "Beer"},
+        winesensed_matches=(),
+        brand_description=None,
+        heuristic_profile="",
+        critic_scores=(),
+        quality_tier="C",
+        evidence_hash="",
+    )
+
+
+def _beer_response() -> dict:
+    """Minimal valid response for a Beer SKU — non-wine family, null structural axes."""
+    return {
+        "wine_body": None,
+        "wine_acidity": None,
+        "wine_tannin": None,
+        "grape_variety": [],
+        "grape_blend_type": None,
+        "wine_production_style": [],
+        "flavor_tags": ["Hop", "Citrus", "Bitter", "Crisp", "Floral"],
+        "food_matching": ["Pizza & flatbreads", "Tapas & small plates", "Pork dishes"],
+        "desc_en_short": "Refreshing IPA with hop-forward citrus and floral aroma.",
+        "full_description": "<p>" + ("Bright pale ale with assertive hop bitterness and a clean malt backbone. " * 4) + "</p>",
+        "confidence": 0.85,
+        "confidence_notes": "Standard IPA profile.",
+        "citations": {"winesensed_record_ids": [], "brand_library_match": None, "grape_source": "", "critic_scores": []},
+    }
+
+
+class TestNonWineFamilyNullAxes:
+    """Phase-5 retros: 240+ rejections were caused by demanding wine_body/etc
+    on Beer/Liqueur/RTD. Non-wine families should accept null (or 'N/A'-shaped
+    strings) instead of forcing a doomed retry."""
+
+    def test_beer_with_null_body_passes(self):
+        result = v.validate(_beer_response(), _beer_evidence(), FOOD_TAX)
+        assert result.outcome in ("passed", "repaired"), result.issues
+
+    def test_beer_with_na_strings_accepted_as_null(self):
+        r = _beer_response()
+        r["wine_body"] = "N/A"
+        r["wine_acidity"] = "None"
+        r["wine_tannin"] = ""
+        result = v.validate(r, _beer_evidence(), FOOD_TAX)
+        assert result.outcome in ("passed", "repaired"), result.issues
+        assert result.repaired_json["wine_body"] is None
+        assert result.repaired_json["wine_acidity"] is None
+        assert result.repaired_json["wine_tannin"] is None
+
+    def test_beer_with_real_body_value_still_validated(self):
+        """If model DOES provide a value for a non-wine family, validate it
+        normally — don't silently null it out."""
+        r = _beer_response()
+        r["wine_body"] = "Light"  # valid BODY_VALUES entry
+        result = v.validate(r, _beer_evidence(), FOOD_TAX)
+        assert result.outcome in ("passed", "repaired")
+        assert result.repaired_json["wine_body"] == "Light"
+
+    def test_beer_with_invalid_body_still_rejects(self):
+        """Non-null garbage still fails — only N/A-shaped null gets a pass."""
+        r = _beer_response()
+        r["wine_body"] = "Effervescent"
+        result = v.validate(r, _beer_evidence(), FOOD_TAX)
+        assert result.outcome == "rejected"
+
+
+class TestFoodMatchingFuzzy:
+    """Phase-5 retros: ~50 retries on food labels like 'Foie gras & pâté' that
+    have an unambiguous taxonomy correspondence. Conservative subset-superset
+    fuzzy match salvages safe cases."""
+
+    def test_seafood_resolves_to_oysters_and_raw_seafood(self):
+        # 'Seafood' tokens ⊂ 'Oysters & raw seafood' tokens, unique → match
+        r = _good_response()
+        r["food_matching"] = ["Grilled red meat", "Lamb dishes", "Seafood"]
+        result = v.validate(r, _empty_evidence(), FOOD_TAX)
+        assert result.outcome == "repaired"
+        assert "Oysters & raw seafood" in result.repaired_json["food_matching"]
+        assert any("fuzzy" in i for i in result.issues)
+
+    def test_ambiguous_desserts_not_salvaged(self):
+        # 'Desserts' is ⊂ Fruit desserts AND ⊂ Creamy desserts & pastries → ambiguous → drop
+        r = _good_response()
+        r["food_matching"] = ["Grilled red meat", "Lamb dishes", "Aged hard cheese", "Desserts"]
+        result = v.validate(r, _empty_evidence(), FOOD_TAX)
+        assert result.outcome == "repaired"
+        assert "Fruit desserts" not in result.repaired_json["food_matching"]
+        assert "Creamy desserts & pastries" not in result.repaired_json["food_matching"]
+
+    def test_greedy_gloss_strip_for_label_with_internal_punctuation(self):
+        # Prompt-gloss with internal `;` and `,` — lazy regex bails, greedy salvages
+        r = _good_response()
+        r["food_matching"] = [
+            "Grilled red meat (e.g. steak, ribeye; pairs with Full red / Medium-Full)",
+            "Lamb dishes",
+            "Aged hard cheese",
+        ]
+        result = v.validate(r, _empty_evidence(), FOOD_TAX)
+        assert result.outcome == "repaired"
+        assert "Grilled red meat" in result.repaired_json["food_matching"]

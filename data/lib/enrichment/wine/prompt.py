@@ -126,7 +126,7 @@ CONTROLLED VOCABULARY (use ONLY these exact values):
 - wine_tannin: {tannin_enum}
 - grape_blend_type: {blend_enum}
 - wine_production_style (multiselect): {prod_enum}
-- food_matching: pick 3-6 labels. Use ONLY the bare label text (the part inside the quotes, without the surrounding quote characters) — e.g. write `Grilled red meat`, NOT `"Grilled red meat"` and NOT `"Grilled red meat [examples: steak; pairs with Full red]"`.
+- food_matching: pick 3-6 labels. Use ONLY the bare label text (the part inside the quotes, without the surrounding quote characters) — e.g. write `Grilled red meat`, NOT `"Grilled red meat"` and NOT `"Grilled red meat [examples: steak; pairs with Full red]"`. Do NOT invent generic labels like "Asian cuisine" / "Seafood" / "Desserts" / "Smoked fish" / "Tropical desserts" — pick the closest SPECIFIC label from the taxonomy below (e.g. "Thai food (spicy & sour)" / "Oysters & raw seafood" / "Fruit desserts").
 
 OUTPUT JSON SCHEMA:
 {{
@@ -145,11 +145,20 @@ OUTPUT JSON SCHEMA:
   "confidence_notes": "...",
   "citations": {{
     "winesensed_record_ids": ["..."],
-    "brand_library_match": "...",
+    "brand_library_match": "BRAND NAME ONLY or null",
     "grape_source": "products.grape_variety",
     "critic_scores": ["James Suckling: 95", "..."]
   }}
 }}
+
+CITATIONS RULE (strict — violations trigger validator rejection):
+- citations.brand_library_match: output the EXACT brand name from the Brand
+  library evidence section (e.g. "Two Hands"), or null. NEVER output reasoning
+  prose, tier annotations, or sentences like
+  "Two Hands (tier S1) — active commercial brand…". The validator strips
+  anything that doesn't exactly match a known brand name → wasted retry.
+- citations.winesensed_record_ids: only IDs that appear in the Winesensed
+  evidence section. Inventing IDs forces a retry; emit [] if none anchored.
 
 WINESENSED LICENSE RULE (critical):
 - Winesensed records (when shown below) are STRUCTURAL grounding ONLY.

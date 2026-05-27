@@ -284,7 +284,7 @@ def main(argv: list[str] | None = None) -> int:
                     print(f"[{idx}/{len(selected)}] {sku}  tier={evidence.quality_tier}  [dry-run] would call Haiku (~{est:.0f} tokens user)")
                 return
             try:
-                gen = haiku.generate(system=system, user=user, max_tokens=2000, temperature=0.1)
+                gen = haiku.generate(system=system, user=user, max_tokens=2500, temperature=0.1)
             except Exception as e:
                 # Per-SKU safety net: if AnthropicClient retries are exhausted
                 # (network, rate-limit, 5xx), log and skip this SKU rather than
@@ -336,7 +336,7 @@ def main(argv: list[str] | None = None) -> int:
                     )
                 correction = f"\n\n[Correction required — your previous response had these issues: {result.issues}. Please regenerate following the schema exactly.]"
                 try:
-                    gen2 = haiku.generate(system=system, user=user + correction, max_tokens=2000, temperature=0.1)
+                    gen2 = haiku.generate(system=system, user=user + correction, max_tokens=2500, temperature=0.1)
                 except Exception as e:
                     with db_lock:
                         print(f"[{idx}/{len(selected)}] {sku}  RETRY GENERATION FAILED: {e}", file=sys.stderr)
