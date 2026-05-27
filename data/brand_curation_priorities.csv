@@ -1,0 +1,51 @@
+brand,country,classifications,total_skus,enriched_skus,a_count,b_count,c_count,max_price_thb,avg_price_thb,priority_score
+Suntory,Japan,Gin|Liqueur|Others|Vodka|Whisky,29,15,3,9,3,349999,45137,50.5
+Johnnie Walker,Scotland,Whisky|Wine product,70,5,0,4,1,202399,16785,47
+Hennessy,France,Brandy|Wine product,41,6,1,5,0,181499,14382,45
+Penfolds,USA,Champagne|Red Wine|Rose Wine|White Wine,57,45,36,9,0,126999,10429,45
+Glenfiddich,Scotland,Whisky|Wine product,22,1,0,0,1,2460999,163594,43.0
+Piper-Heidsieck,France,Champagne,17,10,2,7,1,33400,6870,40.5
+The Macallan,Scotland,Whisky,21,9,3,6,0,134999,20211,40.5
+Domaine Georges Noellat,France,Red Wine,21,1,0,1,0,41100,14542,40.5
+Philipponnat Royal,France,Champagne,16,6,2,3,1,36000,13623,40.0
+Dassai,Japan,Others|Sake/Shochu,23,7,0,5,2,23800,4918,39.3
+Compass Box,Scotland,Whisky,18,4,0,1,3,24199,8929,39.2
+Kavalan,Taiwan,Whisky|Wine product,20,3,0,3,0,29129,7396,39.13
+Moet & Chandon,France,Champagne,13,11,3,7,1,30979,6344,38.5
+Louis Latour,France,Red Wine|White Wine,33,32,20,12,0,23400,6115,38.4
+Domaine Pierre Girardin,France,Red Wine|White Wine,16,1,1,0,0,87400,26881,38.0
+Remy Martin,France,Brandy,13,7,1,6,0,188999,21172,36.5
+Veuve Clicquot,France,Champagne,12,8,5,3,0,33679,8460,36.0
+Dom Perignon,France,Champagne,12,6,4,2,0,36749,17379,36.0
+Domaine Thibault Liger-Belair,France,Red Wine|White Wine,12,5,4,1,0,54000,13539,36.0
+Glenturret,Scotland,Whisky,4,3,0,1,2,126899,34294,36.0
+The Glenrothes,Scotland,Whisky,8,1,0,0,1,44899,10712,36.0
+Champagne Chavost,France,Champagne,8,2,0,1,1,41100,11725,36.0
+Glenfarclas,Scotland,Whisky,8,6,1,4,1,29969,8473,35.97
+Chateau Margaux,France,Red Wine,11,4,4,0,0,64900,36960,35.5
+Highland Park,Scotland,Whisky,7,1,0,0,1,54579,13234,35.5
+Arran,Scotland,Liqueur|Whisky,13,8,1,4,3,22989,4895,35.49
+Château Palmer,France,Red Wine,10,5,4,1,0,34989,18979,35.0
+Chateau Montrose,France,Red Wine,6,2,0,1,1,47639,14492,35.0
+Beaulieu Vineyard,USA,Red Wine|White Wine,6,2,0,1,1,98995,19798,35.0
+Chateau Haut Brion,France,Red Wine,10,5,2,3,0,69979,33071,35.0
+Chateau Mouton Rothschild,France,Red Wine,10,3,3,0,0,41200,33121,35.0
+Bruichladdich,Scotland,Whisky,10,1,0,1,0,108999,22200,35.0
+Billecart-Salmon,France,Champagne,10,1,0,1,0,60460,12399,35.0
+Clase Azul,Mexico,Tequila,9,2,0,2,0,138999,47043,34.5
+Laphroaig,Scotland,Whisky,5,1,0,0,1,42999,12415,34.5
+Henschke,Australia,Red Wine|White Wine,7,3,3,0,0,34100,9400,33.5
+Kurayoshi,Japan,Gin|Whisky,14,9,1,4,4,18500,4185,33.5
+Dewar's,Scotland,Whisky,9,3,0,0,3,22099,4541,32.6
+Lagavulin,Scotland,Whisky|Wine product,5,1,0,1,0,64999,17519,32.5
+Chateau Latour,France,Red Wine,5,1,1,0,0,40829,31545,32.5
+Hine,France,Brandy,5,2,0,2,0,35085,11904,32.5
+Casanova di Neri,Italy,Red Wine,5,5,1,4,0,29660,9120,32.16
+Armand de Brignac,France,Champagne,4,2,1,1,0,95899,42899,32.0
+Chateau Petrus,France,Red Wine,4,1,1,0,0,221599,201636,32.0
+Chateau Cheval Blanc,France,Red Wine,4,1,1,0,0,67000,46664,32.0
+Domaine  Philippe Colin,France,Red Wine|White Wine,4,2,2,0,0,37300,12607,32.0
+Noguchi Naohiko,Japan,Sake/Shochu,4,1,0,1,0,32400,11775,32.0
+Masseto,Italy,Red Wine,3,2,2,0,0,88259,59419,31.5
+Domaine Leflaive,France,White Wine,3,2,2,0,0,101219,74973,31.5
+Chateau Lafite-Rothschild,France,Red Wine,3,2,2,0,0,38300,34733,31.5
