@@ -134,4 +134,70 @@ export interface ExploreProduct {
   // v2 smarter food-pairing prose grounded in specific tier notes (optional,
   // emitted by the v2 enrichment prompt alongside food_matching chips).
   pairing_rationale?: string | null;
+
+  // Extended enrichment fields
+  grape_blend_type?: string;
+  wine_production_style?: string;
+  score_max?: number;
+  score_summary?: string;
+  // Catalog/internal fields (present from /api/products context)
+  wine_classification?: string;
+  bottle_size?: string | number;
+  alcohol?: string | number;
+  validation_status?: string;
+  overall_confidence?: number;
+  appellation?: string;
+  desc_en_full?: string;
+  description_en_html?: string;
+  short_description_th_wn?: string;
+  description_th_wn_text?: string;
+  description_th_wn_html?: string;
+  queue_priority?: number | string;
+  priority_band?: string;
+  bi_priority_band?: string;
+  product_tier?: string | number;
+  enrichment_priority?: string | number;
+  product_tier_definition?: string;
+  enrichment_note?: string;
+  is_primary_variant?: boolean;
+  sku_base?: string;
+  cost_price?: number;
 }
+
+// Shared types extracted from ProductsPage — used by ProductDetailPanel too.
+export type CharDimension = {
+  dimension_key: string;
+  label: string;
+  description: string;
+};
+
+export type RelatedProduct = {
+  id: string;
+  sku: string;
+  name: string;
+  brand?: string | null;
+  classification?: string | null;
+  country?: string | null;
+  region?: string | null;
+  price?: number | string | null;
+  currency?: string | null;
+  matchReasons?: string[];
+  matchScore?: number;
+};
+
+export type AffinityItem = {
+  rank: number;
+  base_product_code: string;
+  product_name: string;
+  rate: number;
+  id?: string;
+  sku?: string;
+  price?: number | string | null;
+  currency?: string | null;
+};
+
+export type ProductAffinities = {
+  base_product_code: string;
+  co_order_affinities: AffinityItem[];
+  co_customer_affinities: AffinityItem[];
+};
