@@ -1713,5 +1713,30 @@
     },
     "created_at": "2026-05-28T18:59:44.748731Z",
     "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "8710d393-abaf-4fd3-accc-57d06f56866c",
+    "name": "RD Wine Consulting",
+    "supplier_code": "GT",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1c9EWmqDAqOo1WJzHrX42qjmozNQz9tA9",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 25.0,
+      "minimum_margin_pct": 15.0,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T20:15:41.675767Z",
+    "updated_at": "2026-05-28T20:15:41.675767Z"
   }
 ]
