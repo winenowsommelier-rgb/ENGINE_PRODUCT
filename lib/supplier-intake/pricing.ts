@@ -1,5 +1,11 @@
 import type { SupplierPriceProposal, SupplierPricingRule } from './types';
 
+const BLOCKING_ISSUES = new Set([
+  'Cost must be greater than zero',
+  'Selling price must be greater than cost',
+  'Margin below minimum',
+]);
+
 export function roundPrice(value: number, rounding: SupplierPricingRule['rounding']): number {
   if (rounding === 'none') return Math.round(value * 100) / 100;
   if (rounding === 'nearest_1') return Math.round(value);
@@ -45,11 +51,7 @@ export function calculateSupplierPrice(input: {
     if (changePct > input.rule.review_price_change_pct) issues.push('Price change exceeds review threshold');
   }
 
-  const blocked = issues.some(issue =>
-    issue === 'Cost must be greater than zero' ||
-    issue === 'Selling price must be greater than cost' ||
-    issue === 'Margin below minimum'
-  );
+  const blocked = issues.some(issue => BLOCKING_ISSUES.has(issue));
 
   return {
     cost: input.cost,
