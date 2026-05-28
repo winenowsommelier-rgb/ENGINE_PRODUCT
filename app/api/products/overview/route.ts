@@ -129,6 +129,18 @@ async function buildLocalOverview(reason: string) {
     },
     pricing: priceStats ? { currency: 'THB', ...priceStats } : null,
     topCountries: topValues(products, 'country'),
+    // Mirror the shape of the Supabase path so the dashboard's
+    // `data.gapsToFill.missingX` reads don't crash on fallback.
+    gapsToFill: {
+      description: 'Priority data gaps that need filling — useful for AI agents or team validation',
+      missingRegion: total - fields.region,
+      missingGrape: total - fields.grape_variety,
+      missingDescription: total - fields.full_description,
+      missingFlavorProfile: total - fields.flavor_profile,
+      missingVintage: total - fields.vintage,
+      missingBrand: total - fields.brand,
+      suggestion: 'Use /api/products?region=&sort=confidence&sortDir=desc to find high-confidence products missing region data.',
+    },
   };
 }
 
