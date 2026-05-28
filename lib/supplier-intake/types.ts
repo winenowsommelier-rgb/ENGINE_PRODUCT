@@ -5,6 +5,7 @@ export type RoundingMode = 'none' | 'nearest_1' | 'nearest_5' | 'nearest_9' | 'n
 export type IntakeRunStatus = 'registered' | 'normalized' | 'matched' | 'priced' | 'approved' | 'committed' | 'blocked';
 export type IntakeRowStatus = 'pending' | 'matched_auto' | 'matched_needs_review' | 'new_code_required' | 'priced' | 'approved' | 'blocked' | 'committed';
 export type PriceDecisionSource = 'supplier_rsp' | 'formula' | 'manual_override';
+export type SupplierFileFormat = 'csv' | 'xlsx' | 'google_sheet' | 'pdf';
 
 export interface SupplierPricingRule {
   mode: PricingMode;
@@ -24,7 +25,7 @@ export interface SupplierDefinition {
   pricing_structure: SupplierPricingStructure;
   drive_bucket_folder_id?: string;
   drive_folder_id?: string;
-  allowed_formats: Array<'csv' | 'xlsx' | 'google_sheet' | 'pdf'>;
+  allowed_formats: SupplierFileFormat[];
   default_currency: string;
   pricing_rule: SupplierPricingRule;
   created_at: string;
@@ -36,7 +37,7 @@ export interface SupplierIntakeRun {
   supplier_id: string;
   supplier_name: string;
   source_filename: string;
-  source_format: 'csv' | 'xlsx' | 'google_sheet' | 'pdf';
+  source_format: SupplierFileFormat;
   pricing_structure: SupplierPricingStructure;
   source_bucket_folder_id?: string;
   source_supplier_folder_id?: string;
@@ -54,26 +55,28 @@ export interface SupplierIntakeRun {
   notes?: string;
 }
 
+export interface SupplierNormalizedPayload {
+  supplier_item_code?: string;
+  sku?: string;
+  barcode?: string;
+  name: string;
+  brand?: string;
+  category?: string;
+  bottle_size?: string;
+  vintage?: string;
+  country?: string;
+  region?: string;
+  cost: number;
+  rsp?: number;
+  currency: string;
+}
+
 export interface SupplierNormalizedRow {
   id: string;
   run_id: string;
   row_number: number;
   raw_payload: Record<string, unknown>;
-  normalized_payload: {
-    supplier_item_code?: string;
-    sku?: string;
-    barcode?: string;
-    name: string;
-    brand?: string;
-    category?: string;
-    bottle_size?: string;
-    vintage?: string;
-    country?: string;
-    region?: string;
-    cost: number;
-    rsp?: number;
-    currency: string;
-  };
+  normalized_payload: SupplierNormalizedPayload;
   status: IntakeRowStatus;
   issues: string[];
   match?: SupplierMatchProposal;
