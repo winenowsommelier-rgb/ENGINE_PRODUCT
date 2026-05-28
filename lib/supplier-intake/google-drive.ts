@@ -1,8 +1,8 @@
 import { google } from 'googleapis';
 
 function driveClient() {
-  const credentials = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
-  if (!credentials) throw new Error('GOOGLE_APPLICATION_CREDENTIALS_JSON is not configured');
+  const credentials = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON ?? process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  if (!credentials) throw new Error('GOOGLE_APPLICATION_CREDENTIALS_JSON or GOOGLE_SERVICE_ACCOUNT_JSON is not configured');
   const parsed = JSON.parse(credentials);
   const auth = new google.auth.GoogleAuth({
     credentials: parsed,
