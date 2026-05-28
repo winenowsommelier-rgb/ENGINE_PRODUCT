@@ -77,24 +77,40 @@ Applies must-pass rules against `products.json` / `products.db`:
 Output: candidate pool (typically 50–300 products)
 
 ### Stage 3 — Scoring Engine
-Scores each candidate 0–100 using weighted axes:
+
+Each component score is first normalised to a 0–1 float, then multiplied by its weight. Bonuses and penalties are additive absolute values applied after the weighted sum. The final raw value is clamped to [0, 1] then multiplied by 100 to yield a 0–100 integer score.
+
+**Component normalisation:**
+
+- `taste_axis_match` — fraction of recommended axis values matched (0–1); 0 if no pairing context
+- `taxonomy_quality` — fraction of key enrichment fields populated: `desc_en_short`, `flavor_tags`, `wine_body`/`taste_profile`, `region` (0–1)
+- `brand_prestige` — expert knowledge library confidence tier: A=1.0, B=0.7, C=0.4, absent=0.2
+- `margin_signal` — `b2b_margin_pct` normalised against catalog 10th/90th percentile (0–1)
+- `web_freshness` — critic score normalised: 100pts=1.0, 90pts=0.5, 85pts=0.2, not found=0
+
+**Formula:**
 
 ```
-base_score          = taste_axis_match × weight
-+ brand_prestige    = expert_knowledge_library tier × weight
-+ web_freshness     = critic mention / trend signal × weight
-+ pairing_boost     = food_beverage_rule match × rule.score_boost
-+ bridge_bonus      = flavor_tag ∩ bridge_ingredients × 0.10
-+ regional_bonus    = product country/region matches food cuisine × 0.10
-+ intensity_match   = food_intensity within 1 tier of beverage_intensity × 0.10
-+ occasion_override = occasion profile weight overrides applied
-- contraindication  = hard_avoid penalty (up to -0.40)
-- avoid_tag_penalty = avoid_flavor_tags present × -0.05 each
-──────────────────────────────────────────────────────────
-= final_score (0–100, normalised)
+weighted_sum = (taste_axis_match   × weights.taste_match)
+             + (taxonomy_quality   × weights.taxonomy_quality)
+             + (brand_prestige     × weights.brand_prestige)
+             + (margin_signal      × weights.margin_signal)
+             + (web_freshness      × weights.web_freshness)
+
+raw_score = weighted_sum
+          + (pairing_rule_matched  ? bonuses.pairing_boost  : 0)
+          + (bridge_tag_matched    ? bonuses.bridge_bonus   : 0)
+          + (regional_match        ? bonuses.regional_bonus : 0)
+          + (intensity_within_1tier? bonuses.intensity_match: 0)
+          - (avoid_tag_count       × abs(penalties.avoid_tag))
+          - (hard_avoid_triggered  ? abs(penalties.hard_avoid) : 0)
+
+final_score = clamp(raw_score, 0, 1) × 100  → integer 0–100
 ```
 
-Weights are loaded from `data/lib/curation/curation_scoring_model.json` — version-controlled and human-editable.
+Occasion weight overrides (from `occasion_profiles.json`) replace the default `weights.*` values for that run — they do not stack additively.
+
+Weights are loaded from `data/lib/curation/curation_scoring_model.json` — version-controlled and human-editable. Base weights must sum to 1.0; validated on load.
 
 ### Stage 4 — Web Context Fetch (async)
 - Fetches current signals for top-20 candidates only
@@ -149,6 +165,36 @@ ollama serve
 
 Stored in `data/lib/pairing_knowledge/`. All files are JSON, human-editable, version-controlled.
 
+### `pairing_resolver.py` Interface
+
+Called by `scoring_engine.py` once per candidate, after the brief has been parsed into a `StructuredQuery`.
+
+```python
+def resolve_pairing(
+    query: StructuredQuery,                # output of brief_parser
+    candidate: ProductRecord,              # single product from candidate pool
+    knowledge_base: PairingKnowledgeBase,  # loaded once at engine startup
+) -> PairingScore:
+    ...
+```
+
+`PairingScore` fields returned:
+
+| Field | Type | Description |
+|---|---|---|
+| `rule_matched` | bool | Any food×beverage rule matched |
+| `pairing_boost` | float | 0 or `bonuses.pairing_boost` |
+| `bridge_bonus` | float | 0 or `bonuses.bridge_bonus` |
+| `regional_bonus` | float | 0 or `bonuses.regional_bonus` |
+| `intensity_ok` | bool | food_intensity within 1 tier of beverage_intensity |
+| `contraindication_triggered` | bool | Any hard_avoid rule matched |
+| `contraindication_penalty` | float | 0 or negative penalty value |
+| `avoid_tag_count` | int | Number of avoid_flavor_tags found on product |
+| `avoid_tag_penalty` | float | Cumulative avoid tag penalty |
+| `matched_rule_ids` | list[str] | For rationale writer and audit log |
+
+`PairingKnowledgeBase` is loaded from all JSON files at engine startup — not re-read per request.
+
 ### Directory Structure
 
 ```
@@ -172,7 +218,62 @@ data/lib/pairing_knowledge/
 └── README.md
 ```
 
-### 6a. Food Taxonomy (Three-Tier)
+### 6a. `intensity_map.json` Schema
+
+Maps each beverage category's taste axis values to a 4-tier intensity scale used for food intensity matching.
+
+```json
+{
+  "category": "wine",
+  "intensity_tiers": ["light", "medium", "full", "powerful"],
+  "axis_mappings": [
+    {
+      "axis": "wine_body",
+      "tier_map": {
+        "Light":         "light",
+        "Medium-Light":  "light",
+        "Medium":        "medium",
+        "Medium-Full":   "full",
+        "Full":          "powerful"
+      }
+    }
+  ],
+  "composite_rule": "highest tier across all axis_mappings"
+},
+{
+  "category": "whisky",
+  "intensity_tiers": ["light", "medium", "full", "powerful"],
+  "axis_mappings": [
+    {
+      "axis": "peat_smoke",
+      "tier_map": {
+        "None":   "light",
+        "Trace":  "light",
+        "Light":  "medium",
+        "Medium": "full",
+        "Heavy":  "powerful"
+      }
+    },
+    {
+      "axis": "oak_influence",
+      "tier_map": {
+        "Light":          "light",
+        "Medium":         "medium",
+        "Pronounced":     "full",
+        "Heavy":          "powerful",
+        "Cask-dominant":  "powerful"
+      }
+    }
+  ],
+  "composite_rule": "highest tier across all axis_mappings"
+}
+```
+
+Food `intensity` field on dishes uses the same 4-tier vocabulary: `light / medium / full / powerful`. Intensity match bonus applies when `abs(food_tier_index - beverage_tier_index) <= 1`.
+
+---
+
+### 6b. Food Taxonomy (Three-Tier)
 
 **Tier 1 — Flavor Signals** (~15 master signals)
 
@@ -426,11 +527,14 @@ Runs asynchronously after each production run. Off by default — enabled per-ru
 
 ```
 [PRODUCTION RUN completes]
+  → saves: structured_query + Stage 2 candidate pool + production ranked list
         ↓
 [BACKGROUND PANEL — Claude API, optional]
+  Receives: SAME structured_query + SAME Stage 2 candidate pool as production run
+  (panel does NOT re-run hard filter — it reasons over the same filtered set)
   3 LLM agents, independent reasoning, different personas:
   sommelier | chef | critic
-  Each produces ranked top-12 with reasoning
+  Each produces ranked top-12 from that candidate pool, with reasoning
   Panel votes → consensus list
         ↓
 [COMPARISON ENGINE]
@@ -505,11 +609,13 @@ components/pages/
 ## 11. Build Phases
 
 ### Phase 1 — Foundation
-- `data/lib/pairing_knowledge/` structure + seed data (5 cuisines, 50 dishes, 15 flavor signals)
+
+- `curation_config.json` — LLM provider config (must exist before `llm_router.py` can load)
+- `data/lib/pairing_knowledge/` structure + seed data (5 cuisines, 50 dishes, 15 flavor signals, `intensity_map.json`)
 - `curation_scoring_model.json` v1.0 with default weights
+- `llm_router.py` — provider abstraction (reads `curation_config.json`)
 - `brief_parser.py` — LLM call #1 (Ollama)
 - `hard_filter.py` — filter against products.json
-- Ollama local setup + `llm_router.py`
 
 ### Phase 2 — Scoring & Ranking
 - `scoring_engine.py` — all scoring layers
