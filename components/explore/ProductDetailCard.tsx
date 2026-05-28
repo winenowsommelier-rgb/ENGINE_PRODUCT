@@ -178,6 +178,7 @@ export default function ProductDetailCard({
             sku={product.sku}
             classification={product.classification}
             size="xl"
+            showLabelZoom
             className={`!w-[100px] !h-[140px] rounded-xl border ${t.imageBorder}`}
           />
 

@@ -24,17 +24,46 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DB = REPO_ROOT / "data" / "db" / "products.db"
 
 PRODUCT_SYNC_COLUMNS = [
+    # Core identity / catalog
+    "sku", "sku_base", "name", "brand", "vintage", "bottle_size", "alcohol",
+    "price", "cost", "currency",
+    "is_in_stock", "quantity_in_stock", "wn_stock",
+    # Taxonomy
+    "country", "region", "subregion", "appellation",
+    "classification", "wine_classification", "wine_type",
+    "liquor_main_type", "other_type", "wine_color",
+    # Enrichment — wine profile
     "wine_body", "wine_acidity", "wine_tannin",
     "grape_variety", "grape_blend_type", "wine_production_style",
     "flavor_tags", "food_matching",
+    # Enrichment — descriptions
     "desc_en_short", "full_description",
     "score_max", "score_summary",
+    # Image
+    "image_url", "image_alt_text",
+    # Enrichment metadata
     "enrichment_confidence", "enrichment_source", "enrichment_note",
     "enriched_at", "enriched_by", "updated_at",
+    "overall_confidence", "validation_status",
     "taste_profile", "taste_profile_override",
+    # Popularity / BI
+    "popularity_score", "popularity_orders_90d", "popularity_revenue_90d",
+    "popularity_qty_90d",
 ]
 
-_JSON_COLUMNS = {"wine_production_style", "taste_profile", "taste_profile_override"}
+# Columns that may exist in local SQLite but are NOT yet in the Supabase schema.
+# Adding a column here prevents 400 errors when pushing to Supabase.
+# Remove the column from this list once the Supabase migration has been applied.
+_SUPABASE_SCHEMA_EXCLUDES = {
+    "enrichment_quality_grade",
+}
+
+_JSON_COLUMNS = {
+    "wine_production_style", "taste_profile", "taste_profile_override",
+    # These are stored as JSON-encoded arrays in SQLite but Supabase expects
+    # parsed arrays (PostgreSQL array columns).
+    "flavor_tags", "food_matching",
+}
 
 
 def _get_sync_state(conn: sqlite3.Connection, table: str) -> str | None:
@@ -53,16 +82,27 @@ def _set_sync_state(conn: sqlite3.Connection, table: str, ts: str) -> None:
     conn.commit()
 
 
-def plan_product_deltas(db_path: Path, since: str | None) -> list[dict]:
+def plan_product_deltas(
+    db_path: Path, since: str | None, full_sync: bool = False
+) -> list[dict]:
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
-    where = "WHERE enrichment_confidence IS NOT NULL"
-    params: list = []
-    if since:
-        where += " AND updated_at > ?"
-        params.append(since)
+    # full_sync: push every product regardless of enrichment status or timestamp.
+    # Default: only rows updated since last sync and with enrichment data.
+    if full_sync:
+        where = "WHERE 1=1"
+        params: list = []
+    else:
+        where = "WHERE enrichment_confidence IS NOT NULL"
+        params = []
+        if since:
+            where += " AND updated_at > ?"
+            params.append(since)
+    # Only select columns that actually exist in this DB (guard against schema drift)
+    existing_cols = {r[1] for r in conn.execute("PRAGMA table_info(products)")}
+    cols = ["id"] + [c for c in PRODUCT_SYNC_COLUMNS if c in existing_cols]
     rows = conn.execute(
-        f"SELECT id, sku, {', '.join(PRODUCT_SYNC_COLUMNS)} FROM products {where} ORDER BY updated_at ASC",
+        f"SELECT {', '.join(cols)} FROM products {where} ORDER BY updated_at ASC",
         params,
     ).fetchall()
     conn.close()
@@ -71,7 +111,10 @@ def plan_product_deltas(db_path: Path, since: str | None) -> list[dict]:
         d = dict(r)
         for col in _JSON_COLUMNS:
             if col in d and d[col]:
-                d[col] = json.loads(d[col])
+                try:
+                    d[col] = json.loads(d[col])
+                except (ValueError, TypeError):
+                    pass
         out.append(d)
     return out
 
@@ -93,7 +136,9 @@ def plan_cache_deltas(db_path: Path, since: str | None) -> list[dict]:
 
 def _patch_product(supabase_url: str, api_key: str, row: dict) -> None:
     pid = row.pop("id")
-    row.pop("sku", None)
+    # Strip columns not yet in the Supabase schema to avoid 400 errors.
+    for col in _SUPABASE_SCHEMA_EXCLUDES:
+        row.pop(col, None)
     url = f"{supabase_url.rstrip('/')}/rest/v1/products?id=eq.{urllib.parse.quote(pid)}"
     body = json.dumps(row).encode("utf-8")
     req = urllib.request.Request(url, data=body, method="PATCH", headers={
@@ -178,11 +223,11 @@ def enqueue_similarity_dirty(supabase_url: str, api_key: str, product_id: str) -
 
 
 def sync_products(db_path: Path, supabase_url: str, api_key: str, dry_run: bool = False,
-                  skip_taste_notes: bool = False) -> int:
+                  skip_taste_notes: bool = False, full_sync: bool = False) -> int:
     conn = sqlite3.connect(db_path)
-    since = _get_sync_state(conn, "products")
+    since = None if full_sync else _get_sync_state(conn, "products")
     conn.close()
-    deltas = plan_product_deltas(db_path, since=since)
+    deltas = plan_product_deltas(db_path, since=since, full_sync=full_sync)
     if dry_run:
         print(f"[dry-run] {len(deltas)} product deltas")
         return len(deltas)
@@ -258,6 +303,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--products-only", action="store_true")
     p.add_argument("--cache-only", action="store_true")
+    p.add_argument("--full-sync", action="store_true",
+                   help="Push ALL products regardless of updated_at or enrichment status. "
+                        "Use for initial population or to sync image_url + core catalog fields.")
     p.add_argument("--skip-taste-notes", action="store_true",
                    help="Skip syncing product_taste_notes rows (emergency bypass).")
     args = p.parse_args(argv)
@@ -272,7 +320,8 @@ def main(argv: list[str] | None = None) -> int:
     n_prod = n_cache = 0
     if not args.cache_only:
         n_prod = sync_products(args.db, supabase_url, api_key, dry_run=args.dry_run,
-                               skip_taste_notes=args.skip_taste_notes)
+                               skip_taste_notes=args.skip_taste_notes,
+                               full_sync=args.full_sync)
     if not args.products_only:
         n_cache = sync_cache(args.db, supabase_url, api_key, dry_run=args.dry_run)
     print(f"products synced: {n_prod}  cache synced: {n_cache}")
