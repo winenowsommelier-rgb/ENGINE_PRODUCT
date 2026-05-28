@@ -1566,7 +1566,7 @@
   },
   {
     "id": "562291a7-dc51-49fd-bdb9-0ff198bb0201",
-    "name": "Great Wine Company Limited",
+    "name": "Great Wine (Thailand) Company Limited",
     "supplier_code": "GE",
     "status": "active",
     "pricing_structure": "rsp_price",
@@ -1587,7 +1587,7 @@
       "review_price_change_pct": 20
     },
     "created_at": "2026-05-28T18:59:44.748731Z",
-    "updated_at": "2026-05-28T18:59:44.748731Z"
+    "updated_at": "2026-05-28T20:10:11.280743Z"
   },
   {
     "id": "a371719e-4cdc-4001-bafa-2a33a34739e2",
