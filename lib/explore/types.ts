@@ -116,6 +116,10 @@ export interface ExploreProduct {
   region: string;
   subregion?: string;
   desc_en_short?: string;
+  // Rich HTML storytelling description (200-1500 chars, allowed tags: p/br/strong/em/ul/li).
+  // Populated by the v3 brand-library re-enrichment (Sonnet + storytelling prompt) and by
+  // earlier Phase-5 backfill. Rendered via dangerouslySetInnerHTML in ProductDetailCard.
+  full_description?: string;
   wine_body?: string;
   wine_acidity?: string;
   wine_tannin?: string;

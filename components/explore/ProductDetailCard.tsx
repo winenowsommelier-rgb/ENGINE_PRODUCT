@@ -222,11 +222,19 @@ export default function ProductDetailCard({
         </div>
 
         {/* ── Description ──────────────────────────── */}
-        {product.desc_en_short && (
-          <div className={`border-t ${t.divider} px-5 py-3`}>
-            <p className={`text-xs leading-relaxed ${t.descText}`}>
-              {product.desc_en_short}
-            </p>
+        {(product.desc_en_short || product.full_description) && (
+          <div className={`border-t ${t.divider} px-5 py-3 space-y-2`}>
+            {product.desc_en_short && (
+              <p className={`text-xs font-medium leading-relaxed ${t.descText}`}>
+                {product.desc_en_short}
+              </p>
+            )}
+            {product.full_description && (
+              <div
+                className={`text-xs leading-relaxed ${t.descText} prose-sm max-w-none [&_p]:mb-2 [&_p:last-child]:mb-0 [&_strong]:font-semibold [&_em]:italic`}
+                dangerouslySetInnerHTML={{ __html: product.full_description }}
+              />
+            )}
           </div>
         )}
 
