@@ -94,8 +94,26 @@ def grade_row(
     confidence: float,
     has_winesensed: bool,
     status: str,
+    price: float | None = None,
 ) -> Grade:
-    """Apply the A/B/C rubric to one row."""
+    """Apply the A/B/C rubric to one row.
+
+    Prestige floor: famous-brand SKUs (priced ≥ ฿15k) should never grade C
+    just because the validator forced a retry. A first-growth Bordeaux or
+    aged Yamazaki is, by definition, a curation-worthy product even when
+    the formulaic prompt struggles to describe it. Price is a noisy proxy
+    for prestige but the only signal we have until brand_description_library
+    is built out (Phase B).
+    """
+    # Prestige floor — high-price SKUs never grade below A
+    if price is not None and price >= 15000:
+        return "A"
+    # Mid-prestige — never grade below B
+    if price is not None and price >= 5000:
+        if confidence >= 0.80 or (confidence >= 0.72 and has_winesensed):
+            return "A"
+        return "B"
+    # Standard rubric
     if confidence >= 0.80:
         return "A"
     if confidence >= 0.72 and has_winesensed:
@@ -131,7 +149,7 @@ def main(argv: list[str] | None = None) -> int:
     statuses = load_validation_status(conn)
 
     rows = conn.execute(
-        "SELECT sku, classification, brand, enrichment_confidence "
+        "SELECT sku, classification, brand, enrichment_confidence, price "
         "FROM products WHERE desc_en_short IS NOT NULL AND desc_en_short != ''"
     ).fetchall()
 
@@ -142,12 +160,13 @@ def main(argv: list[str] | None = None) -> int:
     )
     by_brand_grade_c: collections.Counter[str] = collections.Counter()
 
-    for sku, cls, brand, conf in rows:
+    for sku, cls, brand, conf, price in rows:
         g = grade_row(
             sku=sku,
             confidence=conf or 0.0,
             has_winesensed=sku in ws_skus,
             status=statuses.get(sku, "repaired"),
+            price=price,
         )
         updates.append((g, sku))
         dist[g] += 1
