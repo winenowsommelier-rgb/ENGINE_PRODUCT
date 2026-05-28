@@ -143,19 +143,35 @@ def main(argv: list[str] | None = None) -> int:
     products_list: list[dict] = products_raw if isinstance(products_raw, list) else products_raw.get("records", [])
     products_by_sku = {p["sku"]: p for p in products_list if p.get("sku")}
 
-    # Target: country_fallback SKUs where region == country
+    # Skip purely non-beverage classifications — no production region concept
+    _SKIP_CLS = {"Glassware", "Accessories", "Cigar", "Others", "Non-Alcoholic",
+                 "Mineral Water"}
+
+    # Target:
+    #   (a) country_fallback SKUs where region == country (main case)
+    #   (b) SKUs with no taxonomy_source and no region at all (e.g. Wine product
+    #       spirits/beers that Haiku processed but returned country name as region)
     candidates = [
         p for p in products_list
-        if p.get("taxonomy_source") == "country_fallback"
-        and (p.get("region") or "").strip() == (p.get("country") or "").strip()
-        and (p.get("country") or "").strip()
+        if (p.get("country") or "").strip()
+        and (p.get("classification") or "") not in _SKIP_CLS
+        and (
+            (
+                p.get("taxonomy_source") == "country_fallback"
+                and (p.get("region") or "").strip() == (p.get("country") or "").strip()
+            )
+            or (
+                not p.get("taxonomy_source")
+                and not (p.get("region") or "").strip()
+            )
+        )
     ][:args.limit]
 
     if not candidates:
-        print("No country_fallback SKUs to upgrade.")
+        print("No SKUs to upgrade.")
         return 0
 
-    print(f"Found {len(candidates)} country_fallback SKUs to upgrade.")
+    print(f"Found {len(candidates)} SKUs to upgrade (region→province).")
 
     if args.dry_run:
         print("[dry-run] Would call Haiku for each to infer province/area.")

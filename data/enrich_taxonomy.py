@@ -38,9 +38,11 @@ DEFAULT_DB_PATH = REPO_ROOT / "data" / "db" / "products.db"
 _DEFAULT_BRAND_LIBRARY = REPO_ROOT / "data" / "brand_description_library.csv"
 
 _SKIP_CLASSIFICATIONS = {
-    "Glassware", "Accessories", "Wine product", "Cigar", "Others",
+    "Glassware", "Accessories", "Cigar", "Others",
     "Non-Alcoholic", "Mineral Water",
 }
+# "Wine product" intentionally removed — it contains real spirits/beers/sakes
+# that were mislabelled by the source system and need region enrichment.
 _NO_GRAPE_CLASSIFICATIONS = {
     "Whisky", "Whiskey", "Gin", "Vodka", "Rum", "Tequila", "Brandy",
     "Sake/Shochu", "Beer", "Liqueur", "RTD",
