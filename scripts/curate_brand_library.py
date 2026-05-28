@@ -120,25 +120,42 @@ Brand to research:"""
 
 # ── Verifier prompt ─────────────────────────────────────────────────────────
 
-VERIFIER_SYSTEM = """You are a fact-checking verifier. The researcher produced a brand-library entry for {brand_name}. Cross-check each claim against the cited sources.
+VERIFIER_SYSTEM_TMPL = """You are a fact-checking verifier for a brand-library entry for __BRAND__. Your job is to assess whether the research is TRUSTWORTHY ENOUGH to use for premium-product descriptions — not to demand perfection.
 
-For each fact in the entry, classify it:
-- VERIFIED: source explicitly confirms the claim
-- UNCERTAIN: source mentions but is ambiguous, or only one source supports it
-- SUSPECT: claim is not in the cited sources, or contradicts a source
+CRITICAL FACTS (must verify against cited sources):
+- Founding year and founder name
+- Current owner / parent company
+- Region/appellation/site location
+- Category classification (DOCG, AOC, Single Malt, etc.)
+- Specific awards, scores, or industry firsts that are mentioned
 
-Output JSON only:
+MINOR DETAILS (OK if not perfectly verified — do NOT penalize):
+- Proprietary blend ratios that producers don't publish
+- Internal production parameters (exact fermentation temperatures, yeast strains, cask split %)
+- Personnel-history specifics (generational counts, first-woman-in-role claims)
+- Stylistic/historical superlatives ("the world's largest", "single-handedly created")
+- Minor numeric discrepancies across sources (e.g. 42 vs 43 stills)
+
+If the researcher acknowledged uncertainty (in `uncertainty_flags`), that's GOOD self-awareness — don't double-penalize.
+
+Output JSON ONLY (no markdown, no preamble):
 {
-  "verifier_notes": "1-3 sentences on overall quality of the research",
-  "verified_count": N,
-  "uncertain_count": N,
-  "suspect_count": N,
-  "suspect_claims": ["specific claim 1", "specific claim 2"],
+  "verifier_notes": "1-3 sentences on overall quality",
+  "critical_facts_verified": N,
+  "critical_facts_suspect": N,
+  "minor_uncertain_count": N,
+  "suspect_claims": ["only CRITICAL claims that are unsupported — be specific"],
   "final_confidence": 0.0-1.0,
-  "ready_for_library": true|false
+  "ready_for_library": true_or_false
 }
 
-Set ready_for_library=false if suspect_count > 2 OR final_confidence < 0.6.
+Confidence calibration:
+- 0.85+: critical facts all verified, only minor uncertainty
+- 0.70-0.85: critical facts verified, some questionable minor claims (still acceptable)
+- 0.55-0.70: 1-2 critical claims unsupported but mostly solid
+- <0.55: multiple critical claims unsupported
+
+ready_for_library = true if (critical_facts_suspect <= 1 AND final_confidence >= 0.65).
 
 Entry to verify:"""
 
@@ -148,19 +165,24 @@ Entry to verify:"""
 def research_one(client, brand_row: dict) -> dict:
     """Call Sonnet with web_search to research one brand. Returns dict with
     keys: brand, status, research_json, raw_text, tokens_in, tokens_out, cost_usd."""
+    def _int(v):
+        try:
+            return int(float(v))
+        except (TypeError, ValueError):
+            return 0
     user = (
         f"{brand_row['brand']}\n"
         f"  Country in catalog: {brand_row.get('country', 'unknown')}\n"
         f"  Categories in catalog: {brand_row.get('classifications', '')}\n"
-        f"  Price range observed: ฿{brand_row.get('avg_price_thb', 0):,} avg, "
-        f"฿{brand_row.get('max_price_thb', 0):,} max\n"
+        f"  Price range observed: ฿{_int(brand_row.get('avg_price_thb')):,} avg, "
+        f"฿{_int(brand_row.get('max_price_thb')):,} max\n"
     )
     try:
         resp = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=3500,
             temperature=0.1,
-            tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 8}],
+            tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 4}],
             system=[{"type": "text", "text": RESEARCHER_SYSTEM}],
             messages=[{"role": "user", "content": user}],
         )
@@ -201,11 +223,11 @@ def verify_one(client, research: dict) -> dict:
             "status": "skipped_no_research",
             "verifier_json": None, "cost_usd": 0.0,
         }
-    sys_prompt = VERIFIER_SYSTEM.format(brand_name=research["brand"])
+    sys_prompt = VERIFIER_SYSTEM_TMPL.replace("__BRAND__", research["brand"])
     user = json.dumps(research["research_json"], indent=2, ensure_ascii=False)
     try:
         resp = client.messages.create(
-            model="claude-haiku-4-5-20251001",
+            model="claude-sonnet-4-6",
             max_tokens=1500,
             temperature=0.0,
             system=[{"type": "text", "text": sys_prompt}],
@@ -224,8 +246,8 @@ def verify_one(client, research: dict) -> dict:
     except Exception as e:
         vj = {"verifier_parse_error": str(e), "raw": text}
     usage = resp.usage
-    # Haiku 4.5 pricing: $1/M in, $5/M out
-    cost = (usage.input_tokens or 0) * 1 / 1_000_000 + (usage.output_tokens or 0) * 5 / 1_000_000
+    # Sonnet 4.6 pricing: $3/M in, $15/M out
+    cost = (usage.input_tokens or 0) * 3 / 1_000_000 + (usage.output_tokens or 0) * 15 / 1_000_000
     return {
         "status": "verified", "verifier_json": vj, "cost_usd": cost,
     }
@@ -299,6 +321,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--dry-run", action="store_true",
                    help="Run researcher only; do NOT write to library CSV.")
     p.add_argument("--no-backup", action="store_true")
+    p.add_argument("--reverify-only", action="store_true",
+                   help="Skip the (expensive) research call; re-run only the verifier on existing research JSON stored in brand_library.notes. Use after improving the verifier prompt.")
     args = p.parse_args(argv)
 
     env = load_env()
@@ -325,8 +349,37 @@ def main(argv: list[str] | None = None) -> int:
         print("No brands to process.")
         return 0
 
-    print(f"Will research {len(brand_rows)} brand(s) with {args.workers} workers.")
-    print(f"Estimated cost: ${len(brand_rows) * 0.40:.2f} (~$0.40/brand including web research)")
+    # In --reverify-only mode, load existing research from the library CSV
+    # rather than calling Sonnet+web_search again. Saves ~$0.20/brand.
+    existing_research_by_brand: dict[str, dict] = {}
+    if args.reverify_only:
+        if not args.library.exists():
+            print(f"ERROR: --reverify-only needs existing library: {args.library}", file=sys.stderr)
+            return 1
+        with args.library.open() as f:
+            for row in csv.DictReader(f):
+                if row.get("entity_type") != "brand":
+                    continue
+                if not row.get("notes"):
+                    continue
+                try:
+                    notes = json.loads(row["notes"])
+                    rj = notes.get("research")
+                    if rj:
+                        existing_research_by_brand[row["entity_name"]] = rj
+                except Exception:
+                    pass
+
+    print(f"Will process {len(brand_rows)} brand(s) with {args.workers} workers.")
+    if args.reverify_only:
+        verifier_cost_per_brand = 0.025  # Sonnet verifier ≈ $0.02-0.03
+        print(f"Mode: REVERIFY ONLY — using stored research, not re-running web research")
+        print(f"Estimated cost: ${len(brand_rows) * verifier_cost_per_brand:.2f} (~$0.02-0.03/brand)")
+    else:
+        # Realistic estimate: ~$0.15-0.25/brand
+        # Researcher (Sonnet input-heavy due to web results): ~$0.11
+        # Verifier (Sonnet, switched up from Haiku for reliability): ~$0.05
+        print(f"Estimated cost: ${len(brand_rows) * 0.20:.2f} (~$0.15-0.25/brand)")
     print()
 
     # Backup library before writes
@@ -344,11 +397,26 @@ def main(argv: list[str] | None = None) -> int:
     def work(brand_row: dict) -> None:
         nonlocal total_cost
         brand = brand_row["brand"]
-        with lock:
-            print(f"  → {brand} [research]")
-        r = research_one(client, brand_row)
-        with lock:
-            total_cost += r["cost_usd"]
+
+        # Reverify mode: use stored research, skip the expensive research call
+        if args.reverify_only:
+            stored = existing_research_by_brand.get(brand)
+            if not stored:
+                with lock:
+                    print(f"  ⊘ {brand}: no stored research; skipping (run without --reverify-only first)")
+                return
+            r = {
+                "brand": brand, "status": "loaded_from_csv",
+                "research_json": stored, "raw_text": "",
+                "tokens_in": 0, "tokens_out": 0, "cost_usd": 0.0,
+            }
+        else:
+            with lock:
+                print(f"  → {brand} [research]")
+            r = research_one(client, brand_row)
+            with lock:
+                total_cost += r["cost_usd"]
+
         if r.get("research_json"):
             with lock:
                 print(f"    {brand} [verify]")
@@ -358,12 +426,13 @@ def main(argv: list[str] | None = None) -> int:
         else:
             v = {"status": "skipped_no_research", "verifier_json": None, "cost_usd": 0.0}
         with lock:
-            ready = (v.get("verifier_json") or {}).get("ready_for_library", False)
             vj = v.get("verifier_json") or {}
+            ready = vj.get("ready_for_library", False)
             conf = vj.get("final_confidence", "?")
-            sus = vj.get("suspect_count", "?")
+            # New verifier prompt uses critical_facts_suspect; old used suspect_count
+            sus = vj.get("critical_facts_suspect", vj.get("suspect_count", "?"))
             tag = "✓" if ready else "⚠"
-            print(f"    {tag} {brand}: conf={conf} suspect={sus} cost=${r['cost_usd']+v['cost_usd']:.3f}")
+            print(f"    {tag} {brand}: conf={conf} critical_suspect={sus} cost=${r['cost_usd']+v['cost_usd']:.3f}")
             results.append({"brand_row": brand_row, "research": r, "verifier": v})
 
     with ThreadPoolExecutor(max_workers=args.workers) as ex:
