@@ -54,6 +54,7 @@ class AnthropicClient:
         max_tokens: int = 1500,
         temperature: float = 0.1,
         max_retries: int = 5,
+        tools: list[dict] | None = None,
     ) -> GenerationResult:
         """Generate with exponential backoff on transient errors.
 
@@ -61,18 +62,29 @@ class AnthropicClient:
         (the latter has bitten two consecutive Phase 5 runs — transient
         network blips killing 8000-SKU batches mid-flight). 5 retries with
         2^attempt seconds backoff gives ~31s total tolerance per call.
+
+        `tools` — optional list of tool dicts (e.g. web_search). When provided,
+        the first text block from the final response is extracted.
         """
         last_err: Exception | None = None
         for attempt in range(max_retries):
             try:
-                resp = self.client.messages.create(
+                kwargs: dict = dict(
                     model=self.model,
                     max_tokens=max_tokens,
                     temperature=temperature,
                     system=[{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}],
                     messages=[{"role": "user", "content": user}],
                 )
-                text = resp.content[0].text if resp.content else ""
+                if tools:
+                    kwargs["tools"] = tools
+                resp = self.client.messages.create(**kwargs)
+                # Extract text: pick the last text block (tool-use may precede it)
+                text = ""
+                for block in reversed(resp.content or []):
+                    if hasattr(block, "text"):
+                        text = block.text
+                        break
                 cost_usd = _estimate_cost_usd(resp.usage, resp.model)
                 return GenerationResult(
                     text=text,
