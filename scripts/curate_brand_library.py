@@ -323,6 +323,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--no-backup", action="store_true")
     p.add_argument("--reverify-only", action="store_true",
                    help="Skip the (expensive) research call; re-run only the verifier on existing research JSON stored in brand_library.notes. Use after improving the verifier prompt.")
+    p.add_argument("--skip-already-validated", action="store_true",
+                   help="Skip brands whose library row already has source_basis='web_research_validated'. Use to resume a partial run without re-paying.")
     args = p.parse_args(argv)
 
     env = load_env()
@@ -343,6 +345,17 @@ def main(argv: list[str] | None = None) -> int:
     if args.brand:
         wanted = set(args.brand)
         brand_rows = [r for r in brand_rows if r["brand"] in wanted]
+    if args.skip_already_validated and args.library.exists():
+        already: set[str] = set()
+        with args.library.open() as f:
+            for row in csv.DictReader(f):
+                if (row.get("entity_type") == "brand"
+                        and row.get("source_basis") == "web_research_validated"):
+                    already.add(row["entity_name"])
+        before = len(brand_rows)
+        brand_rows = [r for r in brand_rows if r["brand"] not in already]
+        skipped = before - len(brand_rows)
+        print(f"Skipping {skipped} brands already validated")
     if args.limit > 0:
         brand_rows = brand_rows[: args.limit]
     if not brand_rows:
