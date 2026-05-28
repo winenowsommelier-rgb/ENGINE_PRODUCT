@@ -44,6 +44,12 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DB = REPO_ROOT / "data" / "db" / "products.db"
 DEFAULT_LIBRARY = REPO_ROOT / "data" / "brand_description_library.csv"
 
+# Per-category taste matrices (Whisky, Gin, Sake, Beer, etc.) live here.
+sys.path.insert(0, str(REPO_ROOT))
+from data.lib.taste_taxonomy.category_axes import (  # noqa: E402
+    schema_for_classification, serialise_for_prompt,
+)
+
 
 def load_env() -> dict[str, str]:
     out: dict[str, str] = {}
@@ -109,13 +115,18 @@ FACTUAL DISCIPLINE:
 OUTPUT JSON SCHEMA:
 {
   "desc_en_short": "<=160 char hook — lead with site, technique, or transgression",
-  "full_description": "<p>800-1100 char HTML (only p/br/strong/em). RICH but ZERO filler. Required structure: (1) STORY HOOK — open with a single concrete narrative or historical fact that GROUNDS a technical point (1-2 sentences) (2) SITE + soil/elevation + what those conditions DO to the wine (1-2 sentences) (3) TECHNIQUE/winemaking signature — specific parameters with <strong> tags (2-3 sentences) (4) SPECIAL FEATURE — what's unusual here, what rule is broken, what no peer does (1 sentence) (5) VINTAGE character + critic scores if in brand lib + drinking window (1-2 sentences). Aim ~900-1000 chars including HTML.</p>",
+  "full_description": "<p>800-1100 char HTML (only p/br/strong/em). RICH but ZERO filler. Required structure: (1) STORY HOOK — open with a single concrete narrative or historical fact that GROUNDS a technical point (1-2 sentences) (2) SITE + soil/elevation + what those conditions DO to the wine (1-2 sentences) (3) TECHNIQUE/winemaking signature — specific parameters with <strong> tags (2-3 sentences) (4) SPECIAL FEATURE — what's unusual here, what rule is broken, what no peer does (1 sentence) (5) VINTAGE character + drinking window (1-2 sentences). NO critic scores. Aim ~900-1000 chars including HTML.</p>",
   "flavor_tags": ["6-8 actual aromatic descriptors — NO structural words. Site-specific where possible: 'Galestro minerality' not just 'Minerality'"],
   "food_matching": ["4-6 specific dishes — restaurant-menu specific, not generic categories"],
   "pairing_rationale": "1-2 sentences. Ground EACH pairing direction in a specific note. No vague language.",
-  "wine_body": "Light | Medium | Medium-Full | Full | null (for spirits/sake)",
-  "wine_acidity": "Low | Medium | Medium-High | High | null",
-  "wine_tannin": "Low | Medium | Medium-High | High | null"
+  "taste_axes": {
+    "// USAGE": "Fill ONLY the axes listed in the CATEGORY-SPECIFIC TASTE AXES block below. Use EXACTLY the scale values shown there. Do NOT invent axes or scale values. For non-listed axes, omit the key entirely.",
+    "// Example for Whisky": "{ 'peat_smoke': 'Trace', 'sweetness': 'Balanced', 'oak_influence': 'Pronounced' }",
+    "// Example for Liqueur": "{ 'sweetness': 'Medium', 'bitterness': 'Pronounced' }",
+    "// Example for Wine": "{ 'body': 'Medium-Full', 'acidity': 'High', 'tannin': 'Medium' }"
+  },
+  "style_tag": "Pick ONE style_tag from the STYLE TAG OPTIONS in the category block below (omit if not applicable).",
+  "chip_tags": ["Pick 2-5 from CHIP TAG OPTIONS in category block (only for Liqueur — empty list for all other categories)."]
 }
 Output ONLY JSON, no preamble."""
 
@@ -129,11 +140,14 @@ Country: {country}  |  Region: {region}
 Vintage: {vintage}
 Price: ฿{price_thb}
 
+# CATEGORY-SPECIFIC TASTE AXES (use EXACTLY these axis keys + scale values)
+{category_axes_block}
+
 # Brand library entry (validated research — USE ONLY these facts)
 {brand_lib_text}
 
 # Task
-Write the curation-grade JSON per schema. Honor the brand library facts. Be specific, differentiated, sommelier-grade."""
+Write the curation-grade JSON per schema. Honor the brand library facts. Be specific, differentiated, sommelier-grade. Fill taste_axes using ONLY the axis keys from the category block above. If the category has no taste matrix, return taste_axes={{}} and style_tag=null."""
 
 
 def load_validated_brands(library_path: Path) -> dict[str, dict]:
@@ -161,6 +175,11 @@ def load_validated_brands(library_path: Path) -> dict[str, dict]:
 def enrich_one(client, sku_row: dict, brand_entry: dict) -> dict:
     """Single SKU re-enrichment. Returns dict with new fields + cost."""
     brand_lib_text = json.dumps(brand_entry["research"], indent=2, ensure_ascii=False)
+    schema = schema_for_classification(sku_row.get("classification"))
+    if schema is None:
+        category_axes_block = "(this product category has NO taste matrix — set taste_axes={} and style_tag=null)"
+    else:
+        category_axes_block = serialise_for_prompt(schema)
     user = USER_TMPL.format(
         sku=sku_row["sku"],
         name=sku_row["name"] or "",
@@ -171,6 +190,7 @@ def enrich_one(client, sku_row: dict, brand_entry: dict) -> dict:
         vintage=sku_row["vintage"] or "NV",
         price_thb=int(sku_row["price"]) if sku_row["price"] else 0,
         brand_lib_text=brand_lib_text,
+        category_axes_block=category_axes_block,
     )
     try:
         resp = client.messages.create(
@@ -208,34 +228,81 @@ def enrich_one(client, sku_row: dict, brand_entry: dict) -> dict:
 
 
 def apply_to_db(conn: sqlite3.Connection, sku: str, result: dict, lock: threading.Lock,
-                cols_present: set[str]) -> None:
+                cols_present: set[str], classification: str | None = None) -> None:
     """Write the new enrichment to products row.
 
-    Retries on `database is locked` with exponential backoff. The lock around
-    the connection serializes writes from Python's side, but SQLite can still
-    return SQLITE_BUSY momentarily during checkpoint writes — the retry covers
-    that transient case.
+    Wine categories → write to legacy wine_body/wine_acidity/wine_tannin columns.
+    Non-wine categories → write taste_profile JSON column (axes + tags + style_tag).
+    Categories with no matrix (Glassware/Accessories/Cigar) → no axis data written.
+
+    Retries on `database is locked` with exponential backoff.
     """
     import time as _time
     enriched_at = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
     flavor_tags_json = json.dumps(result.get("flavor_tags") or [], ensure_ascii=False)
     food_matching = ", ".join(result.get("food_matching") or [])
-    payload = {
-        "wine_body": result.get("wine_body"),
-        "wine_acidity": result.get("wine_acidity"),
-        "wine_tannin": result.get("wine_tannin"),
+
+    schema = schema_for_classification(classification)
+    taste_axes = result.get("taste_axes") or {}
+
+    payload: dict[str, object | None] = {
         "flavor_tags": flavor_tags_json,
         "food_matching": food_matching,
         "desc_en_short": result.get("desc_en_short"),
         "full_description": result.get("full_description"),
         "pairing_rationale": result.get("pairing_rationale"),
         "enrichment_source": "ai_brand_library_v3",
-        "enrichment_note": "Sonnet 4.6 + validated brand library + v3 storytelling prompt",
+        "enrichment_note": "Sonnet 4.6 + validated brand library + v3 storytelling prompt + per-category axes",
         "enriched_at": enriched_at,
         "enriched_by": "claude-sonnet-4-6",
         "updated_at": enriched_at,
-        "enrichment_quality_grade": "A",  # brand-library-grounded → top grade
+        # v3 is brand-library-grounded + verifier-checked → top grade.
+        # confidence MUST be non-NULL so the incremental sync's
+        # `enrichment_confidence IS NOT NULL` filter picks the row up.
+        "enrichment_confidence": 0.92,
+        "enrichment_quality_grade": "A",
     }
+
+    if schema is not None and schema.category == "wine":
+        # Wine uses legacy 3-column shape
+        payload["wine_body"] = taste_axes.get("body")
+        payload["wine_acidity"] = taste_axes.get("acidity")
+        payload["wine_tannin"] = taste_axes.get("tannin")
+    elif schema is not None:
+        # Non-wine → taste_profile JSON; clear legacy wine columns if they were populated
+        # before by a prior wrong-category enrichment.
+        # The model sometimes returns axes keyed by display label ("Agave Intensity")
+        # instead of the snake_case key ("agave_intensity"). Accept both.
+        axes_lookup = {}
+        for k, v in (taste_axes or {}).items():
+            axes_lookup[k.lower().strip()] = v
+        axes_with_scale: dict[str, dict] = {}
+        for ax in schema.axes:
+            candidates = [ax.key, ax.label.lower(), ax.label.lower().replace(" / ", "_"),
+                          ax.label.lower().replace(" ", "_"), ax.label.lower().replace("/", "_")]
+            v = None
+            for c in candidates:
+                if c in axes_lookup:
+                    v = axes_lookup[c]
+                    break
+            if v in ax.scale:
+                axes_with_scale[ax.key] = {"value": v, "scale": ax.scale}
+        profile = {
+            "structure": "flat",
+            "category": schema.category,
+            "axes": axes_with_scale,
+        }
+        chip_tags = result.get("chip_tags") or []
+        if chip_tags:
+            profile["tags"] = [t for t in chip_tags if t in schema.chip_tag_options]
+        style_tag = result.get("style_tag")
+        if style_tag in schema.style_tags:
+            profile["style_tag"] = style_tag
+        payload["taste_profile"] = json.dumps(profile, ensure_ascii=False)
+        payload["wine_body"] = None
+        payload["wine_acidity"] = None
+        payload["wine_tannin"] = None
+    # else: schema is None (Glassware/Accessories/Cigar/Others) → no axis fields touched
     payload = {k: v for k, v in payload.items() if k in cols_present}
     sets = ", ".join(f"{k}=?" for k in payload.keys())
     params = list(payload.values()) + [sku]
@@ -363,6 +430,7 @@ def main(argv: list[str] | None = None) -> int:
                 with sidecar_path.open("a", encoding="utf-8") as sf:
                     sf.write(json.dumps({
                         "sku": sku, "brand": sku_row["brand"],
+                        "classification": sku_row.get("classification"),
                         "result": r["result"],
                     }, ensure_ascii=False) + "\n")
             if args.dry_run:
@@ -370,7 +438,8 @@ def main(argv: list[str] | None = None) -> int:
                     samples.append({"sku": sku, "brand": sku_row["brand"], "result": r["result"]})
             else:
                 try:
-                    apply_to_db(conn, sku, r["result"], db_lock, cols_present)
+                    apply_to_db(conn, sku, r["result"], db_lock, cols_present,
+                                classification=sku_row.get("classification"))
                 except Exception as e:
                     with lock:
                         stats["db_failed"] += 1

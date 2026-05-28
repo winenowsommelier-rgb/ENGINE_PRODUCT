@@ -29,11 +29,48 @@ function parseTags(raw: string | string[] | null | undefined): string[] {
 }
 
 const TIER_SCALE: Record<string, number> = {
+  // 5-point legacy wine + generic words
   low: 1, light: 1, medium: 2, high: 3, full: 3,
+  // Wine 5-point fine-grain (Light / Medium-Light / Medium / Medium-Full / Full)
+  'medium-light': 1.5, 'medium-full': 4,
+  // Generic 4/5-point scales used by per-category axes
+  none: 0, trace: 1, pronounced: 4, heavy: 5,
+  // Sweetness scales
+  'bone-dry': 0, dry: 1, 'off-dry': 2, slight: 1.5, balanced: 3, sweet: 4, lush: 5, 'very sweet': 5,
+  // Whisky cask
+  'cask-dominant': 5,
+  // Texture
+  crisp: 1, smooth: 2, velvety: 3, creamy: 4,
+  // Funk
+  clean: 1, 'light funk': 2, 'medium funk': 3, 'hogo / heavy funk': 5,
+  // Vodka flavor character
+  neutral: 1, 'grain-led': 2, 'wheat-led': 3, 'rye-spice': 4, potato: 3,
+  // Gin
+  restrained: 1, bright: 3, zesty: 4, bold: 5, classic: 2, modern: 3, floral: 3, 'spice-led': 4,
+  // Brandy/rum oak-age
+  young: 1, mature: 2, 'aged-mellow': 3, rancio: 5,
+  unaged: 0, 'lightly aged': 2, aged: 3, 'extra-aged': 4,
+  // Tequila oak-age (Blanco→Extra-Añejo)
+  blanco: 0, reposado: 2, añejo: 3, anejo: 3, 'extra-añejo': 4, 'extra-anejo': 4, cristalino: 1,
+  // Fruit intensity / general
+  opulent: 5,
+  // Beer
+  aggressive: 5, malty: 3, citrus: 3, pine: 4, tropical: 5,
+  subtle: 1,
+  session: 1, standard: 2, strong: 3, imperial: 5,
+  // Sake polish ratio (lower seimaibuai → higher purity → rank up)
+  'junmai (≤70%)': 1, 'ginjo (≤60%)': 2, 'daiginjo (≤50%)': 3, 'super-daiginjo (≤35%)': 4,
+  // Light/Clean compound term used by Sake
+  'light / clean': 1, 'rich / umami': 5,
 };
 function scaleTier(v: string | null | undefined): number {
-  if (!v) return 0;
-  return TIER_SCALE[String(v).toLowerCase().trim()] ?? 2;
+  if (v == null) return 0;
+  const norm = String(v).toLowerCase().trim();
+  if (norm in TIER_SCALE) return TIER_SCALE[norm];
+  // Fall back: try to interpret numeric strings
+  const n = parseFloat(norm);
+  if (!isNaN(n)) return Math.min(Math.max(n, 0), 5);
+  return 2;
 }
 
 const DIMENSION_FIELD_MAP: Record<string, string> = {
@@ -44,7 +81,34 @@ const DIMENSION_FIELD_MAP: Record<string, string> = {
   umami: 'sake_umami', fragrance: 'sake_fragrance',
 };
 
+// Pull a value from taste_profile.axes if present. `taste_profile` may be
+// either a parsed object or a raw JSON string (depends on which API path
+// the row came through). Returns null if no axis matches.
+function tasteProfileAxisValue(product: Product, dimKey: string): string | null {
+  const raw = product.taste_profile;
+  if (raw == null) return null;
+  let tp: any = raw;
+  if (typeof tp === 'string') {
+    try { tp = JSON.parse(tp); } catch { return null; }
+  }
+  if (!tp || typeof tp !== 'object' || !tp.axes) return null;
+  // Try exact key, then snake-case-of-label
+  const cand = [dimKey, dimKey.replace(/-/g, '_'), dimKey.replace(/ /g, '_')];
+  for (const k of cand) {
+    if (tp.axes[k]?.value) return String(tp.axes[k].value);
+  }
+  return null;
+}
+
 function dimensionValue(product: Product, dimKey: string): number {
+  // 1) Prefer the authoritative per-category taste_profile axes
+  const tpVal = tasteProfileAxisValue(product, dimKey);
+  if (tpVal != null) {
+    const num = parseFloat(tpVal);
+    if (!isNaN(num)) return Math.min(num, 5);
+    return scaleTier(tpVal);
+  }
+  // 2) Fall back to legacy DB columns (mostly wine_*)
   const field = DIMENSION_FIELD_MAP[dimKey];
   if (field && product[field] != null) {
     const num = parseFloat(String(product[field]));
@@ -223,14 +287,23 @@ function classifyFlavor(tag: string): FlavorMapping {
 
 // ── Scope detection ──────────────────────────────────────────────────────────
 
-function detectScope(product: Product): 'wine' | 'spirits' | 'sake' | 'other' {
+type ScopeKey = 'wine' | 'whisky' | 'brandy' | 'gin' | 'vodka' | 'rum' | 'tequila'
+              | 'liqueur' | 'sake' | 'beer' | 'spirits' | 'other';
+
+function detectScope(product: Product): ScopeKey {
   const cls = String(product.classification ?? '').toLowerCase();
-  if (cls.includes('sake')) return 'sake';
-  if (cls.includes('wine') || cls.includes('champagne') || cls.includes('rose') || cls.includes('prosecco') || cls.includes('cava')) return 'wine';
-  if (cls.includes('whisky') || cls.includes('whiskey') || cls.includes('gin') || cls.includes('rum') ||
-      cls.includes('vodka') || cls.includes('tequila') || cls.includes('mezcal') || cls.includes('brandy') ||
-      cls.includes('cognac') || cls.includes('bourbon') || cls.includes('scotch') || cls.includes('spirit') ||
-      cls.includes('liqueur')) return 'spirits';
+  if (cls.includes('sake') || cls.includes('shochu')) return 'sake';
+  if (cls.includes('beer')) return 'beer';
+  if (cls.includes('wine') || cls.includes('champagne') || cls.includes('rose')
+      || cls.includes('prosecco') || cls.includes('cava')) return 'wine';
+  if (cls.includes('whisky') || cls.includes('whiskey') || cls.includes('bourbon') || cls.includes('scotch')) return 'whisky';
+  if (cls.includes('brandy') || cls.includes('cognac') || cls.includes('armagnac')) return 'brandy';
+  if (cls.includes('gin')) return 'gin';
+  if (cls.includes('vodka')) return 'vodka';
+  if (cls.includes('rum')) return 'rum';
+  if (cls.includes('tequila') || cls.includes('mezcal')) return 'tequila';
+  if (cls.includes('liqueur')) return 'liqueur';
+  if (cls.includes('spirit')) return 'spirits';  // generic fallback
   return 'other';
 }
 
@@ -314,33 +387,73 @@ function getCharacterValue(product: Product, dimKey: string): number {
   return deriveDimensionFromFlavors(product, dimKey);
 }
 
-// Default dimensions per scope when no charDimensions loaded
-const DEFAULT_DIMENSIONS: Record<string, { dimension_key: string; label: string }[]> = {
+// Default dimensions per scope when no charDimensions loaded.
+// Keys must match the per-category taste-axis keys produced by the v3
+// enrichment pipeline (see data/lib/taste_taxonomy/category_axes.py).
+const DEFAULT_DIMENSIONS: Record<ScopeKey, { dimension_key: string; label: string }[]> = {
   wine: [
-    { dimension_key: 'body', label: 'Body' },
-    { dimension_key: 'acidity', label: 'Acidity' },
-    { dimension_key: 'tannin', label: 'Tannin' },
-    { dimension_key: 'sweetness', label: 'Sweetness' },
-    { dimension_key: 'intensity', label: 'Intensity' },
+    { dimension_key: 'body',     label: 'Body' },
+    { dimension_key: 'acidity',  label: 'Acidity' },
+    { dimension_key: 'tannin',   label: 'Tannin' },
+    // Derived fallbacks below — only populated if flavor tags / desc imply them
+    { dimension_key: 'sweetness',  label: 'Sweetness' },
+    { dimension_key: 'intensity',  label: 'Intensity' },
     { dimension_key: 'complexity', label: 'Complexity' },
   ],
-  spirits: [
-    { dimension_key: 'body', label: 'Body' },
-    { dimension_key: 'sweetness', label: 'Sweetness' },
-    { dimension_key: 'smoke', label: 'Smoke' },
-    { dimension_key: 'spice', label: 'Spice' },
-    { dimension_key: 'complexity', label: 'Complexity' },
-    { dimension_key: 'finish', label: 'Finish' },
-    { dimension_key: 'oak', label: 'Oak' },
-    { dimension_key: 'fruit', label: 'Fruit' },
+  whisky: [
+    { dimension_key: 'peat_smoke',    label: 'Peat / Smoke' },
+    { dimension_key: 'sweetness',     label: 'Sweetness' },
+    { dimension_key: 'oak_influence', label: 'Oak Influence' },
+  ],
+  brandy: [
+    { dimension_key: 'sweetness',       label: 'Sweetness' },
+    { dimension_key: 'oak_rancio',      label: 'Oak / Rancio' },
+    { dimension_key: 'fruit_intensity', label: 'Fruit Intensity' },
+  ],
+  gin: [
+    { dimension_key: 'juniper_forward',      label: 'Juniper' },
+    { dimension_key: 'citrus',               label: 'Citrus' },
+    { dimension_key: 'botanical_complexity', label: 'Botanicals' },
+  ],
+  vodka: [
+    { dimension_key: 'body_texture',     label: 'Texture' },
+    { dimension_key: 'sweetness',        label: 'Sweetness' },
+    { dimension_key: 'flavor_character', label: 'Character' },
+  ],
+  rum: [
+    { dimension_key: 'sweetness',  label: 'Sweetness' },
+    { dimension_key: 'funk_ester', label: 'Funk / Ester' },
+    { dimension_key: 'oak_age',    label: 'Oak / Age' },
+  ],
+  tequila: [
+    { dimension_key: 'agave_intensity', label: 'Agave' },
+    { dimension_key: 'smoke',           label: 'Smoke' },
+    { dimension_key: 'oak_age',         label: 'Oak / Age' },
+  ],
+  liqueur: [
+    { dimension_key: 'sweetness',  label: 'Sweetness' },
+    { dimension_key: 'bitterness', label: 'Bitterness' },
   ],
   sake: [
-    { dimension_key: 'umami', label: 'Umami' },
-    { dimension_key: 'sweetness', label: 'Sweetness' },
-    { dimension_key: 'acidity', label: 'Acidity' },
-    { dimension_key: 'body', label: 'Body' },
-    { dimension_key: 'fragrance', label: 'Fragrance' },
-    { dimension_key: 'finish', label: 'Finish' },
+    { dimension_key: 'sweetness',    label: 'Sweetness (SMV)' },
+    { dimension_key: 'acidity',      label: 'Acidity' },
+    { dimension_key: 'body_umami',   label: 'Body / Umami' },
+    { dimension_key: 'polish_ratio', label: 'Polish' },
+  ],
+  beer: [
+    { dimension_key: 'bitterness',     label: 'Bitterness' },
+    { dimension_key: 'sweetness_malt', label: 'Malt' },
+    { dimension_key: 'hop_character',  label: 'Hops' },
+    { dimension_key: 'alcohol',        label: 'Strength' },
+  ],
+  // Generic spirits fallback (when classification is just "Spirit" without subtype)
+  spirits: [
+    { dimension_key: 'body',       label: 'Body' },
+    { dimension_key: 'sweetness',  label: 'Sweetness' },
+    { dimension_key: 'smoke',      label: 'Smoke' },
+    { dimension_key: 'oak',        label: 'Oak' },
+    { dimension_key: 'complexity', label: 'Complexity' },
+    { dimension_key: 'finish',     label: 'Finish' },
   ],
   other: [
     { dimension_key: 'body', label: 'Body' },
@@ -377,12 +490,22 @@ export function CharacterRadarChart({
       .filter(d => d.value > 0);
   }, [product, charDimensions, scope]);
 
-  // Scope accent colors — vivid enough to read on dark bg
+  // Scope accent colors — vivid enough to read on dark bg.
+  // Spirit sub-categories share the amber spirits palette; sake/beer/wine
+  // get distinct hues for the radar fill.
   const scopeColors: Record<string, { stroke: string; fill: string; dot: string }> = {
-    wine:    { stroke: 'rgba(251,113,133,1)',   fill: 'rgba(251,113,133,0.18)', dot: '#fb7185' },
-    spirits: { stroke: 'rgba(251,191,36,1)',    fill: 'rgba(251,191,36,0.18)',  dot: '#fbbf24' },
-    sake:    { stroke: 'rgba(129,140,248,1)',   fill: 'rgba(129,140,248,0.18)', dot: '#818cf8' },
-    other:   { stroke: 'rgba(167,139,250,1)',   fill: 'rgba(167,139,250,0.18)', dot: '#a78bfa' },
+    wine:    { stroke: 'rgba(251,113,133,1)', fill: 'rgba(251,113,133,0.18)', dot: '#fb7185' },
+    whisky:  { stroke: 'rgba(251,191,36,1)',  fill: 'rgba(251,191,36,0.18)',  dot: '#fbbf24' },
+    brandy:  { stroke: 'rgba(244,114,82,1)',  fill: 'rgba(244,114,82,0.18)',  dot: '#f47252' },
+    gin:     { stroke: 'rgba(94,234,212,1)',  fill: 'rgba(94,234,212,0.18)',  dot: '#5eead4' },
+    vodka:   { stroke: 'rgba(186,230,253,1)', fill: 'rgba(186,230,253,0.18)', dot: '#bae6fd' },
+    rum:     { stroke: 'rgba(217,119,6,1)',   fill: 'rgba(217,119,6,0.18)',   dot: '#d97706' },
+    tequila: { stroke: 'rgba(190,242,100,1)', fill: 'rgba(190,242,100,0.18)', dot: '#bef264' },
+    liqueur: { stroke: 'rgba(232,121,249,1)', fill: 'rgba(232,121,249,0.18)', dot: '#e879f9' },
+    sake:    { stroke: 'rgba(129,140,248,1)', fill: 'rgba(129,140,248,0.18)', dot: '#818cf8' },
+    beer:    { stroke: 'rgba(234,179,8,1)',   fill: 'rgba(234,179,8,0.18)',   dot: '#eab308' },
+    spirits: { stroke: 'rgba(251,191,36,1)',  fill: 'rgba(251,191,36,0.18)',  dot: '#fbbf24' },
+    other:   { stroke: 'rgba(167,139,250,1)', fill: 'rgba(167,139,250,0.18)', dot: '#a78bfa' },
   };
   const accent = scopeColors[scope] ?? scopeColors.other;
 

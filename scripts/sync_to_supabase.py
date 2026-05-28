@@ -65,6 +65,18 @@ _JSON_COLUMNS = {
     "flavor_tags", "food_matching",
 }
 
+# Columns that are numeric in Supabase (NUMERIC / FLOAT / INT).
+# Empty strings must be coerced to None before sending or Postgres rejects them.
+_NUMERIC_COLUMNS = {
+    "price", "cost", "special_price", "promotion_price", "promotion_tier_price",
+    "b2b_price", "b2b_margin_thb", "b2b_margin_pct", "b2b_discount_pct",
+    "margin_thb", "margin_pct", "sp_discount_pct",
+    "alcohol", "bottle_size", "score_max",
+    "enrichment_confidence", "overall_confidence",
+    "popularity_score", "popularity_orders_90d", "popularity_revenue_90d",
+    "popularity_qty_90d", "quantity_in_stock", "wn_stock",
+}
+
 
 def _get_sync_state(conn: sqlite3.Connection, table: str) -> str | None:
     row = conn.execute(
@@ -139,6 +151,10 @@ def _patch_product(supabase_url: str, api_key: str, row: dict) -> None:
     # Strip columns not yet in the Supabase schema to avoid 400 errors.
     for col in _SUPABASE_SCHEMA_EXCLUDES:
         row.pop(col, None)
+    # Coerce empty strings to None for numeric columns; Postgres rejects "" for NUMERIC.
+    for col in _NUMERIC_COLUMNS:
+        if col in row and row[col] == "":
+            row[col] = None
     url = f"{supabase_url.rstrip('/')}/rest/v1/products?id=eq.{urllib.parse.quote(pid)}"
     body = json.dumps(row).encode("utf-8")
     req = urllib.request.Request(url, data=body, method="PATCH", headers={

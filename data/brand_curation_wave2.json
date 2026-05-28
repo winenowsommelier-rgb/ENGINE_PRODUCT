@@ -1,0 +1,282 @@
+[
+  {
+    "rank": 1,
+    "brand": "The Balvenie",
+    "classification": "Whisky",
+    "ultra_skus": 10,
+    "prestige_skus": 1,
+    "avg_price": 697624.0
+  },
+  {
+    "rank": 2,
+    "brand": "Domaine Jean-Pierre Guyon",
+    "classification": "Red Wine",
+    "ultra_skus": 5,
+    "prestige_skus": 6,
+    "avg_price": 18891.0
+  },
+  {
+    "rank": 3,
+    "brand": "Dominus Estate",
+    "classification": "Red Wine",
+    "ultra_skus": 6,
+    "prestige_skus": 2,
+    "avg_price": 18501.0
+  },
+  {
+    "rank": 4,
+    "brand": "Domaine Trapet",
+    "classification": "Brandy",
+    "ultra_skus": 4,
+    "prestige_skus": 7,
+    "avg_price": 25418.0
+  },
+  {
+    "rank": 5,
+    "brand": "Domaine Mongeard-Mugneret",
+    "classification": "Red Wine",
+    "ultra_skus": 5,
+    "prestige_skus": 1,
+    "avg_price": 33233.0
+  },
+  {
+    "rank": 6,
+    "brand": "Old Malt Cask",
+    "classification": "Whisky",
+    "ultra_skus": 1,
+    "prestige_skus": 12,
+    "avg_price": 8543.0
+  },
+  {
+    "rank": 7,
+    "brand": "Bond",
+    "classification": "Red Wine",
+    "ultra_skus": 5,
+    "prestige_skus": 0,
+    "avg_price": 17319.0
+  },
+  {
+    "rank": 8,
+    "brand": "Domaine Vincent Dancer",
+    "classification": "Red Wine",
+    "ultra_skus": 4,
+    "prestige_skus": 2,
+    "avg_price": 20350.0
+  },
+  {
+    "rank": 9,
+    "brand": "Joseph Drouhin",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 10,
+    "avg_price": 8328.0
+  },
+  {
+    "rank": 10,
+    "brand": "Domaine Hubert Lignier",
+    "classification": "Red Wine",
+    "ultra_skus": 3,
+    "prestige_skus": 4,
+    "avg_price": 21771.0
+  },
+  {
+    "rank": 11,
+    "brand": "Domaine Bruno Clair",
+    "classification": "Red Wine",
+    "ultra_skus": 4,
+    "prestige_skus": 1,
+    "avg_price": 24700.0
+  },
+  {
+    "rank": 12,
+    "brand": "Etienne Sauzet",
+    "classification": "White Wine",
+    "ultra_skus": 3,
+    "prestige_skus": 1,
+    "avg_price": 28572.0
+  },
+  {
+    "rank": 13,
+    "brand": "Domaine Denis Mortet",
+    "classification": "Red Wine",
+    "ultra_skus": 3,
+    "prestige_skus": 1,
+    "avg_price": 24075.0
+  },
+  {
+    "rank": 14,
+    "brand": "Baron De Sigognac",
+    "classification": "Brandy",
+    "ultra_skus": 2,
+    "prestige_skus": 4,
+    "avg_price": 26081.0
+  },
+  {
+    "rank": 15,
+    "brand": "Domaine Sylvain Pataille",
+    "classification": "Red Wine",
+    "ultra_skus": 0,
+    "prestige_skus": 9,
+    "avg_price": 6767.0
+  },
+  {
+    "rank": 16,
+    "brand": "Domaine Gros Fr\u00e8re et Soeur",
+    "classification": "Red Wine",
+    "ultra_skus": 3,
+    "prestige_skus": 0,
+    "avg_price": 26600.0
+  },
+  {
+    "rank": 17,
+    "brand": "Chateau Lafleur",
+    "classification": "Red Wine",
+    "ultra_skus": 3,
+    "prestige_skus": 0,
+    "avg_price": 50700.0
+  },
+  {
+    "rank": 18,
+    "brand": "That Boutique-y Whisky Company",
+    "classification": "Whisky",
+    "ultra_skus": 2,
+    "prestige_skus": 2,
+    "avg_price": 10874.0
+  },
+  {
+    "rank": 19,
+    "brand": "Wildmoor",
+    "classification": "Whisky",
+    "ultra_skus": 2,
+    "prestige_skus": 1,
+    "avg_price": 21792.0
+  },
+  {
+    "rank": 20,
+    "brand": "Tenuta dell'Ornellaia",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 4,
+    "avg_price": 13801.0
+  },
+  {
+    "rank": 21,
+    "brand": "Grey Goose",
+    "classification": "Vodka",
+    "ultra_skus": 2,
+    "prestige_skus": 1,
+    "avg_price": 16332.0
+  },
+  {
+    "rank": 22,
+    "brand": "Francois Voyer",
+    "classification": "Brandy",
+    "ultra_skus": 2,
+    "prestige_skus": 1,
+    "avg_price": 29433.0
+  },
+  {
+    "rank": 23,
+    "brand": "Domaine Claude Dugat",
+    "classification": "Red Wine",
+    "ultra_skus": 2,
+    "prestige_skus": 1,
+    "avg_price": 19000.0
+  },
+  {
+    "rank": 24,
+    "brand": "Champagne Caze-Thibaut",
+    "classification": "Champagne",
+    "ultra_skus": 0,
+    "prestige_skus": 7,
+    "avg_price": 5500.0
+  },
+  {
+    "rank": 25,
+    "brand": "Brew Dog",
+    "classification": "Beer",
+    "ultra_skus": 0,
+    "prestige_skus": 7,
+    "avg_price": 6280.0
+  },
+  {
+    "rank": 26,
+    "brand": "Quintarelli Giuseppe",
+    "classification": "Red Wine",
+    "ultra_skus": 2,
+    "prestige_skus": 0,
+    "avg_price": 29164.0
+  },
+  {
+    "rank": 27,
+    "brand": "Maison Leroy",
+    "classification": "Red Wine",
+    "ultra_skus": 2,
+    "prestige_skus": 0,
+    "avg_price": 22929.0
+  },
+  {
+    "rank": 28,
+    "brand": "Louis Roederer",
+    "classification": "Champagne",
+    "ultra_skus": 1,
+    "prestige_skus": 3,
+    "avg_price": 8291.0
+  },
+  {
+    "rank": 29,
+    "brand": "Glencadam",
+    "classification": "Whisky",
+    "ultra_skus": 1,
+    "prestige_skus": 3,
+    "avg_price": 13200.0
+  },
+  {
+    "rank": 30,
+    "brand": "Fuenteseca",
+    "classification": "Tequila",
+    "ultra_skus": 2,
+    "prestige_skus": 0,
+    "avg_price": 33949.0
+  },
+  {
+    "rank": 31,
+    "brand": "Dugat-Py",
+    "classification": "Red Wine",
+    "ultra_skus": 2,
+    "prestige_skus": 0,
+    "avg_price": 48090.0
+  },
+  {
+    "rank": 32,
+    "brand": "Domaine Robert Groffier Pere&Fils",
+    "classification": "Red Wine",
+    "ultra_skus": 2,
+    "prestige_skus": 0,
+    "avg_price": 48455.0
+  },
+  {
+    "rank": 33,
+    "brand": "Domaine De La Romanee Conti",
+    "classification": "Red Wine",
+    "ultra_skus": 2,
+    "prestige_skus": 0,
+    "avg_price": 657945.0
+  },
+  {
+    "rank": 34,
+    "brand": "De Venoge",
+    "classification": "Champagne",
+    "ultra_skus": 2,
+    "prestige_skus": 0,
+    "avg_price": 20778.0
+  },
+  {
+    "rank": 35,
+    "brand": "Coutanseaux A\u00een\u00e9",
+    "classification": "Brandy",
+    "ultra_skus": 2,
+    "prestige_skus": 0,
+    "avg_price": 40200.0
+  }
+]
