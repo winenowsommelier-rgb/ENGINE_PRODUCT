@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "weights": {
+    "taste_match":      0.35,
+    "taxonomy_quality": 0.15,
+    "brand_prestige":   0.20,
+    "margin_signal":    0.10,
+    "web_freshness":    0.20
+  },
+  "bonuses": {
+    "pairing_boost":   0.15,
+    "bridge_bonus":    0.10,
+    "regional_bonus":  0.10,
+    "intensity_match": 0.10
+  },
+  "penalties": {
+    "avoid_tag":   -0.05,
+    "hard_avoid":  -0.40
+  }
+}

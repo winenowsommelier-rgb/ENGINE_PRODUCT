@@ -1,0 +1,7 @@
+{
+  "llm_provider": "ollama",
+  "ollama_model": "llama3.1:8b",
+  "ollama_base_url": "http://localhost:11434",
+  "background_panel_provider": "anthropic",
+  "background_panel_enabled": false
+}
