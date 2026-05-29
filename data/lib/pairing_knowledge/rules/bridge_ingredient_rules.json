@@ -1,0 +1,9 @@
+[
+  {"bridge_id": "lemon-citrus", "ingredient": "lemon", "matching_flavor_tags": ["citrus", "citrus zest", "lemon", "bright acidity"]},
+  {"bridge_id": "vanilla-vanilla", "ingredient": "vanilla", "matching_flavor_tags": ["vanilla", "vanilla cream", "sweet spice"]},
+  {"bridge_id": "smoke-peat", "ingredient": "smoke", "matching_flavor_tags": ["smoke", "peat", "smoked", "bonfire"]},
+  {"bridge_id": "mushroom-earth", "ingredient": "mushroom", "matching_flavor_tags": ["earth", "mushroom", "forest floor", "truffle"]},
+  {"bridge_id": "cherry-red-fruit", "ingredient": "cherry", "matching_flavor_tags": ["cherry", "red cherry", "red fruit", "dark cherry"]},
+  {"bridge_id": "lime-citrus", "ingredient": "lime", "matching_flavor_tags": ["citrus", "lime", "citrus zest", "tropical"]},
+  {"bridge_id": "honey-honey", "ingredient": "honey", "matching_flavor_tags": ["honey", "honeysuckle", "sweet floral"]}
+]
