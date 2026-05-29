@@ -666,11 +666,11 @@
   },
   {
     "id": "34c6de85-45e3-4c0a-a281-345ee54d69de",
-    "name": "Estella Company Limited",
+    "name": "The Best Provider",
     "supplier_code": "DH",
     "status": "active",
     "pricing_structure": "no_rsp_price",
-    "drive_folder_id": "1uen8PmYnblV3pDTFSqK9ifi3Li9MKvqu",
+    "drive_folder_id": "1slC6C5jEsH2QGg1ioBGEcHt-9rGz7s5_",
     "drive_bucket_folder_id": null,
     "allowed_formats": [
       "xlsx",
@@ -687,7 +687,7 @@
       "review_price_change_pct": 20
     },
     "created_at": "2026-05-28T18:59:44.748731Z",
-    "updated_at": "2026-05-28T18:59:44.748731Z"
+    "updated_at": "2026-05-29T08:14:20.377833Z"
   },
   {
     "id": "a2912640-cb85-413a-8048-85b228cb6b09",
@@ -1466,11 +1466,11 @@
   },
   {
     "id": "48039087-9713-4c29-8d52-8ecb95ba33dc",
-    "name": "JDSS",
+    "name": "Vinobox",
     "supplier_code": "HP",
     "status": "active",
-    "pricing_structure": "no_rsp_price",
-    "drive_folder_id": "1ByESydr6Ss6_Hh7JUJJhBBnA9jvRxmPX",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1Xf5vm0qyVl83F2pKjmfFaVIyKrvEXDdr",
     "drive_bucket_folder_id": null,
     "allowed_formats": [
       "xlsx",
@@ -1487,7 +1487,7 @@
       "review_price_change_pct": 20
     },
     "created_at": "2026-05-28T18:59:44.748731Z",
-    "updated_at": "2026-05-28T18:59:44.748731Z"
+    "updated_at": "2026-05-29T08:14:20.377833Z"
   },
   {
     "id": "b7d3b20a-a077-4ba0-a91d-d313bf67e3a1",
@@ -1738,5 +1738,205 @@
     },
     "created_at": "2026-05-28T20:15:41.675767Z",
     "updated_at": "2026-05-28T20:15:41.675767Z"
+  },
+  {
+    "id": "00e9ea7b-b61e-4199-adfc-a49039ff2668",
+    "name": "Blue Moon Siam Paragon",
+    "supplier_code": "HC",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "14yqwnX1aI_jKom405dgkGRyzffM8tJd0",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 6.1,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "cda34b06-f197-4a28-9d84-f99afa071601",
+    "name": "KAO HOM Chaiyaphum (Consignment)",
+    "supplier_code": "HE",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "18AFlvkLgNqVG67TT-KiNBmGvR3bpw82M",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 30.0,
+      "minimum_margin_pct": 20.0,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "8ae7fa18-0fe8-4789-a92f-a288a73095f4",
+    "name": "International Beverage",
+    "supplier_code": "BQ",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1kCupdL7DDr60q3aQacTmYWx5LwX9E98a",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 23.5,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "7dd85e52-60cf-4821-9223-6ec47d209f34",
+    "name": "IWS (MH Wine)",
+    "supplier_code": "AD2",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1QMeNQq7Hlur18qCoHDh1NsVR1mFqQYA5",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 22.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "12d6cb4e-782a-412d-b21d-9865a85e551f",
+    "name": "IWS (TWE / Penfolds)",
+    "supplier_code": "AD3",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1w-3EJ2s3SqfdAgoCehU4u9vZunXBhSFy",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 22.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "7391db01-680c-4bcd-b328-e9867b829a24",
+    "name": "Premium Thai Brand Co.Ltd (Kilo)",
+    "supplier_code": "DG(2)",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1R9tuRviL80-Nh1DnOVXVzgaRt2o8B8sq",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 14.9,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "fa48b0e0-918c-4b4e-b1b3-4206ea4e65c0",
+    "name": "Magic Potion Ltd. (Life Elixir)",
+    "supplier_code": "ER(3)",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1HAUgIfvtz5ElkdGCeRkoMagg9Co2u1zT",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 27.4,
+      "minimum_margin_pct": 17.4,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "965c117e-abc9-4781-88a7-8313e5d5286b",
+    "name": "Central Retail (Wine)",
+    "supplier_code": "FP",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1Gb1BaVrCHPEYv-W3a0kyJIrrYzi-cuYj",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 25.0,
+      "minimum_margin_pct": 15.0,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
   }
 ]
