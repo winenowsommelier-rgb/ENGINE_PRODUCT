@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WN/LIQ9 Product Engine — Project Summary</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #020817; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6; padding: 32px 24px; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 700; color: #f8fafc; margin-bottom: 4px; }
+  h2 { font-size: 13px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .08em; margin: 28px 0 10px; }
+  h3 { font-size: 13px; font-weight: 600; color: #94a3b8; margin-bottom: 6px; }
+  .subtitle { color: #64748b; font-size: 13px; margin-bottom: 28px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+  .green  { background: #14532d; color: #86efac; border: 1px solid #166534; }
+  .amber  { background: #78350f; color: #fde68a; border: 1px solid #92400e; }
+  .blue   { background: #1e3a5f; color: #93c5fd; border: 1px solid #1e40af; }
+  .violet { background: #2e1065; color: #c4b5fd; border: 1px solid #4c1d95; }
+  .slate  { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
+  .red    { background: #450a0a; color: #fca5a5; border: 1px solid #7f1d1d; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .card { background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 14px 16px; }
+  .card .num { font-size: 28px; font-weight: 700; margin-bottom: 2px; }
+  .card .lbl { font-size: 11px; color: #64748b; }
+  .section { background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 16px 18px; margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { text-align: left; padding: 6px 10px; color: #475569; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid #1e293b; }
+  td { padding: 7px 10px; border-bottom: 1px solid #0f172a; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #1e293b22; }
+  code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; background: #1e293b; padding: 1px 5px; border-radius: 3px; color: #7dd3fc; }
+  .pipe { display: flex; gap: 0; margin-bottom: 6px; }
+  .pipe-step { flex: 1; text-align: center; padding: 8px 4px; border-bottom: 2px solid; font-size: 11px; font-weight: 500; }
+  .step-done  { border-color: #22c55e; color: #22c55e; }
+  .step-ready { border-color: #7c3aed; color: #a78bfa; }
+  .step-todo  { border-color: #334155; color: #475569; }
+  ul { padding-left: 18px; }
+  li { margin-bottom: 4px; font-size: 12px; color: #94a3b8; }
+  li strong { color: #e2e8f0; }
+  .tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; margin-right: 3px; }
+  .mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: #64748b; }
+  hr { border: none; border-top: 1px solid #1e293b; margin: 22px 0; }
+  .warn { background: #1c1007; border: 1px solid #92400e; border-radius: 6px; padding: 8px 12px; font-size: 12px; color: #fde68a; margin-top: 8px; }
+  .note { background: #0d2818; border: 1px solid #166534; border-radius: 6px; padding: 8px 12px; font-size: 12px; color: #86efac; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>WN/LIQ9 Product Engine</h1>
+  <p class="subtitle">Supplier Intake Pipeline — Project Summary · Last updated 2026-05-30 · Branch: <code>feat/taste-taxonomy-v2</code></p>
+
+  <!-- ── OVERALL STATUS ─────────────────────────────────────────────── -->
+  <h2>Overall Pipeline Status</h2>
+  <div class="pipe">
+    <div class="pipe-step step-done">✓ Types &amp; Lib</div>
+    <div class="pipe-step step-done">✓ API Routes</div>
+    <div class="pipe-step step-done">✓ Settings UI</div>
+    <div class="pipe-step step-done">✓ Dashboard UI</div>
+    <div class="pipe-step step-done">✓ Supplier DB</div>
+    <div class="pipe-step step-done">✓ Drive Map</div>
+    <div class="pipe-step step-done">✓ Spec Written</div>
+    <div class="pipe-step step-ready">→ Run Workflow UI</div>
+    <div class="pipe-step step-todo">Impl Plan</div>
+    <div class="pipe-step step-todo">Build &amp; Test</div>
+  </div>
+  <div class="note">Backend is 100% complete. Supplier data is registered and validated. Next step: build the Run Intake tab UI per the spec at <code>docs/superpowers/specs/2026-05-29-supplier-intake-run-workflow-design.md</code></div>
+
+  <!-- ── METRICS ────────────────────────────────────────────────────── -->
+  <h2>Data Metrics</h2>
+  <div class="grid-4" style="margin-bottom:10px">
+    <div class="card"><div class="num" style="color:#4ade80">78</div><div class="lbl">Suppliers registered in DB</div></div>
+    <div class="card"><div class="num" style="color:#4ade80">147</div><div class="lbl">Total supplier codes in master list</div></div>
+    <div class="card"><div class="num" style="color:#4ade80">64</div><div class="lbl">Live Drive folders confirmed</div></div>
+    <div class="card"><div class="num" style="color:#fbbf24">1</div><div class="lbl">Unresolved folder (Diageo — pending)</div></div>
+  </div>
+  <div class="grid-4">
+    <div class="card"><div class="num" style="color:#4ade80">9</div><div class="lbl">Suppliers ready to run now</div></div>
+    <div class="card"><div class="num" style="color:#94a3b8">69</div><div class="lbl">Need profile / extract first</div></div>
+    <div class="card"><div class="num" style="color:#475569">78</div><div class="lbl">Blocked — no Drive folder yet</div></div>
+    <div class="card"><div class="num" style="color:#4ade80">22</div><div class="lbl">Git commits this session</div></div>
+  </div>
+
+  <!-- ── ARCHITECTURE ───────────────────────────────────────────────── -->
+  <h2>Architecture</h2>
+  <div class="grid-2">
+    <div class="section">
+      <h3>Stack</h3>
+      <ul>
+        <li><strong>Frontend:</strong> Next.js 14 App Router · React 18 · TypeScript · Tailwind CSS</li>
+        <li><strong>Backend:</strong> Next.js API routes (App Router)</li>
+        <li><strong>Persistence:</strong> JSON files in <code>data/db/</code> (suppliers, runs, rows)</li>
+        <li><strong>Drive:</strong> Google Drive API v3 via <code>googleapis</code> npm package</li>
+        <li><strong>Auth:</strong> Service account — <code>GOOGLE_SERVICE_ACCOUNT_JSON</code> env var</li>
+        <li><strong>Service account:</strong> <code>seo-dashboard@wnlq0-seo.iam.gserviceaccount.com</code></li>
+      </ul>
+    </div>
+    <div class="section">
+      <h3>Data Files</h3>
+      <ul>
+        <li><code>data/db/suppliers.json</code> — 78 registered suppliers with pricing rules + Drive folder IDs</li>
+        <li><code>data/db/supplier-intake-runs.json</code> — run history</li>
+        <li><code>data/db/supplier-intake-rows.json</code> — normalized rows per run</li>
+        <li><code>data/supplier-intake/supplier_normalization_status.csv</code> — 147 codes, readiness status</li>
+        <li><code>data/supplier-intake/supplier_trade_terms_template.csv</code> — margin data, pricing rules</li>
+        <li><code>data/live_products_export.json</code> — UI reads this (refresh with <code>scripts/refresh_live_export.py</code>)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── DRIVE STRUCTURE ───────────────────────────────────────────── -->
+  <h2>Google Drive Structure</h2>
+  <div class="section">
+    <table>
+      <tr><th>Bucket Name</th><th>Bucket Folder ID</th><th>Pricing Structure</th><th>Supplier Count</th></tr>
+      <tr><td><strong>1.RSP PRICE</strong></td><td><code>1n8n0HeiCIh6b6-_rTNM6iN8oY2ONrECY</code></td><td><span class="badge blue">rsp_price</span></td><td>36 folders · 36 suppliers</td></tr>
+      <tr><td><strong>2. NO RSP PRICE</strong></td><td><code>132_vwRrD2uoyDUD1hPefgPc_rw5I3Ojf</code></td><td><span class="badge slate">no_rsp_price</span></td><td>25 folders · 27 suppliers</td></tr>
+      <tr><td><strong>3.Retail Supplier (Cash on store)</strong></td><td><code>1gd-ZHxEKjHlexzGvvYWy4FoyNGGGyNZz</code></td><td><span class="badge violet">retail_cash_store</span></td><td>3 folders · 7 suppliers</td></tr>
+      <tr><td colspan="4"><strong>Root folder ID:</strong> <code>1Tz6igFwVCCDzFh-k0L-osRRfxrvpPpxG</code></td></tr>
+    </table>
+    <div class="warn" style="margin-top:10px">⏳ Diageo folder <code>1jH9zp4BGyV94apeYGkZFl9BaUUMPWFIw</code> in RSP bucket — pending decision: same as BU(8) (Chalamnimit/Diageo) or separate direct Diageo account?</div>
+  </div>
+
+  <!-- ── READY TO RUN ──────────────────────────────────────────────── -->
+  <h2>Suppliers Ready to Run Now (9)</h2>
+  <div class="section">
+    <table>
+      <tr><th>Code</th><th>Supplier Name</th><th>Pricing</th><th>Mode</th><th>Target Margin</th><th>Drive Folder ID</th></tr>
+      <tr><td><strong>AA</strong></td><td>Italasia Head Office (-30%)</td><td><span class="badge blue">rsp_price</span></td><td>hybrid</td><td>34.6%</td><td><code>1e6nMYIH0DDeKdKq_8UFyoTi2j_s_rX3Q</code></td></tr>
+      <tr><td><strong>AA2</strong></td><td>Italasia (Spirits) (-15%)</td><td><span class="badge blue">rsp_price</span></td><td>hybrid</td><td>34.6%</td><td><code>1e6nMYIH0DDeKdKq_8UFyoTi2j_s_rX3Q</code></td></tr>
+      <tr><td><strong>AA4</strong></td><td>Italasia (Premium Wine) (-15%)</td><td><span class="badge blue">rsp_price</span></td><td>hybrid</td><td>34.6%</td><td><code>1e6nMYIH0DDeKdKq_8UFyoTi2j_s_rX3Q</code></td></tr>
+      <tr><td><strong>AB</strong></td><td>BB&amp;B (Wine) (-15%)</td><td><span class="badge slate">no_rsp_price</span></td><td>formula</td><td>19.1%</td><td><code>1aVFftSTY1K2TvzfKfiwFvjc9uVjXLFiD</code></td></tr>
+      <tr><td><strong>AB2</strong></td><td>BB&amp;B (Liquor) (-10%)</td><td><span class="badge slate">no_rsp_price</span></td><td>formula</td><td>19.1%</td><td><code>1aVFftSTY1K2TvzfKfiwFvjc9uVjXLFiD</code></td></tr>
+      <tr><td><strong>AB3</strong></td><td>BB&amp;B (Glassware)</td><td><span class="badge slate">no_rsp_price</span></td><td>formula</td><td>19.1%</td><td><code>1aVFftSTY1K2TvzfKfiwFvjc9uVjXLFiD</code></td></tr>
+      <tr><td><strong>AF</strong></td><td>Vanichwattana</td><td><span class="badge slate">no_rsp_price</span></td><td>formula</td><td>19.4%</td><td><code>1TDJL4bBG_VUEzZjDjSxaVULheI-CXCtu</code></td></tr>
+      <tr><td><strong>EQ</strong></td><td>United Beverage</td><td><span class="badge blue">rsp_price</span></td><td>hybrid</td><td>18.9%</td><td><code>143vg7UJaM4tQ7zz07IV7QbmKvfGOPbE-</code></td></tr>
+      <tr><td><strong>GE</strong></td><td>Great Wine (Thailand) Company Limited</td><td><span class="badge blue">rsp_price</span></td><td>hybrid</td><td>23.1%</td><td><code>19Ui31gHAOefyBUUSXZd8h24HJ94vgkoX</code></td></tr>
+    </table>
+    <div class="note" style="margin-top:10px">AF (Vanichwattana) is <code>normalizable_with_review</code> — runs but needs human review on match results. All others are fully normalizable.</div>
+  </div>
+
+  <!-- ── API ROUTES ────────────────────────────────────────────────── -->
+  <h2>Backend API Routes — All Complete ✓</h2>
+  <div class="section">
+    <table>
+      <tr><th>Route</th><th>Method</th><th>What it does</th><th>Status</th></tr>
+      <tr><td><code>GET /api/settings/suppliers</code></td><td>GET</td><td>List all registered suppliers</td><td><span class="badge green">done</span></td></tr>
+      <tr><td><code>POST /api/settings/suppliers</code></td><td>POST</td><td>Create / update supplier with pricing rules</td><td><span class="badge green">done</span></td></tr>
+      <tr><td><code>GET /api/supplier-intake</code></td><td>GET</td><td>Dashboard summary from CSV files</td><td><span class="badge green">done</span></td></tr>
+      <tr><td><code>GET/POST /api/supplier-intake/runs</code></td><td>GET/POST</td><td>List runs / create new run (accepts <code>source_drive_file_id</code>)</td><td><span class="badge green">done</span></td></tr>
+      <tr><td><code>GET /api/supplier-intake/runs/[id]</code></td><td>GET</td><td>Get run + all rows</td><td><span class="badge green">done</span></td></tr>
+      <tr><td><code>POST /api/supplier-intake/runs/[id]/normalize</code></td><td>POST</td><td>Parse file (Drive or upload) → normalized rows</td><td><span class="badge green">done</span></td></tr>
+      <tr><td><code>POST /api/supplier-intake/runs/[id]/match</code></td><td>POST</td><td>Match rows to products (SKU + token score)</td><td><span class="badge green">done</span></td></tr>
+      <tr><td><code>POST /api/supplier-intake/runs/[id]/price</code></td><td>POST</td><td>Calculate selling price per row using supplier pricing rule</td><td><span class="badge green">done</span></td></tr>
+      <tr><td><code>POST /api/supplier-intake/runs/[id]/approve</code></td><td>POST</td><td>Approve selected row IDs — fix: partial approval keeps status 'priced'</td><td><span class="badge amber">fix needed</span></td></tr>
+      <tr><td><code>POST /api/supplier-intake/runs/[id]/commit</code></td><td>POST</td><td>Write cost + price to products, create changelog entries</td><td><span class="badge green">done</span></td></tr>
+      <tr><td><code>POST /api/supplier-intake/monthly-audit</code></td><td>POST</td><td>Check price&gt;cost, duplicate SKUs, uncommitted approved rows</td><td><span class="badge green">done</span></td></tr>
+      <tr><td><code>GET /api/supplier-intake/drive-files</code></td><td>GET</td><td>List Drive files in a folder (<code>?folder_id=xxx</code>)</td><td><span class="badge amber">to build</span></td></tr>
+      <tr><td><code>GET /api/supplier-intake/runs/[id]/export-csv</code></td><td>GET</td><td>Export priced rows to CSV for offline team review</td><td><span class="badge amber">to build</span></td></tr>
+    </table>
+  </div>
+
+  <!-- ── LIB FILES ─────────────────────────────────────────────────── -->
+  <h2>Library Files — All Complete ✓</h2>
+  <div class="section">
+    <table>
+      <tr><th>File</th><th>Exports</th></tr>
+      <tr><td><code>lib/supplier-intake/types.ts</code></td><td><code>SupplierDefinition</code>, <code>SupplierIntakeRun</code>, <code>SupplierNormalizedRow</code>, <code>SupplierNormalizedPayload</code>, <code>SupplierMatchProposal</code>, <code>SupplierPriceProposal</code>, all enums</td></tr>
+      <tr><td><code>lib/supplier-intake/normalization.ts</code></td><td><code>parseSupplierWorkbook(buffer, filename)</code>, <code>normalizeSupplierRows({runId, supplier, rows})</code></td></tr>
+      <tr><td><code>lib/supplier-intake/matching.ts</code></td><td><code>buildMatchProposal(row, products)</code> — SKU exact (100) + token overlap (×35) + brand (20) + size (10) + vintage (10). strong≥100, likely≥55</td></tr>
+      <tr><td><code>lib/supplier-intake/pricing.ts</code></td><td><code>calculateSupplierPrice(input)</code>, <code>roundPrice(value, mode)</code>, <code>BLOCKING_ISSUES</code> Set</td></tr>
+      <tr><td><code>lib/supplier-intake/google-drive.ts</code></td><td><code>listSupplierDriveFiles(folderId)</code>, <code>downloadDriveFile(fileId)</code>, <code>exportGoogleSheetAsXlsx(fileId)</code></td></tr>
+      <tr><td><code>lib/supplier-intake/drive-structure.ts</code></td><td><code>SUPPLIER_DRIVE_ROOT_FOLDER_ID</code>, <code>SUPPLIER_DRIVE_BUCKETS</code></td></tr>
+      <tr><td><code>lib/db/client.ts</code></td><td><code>getSuppliers</code>, <code>saveSupplier</code>, <code>getSupplierIntakeRuns</code>, <code>saveSupplierIntakeRun</code>, <code>getSupplierIntakeRows</code>, <code>saveSupplierIntakeRows</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ── UI COMPONENTS ─────────────────────────────────────────────── -->
+  <h2>UI Components</h2>
+  <div class="section">
+    <table>
+      <tr><th>Component</th><th>Location</th><th>Status</th><th>Notes</th></tr>
+      <tr><td><strong>SupplierSettingsPage</strong></td><td><code>components/pages/SupplierSettingsPage.tsx</code></td><td><span class="badge green">done</span></td><td>CRUD for supplier + full pricing rule form. Wired into Settings nav.</td></tr>
+      <tr><td><strong>SupplierIntakePage</strong></td><td><code>components/pages/SupplierIntakePage.tsx</code></td><td><span class="badge amber">partial</span></td><td>4 tabs: Control room / Supplier folders / Review queue / PIM apply. 5th tab "Run intake" not yet built.</td></tr>
+      <tr><td><strong>IntakeRunWorkflow</strong></td><td>To be added inside SupplierIntakePage.tsx</td><td><span class="badge amber">to build</span></td><td>The run workflow UI — see spec below.</td></tr>
+    </table>
+  </div>
+
+  <!-- ── RUN WORKFLOW UI SPEC ──────────────────────────────────────── -->
+  <h2>Run Workflow UI — What to Build Next</h2>
+  <div class="section">
+    <p style="font-size:12px;color:#64748b;margin-bottom:12px">Spec: <code>docs/superpowers/specs/2026-05-29-supplier-intake-run-workflow-design.md</code> — reviewed, approved, committed.</p>
+    <div class="grid-2">
+      <div>
+        <h3>User Flow</h3>
+        <div class="pipe" style="margin-bottom:12px">
+          <div class="pipe-step step-done" style="font-size:10px">1. Pick supplier</div>
+          <div class="pipe-step step-done" style="font-size:10px">2. Browse Drive</div>
+          <div class="pipe-step step-done" style="font-size:10px">3. Start Run</div>
+          <div class="pipe-step step-ready" style="font-size:10px">4. Auto-chain</div>
+          <div class="pipe-step step-todo" style="font-size:10px">5. Review</div>
+          <div class="pipe-step step-todo" style="font-size:10px">6. Commit</div>
+        </div>
+        <ul>
+          <li><strong>Phase setup:</strong> Supplier dropdown → Drive file list → "Start Run"</li>
+          <li><strong>Phase processing:</strong> Auto-chain normalize → match → price with stepper bar</li>
+          <li><strong>Phase review:</strong> Table with checkboxes, Export CSV, Adjust Settings link</li>
+          <li><strong>Phase committed:</strong> Summary card + "Start another run"</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Review Table Columns</h3>
+        <ul>
+          <li>☐ checkbox (pre-checked if <code>price.status !== 'needs_review'</code>)</li>
+          <li># row_number · Name · Matched SKU</li>
+          <li>Confidence (green≥100, amber 55-99, red&lt;55)</li>
+          <li>Cost · Supplier RSP · Calculated Price · Margin%</li>
+          <li>Status badge: <span class="badge green">auto ✓</span> <span class="badge amber">review ⚑</span> <span class="badge red">flagged ✗</span></li>
+          <li>Issues (collapsed, expand on hover)</li>
+        </ul>
+        <h3 style="margin-top:12px">Key Rules</h3>
+        <ul>
+          <li>Flagged/blocked rows → no checkbox, greyed, never committed</li>
+          <li>needs_review rows → unchecked by default</li>
+          <li>Export CSV: <code>text/csv</code>, all 13 columns, issues joined with <code> | </code></li>
+          <li>"Adjust Settings" → calls <code>onNavigateToSettings()</code> prop</li>
+        </ul>
+      </div>
+    </div>
+    <h3 style="margin-top:16px">Fixes Required Before Building UI</h3>
+    <table style="margin-top:6px">
+      <tr><th>#</th><th>File</th><th>Fix</th></tr>
+      <tr><td>1</td><td><code>runs/[id]/normalize/route.ts</code></td><td>Add content-type guard before <code>formData()</code> — check <code>ct.includes('multipart/form-data')</code> first, else fall through to Drive path</td></tr>
+      <tr><td>2</td><td><code>runs/route.ts</code></td><td>Accept <code>source_drive_file_id</code> + <code>source_filename</code> + <code>source_format</code> in POST body</td></tr>
+      <tr><td>3</td><td><code>runs/[id]/approve/route.ts</code></td><td>Partial approval: only set run.status='approved' when all committable rows approved (exclude blocked + new_code_required)</td></tr>
+      <tr><td>4</td><td><code>app/api/supplier-intake/drive-files/route.ts</code></td><td><strong>Create new</strong> — GET with <code>?folder_id=</code>, calls <code>listSupplierDriveFiles</code></td></tr>
+      <tr><td>5</td><td><code>runs/[id]/export-csv/route.ts</code></td><td><strong>Create new</strong> — GET, returns <code>text/csv</code> with 13 columns</td></tr>
+    </table>
+  </div>
+
+  <!-- ── SUPPLIER CODE PATTERNS ───────────────────────────────────── -->
+  <h2>Supplier Code Conventions</h2>
+  <div class="section">
+    <div class="grid-2">
+      <div>
+        <h3>Code Structure</h3>
+        <ul>
+          <li><strong>Root code</strong> (e.g. <code>AB</code>) — main commercial relationship with distributor</li>
+          <li><strong>Variant number</strong> (e.g. <code>AB2</code>, <code>AB3</code>) — separate supplier in same family</li>
+          <li><strong>Variant bracket</strong> (e.g. <code>AB(2)</code>, <code>FX(2)</code>) — consignment sub-line of same supplier</li>
+          <li><strong>Distributor sub-line</strong> (e.g. <code>AD2</code>, <code>AD3</code>) — same distributor (IWS), different brand owner product line</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Key Distributor Relationships</h3>
+        <ul>
+          <li><strong>AD / AD2 / AD3</strong> = IWS (distributor). AD=IWS direct, AD2=IWS(MH Wine), AD3=IWS(TWE/Penfolds). Brand owners are reference only — pricing &amp; intake via IWS.</li>
+          <li><strong>BU / BU(2) / BU(4) / BU(8) / BU(9) / BU(11)</strong> = Suriwongse Store / related retail suppliers. All share the Surawong Store Drive folder.</li>
+          <li><strong>AA / AA2 / AA4</strong> = Italasia (same folder, different product categories)</li>
+          <li><strong>HM / HP</strong> — HM=JDSS, HP=Vinobox (HP was reassigned from JDSS duplicate)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── IMPORTANT RULES ───────────────────────────────────────────── -->
+  <h2>Critical Rules (from CLAUDE.md)</h2>
+  <div class="section">
+    <table>
+      <tr><th>#</th><th>Rule</th><th>Why it exists</th></tr>
+      <tr><td>1</td><td>After any paid API run, verify data landed in the user-facing destination (products table / UI), not just in cache rows</td><td>May 2026: $56 wasted on enrichment that was silently dropped by a threshold gate. "X/N processed" is NOT verification.</td></tr>
+      <tr><td>2</td><td>Log-line warnings like "→ CSV ONLY" or "skipped" on majority of rows = STOP and investigate</td><td>Hundreds of skipped rows appeared in logs without explanation</td></tr>
+      <tr><td>3</td><td>Inherited thresholds (e.g. write_threshold=0.85) must be re-audited for new pipelines</td><td>Constants from prior versions may not fit new data distributions</td></tr>
+      <tr><td>9</td><td>Explore UI reads <code>data/live_products_export.json</code> not the DB directly. After bulk writes run <code>scripts/refresh_live_export.py</code></td><td>Two-source architecture causes "I don't see the change" confusion</td></tr>
+      <tr><td>10</td><td>Before any bulk paid run: backup DB → 5-SKU canary → verify → estimate cost → get sign-off → run → verify again</td><td>Prevents spending money on data that never ships to the UI</td></tr>
+    </table>
+  </div>
+
+  <!-- ── KNOWN PENDING ITEMS ───────────────────────────────────────── -->
+  <h2>Open / Pending Items</h2>
+  <div class="section">
+    <table>
+      <tr><th>Item</th><th>Status</th><th>Notes</th></tr>
+      <tr><td>Diageo Drive folder <code>1jH9zp4BGyV94apeYGkZFl9BaUUMPWFIw</code></td><td><span class="badge amber">pending</span></td><td>Decide: link to BU(8) or register as new direct Diageo account</td></tr>
+      <tr><td>Run Workflow UI (IntakeRunWorkflow component)</td><td><span class="badge amber">to build</span></td><td>Spec approved. Invoke writing-plans skill, then implement.</td></tr>
+      <tr><td>Pricing rules — all suppliers still at "draft"</td><td><span class="badge amber">pending</span></td><td>Margins derived from 2026 actuals but VAT, rebates, exact markup formulas not confirmed per supplier. Adjust via Settings UI before running.</td></tr>
+      <tr><td>78 blocked supplier codes</td><td><span class="badge slate">blocked</span></td><td>No Drive folder mapped. Nothing to do until folders are created in Drive.</td></tr>
+      <tr><td>Supplier name fixes in DB (AA2, AA4, AB2, AB3 have generic names)</td><td><span class="badge amber">minor</span></td><td>AA2 shows as "Italasia (AA2)" — should be "Italasia (Spirits) (-15%)" per master list</td></tr>
+    </table>
+  </div>
+
+  <hr>
+  <p style="font-size:11px;color:#334155;text-align:center">WN/LIQ9 Product Engine · Generated 2026-05-30 · Paste this file into any new Claude session to restore full project context</p>
+
+</div>
+</body>
+</html>
