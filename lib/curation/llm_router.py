@@ -26,7 +26,7 @@ class LLMRouter:
         resp = httpx.post(
             f"{base}/api/chat",
             json={"model": model, "messages": [{"role": "user", "content": prompt}], "stream": False},
-            timeout=60,
+            timeout=None,
         )
         resp.raise_for_status()
         return resp.json()["message"]["content"]
