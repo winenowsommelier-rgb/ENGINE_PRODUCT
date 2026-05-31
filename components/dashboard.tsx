@@ -1,6 +1,6 @@
 'use client';
 import React, { Suspense, useState } from 'react';
-import { ClipboardCheck, Database, FileCheck2, Globe, Grid3X3, History, Home, Library, Package, Settings, Upload, type LucideIcon } from 'lucide-react';
+import { ClipboardCheck, Database, FileCheck2, FolderInput, Globe, Grid3X3, History, Home, Library, Package, Settings, Sparkles, Upload, type LucideIcon } from 'lucide-react';
 
 const DashboardHomePage = React.lazy(() => import('@/components/pages/DashboardHomePage').then(m => ({ default: m.DashboardHomePage })));
 const ProductsPage      = React.lazy(() => import('@/components/pages/ProductsPage').then(m => ({ default: m.ProductsPage })));
@@ -11,9 +11,10 @@ const PublishReadinessPage = React.lazy(() => import('@/components/pages/Publish
 const ValidationDashboardPage = React.lazy(() => import('@/components/pages/ValidationDashboardPage').then(m => ({ default: m.ValidationDashboardPage })));
 const ChangeLogPage = React.lazy(() => import('@/components/pages/ChangeLogPage').then(m => ({ default: m.ChangeLogPage })));
 const ImportHubPage = React.lazy(() => import('@/components/pages/ImportHubPage').then(m => ({ default: m.ImportHubPage })));
+const SupplierIntakePage = React.lazy(() => import('@/components/pages/SupplierIntakePage').then(m => ({ default: m.SupplierIntakePage })));
 const SettingsPage      = React.lazy(() => import('@/components/pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
 
-type Section = 'home' | 'products' | 'matrix' | 'knowledge_library' | 'research_library' | 'publish_readiness' | 'validation' | 'changelog' | 'import' | 'settings';
+type Section = 'home' | 'products' | 'matrix' | 'knowledge_library' | 'research_library' | 'publish_readiness' | 'validation' | 'changelog' | 'import' | 'supplier_intake' | 'settings';
 
 interface NavGroup {
   label: string;
@@ -48,6 +49,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: 'Data',
     items: [
       { id: 'import', label: 'Import', Icon: Upload },
+      { id: 'supplier_intake', label: 'Supplier Intake', Icon: FolderInput },
     ],
   },
   {
@@ -100,6 +102,12 @@ function Sidebar({ active, onNavigate }: { active: Section; onNavigate: (s: Sect
           Map Explorer
           <span className="ml-auto text-[10px] text-slate-600">↗</span>
         </a>
+        <a href="/curation"
+          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-colors mb-2">
+          <Sparkles size={15} />
+          Curation Engine
+          <span className="ml-auto text-[10px] text-slate-600">↗</span>
+        </a>
         <div className="border-b border-white/5 mb-2" />
         {NAV_GROUPS.map((group, gi) => (
           <React.Fragment key={gi}>
@@ -139,6 +147,7 @@ export function Dashboard() {
     validation:       <ValidationDashboardPage />,
     changelog:        <ChangeLogPage />,
     import:           <ImportHubPage />,
+    supplier_intake:  <SupplierIntakePage />,
     settings:         <SettingsPage />,
   };
 
