@@ -100,6 +100,13 @@ function Sidebar({ active, onNavigate }: { active: Section; onNavigate: (s: Sect
           Map Explorer
           <span className="ml-auto text-[10px] text-slate-600">↗</span>
         </a>
+        {/* Validate Supplier List — drop a CSV, get a validated CSV */}
+        <a href="/validate"
+          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-colors mb-2">
+          <FileCheck2 size={15} />
+          Validate List
+          <span className="ml-auto text-[10px] text-slate-600">↗</span>
+        </a>
         <div className="border-b border-white/5 mb-2" />
         {NAV_GROUPS.map((group, gi) => (
           <React.Fragment key={gi}>

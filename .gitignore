@@ -44,3 +44,4 @@ data/db/products.db
 data/db/products.db-journal
 data/db/products.db-wal
 data/db/products.db-shm
+data/db/taxonomy-proposals.json
