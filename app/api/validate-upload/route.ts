@@ -12,8 +12,11 @@ export const maxDuration = 120;
  * Body (JSON):
  *   { csv: string }                      — raw CSV text, OR
  *   { rows: object[], headers: string[] } — already-parsed rows
- *   research?: boolean                   — research unknowns online (default true)
  *   download?: boolean                   — return text/csv attachment instead of JSON
+ *
+ * Problem values (unknown taxonomy) are cross-checked against our own product
+ * database + canonical lists (no external API) and filed to the review queue.
+ * Nothing is added to the canonical taxonomy automatically.
  *
  * Returns JSON: { detectedColumns, summary, results, proposals }
  * or a CSV file when download=true.
@@ -51,10 +54,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // File unknowns into the review queue (research is best-effort).
-    let storedProposals: Awaited<ReturnType<typeof fileProposals>> = [];
+    // Cross-check problem values against our database and file them for review.
+    // Nothing is added to the canonical taxonomy automatically.
+    let storedProposals: ReturnType<typeof fileProposals> = [];
     if (proposals.length) {
-      storedProposals = await fileProposals(proposals, { research: body.research !== false });
+      storedProposals = fileProposals(proposals);
     }
 
     if (body.download) {

@@ -20,10 +20,12 @@ For every row in the uploaded CSV:
 4. **Validates brand** against the brand set seen in the product database
    (producer is intentionally not validated — the product schema does not
    populate it).
-5. **Routes unknowns to review.** Anything not in the taxonomy becomes an
-   evidence-backed **proposal** (optionally researched online via Claude),
-   filed to `data/db/taxonomy-proposals.json`. Canonical taxonomy is **never**
-   auto-written from an upload — a human approves first.
+5. **Routes problem items to review.** Anything not in the taxonomy is
+   **cross-checked against our own database** (no external API): how many
+   existing products already use the value, plus the closest canonical name
+   we hold ("did you mean…?"). The result is filed as a `pending` proposal to
+   `data/db/taxonomy-proposals.json`. **Nothing is added automatically** — the
+   review process decides.
 
 ## Row statuses (`overall_status`)
 
@@ -41,24 +43,26 @@ For every row in the uploaded CSV:
 
 ```jsonc
 // body
-{ "csv": "raw,csv,text...", "research": true, "download": false }
+{ "csv": "raw,csv,text...", "download": false }
 // or
 { "rows": [ { ... } ], "headers": ["name","country", ...] }
 ```
 
-- `research` (default `true`): research unknown taxonomy online before
-  proposing. Degrades gracefully to `needs_research` when `ANTHROPIC_API_KEY`
-  is not set.
 - `download: true`: returns a `text/csv` attachment instead of JSON.
+- No external API is used. Problem values are cross-checked against the
+  product database and canonical lists only.
 
 JSON response: `{ detectedColumns, summary, total, results, csv, proposals }`.
+Each proposal carries `occurrences` (uses in the product DB), `suggestion`
+(closest canonical name) + `suggestion_score`, `evidence`, and `status: pending`.
 
 ## Code
 
 - `lib/validation/upload-pipeline.ts` — column detection, name matching,
   geography/brand validation, CSV in/out. Reuses `lib/validation/engine.ts`
   and `lib/taxonomy/service.ts`.
-- `lib/validation/taxonomy-research.ts` — online research + local proposal queue.
+- `lib/validation/taxonomy-research.ts` — database cross-check (occurrences +
+  closest-canonical suggestion) + local proposal queue.
 - `app/api/validate-upload/route.ts` — endpoint.
 - `app/validate/` — drop-zone UI.
 

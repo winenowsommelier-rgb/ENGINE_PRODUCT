@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
-import { UploadCloud, FileCheck2, Download, Loader2, AlertTriangle, CheckCircle2, FlaskConical } from 'lucide-react';
+import { UploadCloud, FileCheck2, Download, Loader2, AlertTriangle, CheckCircle2 } from 'lucide-react';
 
 type Row = Record<string, string>;
 type Proposal = {
@@ -9,11 +9,11 @@ type Proposal = {
   proposed_value: string;
   parent_path: string;
   status: string;
-  canonical?: string;
-  recommend_add?: boolean | null;
-  confidence?: number;
-  evidence?: string;
   occurrences: number;
+  suggestion?: string;
+  suggestion_score?: number;
+  evidence?: string;
+  count: number;
 };
 type ApiResult = {
   detectedColumns: Record<string, string>;
@@ -43,7 +43,6 @@ const TABLE_COLS = [
 export default function ValidateClient() {
   const [dragging, setDragging] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [research, setResearch] = useState(true);
   const [fileName, setFileName] = useState('');
   const [error, setError] = useState('');
   const [data, setData] = useState<ApiResult | null>(null);
@@ -58,7 +57,7 @@ export default function ValidateClient() {
       const res = await fetch('/api/validate-upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ csv, research }),
+        body: JSON.stringify({ csv }),
       });
       const json = (await res.json()) as ApiResult;
       if (!res.ok) throw new Error(json.error || `Request failed (${res.status})`);
@@ -68,7 +67,7 @@ export default function ValidateClient() {
     } finally {
       setLoading(false);
     }
-  }, [research]);
+  }, []);
 
   const handleFile = useCallback((file: File) => {
     const reader = new FileReader();
@@ -132,12 +131,9 @@ export default function ValidateClient() {
         />
       </div>
 
-      <div className="mt-4 flex items-center gap-4 text-sm text-white/60">
-        <label className="flex cursor-pointer items-center gap-2 select-none">
-          <input type="checkbox" checked={research} onChange={(e) => setResearch(e.target.checked)} />
-          <FlaskConical className="h-4 w-4" />
-          Research unknown taxonomy online before proposing
-        </label>
+      <div className="mt-3 text-xs text-white/40">
+        Problem items are cross-checked against our product database (no external API). Nothing is
+        added automatically — unknowns are filed for the review process.
       </div>
 
       {loading && (
@@ -178,19 +174,20 @@ export default function ValidateClient() {
           {pendingProposals.length > 0 && (
             <section className="panel mt-6 px-5 py-4">
               <h2 className="flex items-center gap-2 text-sm font-semibold text-fuchsia-200">
-                <FileCheck2 className="h-4 w-4" /> {pendingProposals.length} new taxonomy proposal(s) awaiting review
+                <FileCheck2 className="h-4 w-4" /> {pendingProposals.length} problem value(s) filed for review
               </h2>
               <p className="mt-1 text-xs text-white/50">
-                Unknown values are never auto-added. These were filed to <code>data/db/taxonomy-proposals.json</code> for approval.
+                Cross-checked against our database — never auto-added. Filed to{' '}
+                <code>data/db/taxonomy-proposals.json</code> for the review process.
               </p>
               <div className="mt-3 overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead className="text-white/40">
                     <tr>
                       <th className="px-2 py-1">type</th><th className="px-2 py-1">value</th>
-                      <th className="px-2 py-1">parent</th><th className="px-2 py-1">canonical</th>
-                      <th className="px-2 py-1">add?</th><th className="px-2 py-1">conf</th>
-                      <th className="px-2 py-1">status</th><th className="px-2 py-1">evidence</th>
+                      <th className="px-2 py-1">parent</th>
+                      <th className="px-2 py-1">in DB</th><th className="px-2 py-1">did you mean?</th>
+                      <th className="px-2 py-1">rows</th><th className="px-2 py-1">evidence</th>
                     </tr>
                   </thead>
                   <tbody className="text-white/75">
@@ -199,10 +196,11 @@ export default function ValidateClient() {
                         <td className="px-2 py-1">{p.type}</td>
                         <td className="px-2 py-1 font-medium">{p.proposed_value}</td>
                         <td className="px-2 py-1 text-white/50">{p.parent_path || '—'}</td>
-                        <td className="px-2 py-1">{p.canonical || '—'}</td>
-                        <td className="px-2 py-1">{p.recommend_add == null ? '?' : p.recommend_add ? '✓' : '✕'}</td>
-                        <td className="px-2 py-1">{p.confidence ? p.confidence.toFixed(2) : '—'}</td>
-                        <td className="px-2 py-1">{p.status}</td>
+                        <td className="px-2 py-1">{p.occurrences > 0 ? `${p.occurrences}×` : '—'}</td>
+                        <td className="px-2 py-1">
+                          {p.suggestion ? `${p.suggestion} (${(p.suggestion_score ?? 0).toFixed(2)})` : '—'}
+                        </td>
+                        <td className="px-2 py-1">{p.count}</td>
                         <td className="px-2 py-1 text-white/50">{p.evidence || '—'}</td>
                       </tr>
                     ))}

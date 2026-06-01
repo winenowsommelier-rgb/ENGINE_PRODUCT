@@ -79,8 +79,17 @@ let _productIndex: {
   bySku: Map<string, ProductLite>;
   byName: Map<string, ProductLite>;
   byTokens: Array<{ tokens: Set<string>; brandFold: string; product: ProductLite }>;
-  brandSet: Set<string>;
+  // folded value → number of existing products that use it (our "big database" signal)
+  countryCounts: Map<string, number>;
+  regionCounts: Map<string, number>;
+  subregionCounts: Map<string, number>;
+  brandCounts: Map<string, number>;
 } | null = null;
+
+function bump(m: Map<string, number>, value: string) {
+  const k = fold(value);
+  if (k) m.set(k, (m.get(k) ?? 0) + 1);
+}
 
 function tokenize(s: string): Set<string> {
   return new Set(
@@ -99,7 +108,10 @@ function loadProductIndex() {
   const bySku = new Map<string, ProductLite>();
   const byName = new Map<string, ProductLite>();
   const byTokens: Array<{ tokens: Set<string>; brandFold: string; product: ProductLite }> = [];
-  const brandSet = new Set<string>();
+  const countryCounts = new Map<string, number>();
+  const regionCounts = new Map<string, number>();
+  const subregionCounts = new Map<string, number>();
+  const brandCounts = new Map<string, number>();
 
   for (const p of products) {
     const lite: ProductLite = {
@@ -113,10 +125,25 @@ function loadProductIndex() {
     if (lite.sku) bySku.set(fold(lite.sku), lite);
     if (lite.name) byName.set(fold(lite.name), lite);
     if (lite.name) byTokens.push({ tokens: tokenize(lite.name), brandFold: fold(lite.brand), product: lite });
-    if (lite.brand) brandSet.add(fold(lite.brand));
+    bump(countryCounts, lite.country);
+    bump(regionCounts, lite.region);
+    bump(subregionCounts, lite.subregion);
+    bump(brandCounts, lite.brand);
   }
-  _productIndex = { bySku, byName, byTokens, brandSet };
+  _productIndex = { bySku, byName, byTokens, countryCounts, regionCounts, subregionCounts, brandCounts };
   return _productIndex;
+}
+
+/** How many existing products in our database use this exact value (folded). */
+export function dbOccurrences(field: 'country' | 'region' | 'subregion' | 'brand', value: string): number {
+  const idx = loadProductIndex();
+  const m = {
+    country: idx.countryCounts,
+    region: idx.regionCounts,
+    subregion: idx.subregionCounts,
+    brand: idx.brandCounts,
+  }[field];
+  return m.get(fold(value)) ?? 0;
 }
 
 // Jaccard token similarity for fuzzy name match
@@ -314,7 +341,7 @@ export function validateRows(rawRows: Array<Record<string, any>>, headers: strin
 
     // ── Brand (validate only; producer not used in product schema) ──
     let brandStatus: ValidatedRow['brand_status'] = 'blank';
-    if (resolvedBrand) brandStatus = idx.brandSet.has(fold(resolvedBrand)) ? 'known' : 'new';
+    if (resolvedBrand) brandStatus = idx.brandCounts.has(fold(resolvedBrand)) ? 'known' : 'new';
 
     // ── Name normalization (match existing product first) ──
     const nameMatch = normalizeName(inName, inSku, resolvedBrand, inVintage || patch.vintage || '');

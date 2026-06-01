@@ -1,96 +1,110 @@
 // lib/validation/taxonomy-research.ts
 //
-// For unknown taxonomy values surfaced by the upload validator, this:
-//   1. researches the value online (via Claude) to gather evidence + the
-//      correct canonical spelling and parent, and a recommendation on whether
-//      it belongs in our library, and
-//   2. files the result as a PROPOSAL (never a direct canonical write) into the
-//      local review queue at data/db/taxonomy-proposals.json.
+// For the PROBLEM items surfaced by the upload validator (unknown taxonomy
+// values), this cross-checks each value against our own large database and
+// canonical lists — no external API. It gathers evidence to help a reviewer:
+//   - how many existing products already use this value (occurrences), and
+//   - the closest canonical name we already have ("did you mean…?").
 //
-// Both steps degrade gracefully: with no ANTHROPIC_API_KEY, the proposal is
-// still filed but flagged `needs_research` for a human to investigate.
+// Nothing is added or decided automatically. Every proposal is filed to the
+// local review queue (data/db/taxonomy-proposals.json) with status `pending`
+// for the review process to handle further.
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
-import Anthropic from '@anthropic-ai/sdk';
 import type { TaxonomyProposal } from './types';
+import { countryByName, regionByName, subregionById } from '../taxonomy/service';
+import { dbOccurrences, fold } from './upload-pipeline';
 
 const PROPOSALS_PATH = join(process.cwd(), 'data', 'db', 'taxonomy-proposals.json');
 
-export type ResearchVerdict = {
-  exists: boolean | null;        // is this a real wine geography/brand?
-  canonical: string;             // corrected canonical spelling
-  parent: string;                // correct parent (e.g. country for a region)
-  recommend_add: boolean | null; // should it enter our library?
-  confidence: number;            // 0..1
-  evidence: string;              // short justification
-  status: 'researched' | 'needs_research';
+// Canonical names we already hold, per level — used for "did you mean" suggestions.
+const CANON: Partial<Record<TaxonomyProposal['type'], string[]>> = {
+  country: Array.from(new Set(Array.from(countryByName.values()).map((c) => c.name))),
+  region: Array.from(new Set(Array.from(regionByName.values()).map((r) => r.name))),
+  sub_region: Array.from(new Set(Array.from(subregionById.values()).map((s) => s.name))),
 };
 
-export async function researchTaxonomy(
+const DB_FIELD: Partial<Record<TaxonomyProposal['type'], 'country' | 'region' | 'subregion'>> = {
+  country: 'country',
+  region: 'region',
+  sub_region: 'subregion',
+};
+
+// Normalized Levenshtein similarity (0..1) — catches typos/accents a token
+// overlap would miss (e.g. "Curico Valley" ≈ "Curicó Valley").
+function editSim(a: string, b: string): number {
+  const s = fold(a);
+  const t = fold(b);
+  if (!s || !t) return 0;
+  if (s === t) return 1;
+  const m = s.length;
+  const n = t.length;
+  const dp = Array.from({ length: m + 1 }, (_, i) => i);
+  for (let j = 1; j <= n; j++) {
+    let prev = dp[0];
+    dp[0] = j;
+    for (let i = 1; i <= m; i++) {
+      const tmp = dp[i];
+      dp[i] = Math.min(
+        dp[i] + 1,
+        dp[i - 1] + 1,
+        prev + (s[i - 1] === t[j - 1] ? 0 : 1),
+      );
+      prev = tmp;
+    }
+  }
+  return 1 - dp[m] / Math.max(m, n);
+}
+
+function closestCanonical(type: TaxonomyProposal['type'], value: string): { name: string; score: number } | null {
+  const list = CANON[type];
+  if (!list?.length) return null;
+  let best: { name: string; score: number } | null = null;
+  for (const name of list) {
+    const score = editSim(value, name);
+    if (!best || score > best.score) best = { name, score };
+  }
+  return best && best.score >= 0.7 ? best : null;
+}
+
+export type DbAssessment = {
+  occurrences: number;          // products in our DB already using this exact value
+  suggestion: string;           // closest canonical name we already hold (or '')
+  suggestion_score: number;     // 0..1 similarity to that suggestion
+  evidence: string;             // human-readable summary for the reviewer
+};
+
+export function assessAgainstDatabase(
   type: TaxonomyProposal['type'],
   value: string,
-  parentPath: string,
-): Promise<ResearchVerdict> {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return {
-      exists: null, canonical: value, parent: parentPath, recommend_add: null,
-      confidence: 0, evidence: 'No ANTHROPIC_API_KEY configured — manual research required.',
-      status: 'needs_research',
-    };
-  }
+): DbAssessment {
+  const field = DB_FIELD[type];
+  const occurrences = field ? dbOccurrences(field, value) : 0;
+  const close = closestCanonical(type, value);
 
-  const client = new Anthropic();
-  const prompt = `You are a wine & spirits geography/brand taxonomy expert.
+  const bits: string[] = [];
+  if (occurrences > 0) bits.push(`seen ${occurrences}× in product DB`);
+  else bits.push('not seen in product DB');
+  if (close) bits.push(`closest canonical: "${close.name}" (${close.score.toFixed(2)})`);
 
-Assess this proposed ${type.replace('_', '-')}: "${value}"${parentPath ? ` (claimed parent: "${parentPath}")` : ''}.
-
-Decide, using established wine knowledge:
-- is it a real, recognized ${type.replace('_', '-')}?
-- what is its correct canonical spelling (with proper accents)?
-- what is its correct parent (the country for a region; the region for a sub-region; empty for a country/brand)?
-- should it be added to a canonical wine taxonomy library (true only if it is a genuine, distinct, recognized entity)?
-
-Return ONLY valid JSON, no prose:
-{"exists":true,"canonical":"string","parent":"string","recommend_add":true,"confidence":0.0,"evidence":"one sentence"}`;
-
-  try {
-    const res = await client.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 512,
-      messages: [{ role: 'user', content: prompt }],
-    });
-    const text = res.content[0]?.type === 'text' ? res.content[0].text : '';
-    const clean = text.replace(/```[a-z]*\n?/gi, '').replace(/```/g, '').trim();
-    const j = JSON.parse(clean);
-    return {
-      exists: Boolean(j.exists),
-      canonical: String(j.canonical || value),
-      parent: String(j.parent || parentPath),
-      recommend_add: Boolean(j.recommend_add),
-      confidence: Number(j.confidence) || 0,
-      evidence: String(j.evidence || ''),
-      status: 'researched',
-    };
-  } catch (err) {
-    return {
-      exists: null, canonical: value, parent: parentPath, recommend_add: null,
-      confidence: 0,
-      evidence: `Research failed: ${err instanceof Error ? err.message : 'unknown error'}`,
-      status: 'needs_research',
-    };
-  }
+  return {
+    occurrences,
+    suggestion: close?.name ?? '',
+    suggestion_score: close?.score ?? 0,
+    evidence: bits.join('; '),
+  };
 }
 
 // ── Local proposal queue (review-before-commit; mirrors taxonomy_proposals) ───
 export type StoredProposal = TaxonomyProposal & {
   id: string;
-  status: 'pending' | 'needs_research' | 'approved' | 'rejected';
-  canonical?: string;
-  recommend_add?: boolean | null;
-  confidence?: number;
-  evidence?: string;
+  status: 'pending';            // always pending — the review process decides
   occurrences: number;
+  suggestion: string;
+  suggestion_score: number;
+  evidence: string;
+  count: number;                // how many uploaded rows hit this proposal
   created_at: string;
 };
 
@@ -108,45 +122,35 @@ function key(p: { type: string; proposed_value: string; parent_path: string }) {
 }
 
 /**
- * Research each unique proposal and upsert it into the local review queue.
- * De-duplicates against existing entries; bumps `occurrences` on repeats.
- * Returns the proposals as stored (with verdicts attached).
+ * Cross-check each unique problem value against our database and upsert it into
+ * the local review queue. De-duplicates against existing entries (bumping
+ * `count`). Adds nothing to the canonical taxonomy — review handles that.
  */
-export async function fileProposals(
-  proposals: TaxonomyProposal[],
-  opts: { research?: boolean; maxResearch?: number } = {},
-): Promise<StoredProposal[]> {
-  const { research = true, maxResearch = 25 } = opts;
+export function fileProposals(proposals: TaxonomyProposal[]): StoredProposal[] {
   const existing = loadProposals();
   const byKey = new Map(existing.map((p) => [key(p), p]));
 
-  // unique incoming
   const uniques = new Map<string, TaxonomyProposal>();
   for (const p of proposals) if (p.proposed_value) uniques.set(key(p), p);
 
   const filed: StoredProposal[] = [];
-  let researched = 0;
   for (const [k, p] of uniques) {
     const prior = byKey.get(k);
     if (prior) {
-      prior.occurrences += 1;
+      prior.count += 1;
       filed.push(prior);
       continue;
     }
-    let verdict: ResearchVerdict | null = null;
-    if (research && researched < maxResearch) {
-      verdict = await researchTaxonomy(p.type, p.proposed_value, p.parent_path);
-      researched++;
-    }
+    const assessment = assessAgainstDatabase(p.type, p.proposed_value);
     const stored: StoredProposal = {
       ...p,
       id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
-      status: verdict?.status === 'researched' ? 'pending' : 'needs_research',
-      canonical: verdict?.canonical,
-      recommend_add: verdict?.recommend_add ?? null,
-      confidence: verdict?.confidence ?? 0,
-      evidence: verdict?.evidence ?? '',
-      occurrences: 1,
+      status: 'pending',
+      occurrences: assessment.occurrences,
+      suggestion: assessment.suggestion,
+      suggestion_score: assessment.suggestion_score,
+      evidence: assessment.evidence,
+      count: 1,
       created_at: new Date().toISOString(),
     };
     byKey.set(k, stored);
@@ -159,7 +163,6 @@ export async function fileProposals(
   return filed;
 }
 
-export function getProposals(status?: StoredProposal['status']): StoredProposal[] {
-  const all = loadProposals();
-  return status ? all.filter((p) => p.status === status) : all;
+export function getProposals(): StoredProposal[] {
+  return loadProposals();
 }
