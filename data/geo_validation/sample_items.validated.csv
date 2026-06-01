@@ -1,0 +1,11 @@
+row,item,input_country,input_region,input_subregion,country,region,subregion,country_status,region_status,subregion_status,country_id,region_id,subregion_id,in_database,overall_status,notes
+1,W001,France,Bordeaux,Médoc,France,Bordeaux,Médoc,valid,valid,valid,1,1,1,yes,valid,
+2,W002,Chile,Curico Valley,,Chile,Curico Valley,,valid,valid,blank,7,100,,yes,valid,
+3,W003,United States,Napa,,USA,,,corrected,unknown,blank,6,,,no,invalid,region not in taxonomy; normalized to canonical spelling
+4,W004,France,Burgundy,Cote de Beaune,France,Burgundy,Côte de Beaune,valid,valid,corrected,1,2,6,yes,corrected,normalized to canonical spelling
+5,W005,France,Rhone Valley,,France,Rhône Valley,,valid,corrected,blank,1,4,,yes,corrected,normalized to canonical spelling
+6,W006,Italy,Bordeaux,,Italy,Bordeaux,,valid,wrong_parent,blank,2,1,,no,invalid,"region belongs to 'France', not 'Italy'"
+7,W007,France,Fantasyland,,France,,,valid,unknown,blank,1,,,no,invalid,region not in taxonomy
+8,W008,Atlantis,Somewhere,,,,,unknown,unknown,blank,,,,no,invalid,country not in taxonomy; region not in taxonomy
+9,W009,italy,toscana,,Italy,,,corrected,unknown,blank,2,,,no,invalid,region not in taxonomy; normalized to canonical spelling
+10,W010,France,Champagne,Cote des Blancs,France,Champagne,Côte des Blancs,valid,valid,corrected,1,3,12,yes,corrected,normalized to canonical spelling

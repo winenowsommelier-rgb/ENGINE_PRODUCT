@@ -1,0 +1,11 @@
+sku,name,country,region,subregion
+W001,Château Test Margaux,France,Bordeaux,Médoc
+W002,Curico Red,Chile,Curico Valley,
+W003,Napa Cab,United States,Napa,
+W004,Burgundy White,France,Burgundy,Cote de Beaune
+W005,Rhone Red,France,Rhone Valley,
+W006,Mismatch Wine,Italy,Bordeaux,
+W007,Mystery Wine,France,Fantasyland,
+W008,Unknown Country,Atlantis,Somewhere,
+W009,Tuscan Red,italy,toscana,
+W010,Champagne Brut,France,Champagne,Cote des Blancs
