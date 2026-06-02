@@ -49,6 +49,10 @@ PRODUCT_SYNC_COLUMNS = [
     # Popularity / BI
     "popularity_score", "popularity_orders_90d", "popularity_revenue_90d",
     "popularity_qty_90d",
+    # Stock/active flags (synced from BI via scripts/sync_stock_from_bi.py).
+    # Requires Supabase columns is_active INT, has_recent_sales INT, bi_synced_at TEXT
+    # (added in migration add_is_active_to_products).
+    "is_active", "has_recent_sales", "bi_synced_at",
 ]
 
 # Columns that may exist in local SQLite but are NOT yet in the Supabase schema.

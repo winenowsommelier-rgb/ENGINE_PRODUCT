@@ -101,7 +101,9 @@ export async function GET(req: NextRequest) {
     if (priceMin) filters.push(`price=gte.${Number(priceMin) || 0}`);
     if (priceMax) filters.push(`price=lte.${Number(priceMax) || 0}`);
 
-    const requireActive = q.get('requireActive') !== 'false';
+    // is_active filter — disabled by default until Supabase has the column.
+    // Pass requireActive=true explicitly when the schema has it.
+    const requireActive = q.get('requireActive') === 'true';
     if (requireActive) filters.push('is_active=eq.1');
 
     // For axis.* filters (taste_profile.axes — nested JSON), Postgres doesn't index well,

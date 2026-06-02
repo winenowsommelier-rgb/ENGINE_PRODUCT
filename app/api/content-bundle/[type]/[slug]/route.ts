@@ -427,15 +427,27 @@ async function handleBrand(slug: string) {
     verifier = notes.verifier || {};
   } catch {}
 
-  // Pull active SKUs for this brand from Supabase
-  const skus = await sbQuery(
+  // Pull SKUs for this brand from Supabase. `is_active` may or may not
+  // be a column in Supabase yet — try with it, fall back to without it.
+  let skus = await sbQuery(
     'products?brand=eq.' + encodeURIComponent(canonicalName) +
     '&select=id,sku,name,vintage,price,classification,wine_classification,country,region,subregion,grape_variety,image_url,desc_en_short,full_description,wine_body,wine_acidity,wine_tannin,taste_profile,flavor_tags,food_matching,enrichment_quality_grade,enrichment_source,is_active' +
     '&order=price.desc.nullslast&limit=500'
   );
+  if (skus.length === 0) {
+    // Fallback: column probably doesn't exist on Supabase yet
+    skus = await sbQuery(
+      'products?brand=eq.' + encodeURIComponent(canonicalName) +
+      '&select=id,sku,name,vintage,price,classification,wine_classification,country,region,subregion,grape_variety,image_url,desc_en_short,full_description,wine_body,wine_acidity,wine_tannin,taste_profile,flavor_tags,food_matching,enrichment_quality_grade,enrichment_source' +
+      '&order=price.desc.nullslast&limit=500'
+    );
+  }
 
-  // Stats — only consider active SKUs for headline numbers
-  const activeSkus = skus.filter(function (s: any) { return s.is_active === 1 || s.is_active === true; });
+  // Stats — prefer active SKUs (when is_active is available); else treat all as active.
+  const hasActiveFlag = skus.some(function (s: any) { return s.is_active !== undefined; });
+  const activeSkus = hasActiveFlag
+    ? skus.filter(function (s: any) { return s.is_active === 1 || s.is_active === true; })
+    : skus;
   const prices = activeSkus.map(function (s: any) { return Number(s.price); }).filter(function (p: number) { return Number.isFinite(p) && p > 0; });
   const priceMin = prices.length > 0 ? Math.min(...prices) : null;
   const priceMax = prices.length > 0 ? Math.max(...prices) : null;

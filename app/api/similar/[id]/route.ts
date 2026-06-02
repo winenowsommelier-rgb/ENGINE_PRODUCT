@@ -179,13 +179,23 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ source, similar: [], note: 'No strong dimensions available' });
     }
 
-    const candidates = await sbGet(
+    // Try with is_active filter; if it's missing on Supabase (column doesn't exist),
+    // fall back to no filter — better to show something than nothing.
+    let candidates = await sbGet(
       'products?' +
       `or=(${clauses.join(',')})` +
       '&select=id,sku,sku_base,name,brand,classification,country,region,price,currency,image_url,enrichment_quality_grade,wine_body,wine_acidity,wine_tannin,taste_profile,desc_en_short,is_active' +
       '&is_active=eq.1' +
       '&limit=400'
     ) as SourceRow[];
+    if (candidates.length === 0) {
+      candidates = await sbGet(
+        'products?' +
+        `or=(${clauses.join(',')})` +
+        '&select=id,sku,sku_base,name,brand,classification,country,region,price,currency,image_url,enrichment_quality_grade,wine_body,wine_acidity,wine_tannin,taste_profile,desc_en_short' +
+        '&limit=400'
+      ) as SourceRow[];
+    }
 
     // 3) Score
     const scored = candidates
