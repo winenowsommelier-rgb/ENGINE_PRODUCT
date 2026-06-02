@@ -768,6 +768,10 @@ if __name__ == "__main__":
                         help="Run self-tests (use --sample-dir to point at XLSX samples)")
     parser.add_argument("--sample-dir", type=Path, default=Path("/tmp/supplier_samples"),
                         help="Directory containing sample XLSX files for self-tests")
+    parser.add_argument("--batch-id",
+                        help="Intake run ID to stamp into intake_batch_id column")
+    parser.add_argument("--source-file-id",
+                        help="Google Drive file ID to stamp into source_file_id column")
 
     args = parser.parse_args()
 
@@ -796,6 +800,11 @@ if __name__ == "__main__":
     writer.writeheader()
     count = 0
     for row in func(args.input_file, supplier_code):
+        # Stamp run metadata if provided
+        if args.batch_id:
+            row['intake_batch_id'] = args.batch_id
+        if args.source_file_id:
+            row['source_file_id'] = args.source_file_id
         writer.writerow(row)
         count += 1
 
