@@ -3,32 +3,26 @@
  *
  * Returns a landing-page-ready content bundle for a taxonomy entity.
  * Merges data from: Supabase products + SQLite taxonomy + expert library
- * + explore-taxonomy.json coordinates.
+ * + brand library + explore-taxonomy.json coordinates.
  *
- * Types: country, region, subregion, classification
- * Slug: e.g., "france", "bordeaux", "red-wine"
+ * Types: country, region, subregion, classification, brand
+ * Slug: e.g., "france", "bordeaux", "red-wine", "the-balvenie"
  *
  * Designed for:
  * - Cloud Claude to generate landing page content grounded in real data
- * - Next.js pages to render SEO-optimized region/country pages
+ * - Next.js pages to render SEO-optimized region/country/brand pages
  * - External projects building collection/recommendation features
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { getSupabaseServerConfig } from '@/lib/supabase/server';
 
 export const runtime = 'nodejs';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
-const SB_HEADERS = {
-  apikey: SUPABASE_KEY,
-  Authorization: `Bearer ${SUPABASE_KEY}`,
-  'Content-Type': 'application/json',
-};
-
 const EXPLORE_PATH = join(process.cwd(), 'data/taxonomy/explore-taxonomy.json');
 const EXPERT_PATH = join(process.cwd(), 'data/expert_knowledge_library.csv');
+const BRAND_LIBRARY_PATH = join(process.cwd(), 'data/brand_description_library.csv');
 
 // ── Helpers ──────────────────────────────────────────────────
 
@@ -80,7 +74,8 @@ function getExpertEntry(type: string, name: string): any | null {
 
 async function sbQuery(path: string): Promise<any[]> {
   try {
-    const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: SB_HEADERS });
+    const { url, headers } = getSupabaseServerConfig();
+    const res = await fetch(url + '/rest/v1/' + path, { headers });
     if (!res.ok) return [];
     return res.json();
   } catch { return []; }
@@ -88,12 +83,58 @@ async function sbQuery(path: string): Promise<any[]> {
 
 async function sbCount(filter: string): Promise<number> {
   try {
+    const { url, headers } = getSupabaseServerConfig();
     const res = await fetch(
-      SUPABASE_URL + '/rest/v1/products?select=id&' + filter + '&limit=1',
-      { headers: { ...SB_HEADERS, Prefer: 'count=exact' } }
+      url + '/rest/v1/products?select=id&' + filter + '&limit=1',
+      { headers: { ...headers, Prefer: 'count=exact' } }
     );
     return Number(res.headers.get('content-range')?.split('/')[1] || 0);
   } catch { return 0; }
+}
+
+// Brand library lookup — JSON-encoded in `notes` column of brand_description_library.csv
+let _brandCache: Map<string, any> | null = null;
+function getBrandEntry(name: string): any | null {
+  if (!_brandCache) {
+    _brandCache = new Map();
+    if (existsSync(BRAND_LIBRARY_PATH)) {
+      const raw = readFileSync(BRAND_LIBRARY_PATH, 'utf-8');
+      const lines = raw.split('\n');
+      const headers = parseCSVLine(lines[0]);
+      // Records may span multiple lines because `notes` is a quoted JSON blob.
+      // Fall back to JSON-parsing the notes column when present.
+      let buffer = '';
+      let inRecord = false;
+      const records: string[] = [];
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+        buffer += (buffer ? '\n' : '') + line;
+        const dqCount = (buffer.match(/"/g) || []).length;
+        if (dqCount % 2 === 0) {
+          if (buffer.trim()) records.push(buffer);
+          buffer = '';
+        }
+      }
+      for (const rec of records) {
+        const vals = parseCSVLine(rec);
+        const entry: any = {};
+        headers.forEach(function (h, idx) { entry[h] = vals[idx] || ''; });
+        if (entry.entity_type !== 'brand') continue;
+        if (entry.source_basis !== 'web_research_validated') continue;
+        const name = (entry.entity_name || '').toLowerCase().trim();
+        if (name) _brandCache.set(name, entry);
+      }
+    }
+  }
+  return _brandCache.get(name.toLowerCase()) || null;
+}
+
+function slugifyBrand(name: string): string {
+  return String(name).toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 }
 
 // ── Main handler ────────────────────────────────────────────
@@ -110,8 +151,9 @@ export async function GET(
     if (type === 'region') return handleRegion(slug, tax);
     if (type === 'subregion') return handleSubregion(slug, tax);
     if (type === 'classification') return handleClassification(slug);
+    if (type === 'brand') return handleBrand(slug);
 
-    return NextResponse.json({ error: 'type must be country, region, subregion, or classification' }, { status: 400 });
+    return NextResponse.json({ error: 'type must be country, region, subregion, classification, or brand' }, { status: 400 });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
@@ -349,5 +391,139 @@ async function handleClassification(slug: string) {
       useCases: expert.use_cases,
       confidence: expert.confidence_level,
     } : null,
+  });
+}
+
+// ── Brand bundle ────────────────────────────────────────────
+
+async function handleBrand(slug: string) {
+  // Look up brand by slug — try direct match first, then iterate the cache
+  // (CSV stores brand name in entity_name column, slug is computed).
+  // Force cache hydration:
+  getBrandEntry('__noop__');
+
+  let entry: any = null;
+  let canonicalName: string | null = null;
+  if (_brandCache) {
+    for (const [name, e] of _brandCache.entries()) {
+      if (slugifyBrand(name) === slug) {
+        entry = e;
+        canonicalName = e.entity_name;
+        break;
+      }
+    }
+  }
+
+  if (!entry || !canonicalName) {
+    return NextResponse.json({ error: 'Brand not found in validated library', slug }, { status: 404 });
+  }
+
+  // Parse the JSON-encoded research notes
+  let research: any = {};
+  let verifier: any = {};
+  try {
+    const notes = JSON.parse(entry.notes || '{}');
+    research = notes.research || {};
+    verifier = notes.verifier || {};
+  } catch {}
+
+  // Pull active SKUs for this brand from Supabase
+  const skus = await sbQuery(
+    'products?brand=eq.' + encodeURIComponent(canonicalName) +
+    '&select=id,sku,name,vintage,price,classification,wine_classification,country,region,subregion,grape_variety,image_url,desc_en_short,full_description,wine_body,wine_acidity,wine_tannin,taste_profile,flavor_tags,food_matching,enrichment_quality_grade,enrichment_source,is_active' +
+    '&order=price.desc.nullslast&limit=500'
+  );
+
+  // Stats — only consider active SKUs for headline numbers
+  const activeSkus = skus.filter(function (s: any) { return s.is_active === 1 || s.is_active === true; });
+  const prices = activeSkus.map(function (s: any) { return Number(s.price); }).filter(function (p: number) { return Number.isFinite(p) && p > 0; });
+  const priceMin = prices.length > 0 ? Math.min(...prices) : null;
+  const priceMax = prices.length > 0 ? Math.max(...prices) : null;
+  const priceMedian = prices.length > 0 ? prices.sort(function (a: number, b: number) { return a - b; })[Math.floor(prices.length / 2)] : null;
+
+  const classifications = Array.from(new Set(activeSkus.map(function (s: any) { return s.classification; }).filter(Boolean)));
+  const regions = Array.from(new Set(activeSkus.map(function (s: any) { return s.region; }).filter(Boolean)));
+  const grapes: Record<string, number> = {};
+  for (const s of activeSkus) {
+    const g = String(s.grape_variety || '').split(',')[0].trim();
+    if (g) grapes[g] = (grapes[g] || 0) + 1;
+  }
+  const topGrapes = Object.entries(grapes).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 8).map(function (e) { return { name: e[0], count: e[1] }; });
+
+  // Featured products — prefer A-grade enriched
+  const featured = activeSkus
+    .filter(function (s: any) { return s.enrichment_quality_grade === 'A' && s.full_description; })
+    .slice(0, 8);
+  const fallbackFeatured = featured.length === 0
+    ? activeSkus.filter(function (s: any) { return s.full_description; }).slice(0, 8)
+    : [];
+
+  return NextResponse.json({
+    type: 'brand',
+    slug,
+    canonicalName,
+    parentCountry: entry.parent_country || research.country || null,
+    parentRegion: entry.parent_region || research.region || null,
+    library: {
+      sourceBasis: entry.source_basis,
+      copyStatus: entry.copy_status,
+      shortDescription: entry.description_short_en || null,
+      fullDescription: entry.description_full_en || null,
+      productCount: Number(entry.product_count || 0),
+      classificationScope: (entry.classification_scope || '').split('|').filter(Boolean),
+    },
+    research: {
+      founded: research.founded || null,
+      owner: research.owner || null,
+      classification: research.classification || null,
+      signatureStyle: research.signature_style || null,
+      vineyardOrDistillery: research.vineyard_or_distillery || null,
+      winemakingOrProduction: research.winemaking_or_production || null,
+      blendTypicalOrRecipe: research.blend_typical_or_recipe || null,
+      mustKnow: research.must_know || null,
+      vintageNotes: research.vintage_notes || null,
+      sources: research.sources || [],
+      confidenceSelf: research.confidence_self || null,
+      uncertaintyFlags: research.uncertainty_flags || [],
+    },
+    verifier: {
+      finalConfidence: verifier.final_confidence || null,
+      criticalFactsVerified: verifier.critical_facts_verified || null,
+      criticalFactsSuspect: verifier.critical_facts_suspect || null,
+      minorUncertainCount: verifier.minor_uncertain_count || null,
+      suspectClaims: verifier.suspect_claims || [],
+      verifierNotes: verifier.verifier_notes || null,
+      readyForLibrary: verifier.ready_for_library || null,
+    },
+    stats: {
+      totalSkus: skus.length,
+      activeSkus: activeSkus.length,
+      priceMin,
+      priceMax,
+      priceMedian,
+      classifications,
+      regions: regions.slice(0, 12),
+      topGrapes,
+    },
+    featuredProducts: featured.length > 0 ? featured : fallbackFeatured,
+    allSkus: activeSkus.map(function (s: any) {
+      return {
+        id: s.id,
+        sku: s.sku,
+        name: s.name,
+        vintage: s.vintage,
+        price: s.price,
+        classification: s.classification,
+        region: s.region,
+        image_url: s.image_url,
+        enrichmentGrade: s.enrichment_quality_grade,
+      };
+    }),
+    seoMeta: {
+      title: canonicalName + ' — Brand Profile, Heritage & Available Bottles',
+      description: entry.description_short_en
+        ? entry.description_short_en.slice(0, 155)
+        : (canonicalName + ' wines and spirits curated by Wine-Now'),
+    },
   });
 }
