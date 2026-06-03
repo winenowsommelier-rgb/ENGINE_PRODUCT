@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
+import { SupplierSettingsPage } from './SupplierSettingsPage';
 
 type Brand = { id: string; name: string };
 type SyncStatus = { last_synced_at: string | null; last_synced_count: number };
@@ -55,7 +56,7 @@ export function SettingsPage() {
   }
 
   return (
-    <div className="p-8 max-w-xl">
+    <div className="p-8 max-w-6xl">
       <h1 className="text-xl font-semibold text-white mb-8">Settings</h1>
 
       <section className="mb-10">
@@ -103,6 +104,12 @@ export function SettingsPage() {
               : 'Never'}
           </p>
         )}
+      </section>
+
+      <section className="mt-10">
+        <h2 className="text-sm font-medium text-slate-300 mb-1">Supplier Intake</h2>
+        <p className="text-xs text-slate-500 mb-4">Configure supplier pricing rules and Drive folder mappings for the intake pipeline.</p>
+        <SupplierSettingsPage />
       </section>
     </div>
   );

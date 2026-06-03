@@ -36,7 +36,10 @@ const SELECT_FIELDS = [
   "desc_en_short", "wine_body", "wine_acidity", "wine_tannin", "flavor_tags",
   "food_matching", "popularity_score", "popularity_qty_90d", "popularity_orders_90d",
   "popularity_revenue_90d", "popularity_window_days", "popularity_synced_at",
+  // Wine enrichment pipeline outputs (2026-05-12 spec):
   "grape_blend_type", "wine_production_style", "score_max", "score_summary", "full_description",
+  // Taste taxonomy v2 (2026-05-24): structured taste profile + food pairing rationale
+  "taste_profile", "taste_profile_override", "pairing_rationale",
 ].join(",");
 
 // ── Champagne helpers ─────────────────────────────────────────────────────────
@@ -234,14 +237,48 @@ export async function GET(req: NextRequest) {
   const grapeVariety = sp.get("grape_variety") ?? "";
   const priceMin     = sp.get("price_min") ?? "";
   const priceMax     = sp.get("price_max") ?? "";
+  // v2 taste taxonomy: click-a-note discovery — filter products by the
+  // product_taste_notes denormalized index. ?tier= is optional and narrows
+  // by primary|secondary|tertiary|flat.
+  const note         = sp.get("note") ?? "";
+  const tier         = sp.get("tier") ?? "";
 
   const isChampagneSubregion =
     country === CHAMPAGNE_COUNTRY &&
     region  === CHAMPAGNE_REGION &&
     CHAMPAGNE_SUBREGION_NAMES.has(subregion);
 
+  // v2 click-a-note discovery: pre-fetch matching product IDs from the
+  // product_taste_notes index (Supabase-only — there's no local mirror of
+  // that table). When note matches no products, short-circuit empty.
+  let noteIdFilter: string | null = null;
+  if (note && SUPABASE_URL && SUPABASE_KEY) {
+    const tierClause = tier ? `&tier=eq.${encodeURIComponent(tier)}` : "";
+    const noteUrl = `${SUPABASE_URL}/rest/v1/product_taste_notes?select=product_id&note=eq.${encodeURIComponent(note)}${tierClause}&order=intensity.desc&limit=1000`;
+    try {
+      const noteRes = await fetch(noteUrl, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (noteRes.ok) {
+        const noteRows = (await noteRes.json()) as { product_id: string }[];
+        if (noteRows.length === 0) {
+          return NextResponse.json({ products: [], total: 0, page, limit, source: "supabase" });
+        }
+        const ids = noteRows.map((r) => `"${r.product_id.replace(/"/g, '\\"')}"`).join(",");
+        noteIdFilter = `id=in.(${ids})`;
+      }
+    } catch (_e) {
+      // Fall through: note filter unavailable; treat as no-op filter.
+    }
+  }
+
   // Build Supabase query string
   const sbFilters: string[] = [];
+  if (noteIdFilter) sbFilters.push(noteIdFilter);
   if (country)    sbFilters.push(`country=eq.${encodeURIComponent(country)}`);
   if (region)     sbFilters.push(`region=eq.${encodeURIComponent(region)}`);
   if (subregion && !isChampagneSubregion) sbFilters.push(`subregion=eq.${encodeURIComponent(subregion)}`);
@@ -306,7 +343,20 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Local fallback
+    // Local fallback. If a note filter is active but Supabase failed, the
+    // local path has no way to honor it (product_taste_notes lives only on
+    // Supabase). Surface empty rather than ignoring the filter.
+    if (note) {
+      return NextResponse.json({
+        products: [],
+        total: 0,
+        page,
+        limit,
+        source: "local",
+        note: "note filter requires Supabase; not available locally",
+      });
+    }
+
     return NextResponse.json({
       products: localFiltered.slice(offset, offset + limit),
       total: localFiltered.length,

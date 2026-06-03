@@ -1,0 +1,5 @@
+[
+  {"category": "wine", "intensity_tiers": ["light", "medium", "full", "powerful"], "axis_mappings": [{"axis": "wine_body", "tier_map": {"Light": "light", "Medium-Light": "light", "Medium": "medium", "Medium-Full": "full", "Full": "powerful"}}], "composite_rule": "highest tier across all axis_mappings"},
+  {"category": "whisky", "intensity_tiers": ["light", "medium", "full", "powerful"], "axis_mappings": [{"axis": "peat_smoke", "tier_map": {"None": "light", "Trace": "light", "Light": "medium", "Medium": "full", "Heavy": "powerful"}}, {"axis": "oak_influence", "tier_map": {"Light": "light", "Medium": "medium", "Pronounced": "full", "Heavy": "powerful", "Cask-dominant": "powerful"}}], "composite_rule": "highest tier across all axis_mappings"},
+  {"category": "gin", "intensity_tiers": ["light", "medium", "full", "powerful"], "axis_mappings": [{"axis": "botanical_complexity", "tier_map": {"Classic": "light", "Modern": "medium", "Floral": "medium", "Spice-led": "full"}}], "composite_rule": "highest tier across all axis_mappings"}
+]

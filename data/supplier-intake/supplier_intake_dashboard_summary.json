@@ -1,0 +1,256 @@
+{
+  "generated_at": "2026-05-27T15:33:52",
+  "total_supplier_codes": 147,
+  "problem_supplier_codes": 143,
+  "readiness_counts": {
+    "blocked": 78,
+    "draft_extract_then_review": 9,
+    "needs_profile": 51,
+    "normalizable": 4,
+    "normalizable_with_review": 1,
+    "normalizable_with_rules": 4
+  },
+  "profiled_supplier_codes": 19,
+  "mapped_folder_supplier_codes": 69,
+  "master_sku_rows_represented": 21246,
+  "top_problem_suppliers": [
+    {
+      "supplier_code": "AB2",
+      "supplier_name": "BB&B",
+      "drive_supplier_folder_name": "BB&B",
+      "normalization_readiness": "normalizable_with_rules",
+      "blocker_or_risk": "Supplier code shares one Drive folder/parser with related supplier variants.",
+      "recommended_solution": "Use BB&B simple parser when source file has same columns; otherwise create AB2-specific profile.",
+      "master_sku_count": "1211"
+    },
+    {
+      "supplier_code": "AB3",
+      "supplier_name": "BB&B",
+      "drive_supplier_folder_name": "BB&B",
+      "normalization_readiness": "normalizable_with_rules",
+      "blocker_or_risk": "Supplier code shares one Drive folder/parser with related supplier variants.",
+      "recommended_solution": "Use BB&B simple parser.",
+      "master_sku_count": "1211"
+    },
+    {
+      "supplier_code": "AA2",
+      "supplier_name": "Italasia",
+      "drive_supplier_folder_name": "Italasia (Update)",
+      "normalization_readiness": "normalizable_with_rules",
+      "blocker_or_risk": "Supplier code shares one Drive folder/parser with related supplier variants.",
+      "recommended_solution": "Use Italasia parser but restrict by section/category when configuring AA2.",
+      "master_sku_count": "917"
+    },
+    {
+      "supplier_code": "AA4",
+      "supplier_name": "Italasia",
+      "drive_supplier_folder_name": "Italasia (Update)",
+      "normalization_readiness": "normalizable_with_rules",
+      "blocker_or_risk": "Supplier code shares one Drive folder/parser with related supplier variants.",
+      "recommended_solution": "Use Italasia parser but restrict by premium wine section/brand list when configured.",
+      "master_sku_count": "917"
+    },
+    {
+      "supplier_code": "AD",
+      "supplier_name": "IWS",
+      "drive_supplier_folder_name": "IWS (Update RSP / waiting Pricelist)",
+      "normalization_readiness": "draft_extract_then_review",
+      "blocker_or_risk": "PDF extraction is not deterministic enough for direct database update.",
+      "recommended_solution": "PDF table extractor can draft rows using code-prefixed lines and repeated header blocks. Treat asterisk special-condition marker and multi-line ratings as notes. Product admin review required before import.",
+      "master_sku_count": "715"
+    },
+    {
+      "supplier_code": "BU-VV",
+      "supplier_name": "Vim&Vigor",
+      "drive_supplier_folder_name": "",
+      "normalization_readiness": "blocked",
+      "blocker_or_risk": "Supplier code is not mapped to a confirmed Drive folder.",
+      "recommended_solution": "Map supplier code to the correct Drive supplier folder, then profile latest file.",
+      "master_sku_count": "526"
+    },
+    {
+      "supplier_code": "BU",
+      "supplier_name": "Suriwongse Store",
+      "drive_supplier_folder_name": "Surawong Store (Update)",
+      "normalization_readiness": "draft_extract_then_review",
+      "blocker_or_risk": "PDF extraction is not deterministic enough for direct database update.",
+      "recommended_solution": "PDF line parser can draft rows by matching category/product/size/pack/price pattern, but needs human review for line breaks and missing item codes.",
+      "master_sku_count": "526"
+    },
+    {
+      "supplier_code": "BU(2)",
+      "supplier_name": "Suriwongse Store",
+      "drive_supplier_folder_name": "Surawong Store (Update)",
+      "normalization_readiness": "draft_extract_then_review",
+      "blocker_or_risk": "PDF extraction is not deterministic enough for direct database update.",
+      "recommended_solution": "Use Surawong PDF parser with BU variant rules.",
+      "master_sku_count": "526"
+    },
+    {
+      "supplier_code": "BU(4)",
+      "supplier_name": "Suriwongse Store",
+      "drive_supplier_folder_name": "Surawong Store (Update)",
+      "normalization_readiness": "draft_extract_then_review",
+      "blocker_or_risk": "PDF extraction is not deterministic enough for direct database update.",
+      "recommended_solution": "Use Surawong PDF parser with Pernod Ricard brand/category filters.",
+      "master_sku_count": "526"
+    },
+    {
+      "supplier_code": "BU(9)",
+      "supplier_name": "Suriwongse Store",
+      "drive_supplier_folder_name": "Surawong Store (Update)",
+      "normalization_readiness": "draft_extract_then_review",
+      "blocker_or_risk": "PDF extraction is not deterministic enough for direct database update.",
+      "recommended_solution": "Use Surawong PDF parser with Brown-Forman brand/category filters.",
+      "master_sku_count": "526"
+    },
+    {
+      "supplier_code": "BU(11)",
+      "supplier_name": "Somphop Liquor",
+      "drive_supplier_folder_name": "Somphop (Update)",
+      "normalization_readiness": "needs_profile",
+      "blocker_or_risk": "Drive folder is mapped but no file parser profile has been learned yet.",
+      "recommended_solution": "Inspect latest month folder, fetch representative file text, identify headers, then add profile row.",
+      "master_sku_count": "526"
+    },
+    {
+      "supplier_code": "BU(8)",
+      "supplier_name": "ห้างหุ้นส่วน แฉล้มนิมิต",
+      "drive_supplier_folder_name": "Chalamnimit (Update)",
+      "normalization_readiness": "needs_profile",
+      "blocker_or_risk": "Folder is known but file content has not been profiled.",
+      "recommended_solution": "Inspect latest supplier file and decide spreadsheet parser vs PDF draft extractor.",
+      "master_sku_count": "526"
+    },
+    {
+      "supplier_code": "AF",
+      "supplier_name": "Vanichwattana",
+      "drive_supplier_folder_name": "Vanichwathana (Update)",
+      "normalization_readiness": "normalizable_with_review",
+      "blocker_or_risk": "File shape is learned but needs validation rules before full automation.",
+      "recommended_solution": "Spreadsheet repeated-header parser with price-expression parsing. Carry brand/producer/country section rows. Convert discounts like 1200-20% into raw price and discount fields; route NET/special/out-of-stock rows to review.",
+      "master_sku_count": "453"
+    },
+    {
+      "supplier_code": "AC",
+      "supplier_name": "Universal Fine Wine & Spirit",
+      "drive_supplier_folder_name": "Universal Wine (Update)",
+      "normalization_readiness": "draft_extract_then_review",
+      "blocker_or_risk": "PDF extraction is not deterministic enough for direct database update.",
+      "recommended_solution": "PDF catalogue parser can draft rows from Size/Region/Product Type/price blocks. Human review required before SKU/cost/RSP update because item codes are not visible.",
+      "master_sku_count": "426"
+    },
+    {
+      "supplier_code": "AC2",
+      "supplier_name": "EU Wine Co.,Ltd.",
+      "drive_supplier_folder_name": "EU Wine",
+      "normalization_readiness": "needs_profile",
+      "blocker_or_risk": "Drive folder is mapped but no file parser profile has been learned yet.",
+      "recommended_solution": "Inspect latest month folder, fetch representative file text, identify headers, then add profile row.",
+      "master_sku_count": "426"
+    },
+    {
+      "supplier_code": "AE",
+      "supplier_name": "Gfour",
+      "drive_supplier_folder_name": "Gfour",
+      "normalization_readiness": "draft_extract_then_review",
+      "blocker_or_risk": "PDF extraction is not deterministic enough for direct database update.",
+      "recommended_solution": "PDF block extractor across all files in latest folder. Use item code and product description, preserve region/grape/stock notes. Product admin review required due PDF ordering and multi-file source.",
+      "master_sku_count": "403"
+    },
+    {
+      "supplier_code": "AE4",
+      "supplier_name": "Brandconnect Thailand",
+      "drive_supplier_folder_name": "Brandconnect",
+      "normalization_readiness": "needs_profile",
+      "blocker_or_risk": "Drive folder is mapped but no file parser profile has been learned yet.",
+      "recommended_solution": "Inspect latest month folder, fetch representative file text, identify headers, then add profile row.",
+      "master_sku_count": "403"
+    },
+    {
+      "supplier_code": "DJ",
+      "supplier_name": "Wine 5 Co.,Ltd.",
+      "drive_supplier_folder_name": "Wine 5 (Update)",
+      "normalization_readiness": "needs_profile",
+      "blocker_or_risk": "Drive folder is mapped but no file parser profile has been learned yet.",
+      "recommended_solution": "Inspect latest month folder, fetch representative file text, identify headers, then add profile row.",
+      "master_sku_count": "398"
+    },
+    {
+      "supplier_code": "DJ(2)",
+      "supplier_name": "Wine 5 Co.,Ltd.",
+      "drive_supplier_folder_name": "Wine 5 (Update)",
+      "normalization_readiness": "needs_profile",
+      "blocker_or_risk": "Drive folder is mapped but no file parser profile has been learned yet.",
+      "recommended_solution": "Inspect latest month folder, fetch representative file text, identify headers, then add profile row.",
+      "master_sku_count": "398"
+    },
+    {
+      "supplier_code": "BN",
+      "supplier_name": "IQ Wine CO.,Ltd.",
+      "drive_supplier_folder_name": "IQ Wine (Update)",
+      "normalization_readiness": "needs_profile",
+      "blocker_or_risk": "Drive folder is mapped but no file parser profile has been learned yet.",
+      "recommended_solution": "Inspect latest month folder, fetch representative file text, identify headers, then add profile row.",
+      "master_sku_count": "362"
+    }
+  ],
+  "ready_supplier_codes": [
+    {
+      "supplier_code": "AA",
+      "supplier_name": "Italasia Head Office",
+      "drive_supplier_folder_name": "Italasia (Update)",
+      "normalization_readiness": "normalizable",
+      "master_sku_count": "917"
+    },
+    {
+      "supplier_code": "AB",
+      "supplier_name": "BB&B",
+      "drive_supplier_folder_name": "BB&B",
+      "normalization_readiness": "normalizable",
+      "master_sku_count": "1211"
+    },
+    {
+      "supplier_code": "EQ",
+      "supplier_name": "United Beverage",
+      "drive_supplier_folder_name": "United Beverage (Update)",
+      "normalization_readiness": "normalizable",
+      "master_sku_count": "91"
+    },
+    {
+      "supplier_code": "GE",
+      "supplier_name": "Great Wine Company Limited",
+      "drive_supplier_folder_name": "Great wine (Update)",
+      "normalization_readiness": "normalizable",
+      "master_sku_count": "56"
+    },
+    {
+      "supplier_code": "AA2",
+      "supplier_name": "Italasia",
+      "drive_supplier_folder_name": "Italasia (Update)",
+      "normalization_readiness": "normalizable_with_rules",
+      "master_sku_count": "917"
+    },
+    {
+      "supplier_code": "AA4",
+      "supplier_name": "Italasia",
+      "drive_supplier_folder_name": "Italasia (Update)",
+      "normalization_readiness": "normalizable_with_rules",
+      "master_sku_count": "917"
+    },
+    {
+      "supplier_code": "AB2",
+      "supplier_name": "BB&B",
+      "drive_supplier_folder_name": "BB&B",
+      "normalization_readiness": "normalizable_with_rules",
+      "master_sku_count": "1211"
+    },
+    {
+      "supplier_code": "AB3",
+      "supplier_name": "BB&B",
+      "drive_supplier_folder_name": "BB&B",
+      "normalization_readiness": "normalizable_with_rules",
+      "master_sku_count": "1211"
+    }
+  ]
+}

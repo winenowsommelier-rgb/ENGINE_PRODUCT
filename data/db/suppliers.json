@@ -1,0 +1,1942 @@
+[
+  {
+    "id": "1b34e5e4-985f-4863-b83b-73047d3a31d3",
+    "name": "Universal Fine Wine & Spirit",
+    "supplier_code": "AC",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1Xyku5M2wf-uXgmBDzYqIe8d-Bm4PyoX4",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "pdf"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 18.8,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "53181408-4ca5-4400-bf3f-de7eaf60ffb4",
+    "name": "IWS",
+    "supplier_code": "AD",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1SVb4AaB2WmsrDpWuZwurcIEgfTakDv_f",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "pdf"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 22.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "a088c138-fc3c-4cc6-9e7a-fb5ab028f9cd",
+    "name": "Gfour",
+    "supplier_code": "AE",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1bjvhxfrl8j_7diJJUgYSLJgL8UaKsOgg",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "pdf"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 23.3,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "48f4b401-342e-4964-8ede-d2608996f3c0",
+    "name": "Ambrose",
+    "supplier_code": "AH",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1PSwToctW_fY7OzLSI3Sjk8wtw_3DgWgo",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "pdf"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 17.0,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "3cd822e8-8f93-471e-8193-effaf54379e0",
+    "name": "Suriwongse Store",
+    "supplier_code": "BU",
+    "status": "active",
+    "pricing_structure": "retail_cash_store",
+    "drive_folder_id": "1diYjYahAM85D0MEktJGkYg2CBytY8uWX",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "pdf"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 8.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "72778713-764d-41bc-90fb-e01d6007489d",
+    "name": "Suriwongse Store",
+    "supplier_code": "BU(2)",
+    "status": "active",
+    "pricing_structure": "retail_cash_store",
+    "drive_folder_id": "1diYjYahAM85D0MEktJGkYg2CBytY8uWX",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "pdf"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 8.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "97e0e35d-9686-4362-84de-19782de86173",
+    "name": "Suriwongse Store",
+    "supplier_code": "BU(4)",
+    "status": "active",
+    "pricing_structure": "retail_cash_store",
+    "drive_folder_id": "1diYjYahAM85D0MEktJGkYg2CBytY8uWX",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "pdf"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 8.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "054ba3fc-117f-4fbb-9acb-e550149fb45f",
+    "name": "Suriwongse Store",
+    "supplier_code": "BU(9)",
+    "status": "active",
+    "pricing_structure": "retail_cash_store",
+    "drive_folder_id": "1diYjYahAM85D0MEktJGkYg2CBytY8uWX",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "pdf"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 8.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "b86240be-2df9-4723-8cf4-00050a39b7af",
+    "name": "SK Liquor",
+    "supplier_code": "FS",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1yp0g4ree4q3qyiufOchutbWS4wWsfosX",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "pdf"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 21.5,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "c8c03e27-ef31-48b7-8ab4-f6dadc48c7d6",
+    "name": "EU Wine Co.,Ltd.",
+    "supplier_code": "AC2",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "12WBo4skWfRlqPx6rzzLE4CfU5zrKgPpc",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 18.8,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "9fd299be-20b9-4bf8-aa87-8421570870c2",
+    "name": "Brandconnect Thailand",
+    "supplier_code": "AE4",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "10OSWAhI7Kl1eBME65GLvthNXckXAIbsg",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 23.3,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "f1c1ea32-f4fe-45b9-a8b3-0346de3661e1",
+    "name": "Lovely Wine",
+    "supplier_code": "AJ",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1bYggkGN36p6TtN0DVKXTUlK0NDdO4IYI",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 19.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "fa77c481-ae16-4246-bb3f-11863984f2aa",
+    "name": "SCS Trading",
+    "supplier_code": "AR",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "10aq3LGmAodYuEiGareKsHCW3IyNcXPV-",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 15.4,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "ac434b50-861d-425f-bae7-64ac003b048a",
+    "name": "Smiling Dark House",
+    "supplier_code": "AU2",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1Uod9OZ0q3D-YUfzNEtisWIy-_fyK4Ik7",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 19.3,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "ab0fbe1d-4021-4da4-88d6-6d9edc602b40",
+    "name": "IQ Wine CO.,Ltd.",
+    "supplier_code": "BN",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1SqN1pWUtWXTf-_BjlFpQW1OCYRENQBCP",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 19.4,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "96af6f42-6dbe-443d-ab1b-cd0bea3daaa3",
+    "name": "Texica Co., Ltd",
+    "supplier_code": "BS",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1BKwmGgu8snTWswNNz7OexU7fUH8cqmxa",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 20.1,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "21f79a18-ac11-4664-b2b6-a4ecb425f00b",
+    "name": "Somphop Liquor",
+    "supplier_code": "BU(11)",
+    "status": "active",
+    "pricing_structure": "retail_cash_store",
+    "drive_folder_id": "1IzXabQt-KXgAO8rJBV8bGvima3WjkA0Y",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 8.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "53549f92-7619-4c71-910b-48fc5d48539b",
+    "name": "ห้างหุ้นส่วน แฉล้มนิมิต",
+    "supplier_code": "BU(8)",
+    "status": "active",
+    "pricing_structure": "retail_cash_store",
+    "drive_folder_id": "1I-6ugxQ7ooFXkRuBixSKcFb9Icmnm7Hg",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "pdf"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 8.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "20737a11-dbde-4fab-80b1-e612c47ce0f6",
+    "name": "Boozia Distribution Co., Ltd.",
+    "supplier_code": "CB",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1JplHIz1pDTHUJoNF_BfU7xDvN_gHAFnd",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 25.0,
+      "minimum_margin_pct": 15.0,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "d12d87f2-a6d2-4da0-ad5a-b2050be98d1b",
+    "name": "Siam Winery",
+    "supplier_code": "CH",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1VoaBu04pnlRcr1l-O6MRQjeVaicvWVQz",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 17.9,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "9deb7f4a-f3bf-4ba0-9856-2b5c09c45a8e",
+    "name": "Alchemy Thailand",
+    "supplier_code": "CN",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1fRGM7zt27No5H_ugwE5Um_lvKPpnIMSv",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 11.8,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "4bce1320-13c0-4631-a843-e46df783f728",
+    "name": "Somphop Liquor",
+    "supplier_code": "CP",
+    "status": "active",
+    "pricing_structure": "retail_cash_store",
+    "drive_folder_id": "1IzXabQt-KXgAO8rJBV8bGvima3WjkA0Y",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 24.7,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "0f2f4c66-7d9d-4ee2-b6b4-49fc04a8a356",
+    "name": "Jiggers Co.,Ltd.",
+    "supplier_code": "CQ",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1mWaGWrzhpaTLazdBJBiB13O6g5Wus20e",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 27.1,
+      "minimum_margin_pct": 17.1,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "6827bdb9-fd1b-48dc-b49f-1e497db6001d",
+    "name": "Bacchus Global",
+    "supplier_code": "DB",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1lcLbXnkvH4jObUswnvxnfiFGWjq5_re8",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 16.8,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "85721c36-9ddf-4068-8531-4d9fb45b3054",
+    "name": "Noble Marketing",
+    "supplier_code": "DD",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1-UNmG3vstrxkPdRMAwwdnQMBZDJ0Nf2Z",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 18.9,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "cb4420c8-e824-4e4e-a917-4891a91b59ba",
+    "name": "Noble Marketing",
+    "supplier_code": "DD(2)",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1-UNmG3vstrxkPdRMAwwdnQMBZDJ0Nf2Z",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 18.9,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "43a33ea8-8ab4-431d-8e1d-b0e9e7a71511",
+    "name": "Premium Thai Brand Co.Ltd",
+    "supplier_code": "DG",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1cUk7TLqafMc4OxVCni-1OMOKO1LVbPHO",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 14.9,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "34c6de85-45e3-4c0a-a281-345ee54d69de",
+    "name": "The Best Provider",
+    "supplier_code": "DH",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1slC6C5jEsH2QGg1ioBGEcHt-9rGz7s5_",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 19.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "a2912640-cb85-413a-8048-85b228cb6b09",
+    "name": "Wine 5 Co.,Ltd.",
+    "supplier_code": "DJ",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "17AjBk_s9xNmsm65kY74iF8lVO96iB1n2",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 21.3,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "ad89c850-7b79-44f3-ab05-8bc8a4996c0a",
+    "name": "Wine 5 Co.,Ltd.",
+    "supplier_code": "DJ(2)",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "17AjBk_s9xNmsm65kY74iF8lVO96iB1n2",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 21.3,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "dca41f6c-68aa-435f-abaa-d0c754fcb171",
+    "name": "IWS - Bacardi",
+    "supplier_code": "DR",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1LUS232nfIitUpgQaeFuBKkNPbvZ_mA6-",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 4.5,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "1f052f64-566f-457e-85df-0565972cb5c2",
+    "name": "T/A Beverage",
+    "supplier_code": "DW",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1ck8ikuAZ0gJZy5d_X2t95-XtUarvwcTy",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 27.9,
+      "minimum_margin_pct": 17.9,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "0b508a77-63d1-4ecf-b231-f097463a4ffb",
+    "name": "Primal Product",
+    "supplier_code": "EF",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1ZiUqqK9s-RuIVbrwMzlph-qEPszDMFpj",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 19.0,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "ffcaea49-32bc-47fe-9e00-e9fc20a970ec",
+    "name": "Wine Direct",
+    "supplier_code": "EG",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1VW8RetcPJBbekfDmOmOsBZAqzrboykAl",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 21.3,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "1705f599-e46a-465e-bbef-54065f28e9ee",
+    "name": "Pinnacle Gastro",
+    "supplier_code": "EI",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1LXcIsFohH0o1VzMH_iPsw1OH-2eK9ys3",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 17.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "fc7106c2-12f8-40e0-aca9-f6d2b00768fc",
+    "name": "Magic Potion Ltd.",
+    "supplier_code": "ER",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1iB7-riCua_15DHWrTJxrIyk744oAVSQX",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 27.4,
+      "minimum_margin_pct": 17.4,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "6e8b8e41-a013-4a28-99e6-009c336393ea",
+    "name": "Vinelentine",
+    "supplier_code": "ER2",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1gUeQdDx5PQfHwGsa5nJwSmNCq_7aj5gB",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 27.4,
+      "minimum_margin_pct": 17.4,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "a5acad8e-aa4e-48d1-9c22-85f9e6e2d0b6",
+    "name": "Thai Beverage",
+    "supplier_code": "ES",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1Uvj_EhRdnFDqSJP3SqLXnAI17oHoXey-",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 17.0,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "192f1c3b-e940-4d15-a923-3256633c0c31",
+    "name": "Valentine Wines",
+    "supplier_code": "FC",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1gUeQdDx5PQfHwGsa5nJwSmNCq_7aj5gB",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 20.8,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "11154446-6f70-4e0f-80fa-6535d40dec25",
+    "name": "Italthai",
+    "supplier_code": "FJ(2)",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "14bFLOa82dqgfwmld9GhHQ-PKkAXK_-Td",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 18.7,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "621a29bd-201a-499c-b7c1-cc9a68c2b5bd",
+    "name": "Enoteca",
+    "supplier_code": "FN",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1G65O0pB9fD8MsZ8ktoe_3gDRg5agihGj",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 27.9,
+      "minimum_margin_pct": 17.9,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "c1e9c87e-2d3d-40ae-baa1-39b6f38d34df",
+    "name": "Wine Merchant",
+    "supplier_code": "FO",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1x-3rYKb09c8Qctnstn3S7Uu9ZFzHS5H4",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 16.5,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "01175e0f-4bc2-4f6a-b1c8-54aa0173b34c",
+    "name": "WINE PRO",
+    "supplier_code": "FR",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1LCQLj1uzWLcW8Z4v_POGrxOaVsXESTlt",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 14.7,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "60cb5fc6-d911-4c83-a1fd-3990bfe1accf",
+    "name": "WINE PRO",
+    "supplier_code": "FR(2)",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1LCQLj1uzWLcW8Z4v_POGrxOaVsXESTlt",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 14.7,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "2e08d095-37f9-4427-bf48-8e757d53500c",
+    "name": "LUXE WINE",
+    "supplier_code": "FT",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1Zl7-7iQ3OjV20ZrpUFz-vmlWLrJuorzz",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 22.1,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "296b347d-019e-4392-a1bb-ad79315b68bd",
+    "name": "Wine Diva",
+    "supplier_code": "FU",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "18qffz3N6GAb1CFil-1y6vVYB1w12w1VN",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 20.2,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "5f0f60f0-4d26-45ca-9c9b-2e75951c475d",
+    "name": "Granmonte",
+    "supplier_code": "FX",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "135-vMXChl9n6O_Ifopo3c2JzYxnaOzaT",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 20.8,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "0e8e916f-0019-458a-a76e-d2a026488ab6",
+    "name": "Granmonte",
+    "supplier_code": "FX(2)",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "135-vMXChl9n6O_Ifopo3c2JzYxnaOzaT",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 20.8,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "43eb2559-5df0-4ea2-b0d2-5f59c272ed0d",
+    "name": "Finesip",
+    "supplier_code": "GC",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1k7tUN49uZXQzgBG6zx4QBHj7so0NMLoU",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 22.3,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "7b5cb12f-c52d-4519-99be-f8cc6aa239dd",
+    "name": "MR.CRU",
+    "supplier_code": "GN",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1k7tUN49uZXQzgBG6zx4QBHj7so0NMLoU",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 20.2,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "12a9a952-9512-455b-8c91-4969a271c244",
+    "name": "One Bev .Co.,Ltd",
+    "supplier_code": "GU",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1OAfmH4tX7ntfmZ6coXmwX5JWQhMaekdZ",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 23.5,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "e65b2cd3-9f21-4a74-92a5-1c4e5ad0faee",
+    "name": "Ideal Wine",
+    "supplier_code": "GW",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1WmAvF3v475IOiTTVbvX-QD4ou0DuvVVU",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 24.0,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "f001e3cf-f8ee-4b5b-b79b-dd656a4b77b7",
+    "name": "Ideal Wine",
+    "supplier_code": "GW(2)",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1WmAvF3v475IOiTTVbvX-QD4ou0DuvVVU",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 24.0,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "9871667e-257a-4c18-bf50-96a7477e3104",
+    "name": "Double A Distribution Co., Ltd.",
+    "supplier_code": "GX",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1NfRxV0JNGKADFWZATsNIusMQ6IOiH4pA",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 19.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "041d7167-9a56-47b3-87d0-04d11fd0a345",
+    "name": "The Sake Merchant",
+    "supplier_code": "HD",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1_jyQFx2sUA_nx6rBqsxV65zGRR9dh6fo",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 34.5,
+      "minimum_margin_pct": 24.5,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "4631f839-0e89-4347-b541-c06c98a046c8",
+    "name": "Orion Fine Wines",
+    "supplier_code": "HI",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "10nL7Fml-Ucass5QdJxUrvnvRhUlxnUAe",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 21.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "67ee1e98-878b-48de-89dd-efecfdae2000",
+    "name": "exquisiteelixir",
+    "supplier_code": "HK",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1XhaO2gm-6iFjlgiWrajw8cY-nUJ_SyD2",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 15.0,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "e0a76c5f-d59d-4c65-9608-ecd002ef2d7a",
+    "name": "exquisiteelixir",
+    "supplier_code": "HK(2)",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1XhaO2gm-6iFjlgiWrajw8cY-nUJ_SyD2",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 15.0,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "41076982-2058-4f24-b502-b5c643e9c53b",
+    "name": "JDSS",
+    "supplier_code": "HM",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1ByESydr6Ss6_Hh7JUJJhBBnA9jvRxmPX",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 13.3,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "48039087-9713-4c29-8d52-8ecb95ba33dc",
+    "name": "Vinobox",
+    "supplier_code": "HP",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1Xf5vm0qyVl83F2pKjmfFaVIyKrvEXDdr",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 30.0,
+      "minimum_margin_pct": 20.0,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "b7d3b20a-a077-4ba0-a91d-d313bf67e3a1",
+    "name": "Italasia Head Office",
+    "supplier_code": "AA",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1e6nMYIH0DDeKdKq_8UFyoTi2j_s_rX3Q",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 34.6,
+      "minimum_margin_pct": 24.6,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "a76a610a-da79-4a98-9f91-3c20d0795a7b",
+    "name": "BB&B",
+    "supplier_code": "AB",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1aVFftSTY1K2TvzfKfiwFvjc9uVjXLFiD",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 19.1,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "12716f6d-744b-481c-ba4a-ee1d2ec54571",
+    "name": "United Beverage",
+    "supplier_code": "EQ",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "143vg7UJaM4tQ7zz07IV7QbmKvfGOPbE-",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 18.9,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "562291a7-dc51-49fd-bdb9-0ff198bb0201",
+    "name": "Great Wine (Thailand) Company Limited",
+    "supplier_code": "GE",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "19Ui31gHAOefyBUUSXZd8h24HJ94vgkoX",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 23.1,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T20:10:11.280743Z"
+  },
+  {
+    "id": "a371719e-4cdc-4001-bafa-2a33a34739e2",
+    "name": "Vanichwattana",
+    "supplier_code": "AF",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1TDJL4bBG_VUEzZjDjSxaVULheI-CXCtu",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 19.4,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "1a24e2b3-f5d1-4ab6-8f71-47ba3588341c",
+    "name": "Italasia",
+    "supplier_code": "AA2",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1e6nMYIH0DDeKdKq_8UFyoTi2j_s_rX3Q",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 34.6,
+      "minimum_margin_pct": 24.6,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "b1dc7b6d-7067-4e00-9f33-75cf7a918c68",
+    "name": "Italasia",
+    "supplier_code": "AA4",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1e6nMYIH0DDeKdKq_8UFyoTi2j_s_rX3Q",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 34.6,
+      "minimum_margin_pct": 24.6,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "172baf0c-6443-4332-a084-2dd1f0e3161b",
+    "name": "BB&B",
+    "supplier_code": "AB2",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1aVFftSTY1K2TvzfKfiwFvjc9uVjXLFiD",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 19.1,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "d8879aa5-9de9-4cd5-a6c5-da55a6616ec0",
+    "name": "BB&B",
+    "supplier_code": "AB3",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1aVFftSTY1K2TvzfKfiwFvjc9uVjXLFiD",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 19.1,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T18:59:44.748731Z",
+    "updated_at": "2026-05-28T18:59:44.748731Z"
+  },
+  {
+    "id": "8710d393-abaf-4fd3-accc-57d06f56866c",
+    "name": "RD Wine Consulting",
+    "supplier_code": "GT",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1c9EWmqDAqOo1WJzHrX42qjmozNQz9tA9",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 25.0,
+      "minimum_margin_pct": 15.0,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-28T20:15:41.675767Z",
+    "updated_at": "2026-05-28T20:15:41.675767Z"
+  },
+  {
+    "id": "00e9ea7b-b61e-4199-adfc-a49039ff2668",
+    "name": "Blue Moon Siam Paragon",
+    "supplier_code": "HC",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "14yqwnX1aI_jKom405dgkGRyzffM8tJd0",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 6.1,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "cda34b06-f197-4a28-9d84-f99afa071601",
+    "name": "KAO HOM Chaiyaphum (Consignment)",
+    "supplier_code": "HE",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "18AFlvkLgNqVG67TT-KiNBmGvR3bpw82M",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 30.0,
+      "minimum_margin_pct": 20.0,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "8ae7fa18-0fe8-4789-a92f-a288a73095f4",
+    "name": "International Beverage",
+    "supplier_code": "BQ",
+    "status": "active",
+    "pricing_structure": "no_rsp_price",
+    "drive_folder_id": "1kCupdL7DDr60q3aQacTmYWx5LwX9E98a",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "formula",
+      "target_margin_pct": 23.5,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "7dd85e52-60cf-4821-9223-6ec47d209f34",
+    "name": "IWS (MH Wine)",
+    "supplier_code": "AD2",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1QMeNQq7Hlur18qCoHDh1NsVR1mFqQYA5",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 22.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "12d6cb4e-782a-412d-b21d-9865a85e551f",
+    "name": "IWS (TWE / Penfolds)",
+    "supplier_code": "AD3",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1w-3EJ2s3SqfdAgoCehU4u9vZunXBhSFy",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 22.6,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "7391db01-680c-4bcd-b328-e9867b829a24",
+    "name": "Premium Thai Brand Co.Ltd (Kilo)",
+    "supplier_code": "DG(2)",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1R9tuRviL80-Nh1DnOVXVzgaRt2o8B8sq",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 14.9,
+      "minimum_margin_pct": 15,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "fa48b0e0-918c-4b4e-b1b3-4206ea4e65c0",
+    "name": "Magic Potion Ltd. (Life Elixir)",
+    "supplier_code": "ER(3)",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1HAUgIfvtz5ElkdGCeRkoMagg9Co2u1zT",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 27.4,
+      "minimum_margin_pct": 17.4,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  },
+  {
+    "id": "965c117e-abc9-4781-88a7-8313e5d5286b",
+    "name": "Central Retail (Wine)",
+    "supplier_code": "FP",
+    "status": "active",
+    "pricing_structure": "rsp_price",
+    "drive_folder_id": "1Gb1BaVrCHPEYv-W3a0kyJIrrYzi-cuYj",
+    "drive_bucket_folder_id": null,
+    "allowed_formats": [
+      "xlsx",
+      "csv"
+    ],
+    "default_currency": "THB",
+    "pricing_rule": {
+      "mode": "hybrid",
+      "target_margin_pct": 25.0,
+      "minimum_margin_pct": 15.0,
+      "markup_multiplier": null,
+      "vat_pct": 0,
+      "rounding": "nearest_9",
+      "review_price_change_pct": 20
+    },
+    "created_at": "2026-05-29T08:14:20.377833Z",
+    "updated_at": "2026-05-29T08:14:20.377833Z"
+  }
+]

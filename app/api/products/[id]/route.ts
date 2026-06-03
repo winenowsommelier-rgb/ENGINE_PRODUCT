@@ -4,6 +4,7 @@ import path from 'path';
 import { filterByOwnership, parseSource, type Source } from '@/lib/products/ownership';
 import { validateProductFields } from '@/lib/products/field-validation';
 import { addChangelogEntries, type ProductChangelog } from '@/lib/db/client';
+import { getSupabaseServerConfig } from '@/lib/supabase/server';
 
 export const runtime = 'nodejs';
 
@@ -14,17 +15,16 @@ function sourceToChangelog(source: Source): ProductChangelog['source'] {
   return 'manual_edit';
 }
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
-
-const HEADERS = {
-  apikey: SUPABASE_KEY,
-  Authorization: `Bearer ${SUPABASE_KEY}`,
-  'Content-Type': 'application/json',
-};
+// Use the shared server config so server-only routes can use the
+// SUPABASE_SERVICE_ROLE_KEY (and fall back to publishable if missing).
+// Lazily evaluated so build-time imports don't fail when env is absent.
+function supabaseConfig() {
+  return getSupabaseServerConfig();
+}
 
 async function sbGet(path: string) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: HEADERS });
+  const { url, headers } = supabaseConfig();
+  const res = await fetch(`${url}/rest/v1/${path}`, { headers });
   if (!res.ok) return [];
   return res.json();
 }
@@ -256,6 +256,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
         source,
       }, { status: 400 });
     }
+
+    const { url: SUPABASE_URL, headers: HEADERS } = supabaseConfig();
 
     // Fetch current values for changelog diff
     const fieldNames = Object.keys(allowed);

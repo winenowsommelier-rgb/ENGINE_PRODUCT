@@ -12,6 +12,8 @@ const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 const mkdir = promisify(fs.mkdir);
 
+import type { SupplierDefinition, SupplierIntakeRun, SupplierNormalizedRow } from '@/lib/supplier-intake/types';
+
 // ── New types ──────────────────────────────────────────────────────────────────
 
 export interface ProductChangelog {
@@ -19,7 +21,7 @@ export interface ProductChangelog {
   product_id: string;
   sku: string;
   changed_at: string;
-  source: 'batch_process' | 'taxonomy_queue' | 'manual_edit' | 'override_import' | 'masterfile_import' | 'enrichment' | 'bi_sync' | 'system';
+  source: 'batch_process' | 'taxonomy_queue' | 'manual_edit' | 'override_import' | 'masterfile_import' | 'enrichment' | 'bi_sync' | 'system' | 'supplier_intake' | 'supplier_pricing' | 'monthly_audit';
   field: string;
   old_value: string | null;
   new_value: string | null;
@@ -80,6 +82,9 @@ interface BatchLog {
 const dbDir = path.join(process.cwd(), 'data', 'db');
 const productsFile = path.join(dbDir, 'products.json');
 const logsFile = path.join(dbDir, 'batch-logs.json');
+const suppliersFile = path.join(dbDir, 'suppliers.json');
+const supplierIntakeRunsFile = path.join(dbDir, 'supplier-intake-runs.json');
+const supplierIntakeRowsFile = path.join(dbDir, 'supplier-intake-rows.json');
 
 // Ensure db directory exists
 async function ensureDbDir() {
@@ -88,6 +93,24 @@ async function ensureDbDir() {
   } catch (error) {
     // Directory may already exist
   }
+}
+
+async function readJsonArray<T>(file: string): Promise<T[]> {
+  await ensureDbDir();
+  try {
+    if (fs.existsSync(file)) {
+      const data = await readFile(file, 'utf-8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error(`Error reading ${file}:`, error);
+  }
+  return [];
+}
+
+async function writeJsonArray<T>(file: string, rows: T[]) {
+  await ensureDbDir();
+  await writeFile(file, JSON.stringify(rows, null, 2), 'utf-8');
 }
 
 // Read all products
@@ -756,4 +779,48 @@ export async function batchUpdateEnrichment(updates: EnrichmentUpdate[]): Promis
   const tmp = productsFile + '.tmp';
   await writeFile(tmp, JSON.stringify(next, null, 2), 'utf-8');
   fs.renameSync(tmp, productsFile);
+}
+
+// ── Supplier Intake ────────────────────────────────────────────────────────────
+
+export async function getSuppliers() {
+  return readJsonArray<SupplierDefinition>(suppliersFile);
+}
+
+export async function saveSupplier(input: Omit<SupplierDefinition, 'id' | 'created_at' | 'updated_at'> & { id?: string }) {
+  const now = new Date().toISOString();
+  const suppliers = await getSuppliers();
+  const idx = suppliers.findIndex(s => s.id === input.id);
+  if (idx >= 0) {
+    suppliers[idx] = { ...suppliers[idx], ...input, updated_at: now };
+  } else {
+    suppliers.push({ ...input, id: randomId(), created_at: now, updated_at: now });
+  }
+  await writeJsonArray(suppliersFile, suppliers);
+  return { success: true };
+}
+
+export async function getSupplierIntakeRuns() {
+  return readJsonArray<SupplierIntakeRun>(supplierIntakeRunsFile);
+}
+
+export async function saveSupplierIntakeRun(run: SupplierIntakeRun) {
+  const runs = await getSupplierIntakeRuns();
+  const idx = runs.findIndex(r => r.id === run.id);
+  if (idx >= 0) runs[idx] = { ...run, updated_at: new Date().toISOString() };
+  else runs.unshift(run);
+  await writeJsonArray(supplierIntakeRunsFile, runs);
+  return { success: true };
+}
+
+export async function getSupplierIntakeRows(runId?: string) {
+  const rows = await readJsonArray<SupplierNormalizedRow>(supplierIntakeRowsFile);
+  return runId ? rows.filter(r => r.run_id === runId) : rows;
+}
+
+export async function saveSupplierIntakeRows(runId: string, nextRows: SupplierNormalizedRow[]) {
+  const rows = await readJsonArray<SupplierNormalizedRow>(supplierIntakeRowsFile);
+  const kept = rows.filter(r => r.run_id !== runId);
+  await writeJsonArray(supplierIntakeRowsFile, [...kept, ...nextRows]);
+  return { success: true };
 }

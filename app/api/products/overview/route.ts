@@ -8,34 +8,151 @@
  * No authentication required — returns aggregate data only, no individual records.
  */
 import { NextResponse } from 'next/server';
+import { readProducts } from '@/lib/db/client';
+import { getSupabaseServerConfig } from '@/lib/supabase/server';
 
 export const runtime = 'nodejs';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
-const HEADERS = {
-  apikey: SUPABASE_KEY,
-  Authorization: `Bearer ${SUPABASE_KEY}`,
-  'Content-Type': 'application/json',
-};
-
 async function supabaseGet(path: string) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: HEADERS });
+  const { url, headers } = getSupabaseServerConfig();
+  const res = await fetch(`${url}/rest/v1/${path}`, { headers });
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }
 
 async function countWhere(filter: string): Promise<number> {
+  const { url, headers } = getSupabaseServerConfig();
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/products?select=id&${filter}&limit=1`,
-    { headers: { ...HEADERS, Prefer: 'count=exact' } }
+    `${url}/rest/v1/products?select=id&${filter}&limit=1`,
+    { headers: { ...headers, Prefer: 'count=exact' } }
   );
   const range = res.headers.get('content-range') ?? '*/0';
   return Number(range.split('/')[1] || 0);
 }
 
+function hasValue(value: unknown) {
+  return value !== null && value !== undefined && String(value).trim() !== '';
+}
+
+function countFilled(products: any[], field: string) {
+  return products.filter(product => hasValue(product[field])).length;
+}
+
+function pct(filled: number, total: number) {
+  return total > 0 ? Math.round((filled / total) * 100) : 0;
+}
+
+function topValues(products: any[], field: string) {
+  const counts = new Map<string, number>();
+  for (const product of products) {
+    const value = String(product[field] ?? '').trim();
+    if (!value) continue;
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 20)
+    .map(([name, count]) => ({ name, count }));
+}
+
+async function buildLocalOverview(reason: string) {
+  const products = await readProducts();
+  const total = products.length;
+  const validated = products.filter(p => p.validation_status === 'validated').length;
+  const needsReview = products.filter(p => p.validation_status === 'needs_review').length;
+  const needsAttention = products.filter(p => p.validation_status === 'needs_attention').length;
+  const wine = products.filter(p => String(p.sku ?? '').startsWith('W')).length;
+  const spirits = products.filter(p => String(p.sku ?? '').startsWith('L')).length;
+  const beer = products.filter(p => String(p.sku ?? '').startsWith('LBE')).length;
+  const accessories = products.filter(p => /^[AGN]/.test(String(p.sku ?? ''))).length;
+
+  const prices = products
+    .map(p => Number(p.price))
+    .filter(price => Number.isFinite(price) && price > 0)
+    .sort((a, b) => a - b);
+  const priceStats = prices.length > 0 ? {
+    min: prices[0],
+    max: prices[prices.length - 1],
+    median: prices[Math.floor(prices.length / 2)],
+    avg: Math.round(prices.reduce((sum, price) => sum + price, 0) / prices.length),
+    count: prices.length,
+  } : null;
+
+  const fields = {
+    country: countFilled(products, 'country'),
+    region: countFilled(products, 'region'),
+    grape_variety: countFilled(products, 'grape_variety'),
+    brand: countFilled(products, 'brand'),
+    vintage: countFilled(products, 'vintage'),
+    price: countFilled(products, 'price'),
+    full_description: countFilled(products, 'full_description'),
+    flavor_profile: countFilled(products, 'flavor_profile'),
+  };
+
+  return {
+    _meta: {
+      generated: new Date().toISOString(),
+      description: 'WNLQ9 Product Intelligence Database — local catalog fallback overview',
+      baseUrl: 'http://localhost:3000',
+      source: 'local_json',
+      fallbackReason: reason,
+    },
+    counts: {
+      total,
+      byStatus: {
+        validated,
+        needs_review: needsReview,
+        needs_attention: needsAttention,
+        other: total - validated - needsReview - needsAttention,
+      },
+      bySegment: {
+        wine,
+        spirits,
+        beer,
+        accessories,
+        other: total - wine - spirits - beer - accessories,
+      },
+    },
+    coverage: {
+      description: 'Percentage of products with non-empty values for key fields',
+      fields: Object.fromEntries(
+        Object.entries(fields).map(([field, filled]) => [
+          field,
+          { filled, total, pct: pct(filled, total) },
+        ])
+      ),
+    },
+    inventory: {
+      in_stock_items: products.filter(p => Number(p.quantity_in_stock ?? 0) > 0).length,
+      total_quantity: products.reduce((sum, p) => sum + Number(p.quantity_in_stock ?? 0), 0),
+      stock_source: 'WN Stock when available, otherwise is_in_stock availability proxy',
+    },
+    pricing: priceStats ? { currency: 'THB', ...priceStats } : null,
+    topCountries: topValues(products, 'country'),
+    // Mirror the shape of the Supabase path so the dashboard's
+    // `data.gapsToFill.missingX` reads don't crash on fallback.
+    gapsToFill: {
+      description: 'Priority data gaps that need filling — useful for AI agents or team validation',
+      missingRegion: total - fields.region,
+      missingGrape: total - fields.grape_variety,
+      missingDescription: total - fields.full_description,
+      missingFlavorProfile: total - fields.flavor_profile,
+      missingVintage: total - fields.vintage,
+      missingBrand: total - fields.brand,
+      suggestion: 'Use /api/products?region=&sort=confidence&sortDir=desc to find high-confidence products missing region data.',
+    },
+  };
+}
+
 export async function GET() {
   try {
+    const localProducts = await readProducts();
+    const inventory = {
+      in_stock_items: localProducts.filter(p => Number(p.quantity_in_stock ?? 0) > 0).length,
+      total_quantity: localProducts.reduce((sum, p) => sum + Number(p.quantity_in_stock ?? 0), 0),
+      stock_source: 'WN Stock when available, otherwise is_in_stock availability proxy',
+    };
+
     // Total count
     const total = await countWhere('id=not.is.null');
     const validated = await countWhere('validation_status=eq.validated');
@@ -136,6 +253,8 @@ export async function GET() {
         ...priceStats,
       } : null,
 
+      inventory,
+
       topCountries: sortedCountries,
 
       apis: {
@@ -168,6 +287,7 @@ export async function GET() {
       },
     });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.warn('[products/overview] Supabase overview failed; using local catalog fallback.', err);
+    return NextResponse.json(await buildLocalOverview(err.message));
   }
 }

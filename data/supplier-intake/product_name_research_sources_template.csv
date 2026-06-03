@@ -1,0 +1,8 @@
+source_priority,source_type,source_name,allowed_domain,applies_to_category,applies_to_country,usage,notes
+1,official_producer,Producer official website,,all,all,"Confirm canonical brand, product name, vintage/edition, appellation, bottle size, ABV, and product family.",
+2,official_importer,Supplier/importer official catalogue,,all,Thailand,"Confirm local market name, RSP naming, pack/size, and supplier item code.",
+3,authority_database,Wine-Searcher,wine-searcher.com,wine,all,Support vintage/appellation/name disambiguation only; do not use as sole source for new SKU approval.,
+4,authority_database,Vivino,vivino.com,wine,all,Support name and vintage recognition only; product_admin must verify against official source when possible.,
+5,authority_database,Whiskybase,whiskybase.com,spirits,all,Support whisky age/edition/cask naming only.,
+6,authority_database,Distiller,distiller.com,spirits,all,Support spirits naming and category only.,
+7,retailer_reference,Major international retailer,,all,all,Last-resort supporting evidence for hard-to-find items; must not override official source.,

@@ -1,0 +1,9 @@
+[
+  {"course_id": "aperitif", "label": "Aperitif / Pre-meal", "role": "stimulate appetite, cleanse palate, light and refreshing", "preferred_intensity": ["light", "medium"], "preferred_categories": ["Champagne", "Sparkling Wine", "Gin", "Dry Sherry", "Prosecco"], "avoid_profiles": ["heavy_oak", "full_tannin", "lush_sweetness"]},
+  {"course_id": "first_course", "label": "First Course", "role": "complement starter, build into the meal", "preferred_intensity": ["light", "medium"], "preferred_categories": ["White Wine", "Champagne", "Sake", "Light Red Wine"], "avoid_profiles": ["very_full_body", "heavy_tannin"]},
+  {"course_id": "main_course", "label": "Main Course", "role": "match the weight and intensity of the main dish", "preferred_intensity": ["medium", "full", "powerful"], "preferred_categories": ["Red Wine", "White Wine", "Whisky", "Sake"], "avoid_profiles": []},
+  {"course_id": "main_shared", "label": "Shared / Family Style", "role": "versatile, not too dominant, works across multiple dishes", "preferred_intensity": ["light", "medium", "full"], "preferred_categories": ["White Wine", "Light Red Wine", "Sparkling Wine", "Beer"], "avoid_profiles": ["very_tannic", "very_sweet"]},
+  {"course_id": "cheese", "label": "Cheese Course", "role": "complement cheese intensity and fat", "preferred_intensity": ["medium", "full"], "preferred_categories": ["Red Wine", "Port", "Dessert Wine", "Whisky"], "avoid_profiles": []},
+  {"course_id": "dessert", "label": "Dessert", "role": "match or exceed sweetness of dessert", "preferred_intensity": ["medium", "full"], "preferred_categories": ["Dessert Wine", "Port", "Liqueur", "Champagne"], "avoid_profiles": ["very_dry", "very_tannic"]},
+  {"course_id": "digestif", "label": "Digestif", "role": "aid digestion, warming, complex", "preferred_intensity": ["full", "powerful"], "preferred_categories": ["Whisky", "Brandy", "Cognac", "Armagnac", "Grappa", "Amaro"], "avoid_profiles": ["light_body", "very_sweet"]}
+]

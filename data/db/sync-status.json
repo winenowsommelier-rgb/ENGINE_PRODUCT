@@ -1,4 +1,10 @@
 {
-  "last_synced_at": "2026-03-24T04:13:13.209Z",
-  "last_synced_count": 3857
+  "last_synced_at": "2026-05-26T15:35:01+07:00",
+  "last_synced_count": 11436,
+  "source": "local_inventory_normalization_from_masterfile",
+  "source_file": "data/data mastefile WNLQ9/DATA_ Master_Product_Data_Enable SKU 2026FEB - MR2026MAR31.csv",
+  "notes": "quantity_in_stock uses WN Stock when present, otherwise 1/0 derived from is_in_stock.",
+  "updated_quantity_rows": 10165,
+  "updated_stock_field_rows": 7202,
+  "missing_from_masterfile": 105
 }

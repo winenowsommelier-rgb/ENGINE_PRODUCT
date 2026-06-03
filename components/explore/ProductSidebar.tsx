@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, Loader2 } from "lucide-react";
+import { ChevronLeft, Loader2, X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { CategoryScope, ExploreProduct } from "@/lib/explore/types";
 import { getAccent, getAccentRgb } from "@/lib/explore/category-config";
 import { ProductImage } from "@/components/ProductImage";
@@ -38,6 +39,23 @@ export default function ProductSidebar({
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [sort, setSort] = useState<SortOption>("popular");
+
+  // v2 click-a-note filter (URL-driven): if `?note=` is present, surface
+  // a dismissible chip so the user knows what's being filtered and can
+  // clear it. The actual filtering happens server-side via the search API.
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const noteFilter = searchParams?.get("note") ?? null;
+  const tierFilter = searchParams?.get("tier") ?? null;
+
+  const clearNoteFilter = () => {
+    if (!searchParams) return;
+    const next = new URLSearchParams(searchParams.toString());
+    next.delete("note");
+    next.delete("tier");
+    const qs = next.toString();
+    router.push(qs ? `?${qs}` : "?");
+  };
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [selectedProduct, setSelectedProduct] = useState<ExploreProduct | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -124,6 +142,31 @@ export default function ProductSidebar({
           </div>
         </div>
       </div>
+
+      {/* v2 note-filter chip */}
+      {noteFilter && (
+        <div
+          className={
+            theme === "light"
+              ? "flex items-center gap-2 border-b border-amber-200 bg-amber-50 px-4 py-2"
+              : "flex items-center gap-2 border-b border-amber-500/30 bg-amber-500/10 px-4 py-2"
+          }
+        >
+          <span className={theme === "light" ? "text-xs text-amber-900" : "text-xs text-amber-200"}>
+            Filtered by note: <strong>{noteFilter}</strong>
+            {tierFilter && <span className="opacity-60"> · {tierFilter}</span>}
+          </span>
+          <button
+            onClick={clearNoteFilter}
+            className={`ml-auto flex h-5 w-5 items-center justify-center rounded transition-colors ${
+              theme === "light" ? "text-amber-700 hover:bg-amber-100" : "text-amber-200 hover:bg-amber-500/20"
+            }`}
+            aria-label="Clear note filter"
+          >
+            <X size={12} />
+          </button>
+        </div>
+      )}
 
       {/* Sort */}
       <div className={theme === "light" ? "flex items-center gap-2 border-b border-slate-200 px-4 py-2" : "flex items-center gap-2 border-b border-white/8 px-4 py-2"}>

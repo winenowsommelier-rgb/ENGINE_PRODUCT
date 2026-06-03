@@ -11,16 +11,10 @@
  * metadata like overall_confidence or enrichment_note.
  */
 import { NextRequest, NextResponse } from 'next/server';
+import { readProducts } from '@/lib/db/client';
+import { getSupabaseServerConfig } from '@/lib/supabase/server';
 
 export const runtime = 'nodejs';
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
-const HEADERS = {
-  apikey: SUPABASE_KEY,
-  Authorization: `Bearer ${SUPABASE_KEY}`,
-  'Content-Type': 'application/json',
-};
 
 // Fields exposed to external projects — the "product intelligence card"
 const SELECT_FIELDS = [
@@ -36,19 +30,56 @@ const SELECT_FIELDS = [
   'flavor_tags',
   'bottle_size',
   'price', 'currency',
+  'is_in_stock', 'quantity_in_stock', 'wn_stock',
   'validation_status',
   'overall_confidence',
 ].join(',');
 
 async function fetchBySku(skus: string[]) {
   if (!skus.length) return [];
+  const { url, headers } = getSupabaseServerConfig();
   const list = skus.map(s => `"${s.trim()}"`).join(',');
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/products?sku=in.(${list})&select=${SELECT_FIELDS}`,
-    { headers: HEADERS }
+    `${url}/rest/v1/products?sku=in.(${list})&select=${SELECT_FIELDS}`,
+    { headers }
   );
   if (!res.ok) throw new Error(await res.text());
   return res.json();
+}
+
+async function fetchBySkuFromLocal(skus: string[]) {
+  const wanted = new Set(skus.map(s => s.trim()).filter(Boolean));
+  const products = await readProducts();
+  return products
+    .filter(product => product.sku && wanted.has(product.sku))
+    .map(product => {
+      const card: Record<string, any> = {};
+      for (const field of SELECT_FIELDS.split(',')) {
+        card[field] = product[field];
+      }
+      return card;
+    });
+}
+
+async function mergeLocalInventory(products: any[]) {
+  const localProducts = await readProducts();
+  const inventoryBySku = new Map(
+    localProducts
+      .filter(product => product.sku)
+      .map(product => [
+        product.sku,
+        {
+          is_in_stock: product.is_in_stock,
+          quantity_in_stock: product.quantity_in_stock,
+          wn_stock: product.wn_stock,
+        },
+      ])
+  );
+
+  return products.map(product => ({
+    ...product,
+    ...(inventoryBySku.get(product.sku) ?? {}),
+  }));
 }
 
 export async function GET(req: NextRequest) {
@@ -58,7 +89,13 @@ export async function GET(req: NextRequest) {
     if (!skus.length) {
       return NextResponse.json({ error: 'Provide ?sku=SKU1,SKU2' }, { status: 400 });
     }
-    const products = await fetchBySku(skus);
+    let products;
+    try {
+      products = await mergeLocalInventory(await fetchBySku(skus));
+    } catch (error) {
+      console.warn('[products/lookup] Supabase lookup failed; using local catalog fallback.', error);
+      products = await fetchBySkuFromLocal(skus);
+    }
     // Return map for easy lookup: { WRW0066AC: { ... }, ... }
     const map: Record<string, any> = {};
     for (const p of products) map[p.sku] = p;
@@ -75,7 +112,13 @@ export async function POST(req: NextRequest) {
     if (!skus.length) {
       return NextResponse.json({ error: 'Provide { skus: ["SKU1", ...] }' }, { status: 400 });
     }
-    const products = await fetchBySku(skus);
+    let products;
+    try {
+      products = await mergeLocalInventory(await fetchBySku(skus));
+    } catch (error) {
+      console.warn('[products/lookup] Supabase lookup failed; using local catalog fallback.', error);
+      products = await fetchBySkuFromLocal(skus);
+    }
     const map: Record<string, any> = {};
     for (const p of products) map[p.sku] = p;
     // Also list any SKUs that had no match

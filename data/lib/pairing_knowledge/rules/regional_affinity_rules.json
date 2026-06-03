@@ -1,0 +1,7 @@
+[
+  {"rule_id": "thai-thai", "cuisine_id": "thai", "product_countries": ["Thailand"], "bonus": 0.10, "rationale": "Local spirits match local cuisine naturally"},
+  {"rule_id": "french-french", "cuisine_id": "french", "product_countries": ["France"], "bonus": 0.10, "rationale": "What grows together goes together"},
+  {"rule_id": "italian-italian", "cuisine_id": "italian", "product_countries": ["Italy"], "bonus": 0.10, "rationale": "Italian wine with Italian food is the classical pairing"},
+  {"rule_id": "japanese-japanese", "cuisine_id": "japanese", "product_countries": ["Japan"], "bonus": 0.10, "rationale": "Sake and Japanese spirits with Japanese cuisine"},
+  {"rule_id": "indian-indian", "cuisine_id": "indian", "product_countries": ["India"], "bonus": 0.08, "rationale": "Indian spirits and wine increasingly match Indian cuisine"}
+]

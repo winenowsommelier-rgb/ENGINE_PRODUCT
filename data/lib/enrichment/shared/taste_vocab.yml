@@ -1,0 +1,122 @@
+# Canonical taste-note vocabulary for the enrichment pipeline.
+# Each note must have: name, default_tier, family, applies_to.
+# Aliases are optional; validator uses them for fuzzy repair.
+#
+# applies_to values:
+#   wine | brown_spirit | white_spirit | beer | liqueur | rtd
+#
+# tier values: primary | secondary | tertiary | flat
+#
+# family is a dotted hierarchy (e.g. fruit.black, wood, earth.aged).
+# Keep family list small (<40 distinct values across the file).
+
+version: 1
+notes:
+  # ===== PRIMARY — Fruit (wine/spirits) =====
+  - { name: Blackcurrant,  default_tier: primary,   family: fruit.black,  aliases: [black currant, cassis, blackcurrants], applies_to: [wine, brown_spirit] }
+  - { name: Blackberry,    default_tier: primary,   family: fruit.black,  aliases: [black berry, brambleberry],            applies_to: [wine] }
+  - { name: Dark Plum,     default_tier: primary,   family: fruit.black,  aliases: [black plum, dark plums],                applies_to: [wine] }
+  - { name: Plum,          default_tier: primary,   family: fruit.stone,  aliases: [plums, fresh plum, red plum],            applies_to: [wine] }
+  - { name: Cherry,        default_tier: primary,   family: fruit.red,    aliases: [cherries, red cherry],                  applies_to: [wine] }
+  - { name: Raspberry,     default_tier: primary,   family: fruit.red,    aliases: [raspberries],                           applies_to: [wine] }
+  - { name: Strawberry,    default_tier: primary,   family: fruit.red,    aliases: [strawberries],                          applies_to: [wine] }
+  - { name: Cranberry,     default_tier: primary,   family: fruit.red,    aliases: [],                                       applies_to: [wine] }
+  - { name: Red Fruit,     default_tier: primary,   family: fruit.red,    aliases: [red fruits, red berries, red berry],     applies_to: [wine] }
+  - { name: Dark Fruit,    default_tier: primary,   family: fruit.black,  aliases: [dark fruits, black fruit, black fruits], applies_to: [wine, brown_spirit] }
+  - { name: Green Apple,   default_tier: primary,   family: fruit.tree,   aliases: [granny smith, apple, tart apple],       applies_to: [wine] }
+  - { name: Pear,          default_tier: primary,   family: fruit.tree,   aliases: [pears],                                  applies_to: [wine] }
+  - { name: Stone Fruit,   default_tier: primary,   family: fruit.stone,  aliases: [stonefruit],                             applies_to: [wine] }
+  - { name: Peach,         default_tier: primary,   family: fruit.stone,  aliases: [peaches, white peach],                  applies_to: [wine] }
+  - { name: Apricot,       default_tier: primary,   family: fruit.stone,  aliases: [apricots],                               applies_to: [wine] }
+  - { name: Lemon,         default_tier: primary,   family: fruit.citrus, aliases: [lemons],                                 applies_to: [wine, brown_spirit, white_spirit] }
+  - { name: Grapefruit,    default_tier: primary,   family: fruit.citrus, aliases: [],                                       applies_to: [wine] }
+  - { name: Lime,          default_tier: primary,   family: fruit.citrus, aliases: [],                                       applies_to: [wine, white_spirit] }
+  - { name: Citrus,        default_tier: primary,   family: fruit.citrus, aliases: [citrus notes, citrus fruit, citrusy],    applies_to: [wine, white_spirit, beer] }
+  - { name: Citrus Zest,   default_tier: primary,   family: fruit.citrus, aliases: [citrus peel, zest, lemon zest, lime zest], applies_to: [wine, white_spirit, liqueur] }
+  - { name: Black Cherry,  default_tier: primary,   family: fruit.black,  aliases: [black cherries],                         applies_to: [wine] }
+  - { name: Berry,         default_tier: primary,   family: fruit.red,    aliases: [berries, mixed berry, mixed berries],    applies_to: [wine] }
+  - { name: Lychee,        default_tier: primary,   family: fruit.tropical, aliases: [lychees],                              applies_to: [wine, liqueur] }
+  - { name: Tropical,      default_tier: primary,   family: fruit.tropical, aliases: [tropical fruit, exotic fruit],        applies_to: [wine, beer] }
+  - { name: Pineapple,     default_tier: primary,   family: fruit.tropical, aliases: [],                                    applies_to: [wine] }
+  - { name: Mango,         default_tier: primary,   family: fruit.tropical, aliases: [],                                    applies_to: [wine, beer] }
+
+  # ===== PRIMARY — Floral / Herbal =====
+  - { name: Violet,        default_tier: primary,   family: floral,       aliases: [violets],                                applies_to: [wine] }
+  - { name: Rose,          default_tier: primary,   family: floral,       aliases: [roses, rose petal],                      applies_to: [wine] }
+  - { name: Jasmine,       default_tier: primary,   family: floral,       aliases: [],                                       applies_to: [wine] }
+  - { name: Elderflower,   default_tier: primary,   family: floral,       aliases: [],                                       applies_to: [wine, white_spirit] }
+  - { name: Honeysuckle,   default_tier: primary,   family: floral,       aliases: [],                                       applies_to: [wine] }
+  - { name: Floral,        default_tier: primary,   family: floral,       aliases: [floral notes, flowery, blossom],         applies_to: [wine, white_spirit] }
+  - { name: Mint,          default_tier: primary,   family: herbal,       aliases: [spearmint],                              applies_to: [wine] }
+  - { name: Eucalyptus,    default_tier: primary,   family: herbal,       aliases: [],                                       applies_to: [wine] }
+  - { name: Sage,          default_tier: primary,   family: herbal,       aliases: [],                                       applies_to: [wine] }
+  - { name: Bell Pepper,   default_tier: primary,   family: herbal,       aliases: [green pepper, capsicum, green bell],    applies_to: [wine] }
+  - { name: Grass,         default_tier: primary,   family: herbal,       aliases: [grassy, fresh grass, cut grass],        applies_to: [wine] }
+  - { name: Tomato Leaf,   default_tier: primary,   family: herbal,       aliases: [tomato vine],                            applies_to: [wine] }
+  - { name: Herbaceous,    default_tier: primary,   family: herbal,       aliases: [herbal, herby, herbal notes],            applies_to: [wine, brown_spirit, white_spirit] }
+
+  # ===== PRIMARY — Spice (some are tertiary in old wines but default to primary) =====
+  - { name: Black Pepper,  default_tier: primary,   family: spice.pepper, aliases: [pepper, peppercorn],                    applies_to: [wine, brown_spirit] }
+  - { name: White Pepper,  default_tier: primary,   family: spice.pepper, aliases: [],                                       applies_to: [wine] }
+  - { name: Clove,         default_tier: primary,   family: spice.warm,   aliases: [cloves],                                 applies_to: [wine, brown_spirit] }
+  - { name: Cinnamon,      default_tier: primary,   family: spice.warm,   aliases: [],                                       applies_to: [wine, brown_spirit] }
+  - { name: Anise,         default_tier: primary,   family: spice.warm,   aliases: [aniseed, star anise],                    applies_to: [wine, liqueur] }
+  - { name: Spice,         default_tier: primary,   family: spice.warm,   aliases: [spicy, spice notes, spices],             applies_to: [wine, brown_spirit] }
+  - { name: Licorice,      default_tier: primary,   family: spice.warm,   aliases: [liquorice, anise root],                  applies_to: [wine] }
+  - { name: Tar,           default_tier: tertiary,  family: earth.aged,   aliases: [tarry, asphalt],                         applies_to: [wine] }
+
+  # ===== SECONDARY — Winemaking / production =====
+  - { name: Cedar,         default_tier: secondary, family: wood,         aliases: [cedarwood],                              applies_to: [wine, brown_spirit] }
+  - { name: Oak,           default_tier: secondary, family: wood,         aliases: [oaky, fresh oak, toasted oak],          applies_to: [wine, brown_spirit] }
+  - { name: Sandalwood,    default_tier: secondary, family: wood,         aliases: [],                                       applies_to: [wine, brown_spirit] }
+  - { name: Vanilla,       default_tier: secondary, family: wood.sweet,   aliases: [vanilla pod, vanillin],                  applies_to: [wine, brown_spirit] }
+  - { name: Cocoa,         default_tier: secondary, family: wood.sweet,   aliases: [chocolate, dark chocolate],              applies_to: [wine, brown_spirit] }
+  - { name: Mocha,         default_tier: secondary, family: wood.sweet,   aliases: [coffee, espresso],                       applies_to: [wine, brown_spirit] }
+  - { name: Smoke,         default_tier: secondary, family: smoke,        aliases: [smoky, smokiness, peat smoke, peat],    applies_to: [wine, brown_spirit] }
+  - { name: Toast,         default_tier: secondary, family: wood,         aliases: [toasted, toasty bread],                  applies_to: [wine, beer] }
+  - { name: Butter,        default_tier: secondary, family: dairy,        aliases: [buttery, butterscotch],                  applies_to: [wine] }
+  - { name: Brioche,       default_tier: secondary, family: bread,        aliases: [bread, yeasty, autolytic, lees],        applies_to: [wine] }
+  - { name: Hazelnut,      default_tier: secondary, family: nut,          aliases: [nutty, almond],                          applies_to: [wine, brown_spirit] }
+
+  # ===== TERTIARY — Aging =====
+  - { name: Tobacco,       default_tier: tertiary,  family: earth.aged,   aliases: [tobacco leaf, cigar],                    applies_to: [wine, brown_spirit] }
+  - { name: Leather,       default_tier: tertiary,  family: earth.aged,   aliases: [old leather, saddle leather],            applies_to: [wine, brown_spirit] }
+  - { name: Dried Fruit,   default_tier: tertiary,  family: fruit.dried,  aliases: [dried fruits, raisin, prune, fig],      applies_to: [wine, brown_spirit] }
+  - { name: Earth,         default_tier: tertiary,  family: earth.aged,   aliases: [earthy, forest floor, soil],             applies_to: [wine] }
+  - { name: Mushroom,      default_tier: tertiary,  family: earth.aged,   aliases: [truffle, fungal],                        applies_to: [wine] }
+  - { name: Petrol,        default_tier: tertiary,  family: mineral,      aliases: [petroleum, kerosene],                    applies_to: [wine] }
+  - { name: Honey,         default_tier: tertiary,  family: sweet.aged,   aliases: [honeyed, beeswax],                       applies_to: [wine, liqueur] }
+
+  # ===== Mineral (cross-tier, often primary in young wine, tertiary in aged) =====
+  - { name: Wet Stone,     default_tier: primary,   family: mineral,      aliases: [stone, flint, gravel],                   applies_to: [wine] }
+  - { name: Sea Salt,      default_tier: primary,   family: mineral,      aliases: [salinity, briny, oyster shell],          applies_to: [wine] }
+  - { name: Slate,         default_tier: primary,   family: mineral,      aliases: [],                                       applies_to: [wine] }
+  - { name: Minerality,    default_tier: primary,   family: mineral,      aliases: [mineral, mineral notes],                 applies_to: [wine] }
+
+  # ===== WHITE SPIRIT — Juniper / gin botanicals =====
+  - { name: Juniper,       default_tier: secondary, family: botanical,    aliases: [juniper berry, junipers, gin botanical], applies_to: [white_spirit] }
+  - { name: Coriander,     default_tier: secondary, family: botanical,    aliases: [coriander seed],                         applies_to: [white_spirit] }
+  - { name: Cardamom,      default_tier: secondary, family: botanical,    aliases: [],                                       applies_to: [white_spirit] }
+  - { name: Angelica,      default_tier: secondary, family: botanical,    aliases: [angelica root],                          applies_to: [white_spirit] }
+
+  # ===== BEER =====
+  - { name: Citrus Hops,   default_tier: primary,   family: hops,         aliases: [hoppy citrus, citra, hop citrus],        applies_to: [beer] }
+  - { name: Piney Hops,    default_tier: primary,   family: hops,         aliases: [pine, resinous hops],                    applies_to: [beer] }
+  - { name: Floral Hops,   default_tier: primary,   family: hops,         aliases: [],                                       applies_to: [beer] }
+  - { name: Earthy Hops,   default_tier: primary,   family: hops,         aliases: [],                                       applies_to: [beer] }
+  - { name: Malt Biscuit,  default_tier: primary,   family: malt,         aliases: [biscuit, biscuity malt, cracker],        applies_to: [beer] }
+  - { name: Caramel Malt,  default_tier: primary,   family: malt,         aliases: [caramel, toffee malt],                   applies_to: [beer] }
+  - { name: Roasted Malt,  default_tier: primary,   family: malt,         aliases: [roast malt, dark roast],                 applies_to: [beer] }
+  - { name: Bitter,        default_tier: flat,      family: bitter,       aliases: [bitterness],                             applies_to: [beer, rtd] }
+  - { name: Banana Ester,  default_tier: secondary, family: ferment,      aliases: [banana, isoamyl],                        applies_to: [beer] }
+  - { name: Clove Ester,   default_tier: secondary, family: ferment,      aliases: [],                                       applies_to: [beer] }
+  - { name: Brett Funk,    default_tier: secondary, family: ferment.wild, aliases: [brettanomyces, funky, barnyard],         applies_to: [beer, wine] }
+
+  # ===== LIQUEUR (mostly flat) =====
+  - { name: Herbal Sweet,  default_tier: flat,      family: herbal.sweet, aliases: [],                                       applies_to: [liqueur] }
+  - { name: Lemon Zest,    default_tier: flat,      family: fruit.citrus, aliases: [],                                       applies_to: [liqueur, rtd] }
+
+  # ===== RTD =====
+  - { name: Tonic,         default_tier: flat,      family: mixer,        aliases: [tonic water],                            applies_to: [rtd] }
+  - { name: Soda,          default_tier: flat,      family: mixer,        aliases: [club soda, soda water],                  applies_to: [rtd] }
+  - { name: Salt Rim,      default_tier: flat,      family: salt,         aliases: [],                                       applies_to: [rtd] }

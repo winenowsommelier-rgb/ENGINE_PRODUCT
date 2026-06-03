@@ -1,0 +1,7 @@
+[
+  {"occasion_id": "business_dinner", "label": "Business Dinner", "guest_knowledge": "mixed", "menu_tier": "premium", "scoring_weight_overrides": {"brand_prestige": 0.30, "taste_match": 0.35, "margin_signal": 0.10, "web_freshness": 0.25}, "notes": "Recognisable labels matter; avoid anything too adventurous or divisive"},
+  {"occasion_id": "celebration", "label": "Celebration", "guest_knowledge": "mixed", "menu_tier": "premium", "scoring_weight_overrides": {"brand_prestige": 0.25, "taste_match": 0.30, "margin_signal": 0.10, "web_freshness": 0.35}, "notes": "Showmanship and effervescence welcome; prestige and story important"},
+  {"occasion_id": "everyday", "label": "Everyday / Casual", "guest_knowledge": "novice", "menu_tier": "everyday", "scoring_weight_overrides": {"brand_prestige": 0.15, "taste_match": 0.40, "margin_signal": 0.20, "web_freshness": 0.10}, "notes": "Approachability and value win here"},
+  {"occasion_id": "gift", "label": "Gift", "guest_knowledge": "mixed", "menu_tier": "mid-range", "scoring_weight_overrides": {"brand_prestige": 0.35, "taste_match": 0.25, "margin_signal": 0.05, "web_freshness": 0.20}, "notes": "Presentation, recognisability, and price point are primary"},
+  {"occasion_id": "horecab2b_tasting_menu", "label": "HoReCa Tasting Menu", "guest_knowledge": "expert", "menu_tier": "prestige", "scoring_weight_overrides": {"brand_prestige": 0.30, "taste_match": 0.40, "margin_signal": 0.05, "web_freshness": 0.25}, "glass_pour_economics": true, "notes": "Provenance story and regional identity weighted heavily"}
+]

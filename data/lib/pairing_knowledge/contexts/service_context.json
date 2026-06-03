@@ -1,0 +1,11 @@
+[
+  {"category": "White Wine", "serving_temp_c": [8, 12], "glassware": "white_wine_glass"},
+  {"category": "Red Wine", "serving_temp_c": [14, 18], "glassware": "red_wine_glass"},
+  {"category": "Champagne", "serving_temp_c": [6, 10], "glassware": "flute_or_coupe"},
+  {"category": "Sparkling Wine", "serving_temp_c": [6, 10], "glassware": "flute"},
+  {"category": "Whisky", "serving_temp_c": [18, 22], "glassware": "glencairn_or_tumbler", "notes": "Neat or with a drop of water; avoid heavy ice"},
+  {"category": "Sake", "serving_temp_c": [5, 55], "glassware": "ochoko_or_wine_glass", "notes": "Temperature varies by style — Junmai Daiginjo chilled, aged Koshu warm"},
+  {"category": "Gin", "serving_temp_c": [4, 8], "glassware": "copa_or_highball"},
+  {"category": "Rum", "serving_temp_c": [18, 22], "glassware": "tumbler_or_snifter"},
+  {"category": "Brandy", "serving_temp_c": [18, 22], "glassware": "snifter"}
+]
