@@ -1,9 +1,17 @@
 import { NextResponse } from 'next/server';
-import { addChangelogEntries, getCleanedProducts, getSupplierIntakeRows, getSupplierIntakeRuns, saveCleanedProduct, saveSupplierIntakeRows, saveSupplierIntakeRun } from '@/lib/db/client';
+import { addChangelogEntries, appendMappingMemory, getCleanedProducts, getSupplierIntakeRows, getSupplierIntakeRuns, getSuppliers, saveCleanedProduct, saveSupplierIntakeRows, saveSupplierIntakeRun } from '@/lib/db/client';
 
 export async function POST(_: Request, { params }: { params: { id: string } }) {
-  const products = await getCleanedProducts();
-  const rows = await getSupplierIntakeRows(params.id);
+  const [products, rows, runs, suppliers] = await Promise.all([
+    getCleanedProducts(),
+    getSupplierIntakeRows(params.id),
+    getSupplierIntakeRuns(),
+    getSuppliers(),
+  ]);
+  const run = runs.find(r => r.id === params.id);
+  const supplier = suppliers.find(s => s.id === run?.supplier_id);
+  const supplierCode = supplier?.supplier_code ?? '';
+
   const approved = rows.filter(row => row.status === 'approved' && row.match?.selected_product_id && row.price);
   const changelogEntries: any[] = [];
 
@@ -35,8 +43,24 @@ export async function POST(_: Request, { params }: { params: { id: string } }) {
   );
   await saveSupplierIntakeRows(params.id, committedRows);
 
-  const run = (await getSupplierIntakeRuns()).find(r => r.id === params.id);
   if (run) await saveSupplierIntakeRun({ ...run, status: 'committed', updated_at: now });
 
-  return NextResponse.json({ committed: approved.length, changelog_entries: changelogEntries.length });
+  // Write approved matches back to mapping memory so future runs hit L1
+  if (supplierCode) {
+    const memoryEntries = approved
+      .filter(row => row.normalized_payload.supplier_item_code && row.match?.selected_sku)
+      .map(row => ({
+        supplier_code: supplierCode,
+        supplier_item_code: row.normalized_payload.supplier_item_code!,
+        current_sku: row.match!.selected_sku!,
+        approval_status: 'human_confirmed',
+        vintage_locked: false,
+        brand: row.normalized_payload.brand,
+        bottle_size: row.normalized_payload.bottle_size,
+        vintage: row.normalized_payload.vintage,
+      }));
+    await appendMappingMemory(memoryEntries);
+  }
+
+  return NextResponse.json({ committed: approved.length, changelog_entries: changelogEntries.length, memory_entries_written: approved.filter(r => r.normalized_payload.supplier_item_code).length });
 }

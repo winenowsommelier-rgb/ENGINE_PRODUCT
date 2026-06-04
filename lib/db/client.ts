@@ -13,6 +13,7 @@ const readFile = promisify(fs.readFile);
 const mkdir = promisify(fs.mkdir);
 
 import type { SupplierDefinition, SupplierIntakeRun, SupplierNormalizedRow } from '@/lib/supplier-intake/types';
+import type { MappingMemoryEntry } from '@/lib/supplier-intake/matching';
 
 // ── New types ──────────────────────────────────────────────────────────────────
 
@@ -823,4 +824,65 @@ export async function saveSupplierIntakeRows(runId: string, nextRows: SupplierNo
   const kept = rows.filter(r => r.run_id !== runId);
   await writeJsonArray(supplierIntakeRowsFile, [...kept, ...nextRows]);
   return { success: true };
+}
+
+// ── Supplier Mapping Memory ───────────────────────────────────────────────────
+
+const MAPPING_MEMORY_FILE = path.join(process.cwd(), 'data/supplier-intake/supplier_product_mapping_memory.csv');
+
+function parseMappingMemoryCsv(csv: string): MappingMemoryEntry[] {
+  const lines = csv.split('\n').filter(Boolean);
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',');
+  return lines.slice(1).flatMap(line => {
+    const vals = line.split(',');
+    if (vals.length < headers.length) return [];
+    const row: Record<string, string> = {};
+    headers.forEach((h, i) => { row[h.trim()] = (vals[i] ?? '').trim(); });
+    return [{
+      supplier_code: row['supplier_code'] ?? '',
+      supplier_item_code: row['supplier_item_code'] ?? '',
+      current_sku: row['current_sku'] ?? '',
+      approval_status: row['approval_status'] ?? '',
+      vintage_locked: row['vintage_locked'] === 'true',
+      brand: row['brand'] || undefined,
+      bottle_size: row['bottle_size'] || undefined,
+      vintage: row['vintage'] || undefined,
+    }];
+  });
+}
+
+export async function getMappingMemory(supplierCode?: string): Promise<MappingMemoryEntry[]> {
+  try {
+    const raw = await readFile(MAPPING_MEMORY_FILE, 'utf-8');
+    const all = parseMappingMemoryCsv(raw);
+    return supplierCode ? all.filter(m => m.supplier_code.toUpperCase() === supplierCode.toUpperCase()) : all;
+  } catch {
+    return [];
+  }
+}
+
+export async function appendMappingMemory(entries: MappingMemoryEntry[]): Promise<void> {
+  if (!entries.length) return;
+  try {
+    const raw = await readFile(MAPPING_MEMORY_FILE, 'utf-8');
+    const existing = parseMappingMemoryCsv(raw);
+    const existingKeys = new Set(existing.map(m => `${m.supplier_code}|${m.supplier_item_code}|${m.current_sku}`));
+
+    const newLines = entries
+      .filter(e => e.supplier_item_code && e.current_sku)
+      .filter(e => !existingKeys.has(`${e.supplier_code}|${e.supplier_item_code}|${e.current_sku}`))
+      .map(e => [
+        e.supplier_code, e.supplier_item_code, '', '', '', e.current_sku, '',
+        e.brand ?? '', e.bottle_size ?? '', e.vintage ?? '',
+        new Date().toISOString().slice(0, 10), new Date().toISOString().slice(0, 10),
+        '', e.approval_status, 'intake_run', new Date().toISOString().slice(0, 10), '',
+      ].join(','));
+
+    if (newLines.length) {
+      await writeFile(MAPPING_MEMORY_FILE, raw.trimEnd() + '\n' + newLines.join('\n') + '\n', 'utf-8');
+    }
+  } catch {
+    // If file doesn't exist or is malformed, silently skip — don't break the commit
+  }
 }
