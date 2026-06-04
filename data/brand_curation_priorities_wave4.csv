@@ -1,0 +1,78 @@
+brand,country,classifications,total_skus,enriched_skus,a_count,b_count,c_count,max_price_thb,avg_price_thb,priority_score
+Masumi,Japan,Sake/Shochu,31,3,0,3,0,5100.0,1741.0,24
+Eikun,Japan,Sake/Shochu,19,1,0,0,1,3600.0,1811.0,18
+Kitaoka Honten,Japan,Liqueur|Sake/Shochu,16,0,0,0,0,2900.0,1925.0,16
+Montecristo,Cuba,Cigar,17,0,0,0,0,60300.0,6416.0,16
+Giffard,France,Liqueur|Non-Alcoholic,56,2,0,0,2,1049.0,715.0,15
+Kozaemon,Japan,Others|Sake/Shochu,18,2,0,1,1,6500.0,2161.0,14
+Albert Bichot,France,Red Wine|White Wine,25,7,5,2,0,9400.0,3968.0,12
+Bols,Netherlands,Gin|Liqueur|Vodka,18,3,0,2,1,2699.0,892.0,12
+Chiyomusubi,Japan,Gin|Sake/Shochu,19,6,0,4,2,3300.0,1611.0,12
+Chivas Regal,|Scotland,Whisky|Wine product,18,1,1,0,0,18295.0,5308.0,11
+Romeo Y Julieta,Cuba,Cigar,11,0,0,0,0,32300.0,5655.0,11
+Strega,Italy,Wine product,11,0,0,0,0,3529.0,1254.0,11
+Kirinzan,Japan,Sake/Shochu,16,4,0,0,4,2900.0,1338.0,10
+Nakano BC,Japan,Gin|Others,14,0,0,0,0,2400.0,1279.0,10
+Asura,Thailand,Thai White Spirits,9,0,0,0,0,2399.0,1621.0,9
+Fratelli Ponte,Italy,Red Wine|Rose Wine|Sparkling Wine|White Wine,9,0,0,0,0,2500.0,1167.0,9
+Hakutsuru,Japan,Wine product,18,0,0,0,0,4700.0,1528.0,9
+Rock Rose,Scotland,Gin|Wine product,16,0,0,0,0,3520.0,3000.0,9
+Stolichnaya,Russia,Vodka|Wine product,22,1,0,1,0,12199.0,1912.0,9
+Wolfburn,Scotland,Whisky|Wine product,10,0,0,0,0,5250.0,4205.0,9
+Yering,Australia,Red Wine|Sparkling Wine|White Wine,12,0,0,0,0,3399.0,1826.0,9
+Absolut,Sweden,Vodka|Wine product,22,0,0,0,0,12999.0,1719.0,8
+Bijofu,Japan,Others|Sake/Shochu,11,2,0,1,1,2400.0,1587.0,8
+Champagne Dosnon,France,Champagne,8,0,0,0,0,10100.0,5138.0,8
+Champagne Rousseaux Batteux,France,Champagne,8,0,0,0,0,4200.0,3700.0,8
+Chum Churum,South Korea,Sake/Shochu,8,0,0,0,0,2780.0,2710.0,8
+Fever-Tree,England,Non-Alcoholic,9,0,0,0,0,1795.0,1736.0,8
+Martell,France,Brandy|Wine product,9,0,0,0,0,27999.0,9986.0,8
+Chalong Bay,Thailand,Rum|Wine product,8,0,0,0,0,3147.0,1281.0,7
+Daimon,Japan,Sake/Shochu,7,0,0,0,0,12800.0,3757.0,7
+Jameson,|Ireland,Whisky|Wine product,7,0,0,0,0,7719.0,2979.0,7
+Le Morette,Italy,Red Wine|Sparkling Wine|White Wine,8,0,0,0,0,1390.0,1041.0,7
+Partagas,Cuba,Cigar,11,0,0,0,0,18500.0,3723.0,7
+The Glenlivet,Scotland,Whisky|Wine product,8,0,0,0,0,6599.0,3826.0,7
+Apollonio,Italy,Red Wine|Rose Wine|White Wine,9,1,1,0,0,1600.0,1111.0,6
+Azakura,Japan,Sake/Shochu,10,2,0,2,0,4600.0,1880.0,6
+Bodegas Volver,Spain,Red Wine|White Wine,9,2,0,2,0,2500.0,1622.0,6
+Camus,France,Wine product,7,0,0,0,0,43245.0,11548.0,6
+Champagne Coessens,France,Champagne|Red Wine,6,0,0,0,0,6300.0,5533.0,6
+Cohiba,Cuba,Cigar,7,0,0,0,0,4100.0,2689.0,6
+Douglas Laing,Scotland,Whisky|Wine product,14,0,0,0,0,8699.0,4047.0,6
+Gérard Bertrand,France,Orange Wine|Red Wine|Rose Wine|White Wine,18,11,2,8,1,2000.0,1017.0,6
+Kobe Shu Shin Kan,Japan,Umeshu|Wine product,10,0,0,0,0,2500.0,1110.0,6
+Kook Soon Dang,South Korea,Korean Wine,6,0,0,0,0,3580.0,3530.0,6
+Loch Lomond,Scotland,Whisky,7,1,0,0,1,12800.0,5029.0,6
+Onson,Thailand,White Spirits,8,0,0,0,0,1609.0,953.0,6
+Sakunohana,Japan,Sake/Shochu,9,3,0,1,2,2700.0,1700.0,6
+Santa Julia,Argentina,Orange Wine|Red Wine|Rose Wine|White Wine,8,2,0,2,0,999.0,899.0,6
+Seikyo,Japan,Sake/Shochu,7,0,0,0,0,6800.0,2529.0,6
+Tsuchida,Japan,Sake/Shochu,6,0,0,0,0,3170.0,2775.0,6
+Yalumba,Australia,Red Wine|White Wine,23,13,5,8,0,14800.0,2000.0,6
+Yukinobousha,Japan,Sake/Shochu,8,0,0,0,0,2970.0,2043.0,6
+Alto Los Romeros,Chile,Red Wine|Rose Wine|White Wine,7,2,1,1,0,900.0,786.0,5
+Azumarikish,Japan,Sake/Shochu,6,0,0,0,0,1300.0,950.0,5
+Balblair,Scotland,Wine product,5,0,0,0,0,24895.0,9692.0,5
+Bread & Butter,USA,Red Wine|White Wine,7,2,1,0,1,5500.0,2743.0,5
+Cakebread,USA,Red Wine|White Wine,9,4,3,0,1,10300.0,5267.0,5
+Champagne Agrapart,France,Champagne,5,0,0,0,0,7169.0,4891.0,5
+Champagne J.M. Goulard,France,Champagne,5,0,0,0,0,4800.0,3900.0,5
+Champagne Pierre Gerbais,France,Champagne,6,1,0,0,1,5500.0,3867.0,5
+Cono Sur,Chile,Red Wine|White Wine,15,7,5,2,0,7200.0,1547.0,5
+Domaine Audiffred,France,Red Wine,5,0,0,0,0,13200.0,6840.0,5
+Don Julio,Mexico,Wine product,5,0,0,0,0,27499.0,13255.0,5
+Finlandia,Finland,Vodka,5,0,0,0,0,1859.0,1035.0,5
+Glendalough,Ireland,Wine product,7,0,0,0,0,2709.0,2340.0,5
+Heavensake,Japan,Sake/Shochu,5,0,0,0,0,40000.0,10676.0,5
+Houou Biden,Japan,Liqueur|Sake/Shochu,5,0,0,0,0,3810.0,2846.0,5
+IICHIKO,Japan,Others|Wine product,8,0,0,0,0,2700.0,1353.0,5
+Iyo Kagiya,Japan,Sake/Shochu,5,0,0,0,0,3500.0,1900.0,5
+J. Lohr,USA,Red Wine|White Wine,6,1,1,0,0,3500.0,2137.0,5
+Jack Daniel's,USA,Whisky,19,8,0,4,4,6899.0,2007.0,5
+Jose L. Piedra,Cuba,Cigar,8,0,0,0,0,2900.0,2071.0,5
+Kamotsuru,Japan,Sake/Shochu|Wine product,9,0,0,0,0,4200.0,2028.0,5
+Kunizakari,Japan,Wine product,9,0,0,0,0,1300.0,611.0,5
+Luxardo,Italy,Wine product,6,0,0,0,0,1719.0,1181.0,5
+Mansaku,Japan,Wine product,6,0,0,0,0,4200.0,2300.0,5
+Masottina,Italy,Sparkling Wine,6,1,0,1,0,1600.0,1017.0,5

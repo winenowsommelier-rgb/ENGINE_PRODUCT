@@ -333,6 +333,13 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--dry-run", action="store_true",
                    help="Generate but do NOT write to DB.")
     p.add_argument("--no-backup", action="store_true")
+    p.add_argument("--require-active", action="store_true",
+                   help="Skip SKUs where products.is_active=0 (BI says OOS AND no recent sales). "
+                        "Run scripts/sync_stock_from_bi.py first to populate is_active.")
+    p.add_argument("--min-price", type=float, default=0,
+                   help="Only enrich SKUs with price >= this value")
+    p.add_argument("--max-price", type=float, default=0,
+                   help="Only enrich SKUs with price < this value (0 = no max)")
     p.add_argument("--skip-already-reenriched", action="store_true",
                    help="Skip SKUs whose enrichment_source is already 'ai_brand_library_v3'. Use to resume a partial run without re-paying.")
     args = p.parse_args(argv)
@@ -361,9 +368,18 @@ def main(argv: list[str] | None = None) -> int:
     conn.execute("PRAGMA busy_timeout=10000")  # 10s SQLite-level wait before reporting busy
 
     sku_rows = []
-    for row in conn.execute("""
-        SELECT sku, name, brand, classification, country, region, vintage, price,
-               enrichment_source
+    # Probe if is_active column exists (added by scripts/sync_stock_from_bi.py)
+    products_cols = {r[1] for r in conn.execute("PRAGMA table_info(products)")}
+    has_is_active = "is_active" in products_cols
+    if args.require_active and not has_is_active:
+        print("ERROR: --require-active needs the is_active column. "
+              "Run scripts/sync_stock_from_bi.py first.", file=sys.stderr)
+        return 1
+    select_cols = "sku, name, brand, classification, country, region, vintage, price, enrichment_source"
+    if has_is_active:
+        select_cols += ", is_active, full_description"
+    for row in conn.execute(f"""
+        SELECT {select_cols}
         FROM products
         WHERE brand IS NOT NULL AND brand != ''
         ORDER BY price DESC NULLS LAST
@@ -374,6 +390,12 @@ def main(argv: list[str] | None = None) -> int:
         if args.brand and row["brand"] not in args.brand:
             continue
         if args.skip_already_reenriched and row["enrichment_source"] == "ai_brand_library_v3":
+            continue
+        if args.require_active and (row["is_active"] or 0) != 1:
+            continue
+        if args.min_price and (row["price"] or 0) < args.min_price:
+            continue
+        if args.max_price and (row["price"] or 0) >= args.max_price:
             continue
         sku_rows.append(dict(row))
     if args.limit > 0:

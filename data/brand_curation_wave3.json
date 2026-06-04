@@ -1,0 +1,502 @@
+[
+  {
+    "rank": 1,
+    "brand": "Domaine Hubert Lignier",
+    "classification": "Red Wine",
+    "ultra_skus": 3,
+    "prestige_skus": 4,
+    "unenriched_premium": 7,
+    "avg_price": 21771.0,
+    "max_price": 54000.0
+  },
+  {
+    "rank": 2,
+    "brand": "Chateau Le Pin",
+    "classification": "Red Wine",
+    "ultra_skus": 2,
+    "prestige_skus": 0,
+    "unenriched_premium": 2,
+    "avg_price": 119549.0,
+    "max_price": 139959.0
+  },
+  {
+    "rank": 3,
+    "brand": "Bibi Graetz",
+    "classification": "Red Wine",
+    "ultra_skus": 2,
+    "prestige_skus": 0,
+    "unenriched_premium": 2,
+    "avg_price": 22459.0,
+    "max_price": 22459.0
+  },
+  {
+    "rank": 4,
+    "brand": "Belvedere",
+    "classification": "Vodka",
+    "ultra_skus": 1,
+    "prestige_skus": 3,
+    "unenriched_premium": 4,
+    "avg_price": 11014.0,
+    "max_price": 20999.0
+  },
+  {
+    "rank": 5,
+    "brand": "Almaviva",
+    "classification": "Red Wine",
+    "ultra_skus": 0,
+    "prestige_skus": 6,
+    "unenriched_premium": 6,
+    "avg_price": 10549.0,
+    "max_price": 13419.0
+  },
+  {
+    "rank": 6,
+    "brand": "Vega Sicilia",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 2,
+    "unenriched_premium": 3,
+    "avg_price": 10076.0,
+    "max_price": 17379.0
+  },
+  {
+    "rank": 7,
+    "brand": "Tomintoul",
+    "classification": "Whisky",
+    "ultra_skus": 1,
+    "prestige_skus": 2,
+    "unenriched_premium": 3,
+    "avg_price": 14600.0,
+    "max_price": 27800.0
+  },
+  {
+    "rank": 8,
+    "brand": "The GlenAllachie",
+    "classification": "Whisky",
+    "ultra_skus": 1,
+    "prestige_skus": 2,
+    "unenriched_premium": 3,
+    "avg_price": 11400.0,
+    "max_price": 19100.0
+  },
+  {
+    "rank": 9,
+    "brand": "Talenti",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 2,
+    "unenriched_premium": 3,
+    "avg_price": 10967.0,
+    "max_price": 16100.0
+  },
+  {
+    "rank": 10,
+    "brand": "Pierre Ferrand",
+    "classification": "Brandy",
+    "ultra_skus": 1,
+    "prestige_skus": 2,
+    "unenriched_premium": 3,
+    "avg_price": 12637.0,
+    "max_price": 23220.0
+  },
+  {
+    "rank": 11,
+    "brand": "Patron",
+    "classification": "Tequila",
+    "ultra_skus": 1,
+    "prestige_skus": 2,
+    "unenriched_premium": 3,
+    "avg_price": 11919.0,
+    "max_price": 15150.0
+  },
+  {
+    "rank": 12,
+    "brand": "Harlan Estate",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 2,
+    "unenriched_premium": 3,
+    "avg_price": 17109.0,
+    "max_price": 23329.0
+  },
+  {
+    "rank": 13,
+    "brand": "Domaine Hubert Lamy",
+    "classification": "White Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 2,
+    "unenriched_premium": 3,
+    "avg_price": 10567.0,
+    "max_price": 15400.0
+  },
+  {
+    "rank": 14,
+    "brand": "Domaine Arlaud",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 2,
+    "unenriched_premium": 3,
+    "avg_price": 12033.0,
+    "max_price": 20800.0
+  },
+  {
+    "rank": 15,
+    "brand": "Claude Dugat La Gibryotte",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 2,
+    "unenriched_premium": 3,
+    "avg_price": 10700.0,
+    "max_price": 18800.0
+  },
+  {
+    "rank": 16,
+    "brand": "Chateau Pontet Canet",
+    "classification": "Red Wine",
+    "ultra_skus": 0,
+    "prestige_skus": 5,
+    "unenriched_premium": 5,
+    "avg_price": 8399.0,
+    "max_price": 9699.0
+  },
+  {
+    "rank": 17,
+    "brand": "Tenuta di Biserno",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 1,
+    "unenriched_premium": 2,
+    "avg_price": 17250.0,
+    "max_price": 28400.0
+  },
+  {
+    "rank": 18,
+    "brand": "Taittinger",
+    "classification": "Champagne",
+    "ultra_skus": 1,
+    "prestige_skus": 1,
+    "unenriched_premium": 2,
+    "avg_price": 20295.0,
+    "max_price": 27480.0
+  },
+  {
+    "rank": 19,
+    "brand": "Royal Salute",
+    "classification": "Whisky",
+    "ultra_skus": 0,
+    "prestige_skus": 4,
+    "unenriched_premium": 4,
+    "avg_price": 9722.0,
+    "max_price": 13995.0
+  },
+  {
+    "rank": 20,
+    "brand": "Roses de Jeanne",
+    "classification": "Champagne",
+    "ultra_skus": 0,
+    "prestige_skus": 4,
+    "unenriched_premium": 4,
+    "avg_price": 6792.0,
+    "max_price": 9919.0
+  },
+  {
+    "rank": 21,
+    "brand": "Robert Foley",
+    "classification": "Red Wine",
+    "ultra_skus": 0,
+    "prestige_skus": 4,
+    "unenriched_premium": 4,
+    "avg_price": 7125.0,
+    "max_price": 10200.0
+  },
+  {
+    "rank": 22,
+    "brand": "Plantation",
+    "classification": "Rum",
+    "ultra_skus": 0,
+    "prestige_skus": 4,
+    "unenriched_premium": 4,
+    "avg_price": 6772.0,
+    "max_price": 11089.0
+  },
+  {
+    "rank": 23,
+    "brand": "Old Pulteney",
+    "classification": "Whisky",
+    "ultra_skus": 1,
+    "prestige_skus": 1,
+    "unenriched_premium": 2,
+    "avg_price": 15699.0,
+    "max_price": 19299.0
+  },
+  {
+    "rank": 24,
+    "brand": "Nikka",
+    "classification": "Whisky",
+    "ultra_skus": 0,
+    "prestige_skus": 4,
+    "unenriched_premium": 4,
+    "avg_price": 8739.0,
+    "max_price": 12589.0
+  },
+  {
+    "rank": 25,
+    "brand": "Mumm",
+    "classification": "Champagne",
+    "ultra_skus": 0,
+    "prestige_skus": 4,
+    "unenriched_premium": 4,
+    "avg_price": 7017.0,
+    "max_price": 11119.0
+  },
+  {
+    "rank": 26,
+    "brand": "Levy & McClellan",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 1,
+    "unenriched_premium": 2,
+    "avg_price": 17150.0,
+    "max_price": 22749.0
+  },
+  {
+    "rank": 27,
+    "brand": "Hitachino",
+    "classification": "Beer",
+    "ultra_skus": 0,
+    "prestige_skus": 4,
+    "unenriched_premium": 4,
+    "avg_price": 5142.0,
+    "max_price": 5349.0
+  },
+  {
+    "rank": 28,
+    "brand": "Glenmorangie",
+    "classification": "Whisky",
+    "ultra_skus": 1,
+    "prestige_skus": 1,
+    "unenriched_premium": 2,
+    "avg_price": 16055.0,
+    "max_price": 21109.0
+  },
+  {
+    "rank": 29,
+    "brand": "Glengoyne",
+    "classification": "Whisky",
+    "ultra_skus": 1,
+    "prestige_skus": 1,
+    "unenriched_premium": 2,
+    "avg_price": 15599.0,
+    "max_price": 16699.0
+  },
+  {
+    "rank": 30,
+    "brand": "Flor de Ca\u00f1a Rum",
+    "classification": "Rum",
+    "ultra_skus": 1,
+    "prestige_skus": 1,
+    "unenriched_premium": 2,
+    "avg_price": 38784.0,
+    "max_price": 70719.0
+  },
+  {
+    "rank": 31,
+    "brand": "Domaine Joseph Roty",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 1,
+    "unenriched_premium": 2,
+    "avg_price": 15594.0,
+    "max_price": 22499.0
+  },
+  {
+    "rank": 32,
+    "brand": "Domaine Henri Boillot",
+    "classification": "White Wine",
+    "ultra_skus": 0,
+    "prestige_skus": 4,
+    "unenriched_premium": 4,
+    "avg_price": 8775.0,
+    "max_price": 13400.0
+  },
+  {
+    "rank": 33,
+    "brand": "C\u00f3digo 1530",
+    "classification": "Tequila",
+    "ultra_skus": 1,
+    "prestige_skus": 1,
+    "unenriched_premium": 2,
+    "avg_price": 11190.0,
+    "max_price": 17379.0
+  },
+  {
+    "rank": 34,
+    "brand": "Chateau Lynch Bages",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 1,
+    "unenriched_premium": 2,
+    "avg_price": 11044.0,
+    "max_price": 16839.0
+  },
+  {
+    "rank": 35,
+    "brand": "Chateau Ducru Beaucaillou",
+    "classification": "Red Wine",
+    "ultra_skus": 0,
+    "prestige_skus": 4,
+    "unenriched_premium": 4,
+    "avg_price": 12087.0,
+    "max_price": 13600.0
+  },
+  {
+    "rank": 36,
+    "brand": "Chateau Clinet",
+    "classification": "Red Wine",
+    "ultra_skus": 0,
+    "prestige_skus": 4,
+    "unenriched_premium": 4,
+    "avg_price": 7899.0,
+    "max_price": 8499.0
+  },
+  {
+    "rank": 37,
+    "brand": "Champagne Remi Leroy",
+    "classification": "Champagne",
+    "ultra_skus": 0,
+    "prestige_skus": 4,
+    "unenriched_premium": 4,
+    "avg_price": 6775.0,
+    "max_price": 8100.0
+  },
+  {
+    "rank": 38,
+    "brand": "Bowmore",
+    "classification": "Whisky",
+    "ultra_skus": 1,
+    "prestige_skus": 1,
+    "unenriched_premium": 2,
+    "avg_price": 24749.0,
+    "max_price": 40999.0
+  },
+  {
+    "rank": 39,
+    "brand": "Yamazaki Tsukuriwake",
+    "classification": "Whisky",
+    "ultra_skus": 1,
+    "prestige_skus": 0,
+    "unenriched_premium": 1,
+    "avg_price": 27000.0,
+    "max_price": 27000.0
+  },
+  {
+    "rank": 40,
+    "brand": "Winzer Stolz",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 0,
+    "unenriched_premium": 1,
+    "avg_price": 38600.0,
+    "max_price": 38600.0
+  },
+  {
+    "rank": 41,
+    "brand": "Tenuta San Guido",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 0,
+    "unenriched_premium": 1,
+    "avg_price": 20299.0,
+    "max_price": 20299.0
+  },
+  {
+    "rank": 42,
+    "brand": "Staglin Family",
+    "classification": "Red Wine",
+    "ultra_skus": 0,
+    "prestige_skus": 3,
+    "unenriched_premium": 3,
+    "avg_price": 7716.0,
+    "max_price": 10999.0
+  },
+  {
+    "rank": 43,
+    "brand": "Simon Colin",
+    "classification": "White Wine",
+    "ultra_skus": 0,
+    "prestige_skus": 3,
+    "unenriched_premium": 3,
+    "avg_price": 8400.0,
+    "max_price": 9800.0
+  },
+  {
+    "rank": 44,
+    "brand": "Salon-Delamotte",
+    "classification": "Champagne",
+    "ultra_skus": 1,
+    "prestige_skus": 0,
+    "unenriched_premium": 1,
+    "avg_price": 20180.0,
+    "max_price": 20180.0
+  },
+  {
+    "rank": 45,
+    "brand": "Sagatiba",
+    "classification": "Rum",
+    "ultra_skus": 1,
+    "prestige_skus": 0,
+    "unenriched_premium": 1,
+    "avg_price": 26759.0,
+    "max_price": 26759.0
+  },
+  {
+    "rank": 46,
+    "brand": "Provenance",
+    "classification": "Whisky",
+    "ultra_skus": 0,
+    "prestige_skus": 3,
+    "unenriched_premium": 3,
+    "avg_price": 5646.0,
+    "max_price": 6489.0
+  },
+  {
+    "rank": 47,
+    "brand": "Philippe Pacalet",
+    "classification": "Red Wine",
+    "ultra_skus": 0,
+    "prestige_skus": 3,
+    "unenriched_premium": 3,
+    "avg_price": 6766.0,
+    "max_price": 7300.0
+  },
+  {
+    "rank": 48,
+    "brand": "Opus One",
+    "classification": "Red Wine",
+    "ultra_skus": 1,
+    "prestige_skus": 0,
+    "unenriched_premium": 1,
+    "avg_price": 19999.0,
+    "max_price": 19999.0
+  },
+  {
+    "rank": 49,
+    "brand": "Nonino",
+    "classification": "Brandy",
+    "ultra_skus": 1,
+    "prestige_skus": 0,
+    "unenriched_premium": 1,
+    "avg_price": 16249.0,
+    "max_price": 16249.0
+  },
+  {
+    "rank": 50,
+    "brand": "Mount Mary",
+    "classification": "Red Wine",
+    "ultra_skus": 0,
+    "prestige_skus": 3,
+    "unenriched_premium": 3,
+    "avg_price": 5693.0,
+    "max_price": 5940.0
+  }
+]

@@ -1,0 +1,50 @@
+brand,country,classifications,total_skus,enriched_skus,a_count,b_count,c_count,max_price_thb,avg_price_thb,priority_score
+Chateau Le Pin,France,Red Wine,3,0,0,0,0,139959.0,79986.0,6
+Bibi Graetz,Italy,Red Wine|White Wine,5,1,0,1,0,22459.0,11142.0,6
+Belvedere,Poland,Vodka|Wine product,6,0,0,0,0,20999.0,7999.0,6
+Almaviva,Chile,Red Wine,8,2,0,2,0,13419.0,10612.0,6
+Vega Sicilia,Spain,Red Wine,4,0,0,0,0,17379.0,8332.0,5
+Tomintoul,Scotland,Whisky|Wine product,11,0,0,0,0,27800.0,6045.0,5
+The GlenAllachie,Scotland,Whisky,8,1,0,1,0,19100.0,7250.0,5
+Talenti,Italy,Red Wine,6,0,0,0,0,16100.0,6483.0,5
+Pierre Ferrand,France,Brandy|Liqueur|Wine product,5,1,0,0,1,23220.0,8476.0,5
+Patron,Mexico,Tequila,8,1,0,0,1,15150.0,6156.0,5
+Harlan Estate,USA,Red Wine,3,0,0,0,0,23329.0,17109.0,5
+Domaine Hubert Lamy,France,White Wine,3,0,0,0,0,15400.0,10567.0,5
+Domaine Arlaud,France,Red Wine,3,0,0,0,0,20800.0,12033.0,5
+Claude Dugat La Gibryotte,France,Red Wine,4,0,0,0,0,18800.0,8725.0,5
+Chateau Pontet Canet,France,Red Wine,5,0,0,0,0,9699.0,8399.0,5
+Tenuta di Biserno,Italy,Red Wine,3,1,1,0,0,28400.0,12300.0,4
+Taittinger,France,Champagne,8,3,0,3,0,27480.0,8798.0,4
+Royal Salute,|Scotland,Whisky|Wine product,13,0,0,0,0,32495.0,14477.0,4
+Roses de Jeanne,France,Champagne,7,0,0,0,0,9919.0,5498.0,4
+Robert Foley,USA,Red Wine,4,0,0,0,0,10200.0,7125.0,4
+Plantation,Barbados|Fiji|Jamaica|Panama|Trinidad & Tobago|Venezuela,Rum|Wine product,15,0,0,0,0,11089.0,3833.0,4
+Old Pulteney,Scotland,Whisky|Wine product,7,0,0,0,0,19299.0,9546.0,4
+Nikka,|Japan,Whisky|Wine product,18,3,0,3,0,12589.0,6370.0,4
+Mumm,France,Champagne,8,3,0,2,1,11119.0,4586.0,4
+Levy & McClellan,USA,Red Wine,3,0,0,0,0,22749.0,11953.0,4
+Hitachino,Japan,Beer,9,0,0,0,0,5349.0,4828.0,4
+Glenmorangie,|Scotland,Whisky|Wine product,15,0,0,0,0,39899.0,13013.0,4
+Glengoyne,Scotland,Whisky,4,1,0,0,1,16699.0,9769.0,4
+Flor de Caña Rum,Nicaragua,Rum,8,0,0,0,0,70719.0,11236.0,4
+Domaine Joseph Roty,France,Red Wine,4,0,0,0,0,22499.0,9767.0,4
+Domaine Henri Boillot,France,Red Wine|White Wine,4,0,0,0,0,13400.0,8775.0,4
+Código 1530,Mexico,Tequila|Wine product,7,3,0,1,2,17379.0,7045.0,4
+Chateau Lynch Bages,France,Red Wine,10,7,0,6,1,16839.0,7577.0,4
+Chateau Ducru Beaucaillou,France,Red Wine,8,2,0,1,1,13600.0,8687.0,4
+Chateau Clinet,France,Red Wine|White Wine,8,2,1,1,0,8499.0,4581.0,4
+Champagne Remi Leroy,France,Champagne,11,0,0,0,0,8100.0,4836.0,4
+Bowmore,Scotland,Whisky,4,0,0,0,0,40999.0,14462.0,4
+Yamazaki Tsukuriwake,,Whisky,1,0,0,0,0,27000.0,27000.0,3
+Winzer Stolz,Australia,Red Wine,1,0,0,0,0,38600.0,38600.0,3
+Tenuta San Guido,Italy,Red Wine|Wine product,7,4,1,3,0,20299.0,11014.0,3
+Staglin Family,USA,Red Wine|White Wine,7,2,1,1,0,15400.0,7292.0,3
+Simon Colin,France,White Wine,3,0,0,0,0,9800.0,8400.0,3
+Salon-Delamotte,France,Champagne,5,4,0,3,1,20180.0,6766.0,3
+Sagatiba,Brazil,Rum,2,0,0,0,0,26759.0,14079.0,3
+Provenance,Scotland,Whisky,10,0,0,0,0,6489.0,4739.0,3
+Philippe Pacalet,France,Brandy|Red Wine|White Wine,4,0,0,0,0,7300.0,5947.0,3
+Opus One,USA,Red Wine,6,5,4,1,0,24000.0,19750.0,3
+Nonino,Italy,Brandy|Wine product,16,0,0,0,0,16249.0,3437.0,3
+Mount Mary,Australia,Red Wine|White Wine,3,0,0,0,0,5940.0,5693.0,3
