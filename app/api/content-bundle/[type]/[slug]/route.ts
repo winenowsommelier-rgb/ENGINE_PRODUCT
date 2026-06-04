@@ -443,11 +443,13 @@ async function handleBrand(slug: string) {
     );
   }
 
-  // Stats — prefer active SKUs (when is_active is available); else treat all as active.
-  const hasActiveFlag = skus.some(function (s: any) { return s.is_active !== undefined; });
-  const activeSkus = hasActiveFlag
-    ? skus.filter(function (s: any) { return s.is_active === 1 || s.is_active === true; })
-    : skus;
+  // Stats are computed across ALL SKUs (active + inactive). The is_active
+  // flag is kept per-SKU so the consumer (brand-page UI) can render
+  // an "in stock" badge or filter client-side. Hiding inactive SKUs at
+  // the API level would hide premium allocated bottles (Balvenie 50yr,
+  // DRC etc.) which Wine-Now genuinely sells via special order.
+  const activeSkus = skus;
+  const activeCount = skus.filter(function (s: any) { return s.is_active === 1 || s.is_active === true; }).length;
   const prices = activeSkus.map(function (s: any) { return Number(s.price); }).filter(function (p: number) { return Number.isFinite(p) && p > 0; });
   const priceMin = prices.length > 0 ? Math.min(...prices) : null;
   const priceMax = prices.length > 0 ? Math.max(...prices) : null;
@@ -509,7 +511,7 @@ async function handleBrand(slug: string) {
     },
     stats: {
       totalSkus: skus.length,
-      activeSkus: activeSkus.length,
+      activeSkus: activeCount,
       priceMin,
       priceMax,
       priceMedian,
@@ -529,6 +531,7 @@ async function handleBrand(slug: string) {
         region: s.region,
         image_url: s.image_url,
         enrichmentGrade: s.enrichment_quality_grade,
+        isActive: s.is_active === 1 || s.is_active === true,
       };
     }),
     seoMeta: {
