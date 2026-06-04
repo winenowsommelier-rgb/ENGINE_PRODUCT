@@ -22,7 +22,19 @@ function pick(row: Record<string, unknown>, names: string[]): unknown {
 }
 
 function str(v: unknown): string {
-  return String(v ?? '').trim();
+  // Strip control characters (newlines, tabs, etc.) that break JSON serialization
+  return String(v ?? '').replace(/[\x00-\x1F\x7F]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function sanitizePayload(row: Record<string, unknown>): Record<string, unknown> {
+  // Strip control characters from all string values in raw_payload so the
+  // JSON response is always valid regardless of supplier file content
+  return Object.fromEntries(
+    Object.entries(row).map(([k, v]) => [
+      k,
+      typeof v === 'string' ? v.replace(/[\x00-\x1F\x7F]/g, ' ').replace(/\s+/g, ' ').trim() : v,
+    ])
+  );
 }
 
 // ── CSV detection ────────────────────────────────────────────────────────────
@@ -121,7 +133,7 @@ export function normalizeSupplierRows(input: {
         id: `${input.runId}-${index + 1}`,
         run_id: input.runId,
         row_number: index + 1,
-        raw_payload: row,
+        raw_payload: sanitizePayload(row),
         normalized_payload: {
           supplier_item_code: supplierItemCode || undefined,
           sku: str(pick(row, ['sku', 'matched_sku', 'product code'])) || undefined,
