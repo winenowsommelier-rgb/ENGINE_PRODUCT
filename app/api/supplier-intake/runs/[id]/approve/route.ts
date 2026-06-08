@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupplierIntakeRows, getSupplierIntakeRuns, saveSupplierIntakeRun, saveSupplierIntakeRows } from '@/lib/db/client';
+import type { IntakeRunStatus } from '@/lib/supplier-intake/types';
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   const body = await req.json();
@@ -16,6 +17,11 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   await saveSupplierIntakeRows(params.id, nextRows);
   const run = (await getSupplierIntakeRuns()).find(r => r.id === params.id);
-  if (run) await saveSupplierIntakeRun({ ...run, status: 'approved', approved_rows: nextRows.filter(r => r.status === 'approved').length, updated_at: now });
+  if (run) {
+    const committable = nextRows.filter(r => r.status !== 'blocked' && r.status !== 'new_code_required').length;
+    const approvedCount = nextRows.filter(r => r.status === 'approved').length;
+    const runStatus = approvedCount >= committable && committable > 0 ? 'approved' : 'priced';
+    await saveSupplierIntakeRun({ ...run, status: runStatus as IntakeRunStatus, approved_rows: approvedCount, updated_at: now });
+  }
   return NextResponse.json({ rows: nextRows });
 }

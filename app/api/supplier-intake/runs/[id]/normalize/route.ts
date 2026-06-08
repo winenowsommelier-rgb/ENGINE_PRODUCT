@@ -4,8 +4,12 @@ import { normalizeSupplierRows, parseSupplierWorkbook } from '@/lib/supplier-int
 import { downloadDriveFile, exportGoogleSheetAsXlsx } from '@/lib/supplier-intake/google-drive';
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const form = await req.formData();
-  const uploadedFile = form.get('file');
+  const ct = req.headers.get('content-type') ?? '';
+  let uploadedFile: File | null = null;
+  if (ct.includes('multipart/form-data')) {
+    const form = await req.formData();
+    uploadedFile = form.get('file') as File | null;
+  }
 
   const runs = await getSupplierIntakeRuns();
   const run = runs.find(r => r.id === params.id);

@@ -6,11 +6,15 @@ import {
   ArrowRight,
   CheckCircle2,
   ClipboardCheck,
+  Download,
   FileSearch,
   FolderSymlink,
   GitBranch,
+  Loader2,
   PackagePlus,
+  RotateCcw,
   Search,
+  Settings2,
   ShieldCheck,
   TableProperties,
 } from 'lucide-react';
@@ -73,13 +77,14 @@ type SupplierIntakeResponse = {
   suppliers: SupplierIntakeRow[];
 };
 
-type IntakeView = 'control' | 'suppliers' | 'review' | 'pim';
+type IntakeView = 'control' | 'suppliers' | 'review' | 'pim' | 'run';
 
 const VIEW_LABELS: Record<IntakeView, string> = {
   control: 'Control room',
   suppliers: 'Supplier folders',
   review: 'Review queue',
   pim: 'PIM apply',
+  run: 'Run intake',
 };
 
 const STEP_ICONS = [FolderSymlink, TableProperties, GitBranch, FileSearch, ClipboardCheck, PackagePlus];
@@ -92,6 +97,487 @@ function formatLabel(value: string) {
 
 function numberValue(value: string | number | undefined) {
   return Number(value || 0);
+}
+
+type DriveFile = {
+  id: string;
+  name: string;
+  mimeType: string;
+  modifiedTime: string;
+  size?: string;
+};
+
+type SupplierDef = {
+  id: string;
+  name: string;
+  supplier_code: string;
+  drive_folder_id?: string;
+  pricing_structure: string;
+};
+
+type WorkflowRun = {
+  id: string;
+  supplier_id: string;
+  supplier_name: string;
+  source_filename: string;
+  source_format: string;
+  status: string;
+  total_rows: number;
+  approved_rows: number;
+  blocked_rows: number;
+};
+
+type WorkflowRow = {
+  id: string;
+  run_id: string;
+  row_number: number;
+  raw_payload: Record<string, unknown>;
+  normalized_payload: {
+    supplier_item_code?: string;
+    name: string;
+    cost: number;
+    rsp?: number;
+    currency: string;
+  };
+  status: string;
+  issues: string[];
+  match?: {
+    selected_sku?: string;
+    confidence: number;
+    status: string;
+  };
+  price?: {
+    calculated_price: number;
+    final_selling_price: number;
+    margin_pct: number;
+    status: string;
+  };
+};
+
+type WorkflowPhase = 'setup' | 'processing' | 'review' | 'committed';
+
+interface IntakeRunWorkflowProps {
+  onNavigateToSettings: () => void;
+}
+
+const CHAIN_STEPS = [
+  { key: 'normalize', label: 'Normalize' },
+  { key: 'match', label: 'Match' },
+  { key: 'price', label: 'Price' },
+] as const;
+
+function IntakeRunWorkflow({ onNavigateToSettings }: IntakeRunWorkflowProps) {
+  const [phase, setPhase] = useState<WorkflowPhase>('setup');
+  const [suppliers, setSuppliers] = useState<SupplierDef[]>([]);
+  const [selectedSupplierId, setSelectedSupplierId] = useState<string | null>(null);
+  const [driveFiles, setDriveFiles] = useState<DriveFile[]>([]);
+  const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [run, setRun] = useState<WorkflowRun | null>(null);
+  const [rows, setRows] = useState<WorkflowRow[]>([]);
+  const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
+  const [processing, setProcessing] = useState(false);
+  const [processingStep, setProcessingStep] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loadingSuppliers, setLoadingSuppliers] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/settings/suppliers')
+      .then(r => r.json())
+      .then(d => setSuppliers(d.suppliers ?? []))
+      .catch(() => {})
+      .finally(() => setLoadingSuppliers(false));
+  }, []);
+
+  useEffect(() => {
+    if (!selectedSupplierId) { setDriveFiles([]); return; }
+    const sup = suppliers.find(s => s.id === selectedSupplierId);
+    if (!sup?.drive_folder_id) return;
+    fetch(`/api/supplier-intake/drive-files?folder_id=${encodeURIComponent(sup.drive_folder_id)}`)
+      .then(r => r.json())
+      .then(d => setDriveFiles(d.files ?? []))
+      .catch(() => setDriveFiles([]));
+  }, [selectedSupplierId, suppliers]);
+
+  const selectedSupplier = suppliers.find(s => s.id === selectedSupplierId) ?? null;
+  const flaggedCount = rows.filter(r => r.status === 'blocked').length;
+  const reviewCount = rows.filter(r => r.status === 'needs_review' || r.price?.status === 'needs_review').length;
+  const checkedCount = checkedIds.size;
+
+  function handleStartRun() {
+    if (!selectedSupplierId || !selectedFileId) return;
+    setProcessing(true);
+    setError(null);
+    setPhase('processing');
+    setProcessingStep('normalize');
+
+    const sup = suppliers.find(s => s.id === selectedSupplierId)!;
+    const file = driveFiles.find(f => f.id === selectedFileId)!;
+
+    fetch('/api/supplier-intake/runs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        supplier_id: selectedSupplierId,
+        source_drive_file_id: selectedFileId,
+        source_filename: file.name,
+        source_format: file.name.toLowerCase().endsWith('.xlsx') ? 'xlsx' : file.name.toLowerCase().endsWith('.csv') ? 'csv' : 'xlsx',
+      }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        const createdRun = data.run as WorkflowRun;
+        setRun(createdRun);
+        return chainSteps(createdRun.id, 0);
+      })
+      .catch(err => { setError(String(err?.message ?? err)); setProcessing(false); setProcessingStep(null); });
+  }
+
+  function chainSteps(runId: string, stepIndex: number): Promise<void> {
+    if (stepIndex >= CHAIN_STEPS.length) {
+      // All done — fetch rows
+      setProcessingStep(null);
+      return fetch(`/api/supplier-intake/runs/${runId}/rows`)
+        .then(r => r.json())
+        .then(data => {
+          const fetched = data.rows ?? [];
+          setRows(fetched);
+          setCheckedIds(new Set(
+            fetched
+              .filter((r: WorkflowRow) => r.status !== 'blocked' && r.status !== 'new_code_required' && r.price?.status !== 'needs_review')
+              .map((r: WorkflowRow) => r.id)
+          ));
+          setPhase('review');
+          setProcessing(false);
+        });
+    }
+
+    const step = CHAIN_STEPS[stepIndex];
+    setProcessingStep(step.key);
+    const url = `/api/supplier-intake/runs/${runId}/${step.key}`;
+    const opts: RequestInit = step.key === 'normalize'
+      ? { method: 'POST', headers: { 'Content-Type': 'application/json' } }
+      : { method: 'POST' };
+
+    return fetch(url, opts)
+      .then(r => {
+        if (!r.ok) return r.json().then((d: { error?: string }) => Promise.reject(new Error(d.error ?? `${step.label} failed`)));
+        return r.json();
+      })
+      .then(() => chainSteps(runId, stepIndex + 1))
+      .catch(err => { setError(`${step.label}: ${String(err?.message ?? err)}`); setProcessing(false); setProcessingStep(null); });
+  }
+
+  function handleRetryFromStep() {
+    if (!run) return;
+    setProcessing(true);
+    setError(null);
+    const stepIndex = CHAIN_STEPS.findIndex(s => s.key === processingStep);
+    setProcessingStep(processingStep);
+    chainSteps(run.id, Math.max(0, stepIndex)).catch(() => {});
+  }
+
+  function handleApproveSelected() {
+    if (!run || checkedIds.size === 0) return;
+    setProcessing(true);
+    fetch(`/api/supplier-intake/runs/${run.id}/approve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ row_ids: Array.from(checkedIds) }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        setRows(data.rows ?? []);
+        setPhase('review');
+      })
+      .catch(err => setError(String(err?.message ?? err)))
+      .finally(() => setProcessing(false));
+  }
+
+  function handleCommit() {
+    if (!run) return;
+    setProcessing(true);
+    fetch(`/api/supplier-intake/runs/${run.id}/commit`, { method: 'POST' })
+      .then(r => r.json())
+      .then(() => {
+        setPhase('committed');
+        setProcessing(false);
+      })
+      .catch(err => { setError(String(err?.message ?? err)); setProcessing(false); });
+  }
+
+  function handleReset() {
+    setPhase('setup');
+    setRun(null);
+    setRows([]);
+    setCheckedIds(new Set());
+    setError(null);
+    setProcessing(false);
+    setProcessingStep(null);
+  }
+
+  function handleExportCsv() {
+    if (!run) return;
+    window.open(`/api/supplier-intake/runs/${run.id}/export-csv`, '_blank');
+  }
+
+  function toggleCheck(id: string) {
+    setCheckedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+
+  // SETUP phase
+  if (phase === 'setup') {
+    return (
+      <div className="space-y-5">
+        <div>
+          <label className="mb-1 block text-xs font-medium text-slate-400">Supplier</label>
+          {loadingSuppliers ? (
+            <div className="flex items-center gap-2 text-sm text-slate-500"><Loader2 size={14} className="animate-spin" />Loading suppliers…</div>
+          ) : (
+            <select
+              value={selectedSupplierId ?? ''}
+              onChange={e => { setSelectedSupplierId(e.target.value); setSelectedFileId(null); setSelectedFileName(null); }}
+              className="w-full rounded-md border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white"
+            >
+              <option value="">Select a supplier…</option>
+              {suppliers.map(s => <option key={s.id} value={s.id}>{s.supplier_code} · {s.name}</option>)}
+            </select>
+          )}
+        </div>
+
+        {selectedSupplier && !selectedSupplier.drive_folder_id && (
+          <div className="flex items-center gap-2 rounded-md border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+            <AlertTriangle size={15} />
+            This supplier has no Drive folder configured — go to Settings to add one.
+          </div>
+        )}
+
+        {selectedSupplier?.drive_folder_id && (
+          <div>
+            <label className="mb-1 block text-xs font-medium text-slate-400">Drive files</label>
+            {driveFiles.length === 0 ? (
+              <p className="text-sm text-slate-500">No files found in this supplier's Drive folder.</p>
+            ) : (
+              <div className="space-y-1">
+                {driveFiles.map(f => (
+                  <button
+                    key={f.id}
+                    onClick={() => { setSelectedFileId(f.id); setSelectedFileName(f.name); }}
+                    className={`w-full rounded-md border px-3 py-2 text-left text-sm transition-colors ${
+                      selectedFileId === f.id
+                        ? 'border-cyan-400/40 bg-cyan-400/10 text-cyan-100'
+                        : 'border-white/10 bg-slate-950/50 text-slate-300 hover:bg-white/[0.04]'
+                    }`}
+                  >
+                    <span className="font-medium">{f.name}</span>
+                    <span className="ml-2 text-xs text-slate-500">{new Date(f.modifiedTime).toLocaleDateString()}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {error && (
+          <div className="rounded-md border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{error}</div>
+        )}
+
+        <button
+          onClick={handleStartRun}
+          disabled={!selectedSupplierId || !selectedFileId || !!(selectedSupplier && !selectedSupplier.drive_folder_id)}
+          className="rounded-md bg-cyan-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-400 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Start Run
+        </button>
+      </div>
+    );
+  }
+
+  // PROCESSING phase
+  if (phase === 'processing') {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          {CHAIN_STEPS.map(step => {
+            const isActive = processingStep === step.key;
+            const isDone = processingStep !== null && CHAIN_STEPS.indexOf(step) < CHAIN_STEPS.findIndex(s => s.key === processingStep);
+            return (
+              <div key={step.key} className="flex items-center gap-2">
+                <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${
+                  isDone ? 'bg-emerald-500 text-white' : isActive ? 'bg-cyan-500 text-white' : 'bg-slate-800 text-slate-500'
+                }`}>
+                  {isDone ? <CheckCircle2 size={16} /> : isActive ? <Loader2 size={16} className="animate-spin" /> : CHAIN_STEPS.indexOf(step) + 1}
+                </div>
+                <span className={`text-sm ${isDone ? 'text-emerald-300' : isActive ? 'text-cyan-200' : 'text-slate-500'}`}>{step.label}</span>
+              </div>
+            );
+          })}
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-800 text-sm font-medium text-slate-500">4</div>
+            <span className="text-sm text-slate-500">Review</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-800 text-sm font-medium text-slate-500">5</div>
+            <span className="text-sm text-slate-500">Commit</span>
+          </div>
+        </div>
+
+        {error && (
+          <div className="space-y-3">
+            <div className="rounded-md border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{error}</div>
+            <button onClick={handleRetryFromStep} className="flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-300 hover:bg-white/[0.08]">
+              <RotateCcw size={14} /> Retry from this step
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // COMMITTED phase
+  if (phase === 'committed') {
+    const committedCount = rows.filter(r => r.status === 'committed' || r.status === 'approved').length;
+    return (
+      <div className="space-y-5">
+        <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-6 text-center">
+          <CheckCircle2 size={32} className="mx-auto mb-3 text-emerald-300" />
+          <h3 className="text-lg font-semibold text-white">{committedCount} rows committed to PIM</h3>
+          <p className="mt-1 text-sm text-slate-400">
+            {flaggedCount} flagged rows excluded · review in next run
+          </p>
+        </div>
+        <button onClick={handleReset} className="flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-400">
+          <RotateCcw size={15} /> Start another run
+        </button>
+      </div>
+    );
+  }
+
+  // REVIEW phase
+  return (
+    <div className="space-y-4">
+      {/* Header bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3 text-sm text-slate-400">
+          <span>{rows.length} rows</span>
+          <span>·</span>
+          <span>{flaggedCount} flagged</span>
+          <span>·</span>
+          <span>{reviewCount} needs review</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={handleExportCsv} className="flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-300 hover:bg-white/[0.08]">
+            <Download size={14} /> Export CSV
+          </button>
+          <button onClick={onNavigateToSettings} className="flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-300 hover:bg-white/[0.08]">
+            <Settings2 size={14} /> Adjust Settings
+          </button>
+          {checkedCount > 0 && (
+            <button
+              onClick={handleApproveSelected}
+              disabled={processing}
+              className="rounded-md border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-sm font-medium text-cyan-200 hover:bg-cyan-400/20 disabled:opacity-40"
+            >
+              Approve Selected ({checkedCount})
+            </button>
+          )}
+        </div>
+      </div>
+
+      {error && (
+        <div className="rounded-md border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{error}</div>
+      )}
+
+      {/* Review table */}
+      <div className="overflow-auto rounded-lg border border-white/10">
+        <table className="w-full min-w-[1100px] text-left text-sm">
+          <thead className="sticky top-0 bg-slate-950 text-xs uppercase tracking-wide text-slate-600">
+            <tr>
+              <th className="w-10 px-3 py-3 font-medium">☐</th>
+              <th className="w-12 px-3 py-3 font-medium">#</th>
+              <th className="px-3 py-3 font-medium">Name</th>
+              <th className="px-3 py-3 font-medium">Matched SKU</th>
+              <th className="w-20 px-3 py-3 text-right font-medium">Conf.</th>
+              <th className="w-24 px-3 py-3 text-right font-medium">Cost</th>
+              <th className="w-24 px-3 py-3 text-right font-medium">Supp RSP</th>
+              <th className="w-24 px-3 py-3 text-right font-medium">Calc Price</th>
+              <th className="w-20 px-3 py-3 text-right font-medium">Margin%</th>
+              <th className="w-28 px-3 py-3 font-medium">Status</th>
+              <th className="px-3 py-3 font-medium">Issues</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/5">
+            {rows.map(row => {
+              const isBlocked = row.status === 'blocked';
+              const isNeedsReview = row.status === 'needs_review' || row.price?.status === 'needs_review';
+              const isChecked = checkedIds.has(row.id);
+              const p = row.normalized_payload;
+              const m = row.match;
+              const pr = row.price;
+
+              const rowBg = isBlocked ? 'bg-slate-900/80' : isNeedsReview ? 'bg-amber-500/[0.06]' : '';
+              const marginColor = pr && pr.margin_pct != null
+                ? pr.margin_pct >= 30 ? 'text-emerald-300' : pr.margin_pct >= 15 ? 'text-amber-300' : 'text-rose-300'
+                : 'text-slate-500';
+              const confColor = m && m.confidence != null
+                ? m.confidence >= 100 ? 'text-emerald-300' : m.confidence >= 55 ? 'text-amber-300' : 'text-rose-300'
+                : 'text-slate-500';
+
+              return (
+                <tr key={row.id} className={`transition-colors hover:bg-white/[0.04] ${rowBg}`}>
+                  <td className="px-3 py-2">
+                    {!isBlocked && row.status !== 'new_code_required' && (
+                      <input type="checkbox" checked={isChecked} onChange={() => toggleCheck(row.id)} className="h-4 w-4 accent-cyan-500" />
+                    )}
+                  </td>
+                  <td className="px-3 py-2 text-slate-400">{row.row_number}</td>
+                  <td className={`px-3 py-2 ${isBlocked ? 'text-slate-500 line-through' : 'text-white font-medium'}`}>{p.name}</td>
+                  <td className="px-3 py-2 text-slate-400">{m?.selected_sku ?? <span className="text-slate-600">—</span>}</td>
+                  <td className={`px-3 py-2 text-right tabular-nums ${confColor}`}>{m?.confidence != null ? `${m.confidence}%` : '—'}</td>
+                  <td className="px-3 py-2 text-right tabular-nums text-slate-300">{p.currency} {p.cost?.toFixed(2)}</td>
+                  <td className="px-3 py-2 text-right tabular-nums text-slate-400">{p.rsp != null ? `${p.currency} ${p.rsp.toFixed(2)}` : '—'}</td>
+                  <td className="px-3 py-2 text-right tabular-nums text-slate-300">{pr?.calculated_price != null ? pr.calculated_price.toFixed(2) : '—'}</td>
+                  <td className={`px-3 py-2 text-right tabular-nums ${marginColor}`}>{pr?.margin_pct != null ? `${pr.margin_pct.toFixed(1)}%` : '—'}</td>
+                  <td className="px-3 py-2">
+                    {isBlocked ? (
+                      <span className="rounded border border-rose-400/30 bg-rose-400/10 px-1.5 py-0.5 text-[11px] text-rose-200">flagged ✗</span>
+                    ) : isNeedsReview ? (
+                      <span className="rounded border border-amber-400/30 bg-amber-400/10 px-1.5 py-0.5 text-[11px] text-amber-200">review ⚑</span>
+                    ) : (
+                      <span className="rounded border border-emerald-400/30 bg-emerald-400/10 px-1.5 py-0.5 text-[11px] text-emerald-200">auto ✓</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2 text-xs text-slate-500 group relative">
+                    <span className="line-clamp-1">{row.issues.join(', ')}</span>
+                    {row.issues.length > 0 && (
+                      <span className="absolute left-0 top-full z-10 hidden max-w-xs rounded bg-slate-800 p-2 text-xs text-slate-300 shadow-lg group-hover:block">
+                        {row.issues.join(' · ')}
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Commit button */}
+      {checkedCount > 0 && (
+        <button
+          onClick={handleCommit}
+          disabled={processing}
+          className="w-full rounded-md bg-emerald-600 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-500 disabled:opacity-40"
+        >
+          Commit {checkedCount} approved rows to PIM →
+        </button>
+      )}
+    </div>
+  );
 }
 
 function statusClass(status: string) {
@@ -423,6 +909,12 @@ export function SupplierIntakePage() {
                 ))}
               </div>
             </div>
+          </section>
+        )}
+
+        {view === 'run' && (
+          <section className="rounded-lg border border-white/10 bg-white/[0.03] p-5">
+            <IntakeRunWorkflow onNavigateToSettings={() => setView('pim')} />
           </section>
         )}
       </div>
