@@ -40,6 +40,11 @@ EXPORT_COLS = [
     "popularity_qty_90d", "popularity_window_days", "popularity_synced_at",
     "created_at", "updated_at",
     "pairing_rationale",
+    # Stock and margin — required by curation hard_filter and scoring engine
+    "is_in_stock", "wn_stock", "quantity_in_stock",
+    "margin_pct", "b2b_margin_pct",
+    # Critic scores — required by score_threshold filter in curation
+    "score_max", "score_summary",
 ]
 
 # Columns that contain JSON-encoded text and should be decoded for export.
@@ -84,15 +89,19 @@ def main(argv: list[str] | None = None) -> int:
     args.out.write_text(json.dumps(records, ensure_ascii=False))
     print(f"Wrote {len(records)} products → {args.out}  ({args.out.stat().st_size // 1024} KB)")
 
-    # Tally enrichment fields populated, for sanity
+    # Tally key fields populated, for sanity (Rule 1 — verify data shipped)
     has_desc = sum(1 for r in records if r.get("desc_en_short"))
     has_full = sum(1 for r in records if r.get("full_description"))
     has_taste = sum(1 for r in records if r.get("taste_profile"))
     has_flavors = sum(1 for r in records if r.get("flavor_tags"))
+    has_stock = sum(1 for r in records if str(r.get("is_in_stock", "")) == "1")
+    has_margin = sum(1 for r in records if r.get("b2b_margin_pct") or r.get("margin_pct"))
     print(f"  desc_en_short:    {has_desc}")
     print(f"  full_description: {has_full}")
     print(f"  flavor_tags:      {has_flavors}")
     print(f"  taste_profile:    {has_taste}")
+    print(f"  is_in_stock=1:    {has_stock}  ← curation hard_filter uses this")
+    print(f"  margin populated: {has_margin}  ← curation scoring uses this")
     return 0
 
 

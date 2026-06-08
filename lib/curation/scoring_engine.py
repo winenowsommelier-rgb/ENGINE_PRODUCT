@@ -36,6 +36,10 @@ def _brand_prestige(product: dict) -> float:
     tier = product.get("expert_confidence_tier")
     if tier and tier in _PRESTIGE_MAP:
         return _PRESTIGE_MAP[tier]
+    # enrichment_quality_grade (A/B/C) is the best available prestige proxy
+    grade = product.get("enrichment_quality_grade")
+    if grade and grade in _PRESTIGE_MAP:
+        return _PRESTIGE_MAP[grade]
     return min(1.0, float(product.get("taxonomy_confidence") or 0.5))
 
 
@@ -73,7 +77,7 @@ def score_candidates(
         tm = _taste_match(p, query, kb, avoid_tag_rate=avoid_tag_rate)
         tq = _taxonomy_quality(p)
         bp = _brand_prestige(p)
-        ms = _normalise_margin(_parse_margin(p.get("b2b_margin_pct")))
+        ms = _normalise_margin(_parse_margin(p.get("b2b_margin_pct") or p.get("margin_pct")))
         wf = 0.0
 
         weighted = (

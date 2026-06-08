@@ -1,8 +1,37 @@
 from __future__ import annotations
 import json
+import re
 from pathlib import Path
 from lib.curation.llm_router import LLMRouter
 from lib.curation.models import StructuredQuery
+
+# Regex pre-pass: catch score signals the LLM misses (e.g. "100 points", "95+", "top rated")
+_SCORE_PATTERNS = [
+    (r'\b100[\s-]*point', 95),   # "100 points", "100-point" → grade A proxy (≥95)
+    (r'\b9[5-9][\s-]*point', 95),  # "95 points", "98 points"
+    (r'\b9[0-4][\s-]*point', 90),  # "90 points", "93 points"
+    (r'\b(\d{2,3})\s*\+\s*point', None),  # "90+ points" → extract number
+    (r'\btop[\s-]rated\b', 90),
+    (r'\bbest[\s-]of[\s-](?:the[\s-])?year\b', 90),
+    (r'\bcant?[\s-]miss\b', 90),   # "can't miss", "cant miss"
+    (r'\bmust[\s-](?:buy|have|try)\b', 85),
+]
+
+
+def _regex_score_threshold(brief: str) -> float | None:
+    lower = brief.lower()
+    best = None
+    for pattern, score in _SCORE_PATTERNS:
+        m = re.search(pattern, lower)
+        if not m:
+            continue
+        if score is None:
+            # extract the explicit number from the match
+            digits = re.search(r'\d+', m.group(0))
+            score = float(digits.group()) if digits else 90
+        if best is None or score > best:
+            best = float(score)
+    return best
 
 _SYSTEM_PROMPT = """\
 You are a structured query extractor for a wine and spirits curation engine.
@@ -40,13 +69,18 @@ def parse_brief(brief: str, config_path: Path | None = None) -> StructuredQuery:
         data = json.loads(text.strip())
     except json.JSONDecodeError:
         data = {}
+    # If LLM missed score signals, the regex pre-pass catches them
+    llm_score = data.get("score_threshold")
+    regex_score = _regex_score_threshold(brief)
+    score_threshold = llm_score if llm_score is not None else regex_score
+
     return StructuredQuery(
         raw_brief=brief,
         category_filter=data.get("category_filter") or [],
         subcategory_filter=data.get("subcategory_filter") or [],
         country_filter=data.get("country_filter") or [],
         region_filter=data.get("region_filter") or [],
-        score_threshold=data.get("score_threshold"),
+        score_threshold=score_threshold,
         price_min_thb=data.get("price_min_thb"),
         price_max_thb=data.get("price_max_thb"),
         prefer_high_margin=bool(data.get("prefer_high_margin", False)),
