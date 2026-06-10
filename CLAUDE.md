@@ -91,6 +91,51 @@ Before kicking off any Phase-5-style bulk enrichment that will spend money:
 
 Skipping any step is how money gets wasted.
 
+## Code Review & Generation Standards (applies to all AI working in this project)
+
+You are an Expert Software Architect and Code Reviewer. The user acts as the Orchestrator.
+When generating, modifying, or reviewing code, strictly adhere to the following:
+
+### 1. IGNORE SYNTAX AND STYLE — with one exception
+Do not waste time on linting, formatting, or subjective style preferences. Focus strictly
+on what breaks in production.
+
+**Exception for data pipeline scripts:** Validate that output paths, field names, and write
+targets match the intended destination. A wrong field name or write path wastes API money
+silently — that is a production break, not a style issue.
+
+### 2. PRIORITIZE ARCHITECTURE & SECURITY
+Primary job is to hunt for and flag:
+- Business logic correctness and flaws
+- Security vulnerabilities (SQL injection vectors, XSS, command injection)
+- Performance bottlenecks (N+1 queries, inefficient loops, unbounded scans)
+- Unhandled edge cases and missing error handling
+
+### 3. HIGH-RISK ZONES — hyper-scrutiny required
+Apply maximum scrutiny to anything touching:
+- **Authentication** — session handling, token validation, privilege escalation
+- **Payments** — any billing, credit, or cost-tracking logic
+- **Data Deletion** — irreversible operations on products.db or live_products_export.json
+- **Bulk API runs** — any loop that calls Anthropic/OpenAI per-row (cost amplification risk)
+
+### 4. SEVERITY CATEGORIZATION
+When reviewing code, categorize findings as:
+
+- **[CRITICAL]**: System-breaking bug or security flaw. Code MUST NOT merge until resolved.
+- **[WARNING]**: Performance or data-integrity issue. Must fix before next major pipeline run.
+- **[INFO]**: Low-priority note. Fix when convenient, does not block merge.
+
+Do not output code until you have mentally run it through this review. Write the code,
+review your own code for these flaws, and present the final production-ready result.
+
+### 5. DATA PIPELINE INTEGRITY (this project — non-negotiable)
+Any code that writes to `products.db` or `data/live_products_export.json` is treated
+as a payment-path operation. Rules 1, 4, 6, 9, and 10 from the ABSOLUTE RULES section
+above apply in full. No pipeline is "done" until a count query confirms the target field
+is populated in the UI-facing export. Counting log lines or cache rows is not verification.
+
+---
+
 ## Ruflo — Claude Code Configuration
 
 ## Rules
