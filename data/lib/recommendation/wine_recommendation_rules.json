@@ -1,0 +1,218 @@
+{
+  "version": "2026-06-04",
+  "scope": "wine",
+  "description": "Professional wine recommendation and substitution matrix for sommelier/content operations.",
+  "professional_principles": [
+    "Substitution preserves the customer's expected role: color/category, structure, price band, and style family matter before brand.",
+    "Similarity is driven by drinking experience: body, acidity, tannin, sweetness, flavor family, and grape/style family.",
+    "Origin is hierarchical: same subregion is strongest, then region, country, then classic cross-region style affinity.",
+    "Trade-up keeps the style promise while improving perceived quality, region prestige, brand strength, or presentation.",
+    "Value alternative lowers price while keeping enough structure and style continuity to avoid customer disappointment.",
+    "Gift and promotion recommendations prioritize presentation, recognized region/brand, validated content, and availability."
+  ],
+  "dimension_definitions": {
+    "category": "Wine color/type or category fit such as Red Wine, White Wine, Champagne, Sparkling Wine, Rose Wine.",
+    "grape_family": "Professional style family inferred from grape, cuvee name, classification, and known regional style aliases.",
+    "origin": "Country, region, and subregion relationship using hierarchical proximity.",
+    "structure": "Drinking shape across body, acidity, tannin, and sweetness.",
+    "flavor": "Overlap or family resemblance in flavor tags.",
+    "price": "Fit to the relationship intent: close replacement, lower value option, or premium trade-up.",
+    "quality": "Operational trust signals: validation status, confidence, image, and short copy.",
+    "presentation": "Gift/promotion suitability: image, brand, region, validation, and premium price signal."
+  },
+  "relationship_types": {
+    "direct_substitute": {
+      "label": "Direct Substitute",
+      "intent": "Replace an item while preserving customer expectation.",
+      "minimum_score": 72,
+      "price_window_pct": 30,
+      "constraints": {
+        "category_min": 0.8,
+        "grape_family_min": 0.35,
+        "structure_min": 0.55,
+        "price_min": 0.7
+      },
+      "weights": {
+        "category": 18,
+        "grape_family": 18,
+        "origin": 18,
+        "structure": 20,
+        "flavor": 10,
+        "price": 12,
+        "quality": 4
+      }
+    },
+    "similar_style": {
+      "label": "Similar Style",
+      "intent": "Suggest products with a comparable drinking profile.",
+      "minimum_score": 68,
+      "price_window_pct": 60,
+      "constraints": {
+        "category_min": 0.55,
+        "structure_min": 0.5
+      },
+      "weights": {
+        "category": 15,
+        "grape_family": 16,
+        "origin": 10,
+        "structure": 24,
+        "flavor": 18,
+        "price": 8,
+        "quality": 9
+      }
+    },
+    "trade_up": {
+      "label": "Trade Up",
+      "intent": "Recommend a more premium expression without changing the style too much.",
+      "minimum_score": 65,
+      "price_min_multiplier": 1.15,
+      "price_max_multiplier": 3.5,
+      "constraints": {
+        "category_min": 0.55,
+        "structure_min": 0.5,
+        "quality_min": 0.5
+      },
+      "weights": {
+        "category": 14,
+        "grape_family": 14,
+        "origin": 16,
+        "structure": 18,
+        "flavor": 10,
+        "price": 10,
+        "quality": 18
+      }
+    },
+    "value_alternative": {
+      "label": "Value Alternative",
+      "intent": "Recommend a lower-priced option that preserves the main style cues.",
+      "minimum_score": 62,
+      "price_min_multiplier": 0.35,
+      "price_max_multiplier": 0.95,
+      "constraints": {
+        "category_min": 0.55,
+        "structure_min": 0.5,
+        "price_min": 0.7
+      },
+      "weights": {
+        "category": 16,
+        "grape_family": 16,
+        "origin": 10,
+        "structure": 22,
+        "flavor": 12,
+        "price": 18,
+        "quality": 6
+      }
+    },
+    "premium_gift": {
+      "label": "Premium Gift",
+      "intent": "Surface products suitable for gifting and promotion.",
+      "minimum_score": 66,
+      "price_min": 2500,
+      "constraints": {
+        "quality_min": 0.55,
+        "presentation_min": 0.55,
+        "price_min": 0.7
+      },
+      "weights": {
+        "category": 10,
+        "grape_family": 8,
+        "origin": 18,
+        "structure": 10,
+        "flavor": 8,
+        "price": 10,
+        "quality": 22,
+        "presentation": 14
+      }
+    }
+  },
+  "grape_families": {
+    "cabernet_family": ["cabernet sauvignon", "cabernet franc", "merlot", "bordeaux blend", "mouton cadet"],
+    "pinot_family": ["pinot noir", "gamay", "spatburgunder"],
+    "syrah_family": ["syrah", "shiraz", "gsm", "grenache", "mourvedre", "mataro"],
+    "italian_red_family": ["sangiovese", "nebbiolo", "barbera", "montepulciano", "nero d'avola", "primitivo"],
+    "iberian_red_family": ["tempranillo", "garnacha", "touriga", "tinta roriz"],
+    "malbec_family": ["malbec"],
+    "chardonnay_family": ["chardonnay", "chablis", "white burgundy"],
+    "sauvignon_family": ["sauvignon blanc", "sancerre", "pouilly-fume"],
+    "riesling_family": ["riesling"],
+    "aromatic_white_family": ["gewurztraminer", "pinot gris", "pinot grigio", "viognier", "torrontes", "chenin blanc"],
+    "sparkling_family": ["champagne", "sparkling", "prosecco", "cava", "methode traditionnelle"]
+  },
+  "classic_cross_region_affinities": [
+    {
+      "affinity_id": "cabernet_bordeaux_global",
+      "family": "cabernet_family",
+      "regions": ["Bordeaux", "Napa Valley", "Coonawarra", "Margaret River", "Maipo Valley", "Tuscany", "Stellenbosch"],
+      "score": 0.42,
+      "rationale": "Cabernet-led structured reds can substitute across classic regions when structure and price align."
+    },
+    {
+      "affinity_id": "pinot_cool_climate",
+      "family": "pinot_family",
+      "regions": ["Burgundy", "Marlborough", "Central Otago", "Yarra Valley", "Sonoma Coast", "Willamette Valley"],
+      "score": 0.42,
+      "rationale": "Cool-climate Pinot Noir regions share aromatic red-fruit, acidity, and lighter tannin expectations."
+    },
+    {
+      "affinity_id": "syrah_shiraz_classic",
+      "family": "syrah_family",
+      "regions": ["Barossa Valley", "McLaren Vale", "Rhone Valley", "Crozes-Hermitage", "Saint-Joseph", "Stellenbosch"],
+      "score": 0.42,
+      "rationale": "Syrah/Shiraz regions can cross-substitute when full body, dark fruit, pepper, and tannin profile align."
+    },
+    {
+      "affinity_id": "chardonnay_classic",
+      "family": "chardonnay_family",
+      "regions": ["Burgundy", "Chablis", "Margaret River", "Yarra Valley", "Sonoma", "Napa Valley"],
+      "score": 0.4,
+      "rationale": "Chardonnay can substitute across classic regions when acidity, body, and oak profile align."
+    },
+    {
+      "affinity_id": "sauvignon_classic",
+      "family": "sauvignon_family",
+      "regions": ["Marlborough", "Sancerre", "Pouilly-Fume", "Loire Valley", "Margaret River"],
+      "score": 0.4,
+      "rationale": "Sauvignon Blanc styles can cross-substitute when aromatic intensity and acidity align."
+    }
+  ],
+  "structure_scale": {
+    "Light": 1,
+    "Medium-Light": 2,
+    "Medium": 3,
+    "Medium-Full": 4,
+    "Full": 5,
+    "Dry": 1,
+    "Off-Dry": 2,
+    "Medium-Dry": 3,
+    "Medium-Sweet": 4,
+    "Sweet": 5
+  },
+  "origin_hierarchy": {
+    "same_subregion": 1,
+    "same_region": 0.85,
+    "same_country": 0.55,
+    "classic_cross_region": 0.35,
+    "different_origin": 0.15
+  },
+  "quality_signals": {
+    "validated_bonus": 0.18,
+    "image_bonus": 0.08,
+    "description_bonus": 0.08,
+    "confidence_weight": 0.66
+  },
+  "presentation_signals": {
+    "image_required_for_high": true,
+    "recognized_region_bonus": 0.15,
+    "validated_bonus": 0.15,
+    "premium_price_bonus": 0.2
+  },
+  "risk_flags": {
+    "out_of_stock": "Candidate has no current stock or active availability signal.",
+    "low_confidence": "Candidate has low enrichment confidence; review before using in customer-facing material.",
+    "missing_image": "Candidate lacks product image, weakening gift/promotion suitability.",
+    "missing_copy": "Candidate lacks short copy, weakening staff/customer explanation.",
+    "wide_structure_gap": "Candidate differs materially in body, acidity, tannin, or sweetness.",
+    "different_origin": "Candidate is from a different origin; acceptable for style discovery but risky for direct replacement.",
+    "price_jump": "Candidate changes price expectation materially."
+  }
+}

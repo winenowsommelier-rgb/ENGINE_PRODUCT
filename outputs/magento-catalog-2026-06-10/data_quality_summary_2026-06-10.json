@@ -1,0 +1,81 @@
+{
+  "generated_at": "2026-06-10T15:46:59.694Z",
+  "catalog_source": "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/db/products.db",
+  "export_date": "2026-06-10",
+  "active_items": 6017,
+  "ready_for_magento": 3517,
+  "needs_review_or_hold": 2500,
+  "ready_pct": 58.5,
+  "status_counts": {
+    "HOLD": 1899,
+    "READY": 2662,
+    "REVIEW": 601,
+    "READY_WITH_WARNING": 855
+  },
+  "field_coverage": {
+    "substantial_description": 4157,
+    "short_description": 4157,
+    "country": 5996,
+    "region": 5357,
+    "subregion": 4175
+  },
+  "blocker_counts": {
+    "description_missing_or_too_short": 1860,
+    "short_description_missing_or_too_short": 1860,
+    "beverage_region_missing": 159,
+    "beverage_country_missing": 12
+  },
+  "warning_counts": {
+    "stale_update_over_45_days": 8,
+    "missing_subregion": 1159,
+    "region_equals_subregion": 753
+  },
+  "review_priority_counts": {
+    "HIGH": 972,
+    "MEDIUM": 12,
+    "LOW": 1516
+  },
+  "top_review_categories": [
+    {
+      "classification": "Wine product",
+      "count": 802
+    },
+    {
+      "classification": "Red Wine",
+      "count": 616
+    },
+    {
+      "classification": "White Wine",
+      "count": 238
+    },
+    {
+      "classification": "Whisky",
+      "count": 137
+    },
+    {
+      "classification": "Glassware",
+      "count": 96
+    },
+    {
+      "classification": "Rose Wine",
+      "count": 92
+    },
+    {
+      "classification": "Liqueur",
+      "count": 87
+    },
+    {
+      "classification": "Sake/Shochu",
+      "count": 79
+    },
+    {
+      "classification": "Rum",
+      "count": 46
+    },
+    {
+      "classification": "Brandy",
+      "count": 45
+    }
+  ],
+  "latest_item_update": "2026-06-02T14:04:44Z"
+}

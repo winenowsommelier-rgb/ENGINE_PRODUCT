@@ -1,0 +1,7 @@
+decision,meaning,database_effect,requires_notes
+approve_existing_update,Approved match to existing SKU; update cost/RSP/pricing fields only.,Update existing active SKU,true
+approve_supplier_change,Approved same product identity under new supplier suffix.,Create new SKU with new supplier suffix and mark old SKU inactive,true
+approve_new_sku,Approved as new product/SKU.,Create new SKU from proposed SKU rule,true
+reject_not_same_product,Rejected suggested match; not the same product.,No database update,true
+hold_need_more_info,Hold until supplier/online evidence is added.,No database update,true
+block_bad_source,Source extraction is unreliable or source file is wrong.,No database update,true

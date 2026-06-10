@@ -55,9 +55,16 @@ data/live_products_export.json.bak-*
 .claude-flow/
 .swarm/
 .superpowers/
+.qwen/
 
 # MCP config (local only, may contain paths/keys)
 .mcp.json
 
 # Local vector / embedding DB
 ruvector.db
+
+# Pipeline run artifacts — generated each run, not source (keep state files in data/db/)
+data/brand_description_library.csv.bak-*
+data/reenrich_results-*.jsonl
+data/*dryrun*.json
+data/reenrich_dryrun-*.json
