@@ -36,9 +36,11 @@ const SORT_COLS: Record<string, string> = {
 type LocalProduct = Record<string, unknown>;
 
 let _localCache: LocalProduct[] | null = null;
+let _localCacheAt = 0;
+const LOCAL_TTL = 5 * 60 * 1000; // 5 min
 
 function loadLocalProducts(): LocalProduct[] {
-  if (_localCache) return _localCache;
+  if (_localCache && Date.now() - _localCacheAt < LOCAL_TTL) return _localCache;
 
   // Primary: live_products_export.json — has enrichment fields (flavor_tags, wine_body, etc.)
   const livePath = path.join(process.cwd(), 'data', 'live_products_export.json');
@@ -92,6 +94,7 @@ function loadLocalProducts(): LocalProduct[] {
   }
 
   _localCache = merged;
+  _localCacheAt = Date.now();
   return merged;
 }
 
@@ -126,21 +129,26 @@ function applyFilters(
     search: string; brand: string; country: string; region: string;
     appellation: string; validation_status: string; classification: string;
     wine_classification: string; segment: string; tier: string;
+    priceMin: number | null; priceMax: number | null; confMin: number | null;
   },
 ): LocalProduct[] {
   return products.filter(p => {
     const str = (v: unknown) => String(v ?? '').toLowerCase();
+    const eq  = (a: unknown, b: string) => str(a) === b.toLowerCase();
     if (filters.search) {
       const q = filters.search.toLowerCase();
       if (!str(p.name).includes(q) && !str(p.sku).includes(q) && !str(p.brand).includes(q)) return false;
     }
     if (filters.brand && !str(p.brand).includes(filters.brand.toLowerCase())) return false;
-    if (filters.country && str(p.country) !== filters.country.toLowerCase()) return false;
-    if (filters.region && str(p.region) !== filters.region.toLowerCase()) return false;
-    if (filters.appellation && str(p.appellation) !== filters.appellation.toLowerCase()) return false;
-    if (filters.validation_status && str(p.validation_status) !== filters.validation_status.toLowerCase()) return false;
-    if (filters.classification && str(p.classification) !== filters.classification.toLowerCase()) return false;
-    if (filters.wine_classification && str(p.wine_classification) !== filters.wine_classification.toLowerCase()) return false;
+    if (filters.country && !eq(p.country, filters.country)) return false;
+    if (filters.region && !eq(p.region, filters.region)) return false;
+    if (filters.appellation && !eq(p.appellation, filters.appellation)) return false;
+    if (filters.validation_status && !eq(p.validation_status, filters.validation_status)) return false;
+    if (filters.classification) {
+      const cls = String(p.classification ?? '').split('|')[0].trim();
+      if (cls.toLowerCase() !== filters.classification.toLowerCase()) return false;
+    }
+    if (filters.wine_classification && !eq(p.wine_classification, filters.wine_classification)) return false;
     if (filters.segment) {
       const fn = SEGMENT_PREFIXES[filters.segment];
       if (fn && !fn(String(p.sku ?? ''))) return false;
@@ -149,6 +157,9 @@ function applyFilters(
       const ep = p.enrichment_priority ?? p.queue_priority;
       if (String(ep) !== filters.tier) return false;
     }
+    if (filters.priceMin !== null && parseFloat(String(p.price ?? 0)) < filters.priceMin) return false;
+    if (filters.priceMax !== null && parseFloat(String(p.price ?? 0)) > filters.priceMax) return false;
+    if (filters.confMin !== null && parseFloat(String(p.overall_confidence ?? 0)) < filters.confMin) return false;
     return true;
   });
 }
@@ -190,9 +201,17 @@ export async function GET(req: NextRequest) {
     const explicitOffset     = searchParams.get('offset');
     const offset             = explicitOffset ? parseInt(explicitOffset) : (page - 1) * limit;
 
+    const rawPriceMin = searchParams.get('priceMin');
+    const rawPriceMax = searchParams.get('priceMax');
+    const rawConfMin  = searchParams.get('confMin');
+    const priceMin = rawPriceMin ? parseFloat(rawPriceMin) : null;
+    const priceMax = rawPriceMax ? parseFloat(rawPriceMax) : null;
+    const confMin  = rawConfMin  ? parseFloat(rawConfMin) / 100 : null;
+
     const filterArgs = {
       search, brand, country, region, appellation,
       validation_status, classification, wine_classification, segment, tier,
+      priceMin, priceMax, confMin,
     };
 
     // Build Supabase query string for parallel fetch

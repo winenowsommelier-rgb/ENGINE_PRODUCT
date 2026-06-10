@@ -1,6 +1,6 @@
 'use client';
 import React, { Suspense, useState } from 'react';
-import { ClipboardCheck, Database, FileCheck2, FolderInput, Globe, Grid3X3, History, Home, Library, Package, Settings, Sparkles, Upload, type LucideIcon } from 'lucide-react';
+import { BarChart3, ClipboardCheck, Database, FileCheck2, FolderInput, Globe, Grid3X3, History, Home, Library, Package, Settings, Sparkles, Upload, type LucideIcon } from 'lucide-react';
 
 const DashboardHomePage = React.lazy(() => import('@/components/pages/DashboardHomePage').then(m => ({ default: m.DashboardHomePage })));
 const ProductsPage      = React.lazy(() => import('@/components/pages/ProductsPage').then(m => ({ default: m.ProductsPage })));
@@ -12,9 +12,10 @@ const ValidationDashboardPage = React.lazy(() => import('@/components/pages/Vali
 const ChangeLogPage = React.lazy(() => import('@/components/pages/ChangeLogPage').then(m => ({ default: m.ChangeLogPage })));
 const ImportHubPage = React.lazy(() => import('@/components/pages/ImportHubPage').then(m => ({ default: m.ImportHubPage })));
 const SupplierIntakePage = React.lazy(() => import('@/components/pages/SupplierIntakePage').then(m => ({ default: m.SupplierIntakePage })));
+const CompletenessPage  = React.lazy(() => import('@/components/pages/CompletenessPage').then(m => ({ default: m.CompletenessPage })));
 const SettingsPage      = React.lazy(() => import('@/components/pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
 
-type Section = 'home' | 'products' | 'matrix' | 'knowledge_library' | 'research_library' | 'publish_readiness' | 'validation' | 'changelog' | 'import' | 'supplier_intake' | 'settings';
+type Section = 'home' | 'products' | 'matrix' | 'knowledge_library' | 'research_library' | 'publish_readiness' | 'validation' | 'changelog' | 'completeness' | 'import' | 'supplier_intake' | 'settings';
 
 interface NavGroup {
   label: string;
@@ -42,6 +43,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { id: 'publish_readiness', label: 'Publish Readiness', Icon: FileCheck2 },
       { id: 'validation', label: 'Data Validation', Icon: ClipboardCheck },
+      { id: 'completeness', label: 'Completeness',  Icon: BarChart3 },
       { id: 'changelog',  label: 'Change Log',      Icon: History },
     ],
   },
@@ -146,6 +148,7 @@ export function Dashboard() {
     publish_readiness: <PublishReadinessPage />,
     validation:       <ValidationDashboardPage />,
     changelog:        <ChangeLogPage />,
+    completeness:     <CompletenessPage />,
     import:           <ImportHubPage />,
     supplier_intake:  <SupplierIntakePage />,
     settings:         <SettingsPage />,
