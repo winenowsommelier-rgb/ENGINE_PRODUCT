@@ -237,7 +237,7 @@ function IntakeRunWorkflow({ onNavigateToSettings }: IntakeRunWorkflowProps) {
     if (stepIndex >= CHAIN_STEPS.length) {
       // All done — fetch rows
       setProcessingStep(null);
-      return fetch(`/api/supplier-intake/runs/${runId}/rows`)
+      return fetch(`/api/supplier-intake/runs/${runId}`)
         .then(r => r.json())
         .then(data => {
           const fetched = data.rows ?? [];

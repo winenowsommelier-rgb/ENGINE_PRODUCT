@@ -16,8 +16,10 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
+    "@supabase/supabase-js": "^2.108.1",
     "better-sqlite3": "^11.0.0",
     "clsx": "^2.1.1",
+    "fuzzball": "^2.2.6",
     "googleapis": "^171.4.0",
     "lucide-react": "^0.469.0",
     "maplibre-gl": "^5.22.0",
@@ -26,7 +28,8 @@
     "react-dom": "18.3.1",
     "react-map-gl": "^8.1.1",
     "recharts": "^2.15.0",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
