@@ -416,6 +416,7 @@ def test_source_fingerprint_is_canonical_and_changes_with_geography():
         ("Spirit", "A Mystery", "unknown"),
         ("Red Wine", "Holiday Mixed Pack", "multi_region_blend"),
         ("Cognac", "Assorted Cognac Selection", "multi_region_blend"),
+        ("Whisky", "Blended Whisky", "multi_region_blend"),
     ],
 )
 def test_geography_basis(classification, name, expected):
@@ -540,18 +541,50 @@ def test_missing_and_unknown_geography_requires_evidence_review(
     assert result["reason_codes"] == [reason]
 
 
+@pytest.mark.parametrize("subregion", ["Grande Champagne", ""])
+def test_unknown_basis_requires_evidence_review_for_canonical_path(
+    taxonomy_dir, subregion
+):
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(
+        product(
+            classification="Spirit",
+            name="Unknown Spirit",
+            subregion=subregion,
+        ),
+        taxonomy,
+    )
+
+    assert result["status"] == "evidence_review"
+    assert result["reason_codes"] == ["geography_basis_unknown"]
+
+
+def test_unknown_basis_prevents_redundant_subregion_correction(
+    taxonomy_dir,
+):
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(
+        product(
+            classification="Spirit",
+            name="Unknown Spirit",
+            region="Bordeaux",
+            subregion="Bordeaux",
+        ),
+        taxonomy,
+    )
+
+    assert result["status"] == "evidence_review"
+    assert result["reason_codes"] == ["geography_basis_unknown"]
+
+
 @pytest.mark.parametrize(
     ("classification", "name", "expected_status", "expected_reason"),
     [
         (
             "Brandy",
             "St-Rémy Brandy",
-            "valid_region_only",
-            "subregion_not_proven",
-        ),
-        (
-            "Spirit",
-            "Unknown Spirit",
             "valid_region_only",
             "subregion_not_proven",
         ),
@@ -590,6 +623,50 @@ def test_blank_subregion_status_depends_on_basis(
     assert result["status"] == expected_status
     assert result["reason_codes"] == [expected_reason]
     assert result["taxonomy_ids"]["subregion_id"] is None
+
+
+def test_blank_subregion_preserves_country_alias_correction(taxonomy_dir):
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(
+        product(country="French Republic", subregion=""), taxonomy
+    )
+
+    assert result["status"] == "exact_mechanical_correction"
+    assert result["new_geography"] == {
+        "country": "France",
+        "region": "Cognac",
+        "subregion": "",
+    }
+    assert result["reason_codes"] == ["approved_alias_correction"]
+
+
+def test_blank_subregion_preserves_parent_scoped_region_alias_correction(
+    taxonomy_dir,
+):
+    path = taxonomy_dir / "geography-aliases.json"
+    doc = json.loads(path.read_text())
+    doc["region"] = [
+        {
+            "country": "France",
+            "alias": "Charente",
+            "canonical": "Cognac",
+        }
+    ]
+    path.write_text(json.dumps(doc))
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(
+        product(region="Charente", subregion=""), taxonomy
+    )
+
+    assert result["status"] == "exact_mechanical_correction"
+    assert result["new_geography"] == {
+        "country": "France",
+        "region": "Cognac",
+        "subregion": "",
+    }
+    assert result["reason_codes"] == ["approved_alias_correction"]
 
 
 def test_quarantined_path_is_taxonomy_blocked(taxonomy_dir):

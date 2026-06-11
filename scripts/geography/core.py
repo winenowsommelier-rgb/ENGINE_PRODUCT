@@ -61,7 +61,14 @@ def source_fingerprint(product):
 def geography_basis(product):
     name = normalize(product.get("name"))
     if re.search(
-        r"\b(mixed pack|mixed case|assorted|assortment|blend)\b", name
+        (
+            r"\b("
+            r"mixed[\s-]*(?:pack|case)s?"
+            r"|assort(?:ed|ment)"
+            r"|blend(?:ed|s|ing)?"
+            r")\b"
+        ),
+        name,
     ):
         return "multi_region_blend"
 
@@ -551,6 +558,26 @@ def classify_product(product, taxonomy):
 
     if not old["subregion"]:
         result["new_geography"]["subregion"] = ""
+        if result["geography_basis"] == "unknown":
+            return _finish(
+                result, "evidence_review", "geography_basis_unknown"
+            )
+
+        aliases_used = country_alias or region_alias
+        formatting_changed = any(
+            old[level] != result["new_geography"][level]
+            for level in ("country", "region")
+        )
+        if aliases_used or formatting_changed:
+            reason = (
+                "approved_alias_correction"
+                if aliases_used
+                else "canonical_format_correction"
+            )
+            return _finish(
+                result, "exact_mechanical_correction", reason
+            )
+
         if result["geography_basis"] in {
             "production_location",
             "multi_region_blend",
@@ -585,6 +612,10 @@ def classify_product(product, taxonomy):
                 else "redundant_subregion_ambiguous"
             )
             return _finish(result, status, reason)
+        if result["geography_basis"] == "unknown":
+            return _finish(
+                result, "evidence_review", "geography_basis_unknown"
+            )
         result["new_geography"]["subregion"] = ""
         return _finish(
             result,
@@ -606,6 +637,11 @@ def classify_product(product, taxonomy):
 
     ids["subregion_id"] = subregion["id"]
     result["new_geography"]["subregion"] = subregion["name"]
+
+    if result["geography_basis"] == "unknown":
+        return _finish(
+            result, "evidence_review", "geography_basis_unknown"
+        )
 
     aliases_used = country_alias or region_alias or subregion_alias
     canonical = result["new_geography"]
