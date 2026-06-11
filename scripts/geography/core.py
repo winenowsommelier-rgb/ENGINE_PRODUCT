@@ -6,7 +6,10 @@ import re
 import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Union
+
+
+AliasKey = Union[str, tuple[int, str]]
 
 
 NON_BEVERAGE_CLASSIFICATIONS = {
@@ -72,7 +75,7 @@ class Taxonomy:
     subregions_by_parent_name: dict[
         tuple[int, str], list[dict[str, Any]]
     ]
-    aliases: dict[str, dict[str, str]]
+    aliases: dict[str, dict[AliasKey, str]]
     failures: list[str]
     quarantined_names: set[str]
 
@@ -82,6 +85,13 @@ def _group(rows, key):
     for row in rows:
         grouped.setdefault(key(row), []).append(row)
     return grouped
+
+
+def _first_by_id(rows):
+    indexed = {}
+    for row in rows:
+        indexed.setdefault(row["id"], row)
+    return indexed
 
 
 def load_taxonomy(directory: Path) -> Taxonomy:
@@ -112,20 +122,50 @@ def load_taxonomy(directory: Path) -> Taxonomy:
         paths["geography-aliases.json"].read_text(encoding="utf-8")
     )
 
-    countries = {row["id"]: row for row in countries_list}
-    regions = {row["id"]: row for row in regions_list}
-    subregions = {row["id"]: row for row in subregions_list}
     failures = []
     quarantined_names = set()
+
+    id_groups = {
+        "country": _group(countries_list, lambda row: row["id"]),
+        "region": _group(regions_list, lambda row: row["id"]),
+        "subregion": _group(subregions_list, lambda row: row["id"]),
+    }
+    duplicate_ids = {
+        level: {
+            row_id
+            for row_id, rows in grouped.items()
+            if len(rows) > 1
+        }
+        for level, grouped in id_groups.items()
+    }
+    for level, grouped in id_groups.items():
+        for row_id in duplicate_ids[level]:
+            failures.append(f"duplicate_{level}_id:{row_id}")
+            quarantined_names.update(
+                normalize(row["name"]) for row in grouped[row_id]
+            )
+
+    countries = _first_by_id(countries_list)
+    regions = _first_by_id(regions_list)
+    subregions = _first_by_id(subregions_list)
 
     for row in regions_list:
         if row["country_id"] not in countries:
             failures.append(f"orphan_region:{row['id']}")
             quarantined_names.add(normalize(row["name"]))
+        if row["country_id"] in duplicate_ids["country"]:
+            quarantined_names.add(normalize(row["name"]))
 
     for row in subregions_list:
         if row["region_id"] not in regions:
             failures.append(f"orphan_subregion:{row['id']}")
+            quarantined_names.add(normalize(row["name"]))
+            continue
+        parent = regions[row["region_id"]]
+        if (
+            row["region_id"] in duplicate_ids["region"]
+            or parent["country_id"] in duplicate_ids["country"]
+        ):
             quarantined_names.add(normalize(row["name"]))
 
     countries_by_name = _group(
@@ -176,29 +216,104 @@ def load_taxonomy(directory: Path) -> Taxonomy:
             )
             quarantined_names.add(name)
 
+    aliases = {"country": {}, "region": {}, "subregion": {}}
+
+    alias_candidates = {"country": [], "region": [], "subregion": []}
+    for entry in alias_doc.get("country", []):
+        alias_candidates["country"].append(
+            (normalize(entry["alias"]), normalize(entry["canonical"]))
+        )
+
+    for entry in alias_doc.get("region", []):
+        alias = normalize(entry["alias"])
+        country_rows = countries_by_name.get(
+            normalize(entry.get("country")), []
+        )
+        if (
+            len(country_rows) != 1
+            or country_rows[0]["id"] in duplicate_ids["country"]
+        ):
+            failures.append(f"invalid_alias_parent:region:{alias}")
+            quarantined_names.add(alias)
+            continue
+        alias_candidates["region"].append(
+            (
+                (country_rows[0]["id"], alias),
+                normalize(entry["canonical"]),
+            )
+        )
+
+    for entry in alias_doc.get("subregion", []):
+        alias = normalize(entry["alias"])
+        country_rows = countries_by_name.get(
+            normalize(entry.get("country")), []
+        )
+        if (
+            len(country_rows) != 1
+            or country_rows[0]["id"] in duplicate_ids["country"]
+        ):
+            failures.append(f"invalid_alias_parent:subregion:{alias}")
+            quarantined_names.add(alias)
+            continue
+        country_id = country_rows[0]["id"]
+        region_rows = regions_by_parent_name.get(
+            (country_id, normalize(entry.get("region"))), []
+        )
+        if (
+            len(region_rows) != 1
+            or region_rows[0]["id"] in duplicate_ids["region"]
+        ):
+            failures.append(f"invalid_alias_parent:subregion:{alias}")
+            quarantined_names.add(alias)
+            continue
+        alias_candidates["subregion"].append(
+            (
+                (region_rows[0]["id"], alias),
+                normalize(entry["canonical"]),
+            )
+        )
+
     canonical_groups = {
         "country": countries_by_name,
-        "region": _group(
-            regions_list, lambda row: normalize(row["name"])
-        ),
-        "subregion": _group(
-            subregions_list, lambda row: normalize(row["name"])
-        ),
+        "region": regions_by_parent_name,
+        "subregion": subregions_by_parent_name,
     }
-    aliases = {"country": {}, "region": {}, "subregion": {}}
-    for level in aliases:
-        entries_by_alias = _group(
-            alias_doc.get(level, []),
-            lambda entry: normalize(entry["alias"]),
-        )
-        for alias, entries in entries_by_alias.items():
-            canonical = normalize(entries[0]["canonical"])
-            canonical_rows = canonical_groups[level].get(canonical, [])
-            if len(entries) != 1 or len(canonical_rows) != 1:
+    for level, candidates in alias_candidates.items():
+        candidates_by_key = _group(candidates, lambda item: item[0])
+        for key, entries in candidates_by_key.items():
+            alias = key[-1] if isinstance(key, tuple) else key
+            if len(entries) != 1:
                 failures.append(f"ambiguous_alias:{level}:{alias}")
                 quarantined_names.add(alias)
                 continue
-            aliases[level][alias] = canonical
+
+            canonical = entries[0][1]
+            canonical_key = (
+                (key[0], canonical) if isinstance(key, tuple)
+                else canonical
+            )
+            canonical_rows = canonical_groups[level].get(
+                canonical_key, []
+            )
+            if (
+                len(canonical_rows) != 1
+                or canonical_rows[0]["id"]
+                in duplicate_ids[level]
+            ):
+                failures.append(f"ambiguous_alias:{level}:{alias}")
+                quarantined_names.add(alias)
+                continue
+
+            alias_rows = canonical_groups[level].get(key, [])
+            if alias_rows:
+                if alias == canonical:
+                    continue
+                failures.append(
+                    f"alias_shadows_canonical:{level}:{alias}"
+                )
+                quarantined_names.add(alias)
+                continue
+            aliases[level][key] = canonical
 
     return Taxonomy(
         batch_hash=batch_hash,
