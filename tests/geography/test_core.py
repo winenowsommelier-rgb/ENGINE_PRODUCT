@@ -5,10 +5,6 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
-import scripts  # noqa: E402
-
-scripts.__path__ = [str(REPO_ROOT / "scripts"), *scripts.__path__]
-
 from scripts.geography.core import (  # noqa: E402
     NON_BEVERAGE_CLASSIFICATIONS,
     NON_BEVERAGE_PREFIXES,
