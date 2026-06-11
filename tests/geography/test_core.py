@@ -2,6 +2,8 @@ import json
 import sys
 from pathlib import Path
 
+import pytest
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
@@ -109,12 +111,23 @@ def test_duplicate_normalized_name_under_same_parent_is_quarantined(
     assert "bordeaux" in taxonomy.quarantined_names
 
 
-def test_ambiguous_alias_is_a_failure(taxonomy_dir):
+@pytest.mark.parametrize(
+    "country_aliases",
+    [
+        [
+            {"alias": "French Republic", "canonical": "France"},
+            {"alias": "French Republic", "canonical": "Missing"},
+        ],
+        [
+            {"alias": "French Republic", "canonical": "Missing"},
+            {"alias": "French Republic", "canonical": "France"},
+        ],
+    ],
+)
+def test_ambiguous_alias_is_a_failure(taxonomy_dir, country_aliases):
     path = taxonomy_dir / "geography-aliases.json"
     doc = json.loads(path.read_text())
-    doc["country"].append(
-        {"alias": "French Republic", "canonical": "Missing"}
-    )
+    doc["country"] = country_aliases
     path.write_text(json.dumps(doc))
 
     taxonomy = load_taxonomy(taxonomy_dir)
@@ -122,4 +135,5 @@ def test_ambiguous_alias_is_a_failure(taxonomy_dir):
     assert (
         "ambiguous_alias:country:french republic" in taxonomy.failures
     )
+    assert "french republic" in taxonomy.quarantined_names
     assert "french republic" not in taxonomy.aliases["country"]
