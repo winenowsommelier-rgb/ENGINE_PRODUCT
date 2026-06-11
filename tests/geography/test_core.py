@@ -10,8 +10,11 @@ sys.path.insert(0, str(REPO_ROOT))
 from scripts.geography.core import (  # noqa: E402
     NON_BEVERAGE_CLASSIFICATIONS,
     NON_BEVERAGE_PREFIXES,
+    classify_product,
+    geography_basis,
     is_beverage,
     load_taxonomy,
+    source_fingerprint,
 )
 
 FIXTURE_PATH = (
@@ -376,3 +379,356 @@ def test_subregion_alias_rejects_ambiguous_region_parent(taxonomy_dir):
     assert failure in taxonomy.failures
     assert "grande fine champagne" in taxonomy.quarantined_names
     assert not taxonomy.aliases["subregion"]
+
+
+def product(**overrides):
+    row = {
+        "id": "product-1",
+        "sku": "LBD0006CN",
+        "name": "St-Rémy Brandy",
+        "classification": "Brandy",
+        "country": "France",
+        "region": "Cognac",
+        "subregion": "Grande Champagne",
+        "updated_at": "2026-06-11T00:00:00Z",
+    }
+    row.update(overrides)
+    return row
+
+
+def test_source_fingerprint_is_canonical_and_changes_with_geography():
+    first = product(country=" France ", region="Cognac")
+    equivalent = dict(reversed(list(first.items())))
+    changed = product(country="France", region="Bordeaux")
+
+    assert source_fingerprint(first) == source_fingerprint(equivalent)
+    assert source_fingerprint(first) != source_fingerprint(changed)
+    assert len(source_fingerprint(first)) == 64
+
+
+@pytest.mark.parametrize(
+    ("classification", "name", "expected"),
+    [
+        ("Brandy", "St-Rémy Brandy", "protected_origin"),
+        ("Red Wine", "Château Test", "protected_origin"),
+        ("Gin", "London Dry Gin", "production_location"),
+        ("Beer", "Lager", "production_location"),
+        ("Spirit", "A Mystery", "unknown"),
+        ("Red Wine", "Holiday Mixed Pack", "multi_region_blend"),
+        ("Cognac", "Assorted Cognac Selection", "multi_region_blend"),
+    ],
+)
+def test_geography_basis(classification, name, expected):
+    assert geography_basis(
+        product(classification=classification, name=name)
+    ) == expected
+
+
+def test_classify_valid_exact_path(taxonomy_dir):
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(product(), taxonomy)
+
+    assert result == {
+        "sku": "LBD0006CN",
+        "name": "St-Rémy Brandy",
+        "classification": "Brandy",
+        "old_geography": {
+            "country": "France",
+            "region": "Cognac",
+            "subregion": "Grande Champagne",
+        },
+        "new_geography": {
+            "country": "France",
+            "region": "Cognac",
+            "subregion": "Grande Champagne",
+        },
+        "taxonomy_ids": {
+            "country_id": 1,
+            "region_id": 10,
+            "subregion_id": 100,
+        },
+        "geography_basis": "protected_origin",
+        "taxonomy_hash": taxonomy.batch_hash,
+        "source_fingerprint": source_fingerprint(product()),
+        "status": "valid_exact",
+        "reason_codes": [],
+    }
+
+
+def test_case_unicode_and_repeated_spaces_are_mechanical_corrections(
+    taxonomy_dir,
+):
+    taxonomy = load_taxonomy(taxonomy_dir)
+    row = product(
+        country="ＦＲＡＮＣＥ",
+        region="  COGNAC  ",
+        subregion="Grande   Champagne",
+    )
+
+    result = classify_product(row, taxonomy)
+
+    assert result["status"] == "exact_mechanical_correction"
+    assert result["new_geography"] == {
+        "country": "France",
+        "region": "Cognac",
+        "subregion": "Grande Champagne",
+    }
+    assert result["reason_codes"] == ["canonical_format_correction"]
+
+
+def test_two_part_compound_is_restructure_review(taxonomy_dir):
+    taxonomy = load_taxonomy(taxonomy_dir)
+    row = product(region="Cognac | Grande Champagne", subregion="")
+
+    result = classify_product(row, taxonomy)
+
+    assert result["status"] == "exact_restructure_review"
+    assert result["new_geography"] == {
+        "country": "France",
+        "region": "Cognac",
+        "subregion": "Grande Champagne",
+    }
+    assert result["reason_codes"] == ["compound_region_restructure"]
+
+
+def test_compound_conflicting_with_current_subregion_is_evidence_review(
+    taxonomy_dir,
+):
+    taxonomy = load_taxonomy(taxonomy_dir)
+    row = product(
+        region="Cognac | Grande Champagne", subregion="Pauillac"
+    )
+
+    result = classify_product(row, taxonomy)
+
+    assert result["status"] == "evidence_review"
+    assert result["reason_codes"] == ["compound_subregion_conflict"]
+
+
+def test_wrong_parent_subregion_is_evidence_review(taxonomy_dir):
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(
+        product(region="Bordeaux", subregion="Grande Champagne"),
+        taxonomy,
+    )
+
+    assert result["status"] == "evidence_review"
+    assert result["reason_codes"] == ["subregion_parent_mismatch"]
+
+
+@pytest.mark.parametrize(
+    ("overrides", "reason"),
+    [
+        ({"country": ""}, "missing_country"),
+        ({"region": ""}, "missing_region"),
+        ({"country": "Atlantis"}, "unknown_country"),
+        ({"region": "Champagne"}, "unknown_region"),
+        ({"subregion": "Borderies"}, "unknown_subregion"),
+        ({"region": "Cognac | Grande | Champagne"}, "malformed_compound"),
+    ],
+)
+def test_missing_and_unknown_geography_requires_evidence_review(
+    taxonomy_dir, overrides, reason
+):
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(product(**overrides), taxonomy)
+
+    assert result["status"] == "evidence_review"
+    assert result["reason_codes"] == [reason]
+
+
+@pytest.mark.parametrize(
+    ("classification", "name", "expected_status", "expected_reason"),
+    [
+        (
+            "Brandy",
+            "St-Rémy Brandy",
+            "valid_region_only",
+            "subregion_not_proven",
+        ),
+        (
+            "Spirit",
+            "Unknown Spirit",
+            "valid_region_only",
+            "subregion_not_proven",
+        ),
+        (
+            "Gin",
+            "London Dry Gin",
+            "legitimately_blank",
+            "subregion_not_applicable",
+        ),
+        (
+            "Red Wine",
+            "Holiday Mixed Pack",
+            "legitimately_blank",
+            "multi_region_blend",
+        ),
+    ],
+)
+def test_blank_subregion_status_depends_on_basis(
+    taxonomy_dir,
+    classification,
+    name,
+    expected_status,
+    expected_reason,
+):
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(
+        product(
+            classification=classification,
+            name=name,
+            subregion="",
+        ),
+        taxonomy,
+    )
+
+    assert result["status"] == expected_status
+    assert result["reason_codes"] == [expected_reason]
+    assert result["taxonomy_ids"]["subregion_id"] is None
+
+
+def test_quarantined_path_is_taxonomy_blocked(taxonomy_dir):
+    path = taxonomy_dir / "subregions.json"
+    doc = json.loads(path.read_text())
+    doc["data"].append(
+        {"id": 102, "region_id": 11, "name": "Cognac"}
+    )
+    path.write_text(json.dumps(doc))
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(
+        product(region="cognac", subregion=""), taxonomy
+    )
+
+    assert result["status"] == "taxonomy_blocked"
+    assert result["reason_codes"] == ["quarantined_region"]
+
+
+@pytest.mark.parametrize(
+    ("filename", "duplicate", "reason"),
+    [
+        (
+            "countries.json",
+            {"id": 2, "name": " FRANCE ", "iso": "FX"},
+            "quarantined_country",
+        ),
+        (
+            "regions.json",
+            {"id": 12, "country_id": 1, "name": " COGNAC "},
+            "quarantined_region",
+        ),
+        (
+            "subregions.json",
+            {
+                "id": 102,
+                "region_id": 10,
+                "name": " GRANDE CHAMPAGNE ",
+            },
+            "quarantined_subregion",
+        ),
+    ],
+)
+def test_ambiguous_match_lists_are_taxonomy_blocked(
+    taxonomy_dir, filename, duplicate, reason
+):
+    path = taxonomy_dir / filename
+    doc = json.loads(path.read_text())
+    doc["data"].append(duplicate)
+    path.write_text(json.dumps(doc))
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(product(), taxonomy)
+
+    assert result["status"] == "taxonomy_blocked"
+    assert result["reason_codes"] == [reason]
+
+
+def test_duplicate_id_conflict_is_taxonomy_blocked(taxonomy_dir):
+    path = taxonomy_dir / "regions.json"
+    doc = json.loads(path.read_text())
+    doc["data"].append(
+        {"id": 10, "country_id": 1, "name": "Armagnac"}
+    )
+    path.write_text(json.dumps(doc))
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(product(), taxonomy)
+
+    assert result["status"] == "taxonomy_blocked"
+    assert result["reason_codes"] == ["quarantined_region"]
+
+
+def test_redundant_subregion_is_cleared_when_safe(taxonomy_dir):
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(
+        product(region="Bordeaux", subregion="Bordeaux"), taxonomy
+    )
+
+    assert result["status"] == "exact_mechanical_correction"
+    assert result["new_geography"]["subregion"] == ""
+    assert result["taxonomy_ids"]["subregion_id"] is None
+    assert result["reason_codes"] == ["redundant_subregion_cleared"]
+
+
+def test_redundant_subregion_is_blocked_when_same_name_is_canonical(
+    taxonomy_dir,
+):
+    path = taxonomy_dir / "subregions.json"
+    doc = json.loads(path.read_text())
+    doc["data"].append(
+        {"id": 102, "region_id": 10, "name": "Cognac"}
+    )
+    path.write_text(json.dumps(doc))
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(
+        product(region="Cognac", subregion="Cognac"), taxonomy
+    )
+
+    assert result["status"] == "taxonomy_blocked"
+    assert result["reason_codes"] == ["quarantined_region"]
+
+
+def test_approved_parent_scoped_aliases_are_mechanical(taxonomy_dir):
+    path = taxonomy_dir / "geography-aliases.json"
+    doc = json.loads(path.read_text())
+    doc["region"] = [
+        {
+            "country": "France",
+            "alias": "Charente",
+            "canonical": "Cognac",
+        }
+    ]
+    doc["subregion"] = [
+        {
+            "country": "France",
+            "region": "Cognac",
+            "alias": "Grande Fine Champagne",
+            "canonical": "Grande Champagne",
+        }
+    ]
+    path.write_text(json.dumps(doc))
+    taxonomy = load_taxonomy(taxonomy_dir)
+
+    result = classify_product(
+        product(
+            country="French Republic",
+            region="Charente",
+            subregion="Grande Fine Champagne",
+        ),
+        taxonomy,
+    )
+
+    assert result["status"] == "exact_mechanical_correction"
+    assert result["new_geography"] == {
+        "country": "France",
+        "region": "Cognac",
+        "subregion": "Grande Champagne",
+    }
+    assert result["reason_codes"] == ["approved_alias_correction"]
