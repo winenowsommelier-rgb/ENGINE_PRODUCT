@@ -122,3 +122,4 @@ def test_ambiguous_alias_is_a_failure(taxonomy_dir):
     assert (
         "ambiguous_alias:country:french republic" in taxonomy.failures
     )
+    assert "french republic" not in taxonomy.aliases["country"]

@@ -187,11 +187,14 @@ def load_taxonomy(directory: Path) -> Taxonomy:
     }
     aliases = {"country": {}, "region": {}, "subregion": {}}
     for level in aliases:
-        for entry in alias_doc.get(level, []):
-            alias = normalize(entry["alias"])
-            canonical = normalize(entry["canonical"])
+        entries_by_alias = _group(
+            alias_doc.get(level, []),
+            lambda entry: normalize(entry["alias"]),
+        )
+        for alias, entries in entries_by_alias.items():
+            canonical = normalize(entries[0]["canonical"])
             canonical_rows = canonical_groups[level].get(canonical, [])
-            if alias in aliases[level] or len(canonical_rows) != 1:
+            if len(entries) != 1 or len(canonical_rows) != 1:
                 failures.append(f"ambiguous_alias:{level}:{alias}")
                 quarantined_names.add(alias)
                 continue
