@@ -35,6 +35,43 @@ test('matches the shared beverage selection fixture', () => {
   }
 });
 
+test('covers every non-beverage classification and prefix rule', () => {
+  const nonBeverageClassifications = [
+    'accessories',
+    'cigar',
+    'events',
+    'glassware',
+    'mineral water',
+    'non-alcoholic',
+  ];
+  const nonBeveragePrefixes = [
+    'ABA',
+    'AWC',
+    'CIG',
+    'GBE',
+    'GDC',
+    'GLQ',
+    'GWN',
+    'WEV',
+  ];
+
+  for (const classification of nonBeverageClassifications) {
+    assert.equal(isBeverage({ sku: 'WRW0001AA', classification }), false, classification);
+  }
+  for (const prefix of nonBeveragePrefixes) {
+    assert.equal(
+      isBeverage({ sku: `${prefix}0001AA`, classification: 'Red Wine' }),
+      false,
+      prefix,
+    );
+  }
+  assert.equal(
+    isBeverage({ sku: 'ABC0001AA', classification: 'Wine product' }),
+    false,
+    'generic wine product prefix',
+  );
+});
+
 test('marks a recently enriched beverage with complete geography ready', () => {
   const result = assessProduct(product(), currentDate);
   assert.equal(result.status, 'READY');
