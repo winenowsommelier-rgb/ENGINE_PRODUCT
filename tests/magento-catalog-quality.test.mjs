@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 import {
   assessProduct,
@@ -25,10 +26,50 @@ function product(overrides = {}) {
   };
 }
 
-test('classifies beverage and non-beverage catalog prefixes', () => {
-  assert.equal(isBeverage(product()), true);
-  assert.equal(isBeverage(product({ sku: 'ABA0001BH', classification: 'Wine product' })), false);
-  assert.equal(isBeverage(product({ sku: 'LWH0001AA', classification: 'Wine product' })), true);
+test('matches the shared beverage selection fixture', () => {
+  const fixtureUrl = new URL('./fixtures/geography/beverage-selection.json', import.meta.url);
+  const products = JSON.parse(readFileSync(fixtureUrl, 'utf8'));
+
+  for (const { expected, ...fixtureProduct } of products) {
+    assert.equal(isBeverage(fixtureProduct), expected, fixtureProduct.sku);
+  }
+});
+
+test('covers every non-beverage classification and prefix rule', () => {
+  const nonBeverageClassifications = [
+    'accessories',
+    'cigar',
+    'events',
+    'glassware',
+    'mineral water',
+    'non-alcoholic',
+  ];
+  const nonBeveragePrefixes = [
+    'ABA',
+    'AWC',
+    'CIG',
+    'GBE',
+    'GDC',
+    'GLQ',
+    'GWN',
+    'WEV',
+  ];
+
+  for (const classification of nonBeverageClassifications) {
+    assert.equal(isBeverage({ sku: 'WRW0001AA', classification }), false, classification);
+  }
+  for (const prefix of nonBeveragePrefixes) {
+    assert.equal(
+      isBeverage({ sku: `${prefix}0001AA`, classification: 'Red Wine' }),
+      false,
+      prefix,
+    );
+  }
+  assert.equal(
+    isBeverage({ sku: 'ABC0001AA', classification: 'Wine product' }),
+    false,
+    'generic wine product prefix',
+  );
 });
 
 test('marks a recently enriched beverage with complete geography ready', () => {

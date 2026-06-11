@@ -1,0 +1,10 @@
+[
+  {"sku":"WRW0001AA","classification":"Red Wine","expected":true},
+  {"sku":"LWH0001AA","classification":"Wine product","expected":true},
+  {"sku":"ABA0001BH","classification":"Wine product","expected":false},
+  {"sku":"WEV0001AA","classification":"Wine product","expected":false},
+  {"sku":"CIG0001AA","classification":"Cigar","expected":false},
+  {"sku":"GWN0001AA","classification":"Glassware","expected":false},
+  {"sku":"ABC0001AA","classification":"Non-Alcoholic","expected":false},
+  {"sku":"LBD0006CN","classification":"Brandy","expected":true}
+]
