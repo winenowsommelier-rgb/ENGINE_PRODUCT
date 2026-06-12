@@ -83,14 +83,52 @@ Single most load-bearing critic: **Wine Enthusiast** (~18% of all mentions). Whi
 | 4 | WineAlign | Score-only | HTTPS GET | None | Wine |
 | 5 | The Real Review | Score-only | HTTPS GET | None | Wine (AU/NZ) |
 | 6 | Whiskybase | Score-only | HTTPS GET | None | Whisky |
-| 7 | Master of Malt | Score-only (their editorial scores; quoted critic scores → attributed to original critic) | HTTPS GET | None | Whisky/spirits |
+| 7 | Master of Malt | Score-only | HTTPS GET | None | Whisky/spirits |
 | 8 | Distiller.com | Score-only | HTTPS GET | None | Spirits |
 
-**CellarTracker API access:** the spec assumes the API can be obtained for free for our use case. If outreach fails or terms become incompatible, CellarTracker falls back to no-source (the spec already plans for 30%+ "no data" on long tail; losing CT shifts a portion to that bucket and we cope).
+**CellarTracker API access — go/no-go gate (Day 0):**
+
+Email Eric Levine within the first 24 hours of project start. If granted: full CT adapter via API. If denied or no response within 7 days, the project enters CT-fallback mode:
+
+- **CT fallback:** scrape CT's public tasting-note pages (no login required) under the same `facts_only` posture as the editorial sources. URL pattern: `https://www.cellartracker.com/wine.asp?iWine=<id>` — `iWine` ids are discoverable via CT's public search HTML page. Extract score + reviewer name + URL only. No prose persisted.
+- **Coverage impact:** API gets us ~16 of the 50 recon SKUs (top domain). HTML scraping gets a subset of that — likely ~10 SKUs — because community notes without numeric scores are skipped. Net coverage drops from ~64% to ~55-58%.
+- **No-CT mode (worst case):** if CT also rejects scraping or robots.txt forbids it, drop CT entirely. Net coverage drops to ~48-52%. Spec still survives — Wine Enthusiast + WineAlign + Whiskybase pick up most of the wine and spirits signal independently.
+
+Day-0 outreach email is in `scripts/critic_reviews_cellartracker_outreach.txt` (drafted at project start, sent by operator). Implementation does not start until Day 0's outcome is recorded, even if it's "no response yet" with a documented fallback decision.
+
+**Wine Enthusiast URL caveat:** WE buying-guide URLs are slugged from editorial titles, not deterministically derivable from `(producer, cuvée, vintage)`. The WE adapter therefore runs a two-step fetch:
+
+1. **In-site search**: `GET https://www.wineenthusiast.com/?s=<producer>+<cuvée>+<vintage>` (their public search endpoint), parse the result list for buying-guide URLs.
+2. **Detail fetch**: for each candidate URL whose result snippet contains the producer name AND (vintage match OR vintage absent on both sides), fetch the article and extract score.
+
+This makes WE one search + N detail fetches per `(producer, cuvée, vintage)` triplet — roughly 2-3× the request budget vs sources with deterministic URLs. Politeness budget in §8 (1 req / 3s, 4hr / day) absorbs this — the adjusted backfill timing in §8 reflects it.
+
+Same in-site-search pattern is used by adapters for Natalie MacLean, WineAlign, The Real Review (all slug-based article URLs). Whiskybase, CellarTracker (API mode), and Distiller use deterministic URLs / IDs and skip the search step.
 
 **Wine Enthusiast as cornerstone:** they have a public review archive with stable URL patterns (`/buying-guide/<wine-slug>/`). Adapter #2 is the highest-yield single source after CellarTracker.
 
 **Why not 10+ sources:** the top 8 cover ~85% of total observed mentions. The long-tail sites (each appearing 1-2 times in the 50-SKU sample) cost a parser to build and yield very little. Cut them.
+
+### 3.1 Source vs critic attribution (provenance rule)
+
+`critic_scores.source` always records **the page we fetched** (where we got the data). `critic_scores.critic` records **who scored the wine** (attribution). These differ when one site quotes another — e.g., Master of Malt's product page quoting "Whisky Advocate 90."
+
+Rules:
+
+- `source` is **always** the domain of the page that contained the score. This is provenance — the URL we can re-verify.
+- `critic` is what the regex captured as the scoring authority. For Master of Malt's own editorial scores, `critic` = `Master of Malt`. For an MoM page that quotes "Whisky Advocate 90," `critic` = `Whisky Advocate` and `source` is still `master_of_malt`.
+- This means the same `(producer, cuvee, vintage, critic, score)` row may legitimately appear twice with different `source` values if two sites both quote it. Dedup at display time uses `(critic, score_native, vintage)` — keep the highest-confidence row.
+
+### 3.2 Signal-tier mapping (table referenced by §6 and §9)
+
+| Source | Default `signal_tier` | Default `signal_class` |
+| --- | --- | --- |
+| Wine Enthusiast, Wine Spectator, Wine Advocate, Vinous, Decanter, James Suckling, Jancis Robinson, Whisky Advocate | 1 | `critic_numeric` |
+| Natalie MacLean, WineAlign, The Real Review, James Halliday, Master of Malt (editorial), Distiller (editorial), Got Rum? | 2 | `critic_numeric` |
+| CellarTracker community, Whiskybase community, Vivino (if ever ingested) | 3 | `community` |
+| IWSC, IWC, DWWA, Bartender Spirits Awards, SFWSC, ITI, regional shows | 4 | `medal` |
+
+If a regex pattern surfaces a critic name not in this table, the adapter assigns `signal_tier = 2` by default and logs the new critic for one-time human review (likely a critic worth promoting or a false positive worth blocking).
 
 ---
 
@@ -233,12 +271,53 @@ CREATE INDEX idx_critic_scores_sku ON critic_scores(sku) WHERE sku IS NOT NULL;
 ```
 
 **Reuse of existing columns in `products`:**
-- `score_max` (REAL) — highest normalized 100pt-equivalent across all sources for this SKU.
-- `score_summary` (TEXT) — short JSON: `{"critics": ["JS 94", "WE 91"], "medals": ["IWSC Silver"], "community": 4.2, "primary_source": "wine_enthusiast"}`.
 
-Both are populated by `refresh_products_summary.py`, run after each backfill or refresh job. The bulk export (`scripts/refresh_live_export.py`) picks them up automatically — **no separate API endpoint needed for v1** because the score badges can ride along the existing product detail surface.
+- `score_max` (REAL) — highest normalized 100pt-equivalent across all `signal_tier ≤ 2` rows (pro critics) bound to this SKU. Community scores and medals are excluded from `score_max` because mixing them produces noise.
+- `score_summary` (TEXT) — short JSON with a deterministic shape; populated by `refresh_products_summary.py`.
 
-**SKU binding strategy:** keep `critic_scores.sku` nullable. The natural key is `(producer, cuvee, vintage)`. At display time the product UI looks up the matching row by producer+cuvée+vintage. For SKUs where vintage is "Current vintage" or NV, we display the most recent vintage's row we have, or pool by NULL vintage. No `vintage_policy` column in v1 — that's a v2 sophistication.
+`score_summary` JSON shape (one entry per signal kind, sorted within each list):
+
+```json
+{
+  "critics":   [{"abbr":"JS","critic":"James Suckling","score_native":"99","score_value":99,"url":"https://..."},
+                {"abbr":"WA","critic":"Wine Advocate","score_native":"94","score_value":94,"url":"https://..."}],
+  "community": [{"source":"cellartracker","score_native":"93","score_value":93,"count":12}],
+  "medals":    [{"authority":"IWSC","medal":"Silver","year":2022,"url":"https://..."}],
+  "primary_source": "wine_enthusiast",
+  "rows_total": 4,
+  "computed_at": "2026-06-15T08:00:00Z"
+}
+```
+
+**Merge rules** (deterministic, implemented in `refresh_products_summary.py`):
+
+1. **`score_max`** = `max(score_value)` across rows where `signal_tier ≤ 2` AND `score_scale IN ('100pt','20pt')`. 20pt scores convert to 100pt-equivalent via the table-published mapping (see §7.4). NULL if no qualifying row.
+2. **`critics` list** = unique `(critic, score_native)` pairs from `signal_class = 'critic_numeric'` rows, sorted by `score_value` descending then `signal_tier` ascending. Capped at 5 entries.
+3. **`community` list** = `signal_class = 'community'` rows, one per source. Aggregated count if the source provides it.
+4. **`medals` list** = `signal_class = 'medal'` rows, sorted by `signal_tier` then year desc.
+5. **`primary_source`** = `source` of the row that contributed `score_max`. If `score_max` is NULL, the most-recent source by `fetched_at`.
+6. Rows where `confidence < 0.5` are excluded from all aggregates (audit trail only).
+7. Mixed-scale SKUs (e.g., a 100pt AND a 20pt score) appear as separate entries in `critics`; `score_max` is the higher of the two 100pt-equivalents.
+
+The bulk export (`scripts/refresh_live_export.py`) picks `score_max` / `score_summary` up automatically. **No separate API endpoint in v1** — the badges ride the existing product detail surface.
+
+**SKU binding strategy:** keep `critic_scores.sku` nullable. The natural key is `(producer, cuvee, vintage)`. At display/refresh time, the SKU↔row lookup is:
+
+```sql
+-- For each SKU, find all critic_scores rows that match its producer+cuvée
+-- (canonicalized lower(trim()) on both sides) and vintage policy:
+SELECT cs.* FROM critic_scores cs
+JOIN products p ON p.sku = :sku
+WHERE lower(trim(cs.producer)) = lower(trim(p.brand))
+  AND (
+    cs.vintage = p.vintage                                -- exact vintage match
+    OR (p.vintage IN ('Current vintage','','NV') AND cs.vintage IS NOT NULL)  -- pool all vintages
+    OR (p.vintage = '' AND cs.vintage IS NULL)            -- both NV
+  )
+ORDER BY cs.vintage DESC NULLS LAST, cs.signal_tier ASC;
+```
+
+For SKUs whose `vintage = 'Current vintage'`, we pool by producer+cuvée and surface the most-recent-vintage row's data. v1 accepts the precision loss; v2 adds `vintage_policy`.
 
 ---
 
@@ -246,41 +325,141 @@ Both are populated by `refresh_products_summary.py`, run after each backfill or 
 
 ### 7.1 Score patterns
 
-A single Python file `lib/critic_reviews/extract/score_patterns.py` with named-capture regexes:
+A single Python file `lib/critic_reviews/extract/score_patterns.py`. **Patterns are deliberately strict** — favor precision over recall. False positives are worse than misses because every persisted row is shown to a paying customer.
 
 ```python
+# Anchor tokens that confirm this is a score context, not a stray number
+SCORE_CONTEXT = r'(?:points?|pts?|/\s*100|/\s*20|\bscore[d]?\b|\brated\b|\bawards?\b)'
+
 PATTERNS = [
-    # "JS 95", "WA 96", "WS 94" — joined-abbreviation form
-    re.compile(r'\b(?P<critic>JS|WA|WS|JR|RP|VN|WE|DEC|JD)\s*(?P<score>\d{2,3})\b'),
-
-    # "James Suckling 95 points", "Wine Enthusiast: 91" — name + number
-    re.compile(r'(?P<critic>James Suckling|Wine Enthusiast|Wine Spectator|Wine Advocate|Robert Parker|Decanter|Vinous|Jancis Robinson|Natalie MacLean|WineAlign|The Real Review|James Halliday|Whisky Advocate|Master of Malt|Distiller)\s*[:\s]\s*(?P<score>\d{2,3})\b'),
-
-    # "94/100" / "17.5/20"
+    # Pattern 1 — explicit denominator: "94/100", "17.5/20"
+    # Most reliable; no critic context needed since the denom anchors it.
     re.compile(r'\b(?P<score>\d{2,3}(?:\.\d)?)\s*/\s*(?P<denom>100|20)\b'),
 
-    # Medals: "IWSC Silver", "Gold Medal", "Decanter Bronze"
-    re.compile(r'\b(?P<authority>IWSC|Decanter World Wine Awards|DWWA|International Wine Challenge|IWC|Bartender Spirits Awards|San Francisco World Spirits|SFWSC)\s+(?P<medal>Gold|Silver|Bronze|Platinum)\b'),
+    # Pattern 2 — full critic name + score-context word
+    # "James Suckling: 95 points", "Wine Enthusiast 91 pts", "Scored 92 by Decanter"
+    re.compile(
+        r'(?P<critic>James Suckling|Wine Enthusiast|Wine Spectator|Wine Advocate|'
+        r'Robert Parker|Decanter|Vinous|Jancis Robinson|Antonio Galloni|Neal Martin|'
+        r'Natalie MacLean|WineAlign|The Real Review|James Halliday|'
+        r'Whisky Advocate|Master of Malt|Distiller|Whiskybase)'
+        r'\s*[:\s\-]{1,4}\s*'
+        r'(?P<score>\d{2,3}(?:\.\d)?)'
+        r'\s*(?:points?|pts?|/\s*100|/\s*20)?\b',
+        re.IGNORECASE,
+    ),
+
+    # Pattern 3 — score + critic, reverse order with explicit context
+    # "92 points (James Suckling)", "94/100 — Wine Enthusiast"
+    re.compile(
+        r'\b(?P<score>\d{2,3}(?:\.\d)?)\s*(?:points?|pts?|/\s*100|/\s*20)\s*'
+        r'[(\-—:\s]{1,6}\s*'
+        r'(?P<critic>James Suckling|Wine Enthusiast|Wine Spectator|Wine Advocate|'
+        r'Robert Parker|Decanter|Vinous|Jancis Robinson|Antonio Galloni|Neal Martin|'
+        r'Natalie MacLean|WineAlign|The Real Review|James Halliday|'
+        r'Whisky Advocate|Master of Malt|Distiller|Whiskybase)',
+        re.IGNORECASE,
+    ),
+
+    # Pattern 4 — abbreviation form, BUT ONLY when accompanied by /100 or "pts"
+    # Rejects "DEC 92" (date) by requiring the score-context anchor.
+    re.compile(
+        r'\b(?P<critic>JS|WA|WS|JR|RP|VN|WE|DEC|JD|NM|MoM)'
+        r'\s+(?P<score>\d{2,3})'
+        r'\s*(?:/\s*100|pts?|points?)\b'
+    ),
+
+    # Pattern 5 — Medals (competition awards)
+    re.compile(
+        r'\b(?P<authority>IWSC|Decanter World Wine Awards|DWWA|'
+        r'International Wine Challenge|IWC|Bartender Spirits Awards|'
+        r'San Francisco World Spirits|SFWSC|International Taste Institute|ITI|'
+        r'Hunter Valley Wine Show|Victorian Wine Show|Asian Spirits Masters)'
+        r'\s+(?P<medal>Gold|Silver|Bronze|Platinum|Double Gold)\b',
+        re.IGNORECASE,
+    ),
 ]
+
+# Score validity constraints (post-match)
+def is_plausible_score(score_value: float, scale: str) -> bool:
+    if scale == "100pt":
+        return 50 <= score_value <= 100   # reject <50 (likely false positive, e.g., "WA 19" = year)
+    if scale == "20pt":
+        return 10 <= score_value <= 20
+    return True
 ```
+
+**Why this is safer than the original regex sketch:**
+- Pattern 1 (`/100`, `/20`) is anchored by the denominator — can't false-positive.
+- Pattern 4 (abbreviations like "JS 95") *requires* a score-context anchor (`pts`, `points`, `/100`), eliminating the "DEC 92" (date) and "WE 100" (in "WE 100% recommend") collisions the reviewer flagged.
+- Pattern 2 and 3 require a full critic name AND a score-context token (or denominator).
+- `is_plausible_score` rejects out-of-range matches.
+
+**Precision target on canary**: ≥90%. Measured against the labeled 50-SKU recon set (`data/critic_reviews_recon/results_merged.json`) which doubles as ground truth.
 
 ### 7.2 Binding rule (which score is "for the wine we're looking up")
 
-Each source adapter passes its fetched page to the extractor with a `wine_context` describing what we asked for: `(producer, cuvée, vintage)`. The extractor:
+Each source adapter passes its fetched page to the extractor with a `wine_context` describing what we asked for: `(producer, cuvée, vintage)`. The extractor returns one `ExtractedScore` per surviving match.
 
-1. Runs all patterns against the page text.
-2. For each match, captures a 200-char text window (the `supporting_text` column).
-3. **Producer-name proximity filter**: keep the match only if the producer name (or any aliasthe brand-curation library knows) appears within the same paragraph (or in the page title / H1 / OG metadata). This is the v1 binding heuristic.
-4. **Vintage filter** (when applicable): if the source URL or page title contains a vintage and our `wine_context.vintage` is non-NULL, require match.
-5. Emit one `ExtractedScore` per surviving match.
+**Step 1 — Pre-extract page metadata.** Parse the fetched HTML once to extract:
 
-**Anti-hallucination property:** every persisted score's `supporting_text` is a literal substring of the source page. The persistence layer asserts `supporting_text in fetched_html` (or `in fetched_text` for API sources). Rows that fail are rejected as parser bugs, logged, and skipped.
+- `page_title` (HTML `<title>`)
+- `page_h1` (first `<h1>` if present)
+- `og_title` (`<meta property="og:title">` if present)
+- `main_text`: the stripped-text body. Algorithm: drop `<script>`, `<style>`, `<nav>`, `<footer>`, `<header>`; for the rest, concatenate `innerText` with `\n\n` between block-level elements (`<p>`, `<div>`, `<li>`, `<h*>`, `<section>`, `<article>`).
+- `paragraphs`: `main_text.split("\n\n")` — the v1 working definition of "paragraph" (block-level boundary, not strictly HTML `<p>`).
+
+**Step 2 — Run score patterns** (§7.1) against `main_text`. For each match, record `match_offset` (character offset into `main_text`) and `paragraph_index` (which paragraph the match landed in).
+
+**Step 3 — Producer-name proximity filter** (the v1 binding heuristic; favors precision):
+
+Keep a match only if AT LEAST ONE of the following is true:
+
+- (a) The producer name (or any alias from the brand-curation library) appears in `page_title` OR `page_h1` OR `og_title`. This handles single-wine pages (most retailer / review pages).
+- (b) The producer name appears in the same `paragraph_index` as the score match (block-level paragraph proximity, as defined in step 1).
+- (c) The producer name appears within `±400` characters of the score match in `main_text` (character-distance fallback for sites that use non-standard markup). 400 chars is roughly 80-100 words — typically the same logical section.
+
+If none hold, the match is discarded.
+
+**Step 4 — Vintage filter** (when applicable):
+
+- If `wine_context.vintage IS NULL`, no vintage check; accept the match.
+- If `wine_context.vintage` is set, extract candidate vintage tokens from: `page_title`, `page_h1`, `og_title`, the URL path, and the same paragraph as the match.
+- **Single-vintage page** (one distinct vintage token across all sources, or all tokens match): require it equals `wine_context.vintage`. If not, discard.
+- **Multi-vintage page** (a vintage report like "Brunello 2016–2020 retrospective"): bind the match to the nearest preceding vintage token in `main_text` (scanning backward from `match_offset`). If that nearest vintage equals `wine_context.vintage`, accept. Otherwise discard.
+- **No vintage token anywhere**: accept the match, store with `vintage = NULL` and `confidence -= 0.1`.
+
+**Step 5 — Supporting text capture.** Store the 200-char window around the match as `supporting_text`. This MUST be a literal substring of `main_text` — the write-time invariant assertion (§10) rejects rows where it isn't.
+
+**Anti-hallucination property:** every persisted score's `supporting_text` is a literal substring of the source page. The persistence layer asserts `supporting_text in fetched_payload` (HTML for scraped sources, text payload for API sources). Rows that fail are rejected as parser bugs, logged, and skipped.
 
 ### 7.3 What we explicitly do NOT do in v1
 
 - **No LLM verification.** First measure regex precision on the canary; only add LLM if precision < 90% and the bad cases are clearly LLM-fixable.
 - **No multi-source corroboration scoring.** Each row stands alone with its source's confidence.
 - **No critic era handling.** "RP" maps to "Robert Parker / Wine Advocate" with no date logic; if Galloni-at-Vinous-vs-WA confusion appears in real data, we add the era logic to v1.1.
+
+### 7.4 Scale conversion (100pt-equivalent for `score_max`)
+
+`score_max` and the "highest critic score" comparison need a single comparable number. Conversions:
+
+- `100pt` scale: identity. `score_value` is the published number.
+- `20pt` scale (Jancis Robinson, La Revue du Vin de France): use the conventional industry mapping below. Conversion is for sorting/`score_max` only; the badge display always shows the native form (`17.5/20`, never `90`).
+
+| 20pt | 100pt-equivalent |
+| --- | --- |
+| ≥ 19.0 | 96 |
+| 18.5 | 94 |
+| 18.0 | 92 |
+| 17.5 | 90 |
+| 17.0 | 88 |
+| 16.5 | 86 |
+| 16.0 | 84 |
+| 15.5 | 82 |
+| ≤ 15.0 | 80 |
+
+- `5star` scale: not converted to 100pt. Stored separately; not eligible for `score_max`.
+- `medal` and `community` scales: not eligible for `score_max`.
 
 ---
 
@@ -294,7 +473,24 @@ Per-source defaults (overridable):
 - HTTP retry: 3 attempts, exponential backoff 5s → 25s → 125s on 5xx; 1 retry on 429 with `Retry-After`; 0 retries on 4xx (other than 429).
 - Backfill is **per-item resumable** via a `scrape_progress` table keyed on `(source, producer, cuvee, vintage)` with status `pending | done | transient_fail | permanent_skip`.
 
-Estimated backfill time at 1 req / 3s × 4hr / day across 8 sources processing ~5,000 distinct (producer, cuvée, vintage) triplets: **~7-10 days of background runs**. Fine.
+**Backfill timing model** (made explicit so the assumptions can be challenged):
+
+- Sources run **in parallel** (each in its own process/event loop, independent rate limiters).
+- Per source, **1 request per 3 seconds** within a 4-hour daily window = 4,800 requests per source per day.
+- Adapters using deterministic URLs (CellarTracker API, Whiskybase, Distiller): 1 fetch per triplet.
+- Adapters using in-site search (Wine Enthusiast, Natalie MacLean, WineAlign, The Real Review, Master of Malt): 1 search + up to 2 detail fetches per triplet = 3 fetches per triplet on average.
+- Failure budget: assume 30% of fetches fail (404, 429, transient 5xx, parser miss). Triplets with `transient_fail` retry the next day.
+
+Worked numbers for the catalog (~5,000 distinct producer+cuvée+vintage triplets, conservative):
+
+| Source kind | Fetches per triplet | Total fetches | Days at 4,800/day | With 30% retry buffer |
+| --- | --- | --- | --- | --- |
+| Deterministic-URL (CT API, Whiskybase, Distiller) | 1 | 5,000 | ~1.0 | ~1.5 |
+| Search-based (WE, NM, WA, TRR, MoM) | 3 | 15,000 | ~3.1 | ~4.5 |
+
+So search-based sources are the long pole. Running all 8 in parallel, the **first backfill completes in ~5 days, with all stragglers (retries, longer-tail SKUs) done within ~10 days**.
+
+After Day 5, the backfill job stays running but most triplets are `done`; refresh windows handle the remainder.
 
 ---
 
@@ -368,13 +564,15 @@ The two rules that govern this project (1 and 4 in your CLAUDE.md) drive the ver
    ```
    Returns non-zero for at least one canary SKU per source.
 3. **Write-time invariant assertion**: every `critic_scores` insert checks `supporting_text in fetched_payload` before persisting. Failure rejects the row, increments the parser-bug counter, does not silently drop.
-4. **5-SKU canary** per CLAUDE.md Rule 10 before any full backfill:
-   - One famous wine (high data density)
-   - One mid-tier wine
-   - One mainstream wine
-   - One whisky
-   - One Thai-market SKU (low data density expected)
-   Run the full pipeline, eyeball the UI, sign off, only then scale.
+4. **Two-stage canary protocol** per CLAUDE.md Rule 10, scoped to keep operator manual-check time bounded:
+   - **Per-source canary (automated):** when a new source adapter goes live, run it against the 50-SKU recon set as ground truth. Compare extracted scores to the recon spreadsheet's `critics_found` / `scores_found` columns. Output: precision, recall, false-positive examples. No manual UI checks; this is a Python script that prints a confusion matrix.
+   - **Cross-source canary (manual, 5 SKUs only):** after all sources are integrated, pick 5 SKUs spanning tiers (famous wine, mid wine, mainstream wine, whisky, Thai-market). Operator opens each in the dev UI and visually confirms badges render, attribution is right, outbound links work. Total: 5 manual checks, not 40.
+
+**Browser verification steps** (CLAUDE.md Rule 7 — concrete):
+   1. `npm run dev` from the repo root (starts Next.js dev server on default port, typically `localhost:3000`).
+   2. Open `http://localhost:3000/product/<canary_sku>` (existing product detail route) — each of the 5 canary SKUs.
+   3. Verify: `CriticScoreBadges` component renders, each badge shows critic + score + outbound link icon, clicking the link opens the source page in a new tab.
+   4. Sign-off recorded in the job report.
 
 ---
 
@@ -406,17 +604,17 @@ The two rules that govern this project (1 and 4 in your CLAUDE.md) drive the ver
 
 ## 12. Decision gates and v2 triggers
 
-The slim spec is designed so the next layer of complexity gets added **only if evidence shows we need it**:
+The slim spec is designed so the next layer of complexity gets added **only if evidence shows we need it**. Each trigger has a measurable threshold so the gate is unambiguous:
 
-| Trigger | v2 addition |
-|---|---|
-| Regex precision on canary < 90% AND mistakes are LLM-fixable | Add LLM verification (`lib/critic_reviews/extract/llm_verifier.py`) |
-| Cross-vintage SKU binding produces noticeable user complaints | Add `vintage_policy` column + per-vintage UI cards |
-| Wine-Searcher API becomes affordable / paid CellarTracker tier added | Add `license` column, generalize the source interface |
-| Crowd-vs-pro signal needs visual separation | Promote `signal_class` to UI rule |
-| New-SKU velocity > 50/week | Add the diff-based new-SKU hook |
-| Catalog wine count grows past ~15k SKUs | Add the canonical critic identity table |
-| Champagne NV / cask-strength batch SKUs get bad reviews from wrong release | Add `release_id` / `batch_id` columns |
+| Trigger (measurable) | v2 addition |
+| --- | --- |
+| Canary regex precision < 90% on the labeled 50-SKU recon set | Add LLM verification (`lib/critic_reviews/extract/llm_verifier.py`) |
+| >2% of SKUs surface a score whose `vintage` differs from the SKU's actual vintage (measured by a monthly audit of 100 random SKUs) | Add `vintage_policy` column + per-vintage UI cards |
+| Wine-Searcher API priced ≤ $200/mo OR a CellarTracker paid tier announced | Add `license` column, generalize the source interface |
+| ≥1 user-reported case per month of community-score being mistaken for pro-critic-score | Promote `signal_class` to a visible UI separator |
+| Supplier intake adds > 50 new producer+cuvée pairs per week (measured by diff in `lib/critic_reviews/catalog.py`) | Add the diff-based new-SKU hook |
+| Catalog distinct producer+cuvée count exceeds 15,000 | Add the canonical critic identity table |
+| ≥3 user reports per quarter of a Champagne NV or whisky batch showing a score from a different release/batch | Add `release_id` / `batch_id` columns |
 
 Each is a clean additive change against the slim schema — no rework.
 
@@ -428,12 +626,12 @@ Each is a clean additive change against the slim schema — no rework.
 |---|---|---|---|
 | 1 | CellarTracker API access not granted | M | Fallback: drop CT, coverage shifts from ~64% to ~50%. Spec survives. |
 | 2 | Wine Enthusiast URL pattern changes | M | DOM-canary as part of weekly job. Fixture-based parser update. |
-| 3 | Regex binds the wrong score to wrong wine on round-up pages | H | Producer-proximity filter (§7.2) is the v1 mitigation. Measured on canary; LLM verify is the v2 escalation. |
+| 3 | Regex binds the wrong score to wrong wine on multi-wine pages (round-ups, vintage reports, comparison articles) | H | Producer-proximity filter + nearest-vintage binding (§7.2 steps 3-4) is the v1 mitigation. Measured on canary; LLM verify is the v2 escalation. |
 | 4 | Long-tail Thai/sake SKUs get nothing → user frustration | L | UI empty state is invisible, not "no data" error. Honest non-coverage. |
 | 5 | Rate-limit ban from a source | M | Per-source circuit breaker: pause source on >5% 429/403 in a 50-request window. |
 | 6 | A scraped score is later removed from the source | L | `fetched_at` lets us age out; quarterly refresh re-validates. |
 | 7 | Critic identity collisions ("WA" = Wine Advocate publication vs critic) | L | Store as string in v1; correct in v2 if it becomes painful. |
-| 8 | `refresh_live_export.py` not run after backfill → UI doesn't show the change | M | The backfill job calls `refresh_live_export.py` automatically (CLAUDE.md Rule 9). |
+| 8 | `refresh_live_export.py` not run after backfill → UI doesn't show the change | M | Backfill / refresh jobs invoke `scripts/refresh_live_export.py` at the end automatically (CLAUDE.md Rule 9). Operator can pass `--no-refresh-export` for staging runs but the default is on. |
 | 9 | Effort estimate slips | M | Spec budgets 2.5-3.5 weeks; if week 1 misses CT canary milestone, kill point. |
 
 ---
@@ -451,7 +649,8 @@ Everything load-bearing survived. Everything speculative was cut. Specifically:
 ## 15. Open items (small, resolvable during implementation)
 
 - Exact CellarTracker API endpoint path + auth header format — confirm during day-4 implementation.
-- Wine Enthusiast URL slug pattern — verify on 5 known articles before the day-6 implementation.
-- Whether `data/live_products_export.json` refresh should fire automatically after a backfill or be a manual operator step. Default: automatic; operator can disable in config.
+- Wine Enthusiast in-site search endpoint — verify `?s=<query>` returns parseable HTML on 5 known articles before the day-6 implementation. If the public search is JavaScript-only, fall back to the deterministic-URL strategy and accept lower yield.
+
+(`refresh_live_export.py` integration was an open item in the earlier draft; resolved in §13 risk #8 — automatic, default-on, `--no-refresh-export` flag for staging.)
 
 These are intentionally small. None gate the spec.
