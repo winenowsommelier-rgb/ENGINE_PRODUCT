@@ -68,3 +68,14 @@ data/brand_description_library.csv.bak-*
 data/reenrich_results-*.jsonl
 data/*dryrun*.json
 data/reenrich_dryrun-*.json
+
+# Magento / catalog export artifacts — regenerated on demand, not source
+outputs/
+
+# AI knowledge base generated product JSONs — rebuilt from live_products_export.json
+docs/ai-knowledge-base/products_*.json
+docs/ai-knowledge-base/product_index.md
+docs/ai-knowledge-base/product_index_compact.tsv
+
+# Taxonomy pre-fix backups
+data/taxonomy/*.bak-*
