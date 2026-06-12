@@ -1,0 +1,1023 @@
+[
+  {
+    "sku": "WRW5400BN",
+    "tier": "famous_wine_high_price",
+    "found": true,
+    "critics": [
+      "Antonio Galloni (Vinous)"
+    ],
+    "scores": [
+      "Galloni 92-95"
+    ],
+    "domains": [
+      "wine.com",
+      "wineinvestment.com",
+      "flatiron-wines.com",
+      "winelibrary.com",
+      "cellartracker.com",
+      "millesima-usa.com",
+      "wine-searcher.com",
+      "farrvintners.com",
+      "tastingbook.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WWW2371EH",
+    "tier": "famous_wine_high_price",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "vivino.com",
+      "cellartracker.com",
+      "idealwine.com",
+      "rollerswineandspirits.com",
+      "blindbishop.com",
+      "wine-searcher.com",
+      "onshorecellars.com",
+      "vinsetmillesimes.com"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "WWW5943DJ",
+    "tier": "famous_wine_high_price",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "klwines.com",
+      "w-vine.com",
+      "vivino.com",
+      "sommpicks.com",
+      "athenaeum.com",
+      "vinify.app",
+      "versus.wine",
+      "sante.is"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "WRW6654DJ",
+    "tier": "famous_wine_high_price",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "vinothentic.ch",
+      "saratogawine.com",
+      "bbr.com",
+      "caveroyale.ch",
+      "insideburgundy.com",
+      "wine-searcher.com",
+      "vivino.com",
+      "laywheelertrading.com",
+      "farrvintners.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WRW2506BN",
+    "tier": "famous_wine_high_price",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "finewineselect.com",
+      "wine.com",
+      "wine-searcher.com",
+      "cellartracker.com",
+      "thewinecellarinsider.com",
+      "farrvintners.com",
+      "laywheeler.com",
+      "wallywine.com",
+      "vivino.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WRW4605EH",
+    "tier": "famous_wine_high_price",
+    "found": true,
+    "critics": [
+      "unattributed critic aggregate"
+    ],
+    "scores": [
+      "91"
+    ],
+    "domains": [
+      "mediumplus.com",
+      "klwines.com",
+      "wine-searcher.com",
+      "winovisor.com",
+      "vivino.com",
+      "perrineswine.com",
+      "qualityhousewines.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WWW1394AC",
+    "tier": "famous_wine_high_price",
+    "found": true,
+    "critics": [
+      "unattributed (likely Wine Advocate/Galloni)"
+    ],
+    "scores": [
+      "96",
+      "98-100"
+    ],
+    "domains": [
+      "cellartracker.com",
+      "wine.com",
+      "owenbargreen.com",
+      "vivino.com",
+      "kongsgaardwine.com",
+      "cultwine.com",
+      "wineberserkers.com"
+    ],
+    "quality": "rich"
+  },
+  {
+    "sku": "WWW1438BN",
+    "tier": "famous_wine_high_price",
+    "found": true,
+    "critics": [
+      "unattributed"
+    ],
+    "scores": [
+      "93"
+    ],
+    "domains": [
+      "worldclasswine.us",
+      "klwines.com",
+      "flaskfinewines.com",
+      "wine-searcher.com",
+      "vivino.com",
+      "cellartracker.com",
+      "winedexer.com",
+      "skurnik.com",
+      "lighthousewines.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WRW5163DH",
+    "tier": "mid_wine",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "weinquellen.at",
+      "savinowineshop.com",
+      "wine-searcher.com",
+      "dynamicvines.com",
+      "rawwine.com",
+      "chainbridgecellars.com",
+      "hartandcru.com",
+      "northberkeleyimports.com",
+      "tedwardwines.com",
+      "sheridanscheesemongers.com"
+    ],
+    "quality": "none"
+  },
+  {
+    "sku": "WRW3837AF",
+    "tier": "mid_wine",
+    "found": true,
+    "critics": [
+      "aggregate critics' score"
+    ],
+    "scores": [
+      "89"
+    ],
+    "domains": [
+      "thewinelist.shop",
+      "idealwine.com",
+      "mmdltd.com",
+      "delas.com",
+      "wine-searcher.com",
+      "wineandco.com",
+      "vineshop24.de"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "WRW0331AD",
+    "tier": "mid_wine",
+    "found": true,
+    "critics": [
+      "Wine Enthusiast",
+      "Wine-Searcher aggregate",
+      "i-WineReview"
+    ],
+    "scores": [
+      "WS-agg 90"
+    ],
+    "domains": [
+      "wine-searcher.com",
+      "wineenthusiast.com",
+      "wine.com",
+      "i-winereview.com",
+      "vivino.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WRW0507AA",
+    "tier": "mid_wine",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "vivino.com",
+      "pbvalley.com",
+      "khaoyaiwinery.com",
+      "cellartracker.com",
+      "tripadvisor.com",
+      "top25restaurants.com"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "WRW6027FT",
+    "tier": "mid_wine",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "wine-searcher.com",
+      "wineenthusiast.com",
+      "jamessuckling.com",
+      "robersonwine.com",
+      "thewinecellarinsider.com"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "WRW3764DJ",
+    "tier": "mid_wine",
+    "found": true,
+    "critics": [
+      "Winedoctor (Chris Kissack)",
+      "Jamie Goode"
+    ],
+    "scores": [
+      "aggregate 92"
+    ],
+    "domains": [
+      "thewinedoctor.com",
+      "wineanorak.com",
+      "vivino.com",
+      "cellartracker.com",
+      "wine-searcher.com",
+      "subtilwine.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WRW1305AF",
+    "tier": "mid_wine",
+    "found": true,
+    "critics": [
+      "Natalie MacLean",
+      "WineAlign"
+    ],
+    "scores": [
+      "NM Marvelous",
+      "NM Notable"
+    ],
+    "domains": [
+      "nataliemaclean.com",
+      "winealign.com",
+      "wine.com",
+      "vivino.com",
+      "palmbay.com",
+      "therealreview.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WWW6017GT",
+    "tier": "mid_wine",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "perfectcellar.com",
+      "marcheauxvins.com",
+      "whiskysite.nl",
+      "totalwine.com",
+      "vivino.com"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "WRW5031AD",
+    "tier": "mid_wine",
+    "found": true,
+    "critics": [
+      "James Suckling",
+      "Wine Advocate"
+    ],
+    "scores": [
+      "JS 99",
+      "JS 97",
+      "WA 94"
+    ],
+    "domains": [
+      "jamessuckling.com",
+      "whwc.com",
+      "mmdusa.net",
+      "hitimewine.net",
+      "superiore.de"
+    ],
+    "quality": "rich"
+  },
+  {
+    "sku": "WRW7506CB",
+    "tier": "mid_wine",
+    "found": true,
+    "critics": [
+      "James Suckling",
+      "Wine Enthusiast"
+    ],
+    "scores": [
+      "WE rating",
+      "JS descriptor"
+    ],
+    "domains": [
+      "wineenthusiast.com",
+      "wine-searcher.com",
+      "cellartracker.com",
+      "artisan.wine",
+      "bodegasvolver.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WWW4794AA",
+    "tier": "mainstream_wine",
+    "found": true,
+    "critics": [
+      "Wine Enthusiast",
+      "Falstaff",
+      "Andreas Larsson"
+    ],
+    "scores": [
+      "AL 89",
+      "WE rating"
+    ],
+    "domains": [
+      "wineenthusiast.com",
+      "falstaff.com",
+      "wine-searcher.com",
+      "vinello.de",
+      "snooth.com",
+      "quench.me"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WRW4744AD",
+    "tier": "mainstream_wine",
+    "found": true,
+    "critics": [
+      "Wine Enthusiast",
+      "IWSC",
+      "Natalie MacLean"
+    ],
+    "scores": [
+      "WE rating",
+      "IWSC award"
+    ],
+    "domains": [
+      "wineenthusiast.com",
+      "cellartracker.com",
+      "iwsc.net",
+      "nataliemaclean.com",
+      "winediplomats.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WRW6935AE",
+    "tier": "mainstream_wine",
+    "found": true,
+    "critics": [
+      "Patricio Tapia (Descorchados)"
+    ],
+    "scores": [
+      "Descorchados 90",
+      "88+"
+    ],
+    "domains": [
+      "vintagewinepicks.blogspot.com",
+      "winealign.com",
+      "maturanawinery.cl",
+      "tiendapuenteaustral.cl",
+      "ewine.cl",
+      "lcbo.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WRW5799AH",
+    "tier": "mainstream_wine",
+    "found": false,
+    "critics": [],
+    "scores": [
+      "Vivino 3.7"
+    ],
+    "domains": [
+      "vivino.com",
+      "vinepair.com",
+      "vsptwinegroup.com",
+      "wineenthusiast.com",
+      "alko.fi",
+      "africanandeastern.com"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "WRW5910FJ",
+    "tier": "mainstream_wine",
+    "found": true,
+    "critics": [
+      "James Suckling",
+      "Wine Enthusiast",
+      "Cameron Douglas MS",
+      "Natalie MacLean",
+      "WineAlign"
+    ],
+    "scores": [
+      "JS 88",
+      "WineAlign 86",
+      "90"
+    ],
+    "domains": [
+      "wine-searcher.com",
+      "nataliemaclean.com",
+      "winealign.com",
+      "camdouglasms.com",
+      "wineenthusiast.com",
+      "jamessuckling.com",
+      "vintagewinepicks.blogspot.com"
+    ],
+    "quality": "rich"
+  },
+  {
+    "sku": "WRW6958FJ",
+    "tier": "mainstream_wine",
+    "found": true,
+    "critics": [
+      "Wine Enthusiast",
+      "Wine Spectator",
+      "Drinkhacker",
+      "Burgundy Report",
+      "The Wine Fairy"
+    ],
+    "scores": [
+      "WE 91"
+    ],
+    "domains": [
+      "wineenthusiast.com",
+      "winespectator.com",
+      "drinkhacker.com",
+      "burgundy-report.com",
+      "the-wine-fairy.com",
+      "bevinfogroup.com",
+      "vivino.com",
+      "totalwine.com"
+    ],
+    "quality": "rich"
+  },
+  {
+    "sku": "WWW0527AF",
+    "tier": "mainstream_wine",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "vivino.com",
+      "wine-searcher.com",
+      "cellartracker.com",
+      "antareswines.com",
+      "wtwine.com",
+      "vesselliquor.com"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "WWW0511AF",
+    "tier": "mainstream_wine",
+    "found": true,
+    "critics": [
+      "James Halliday Wine Companion",
+      "Wine Enthusiast",
+      "Decanter"
+    ],
+    "scores": [
+      "Halliday 91",
+      "WE 90",
+      "Decanter Silver",
+      "Hunter Valley Gold"
+    ],
+    "domains": [
+      "vivino.com",
+      "manila-wine.com",
+      "wineenthusiast.com",
+      "wine-searcher.com",
+      "tyrrells.com.au",
+      "therealreview.com"
+    ],
+    "quality": "rich"
+  },
+  {
+    "sku": "WWW6005GW",
+    "tier": "budget_wine",
+    "found": false,
+    "critics": [],
+    "scores": [
+      "CT 86"
+    ],
+    "domains": [
+      "essenzedisicilia.it",
+      "vivino.com",
+      "cantinepaolini.it",
+      "cellartracker.com",
+      "winefolly.com",
+      "falstaff.com",
+      "vinello.de"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "WRW3123CH",
+    "tier": "budget_wine",
+    "found": true,
+    "critics": [
+      "Wine Enthusiast",
+      "Natalie MacLean",
+      "The Real Review"
+    ],
+    "scores": [
+      "WS-agg 82"
+    ],
+    "domains": [
+      "virginwines.co.uk",
+      "vivino.com",
+      "wine-searcher.com",
+      "nataliemaclean.com",
+      "therealreview.com",
+      "winevybe.com",
+      "winesdirect.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WRW5677FR",
+    "tier": "budget_wine",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "vivino.com",
+      "thaiwineryhouse.com",
+      "wineplus.co.th",
+      "winepro.co.th",
+      "facebook.com",
+      "lesgrappes.com"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "WRW0207AH",
+    "tier": "budget_wine",
+    "found": true,
+    "critics": [
+      "WineAlign",
+      "Natalie MacLean"
+    ],
+    "scores": [
+      "WA 87 (2016)",
+      "WA 87 (2012)",
+      "WA 87 (2013)",
+      "WA 86 (2008)",
+      "WA 86 (2014)",
+      "WA 85 (2017)"
+    ],
+    "domains": [
+      "nataliemaclean.com",
+      "vivino.com",
+      "reviewcentre.com",
+      "chickadvisor.com",
+      "winealign.com",
+      "winestyleonline.com"
+    ],
+    "quality": "rich"
+  },
+  {
+    "sku": "WWW5172FR",
+    "tier": "budget_wine",
+    "found": false,
+    "critics": [],
+    "scores": [
+      "CT 91.5",
+      "Vivino 3.2"
+    ],
+    "domains": [
+      "cellartracker.com",
+      "vivino.com",
+      "wineplus.co.th"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "WSP1472DK",
+    "tier": "champagne",
+    "found": true,
+    "critics": [
+      "La Revue du Vin de France",
+      "CellarTracker community"
+    ],
+    "scores": [
+      "RVF 16.5/20",
+      "CT 93"
+    ],
+    "domains": [
+      "cellartracker.com",
+      "wine-searcher.com",
+      "comptoirdesmillesimes.com",
+      "champagnepoodle.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WSP1275BN",
+    "tier": "champagne",
+    "found": true,
+    "critics": [
+      "James Suckling",
+      "Wine Spectator",
+      "Robert Parker",
+      "Decanter"
+    ],
+    "scores": [
+      "JS 92",
+      "WS 90",
+      "RP 90",
+      "Decanter 91"
+    ],
+    "domains": [
+      "wine.com",
+      "whwc.com",
+      "67wine.com",
+      "famelounge-ps.com",
+      "cellartracker.com"
+    ],
+    "quality": "rich"
+  },
+  {
+    "sku": "WSP1461DW",
+    "tier": "champagne",
+    "found": true,
+    "critics": [
+      "The Real Review",
+      "Victorian Wine Show"
+    ],
+    "scores": [
+      "Real Review 87",
+      "Gold"
+    ],
+    "domains": [
+      "therealreview.com",
+      "gapstedestate.com.au",
+      "cellars.com.au",
+      "cellartracker.com",
+      "winecompanion.com.au"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "WSP9002AB",
+    "tier": "champagne",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "vino.com",
+      "svinando.co.uk",
+      "manila-wine.com",
+      "hitimewine.net"
+    ],
+    "quality": "none"
+  },
+  {
+    "sku": "WSP5844DJ",
+    "tier": "champagne",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "lecarredesvins.com",
+      "champagne-characters.com",
+      "cellartracker.com",
+      "piedmontwineimports.com",
+      "vivino.com",
+      "hachette-vins.com"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "LWH0139AE",
+    "tier": "whisky",
+    "found": true,
+    "critics": [
+      "Whisky Advocate",
+      "Dramface",
+      "The Whisky Study",
+      "Whiskey Reviewer",
+      "Whiskybase"
+    ],
+    "scores": [
+      "WhAdv 90"
+    ],
+    "domains": [
+      "whiskyadvocate.com",
+      "whiskybase.com",
+      "dramface.com",
+      "thewhiskystudy.com",
+      "connosr.com",
+      "whiskeyreviewer.com"
+    ],
+    "quality": "rich"
+  },
+  {
+    "sku": "LWH0280AA",
+    "tier": "whisky",
+    "found": true,
+    "critics": [
+      "Whiskybase",
+      "Scotch Noob",
+      "Honest Booze Reviews",
+      "Master of Malt"
+    ],
+    "scores": [
+      "WB 79.38",
+      "HBR 51.5/70"
+    ],
+    "domains": [
+      "masterofmalt.com",
+      "whiskybase.com",
+      "scotchnoob.com",
+      "honestboozereviews.com",
+      "whiskyoftheweek.co.uk"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "LWH0655BU",
+    "tier": "whisky",
+    "found": true,
+    "critics": [
+      "Distiller.com",
+      "The Whiskey Jug",
+      "Whisky Rant",
+      "Whisky For Everyone",
+      "Whiskybase",
+      "Master of Malt"
+    ],
+    "scores": [
+      "WB rating"
+    ],
+    "domains": [
+      "masterofmalt.com",
+      "whiskybase.com",
+      "distiller.com",
+      "thewhiskeyjug.com",
+      "whiskyrant.com",
+      "distilld.io"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "LWH1131BU",
+    "tier": "whisky",
+    "found": true,
+    "critics": [
+      "Whiskybase",
+      "GreatDrams",
+      "Robb Report",
+      "Drinkhacker"
+    ],
+    "scores": [
+      "WB 84"
+    ],
+    "domains": [
+      "greatdrams.com",
+      "robbreport.com",
+      "whiskybase.com",
+      "totalwine.com",
+      "drinkhacker.com",
+      "thebottleclub.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "LWH0100BT",
+    "tier": "whisky",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "whiskybase.com",
+      "connosr.com",
+      "wine-searcher.com",
+      "bestofwines.com",
+      "whiskyfun.com"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "LWH0191AE",
+    "tier": "whisky",
+    "found": true,
+    "critics": [
+      "Wine Enthusiast"
+    ],
+    "scores": [
+      "WE rating (number not surfaced)"
+    ],
+    "domains": [
+      "wineenthusiast.com",
+      "whiskybase.com",
+      "masterofmalt.com",
+      "tastings.com",
+      "thecampfiredram.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "LSK0507AB",
+    "tier": "sake_shochu",
+    "found": false,
+    "critics": [
+      "Shizuoka Gourmet (blog)"
+    ],
+    "scores": [],
+    "domains": [
+      "shizuokagourmet.com",
+      "bbb.co.th",
+      "winestoreasia.com",
+      "itssaketime.wordpress.com",
+      "passionatefoodie.blogspot.com"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "LSK0144AB",
+    "tier": "sake_shochu",
+    "found": true,
+    "critics": [
+      "WineAlign",
+      "Natalie MacLean"
+    ],
+    "scores": [
+      "expert pages exist"
+    ],
+    "domains": [
+      "winealign.com",
+      "nataliemaclean.com",
+      "ratebeer.com",
+      "masumi.co.jp",
+      "saq.com"
+    ],
+    "quality": "rich"
+  },
+  {
+    "sku": "LSK0125AB",
+    "tier": "sake_shochu",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "skurnik.com",
+      "truesake.com",
+      "wine.com",
+      "hiproof.com",
+      "sugidama.co.uk",
+      "finestsake.ch"
+    ],
+    "quality": "sparse"
+  },
+  {
+    "sku": "LSJ0071DB",
+    "tier": "sake_shochu",
+    "found": false,
+    "critics": [],
+    "scores": [],
+    "domains": [
+      "isobe-sake.com",
+      "amazon.co.jp",
+      "japansake.or.jp",
+      "distiller.com",
+      "drinkshochu.com"
+    ],
+    "quality": "none"
+  },
+  {
+    "sku": "LRM0125AA",
+    "tier": "gin_vodka_rum",
+    "found": true,
+    "critics": [
+      "Tastings.com",
+      "Got Rum?",
+      "Fat Rum Pirate"
+    ],
+    "scores": [
+      "BTI 93",
+      "RumX 72",
+      "Influenster 4.46"
+    ],
+    "domains": [
+      "rumratings.com",
+      "masterofmalt.com",
+      "rum-x.com",
+      "thefatrumpirate.com",
+      "gotrum.com",
+      "tastings.com"
+    ],
+    "quality": "rich"
+  },
+  {
+    "sku": "LRM0219BU",
+    "tier": "gin_vodka_rum",
+    "found": true,
+    "critics": [
+      "Lone Caner",
+      "Got Rum?",
+      "Excellence Rhum"
+    ],
+    "scores": [
+      "Paris Rhum Fest Gold"
+    ],
+    "domains": [
+      "excellencerhum.com",
+      "thelonecaner.com",
+      "gotrum.com",
+      "tripadvisor.com",
+      "gulpbkk.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "LVK0185DG",
+    "tier": "gin_vodka_rum",
+    "found": false,
+    "critics": [
+      "Bartender Spirits Awards",
+      "Spirits Business"
+    ],
+    "scores": [
+      "BSA Silver",
+      "ASM Gold"
+    ],
+    "domains": [
+      "thespiritsbusiness.com",
+      "thebottlesbkk.com",
+      "lanna-global.com",
+      "bartenderspiritsawards.com",
+      "bkmagazine.com"
+    ],
+    "quality": "partial"
+  },
+  {
+    "sku": "LRM0236ER",
+    "tier": "gin_vodka_rum",
+    "found": true,
+    "critics": [
+      "Got Rum?",
+      "Flaviar",
+      "All At Sea",
+      "International Taste Institute",
+      "Superior Taste Award"
+    ],
+    "scores": [
+      "ITI 3 Gold Stars",
+      "STA 6 yrs",
+      "ITQI Best Rum 2020"
+    ],
+    "domains": [
+      "rumratings.com",
+      "rum-x.com",
+      "flaviar.com",
+      "gotrum.com",
+      "allatsea.net",
+      "rhumattitude.com",
+      "totalwine.com"
+    ],
+    "quality": "rich"
+  }
+]
