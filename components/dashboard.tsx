@@ -1,5 +1,5 @@
 'use client';
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { BarChart3, ClipboardCheck, Database, FileCheck2, FolderInput, Globe, Grid3X3, History, Home, Library, Package, Settings, Sparkles, Upload, type LucideIcon } from 'lucide-react';
 
 const DashboardHomePage = React.lazy(() => import('@/components/pages/DashboardHomePage').then(m => ({ default: m.DashboardHomePage })));
@@ -84,51 +84,70 @@ class PageErrorBoundary extends React.Component<{ name: string; children: React.
 function PageLoader() {
   return (
     <div className="flex items-center justify-center h-64">
-      <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-32 h-px bg-white/10 rounded-full overflow-hidden">
+        <div className="h-full bg-white/40 rounded-full animate-shimmer" />
+      </div>
     </div>
   );
 }
 
 function Sidebar({ active, onNavigate }: { active: Section; onNavigate: (s: Section) => void }) {
   return (
-    <nav className="flex w-52 shrink-0 flex-col border-r border-white/10 bg-slate-900">
-      <div className="flex h-14 items-center gap-2.5 border-b border-white/10 px-4">
-        <span className="text-xl">🍷</span>
-        <span className="text-sm font-semibold text-white">WNLQ9 PIM</span>
+    <nav className="flex w-48 shrink-0 flex-col bg-[#080808] border-r border-white/[0.06]">
+      {/* Logo */}
+      <div className="flex h-12 items-center gap-2 px-4 border-b border-white/[0.06]">
+        <div className="w-5 h-5 rounded bg-white flex items-center justify-center shrink-0">
+          <span className="text-black text-[10px] font-bold leading-none">W</span>
+        </div>
+        <span className="text-[13px] font-semibold text-white tracking-tight">WNLQ9 PIM</span>
       </div>
-      <div className="flex flex-1 flex-col gap-0.5 p-2 pt-3">
-        {/* Map Explorer — opens separate route */}
-        <a href="/explore"
-          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-colors mb-2">
-          <Globe size={15} />
-          Map Explorer
-          <span className="ml-auto text-[10px] text-slate-600">↗</span>
-        </a>
-        <a href="/curation"
-          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-colors mb-2">
-          <Sparkles size={15} />
-          Curation Engine
-          <span className="ml-auto text-[10px] text-slate-600">↗</span>
-        </a>
-        <div className="border-b border-white/5 mb-2" />
+
+      {/* Nav content */}
+      <div className="flex flex-1 flex-col gap-0 p-2 pt-3 overflow-y-auto">
+        {/* External links */}
+        <div className="mb-3 space-y-0.5">
+          <a href="/explore"
+            className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-white/70 hover:bg-white/[0.05] hover:text-white/90 transition-colors group">
+            <Globe size={13} className="shrink-0" />
+            <span>Map Explorer</span>
+            <span className="ml-auto text-[10px] text-white/40 group-hover:text-white/60">↗</span>
+          </a>
+          <a href="/curation"
+            className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-white/70 hover:bg-white/[0.05] hover:text-white/90 transition-colors group">
+            <Sparkles size={13} className="shrink-0" />
+            <span>Curation Engine</span>
+            <span className="ml-auto text-[10px] text-white/40 group-hover:text-white/60">↗</span>
+          </a>
+        </div>
+
+        <div className="h-px bg-white/[0.06] mb-3" />
+
+        {/* Nav groups */}
         {NAV_GROUPS.map((group, gi) => (
           <React.Fragment key={gi}>
             {group.label && (
-              <p className={'px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-600 ' + (gi > 0 ? 'mt-4 ' : '') + 'mb-1'}>
+              <p className={'px-2.5 text-[10px] font-medium uppercase tracking-[0.14em] text-white/50 ' + (gi > 0 ? 'mt-5 ' : '') + 'mb-1.5'}>
                 {group.label}
               </p>
             )}
             {!group.label && gi > 0 && <div className="mt-auto" />}
-            {group.items.map(function ({ id, label, Icon }) {
-              return (
-                <button key={id} type="button" onClick={function () { onNavigate(id); }}
-                  className={'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors ' +
-                    (active === id ? 'bg-violet-500/20 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200')}>
-                  <Icon size={15} />
-                  {label}
-                </button>
-              );
-            })}
+            <div className="space-y-0.5">
+              {group.items.map(function ({ id, label, Icon }) {
+                const isActive = active === id;
+                return (
+                  <button key={id} type="button" onClick={function () { onNavigate(id); }}
+                    className={
+                      'w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] transition-colors ' +
+                      (isActive
+                        ? 'bg-white text-black font-medium'
+                        : 'text-white/70 hover:bg-white/[0.05] hover:text-white/90')
+                    }>
+                    <Icon size={13} className="shrink-0" />
+                    <span>{label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </React.Fragment>
         ))}
       </div>
@@ -136,8 +155,34 @@ function Sidebar({ active, onNavigate }: { active: Section; onNavigate: (s: Sect
   );
 }
 
+const VALID_SECTIONS = new Set<Section>(['home','products','matrix','knowledge_library','research_library','publish_readiness','validation','changelog','completeness','import','supplier_intake','settings']);
+
+function sectionFromHash(): Section {
+  try {
+    const hash = window.location.hash.replace('#', '') as Section;
+    return VALID_SECTIONS.has(hash) ? hash : 'home';
+  } catch { return 'home'; }
+}
+
 export function Dashboard() {
   const [section, setSection] = useState<Section>('home');
+
+  // Read hash on mount
+  useEffect(() => {
+    setSection(sectionFromHash());
+  }, []);
+
+  // Write hash when section changes
+  useEffect(() => {
+    try { window.location.hash = section; } catch { /* noop */ }
+  }, [section]);
+
+  // Respond to browser back/forward
+  useEffect(() => {
+    function onHashChange() { setSection(sectionFromHash()); }
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
 
   const pages: Record<Section, React.ReactNode> = {
     home:             <DashboardHomePage onNavigate={function (s: string) { setSection(s as Section); }} />,
@@ -155,9 +200,9 @@ export function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-slate-950 text-white overflow-hidden">
+    <div className="flex h-screen bg-[#080808] text-white overflow-hidden">
       <Sidebar active={section} onNavigate={setSection} />
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto bg-[#080808]">
         <PageErrorBoundary name={section}>
           <Suspense fallback={<PageLoader />}>
             {pages[section]}

@@ -23,7 +23,7 @@ const ExploreMap = dynamic(() => import("@/components/explore/ExploreMap"), {
   ssr: false,
   loading: () => (
     <div className="flex h-full w-full items-center justify-center bg-[#0a0a1a]">
-      <div className="text-sm text-white/30">Loading map...</div>
+      <div role="status" aria-live="polite" className="text-sm text-white/30">Loading map...</div>
     </div>
   ),
 });

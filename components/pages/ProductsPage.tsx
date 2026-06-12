@@ -45,29 +45,29 @@ function SearchableSelect({ value, onChange, options, placeholder }: {
   return (
     <div ref={containerRef} className="relative">
       <button type="button" onClick={function () { setOpen(!open); }}
-        className="w-full flex items-center justify-between bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-left transition-colors hover:border-white/20">
+        className="w-full flex items-center justify-between bg-[#111111] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-left transition-colors hover:border-white/20">
         <span className={value ? 'text-white' : 'text-slate-500'}>{value ? selectedLabel : placeholder}</span>
         <ChevronDown size={12} className={'text-slate-500 transition-transform' + (open ? ' rotate-180' : '')} />
       </button>
       {open && (
-        <div className="absolute z-50 mt-1 w-full rounded-lg border border-white/10 bg-slate-800 shadow-xl">
+        <div className="absolute z-50 mt-1 w-full rounded-lg border border-white/[0.08] bg-[#111111] shadow-xl">
           {options.length > 5 && (
             <div className="p-1.5 border-b border-white/8">
               <input ref={inputRef} type="text" value={query}
                 onChange={function (e) { setQuery(e.target.value); }}
                 placeholder="Type to filter..."
-                className="w-full bg-slate-900 border border-white/10 rounded px-2 py-1 text-xs text-white placeholder:text-slate-500 outline-none" />
+                className="w-full bg-[#080808] border border-white/10 rounded px-2 py-1 text-xs text-white placeholder:text-slate-500 outline-none" />
             </div>
           )}
           <div className="max-h-52 overflow-y-auto p-1">
             <button onClick={function () { onChange(''); setOpen(false); }}
-              className={'w-full text-left rounded px-2 py-1.5 text-xs transition-colors ' + (!value ? 'bg-violet-500/15 text-violet-300' : 'text-slate-400 hover:bg-white/5 hover:text-white')}>
+              className={'w-full text-left rounded px-2 py-1.5 text-xs transition-colors ' + (!value ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-white')}>
               {placeholder}
             </button>
             {filtered.map(function (o) {
               return (
                 <button key={o.value} onClick={function () { onChange(o.value); setOpen(false); }}
-                  className={'w-full text-left rounded px-2 py-1.5 text-xs transition-colors flex items-center justify-between ' + (value === o.value ? 'bg-violet-500/15 text-violet-300' : 'text-slate-300 hover:bg-white/5 hover:text-white')}>
+                  className={'w-full text-left rounded px-2 py-1.5 text-xs transition-colors flex items-center justify-between ' + (value === o.value ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white')}>
                   <span className="truncate">{o.label}</span>
                   {o.count !== undefined && <span className="text-slate-400 ml-1 shrink-0">{o.count}</span>}
                 </button>
@@ -117,17 +117,17 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const CLASSIFICATION_COLORS: Record<string, string> = {
-  'Red Wine':       'bg-red-500/20 text-red-300 border-red-500/30',
-  'White Wine':     'bg-yellow-500/20 text-yellow-200 border-yellow-500/30',
-  'Sparkling Wine': 'bg-amber-400/20 text-amber-200 border-amber-400/30',
-  'Champagne':      'bg-amber-400/20 text-amber-200 border-amber-400/30',
-  'Rose':           'bg-pink-400/20 text-pink-300 border-pink-400/30',
-  'Whisky':         'bg-orange-500/20 text-orange-300 border-orange-500/30',
-  'Gin':            'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
-  'Rum':            'bg-amber-600/20 text-amber-300 border-amber-600/30',
-  'Vodka':          'bg-sky-500/20 text-sky-300 border-sky-500/30',
-  'Tequila':        'bg-lime-500/20 text-lime-300 border-lime-500/30',
-  'Sake':           'bg-indigo-400/20 text-indigo-300 border-indigo-400/30',
+  'Red Wine':       'bg-white/8 text-white/80 border-white/15',
+  'White Wine':     'bg-white/8 text-white/80 border-white/15',
+  'Sparkling Wine': 'bg-white/8 text-white/80 border-white/15',
+  'Champagne':      'bg-white/8 text-white/80 border-white/15',
+  'Rose':           'bg-white/8 text-white/80 border-white/15',
+  'Whisky':         'bg-white/8 text-white/80 border-white/15',
+  'Gin':            'bg-white/8 text-white/80 border-white/15',
+  'Rum':            'bg-white/8 text-white/80 border-white/15',
+  'Vodka':          'bg-white/8 text-white/80 border-white/15',
+  'Tequila':        'bg-white/8 text-white/80 border-white/15',
+  'Sake':           'bg-white/8 text-white/80 border-white/15',
 };
 function classificationBadge(cls: string | null | undefined) {
   const c = cls ? String(cls) : '';
@@ -208,7 +208,7 @@ function LangDesc({ shortText, fullText, fullHtml }: {
               <div className="flex gap-0.5">
                 {([['text', FileText, 'Text'], ['preview', Eye, 'Preview'], ['source', Code2, 'HTML']] as const).map(([v, Icon, tip]) => (
                   <button key={v} title={tip} onClick={() => setView(v as DescView)}
-                    className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] transition-colors ${view === v ? 'bg-violet-500/30 text-violet-300' : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'}`}>
+                    className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] transition-colors ${view === v ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'}`}>
                     <Icon size={10} />{tip}
                   </button>
                 ))}
@@ -370,7 +370,7 @@ export function ProductsPage() {
 
   const confBadge = (conf: number) => {
     const pct = Math.round(conf * 100);
-    const cls = conf >= 0.75 ? 'bg-emerald-500/20 text-emerald-300' : conf >= 0.4 ? 'bg-amber-500/20 text-amber-300' : 'bg-rose-500/20 text-rose-300';
+    const cls = conf >= 0.75 ? 'bg-white/10 text-white' : conf >= 0.4 ? 'bg-white/8 text-white/70' : 'bg-white/5 text-white/40';
     return <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${cls}`}>{pct}%</span>;
   };
 
@@ -450,17 +450,19 @@ export function ProductsPage() {
   return (
     <div className="flex h-full">
       {/* ═══ LEFT PANEL: Product List ═══ */}
-      <div className={`${selected ? 'hidden lg:flex' : 'flex'} flex-col w-full lg:w-[400px] lg:min-w-[400px] lg:max-w-[400px] border-r border-white/10 bg-slate-950`}>
+      <div className={`${selected ? 'hidden lg:flex' : 'flex'} flex-col w-full lg:w-[400px] lg:min-w-[400px] lg:max-w-[400px] border-r border-white/[0.07] bg-[#080808]`}>
         {/* Header */}
-        <div className="px-4 pt-4 pb-3 border-b border-white/10 shrink-0 space-y-3">
+        <div className="px-4 pt-4 pb-3 border-b border-white/[0.07] shrink-0 space-y-3">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-base font-semibold text-white">Products</h1>
               {data && data.total != null && <p className="text-[11px] text-slate-500">{data.total.toLocaleString()} products</p>}
             </div>
             <button
+              aria-label="Toggle filters"
+              aria-expanded={showFilters}
               onClick={() => setShowFilters(f => !f)}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs border transition-colors ${showFilters || activeFilters ? 'bg-violet-500/20 border-violet-500/40 text-violet-300' : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'}`}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs border transition-colors ${showFilters || activeFilters ? 'bg-white/10 border-white/20 text-white' : 'bg-transparent border-white/[0.08] text-white/70 hover:text-white/90 hover:border-white/20'}`}
             >
               <SlidersHorizontal size={12} /> {activeFilters > 0 ? `${activeFilters}` : ''}
             </button>
@@ -489,20 +491,20 @@ export function ProductsPage() {
                 options={(facets?.countries ?? []).map(function(f) { return { value: f.value, label: f.value, count: f.count }; })}
                 placeholder="All countries" />
               <div className="flex gap-2">
-                <input placeholder="Price min" value={priceMin} onChange={e => setPriceMin(e.target.value)}
-                  className="flex-1 bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-slate-500" />
-                <input placeholder="Price max" value={priceMax} onChange={e => setPriceMax(e.target.value)}
-                  className="flex-1 bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-slate-500" />
+                <input aria-label="Minimum price" placeholder="Price min" value={priceMin} onChange={e => setPriceMin(e.target.value)}
+                  className="flex-1 bg-[#111111] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-slate-500" />
+                <input aria-label="Maximum price" placeholder="Price max" value={priceMax} onChange={e => setPriceMax(e.target.value)}
+                  className="flex-1 bg-[#111111] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-slate-500" />
               </div>
-              <select value={confFilter} onChange={e => setConfFilter(e.target.value)}
-                className="w-full bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white">
+              <select aria-label="Confidence threshold" value={confFilter} onChange={e => setConfFilter(e.target.value)}
+                className="w-full bg-[#111111] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white">
                 <option value="">Any confidence</option>
                 <option value="75">75%+</option>
                 <option value="50">50%+</option>
                 <option value="25">25%+</option>
               </select>
-              <select value={tierFilter} onChange={e => setTierFilter(e.target.value)}
-                className="w-full bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white">
+              <select aria-label="BI tier" value={tierFilter} onChange={e => setTierFilter(e.target.value)}
+                className="w-full bg-[#111111] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white">
                 <option value="">Any BI tier</option>
                 {(['1', '2', '3', '4', '5'] as const).map(t => (
                   <option key={t} value={t}>{TIER_LABELS[t]}</option>
@@ -519,7 +521,7 @@ export function ProductsPage() {
                   { id: 'tier', label: 'Tier' },
                 ].map(opt => (
                   <button key={opt.id} onClick={() => toggleSort(opt.id)}
-                    className={`flex items-center gap-0.5 px-2 py-1 rounded text-[10px] transition-colors ${sortBy === opt.id ? 'bg-violet-500/20 text-violet-300' : 'text-slate-500 hover:text-white hover:bg-white/5'}`}>
+                    className={`flex items-center gap-0.5 px-2 py-1 rounded text-[10px] transition-colors ${sortBy === opt.id ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-white hover:bg-white/5'}`}>
                     {opt.label}
                     {sortBy === opt.id && <ChevronDown size={8} className={`transition-transform ${sortDir === 'asc' ? 'rotate-180' : ''}`} />}
                   </button>
@@ -542,7 +544,7 @@ export function ProductsPage() {
             const isActive = selected && selected.id === p.id;
             return (
               <div key={String(p.id)} onClick={() => openProduct(p)}
-                className={`px-4 py-3 border-b border-white/5 cursor-pointer transition-colors ${isActive ? 'bg-violet-500/10 border-l-2 border-l-violet-500' : 'hover:bg-white/5'}`}>
+                className={`px-4 py-3 border-b border-white/5 cursor-pointer transition-colors ${isActive ? 'bg-white/[0.05] border-l border-l-white/40' : 'hover:bg-white/5'}`}>
                 <div className="flex items-start gap-3">
                   <ProductImage
                     src={p.image_url ? String(p.image_url) : undefined}
@@ -563,12 +565,12 @@ export function ProductsPage() {
                 <div className="flex items-center gap-1.5 mt-1.5">
                   {classificationBadge(p.classification != null ? String(p.classification) : null)}
                   {tierValue(p) && (
-                    <span className="px-1.5 py-0.5 rounded text-[10px] bg-cyan-500/15 text-cyan-300 font-medium">
+                    <span className="px-1.5 py-0.5 rounded text-[10px] bg-white/8 text-white/60 font-medium">
                       T{tierValue(p)}
                     </span>
                   )}
                   {group.length > 1 && (
-                    <span className="px-1.5 py-0.5 rounded text-[10px] bg-violet-500/15 text-violet-300 font-medium">
+                    <span className="px-1.5 py-0.5 rounded text-[10px] bg-white/8 text-white/50 font-medium">
                       {group.length} variants
                     </span>
                   )}
@@ -611,7 +613,7 @@ export function ProductsPage() {
         ) : (
           <>
             {/* Sticky header bar */}
-            <div className="px-6 py-3 border-b border-white/10 shrink-0 flex items-center justify-between bg-slate-950/80 backdrop-blur">
+            <div className="px-6 py-3 border-b border-white/10 shrink-0 flex items-center justify-between bg-[#080808]/90 backdrop-blur">
               <div className="flex items-center gap-3 min-w-0">
                 <button onClick={() => setSelected(null)} className="lg:hidden text-slate-400 hover:text-white shrink-0">
                   <ChevronLeft size={18} />
@@ -630,7 +632,7 @@ export function ProductsPage() {
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <button onClick={() => setEditMode(!editMode)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs border transition-colors ${editMode ? 'bg-violet-500/20 border-violet-500/40 text-violet-300' : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'}`}>
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs border transition-colors ${editMode ? 'bg-white/10 border-white/20 text-white' : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'}`}>
                   <Edit2 size={11} /> Edit
                 </button>
                 <button onClick={() => setSelected(null)} className="hidden lg:block text-slate-400 hover:text-white">
@@ -644,7 +646,7 @@ export function ProductsPage() {
               {detailLoading && (
                 <div className="px-6 py-2">
                   <div className="h-1 bg-white/5 rounded-full overflow-hidden">
-                    <div className="h-1 bg-violet-500/50 rounded-full animate-pulse w-2/3" />
+                    <div className="h-1 bg-white/30 rounded-full animate-pulse w-2/3" />
                   </div>
                 </div>
               )}
@@ -661,9 +663,9 @@ export function ProductsPage() {
 
                 {/* ── Inline Edit Panel ── */}
                 {editMode && (
-                  <div className="bg-white/[0.03] border border-violet-500/20 rounded-xl p-5">
+                  <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-5">
                     <div className="flex items-center gap-2 mb-4">
-                      <Edit2 size={14} className="text-violet-400" />
+                      <Edit2 size={14} className="text-white/40" />
                       <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Edit Fields</h3>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -673,7 +675,7 @@ export function ProductsPage() {
                           <input
                             value={editFields[field] ?? ''}
                             onChange={e => setEditFields(f => ({ ...f, [field]: e.target.value }))}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-violet-500/50 focus:outline-none"
+                            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-white/30 focus:outline-none"
                           />
                         </div>
                       ))}
@@ -689,13 +691,13 @@ export function ProductsPage() {
                     </div>
                     <div className="mt-4 flex items-center gap-3">
                       <button onClick={handleSave} disabled={saving}
-                        className="bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm py-2 px-6 rounded-lg font-medium transition-colors">
+                        className="bg-white hover:bg-white/90 disabled:opacity-50 text-black text-sm py-2 px-6 rounded-lg font-medium transition-colors">
                         {saving ? 'Saving...' : 'Save changes'}
                       </button>
                       <button onClick={() => setEditMode(false)} className="text-xs text-slate-400 hover:text-white transition-colors">
                         Cancel
                       </button>
-                      {saveMsg && <p className="text-xs text-slate-400">{saveMsg}</p>}
+                      <p aria-live="polite" aria-atomic="true" className="text-xs text-slate-400">{saveMsg ?? ''}</p>
                     </div>
                   </div>
                 )}

@@ -39,7 +39,7 @@ export async function GET() {
     { key: 'region',            label: 'Region' },
     { key: 'appellation',       label: 'Appellation' },
     { key: 'grape_variety',     label: 'Grape Variety' },
-    { key: 'overall_confidence',label: 'Confidence Score' },
+    { key: 'enrichment_confidence', label: 'Confidence Score' },
     { key: 'validation_status', label: 'Validation Status' },
     { key: 'country',           label: 'Country' },
     { key: 'vintage',           label: 'Vintage' },

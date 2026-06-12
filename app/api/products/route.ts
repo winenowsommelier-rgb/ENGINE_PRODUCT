@@ -24,7 +24,7 @@ const SEGMENT_PREFIXES: Record<string, (sku: string) => boolean> = {
 const SORT_COLS: Record<string, string> = {
   name:       'name',
   price:      'price',
-  confidence: 'overall_confidence',
+  confidence: 'enrichment_confidence',
   tier:       'enrichment_priority',
   vintage:    'vintage',
   created:    'created_at',
@@ -159,7 +159,7 @@ function applyFilters(
     }
     if (filters.priceMin !== null && parseFloat(String(p.price ?? 0)) < filters.priceMin) return false;
     if (filters.priceMax !== null && parseFloat(String(p.price ?? 0)) > filters.priceMax) return false;
-    if (filters.confMin !== null && parseFloat(String(p.overall_confidence ?? 0)) < filters.confMin) return false;
+    if (filters.confMin !== null && parseFloat(String(p.enrichment_confidence ?? 0)) < filters.confMin) return false;
     return true;
   });
 }
