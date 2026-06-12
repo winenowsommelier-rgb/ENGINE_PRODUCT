@@ -100,13 +100,34 @@ This keeps your product database improving with every conversation.
 
 ## Keeping files up to date
 
-These files are exported from `data/live_products_export.json`. To regenerate them after a database update:
+Files are exported from `data/live_products_export.json`.
+
+### One-command full sync (regenerate + upload to Drive)
 
 ```bash
-cd /path/to/ENGINE_PRODUCT
+python3 scripts/sync_ai_knowledge_base_to_drive.py
+```
+
+This script:
+1. Regenerates all files in `docs/ai-knowledge-base/` from the live export
+2. Uploads/overwrites every file in the Google Drive folder
+3. Creates new files if any are added in future
+
+First run requires Google OAuth2 browser authorisation (one-time). Credentials cached at `~/.config/wnlq9/gdrive_token.json`.
+
+**Setup (first time only):**
+```bash
+pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
+# Place OAuth2 credentials JSON at ~/.config/wnlq9/gdrive_credentials.json
+python3 scripts/sync_ai_knowledge_base_to_drive.py
+```
+
+### Regenerate local files only (no Drive upload)
+```bash
 python3 scripts/export_ai_knowledge_base.py
 ```
 
-(Script to be created — regenerates all files in this folder from the live export.)
+**Recommended cadence:** Run `sync_ai_knowledge_base_to_drive.py` weekly, or after any bulk enrichment run.
 
-Recommended cadence: regenerate weekly, or after any bulk enrichment run.
+### Drive folder
+https://drive.google.com/drive/folders/1jI0O-5sYTekqpOQBET7I_rw4XTIeaKdK

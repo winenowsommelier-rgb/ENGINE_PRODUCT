@@ -299,6 +299,15 @@ export function ProductsPage() {
     fetch('/api/products/facets').then(r => r.json()).then(setFacets).catch(() => {});
   }, []);
 
+  // Escape key closes detail panel
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setSelected(null);
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, []);
+
   const load = useCallback(async (
     p = page, q = search, c = country, r = region, ap = appellation,
     s = status, cl = classification, wc = wineClass, sg = segment,
@@ -496,20 +505,22 @@ export function ProductsPage() {
                 <input aria-label="Maximum price" placeholder="Price max" value={priceMax} onChange={e => setPriceMax(e.target.value)}
                   className="flex-1 bg-[#111111] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-slate-500" />
               </div>
-              <select aria-label="Confidence threshold" value={confFilter} onChange={e => setConfFilter(e.target.value)}
-                className="w-full bg-[#111111] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white">
-                <option value="">Any confidence</option>
-                <option value="75">75%+</option>
-                <option value="50">50%+</option>
-                <option value="25">25%+</option>
-              </select>
-              <select aria-label="BI tier" value={tierFilter} onChange={e => setTierFilter(e.target.value)}
-                className="w-full bg-[#111111] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white">
-                <option value="">Any BI tier</option>
-                {(['1', '2', '3', '4', '5'] as const).map(t => (
-                  <option key={t} value={t}>{TIER_LABELS[t]}</option>
-                ))}
-              </select>
+              <SearchableSelect
+                value={confFilter}
+                onChange={v => setConfFilter(v)}
+                options={[
+                  { value: '75', label: '75%+ confidence' },
+                  { value: '50', label: '50%+ confidence' },
+                  { value: '25', label: '25%+ confidence' },
+                ]}
+                placeholder="Any confidence"
+              />
+              <SearchableSelect
+                value={tierFilter}
+                onChange={v => { setTierFilter(v); setPage(1); }}
+                options={(['1','2','3','4','5'] as const).map(t => ({ value: t, label: TIER_LABELS[t] }))}
+                placeholder="Any BI tier"
+              />
               {/* Sort */}
               <div className="flex items-center gap-1.5 pt-1 flex-wrap">
                 <ArrowUpDown size={10} className="text-slate-500" />
@@ -538,6 +549,15 @@ export function ProductsPage() {
 
         {/* Product list */}
         <div className="flex-1 overflow-y-auto">
+          {groupedProducts.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-48 gap-3 text-center px-6">
+              <Search size={28} className="text-white/20" />
+              <p className="text-sm text-white/50">No products match your filters</p>
+              <button onClick={clearFilters} className="text-xs text-violet-400 hover:text-violet-300 transition-colors underline underline-offset-2">
+                Clear all filters
+              </button>
+            </div>
+          )}
           {groupedProducts.map((group) => {
             const p = group[0];
             const conf = confValue(p);

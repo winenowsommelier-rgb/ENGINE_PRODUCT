@@ -83,7 +83,7 @@ body::before {
 
 @media (prefers-reduced-motion: reduce) {
   .animate-spin, .animate-card-in, .animate-fade-in-up,
-  .animate-slide-in-right, .animate-slide-in-left, .animate-shimmer {
+  .animate-slide-in-left, .animate-shimmer {
     animation: none !important;
   }
   * { transition-duration: 0.01ms !important; }

@@ -102,7 +102,7 @@ export function PublishReadinessPage() {
 
   if (loading && !data) {
     return (
-      <div className="flex h-64 items-center justify-center">
+      <div role="status" aria-live="polite" aria-label="Loading publish readiness" className="flex h-64 items-center justify-center">
         <Loader2 className="h-5 w-5 animate-spin text-violet-400" />
       </div>
     );
@@ -192,7 +192,7 @@ export function PublishReadinessPage() {
                   {action.priority}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm text-slate-200">{action.label}</p>
+                  <p className="truncate text-sm text-slate-200" title={action.label}>{action.label}</p>
                   <p className="text-xs text-slate-500">{action.owner}</p>
                 </div>
                 <span className="text-xs font-medium text-slate-300">{action.metric}</span>
@@ -377,8 +377,8 @@ function PriorityTable({ title, rows, scoreLabel }: { title: string; rows: Prior
                   <td className="py-2 pr-3 text-slate-500">{row.rank}</td>
                   <td className="py-2 pr-3 font-mono text-slate-200">{row.sku}</td>
                   <td className="max-w-xs py-2 pr-3">
-                    <p className="truncate text-slate-200">{row.name}</p>
-                    <p className="truncate text-slate-500">{row.whyNow || row.brand || row.taskTypes || '-'}</p>
+                    <p className="truncate text-slate-200" title={row.name}>{row.name}</p>
+                    <p className="truncate text-slate-500" title={row.whyNow || row.brand || row.taskTypes || undefined}>{row.whyNow || row.brand || row.taskTypes || '-'}</p>
                   </td>
                   <td className="py-2 pr-3 text-right font-medium text-slate-200">{score.toLocaleString()}</td>
                   <td className="py-2 pr-3">

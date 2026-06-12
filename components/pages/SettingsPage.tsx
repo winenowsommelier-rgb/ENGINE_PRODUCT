@@ -65,13 +65,14 @@ export function SettingsPage() {
 
         <div className="flex gap-2 mb-3">
           <input
+            aria-label="New brand name"
             value={newBrand}
             onChange={e => setNewBrand(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') addBrand(); }}
             placeholder="Brand name…"
-            className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-600"
+            className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500"
           />
-          <button onClick={addBrand} className="bg-violet-600 hover:bg-violet-500 text-white px-3 py-2 rounded-lg transition-colors">
+          <button aria-label="Add brand" onClick={addBrand} className="bg-violet-600 hover:bg-violet-500 text-white px-3 py-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
             <Plus size={16} />
           </button>
         </div>
@@ -81,7 +82,7 @@ export function SettingsPage() {
           {brands.map(b => (
             <div key={b.id} className="flex items-center justify-between bg-white/5 rounded-lg px-3 py-2">
               <span className="text-sm text-white">{b.name}</span>
-              <button onClick={() => removeBrand(b.id)} className="text-slate-500 hover:text-rose-400 transition-colors">
+              <button aria-label={`Remove ${b.name}`} onClick={() => removeBrand(b.id)} className="text-slate-500 hover:text-rose-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/60 rounded">
                 <Trash2 size={14} />
               </button>
             </div>
@@ -96,9 +97,9 @@ export function SettingsPage() {
           className="bg-slate-700 hover:bg-slate-600 disabled:opacity-50 text-white text-sm px-4 py-2 rounded-lg transition-colors">
           {syncing ? 'Syncing…' : 'Sync validated products to Supabase'}
         </button>
-        {syncMsg && <p className="mt-2 text-xs text-slate-400">{syncMsg}</p>}
+        <p aria-live="polite" aria-atomic="true" className="mt-2 text-xs text-slate-400">{syncMsg ?? ''}</p>
         {syncStatus && (
-          <p className="mt-1 text-xs text-slate-600">
+          <p className="mt-1 text-xs text-slate-500">
             Last synced: {syncStatus.last_synced_at
               ? `${new Date(syncStatus.last_synced_at).toLocaleString()} — ${syncStatus.last_synced_count} products`
               : 'Never'}

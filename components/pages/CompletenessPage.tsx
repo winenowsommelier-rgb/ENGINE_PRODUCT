@@ -6,12 +6,19 @@ type FieldStat = { key: string; label: string; filled: number; missing: number; 
 type CategoryStat = { name: string; total: number; descPct: number; imagePct: number; tastePct: number };
 type Data = { total: number; fields: FieldStat[]; categories: CategoryStat[] };
 
-function PctBadge({ pct }: { pct: number }) {
+function PctBadge({ pct, label }: { pct: number; label?: string }) {
   const cls = pct >= 80 ? 'text-emerald-400' : pct >= 40 ? 'text-amber-400' : 'text-rose-400';
   const bar = pct >= 80 ? 'bg-emerald-500' : pct >= 40 ? 'bg-amber-500' : 'bg-rose-500';
   return (
     <div className="flex items-center gap-2 flex-1">
-      <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+      <div
+        role="progressbar"
+        aria-valuenow={pct}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={label ? `${label} coverage` : `${pct}% coverage`}
+        className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden"
+      >
         <div className={`h-full rounded-full ${bar}`} style={{ width: `${pct}%` }} />
       </div>
       <span className={`text-xs font-semibold w-9 text-right ${cls}`}>{pct}%</span>
@@ -23,7 +30,7 @@ export function CompletenessPage() {
   const [data, setData] = useState<Data | null>(null);
   useEffect(() => { fetch('/api/products/completeness').then(r => r.json()).then(setData).catch(() => {}); }, []);
 
-  if (!data) return <div className="flex items-center justify-center h-64 text-slate-400 text-sm">Loading...</div>;
+  if (!data) return <div role="status" aria-live="polite" className="flex items-center justify-center h-64 text-slate-400 text-sm">Loading...</div>;
 
   return (
     <div className="p-6 space-y-6 max-w-4xl">
@@ -44,7 +51,7 @@ export function CompletenessPage() {
           {data.fields.map(f => (
             <div key={f.key} className="px-4 py-2.5 flex items-center gap-4">
               <span className="text-xs text-slate-400 w-40 shrink-0">{f.label}</span>
-              <PctBadge pct={f.pct} />
+              <PctBadge pct={f.pct} label={f.label} />
               <span className="text-[11px] text-slate-500 w-24 text-right shrink-0">{f.filled.toLocaleString()} / {(f.filled + f.missing).toLocaleString()}</span>
             </div>
           ))}
@@ -60,11 +67,11 @@ export function CompletenessPage() {
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-white/10 text-slate-500">
-                <th className="px-4 py-2 text-left font-medium">Category</th>
-                <th className="px-4 py-2 text-right font-medium">Total</th>
-                <th className="px-4 py-2 text-right font-medium">Desc</th>
-                <th className="px-4 py-2 text-right font-medium">Image</th>
-                <th className="px-4 py-2 text-right font-medium">Taste</th>
+                <th scope="col" className="px-4 py-2 text-left font-medium">Category</th>
+                <th scope="col" className="px-4 py-2 text-right font-medium">Total</th>
+                <th scope="col" className="px-4 py-2 text-right font-medium" title="Description coverage">Desc</th>
+                <th scope="col" className="px-4 py-2 text-right font-medium" title="Image coverage">Image</th>
+                <th scope="col" className="px-4 py-2 text-right font-medium" title="Taste profile coverage">Taste</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">

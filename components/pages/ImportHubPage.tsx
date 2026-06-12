@@ -21,7 +21,7 @@ const TABS: Array<{ id: Tab; label: string; Icon: React.ElementType; description
 
 function TabLoader() {
   return (
-    <div className="flex items-center justify-center h-48">
+    <div role="status" aria-label="Loading" className="flex items-center justify-center h-48">
       <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
     </div>
   );
@@ -34,10 +34,14 @@ export function ImportHubPage() {
     <div className="space-y-0">
       {/* Tab header */}
       <div className="border-b border-white/8 bg-slate-900/50">
-        <div className="flex items-center gap-1 px-4 pt-4 pb-0 overflow-x-auto">
+        <div role="tablist" aria-label="Import sections" className="flex items-center gap-1 px-4 pt-4 pb-0 overflow-x-auto">
           {TABS.map(({ id, label, Icon }) => (
             <button
               key={id}
+              role="tab"
+              aria-selected={activeTab === id}
+              aria-controls={`tabpanel-${id}`}
+              id={`tab-${id}`}
               onClick={() => setActiveTab(id)}
               className={`flex items-center gap-2 rounded-t-lg px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
                 activeTab === id
@@ -53,7 +57,12 @@ export function ImportHubPage() {
       </div>
 
       {/* Tab content */}
-      <div className="p-6">
+      <div
+        role="tabpanel"
+        id={`tabpanel-${activeTab}`}
+        aria-labelledby={`tab-${activeTab}`}
+        className="p-6"
+      >
         <Suspense fallback={<TabLoader />}>
           {activeTab === 'csv_import' && <ImportPage />}
           {activeTab === 'override' && <OverrideImportPage />}

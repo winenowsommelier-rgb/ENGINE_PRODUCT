@@ -60,7 +60,7 @@ export function DashboardHomePage({ onNavigate }: { onNavigate: (section: string
   var gaps = data.gapsToFill;
 
   return (
-    <div className="p-6 space-y-6 max-w-6xl">
+    <div className="px-4 py-6 md:px-6 space-y-6 max-w-5xl mx-auto w-full">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

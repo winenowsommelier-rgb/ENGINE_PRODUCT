@@ -294,15 +294,17 @@ export function ChangeLogPage() {
         <div className="ml-auto flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 p-0.5">
           <button
             onClick={() => setViewMode('list')}
-            className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition-colors ${viewMode === 'list' ? 'bg-violet-500/20 text-violet-300' : 'text-slate-400 hover:text-white'}`}
+            aria-pressed={viewMode === 'list'}
             title="Show individual field changes"
+            className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition-colors ${viewMode === 'list' ? 'bg-violet-500/20 text-violet-300' : 'text-slate-400 hover:text-white'}`}
           >
             <List size={12} /> List
           </button>
           <button
             onClick={() => setViewMode('batches')}
-            className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition-colors ${viewMode === 'batches' ? 'bg-violet-500/20 text-violet-300' : 'text-slate-400 hover:text-white'}`}
+            aria-pressed={viewMode === 'batches'}
             title="Group changes by batch (source + minute)"
+            className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition-colors ${viewMode === 'batches' ? 'bg-violet-500/20 text-violet-300' : 'text-slate-400 hover:text-white'}`}
           >
             <Layers size={12} /> Batches
           </button>
@@ -325,6 +327,8 @@ export function ChangeLogPage() {
               <div key={batch.key} className="rounded-xl border border-white/8 bg-white/3 overflow-hidden">
                 <button
                   onClick={() => toggleBatch(batch.key)}
+                  aria-expanded={isExpanded}
+                  aria-label={`${isExpanded ? 'Collapse' : 'Expand'} batch`}
                   className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-white/3 transition-colors"
                 >
                   {isExpanded ? <ChevronDown size={14} className="text-slate-500 shrink-0" /> : <ChevronRight size={14} className="text-slate-500 shrink-0" />}

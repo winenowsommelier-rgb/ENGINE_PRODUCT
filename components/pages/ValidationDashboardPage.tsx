@@ -111,11 +111,11 @@ function FieldCompletenessTable({ issues, total }: { issues: TopIssue[]; total: 
       <table className="w-full text-sm">
         <thead>
           <tr className="text-left text-slate-500 text-xs uppercase tracking-wider border-b border-white/10">
-            <th className="pb-2 pl-3">Field</th>
-            <th className="pb-2 text-right pr-3">Filled</th>
-            <th className="pb-2 text-right pr-3">Missing</th>
-            <th className="pb-2 pr-3 w-48">Coverage</th>
-            <th className="pb-2 text-right pr-3">%</th>
+            <th scope="col" className="pb-2 pl-3">Field</th>
+            <th scope="col" className="pb-2 text-right pr-3">Filled</th>
+            <th scope="col" className="pb-2 text-right pr-3">Missing</th>
+            <th scope="col" className="pb-2 pr-3 w-48">Coverage</th>
+            <th scope="col" className="pb-2 text-right pr-3">%</th>
           </tr>
         </thead>
         <tbody>
@@ -251,16 +251,16 @@ function ProductTable({ products }: { products: ScoredProduct[] }) {
         <table className="w-full text-xs">
           <thead>
             <tr className="text-left text-slate-500 uppercase tracking-wider border-b border-white/10">
-              <th className="pb-2 pl-3">SKU</th>
-              <th className="pb-2">Name</th>
-              <th className="pb-2">Item Category</th>
-              <th className="pb-2 text-right">Score</th>
-              <th className="pb-2 text-right">Comp</th>
-              <th className="pb-2 text-right">Desc</th>
-              <th className="pb-2 text-right">Tax</th>
-              <th className="pb-2 text-right">Cons</th>
-              <th className="pb-2 text-right pr-3">Enr</th>
-              <th className="pb-2 text-right pr-3">Issues</th>
+              <th scope="col" className="pb-2 pl-3">SKU</th>
+              <th scope="col" className="pb-2">Name</th>
+              <th scope="col" className="pb-2">Item Category</th>
+              <th scope="col" className="pb-2 text-right" title="Overall quality score">Score</th>
+              <th scope="col" className="pb-2 text-right" title="Completeness">Comp</th>
+              <th scope="col" className="pb-2 text-right" title="Description quality">Desc</th>
+              <th scope="col" className="pb-2 text-right" title="Taxonomy accuracy">Tax</th>
+              <th scope="col" className="pb-2 text-right" title="Data consistency">Cons</th>
+              <th scope="col" className="pb-2 text-right pr-3" title="Enrichment depth">Enr</th>
+              <th scope="col" className="pb-2 text-right pr-3">Issues</th>
             </tr>
           </thead>
           <tbody>
@@ -356,9 +356,10 @@ export function ValidationDashboardPage() {
         </div>
         <div className="flex items-center gap-3">
           <select
+            aria-label="Filter by BI tier"
             value={tier}
             onChange={e => setTier(e.target.value)}
-            className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-slate-300 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-violet-500/70"
           >
             {TIER_OPTIONS.map(o => (
               <option key={o.value} value={o.value} className="bg-slate-900">{o.label}</option>

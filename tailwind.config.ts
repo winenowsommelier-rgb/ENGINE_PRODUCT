@@ -13,7 +13,7 @@ const config: Config = {
         background: '#080808',
         surface:    '#111111',
         border:     'rgba(255,255,255,0.07)',
-        muted:      '#6b6b6b',
+        muted:      '#737373',
         subtle:     '#333333',
         card:       '#111111',
         accent:     '#ffffff',

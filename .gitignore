@@ -68,6 +68,10 @@ data/brand_description_library.csv.bak-*
 data/reenrich_results-*.jsonl
 data/*dryrun*.json
 data/reenrich_dryrun-*.json
+data/phase_c_results-*.jsonl
+
+# Stray root-level SQLite DB placeholder (real DB lives at data/db/products.db)
+/products.db
 
 # Magento / catalog export artifacts — regenerated on demand, not source
 outputs/
