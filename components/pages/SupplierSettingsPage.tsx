@@ -197,6 +197,7 @@ export function SupplierSettingsPage() {
         <div className="mb-4">
           <label className={labelCls}>Pricing Structure</label>
           <select
+            aria-label="Pricing structure"
             value={form.pricing_structure}
             onChange={e => set('pricing_structure', e.target.value as SupplierPricingStructure)}
             className={selectCls}
@@ -232,6 +233,7 @@ export function SupplierSettingsPage() {
           <div>
             <label className={labelCls}>Pricing Mode</label>
             <select
+              aria-label="Pricing mode"
               value={form.pricing_mode}
               onChange={e => set('pricing_mode', e.target.value as PricingMode)}
               className={selectCls}
@@ -244,6 +246,7 @@ export function SupplierSettingsPage() {
           <div>
             <label className={labelCls}>Rounding</label>
             <select
+              aria-label="Price rounding"
               value={form.rounding}
               onChange={e => set('rounding', e.target.value as RoundingMode)}
               className={selectCls}

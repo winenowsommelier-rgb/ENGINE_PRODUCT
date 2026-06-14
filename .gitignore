@@ -81,5 +81,13 @@ docs/ai-knowledge-base/products_*.json
 docs/ai-knowledge-base/product_index.md
 docs/ai-knowledge-base/product_index_compact.tsv
 
+# Slim + NotebookLM variants — also generated, not source
+docs/ai-knowledge-base-slim/
+docs/ai-knowledge-base-notebooklm/
+
+# Stray empty PIM db at root
+/pim.db
+
 # Taxonomy pre-fix backups
 data/taxonomy/*.bak-*
+.env*.local

@@ -250,7 +250,7 @@ export function TaxonomyManagerPage() {
       {/* Content */}
       <div className="space-y-1">
         {loading && items.length === 0 && (
-          <div className="p-8 text-center text-slate-500 text-sm">Loading...</div>
+          <div role="status" aria-live="polite" className="p-8 text-center text-slate-500 text-sm">Loading...</div>
         )}
 
         {/* Add form */}

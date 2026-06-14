@@ -543,13 +543,13 @@ export function CharacterRadarChart({
   return (
     <div className="flex flex-col sm:flex-row items-center gap-4">
       {/* Radar chart */}
-      <div className="w-[280px] h-[240px] shrink-0">
+      <div className="w-full max-w-[280px] h-[240px] shrink-0">
         <ResponsiveContainer width="100%" height="100%">
-          <RadarChart cx="50%" cy="50%" outerRadius="68%" data={radarData}>
+          <RadarChart cx="50%" cy="50%" outerRadius="58%" data={radarData}>
             <PolarGrid stroke="rgba(255,255,255,0.1)" strokeDasharray="3 3" />
             <PolarAngleAxis
               dataKey="dimension"
-              tick={{ fill: 'rgba(226,232,240,0.85)', fontSize: 11, fontWeight: 500 }}
+              tick={{ fill: 'rgba(226,232,240,0.85)', fontSize: 10, fontWeight: 500 }}
               tickLine={false}
             />
             <PolarRadiusAxis
@@ -701,17 +701,17 @@ export function FlavorWheel({ product }: { product: Product }) {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="w-[280px] h-[280px]">
+      <div className="w-full max-w-[280px] h-[260px]">
         <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
+          <PieChart margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
             {/* Inner ring: categories */}
             <Pie
               data={innerData}
               dataKey="value"
               cx="50%"
               cy="50%"
-              innerRadius={38}
-              outerRadius={68}
+              innerRadius={32}
+              outerRadius={58}
               paddingAngle={2}
               strokeWidth={0}
             >
@@ -719,35 +719,17 @@ export function FlavorWheel({ product }: { product: Product }) {
                 <Cell key={i} fill={entry.fill} opacity={0.9} />
               ))}
             </Pie>
-            {/* Outer ring: individual flavors */}
+            {/* Outer ring: individual flavors — no SVG labels, use chip list below */}
             <Pie
               data={outerData}
               dataKey="value"
               cx="50%"
               cy="50%"
-              innerRadius={73}
-              outerRadius={108}
+              innerRadius={62}
+              outerRadius={90}
               paddingAngle={1}
               strokeWidth={0}
-              label={({ name, cx: cxVal, cy: cyVal, midAngle, outerRadius: outerR }) => {
-                if (outerData.length > 10) return null;
-                const RADIAN = Math.PI / 180;
-                const radius = (outerR as number) + 16;
-                const x = (cxVal as number) + radius * Math.cos(-midAngle * RADIAN);
-                const y = (cyVal as number) + radius * Math.sin(-midAngle * RADIAN);
-                return (
-                  <text
-                    x={x} y={y}
-                    fill="rgba(203,213,225,0.9)"
-                    textAnchor={x > (cxVal as number) ? 'start' : 'end'}
-                    dominantBaseline="central"
-                    fontSize={10}
-                    fontWeight={500}
-                  >
-                    {name}
-                  </text>
-                );
-              }}
+              label={false}
             >
               {outerData.map((entry, i) => (
                 <Cell key={i} fill={entry.fill} opacity={0.8} />
@@ -852,7 +834,15 @@ export function BodySweetnessMatrix({ product }: { product: Product }) {
 
   return (
     <div>
-      <div className="relative w-full aspect-square max-w-[260px] mx-auto rounded-xl overflow-hidden border border-white/10 bg-slate-900/50">
+      <div className="flex items-center gap-2">
+        {/* Y-axis label — outside the clipping container */}
+        <span
+          className="text-[10px] text-slate-400 font-medium select-none shrink-0"
+          style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)', letterSpacing: '0.02em' }}
+        >
+          ↓ Low · {yLabel} · High ↑
+        </span>
+      <div className="relative flex-1 aspect-square max-w-[260px] rounded-xl overflow-hidden border border-white/10 bg-slate-900/50">
 
         {/* Quadrant backgrounds — subtle tint on active quadrant */}
         <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 pointer-events-none">
@@ -916,17 +906,12 @@ export function BodySweetnessMatrix({ product }: { product: Product }) {
           }}
         />
 
-        {/* Axis labels */}
-        <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 font-medium pointer-events-none select-none">
-          ← Light &nbsp; Body &nbsp; Full →
-        </span>
-        <span
-          className="absolute left-2 top-1/2 text-[10px] text-slate-400 font-medium pointer-events-none select-none"
-          style={{ writingMode: 'vertical-rl', transform: 'translateY(-50%) rotate(180deg)' }}
-        >
-          ← Low &nbsp;{yLabel}&nbsp; High →
+        {/* X-axis label */}
+        <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 font-medium pointer-events-none select-none whitespace-nowrap">
+          ← Light · Body · Full →
         </span>
       </div>
+      </div>{/* end flex wrapper */}
 
       {/* Values below */}
       <div className="flex justify-center gap-6 mt-2.5">

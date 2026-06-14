@@ -382,25 +382,29 @@ export function AIReviewQueuePage() {
         </button>
       </div>
 
-      {publishOutput && (
-        <div className="bg-black/20 border border-white/10 rounded-lg p-3 text-xs font-mono text-slate-300 mb-5">
-          {publishOutput}
-        </div>
-      )}
+      <div aria-live="polite" aria-atomic="true">
+        {publishOutput && (
+          <div className="bg-black/20 border border-white/10 rounded-lg p-3 text-xs font-mono text-slate-300 mb-5">
+            {publishOutput}
+          </div>
+        )}
+      </div>
 
       {/* Filters */}
       <div className="flex gap-3 mb-5 flex-wrap">
         <select
+          aria-label="Filter by category"
           value={filter.category}
           onChange={e => setFilter(f => ({ ...f, category: e.target.value }))}
-          className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-slate-300"
+          className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:ring-2 focus:ring-violet-500/60"
         >
           {categories.map(c => <option key={c} value={c}>{c === 'all' ? 'All categories' : c}</option>)}
         </select>
         <select
+          aria-label="Filter by confidence"
           value={filter.confidence}
           onChange={e => setFilter(f => ({ ...f, confidence: e.target.value as any }))}
-          className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-slate-300"
+          className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:ring-2 focus:ring-violet-500/60"
         >
           <option value="all">All confidence</option>
           <option value="low">Low (&lt;70%)</option>

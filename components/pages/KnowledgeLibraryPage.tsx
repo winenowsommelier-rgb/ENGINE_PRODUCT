@@ -193,9 +193,10 @@ function EntityBrowser({
         </div>
         <div className="flex gap-2">
           <select
+            aria-label="Filter by scope"
             value={scopeFilter}
             onChange={e => setScopeFilter(e.target.value)}
-            className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-violet-500/50 appearance-none"
+            className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-violet-500/60 appearance-none"
           >
             <option value="" className="bg-slate-900">All Scopes</option>
             {scopes.map(s => (
@@ -203,9 +204,10 @@ function EntityBrowser({
             ))}
           </select>
           <select
+            aria-label="Filter by status"
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-violet-500/50 appearance-none"
+            className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-violet-500/60 appearance-none"
           >
             {STATUS_OPTIONS.map(o => (
               <option key={o.value} value={o.value} className="bg-slate-900">{o.label}</option>

@@ -283,15 +283,15 @@ export function TaxonomyQueuePage() {
         </div>
         {pageTab === 'queue' && (
         <div className="flex items-center gap-3">
-          <select value={filter} onChange={e => { setFilter(e.target.value); setPage(1); }}
-            className="bg-white/10 text-slate-200 text-sm rounded-lg px-3 py-1.5 border border-white/10">
+          <select aria-label="Filter by validation status" value={filter} onChange={e => { setFilter(e.target.value); setPage(1); }}
+            className="bg-white/10 text-slate-200 text-sm rounded-lg px-3 py-1.5 border border-white/10 focus:outline-none focus:ring-2 focus:ring-violet-500/60">
             <option value="unvalidated">Unvalidated</option>
             <option value="needs_review">Needs review</option>
             <option value="needs_attention">Needs attention</option>
             <option value="validated">Validated</option>
           </select>
-          <input type="number" min={1} max={500} value={batchN} onChange={e => setBatchN(parseInt(e.target.value) || 50)}
-            className="w-20 bg-white/10 text-slate-200 text-sm rounded-lg px-3 py-1.5 border border-white/10" />
+          <input aria-label="Batch size" type="number" min={1} max={500} value={batchN} onChange={e => setBatchN(parseInt(e.target.value) || 50)}
+            className="w-20 bg-white/10 text-slate-200 text-sm rounded-lg px-3 py-1.5 border border-white/10 focus:outline-none focus:ring-2 focus:ring-violet-500/60" />
           <button onClick={handleBatchValidate} disabled={working}
             className="bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm px-4 py-1.5 rounded-lg transition-colors">
             Batch validate top {batchN}
@@ -300,12 +300,14 @@ export function TaxonomyQueuePage() {
         )}
       </div>
 
+      <div aria-live="polite" aria-atomic="true">
       {message && (
         <div className="mb-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3 flex justify-between">
           <span className="text-emerald-300 text-sm">{message}</span>
-          <button onClick={() => setMessage(null)}><X size={14} className="text-slate-400" /></button>
+          <button aria-label="Dismiss" onClick={() => setMessage(null)}><X size={14} className="text-slate-400" /></button>
         </div>
       )}
+      </div>
 
       {pageTab === 'queue' && (
       <>

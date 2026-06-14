@@ -93,6 +93,8 @@ function RunPipelineCard() {
       {output && (
         <textarea
           readOnly
+          aria-label="Pipeline output log"
+          aria-live="polite"
           value={output}
           className="w-full h-48 bg-black/40 border border-white/10 rounded-lg p-3 text-xs font-mono text-slate-300 resize-y"
         />
@@ -149,7 +151,7 @@ function TriageScanCard() {
         </span>
       </div>
       {output && (
-        <textarea readOnly value={output} className="w-full h-32 bg-black/40 border border-white/10 rounded-lg p-3 text-xs font-mono text-slate-300 resize-y mb-4" />
+        <textarea readOnly aria-label="Triage scan output" aria-live="polite" value={output} className="w-full h-32 bg-black/40 border border-white/10 rounded-lg p-3 text-xs font-mono text-slate-300 resize-y mb-4" />
       )}
       {summary && (
         <div className="overflow-x-auto">
@@ -225,16 +227,17 @@ function AIEnrichmentCard({ onNavigateToReview }: { onNavigateToReview: () => vo
       <p className="text-xs text-slate-500 mb-4">Calls Claude for each primary variant — rewrites descriptions and fills taxonomy gaps. Results saved locally for review before publishing.</p>
 
       <div className="flex items-center gap-3 mb-4 flex-wrap">
-        <select value={batch} onChange={e => setBatch(e.target.value)}
-          className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-slate-300">
+        <select aria-label="Enrichment batch" value={batch} onChange={e => setBatch(e.target.value)}
+          className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:ring-2 focus:ring-violet-500/60">
           {BATCH_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
         <input
           type="number"
+          aria-label="Row limit (test only)"
           placeholder="Limit (test only)"
           value={limit}
           onChange={e => setLimit(e.target.value)}
-          className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-slate-300 w-36"
+          className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-slate-300 w-36 focus:outline-none focus:ring-2 focus:ring-violet-500/60"
         />
       </div>
 
@@ -256,7 +259,7 @@ function AIEnrichmentCard({ onNavigateToReview }: { onNavigateToReview: () => vo
       </div>
 
       {output && (
-        <textarea readOnly value={output} className="w-full h-48 bg-black/40 border border-white/10 rounded-lg p-3 text-xs font-mono text-slate-300 resize-y" />
+        <textarea readOnly aria-label="Enrichment output log" aria-live="polite" value={output} className="w-full h-48 bg-black/40 border border-white/10 rounded-lg p-3 text-xs font-mono text-slate-300 resize-y" />
       )}
     </div>
   );

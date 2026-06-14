@@ -269,7 +269,7 @@ export function ProductMatrixPage() {
   }, []);
 
   if (loading) return (
-    <div className="flex items-center justify-center h-64">
+    <div role="status" aria-label="Loading product matrix" className="flex items-center justify-center h-64">
       <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
     </div>
   );

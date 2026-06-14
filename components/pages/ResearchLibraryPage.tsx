@@ -398,9 +398,10 @@ export function ResearchLibraryPage() {
                 />
               </div>
               <select
+                aria-label="Filter by decision status"
                 value={authorityStatus}
                 onChange={event => setAuthorityStatus(event.target.value)}
-                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white focus:border-violet-500/50 focus:outline-none"
+                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white focus:border-violet-500/50 focus:outline-none focus:ring-2 focus:ring-violet-500/60"
               >
                 <option value="new" className="bg-slate-900">New</option>
                 <option value="needs_authority_source" className="bg-slate-900">Needs authority source</option>
@@ -412,9 +413,10 @@ export function ResearchLibraryPage() {
                 <option value="" className="bg-slate-900">All statuses</option>
               </select>
               <select
+                aria-label="Filter by missing field"
                 value={authorityField}
                 onChange={event => setAuthorityField(event.target.value)}
-                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white focus:border-violet-500/50 focus:outline-none"
+                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white focus:border-violet-500/50 focus:outline-none focus:ring-2 focus:ring-violet-500/60"
               >
                 <option value="region" className="bg-slate-900">Region first</option>
                 <option value="subregion" className="bg-slate-900">Subregion</option>
@@ -422,9 +424,10 @@ export function ResearchLibraryPage() {
                 <option value="" className="bg-slate-900">All missing fields</option>
               </select>
               <select
+                aria-label="Filter by sales tier"
                 value={authoritySalesTier}
                 onChange={event => setAuthoritySalesTier(event.target.value)}
-                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white focus:border-violet-500/50 focus:outline-none"
+                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white focus:border-violet-500/50 focus:outline-none focus:ring-2 focus:ring-violet-500/60"
               >
                 <option value="S1" className="bg-slate-900">Sales S1 ({authorityData?.summary.by_sales_tier.S1 ?? 0})</option>
                 <option value="S2" className="bg-slate-900">Sales S2 ({authorityData?.summary.by_sales_tier.S2 ?? 0})</option>
@@ -441,11 +444,11 @@ export function ResearchLibraryPage() {
                 <table className="w-full text-left text-xs">
                   <thead className="border-b border-white/10 text-slate-500">
                     <tr>
-                      <th className="py-2 pl-4 pr-3 font-medium">Product</th>
-                      <th className="py-2 pr-3 font-medium">Missing</th>
-                      <th className="py-2 pr-3 font-medium">WineSensed Signal</th>
-                      <th className="py-2 pr-3 font-medium">Validated Value</th>
-                      <th className="py-2 pr-4 font-medium">Authority Decision</th>
+                      <th scope="col" className="py-2 pl-4 pr-3 font-medium">Product</th>
+                      <th scope="col" className="py-2 pr-3 font-medium">Missing</th>
+                      <th scope="col" className="py-2 pr-3 font-medium">WineSensed Signal</th>
+                      <th scope="col" className="py-2 pr-3 font-medium">Validated Value</th>
+                      <th scope="col" className="py-2 pr-4 font-medium">Authority Decision</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -481,6 +484,7 @@ export function ResearchLibraryPage() {
                           <td className="min-w-56 py-2 pr-3">
                             <div className="space-y-2">
                               <select
+                                aria-label="Validated field"
                                 value={candidate.decision?.validated_field ?? candidate.suggested_next_field}
                                 disabled={savingAuthority === candidate.id}
                                 onChange={event => void updateAuthority(candidate, { validated_field: event.target.value })}
@@ -507,6 +511,7 @@ export function ResearchLibraryPage() {
                           <td className="min-w-80 py-2 pr-4">
                             <div className="space-y-2">
                               <select
+                                aria-label="Authority decision status"
                                 value={candidate.decision?.status ?? 'new'}
                                 disabled={savingAuthority === candidate.id}
                                 onChange={event => void updateAuthority(candidate, { status: event.target.value })}
@@ -584,12 +589,12 @@ export function ResearchLibraryPage() {
                   <table className="w-full text-left text-xs">
                     <thead className="border-b border-white/10 text-slate-500">
                       <tr>
-                        <th className="py-2 pl-4 pr-3 font-medium">SKU</th>
-                        <th className="py-2 pr-3 font-medium">Product</th>
-                        <th className="py-2 pr-3 font-medium">Field</th>
-                        <th className="py-2 pr-3 font-medium">Current</th>
-                        <th className="py-2 pr-3 font-medium">Validated</th>
-                        <th className="py-2 pr-4 font-medium">Source</th>
+                        <th scope="col" className="py-2 pl-4 pr-3 font-medium">SKU</th>
+                        <th scope="col" className="py-2 pr-3 font-medium">Product</th>
+                        <th scope="col" className="py-2 pr-3 font-medium">Field</th>
+                        <th scope="col" className="py-2 pr-3 font-medium">Current</th>
+                        <th scope="col" className="py-2 pr-3 font-medium">Validated</th>
+                        <th scope="col" className="py-2 pr-4 font-medium">Source</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -651,9 +656,10 @@ export function ResearchLibraryPage() {
                 />
               </div>
               <select
+                aria-label="Filter by match status"
                 value={geoStatus}
                 onChange={event => setGeoStatus(event.target.value)}
-                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white focus:border-violet-500/50 focus:outline-none"
+                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white focus:border-violet-500/50 focus:outline-none focus:ring-2 focus:ring-violet-500/60"
               >
                 <option value="needs_classification" className="bg-slate-900">Needs classification</option>
                 <option value="ambiguous" className="bg-slate-900">Ambiguous</option>
@@ -661,9 +667,10 @@ export function ResearchLibraryPage() {
                 <option value="" className="bg-slate-900">All</option>
               </select>
               <select
+                aria-label="Filter by review state"
                 value={curationStatus}
                 onChange={event => setCurationStatus(event.target.value)}
-                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white focus:border-violet-500/50 focus:outline-none"
+                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white focus:border-violet-500/50 focus:outline-none focus:ring-2 focus:ring-violet-500/60"
               >
                 <option value="" className="bg-slate-900">All review states</option>
                 <option value="new" className="bg-slate-900">New</option>
@@ -685,13 +692,13 @@ export function ResearchLibraryPage() {
                 <table className="w-full text-left text-xs">
                   <thead className="border-b border-white/10 text-slate-500">
                     <tr>
-                      <th className="py-2 pl-4 pr-3 font-medium">Observed Geography</th>
-                      <th className="py-2 pr-3 font-medium">Country</th>
-                      <th className="py-2 pr-3 font-medium">Evidence</th>
-                      <th className="py-2 pr-3 font-medium">Top Grapes</th>
-                      <th className="py-2 pr-3 font-medium">Matched Canonical</th>
-                      <th className="py-2 pr-4 font-medium">Suggested Type</th>
-                      <th className="py-2 pr-4 font-medium">Review State</th>
+                      <th scope="col" className="py-2 pl-4 pr-3 font-medium">Observed Geography</th>
+                      <th scope="col" className="py-2 pr-3 font-medium">Country</th>
+                      <th scope="col" className="py-2 pr-3 font-medium">Evidence</th>
+                      <th scope="col" className="py-2 pr-3 font-medium">Top Grapes</th>
+                      <th scope="col" className="py-2 pr-3 font-medium">Matched Canonical</th>
+                      <th scope="col" className="py-2 pr-4 font-medium">Suggested Type</th>
+                      <th scope="col" className="py-2 pr-4 font-medium">Review State</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -703,7 +710,7 @@ export function ResearchLibraryPage() {
                           <p>{row.evidence_count.toLocaleString()} rows</p>
                           <p className="text-[10px] text-slate-600">{row.review_count.toLocaleString()} reviews · rating {row.avg_rating ?? '-'}</p>
                         </td>
-                        <td className="max-w-xs py-2 pr-3 text-slate-400">
+                        <td className="max-w-xs py-2 pr-3 text-slate-400" title={row.top_grapes.map(grapeRow => `${grapeRow.name} (${grapeRow.count})`).join(', ') || undefined}>
                           {row.top_grapes.map(grapeRow => `${grapeRow.name} (${grapeRow.count})`).join(', ') || '-'}
                         </td>
                         <td className="py-2 pr-3">
@@ -724,6 +731,7 @@ export function ResearchLibraryPage() {
                         <td className="min-w-72 py-2 pr-4">
                           <div className="space-y-2">
                             <select
+                              aria-label="Review state"
                               value={row.curation?.status ?? 'new'}
                               disabled={savingCuration === row.id}
                               onChange={event => updateCuration(row, { status: event.target.value })}
@@ -842,12 +850,12 @@ export function ResearchLibraryPage() {
                   <table className="w-full text-left text-xs">
                     <thead className="border-b border-white/10 text-slate-500">
                       <tr>
-                        <th className="py-2 pl-4 pr-3 font-medium">SKU</th>
-                        <th className="py-2 pr-3 font-medium">Product</th>
-                        <th className="py-2 pr-3 font-medium">Field</th>
-                        <th className="py-2 pr-3 font-medium">Old</th>
-                        <th className="py-2 pr-3 font-medium">New</th>
-                        <th className="py-2 pr-4 font-medium">Reason</th>
+                        <th scope="col" className="py-2 pl-4 pr-3 font-medium">SKU</th>
+                        <th scope="col" className="py-2 pr-3 font-medium">Product</th>
+                        <th scope="col" className="py-2 pr-3 font-medium">Field</th>
+                        <th scope="col" className="py-2 pr-3 font-medium">Old</th>
+                        <th scope="col" className="py-2 pr-3 font-medium">New</th>
+                        <th scope="col" className="py-2 pr-4 font-medium">Reason</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -914,12 +922,12 @@ export function ResearchLibraryPage() {
                 <table className="w-full text-left text-xs">
                   <thead className="border-b border-white/10 text-slate-500">
                     <tr>
-                      <th className="py-2 pl-4 pr-3 font-medium">Vintage</th>
-                      <th className="py-2 pr-3 font-medium">Country</th>
-                      <th className="py-2 pr-3 font-medium">Region</th>
-                      <th className="py-2 pr-3 font-medium">Grape</th>
-                      <th className="py-2 pr-3 font-medium">Rating</th>
-                      <th className="py-2 pr-4 font-medium">Review Signal</th>
+                      <th scope="col" className="py-2 pl-4 pr-3 font-medium">Vintage</th>
+                      <th scope="col" className="py-2 pr-3 font-medium">Country</th>
+                      <th scope="col" className="py-2 pr-3 font-medium">Region</th>
+                      <th scope="col" className="py-2 pr-3 font-medium">Grape</th>
+                      <th scope="col" className="py-2 pr-3 font-medium">Rating</th>
+                      <th scope="col" className="py-2 pr-4 font-medium">Review Signal</th>
                     </tr>
                   </thead>
                   <tbody>

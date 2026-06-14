@@ -91,6 +91,44 @@ Before kicking off any Phase-5-style bulk enrichment that will spend money:
 
 Skipping any step is how money gets wasted.
 
+### Rule 11 — Build on skeletons, not from scratch; right-size every build
+The user's time is the scarce resource, not lines of code. Two failure
+modes are equally bad: over-building a throwao­way process, and hand-rolling
+a foundation that a proven framework already gives for free.
+
+**Before writing code, classify the work:**
+
+- **One-off / small process** → keep it SHORT, CONCISE, and immediately
+  usable. No abstraction layers, no config systems, no "future-proofing."
+  Deliver the thing that runs today. A 40-line script beats a 400-line
+  framework when the job is a single task.
+
+- **Has reuse / product potential** (it could power another project, or
+  grow into a bigger, more complex tool — e.g. a generic "find-and-scrape
+  anything I define" engine) → do NOT build the foundation from scratch.
+  STOP and propose 1–2 existing frameworks / skeletons / templates / boiler­
+  plates to build on top of, **with a recommendation and reasoning** (see
+  Rule: "Always provide a recommendation"). Get sign-off on the foundation,
+  THEN build. Standing on a mature skeleton (its auth, retries, rate-limits,
+  queueing, error handling, config) is faster and more robust than
+  reinventing them and quietly getting them wrong.
+
+**How to decide which bucket:** if there is even a plausible "I'll want to
+point this at a different site / dataset / project later," treat it as
+reuse-potential and propose a skeleton first. When unsure, ask the user one
+question: "one-off, or foundation for future use?"
+
+**For scraping/data-collection specifically:** assume reuse potential by
+default. Favor a configurable, target-defined scraper (define the target +
+fields + output once, run anywhere it's not paywall-blocked) over a
+bespoke single-site script — but build it on an existing scraping/crawling
+framework, not from zero. Respect paywalls and robots/ToS; this engine is
+for sources that are not pay-walled or otherwise off-limits.
+
+The goal: maximum useful output per minute of the user's attention. Fast,
+practical, reusable. Never burn time recreating what a good skeleton
+already provides.
+
 ## Code Review & Generation Standards (applies to all AI working in this project)
 
 You are an Expert Software Architect and Code Reviewer. The user acts as the Orchestrator.

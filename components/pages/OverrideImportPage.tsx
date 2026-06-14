@@ -55,19 +55,23 @@ export function OverrideImportPage() {
       {stage === 'idle' || stage === 'error' ? (
         <>
           <div
-            className="border-2 border-dashed border-white/20 rounded-xl p-12 text-center cursor-pointer hover:border-violet-400 transition-colors"
+            role="button"
+            tabIndex={0}
+            aria-label="Drop a CSV file here or click to browse"
+            className="border-2 border-dashed border-white/20 rounded-xl p-12 text-center cursor-pointer hover:border-violet-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
             onClick={() => inputRef.current?.click()}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') inputRef.current?.click(); }}
             onDragOver={e => e.preventDefault()}
             onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }}
           >
             <Upload size={32} className="mx-auto mb-3 text-slate-500" />
             <p className="text-slate-400 text-sm">Drop a CSV here or click to browse</p>
-            <input ref={inputRef} type="file" accept=".csv" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+            <input ref={inputRef} type="file" accept=".csv" className="hidden" aria-hidden="true" onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
           </div>
-          {stage === 'error' && <p className="mt-4 text-rose-300 text-sm">{error}</p>}
+          {stage === 'error' && <div role="alert" className="mt-4"><p className="text-rose-300 text-sm">{error}</p></div>}
         </>
       ) : stage === 'loading' ? (
-        <p className="text-slate-400 text-sm">Parsing and comparing against database…</p>
+        <div aria-live="polite" aria-atomic="true"><p className="text-slate-400 text-sm">Parsing and comparing against database…</p></div>
       ) : stage === 'preview' && preview ? (
         <div>
           <div className="flex gap-4 mb-4">
@@ -106,6 +110,7 @@ export function OverrideImportPage() {
           <div className="mb-4">
             <label className="text-xs text-slate-400 block mb-1">Batch note (required)</label>
             <input
+              aria-label="Batch note"
               value={note}
               onChange={e => setNote(e.target.value)}
               placeholder="e.g. Manual price corrections from supplier sheet 2026-03"
@@ -125,7 +130,7 @@ export function OverrideImportPage() {
           </div>
         </div>
       ) : stage === 'confirming' ? (
-        <p className="text-slate-400 text-sm">Applying overrides…</p>
+        <div aria-live="polite" aria-atomic="true"><p className="text-slate-400 text-sm">Applying overrides…</p></div>
       ) : stage === 'done' && result ? (
         <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-4">
           <p className="text-emerald-300 text-sm font-medium mb-2">Override complete</p>
