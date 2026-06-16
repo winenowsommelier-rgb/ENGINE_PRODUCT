@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:vscode": "next dev --hostname 0.0.0.0 --port 3000",
-    "build": "next build",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "verify": "npm run typecheck",

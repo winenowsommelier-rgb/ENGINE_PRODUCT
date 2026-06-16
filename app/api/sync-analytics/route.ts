@@ -22,8 +22,10 @@ const GA4_PROPERTY_MAP: Record<string, string> = {
 
 const DAYS_TO_FETCH = 30; // Fetch data for the last 30 days on each run.
 
-// Initialize Supabase client
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+// Supabase client is created inside handlers to avoid build-time env errors
+function getSupabase() {
+  return createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+}
 
 // --- Google API Authentication ---
 
@@ -51,7 +53,7 @@ function subtractDays(date: Date, days: number): Date {
 }
 
 async function logSyncStart(runId: string, site: string) {
-  const { error } = await supabase.from('sync_log').insert({
+  const { error } = await getSupabase().from('sync_log').insert({
     run_id: runId,
     site: site,
     status: 'running',
@@ -69,7 +71,7 @@ async function logSyncEnd(
   // duration computed in JS — the Supabase JS client has no .raw() for SQL
   // expressions inside .update(), so we can't subtract started_at server-side.
   const completedAt = new Date();
-  const { error } = await supabase
+  const { error } = await getSupabase()
     .from('sync_log')
     .update({
       completed_at: completedAt.toISOString(),
@@ -92,7 +94,7 @@ async function logSyncEnd(
 async function upsertRecords(tableName: string, records: any[], onConflict: string): Promise<number> {
   if (records.length === 0) return 0;
 
-  const { error } = await supabase.from(tableName).upsert(records, { onConflict });
+  const { error } = await getSupabase().from(tableName).upsert(records, { onConflict });
 
   if (error) {
     console.error(`Error upserting into ${tableName}:`, error);
@@ -293,7 +295,7 @@ async function calculateContentSignals(site: string, endDate: string) {
   const lastRebuilt = new Date().toISOString();
 
   // Fetch GSC pages data for the last 30 days for this site
-  const { data: gscPagesData, error: gscPagesError } = await supabase
+  const { data: gscPagesData, error: gscPagesError } = await getSupabase()
     .from('gsc_pages')
     .select('page, snapshot_date, position, ctr, impressions, clicks')
     .eq('site', site)
@@ -412,7 +414,7 @@ export async function POST(req: NextRequest) {
 
       // Check if already synced today
       if (!refresh) {
-        const { data: lastSync, error: syncLogError } = await supabase
+        const { data: lastSync, error: syncLogError } = await getSupabase()
           .from('sync_log')
           .select('status')
           .eq('site', site)
