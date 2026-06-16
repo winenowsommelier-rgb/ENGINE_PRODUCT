@@ -243,10 +243,10 @@ export async function GET(req: NextRequest) {
 
     // ── Run local filter + Supabase in parallel ──────────────────────────────
     const [sbResult, localFiltered] = await Promise.all([
-      fetchSupabase(sbQs),
-      Promise.resolve(
+      fetchSupabase(sbQs).catch(() => null),
+      Promise.resolve().then(() =>
         sortProducts(applyFilters(loadLocalProducts(), filterArgs), sortCol, sortDir)
-      ),
+      ).catch(() => [] as LocalProduct[]),
     ]);
 
     // ── If Supabase returned data, merge it with local (Supabase wins per field) ──
@@ -311,8 +311,11 @@ export async function GET(req: NextRequest) {
     }, { headers: CORS_HEADERS });
 
   } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Request failed';
+    const stack = error instanceof Error ? error.stack?.split('\n').slice(0, 4).join(' | ') : '';
+    console.error('[/api/products] ERROR:', msg, stack);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Request failed' },
+      { error: msg, stack },
       { status: 500, headers: CORS_HEADERS }
     );
   }

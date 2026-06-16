@@ -176,7 +176,7 @@ export function DashboardHomePage({ onNavigate }: { onNavigate: (section: string
               return (
                 <div key={entry[0]} className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2">
                   <span className="text-xs text-slate-300">{formatSource(entry[0])}</span>
-                  <span className="text-sm font-semibold text-white">{entry[1].toLocaleString()}</span>
+                  <span className="text-sm font-semibold text-white">{(entry[1] ?? 0).toLocaleString()}</span>
                 </div>
               );
             })}
@@ -201,7 +201,7 @@ function MetricCard({ icon, label, value, sub, color }: {
   return (
     <div className={'rounded-xl border p-4 ' + colors[color]}>
       <div className="flex items-center gap-2 mb-2 opacity-70">{icon}<span className="text-xs">{label}</span></div>
-      <p className="text-2xl font-bold">{value.toLocaleString()}</p>
+      <p className="text-2xl font-bold">{(value ?? 0).toLocaleString()}</p>
       {sub && <p className="text-xs opacity-50 mt-0.5">{sub}</p>}
     </div>
   );
@@ -215,7 +215,7 @@ function SegmentBar({ label, count, total, color }: { label: string; count: numb
       <div className="flex-1 h-5 bg-white/5 rounded-full overflow-hidden">
         <div className={'h-full rounded-full transition-all ' + color} style={{ width: pct + '%' }} />
       </div>
-      <span className="text-xs text-slate-400 w-20 text-right">{count.toLocaleString()} <span className="text-slate-600">({pct}%)</span></span>
+      <span className="text-xs text-slate-400 w-20 text-right">{(count ?? 0).toLocaleString()} <span className="text-slate-600">({pct}%)</span></span>
     </div>
   );
 }
@@ -244,7 +244,7 @@ function CoverageGauge({ label, field, icon }: {
         {icon}
         <span className="text-[11px]">{label}</span>
       </div>
-      <p className="text-[10px] text-slate-600 mt-0.5">{field.filled.toLocaleString()}/{field.total.toLocaleString()}</p>
+      <p className="text-[10px] text-slate-600 mt-0.5">{(field.filled ?? 0).toLocaleString()}/{(field.total ?? 0).toLocaleString()}</p>
     </div>
   );
 }
@@ -256,7 +256,7 @@ function GapCard({ label, count, onClick }: { label: string; count: number; onCl
       className="flex items-center justify-between rounded-lg border border-white/6 bg-white/3 px-3 py-2.5 hover:bg-white/5 transition-colors text-left group">
       <div>
         <p className="text-xs text-slate-300">{label}</p>
-        <p className="text-lg font-bold text-white">{count.toLocaleString()}</p>
+        <p className="text-lg font-bold text-white">{(count ?? 0).toLocaleString()}</p>
       </div>
       <ArrowRight size={14} className="text-slate-600 group-hover:text-violet-400 transition-colors" />
     </button>

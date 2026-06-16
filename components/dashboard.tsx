@@ -203,7 +203,7 @@ export function Dashboard() {
     <div className="flex h-screen bg-[#080808] text-white overflow-hidden">
       <Sidebar active={section} onNavigate={setSection} />
       <main className="flex-1 overflow-auto bg-[#080808]">
-        <PageErrorBoundary name={section}>
+        <PageErrorBoundary key={section} name={section}>
           <Suspense fallback={<PageLoader />}>
             {pages[section]}
           </Suspense>
