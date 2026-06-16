@@ -100,8 +100,8 @@ v1 operator surface is **CLI only**:
 
 ```
 scrapy crawl wine_enthusiast -a skus=WRW5031AD,WRW5400BN   # canary subset
-scrapy crawl wine_enthusiast                               # full source backfill
-scrapy crawl all_critics                                   # meta-spider runs the set
+scrapy crawl wine_enthusiast                               # one source, full backfill
+scrapy crawl all_critics                                   # canary subset only — sequential, one process; NOT the parallel backfill
 ```
 
 No Next.js admin page in v1 (deferred to v2 once the engine is proven). The
@@ -289,8 +289,9 @@ source is never mistaken for "no reviews found" (Rule 2).
 
 **Backfill timing:** sources run as separate `scrapy crawl` processes in
 parallel, **each with its own JOBDIR**, each polite at ~1 req/3s. Search-based
-sources (1 search + ~2 detail fetches/triplet) are the long pole at ~5 days for
-the first pass; per-source `JOBDIR` makes each resumable across days/reboots.
+sources (1 search + ~2 detail fetches/triplet) are the long pole — first pass
+~5 days, all stragglers within ~10 days; per-source `JOBDIR` makes each
+resumable across days/reboots.
 This is the same ~5-day-with-parallel-sources ballpark as the old §8 — and is
 only valid *because* the sources run in parallel; the `all_critics` meta-spider
 (sequential, one process) is for the canary subset only, never the backfill.
