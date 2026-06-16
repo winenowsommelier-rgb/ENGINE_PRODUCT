@@ -1,10 +1,29 @@
 # Critic Score Harvester — v1 Design (Scrapy rebuild)
 
 **Date:** 2026-06-16
-**Status:** Draft — pending spec review + user approval
+**Status:** ⏸️ PAUSED (2026-06-16) — review-approved, but build on hold pending a coverage/ROI call. See "Pause decision" below.
 **Branch:** `feat/critic-score-harvester`
 **Supersedes:** [2026-06-03-critic-score-harvester-design.md](2026-06-03-critic-score-harvester-design.md) (the 2-3 week, hand-rolled-infra version)
-**Estimated effort:** ~5 focused days + background backfill
+**Estimated effort:** ~6 focused days + 2-day buffer + background backfill
+
+> **⏸️ Pause decision (2026-06-16).** Investigation found a working critic-score
+> system already in production: `scripts/load_critic_scores_from_csv.py` loads the
+> Magento "Wine score" CSV into `critic_scores` (3,144 rows / 1,631 SKUs) and
+> populates `products.score_max` / `score_summary` — **1,550 products already
+> render badges** with the exact JSON shape this spec proposed to build. The
+> Magento CSV is effectively tapped out (only 1,631 of 7,260 wine SKUs carry any
+> score; the rest are blank in Magento). The scraper's real job is the **~9,886
+> unscored products** (the recon suggests ~4-5k have findable public scores). That
+> is a real gap, but the build is paused to decide whether 6 days + ongoing scrape
+> maintenance is the best way to close it, versus expanding the existing CSV /
+> supplier-intake feeds (`lib/supplier-intake/`) which are zero-risk and already
+> built. **Do not start implementation from this spec until that call is made.**
+> If the scraper is greenlit, this spec ALSO needs schema-reconciliation work: the
+> live `critic_scores` table is **sku-keyed and simpler** than §6's schema
+> (`id, sku, critic, score, score_max, vintage, tasting_year, source_url, notes,
+> added_by, added_at` — no `signal_tier` / `score_scale` / `supporting_text` /
+> `confidence` / nullable-SKU natural key). Migrating it and making CSV win on
+> overlap is a prerequisite, not covered in the day-plan below.
 
 This is the slim rebuild. The 2026-06-03 spec hand-rolled an HTTP client, rate
 limiter, retry logic, resumable-backfill state table, robots.txt cache, and 8

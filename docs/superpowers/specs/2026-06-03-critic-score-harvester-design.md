@@ -7,6 +7,14 @@
 > the recon evidence (§2), the `critic_scores` schema (§6), the regex patterns and
 > binding rules (§7), and the UI rules (§9)** — all of which the Scrapy design keeps
 > verbatim and references back to here. Read this for the *what*, the new doc for the *how*.
+>
+> **⏸️ Both specs PAUSED (2026-06-16).** A working CSV-fed critic-score system is
+> already in production (`scripts/load_critic_scores_from_csv.py`, 3,144 rows,
+> 1,550 products showing badges). The scraper build is on hold pending a
+> coverage/ROI call — see the Pause decision banner in the Scrapy doc. Note: the
+> §6 schema below is the *proposed* schema; the **live** `critic_scores` table is
+> simpler and sku-keyed (see that banner). Do not build from either spec until the
+> pause is resolved.
 
 **Date:** 2026-06-03
 **Status:** Superseded by the 2026-06-16 Scrapy rebuild (see banner above)
