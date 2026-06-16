@@ -1,7 +1,15 @@
 # Critic Score Harvester — v1 Design (slim, evidence-driven)
 
+> **⚠️ SUPERSEDED (2026-06-16) by [2026-06-16-critic-score-harvester-scrapy-design.md](2026-06-16-critic-score-harvester-scrapy-design.md).**
+> The new design rebuilds v1 on **Scrapy** (per CLAUDE.md Rule 11), throwing away
+> the hand-rolled HTTP client / rate limiter / retry / resumable-backfill / robots
+> cache / 8 bespoke adapters. **This document is retained as the source of truth for
+> the recon evidence (§2), the `critic_scores` schema (§6), the regex patterns and
+> binding rules (§7), and the UI rules (§9)** — all of which the Scrapy design keeps
+> verbatim and references back to here. Read this for the *what*, the new doc for the *how*.
+
 **Date:** 2026-06-03
-**Status:** Draft — pending spec review + user approval
+**Status:** Superseded by the 2026-06-16 Scrapy rebuild (see banner above)
 **Branch:** `feat/critic-score-harvester`
 **Catalog size at design time:** 11,436 products (7,954 wine + ~2,000 spirits + accessories)
 **Estimated effort:** 2-3 weeks single developer
