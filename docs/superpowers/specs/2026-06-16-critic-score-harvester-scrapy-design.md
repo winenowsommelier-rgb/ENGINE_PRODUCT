@@ -334,8 +334,10 @@ products.db, and NOT critic_scores.** `critic_scores` row count is the
    SELECT count(*) FROM products WHERE score_summary IS NOT NULL;
    ```
    ```bash
-   # Layer 3 (THE number that matters — user-facing live export, post-refresh):
-   jq '[.[] | select(.score_summary != null)] | length' data/live_products_export.json
+   # Layer 3 (THE number that matters — user-facing live export, post-refresh).
+   # NOTE: jq is NOT installed in this env — use python so the load-bearing
+   # probe can't fail with 'command not found' (which would misread as 0 shipped):
+   python3 -c "import json;print(sum(1 for p in json.load(open('data/live_products_export.json')) if p.get('score_summary')))"
    ```
    The "what shipped" report's **headline number is Layer 3**, computed *after*
    `refresh_live_export.py` runs. If Layer 2 > 0 but Layer 3 = 0, the export
@@ -392,7 +394,7 @@ day-4 overload split across two days.
 | **2** | `BaseCriticSpider` (per-source JOBDIR, RetryAfterMiddleware) + Wine Enthusiast spider. Golden-fixture parser tests. Canary subset crawl writes real rows. | `SELECT count(*) FROM critic_scores` > 0 after WE canary crawl. |
 | **3** | Remaining spiders: WineAlign, Natalie MacLean, The Real Review, Whiskybase, Master of Malt, Distiller. Per-source fixtures + Playwright per the day-0 decision. | Each spider yields ≥1 row on its canary SKU. |
 | **4** | `refresh_products_summary.py` (the 7 deterministic merge rules → score_max/score_summary). **Rule 6 integration test** (`test_critic_db_invariants.py`). Precision canary on 50-SKU set. | Precision ≥ 90% gate; integration invariant test green. |
-| **5** | Extend `app/api/products/[id]/route.ts` with `reviews[]`. `CriticScoreBadges.tsx`. Run `refresh_live_export.py`. **Layer-3 destination probe** (jq on live export). Browser walkthrough (Rule 7) on 5 SKUs. | `curl /api/products/<id> \| jq '.reviews'` non-empty; Layer-3 export count > 0; browser walkthrough signed off. |
+| **5** | Extend `app/api/products/[id]/route.ts` with `reviews[]`. `CriticScoreBadges.tsx`. Run `refresh_live_export.py`. **Layer-3 destination probe** (jq on live export). Browser walkthrough (Rule 7) on 5 SKUs. | `curl /api/products/<id>` returns non-empty `reviews`; Layer-3 export count (python probe, §11.2) > 0; browser walkthrough signed off. |
 | **6+** | **Backup products.db (Rule 10).** Full backfill kickoff (parallel processes, per-source `JOBDIR`, ~5-10 days wall). Final "what shipped" report (Layer-3 headline) + live-export refresh. | Rule 4 report shows SKUs-newly-populated **in the live export**; UI shows badges. |
 | **buffer** | 2 days reserve for per-source parser quirks, a Playwright flip, or a robots-blocked search path forcing a deterministic-URL fallback. | — |
 
@@ -447,8 +449,9 @@ id, sku NOT NULL, critic, score REAL, score_max REAL DEFAULT 100,
 vintage, tasting_year, source_url, notes, added_by, added_at
 ```
 
-**Target additions** (additive ALTERs — no column drops, so existing reads keep
-working during migration):
+**Target additions** (step 1 of the migration — additive `ALTER ADD COLUMN`, no
+drops, so existing reads keep working; the `sku`-nullable change is a separate
+table-rebuild step, see the notes after the backfill):
 ```sql
 ALTER TABLE critic_scores ADD COLUMN source          TEXT;     -- provenance: where fetched
 ALTER TABLE critic_scores ADD COLUMN score_native    TEXT;     -- as published ('94','17.5/20','Silver')
@@ -466,7 +469,12 @@ ALTER TABLE critic_scores ADD COLUMN fetched_at      TEXT;     -- ISO; for curat
 ```sql
 UPDATE critic_scores
 SET source = 'magento_csv',
-    score_native = CAST(CAST(score AS INTEGER) AS TEXT),  -- '91' not '91.0'
+    -- score_native must be AS PUBLISHED, never a re-derived integer (old §6).
+    -- All 3,144 existing rows are integer-valued, but a future 94.5 must survive:
+    -- strip a trailing .0 only, keep fractional scores intact.
+    score_native = CASE WHEN score = CAST(score AS INTEGER)
+                        THEN CAST(CAST(score AS INTEGER) AS TEXT)  -- 91.0 → '91'
+                        ELSE CAST(score AS TEXT) END,              -- 94.5 → '94.5'
     score_scale = '100pt',
     signal_class = 'critic_numeric',
     signal_tier = 1,            -- WE/WA/WS/JS are all major pro critics
@@ -477,23 +485,41 @@ WHERE added_by LIKE 'magento_csv%' AND source IS NULL;
 ```
 
 **Notes:**
-- `sku` stays **NOT NULL for curated rows** (CSV/supplier already resolve to a
-  SKU). Scraped rows bind by `(producer, cuvee, vintage)` and may have `sku`
-  filled at write time via the §6 join; the column is kept NOT NULL by writing
-  the resolved SKU, or the constraint is relaxed to nullable in the migration if
-  the scraper needs to persist an unbound row — **decided at migration time**
-  after confirming whether any scraped row legitimately has no SKU. (Default:
-  relax to nullable, matching old §6's natural-key design; existing rows are
-  unaffected since they all have SKUs.)
+- **`sku` becomes nullable** (committed, not punted — matches old §6's natural-key
+  design: scraped rows bind by `(producer, cuvee, vintage)` and may legitimately
+  have no SKU). ⚠️ **SQLite cannot drop a NOT NULL constraint with `ALTER`** — it
+  requires the 12-step table rebuild (`CREATE TABLE critic_scores_new (...nullable
+  sku...)`, `INSERT INTO critic_scores_new SELECT * FROM critic_scores`,
+  `DROP TABLE critic_scores`, `ALTER TABLE critic_scores_new RENAME TO
+  critic_scores`, recreate indexes). So the migration is **not** pure additive
+  ALTERs as the block above implies — it is: (1) add the new columns via ALTER,
+  (2) backfill the CSV rows, (3) table-rebuild to make `sku` nullable, preserving
+  all rows + the new columns. The rebuild runs inside a transaction with
+  `PRAGMA foreign_keys=OFF` per the SQLite-documented procedure; a backup (Rule 10)
+  is taken first so a failed rebuild is recoverable.
 - The existing `score_max` column on `critic_scores` (DEFAULT 100, the
   *denominator*) is unrelated to `products.score_max` (the aggregate). Left as-is.
 - `load_critic_scores_from_csv.py` is updated to populate the new columns on
-  future runs (set `source='magento_csv'`, tier 1, conf 1.0) so a re-run stays
-  consistent with the backfill. ~10-line change to its INSERT tuple + `build_summary`.
-- **Verification (Rule 6):** after migration, assert (a) row count unchanged at
-  3,144, (b) every row has non-NULL `source`/`signal_tier`/`confidence`,
-  (c) `products.score_summary` count still 1,550, (d) the live export still
-  renders the same badges (Rule 7 spot-check on 3 known SKUs).
+  future runs: `source='magento_csv'`, `signal_tier=1`, `signal_class='critic_numeric'`,
+  `confidence=1.0`, `score_scale='100pt'`, `supporting_text=NULL`, and crucially
+  **`score_native = clean(raw_cell)`** — the published string, exactly as
+  `build_summary` already captures it (loader line 120). Do NOT set `score_native`
+  from a re-CAST of the float (`94.5 → '94'` would corrupt it — see the backfill
+  CASE above). ~10-line change to its INSERT tuple.
+- **Verification (Rules 1, 6, 9):**
+  - (a) row count unchanged at **3,144**; (b) every row has non-NULL
+    `source`/`signal_tier`/`confidence`. *(Layer-2 DB checks — informational, not
+    success, per §11.)*
+  - (c) **Snapshot the 1,550 SKU IDs** with non-NULL `products.score_summary`
+    BEFORE migration; assert the set is **identical** after (not just the count).
+  - (d) **Run `scripts/refresh_live_export.py`** (Rule 9), then assert the
+    **Layer-3** live-export `score_summary` count is unchanged at **1,550** (the
+    §11.2 destination probe — the number that matters).
+  - (e) **Migration invariant test (Rule 6)** — `test_critic_db_invariants.py`
+    (the §11.7 file, extended): on a `cp` backup copy, assert the 3,144 rows'
+    `(id, sku, critic, score)` are byte-identical pre/post and the 1,550-SKU
+    badge set is identical pre/post. Patterned on `tests/test_enrichment_db_invariants.py`.
+  - (f) Rule 7 spot-check on 3 known SKUs in the browser.
 
 ## 16. Source precedence & merge (three feeds, one badge)
 
@@ -511,6 +537,12 @@ when more than one source offers a value:
 1. Higher `confidence` wins → **curated always beats scraped.**
 2. Tie on confidence (two curated, both 1.0) → most recent `fetched_at` wins.
 3. Still tied → lower `signal_tier`, then higher `score_value`.
+
+This precedence layer sits **on top of** the old §6 merge rules — it does not
+redefine the §6 critics-list dedup key (`(critic, score_native)`). Precedence
+runs first (collapse multi-source duplicates per `(critic, score_scale)` to one
+winning row), then §6 rule 2 dedups the resulting list. For the curated-vs-scraped
+case the keys never conflict because step 1 (confidence) decides before dedup.
 
 A scraped score for a `(critic)` already covered by a curated source is **kept in
 the table** (audit/provenance) but **excluded from the badge** — the merge picks
@@ -543,6 +575,10 @@ needs review). So:
 - Only rows whose match status is `strong_match` (or operator-approved
   `likely_match`) get scores written — an unmatched/conflicted row has no SKU to
   attach a score to, so its scores are held with the row, not written.
+- ⚠️ The writer guards on a **truthy** `selected_sku`, not just `!== undefined`.
+  `matching.ts` builds candidate SKUs as `String(p.sku ?? '')`, so a product
+  lacking a SKU yields `selected_sku === ''` — which must NOT produce a
+  `critic_scores` row with `sku=''`. Write only when `if (selected_sku)` is truthy.
 - This reuses the supplier file ingest + matching infrastructure without
   threading scores through `pricing.ts` or the price-approval `IntakeRowStatus`
   flow.
