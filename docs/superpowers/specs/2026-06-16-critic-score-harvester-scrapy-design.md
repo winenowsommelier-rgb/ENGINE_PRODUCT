@@ -394,7 +394,7 @@ day-4 overload split across two days.
 | **2** | `BaseCriticSpider` (per-source JOBDIR, RetryAfterMiddleware) + Wine Enthusiast spider. Golden-fixture parser tests. Canary subset crawl writes real rows. | `SELECT count(*) FROM critic_scores` > 0 after WE canary crawl. |
 | **3** | Remaining spiders: WineAlign, Natalie MacLean, The Real Review, Whiskybase, Master of Malt, Distiller. Per-source fixtures + Playwright per the day-0 decision. | Each spider yields ≥1 row on its canary SKU. |
 | **4** | `refresh_products_summary.py` (the 7 deterministic merge rules → score_max/score_summary). **Rule 6 integration test** (`test_critic_db_invariants.py`). Precision canary on 50-SKU set. | Precision ≥ 90% gate; integration invariant test green. |
-| **5** | Extend `app/api/products/[id]/route.ts` with `reviews[]`. `CriticScoreBadges.tsx`. Run `refresh_live_export.py`. **Layer-3 destination probe** (jq on live export). Browser walkthrough (Rule 7) on 5 SKUs. | `curl /api/products/<id>` returns non-empty `reviews`; Layer-3 export count (python probe, §11.2) > 0; browser walkthrough signed off. |
+| **5** | Extend `app/api/products/[id]/route.ts` with `reviews[]`. `CriticScoreBadges.tsx`. Run `refresh_live_export.py`. **Layer-3 destination probe** (python, §11.2). Browser walkthrough (Rule 7) on 5 SKUs. | `curl /api/products/<id>` returns non-empty `reviews`; Layer-3 export count (python probe, §11.2) > 0; browser walkthrough signed off. |
 | **6+** | **Backup products.db (Rule 10).** Full backfill kickoff (parallel processes, per-source `JOBDIR`, ~5-10 days wall). Final "what shipped" report (Layer-3 headline) + live-export refresh. | Rule 4 report shows SKUs-newly-populated **in the live export**; UI shows badges. |
 | **buffer** | 2 days reserve for per-source parser quirks, a Playwright flip, or a robots-blocked search path forcing a deterministic-URL fallback. | — |
 
@@ -442,6 +442,12 @@ The **live** `critic_scores` table (3,144 rows, source `magento_csv_2026-06-15`)
 is sku-keyed and simpler than the rich schema this design needs for lower-trust
 scraped data. We migrate in place, preserving every existing row and all 1,550
 live badges.
+
+> **Run-once migration.** The `ALTER ADD COLUMN` steps and the `sku`-nullable
+> table rebuild are **not re-runnable** (a second `ADD COLUMN` of an existing
+> column errors; the rebuild assumes the old shape). Only the backfill UPDATE is
+> idempotent. Take the Rule 10 backup first; if a step fails, restore from backup
+> and re-run from the top — do not re-run partway through.
 
 **Live schema (today):**
 ```
@@ -600,8 +606,11 @@ curated one.
 §12's day-by-day plan still describes the **scraper** work. The full effort now
 sequences three tracks; §12 is the third block:
 
-1. **Schema migration (§15)** — ~0.5 day. ALTERs + backfill + verification.
-   Prerequisite for everything else. Backup products.db first (Rule 10).
+1. **Schema migration (§15)** — ~1 day. ALTER add-columns + backfill +
+   `sku`-nullable table rebuild + the Rule 6 invariant test + live-export
+   snapshot/refresh verification. **Run-once** (un-guarded ALTERs + one-shot
+   rebuild error on re-run; only the backfill is idempotent). Backup products.db
+   first (Rule 10). Prerequisite for everything else.
 2. **Source-precedence merge (§16)** — folded into `refresh_products_summary.py`;
    ~0.5 day. Must land before any non-CSV source writes, so curated-wins is
    enforced from the first supplier/scraper row.
