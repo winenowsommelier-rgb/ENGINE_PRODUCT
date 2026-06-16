@@ -241,13 +241,17 @@ export async function GET(req: NextRequest) {
       `offset=${offset}`,
     ].join('&');
 
-    // ── Run local filter + Supabase in parallel ──────────────────────────────
-    const [sbResult, localFiltered] = await Promise.all([
-      fetchSupabase(sbQs).catch(() => null),
-      Promise.resolve().then(() =>
-        sortProducts(applyFilters(loadLocalProducts(), filterArgs), sortCol, sortDir)
-      ).catch(() => [] as LocalProduct[]),
-    ]);
+    // ── Local filter first (Supabase is best-effort only) ───────────────────
+    let localFiltered: LocalProduct[] = [];
+    try {
+      localFiltered = sortProducts(applyFilters(loadLocalProducts(), filterArgs), sortCol, sortDir);
+    } catch (_loadErr) { /* fallback to empty */ }
+
+    // Supabase: fire-and-forget, never throw
+    let sbResult: { items: LocalProduct[]; total: number } | null = null;
+    try {
+      sbResult = await fetchSupabase(sbQs);
+    } catch (_sbErr) { /* ignore */ }
 
     // ── If Supabase returned data, merge it with local (Supabase wins per field) ──
     if (sbResult && sbResult.items.length > 0) {
