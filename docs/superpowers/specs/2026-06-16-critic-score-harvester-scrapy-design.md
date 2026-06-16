@@ -1,29 +1,24 @@
 # Critic Score Harvester — v1 Design (Scrapy rebuild)
 
 **Date:** 2026-06-16
-**Status:** ⏸️ PAUSED (2026-06-16) — review-approved, but build on hold pending a coverage/ROI call. See "Pause decision" below.
+**Status:** Active — scraper greenlit + feed-expansion in scope (2026-06-16). Build sequence: schema migration (§15) → supplier-intake score branch (§17) → scraper. See §15-§17 for the three-feed model.
 **Branch:** `feat/critic-score-harvester`
 **Supersedes:** [2026-06-03-critic-score-harvester-design.md](2026-06-03-critic-score-harvester-design.md) (the 2-3 week, hand-rolled-infra version)
-**Estimated effort:** ~6 focused days + 2-day buffer + background backfill
+**Estimated effort:** migration + supplier branch ~2 days; scraper ~6 days + 2-day buffer + background backfill
 
-> **⏸️ Pause decision (2026-06-16).** Investigation found a working critic-score
-> system already in production: `scripts/load_critic_scores_from_csv.py` loads the
-> Magento "Wine score" CSV into `critic_scores` (3,144 rows / 1,631 SKUs) and
-> populates `products.score_max` / `score_summary` — **1,550 products already
-> render badges** with the exact JSON shape this spec proposed to build. The
-> Magento CSV is effectively tapped out (only 1,631 of 7,260 wine SKUs carry any
-> score; the rest are blank in Magento). The scraper's real job is the **~9,886
-> unscored products** (the recon suggests ~4-5k have findable public scores). That
-> is a real gap, but the build is paused to decide whether 6 days + ongoing scrape
-> maintenance is the best way to close it, versus expanding the existing CSV /
-> supplier-intake feeds (`lib/supplier-intake/`) which are zero-risk and already
-> built. **Do not start implementation from this spec until that call is made.**
-> If the scraper is greenlit, this spec ALSO needs schema-reconciliation work: the
-> live `critic_scores` table is **sku-keyed and simpler** than §6's schema
-> (`id, sku, critic, score, score_max, vintage, tasting_year, source_url, notes,
-> added_by, added_at` — no `signal_tier` / `score_scale` / `supporting_text` /
-> `confidence` / nullable-SKU natural key). Migrating it and making CSV win on
-> overlap is a prerequisite, not covered in the day-plan below.
+> **Context (2026-06-16, after pause-and-investigate).** A working critic-score
+> system already ships: `scripts/load_critic_scores_from_csv.py` loads the Magento
+> "Wine score" CSV into `critic_scores` (3,144 rows / 1,631 SKUs) and populates
+> `products.score_max` / `score_summary` — **1,550 products already render badges**.
+> The Magento CSV is tapped out (1,631 of 7,260 wine SKUs scored; the rest blank in
+> Magento; no unloaded critic columns). **Decision:** the catalog gets critic
+> scores from **three feeds into one `critic_scores` table** — (1) the Magento CSV
+> loader (exists), (2) **supplier-provided scores** via the supplier-intake match
+> path (§17, new), (3) the **Scrapy scraper** scoped to the ~9,886 unscored SKUs
+> (§6-§14). Curated feeds (CSV, supplier; confidence 1.0) always beat scraped
+> (≤0.7) on overlap (§16). The live table is sku-keyed and simpler than §6's
+> schema; **§15 migrates it to the rich schema first** (prerequisite for both the
+> supplier branch and the scraper) and preserves the 1,550 live badges.
 
 This is the slim rebuild. The 2026-06-03 spec hand-rolled an HTTP client, rate
 limiter, retry logic, resumable-backfill state table, robots.txt cache, and 8
@@ -131,7 +126,8 @@ that is the user feature and is independent of the operator console.
 
 ```
 data/db/products.db ──▶ catalog.py: distinct (producer, cuvee, vintage)
-                              │  (start_requests source for spiders)
+                              │  for SKUs with NO curated score yet (§16 gap
+                              │  scope); start_requests source for spiders
                               ▼
         ┌─────────────────────────────────────────────┐
         │ Scrapy project: scraper/                      │
@@ -435,3 +431,150 @@ are **day-0 gates**, recorded in the job config before any spider is written:
 
 These gate the *implementation* (you can't write a correct spider without the
 answers) but not the *spec* — the design holds regardless of how each resolves.
+
+---
+
+## 15. Schema migration (prerequisite — runs before supplier branch and scraper)
+
+The **live** `critic_scores` table (3,144 rows, source `magento_csv_2026-06-15`)
+is sku-keyed and simpler than the rich schema this design needs for lower-trust
+scraped data. We migrate in place, preserving every existing row and all 1,550
+live badges.
+
+**Live schema (today):**
+```
+id, sku NOT NULL, critic, score REAL, score_max REAL DEFAULT 100,
+vintage, tasting_year, source_url, notes, added_by, added_at
+```
+
+**Target additions** (additive ALTERs — no column drops, so existing reads keep
+working during migration):
+```sql
+ALTER TABLE critic_scores ADD COLUMN source          TEXT;     -- provenance: where fetched
+ALTER TABLE critic_scores ADD COLUMN score_native    TEXT;     -- as published ('94','17.5/20','Silver')
+ALTER TABLE critic_scores ADD COLUMN score_scale     TEXT;     -- '100pt'/'20pt'/'5star'/'medal'/'community'
+ALTER TABLE critic_scores ADD COLUMN signal_class    TEXT;     -- 'critic_numeric'/'critic_text'/'community'/'medal'
+ALTER TABLE critic_scores ADD COLUMN signal_tier     INTEGER;  -- 1..4 (§3.2)
+ALTER TABLE critic_scores ADD COLUMN supporting_text TEXT;     -- literal substring (anti-hallucination); NULL for curated feeds
+ALTER TABLE critic_scores ADD COLUMN confidence      REAL;     -- 1.0 curated, ≤0.7 scraped
+ALTER TABLE critic_scores ADD COLUMN producer        TEXT;     -- canonical, for nullable-sku natural-key binding
+ALTER TABLE critic_scores ADD COLUMN cuvee           TEXT;     -- canonical
+ALTER TABLE critic_scores ADD COLUMN fetched_at      TEXT;     -- ISO; for curated rows = added_at
+```
+
+**Backfill the 3,144 existing CSV rows** (one UPDATE, idempotent):
+```sql
+UPDATE critic_scores
+SET source = 'magento_csv',
+    score_native = CAST(CAST(score AS INTEGER) AS TEXT),  -- '91' not '91.0'
+    score_scale = '100pt',
+    signal_class = 'critic_numeric',
+    signal_tier = 1,            -- WE/WA/WS/JS are all major pro critics
+    confidence = 1.0,           -- curated → authoritative
+    supporting_text = NULL,     -- curated feed; not a scraped substring
+    fetched_at = COALESCE(fetched_at, added_at)
+WHERE added_by LIKE 'magento_csv%' AND source IS NULL;
+```
+
+**Notes:**
+- `sku` stays **NOT NULL for curated rows** (CSV/supplier already resolve to a
+  SKU). Scraped rows bind by `(producer, cuvee, vintage)` and may have `sku`
+  filled at write time via the §6 join; the column is kept NOT NULL by writing
+  the resolved SKU, or the constraint is relaxed to nullable in the migration if
+  the scraper needs to persist an unbound row — **decided at migration time**
+  after confirming whether any scraped row legitimately has no SKU. (Default:
+  relax to nullable, matching old §6's natural-key design; existing rows are
+  unaffected since they all have SKUs.)
+- The existing `score_max` column on `critic_scores` (DEFAULT 100, the
+  *denominator*) is unrelated to `products.score_max` (the aggregate). Left as-is.
+- `load_critic_scores_from_csv.py` is updated to populate the new columns on
+  future runs (set `source='magento_csv'`, tier 1, conf 1.0) so a re-run stays
+  consistent with the backfill. ~10-line change to its INSERT tuple + `build_summary`.
+- **Verification (Rule 6):** after migration, assert (a) row count unchanged at
+  3,144, (b) every row has non-NULL `source`/`signal_tier`/`confidence`,
+  (c) `products.score_summary` count still 1,550, (d) the live export still
+  renders the same badges (Rule 7 spot-check on 3 known SKUs).
+
+## 16. Source precedence & merge (three feeds, one badge)
+
+`refresh_products_summary.py` (the §6 merge step) now reconciles rows from three
+`source` families when computing `products.score_max` / `score_summary`:
+
+| Source family | `source` values | tier | confidence | Role |
+| --- | --- | --- | --- | --- |
+| Magento CSV | `magento_csv` | 1 | 1.0 | curated, authoritative |
+| Supplier | `supplier_<code>` | 1 | 1.0 | curated, authoritative |
+| Scraper | `wine_enthusiast`, `winealign`, … | 1–4 | ≤0.7 | public web, lower trust |
+
+**Precedence rule (deterministic):** for a given SKU + `(critic, score_scale)`,
+when more than one source offers a value:
+1. Higher `confidence` wins → **curated always beats scraped.**
+2. Tie on confidence (two curated, both 1.0) → most recent `fetched_at` wins.
+3. Still tied → lower `signal_tier`, then higher `score_value`.
+
+A scraped score for a `(critic)` already covered by a curated source is **kept in
+the table** (audit/provenance) but **excluded from the badge** — the merge picks
+the curated row. A scraped score for a critic NOT in any curated source for that
+SKU **is shown** (that is the whole point — filling the gap). This makes the
+scraper purely additive to the 1,550 curated SKUs and the source of all-new
+coverage on the 9,886 unscored ones. All other §6 merge rules (5-entry cap,
+score_max from tier≤2 numeric, confidence<0.5 excluded) are unchanged.
+
+## 17. Supplier-provided scores (feed-expansion track)
+
+Suppliers will provide critic scores alongside the product data they already
+submit through the **supplier-intake** subsystem (`lib/supplier-intake/`). That
+subsystem is a **pricing/matching pipeline** (register → normalize → match →
+price → approve → commit); its `SupplierNormalizedPayload` has cost/RSP/identity
+fields but **no score concept**, and its lifecycle gates on price approval.
+
+**Decision: reuse the matching, bypass the pricing.** Scores do not belong in the
+margin-approval gate (a valid critic score must not be "blocked" because a price
+needs review). So:
+
+- When a supplier file includes score columns (same critic vocabulary as the
+  Magento CSV — WE/WA/WS/JS plus any agreed additions), the intake run extracts
+  them per row **as an optional side-channel**, independent of the pricing path.
+- After the existing **match step** resolves `supplier_item → product SKU`
+  (`SupplierMatchProposal.selected_sku`), a new score branch writes
+  `(selected_sku, critic, score)` rows to `critic_scores` with
+  `source='supplier_<supplier_code>'`, `signal_tier=1`, `confidence=1.0`,
+  `score_scale='100pt'`, `supporting_text=NULL` — same shape as curated CSV rows.
+- Only rows whose match status is `strong_match` (or operator-approved
+  `likely_match`) get scores written — an unmatched/conflicted row has no SKU to
+  attach a score to, so its scores are held with the row, not written.
+- This reuses the supplier file ingest + matching infrastructure without
+  threading scores through `pricing.ts` or the price-approval `IntakeRowStatus`
+  flow.
+
+**What this adds to supplier-intake (minimal, non-invasive):**
+- An optional score-column map in the supplier definition / normalization
+  (off by default; only suppliers who provide scores set it).
+- A post-match score-writer that calls the same `critic_scores` repository the
+  CSV loader and scraper use. No change to `pricing.ts`, no new `IntakeRunStatus`.
+
+**Verification:** same destination probe as §11 — after a supplier run with
+scores, the headline is **SKUs newly populated in the live export**, not rows in
+`critic_scores`. CSV/supplier precedence (§16) means a supplier score only
+changes a badge where it adds a new critic or is more recent than an existing
+curated one.
+
+## 18. Revised build sequence (supersedes §12's day-plan ordering)
+
+§12's day-by-day plan still describes the **scraper** work. The full effort now
+sequences three tracks; §12 is the third block:
+
+1. **Schema migration (§15)** — ~0.5 day. ALTERs + backfill + verification.
+   Prerequisite for everything else. Backup products.db first (Rule 10).
+2. **Source-precedence merge (§16)** — folded into `refresh_products_summary.py`;
+   ~0.5 day. Must land before any non-CSV source writes, so curated-wins is
+   enforced from the first supplier/scraper row.
+3. **Supplier score branch (§17)** — ~1 day. Score-column map + post-match writer
+   in supplier-intake. Independent of the scraper; can ship first as the
+   lowest-risk new coverage.
+4. **Scraper (§6-§14, §12 day-plan)** — ~6 days + 2-day buffer + background
+   backfill. Scoped to SKUs with no curated score (catalog query filters
+   `WHERE products.score_summary IS NULL OR the critic is uncovered`).
+
+Tracks 3 and 4 are independent after tracks 1-2; track 3 is the smaller, safer
+win and is a reasonable first ship.
