@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import type { PublicProduct } from './types';
 
 /**
@@ -36,4 +38,61 @@ export function toPublicProduct(raw: Record<string, unknown>): PublicProduct {
   // This does NOT guarantee required fields (sku/name/price) are present — presence/validation
   // is the loader's responsibility (Task 2). null values pass through intentionally (see test).
   return out as unknown as PublicProduct;
+}
+
+/**
+ * Resolve the absolute path to the product export. cwd differs between local
+ * dev (apps/catalog) and the Vercel build, so probe several known locations
+ * plus an explicit env override. Throws loudly if none exist — a missing data
+ * file at build time must fail the build, not silently produce an empty catalog.
+ */
+function exportPath(): string {
+  const candidates = [
+    path.join(process.cwd(), 'data', 'live_products_export.json'),             // cwd = repo root
+    path.join(process.cwd(), '..', '..', 'data', 'live_products_export.json'), // cwd = apps/catalog
+    process.env.CATALOG_DATA_PATH ?? '',                                       // explicit override
+  ];
+  const found = candidates.find((p) => p && fs.existsSync(p));
+  if (!found) throw new Error('live_products_export.json not found in any known location');
+  return found;
+}
+
+/**
+ * Module-level singletons. The 26 MB export is read and projected ONCE on the
+ * first getAllProducts() call (build-time SSG), then served from memory.
+ *   - _all:   the public-projected array (margin/internal fields stripped).
+ *   - _bySku: sku -> PublicProduct for O(1) lookup.
+ */
+let _all: PublicProduct[] | null = null;
+let _bySku: Map<string, PublicProduct> | null = null;
+
+function load(): void {
+  const raw = JSON.parse(fs.readFileSync(exportPath(), 'utf8')) as unknown;
+  // Defensive shape handling: file is a bare array, but tolerate { products: [...] }.
+  const rows: unknown[] = Array.isArray(raw)
+    ? raw
+    : ((raw as { products?: unknown[] })?.products ?? []);
+
+  const all: PublicProduct[] = [];
+  const bySku = new Map<string, PublicProduct>();
+  for (const row of rows) {
+    // Project through the allowlist chokepoint so NO internal field can leak.
+    const p = toPublicProduct(row as Record<string, unknown>);
+    all.push(p);
+    if (p.sku) bySku.set(p.sku, p);
+  }
+  _all = all;
+  _bySku = bySku;
+}
+
+/** All products, public-projected. Lazy-loaded and cached for the process lifetime. */
+export function getAllProducts(): PublicProduct[] {
+  if (_all === null) load();
+  return _all!;
+}
+
+/** O(1) sku lookup; returns undefined for unknown skus. */
+export function getProductBySku(sku: string): PublicProduct | undefined {
+  if (_bySku === null) load();
+  return _bySku!.get(sku);
 }
