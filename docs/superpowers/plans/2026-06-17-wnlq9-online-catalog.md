@@ -305,6 +305,12 @@ describe('price tiers', () => {
   it('formats THB with ฿ and separators', () => expect(formatPrice(1600)).toBe('฿1,600'));
   it('buckets 500 → Under ฿1,000', () => expect(tierForPrice(500).label).toContain('Under'));
   it('buckets 20000 → ฿15,000+', () => expect(tierForPrice(20000).label).toContain('15,000'));
+  it('bracket edges are unambiguous (3000 lands in exactly one tier)', () => {
+    // boundary convention: upper bound is exclusive, so 3000 → ฿3,000–7,000
+    expect(tierForPrice(3000).label).toContain('3,000');
+    expect(tierForPrice(2999).label).toContain('1,000');
+    expect(tierForPrice(1000).label).toContain('1,000'); // 1000 → ฿1,000–3,000, not "Under"
+  });
   it('has 5 brackets', () => expect(PRICE_TIERS.length).toBe(5));
 });
 ```
@@ -481,7 +487,7 @@ describe('contact links', () => {
 
 - [ ] **Step 1: `generateStaticParams`** returns all SKUs from `getAllProducts()` (SSG all ~11,436 pages). **Call `precomputeRecommendations(getAllProducts())` once at module load** (Task 5) and have the page read recs from the `Map<sku,sku[]>` — do NOT call `getRecommendations` per page (avoids O(n²), see Task 5 PERF NOTE). **Fallback:** if the full SSG build proves too slow/memory-heavy in Task 14 Step 1, switch product pages to ISR (`export const dynamicParams = true` + `revalidate`) and pre-render only a top slice; note this is the escape hatch, SSG is the default.
 - [ ] **Step 2: Implement page** — image left; right: name, formatPrice, attributes (country/region/grape/vintage/bottle size/body/acidity/tannin — **omit `alcohol`**), description (if present), food pairing, critic badge (only with `score_summary`), stock. Render `StructuralGauges`/`TasteWheel` when taste data present. **When no description, the attribute matrix + taste viz are the hero (§10.2-C).** Per-product `ContactButtons`. Recommended-together rail via `getRecommendations`.
-- [ ] **Step 3: Per-product SEO** — `generateMetadata` sets title/description/OG image.
+- [ ] **Step 3: Per-product SEO** — `generateMetadata` sets title/description/OG image. Reuse `getProductBySku(sku)` (singleton-cached loader) — do NOT trigger a second full data scan.
 - [ ] **Step 4: Unknown SKU → `notFound()`** (clean 404 with link to Shop).
 - [ ] **Step 5: Browser-verify** a described product, a description-less product (attribute-hero), an OOS product, and a bad SKU (404). Verify each contact button's pre-filled text.
 - [ ] **Step 6: Commit.** `git commit -m "feat(catalog): product detail w/ attribute-first + taste viz"`
@@ -539,15 +545,20 @@ required `data/taxonomy/explore-taxonomy.json` into the catalog app.
 > **VERCEL MONOREPO DATA-PATH (resolved — the #1 late-stage risk).** Do NOT set the new
 > project's Root Directory to `apps/catalog` — that would put repo-root `data/` outside
 > the build context and `fs` would `ENOENT` at build. Instead:
-> - **Root Directory = repo root** (`.`), so `process.cwd()` is the repo root and
->   `data/live_products_export.json` is in the build context (cwd-relative path resolves —
->   this is why the loader's first candidate is `cwd/data/...`).
+> - **Root Directory = repo root** (`.`), so the whole repo — including
+>   `data/live_products_export.json` — is in the build context (this is the key point:
+>   the data file gets uploaded to the build at all).
 > - **Build Command** = `cd apps/catalog && npm install && npm run build`
 > - **Output Directory** = `apps/catalog/.next`
 > - **Install Command** = `npm install --prefix apps/catalog` (or part of build)
-> This is the standard "build a sub-app from repo root" pattern and is the configuration
-> the Step-6 deploy verifies. The loader's multi-candidate `exportPath()` (Task 2) makes
-> both this and local dev work without edits.
+>
+> **Which path candidate resolves:** because the build command `cd`s into `apps/catalog`,
+> `process.cwd()` at build is `apps/catalog`, so the loader's **second** candidate
+> (`../../data/...`) is the one that matches — and it resolves because Root Directory =
+> repo root put `data/` inside the build context. (Locally, `npm run dev` from
+> `apps/catalog` hits the same second candidate.) The multi-candidate `exportPath()`
+> (Task 2) is what makes this robust regardless of which cwd the runner uses — do NOT
+> collapse it to a single hard-coded path.
 
 - [ ] **Step 1: Full local production build** — Run: `cd apps/catalog && npm run build`. Expected: SSG emits home + shop + ~11,436 product pages with no errors; build reads `../../data/live_products_export.json` successfully.
 - [ ] **Step 2: `npm run start`** and smoke-test the production build locally on `:3100`.
