@@ -52,10 +52,27 @@ export, and keeps Supabase in step.
   90d=1,241 · 180d=2,320 · **365d=3,295** · 730d=4,283. 365d is the sweet spot
   before diminishing returns; "popular" still means recent-ish. The window is
   stored in `popularity_window_days`, so it's auditable and re-runnable.
+- **`popularity_score` is RANK-ONLY, not an absolute/comparable value.**
+  `compute_scores` min-max-normalizes across the *matched row set*
+  (sync script lines 89–99), so the score depends on the window and the set of
+  SKUs in the run. A score from a 365d run is NOT comparable to one from a 90d
+  run, and any window change recomputes all scores. This is fine because the
+  only consumer (`sort=popular`) needs rank, not magnitude. The 365d window is
+  therefore a **recorded decision** (stored in `popularity_window_days`); the
+  0.5/0.3/0.2 weights and min-max approach are inherited from the 90d era and
+  are accepted as-is for rank purposes (Rule 3 — noted, not re-tuned, because
+  rank is insensitive to the exact blend within reason).
 - **Source of truth:** SQLite `products.db`. Sync writes SQLite; export reads
-  SQLite; Supabase kept in step via the existing push.
+  SQLite; Supabase kept in step via the existing push (for general store
+  consistency — NOT because the affinity rail needs it; the affinity route
+  reads `co_order_affinities` + Supabase `sku_base`, never `popularity_*`).
 - **NULL behaviour:** ~8,100 products with no sales in 365 days get
   `popularity_score = NULL` and sort last (matches existing `nullslast`).
+- **Re-run semantics (avoids stale ranks):** because re-runs only UPDATE the
+  matched set, a SKU that sold last run but not this one would keep its **old**
+  rank. So the SQLite write MUST, in a single transaction, first reset all 6
+  `popularity_*` columns to NULL for every row, then UPDATE the matched set.
+  First run against an all-NULL table is a no-op reset; re-runs are correct.
 - **Pre-flight:** full Rule-10 discipline (backup + 5-SKU canary + full run +
   UI walkthrough), even though this is a deterministic non-LLM aggregation
   that spends no API money.
@@ -66,20 +83,31 @@ export, and keeps Supabase in step.
 Add a SQLite write target alongside the existing Supabase push.
 
 - New flag: `--sqlite-db PATH` (default `data/db/products.db`).
-- New flag: `--no-supabase` / keep Supabase push on by default so both stores
-  stay consistent (the affinity route's `sbGet` lookups depend on Supabase).
+- New flag: `--no-supabase` to allow SQLite-only runs; Supabase push stays on
+  by default for general store consistency.
 - Change `--window-days` default to **365**.
-- Write the 6 `popularity_*` columns keyed by `sku`, via
-  `UPDATE products SET popularity_* = ? WHERE sku = ?`.
+- **Write order: SQLite first, then Supabase.** SQLite is the UI source of
+  truth (Rule 9), so it must succeed before we touch Supabase.
+- **Write all 6 `popularity_*` columns to SQLite** — score, qty_90d,
+  orders_90d, revenue_90d, **window_days, synced_at** — so SQLite is as
+  auditable as Supabase (re-run provenance lives in both).
+- **Single transaction:** `UPDATE products SET popularity_*=NULL` (reset all
+  rows) then `UPDATE products SET popularity_*=? WHERE sku=?` for the matched
+  set, committed atomically. This prevents stale ranks on re-run (see Decisions).
+- Keyed by `sku` (verified unique, non-null, identical SKU set to products.json).
 - Use WAL mode + busy_timeout/retry (per `canary_must_match_prod` memory —
   SQLite concurrent-write pattern).
-- Only update existing rows; never insert (mirrors the Supabase
-  `merge-duplicates`-on-existing behaviour).
+- Only update existing rows; never insert.
 - Print a destination count after writing: rows where `popularity_orders_90d`
   is non-NULL in SQLite (Rule 4 — "what shipped" line).
+- **Partial-failure handling (Rule 4):** `push_supabase` returns
+  `(sent, failed)`. If `failed > 0`, the run is NOT "done" — print the gap and
+  exit non-zero. SQLite (the UI source) is already correct in that case, but
+  the Supabase divergence must be surfaced, not silent.
 
 **Not changing:** the aggregation SQL or the scoring math (`compute_scores`,
-weights 0.5/0.3/0.2). Only adding a write target.
+weights 0.5/0.3/0.2). Only adding a write target + the reset-then-update
+transaction.
 
 ### 2. `scripts/refresh_live_export.py` — run, no change
 Already projects all 6 `popularity_*` columns (lines 39–40). Running it after
@@ -95,13 +123,21 @@ Verification is destination queries, not "the script ran":
 - **Browser (Rule 7):** start dev server, open explore with `sort=popular`,
   confirm ordering by real sales; confirm top SKUs match the sync's top-5
   preview.
-- **Affinity rail re-check (the "all BI flows" check):** open a product detail
-  page, confirm "Same Order (Basket Affinity)" renders rows. (Depends on
-  Supabase `sku_base` lookups, not the export — confirm that path resolves.)
+- **Affinity rail smoke test (unrelated to popularity, kept for the
+  "all BI flows" goal):** open a product detail page, confirm "Same Order
+  (Basket Affinity)" renders rows. NOTE: this proves nothing about popularity
+  — the affinity route reads `co_order_affinities` + Supabase `sku_base`
+  enrichment, never `popularity_*`. It does NOT gate this change; it's a
+  smoke test confirming the already-shipping BI affinity feed still works.
 
 ### 4. Regression guard (Rule 6)
-Add `tests/test_popularity_export_invariant.py`: if SQLite has popularity for
-SKU X, the export has it for X. Mirrors `tests/test_enrichment_db_invariants.py`.
+Add `tests/test_popularity_export_invariant.py`, asserting **both directions**:
+
+- SKU populated in SQLite ⇒ populated in export (data shipped).
+- SKU NULL in SQLite ⇒ NULL/absent in export (catches the stale-rank class —
+  guards that a reset in SQLite propagates, not just additions).
+
+Mirrors `tests/test_enrichment_db_invariants.py`.
 
 ## Out of scope (YAGNI / Rule 11)
 
@@ -112,18 +148,26 @@ SKU X, the export has it for X. Mirrors `tests/test_enrichment_db_invariants.py`
 
 ## Implementation order (Rule 10 pre-flight)
 
-1. `cp data/db/products.db data/db/products.db.bak-pre-popularity`
-2. Edit `sync_popularity_from_bi.py` (SQLite write path, 365d default).
-3. Canary: run on 5 SKUs → SQLite → refresh export → verify those 5 in export.
-4. Full run: ~3,295 SKUs → SQLite + Supabase.
+1. `cp data/db/products.db data/db/products.db.bak-pre-popularity` — **before**
+   the canary, since the canary mutates the real DB.
+2. Edit `sync_popularity_from_bi.py` (SQLite write path, reset-then-update
+   transaction, 365d default, SQLite-first ordering, partial-failure exit).
+3. Canary: run on 5 SKUs against the **real SQLite write path** (WAL/retry, not
+   a dry-run) → real export refresh → verify those 5 in export. The canary must
+   exercise the exact prod write path (`canary_must_match_prod` memory).
+4. Full run: ~3,295 SKUs → SQLite (then Supabase).
 5. `python scripts/refresh_live_export.py`.
-6. Verify: SQLite count, export count, browser `sort=popular`, affinity rail.
+6. Verify: SQLite count, export count, browser `sort=popular`, affinity smoke.
 7. Add + run the regression-guard test.
 
 ## Success criteria
 
-- `popularity_orders_90d` populated for ~3,295 SKUs in **both** SQLite and the
-  export JSON (count shown to user).
-- `sort=popular` in the live UI orders products by real 365-day sales.
-- "Same Order (Basket Affinity)" rail confirmed still rendering.
-- Regression-guard test passes.
+- `popularity_orders_90d` populated for **~3,295 SKUs (low thousands; report the
+  actual number, sanity-check the magnitude — not an exact-match gate)** in
+  **both** SQLite and the export JSON. The live count depends on the BI mart at
+  run time.
+- `sort=popular` in the live UI orders products by real 365-day sales; top SKUs
+  match the sync's top-5 preview.
+- Supabase push reports `failed == 0` (else surfaced, not silent).
+- "Same Order (Basket Affinity)" rail confirmed still rendering (smoke test).
+- Bidirectional regression-guard test passes.
