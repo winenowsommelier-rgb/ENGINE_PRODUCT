@@ -11,7 +11,7 @@
 export function TrustBar() {
   return (
     <div className="w-full border-b border-border bg-secondary">
-      <p className="container py-2.5 text-center text-sm text-muted-foreground">
+      <p className="container py-2.5 text-center text-xs leading-relaxed text-muted-foreground sm:text-base">
         Browse freely · Contact us to order · No online payment yet.
       </p>
     </div>

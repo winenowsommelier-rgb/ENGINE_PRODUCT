@@ -31,8 +31,8 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
-      <div className="container flex h-20 items-center justify-between gap-4">
+    <header className="sticky top-0 z-50 w-full overflow-x-hidden border-b border-border bg-background">
+      <div className="container flex h-20 items-center justify-between gap-3 !px-4 sm:gap-4 sm:!px-6 lg:!px-8">
         {/* Wordmark */}
         <Link
           href="/"
@@ -59,7 +59,7 @@ export function Header() {
         </nav>
 
         {/* Right cluster: search + mobile toggle */}
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1">
           <Link
             href="/shop"
             aria-label="Search"
