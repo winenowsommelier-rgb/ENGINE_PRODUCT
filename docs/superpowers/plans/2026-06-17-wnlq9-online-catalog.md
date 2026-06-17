@@ -89,7 +89,11 @@ All new files live under `apps/catalog/` unless noted.
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "lucide-react": "^0.469.0",
-    "clsx": "^2.1.1"
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.0",
+    "class-variance-authority": "^0.7.0",
+    "@radix-ui/react-dialog": "^1.1.0",
+    "@radix-ui/react-dropdown-menu": "^2.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
@@ -110,6 +114,11 @@ All new files live under `apps/catalog/` unless noted.
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    // Unoptimized passthrough: Vercel free tier caps next/image transforms (~1,000
+    // source images/mo); with 11k products that would throttle or cost. Images are
+    // already reasonably sized on the Magento CDN, so serve them directly with lazy
+    // loading instead of transforming.
+    unoptimized: true,
     remotePatterns: [
       { protocol: 'https', hostname: 'th.wine-now.com', pathname: '/media/**' },
     ],
@@ -121,6 +130,8 @@ module.exports = nextConfig;
 - [ ] **Step 3: Create `tsconfig.json`** — set `"baseUrl": "."` and `"paths": { "@/*": ["./*"] }` so `@/` resolves from `apps/catalog/` (NOT repo root). Create `tailwind.config.ts`, `postcss.config.js`; set Tailwind `content` to `./app/**/*.{ts,tsx}` and `./components/**/*.{ts,tsx}`.
 
 - [ ] **Step 4: Create a minimal `app/layout.tsx`, `app/page.tsx` ("WNLQ9 — coming soon"), `app/globals.css`** with Tailwind directives.
+
+- [ ] **Step 4b: shadcn/ui setup** (chosen for accessible primitives — focus-trap modal, dropdowns). Run `npx shadcn@latest init` in `apps/catalog` (New York style, neutral base to match Maison), then add the components used later: `npx shadcn@latest add dialog dropdown-menu`. This creates `components/ui/` + `lib/utils.ts` (`cn()` helper). Radix deps are already in package.json. Use the shadcn/ui MCP (via ui-ux-pro-max) to pull current component code if the CLI version drifts.
 
 - [ ] **Step 5: Install & boot**
 
@@ -467,9 +478,9 @@ describe('contact links', () => {
 **Files:**
 - Create: `components/StorefrontImage.tsx`, `components/ProductCard.tsx`, `components/QuickView.tsx`
 
-- [ ] **Step 1: `StorefrontImage`** — `next/image` with `fill`/sizes, lazy by default, light placeholder when `src` missing (110 products). NOT the internal dark `ProductImage`.
+- [ ] **Step 1: `StorefrontImage`** — `next/image` (with `unoptimized` set globally in next.config.js — see Task 0), `fill`/sizes, `loading="lazy"`, light placeholder when `src` missing (110 products). NOT the internal dark `ProductImage`.
 - [ ] **Step 2: `ProductCard`** — large image, name, `formatPrice(price)`, OOS badge if `!is_in_stock`, "Quick look" button. Min 44px targets, 18px name.
-- [ ] **Step 3: `QuickView`** — modal (focus-trapped, ESC to close) with image, name, price, key attributes, per-product contact buttons (built in Task 9), link to full page.
+- [ ] **Step 3: `QuickView`** — build on shadcn/ui `Dialog` (Radix — focus-trap + ESC + ARIA out of the box) with image, name, price, key attributes, per-product contact buttons (built in Task 9, receives link strings as props), link to full page.
 - [ ] **Step 4: Browser-verify** a card + quick-view render against a real product on a temp test page.
 - [ ] **Step 5: Commit.** `git commit -m "feat(catalog): storefront image, product card, quick-view"`
 
@@ -481,7 +492,7 @@ describe('contact links', () => {
 - Create: `components/ContactButtons.tsx`, `components/Filters.tsx`
 
 - [ ] **Step 1: `ContactButtons`** — receives **ready-made link strings as props** (`{ line, whatsapp, facebook }`), computed by the parent server component via `buildContactLinks` reading the non-prefixed env vars (see ENV CONTRACT in Task 6). Renders LINE/WhatsApp/FB buttons; all `target="_blank" rel="noopener"`. It does NOT read env itself, so it works inside client modals without `NEXT_PUBLIC_`.
-- [ ] **Step 2: `Filters`** — big visible row (Price tiers, Country, Type=group, In-stock) + Sort dropdown + "More filters" expander (region, grape, body, acidity, tannin, flavor tags, critic score). State reflected in URL query.
+- [ ] **Step 2: `Filters`** — big visible row (Price tiers, Country, Type=group, In-stock) + Sort dropdown (shadcn/ui `DropdownMenu`) + "More filters" expander (region, grape, body, acidity, tannin, flavor tags, critic score). State reflected in URL query.
 - [ ] **Step 3: Browser-verify** filters toggle and a contact button opens the right pre-filled link.
 - [ ] **Step 4: Commit.** `git commit -m "feat(catalog): contact buttons + accessible filters"`
 
