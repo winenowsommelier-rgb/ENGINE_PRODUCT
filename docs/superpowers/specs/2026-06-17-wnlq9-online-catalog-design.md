@@ -158,7 +158,8 @@ route key; the SKU index is the lookup. No slugging needed.
 
 ### 1. Home (`/`)
 Large hero (featured product or category) → featured products section → "Shop by
-Category" block → footer band. Calm, lots of whitespace.
+Category" block (the ~7 friendly groups from §10.2-A) → footer band. Calm, lots of
+whitespace.
 **Featured selection (no fake popularity):** `popularity_score` is 0/11,436, so
 "featured" is NOT data-driven. Phase 1 uses a **manual featured-SKU list** in config
 (team-editable), falling back to "in-stock products with critic `score_summary`" if
@@ -166,19 +167,28 @@ the list is empty. Never labeled "best-selling" / "most popular" — avoids impl
 data we don't have.
 
 ### 2. Shop (`/shop`) — core
-- Category tabs across the top (Wine · Spirits · …)
-- Small row of big filters: **Price · Country · Type · In-stock** + **Sort** dropdown
+- **Trust/clarity bar** at top: "Browse freely · Contact us to order · No online
+  payment yet" (§10.2-G).
+- Category tabs across the top = the **~7 friendly groups** (Wine · Whisky · Spirits ·
+  Sake & Asian · Beer & RTD · Accessories), NOT the 44 raw classifications (§10.2-A).
+- Small row of big filters: **Price (tiered brackets, §10.2-B) · Country · Type ·
+  In-stock** + **Sort** dropdown.
 - **"More filters"** expander → advanced facets (region, grape, body, acidity,
-  tannin, flavor tags, food matching, critic score)
-- 3-across responsive product grid (large image, name, price) → 2-across → 1-across
-- Clear pagination
+  tannin, flavor tags, food matching, critic score).
+- 3-across responsive product grid (large image, name, price) → 2-across → 1-across.
+  Each card offers **Quick-view** (§10.2-F).
+- Clear pagination. Filters applied server-side/at build before slicing; filter+page
+  state URL-encoded for shareable, back-button-safe browsing.
 
 ### 3. Product detail (`/product/[sku]`)
 Large image left; right column: name, price, key attributes (country/region/grape/
-vintage/body/acidity/tannin), description, food pairing, critic-score badge (only the
-1,550 with `score_summary`), stock status. Per-product **Inquire on LINE / WhatsApp /
-Facebook** buttons pre-filling `"I'm interested in [Name] — [SKU]."` Below:
-**Recommended together** rail.
+vintage/bottle size/body/acidity/tannin — **`alcohol` omitted, always empty §10.2-D**),
+description, food pairing, critic-score badge (only the 1,550 with `score_summary`),
+stock status. **Taste visualisations** (TasteWheel / StructuralGauges) render for wines
+with taste data (§10.2-E). When **no description exists (40% of products)**, the
+**attribute matrix + taste viz become the hero** instead of a bare page (§10.2-C).
+Per-product **Inquire on LINE / WhatsApp / Facebook** buttons pre-filling `"I'm
+interested in [Name] — [SKU]."` Below: **Recommended together** rail.
 
 ### 4. Explore by Map (`/explore-map`)
 Existing map discovery tool, ported as-is, reached from the menu (secondary path).
@@ -304,6 +314,61 @@ shipped). If the index proves too large, fall back to a server search route.
   it's a conscious choice, not an oversight, given the THB/Thai market.
 - **SEO:** per-product `<title>` + meta description + OpenGraph image from the product,
   and a generated sitemap. Low effort under SSG; included since this is a public store.
+
+## 10.2 Design & Data-Shape Adjustments (expert + designer review, verified on data)
+
+These came from reviewing the spec against the **actual** export distribution. All
+seven are IN Phase-1 scope.
+
+### A. Category grouping (44 → ~7) — REQUIRED, biggest usability lever
+The export has **44 distinct `classification` values** (incl. messy ones: `Wine
+product`, `Red Wine|Fruit Wine`, `Sake` vs `Sake/Shochu`, `Whisky` vs `Whiskey`,
+`Others`, `Events`, `Cigar`). 44 tabs is the opposite of calm-for-40+. A config map
+`lib/category-groups.ts` collapses them into **~7 friendly top-level groups**:
+- **Wine** — Red/White/Rosé/Sparkling/Champagne/Dessert/Orange/Port/Fruit/Korean/Thai
+- **Whisky** — Whisky + Whiskey
+- **Spirits** — Gin/Vodka/Rum/Tequila/Brandy/Mezcal/Cognac/Pisco/Absinthe/Baijiu…
+- **Sake & Asian** — Sake/Shochu/Umeshu
+- **Beer & RTD** — Beer/Ready to Drink/Non-Alcoholic/Mineral Water
+- **Accessories** — Glassware/Cigar/Events/Others
+Pipe-delimited values (`Red Wine|Fruit Wine`) are split and mapped to the first match.
+Top nav shows the ~7 groups; the group→classifications map also feeds the "Type" filter.
+
+### B. Tiered price filter (NOT a slider) — REQUIRED
+Price range is **฿40 → ฿2,460,999** (60,000×; p50 ฿1,600, p90 ฿7,000). A linear slider
+is unusable and inaccessible. Use **preset brackets** from real percentiles:
+`Under ฿1,000 · ฿1,000–3,000 · ฿3,000–7,000 · ฿7,000–15,000 · ฿15,000+`. Tap targets,
+not drag.
+
+### C. Attribute-first product pages — REQUIRED
+**4,524 products (40%) have NO description at all.** "Hide the block" leaves bare pages.
+Instead, when description is absent, the **structured attribute matrix becomes the hero**
+(region · grape · vintage · bottle size · body/acidity/tannin · food pairing · flavor
+tags). Showcases the "matrix & visualisation" goal and never shows an empty page.
+
+### D. Drop always-empty fields
+`alcohol` is **0/11,436** — remove from the detail layout entirely (no perpetually-blank
+row). `popularity_*` already handled (§6). Confirmed-present attributes to lean on:
+brand 11,334 · region 10,219 · bottle_size 10,312 · vintage 9,163 · grape 6,772.
+
+### E. Taste visualisations (port existing components) — differentiator
+Reuse the internal app's `components/product/TasteWheel.tsx`,
+`StructuralGauges.tsx`, `TasteProfileSection.tsx` (verified to exist) on the public
+product page. Data is richly structured — `taste_profile` is tiered notes with
+intensity, `wine_body/acidity/tannin` are populated for **~4,438** wines. Renders only
+when data is present (defensive per §9). This is a genuine edge over a plain Shopify
+store and is **already built** — port, don't rebuild.
+
+### F. Grid quick-view
+"Quick look" on a grid card opens product essentials (image, name, price, key
+attributes, contact button) in a modal **without leaving the grid** — reduces
+navigation/orientation load for older users who lose their place. Reuses the detail
+components.
+
+### G. Trust/clarity bar
+A thin strip near the top: **"Browse freely · Contact us to order · No online payment
+yet."** Removes confusion about the missing checkout and sets the contact-to-order
+expectation — directly serves the Phase-1 model.
 
 ## 11. Open Items for Phase 2
 - Cart → list → order-summary email (customer + order inbox)
