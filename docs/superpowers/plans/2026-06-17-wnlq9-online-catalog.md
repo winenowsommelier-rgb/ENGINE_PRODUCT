@@ -100,7 +100,7 @@ const nextConfig = {
 module.exports = nextConfig;
 ```
 
-- [ ] **Step 3: Create `tsconfig.json`** (with `@/` → `apps/catalog/` alias and `baseUrl`), `tailwind.config.ts`, `postcss.config.js`. Copy structure from repo-root equivalents; set Tailwind `content` to `./app/**/*.{ts,tsx}` and `./components/**/*.{ts,tsx}`.
+- [ ] **Step 3: Create `tsconfig.json`** — set `"baseUrl": "."` and `"paths": { "@/*": ["./*"] }` so `@/` resolves from `apps/catalog/` (NOT repo root). Create `tailwind.config.ts`, `postcss.config.js`; set Tailwind `content` to `./app/**/*.{ts,tsx}` and `./components/**/*.{ts,tsx}`.
 
 - [ ] **Step 4: Create a minimal `app/layout.tsx`, `app/page.tsx` ("WNLQ9 — coming soon"), `app/globals.css`** with Tailwind directives.
 
@@ -228,7 +228,24 @@ describe('catalog loader', () => {
 
 - [ ] **Step 2: Run to verify it fails.** Run: `cd apps/catalog && npx vitest run lib/__tests__/catalog-data.loader.test.ts` — FAIL (`getAllProducts` undefined).
 
-- [ ] **Step 3: Implement loader** in `catalog-data.ts`: read `path.join(process.cwd(), '..', '..', 'data', 'live_products_export.json')` with `fs.readFileSync`, parse, map every row through `toPublicProduct`, cache in a module-level singleton (build-time only). Add `getProductBySku` backed by a `Map<string, PublicProduct>`. (This mirrors the existing root `app/api/products/route.ts` load pattern.)
+- [ ] **Step 3: Implement loader** in `catalog-data.ts`: resolve the export path **robustly** so it works whether cwd is the repo root (Vercel build, see Task 14) or `apps/catalog` (local dev). Use:
+
+```ts
+import fs from 'fs';
+import path from 'path';
+function exportPath(): string {
+  const candidates = [
+    path.join(process.cwd(), 'data', 'live_products_export.json'),          // cwd = repo root (Vercel)
+    path.join(process.cwd(), '..', '..', 'data', 'live_products_export.json'), // cwd = apps/catalog (dev)
+    process.env.CATALOG_DATA_PATH ?? '',                                    // explicit override
+  ];
+  const found = candidates.find(p => p && fs.existsSync(p));
+  if (!found) throw new Error('live_products_export.json not found in any known location');
+  return found;
+}
+```
+
+Then `fs.readFileSync(exportPath())`, parse, map every row through `toPublicProduct`, cache in a module-level singleton (build-time only). Add `getProductBySku` backed by a `Map<string, PublicProduct>`. (Mirrors the existing root `app/api/products/route.ts` load pattern, which uses cwd-relative `data/`.)
 
 - [ ] **Step 4: Run to verify pass.** Expected: PASS (4 tests).
 
@@ -332,11 +349,23 @@ describe('recommender', () => {
   it('ranks the most-similar product first', () => {
     expect(getRecommendations(base, pool)[0].sku).toBe('B');
   });
+  it('a far-out-of-band product (price 50000 vs 1600, no shared attrs) ranks last or is dropped', () => {
+    const recs = getRecommendations(base, pool);
+    const dIdx = recs.findIndex(r => r.sku === 'D');
+    expect(dIdx === -1 || dIdx === recs.length - 1).toBe(true);
+  });
 });
 ```
 
 - [ ] **Step 2: Run, FAIL.**
 - [ ] **Step 3: Implement** `getRecommendations(product, all)` with the §6 scoring (region +3, grape +2, country +1, food overlap +1/shared, same classification +1, price within ±40% +1); filter self + OOS, sort desc, slice 4. Structure it so a future `coPurchaseStrategy` can be checked first (comment the seam).
+
+> **PERF NOTE (avoid O(n²) blow-up at build).** `getRecommendations` is O(n) per call.
+> Calling it during SSG of all ~11,436 product pages would be O(n²) ≈ 130M ops and can
+> stall the build. **Mitigation (implemented in Task 11):** precompute recommendations
+> ONCE into a `Map<sku, sku[]>` and have product pages read from the map, not recompute.
+> Add a `precomputeRecommendations(all): Map<string,string[]>` export here that bucketizes
+> candidates by `region`/`classification` first to shrink each comparison set.
 - [ ] **Step 4: Run, PASS.**
 - [ ] **Step 5: Commit.** `git commit -m "feat(catalog): rule-based recommender (BI-swap ready)"`
 
@@ -372,6 +401,16 @@ describe('contact links', () => {
 
 - [ ] **Step 2: Run, FAIL.**
 - [ ] **Step 3: Implement** `buildContactLinks(env, product?)` reading handles from params (callers pass `process.env` values); WhatsApp `https://wa.me/<num>?text=<encoded>`, FB `https://m.me/<page>`, LINE passthrough. Pre-fill text: `I'm interested in <name> — <sku>` when product given.
+
+> **ENV CONTRACT (resolved — read before Tasks 9 & 14).** Env var names match the
+> spec **exactly** and have **NO `NEXT_PUBLIC_` prefix**: `LINE_OFFICIAL_URL`,
+> `WHATSAPP_NUMBER`, `FB_MESSENGER_PAGE`. `buildContactLinks` is a **pure function** —
+> it never touches `process.env` itself. Links are computed **at build time in server
+> components** (pages are SSG) by reading `process.env.LINE_OFFICIAL_URL` etc. and
+> calling `buildContactLinks`. The resulting **plain string links are passed as props**
+> into `ContactButtons` and any client modal (`QuickView`). Therefore NO `NEXT_PUBLIC_`
+> var is needed — the browser only ever sees the finished URL strings, not the env. This
+> keeps a single env-name set across spec, Task 9, and Task 14.
 - [ ] **Step 4: Run, PASS.**
 - [ ] **Step 5: Commit.** `git commit -m "feat(catalog): contact deep-link builder"`
 
@@ -410,7 +449,7 @@ describe('contact links', () => {
 **Files:**
 - Create: `components/ContactButtons.tsx`, `components/Filters.tsx`
 
-- [ ] **Step 1: `ContactButtons`** — renders LINE/WhatsApp/FB buttons from `buildContactLinks`; `product?` prop toggles per-product vs global; all `target="_blank" rel="noopener"`. Reads handles from `NEXT_PUBLIC_*` env.
+- [ ] **Step 1: `ContactButtons`** — receives **ready-made link strings as props** (`{ line, whatsapp, facebook }`), computed by the parent server component via `buildContactLinks` reading the non-prefixed env vars (see ENV CONTRACT in Task 6). Renders LINE/WhatsApp/FB buttons; all `target="_blank" rel="noopener"`. It does NOT read env itself, so it works inside client modals without `NEXT_PUBLIC_`.
 - [ ] **Step 2: `Filters`** — big visible row (Price tiers, Country, Type=group, In-stock) + Sort dropdown + "More filters" expander (region, grape, body, acidity, tannin, flavor tags, critic score). State reflected in URL query.
 - [ ] **Step 3: Browser-verify** filters toggle and a contact button opens the right pre-filled link.
 - [ ] **Step 4: Commit.** `git commit -m "feat(catalog): contact buttons + accessible filters"`
@@ -431,10 +470,16 @@ describe('contact links', () => {
 ## Task 11: Product detail page (SSG + attribute-first + taste viz)
 
 **Files:**
-- Create: `apps/catalog/app/product/[sku]/page.tsx`
+- Create: `apps/catalog/app/product/[sku]/page.tsx`, `apps/catalog/lib/taste-adapter.ts`
 - Copy: `components/product/StructuralGauges.tsx` + `TasteWheel.tsx` into `apps/catalog/components/product/` (port; adapt styles to light theme)
+- Test: `apps/catalog/lib/__tests__/taste-adapter.test.ts`
 
-- [ ] **Step 1: `generateStaticParams`** returns all SKUs from `getAllProducts()` (SSG all ~11,436 pages).
+- [ ] **Step 0: Build the taste-data adapter (REQUIRED — ported components need re-keyed data).** Verified prop shapes: `TasteWheel` wants `tiers: {primary, secondary, tertiary}` (each `Note[]` = `{note, intensity}`); `StructuralGauges` wants `structural: Record<string,string>` keyed `body/acidity/tannin`. The raw export has `taste_profile.tiers` (NESTED — pass `taste_profile.tiers`, not the whole object) and FLAT `wine_body`/`wine_acidity`/`wine_tannin`. Write `taste-adapter.ts`:
+  - `toTiers(taste_profile)` → returns `taste_profile?.tiers ?? null` (guarding missing tiers per component's own `?? []` handling).
+  - `toStructural(p)` → `{ body: p.wine_body, acidity: p.wine_acidity, tannin: p.wine_tannin }` (drop nulls).
+  Test both with a real product (e.g. `taste_profile.structure === 'tiered'`) and a product with no taste data (returns null/empty → components render nothing). Test-first: write the failing test, run FAIL, implement, run PASS.
+
+- [ ] **Step 1: `generateStaticParams`** returns all SKUs from `getAllProducts()` (SSG all ~11,436 pages). **Call `precomputeRecommendations(getAllProducts())` once at module load** (Task 5) and have the page read recs from the `Map<sku,sku[]>` — do NOT call `getRecommendations` per page (avoids O(n²), see Task 5 PERF NOTE). **Fallback:** if the full SSG build proves too slow/memory-heavy in Task 14 Step 1, switch product pages to ISR (`export const dynamicParams = true` + `revalidate`) and pre-render only a top slice; note this is the escape hatch, SSG is the default.
 - [ ] **Step 2: Implement page** — image left; right: name, formatPrice, attributes (country/region/grape/vintage/bottle size/body/acidity/tannin — **omit `alcohol`**), description (if present), food pairing, critic badge (only with `score_summary`), stock. Render `StructuralGauges`/`TasteWheel` when taste data present. **When no description, the attribute matrix + taste viz are the hero (§10.2-C).** Per-product `ContactButtons`. Recommended-together rail via `getRecommendations`.
 - [ ] **Step 3: Per-product SEO** — `generateMetadata` sets title/description/OG image.
 - [ ] **Step 4: Unknown SKU → `notFound()`** (clean 404 with link to Shop).
@@ -455,29 +500,60 @@ describe('contact links', () => {
 
 ---
 
-## Task 13: About / Contact pages + port Explore-by-Map
+## Task 13: About / Contact pages + Explore-by-Map placeholder
 
 **Files:**
 - Create: `app/about/page.tsx`, `app/contact/page.tsx`, `app/explore-map/page.tsx`
 
 - [ ] **Step 1: About/Contact** static pages with global `ContactButtons`.
-- [ ] **Step 2: Explore-by-Map** — port the existing `app/explore` UI as a secondary route. If porting risks the 2-day deadline, ship a simple placeholder linking back to the internal tool and flag for fast-follow (note in commit).
+- [ ] **Step 2: Explore-by-Map = simple placeholder (DEFAULT path).** Ship a clean page explaining the map view is coming and linking to the internal tool. The full port is **Task 15 (optional)** — do NOT attempt the port here; the placeholder is what ships for the 2-day launch.
 - [ ] **Step 3: Browser-verify** nav reaches all three.
-- [ ] **Step 4: Commit.** `git commit -m "feat(catalog): about/contact + explore-map route"`
+- [ ] **Step 4: Commit.** `git commit -m "feat(catalog): about/contact + explore-map placeholder"`
+
+---
+
+## Task 15 (OPTIONAL — only if time remains after launch): Port the full Explore-by-Map
+
+Skip for the 2-day launch unless Tasks 0–14 are done with buffer to spare.
+
+**Files:** copy `components/explore/*` (13 files), `lib/explore/*` (5 files), and the
+required `data/taxonomy/explore-taxonomy.json` into the catalog app.
+
+- [ ] **Step 1: Inventory dependencies** — the map is a custom SVG `ExploreMap.tsx`
+  (dynamic-imported, `ssr:false`) plus a 13-component tree, a 5-file lib tree, and a
+  taxonomy JSON that is NOT the products export. Confirm all are copied and the taxonomy
+  path resolves.
+- [ ] **Step 2: Replace the placeholder** route with the ported client UI.
+- [ ] **Step 3: Browser-verify** the map renders and navigates; it's a secondary path,
+  so a dark theme here is acceptable if restyling risks time.
+- [ ] **Step 4: Commit.** `git commit -m "feat(catalog): port full explore-by-map"`
 
 ---
 
 ## Task 14: Production build + Vercel deploy verification
 
 **Files:**
-- Create: `apps/catalog/.env.example`, `apps/catalog/vercel.json` (if needed)
-- Modify: root `.vercelignore` if it would exclude `apps/catalog`
+- Create: `apps/catalog/.env.example`, root-level `vercel.catalog.json` or use dashboard settings
+- Verify: root `.vercelignore` does NOT strip `apps/catalog` or `data/live_products_export.json` (it strips `data/db/`, `*.py`, `scripts/` — none of which the catalog needs; the export is git-tracked and not ignored — verified)
+
+> **VERCEL MONOREPO DATA-PATH (resolved — the #1 late-stage risk).** Do NOT set the new
+> project's Root Directory to `apps/catalog` — that would put repo-root `data/` outside
+> the build context and `fs` would `ENOENT` at build. Instead:
+> - **Root Directory = repo root** (`.`), so `process.cwd()` is the repo root and
+>   `data/live_products_export.json` is in the build context (cwd-relative path resolves —
+>   this is why the loader's first candidate is `cwd/data/...`).
+> - **Build Command** = `cd apps/catalog && npm install && npm run build`
+> - **Output Directory** = `apps/catalog/.next`
+> - **Install Command** = `npm install --prefix apps/catalog` (or part of build)
+> This is the standard "build a sub-app from repo root" pattern and is the configuration
+> the Step-6 deploy verifies. The loader's multi-candidate `exportPath()` (Task 2) makes
+> both this and local dev work without edits.
 
 - [ ] **Step 1: Full local production build** — Run: `cd apps/catalog && npm run build`. Expected: SSG emits home + shop + ~11,436 product pages with no errors; build reads `../../data/live_products_export.json` successfully.
 - [ ] **Step 2: `npm run start`** and smoke-test the production build locally on `:3100`.
 - [ ] **Step 3: Run all unit tests** — Run: `cd apps/catalog && npm run test`. Expected: all green.
 - [ ] **Step 4: Margin-leak grep gate** — Run: `grep -rl "margin_pct\|b2b_margin" apps/catalog/.next || echo "CLEAN"`. Expected: `CLEAN` (no internal field in any built output).
-- [ ] **Step 5: Create new Vercel project** pointed at Root Directory `apps/catalog`; set env vars `NEXT_PUBLIC_LINE_URL`, `NEXT_PUBLIC_WHATSAPP_NUMBER`, `NEXT_PUBLIC_FB_PAGE`; configure monorepo so the build context includes repo-root `data/`. Assign the primary WNLQ9 domain (keep the existing internal project; no deletion).
+- [ ] **Step 5: Create new Vercel project** using the **VERCEL MONOREPO DATA-PATH** config above (Root Directory = repo root, build command targets `apps/catalog`). Set env vars **per the ENV CONTRACT (Task 6) — non-prefixed**: `LINE_OFFICIAL_URL`, `WHATSAPP_NUMBER`, `FB_MESSENGER_PAGE`. Assign the primary WNLQ9 domain (keep the existing internal project; no deletion).
 - [ ] **Step 6: Deploy + verify on the live URL** (CLAUDE.md Rule 7 — browser verification is the only proof): home → shop → filter/sort → product detail → each contact button (verify pre-filled LINE/WhatsApp/FB) → bad SKU 404 → images load from CDN. Confirm prices show ฿ formatting.
 - [ ] **Step 7: Commit.** `git commit -m "chore(catalog): production build, env, Vercel deploy verified"`
 
