@@ -47,7 +47,7 @@ export interface PublicProduct {
   currency?: string;
   desc_en_short?: string;
   full_description?: string;
-  taste_profile?: unknown; // structured object/JSON, shape varies upstream
+  taste_profile?: Record<string, unknown>; // structured object/JSON, shape varies upstream
   wine_color?: string;
   image_url?: string;
   score_summary?: string; // JSON STRING (not a parsed object)
