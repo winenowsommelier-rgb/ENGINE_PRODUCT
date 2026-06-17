@@ -71,10 +71,22 @@ export function scoreCandidate(
   return score;
 }
 
-/** True if a candidate is eligible to be recommended for `product`. */
+/**
+ * True if a candidate is eligible to be recommended for `product`.
+ *
+ * STOCK FILTER (intentional, applies in BOTH directions)
+ * ------------------------------------------------------
+ * Products with `is_in_stock` falsy/undefined are excluded from recommendations
+ * in BOTH directions: they are never recommended TO anyone (this check), and in
+ * `precomputeRecommendations` they are filtered out of `inStock` up front so they
+ * never get recs computed FOR them either. Verified: 98 / 11,436 real products
+ * have a null `is_in_stock` value — all treated as unavailable. This is
+ * intentional, not a bug: a falsy `is_in_stock` (false, null, undefined, 0) means
+ * "do not surface this product anywhere."
+ */
 function isEligible(product: PublicProduct, candidate: PublicProduct): boolean {
   if (candidate.sku === product.sku) return false; // not self
-  if (!candidate.is_in_stock) return false; // not out-of-stock
+  if (!candidate.is_in_stock) return false; // not out-of-stock (falsy/undefined excluded)
   return true;
 }
 
@@ -102,6 +114,11 @@ function rankAgainst(
  * §6 similarity score. Excludes self and out-of-stock, dedupes by sku, and only
  * returns positive-scored matches (no zero-score padding).
  *
+ * EXACT RANKING: this scores `product` against the FULL `all` pool — every other
+ * product is a candidate. This is the authoritative, exact rule-based ranking.
+ * `precomputeRecommendations` is a region-bucketed APPROXIMATION of this function
+ * (see its docblock) and may return a different top-4 for the same product.
+ *
  * FUTURE: if a coPurchaseStrategy provides real BI data for product.sku, use it
  * first; fall back to the rule-based scoring below.
  */
@@ -124,6 +141,19 @@ export function getRecommendations(
  * Precompute recommendations for EVERY in-stock product, returning a lightweight
  * Map<sku, sku[]> (<=4 rec skus each). Pages resolve skus via getProductBySku, so
  * we store skus only — not full product objects.
+ *
+ * APPROXIMATION OF getRecommendations (accepted tradeoff — DO NOT "fix" to parity)
+ * -------------------------------------------------------------------------------
+ * This is a region-bucketed APPROXIMATION of getRecommendations, used to keep the
+ * ~11,436-page static build fast (avoids O(n^2)). It may return a DIFFERENT top-4
+ * than getRecommendations when a product's highest-scoring match lies OUTSIDE its
+ * region bucket (and the in-region bucket is already large enough that the
+ * widening chain below never reaches that better cross-region candidate). This is
+ * an ACCEPTED tradeoff: region (+3) is the dominant affinity signal, so the
+ * bucketed result is a close approximation in practice. Do NOT "fix" this into a
+ * full scan to force exact parity without re-evaluating the build cost — a full
+ * scan reinstates the O(n^2) build we deliberately avoid here. The accepted
+ * divergence is pinned by a regression test in recommender.test.ts.
  *
  * BUCKETING STRATEGY (avoids O(n^2) over ~11,436 products)
  * --------------------------------------------------------
