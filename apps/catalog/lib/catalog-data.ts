@@ -46,7 +46,7 @@ export function toPublicProduct(raw: Record<string, unknown>): PublicProduct {
  * plus an explicit env override. Throws loudly if none exist — a missing data
  * file at build time must fail the build, not silently produce an empty catalog.
  */
-function exportPath(): string {
+export function exportPath(): string {
   const candidates = [
     path.join(process.cwd(), 'data', 'live_products_export.json'),             // cwd = repo root
     path.join(process.cwd(), '..', '..', 'data', 'live_products_export.json'), // cwd = apps/catalog
@@ -67,7 +67,13 @@ let _all: PublicProduct[] | null = null;
 let _bySku: Map<string, PublicProduct> | null = null;
 
 function load(): void {
-  const raw = JSON.parse(fs.readFileSync(exportPath(), 'utf8')) as unknown;
+  const file = exportPath();
+  let raw: unknown;
+  try {
+    raw = JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (e) {
+    throw new Error(`Failed to parse catalog export at ${file}: ${(e as Error).message}`);
+  }
   // Defensive shape handling: file is a bare array, but tolerate { products: [...] }.
   const rows: unknown[] = Array.isArray(raw)
     ? raw
