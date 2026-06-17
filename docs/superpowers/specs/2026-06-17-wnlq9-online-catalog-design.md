@@ -279,6 +279,43 @@ shipped). If the index proves too large, fall back to a server search route.
   is the documented refresh SLA). Catalog may show prices/stock up to one rebuild stale
   — acceptable for a contact-to-buy flow.
 
+### 8.3 Vercel deployment (verified against current setup)
+
+**Current state (verified):** repo already has a working Vercel project
+`new.mgfdev.com` (`prj_W7v5ttUA6wyH6r3dK0s6LOLPqpUH`) deploying the **internal tool**
+from the repo root; `framework: nextjs`; the 27 MB export is **git-tracked and not
+ignored** (ships to Vercel automatically — confirmed).
+
+**Decision — two projects, no deletion.** Vercel Hobby (free) allows ~200 projects, so
+there is no slot pressure. The existing internal-tool project is **kept** (deletion is
+irreversible — loses deploy history, env vars, domain binding, and could silently break
+anything pointing at the PIM). "Main" is achieved by **domain assignment, not deletion**:
+
+- **New catalog project** (Root Directory = `apps/catalog`) gets the **primary WNLQ9
+  domain** → this is the public "main" site.
+- **Existing internal project** stays; optionally moved to a side domain (e.g.
+  `admin.` / `internal.`). The user can delete it himself later, post-launch, if desired.
+
+**Required setup items (folded into the implementation plan as explicit, verified steps):**
+1. **New Vercel project** pointed at `apps/catalog` as Root Directory (separate from the
+   existing root-level project). Own domain.
+2. **Build reaches the export:** catalog reads `../../data/live_products_export.json` at
+   **build time**. Configure the monorepo build so the repo root (incl. `data/`) is in
+   the build context; verify the relative read resolves in a real Vercel build, not just
+   locally.
+3. **`next/image` remote host:** add `th.wine-now.com` to `images.remotePatterns` in the
+   catalog's `next.config.js`, or every product image throws at runtime. **Images served
+   directly from the existing Magento CDN** (decision: no download, no repo bloat, Vercel
+   optimizes on the fly; risk = Magento takedown, which is user-controlled and can later
+   migrate to Supabase Storage).
+4. **Env vars** set in the new Vercel project: `LINE_OFFICIAL_URL`, `WHATSAPP_NUMBER`,
+   `FB_MESSENGER_PAGE` (public handles, no secrets).
+
+**Update model (plain):** team edits `products.db` locally → runs
+`scripts/refresh_live_export.py` (Python; `.vercelignore` strips `*.py`/`scripts/`, so it
+runs **locally, never on Vercel** — correct) → **commit the updated JSON + push** →
+Vercel auto-rebuilds the static catalog. Updates = commit + push.
+
 ---
 
 ## 9. Error Handling
