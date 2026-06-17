@@ -12,6 +12,24 @@
 
 ---
 
+## Pre-Build Checklist (resolve before / during, per final readiness review)
+
+- [ ] **USER INPUT NEEDED — contact values (blocks Task 14 ship/verify).** No LINE/
+  WhatsApp/FB handles exist in `.env.local`. Get from user: `LINE_OFFICIAL_URL`,
+  `WHATSAPP_NUMBER` (intl format, no `+`, e.g. `66812345678`), `FB_MESSENGER_PAGE`.
+  Tasks 0–13 proceed with placeholder values (unit tests use fakes); **Task 14 Step 6
+  Definition-of-Done cannot pass without the real three.**
+- [ ] Taste viz is bigger than "copy 2 files": copy **3** files (incl. `TasteNote`),
+  **neutralize its `/explore` routing**, and **write the taste-viz CSS from scratch**
+  (~1–2h) — see Task 11 Steps 0a–0d. There is no existing stylesheet to port.
+- [ ] Normalize off-scale `wine_acidity`/`wine_tannin` values or gauges render silently
+  empty for hundreds of wines (Task 11 Step 0c — Rule 2/6 guard).
+- [ ] Drop `alcohol`, `wine_classification`, `appellation`, `wine_color` from the
+  rendered attribute matrix (all 0/11,436).
+- [ ] Two isolated installs; do NOT add a root `workspaces` key (Task 0 Step 5).
+
+---
+
 ## File Structure
 
 All new files live under `apps/catalog/` unless noted.
@@ -108,6 +126,13 @@ module.exports = nextConfig;
 
 Run: `cd apps/catalog && npm install && npm run dev`
 Expected: dev server starts on `http://localhost:3100`, page shows "WNLQ9".
+
+> **INSTALL SAFETY (verified).** Root `package.json` has **no `workspaces` key**, so this
+> creates an isolated `apps/catalog/node_modules` — no hoisting, no conflict with the
+> root's `next 14.2.30` install (the sub-app pins identical versions). vitest is not
+> installed anywhere in the repo, so adding it here is conflict-free. **Do NOT add a
+> root `workspaces` key** — that would re-route the internal app's module resolution and
+> risk breaking it (violates "internal project untouched").
 
 - [ ] **Step 6: Commit**
 
@@ -480,13 +505,18 @@ describe('contact links', () => {
 - Copy: `components/product/StructuralGauges.tsx` + `TasteWheel.tsx` into `apps/catalog/components/product/` (port; adapt styles to light theme)
 - Test: `apps/catalog/lib/__tests__/taste-adapter.test.ts`
 
-- [ ] **Step 0: Build the taste-data adapter (REQUIRED — ported components need re-keyed data).** Verified prop shapes: `TasteWheel` wants `tiers: {primary, secondary, tertiary}` (each `Note[]` = `{note, intensity}`); `StructuralGauges` wants `structural: Record<string,string>` keyed `body/acidity/tannin`. The raw export has `taste_profile.tiers` (NESTED — pass `taste_profile.tiers`, not the whole object) and FLAT `wine_body`/`wine_acidity`/`wine_tannin`. Write `taste-adapter.ts`:
-  - `toTiers(taste_profile)` → returns `taste_profile?.tiers ?? null` (guarding missing tiers per component's own `?? []` handling).
-  - `toStructural(p)` → `{ body: p.wine_body, acidity: p.wine_acidity, tannin: p.wine_tannin }` (drop nulls).
-  Test both with a real product (e.g. `taste_profile.structure === 'tiered'`) and a product with no taste data (returns null/empty → components render nothing). Test-first: write the failing test, run FAIL, implement, run PASS.
+- [ ] **Step 0a: Copy THREE files, not two, and neutralize routing (verified deps).** `TasteWheel.tsx` imports `./TasteNote`, so copy `TasteNote.tsx` too. **`TasteNote` calls `useRouter().push('/explore?note=...')` — a route that does NOT exist in the catalog (404 on click).** Replace that click behavior with a no-op/non-interactive chip (the catalog has no `/explore` note-search). Verify after copying: `grep -rn "useRouter\|/explore" apps/catalog/components/product/` returns nothing live.
+
+- [ ] **Step 0b: Author the taste-viz stylesheet from SCRATCH (NOT "adapt").** Verified: the classNames the components use (`.taste-wheel`, `.gauge-row`, `.gauge-track`, `.gauge-cell`, `.structural-gauges`, `.taste-note`, etc.) are defined in **NO stylesheet anywhere in the repo** — the internal app renders their layout unstyled. So there is nothing to "adapt"; write a light-theme stylesheet for these selectors from zero (flex tracks, legend rows, scale-label spacing). Budget ~1–2h. Add to `apps/catalog/app/globals.css` or a co-located CSS module.
+
+- [ ] **Step 0c: Build the taste-data adapter WITH value normalization (REQUIRED — prevents silent-empty gauges, CLAUDE.md Rule 2/6).** Verified prop shapes: `TasteWheel` wants `tiers: {primary, secondary, tertiary}` (each `Note[]` = `{note, intensity}`); `StructuralGauges` wants `structural: Record<string,string>` keyed `body/acidity/tannin`, and only renders a bar if the value is found in its fixed `SCALE_DEFINITIONS` 4-step scale. **CRITICAL DATA MISMATCH (verified):** the export's `wine_acidity`/`wine_tannin` contain values NOT in the component's scales — e.g. `wine_acidity` has `Medium-Full` (260), `Full` (72), `Light` (44), `Medium-Light` (138); acidity scale is only `['Low','Medium','Medium-High','High']`. Unmapped values → `indexOf` = -1 → **gauge renders all-empty with no error** for hundreds of wines. The flat fields (`wine_body` 4,438, etc.) are the canonical source (more populated than nested `taste_profile.structural` at 3,745). Write `taste-adapter.ts`:
+  - `toTiers(taste_profile)` → `taste_profile?.tiers ?? null` (only 3,689 have `.tiers`; guard).
+  - `toStructural(p)` → `{ body, acidity, tannin }` from flat fields, each passed through `normalizeScale(axis, value)`.
+  - `normalizeScale(axis, value)` → maps off-scale values onto the component's 4-step scale: for acidity/tannin, `Medium-Full`→`Medium-High`, `Full`→`High`, `Medium-Light`→`Medium`, `Light`→`Low`; `body` already matches except `Medium-Light`→`Medium`. Drop nulls.
+- [ ] **Step 0d: Test-first for the adapter.** Failing test FIRST, then implement, then pass. Tests MUST include the regression guard: assert a `Medium-Full` acidity yields a value the component's scale contains (i.e. `filledCount > 0`), a `tiered` product returns non-empty tiers, and a no-taste-data product returns null/empty (components render nothing). Run FAIL → implement → run PASS.
 
 - [ ] **Step 1: `generateStaticParams`** returns all SKUs from `getAllProducts()` (SSG all ~11,436 pages). **Call `precomputeRecommendations(getAllProducts())` once at module load** (Task 5) and have the page read recs from the `Map<sku,sku[]>` — do NOT call `getRecommendations` per page (avoids O(n²), see Task 5 PERF NOTE). **Fallback:** if the full SSG build proves too slow/memory-heavy in Task 14 Step 1, switch product pages to ISR (`export const dynamicParams = true` + `revalidate`) and pre-render only a top slice; note this is the escape hatch, SSG is the default.
-- [ ] **Step 2: Implement page** — image left; right: name, formatPrice, attributes (country/region/grape/vintage/bottle size/body/acidity/tannin — **omit `alcohol`**), description (if present), food pairing, critic badge (only with `score_summary`), stock. Render `StructuralGauges`/`TasteWheel` when taste data present. **When no description, the attribute matrix + taste viz are the hero (§10.2-C).** Per-product `ContactButtons`. Recommended-together rail via `getRecommendations`.
+- [ ] **Step 2: Implement page** — image left; right: name, formatPrice, attributes (country/region/grape/vintage/bottle size/body/acidity/tannin). **OMIT always-empty fields from the rendered matrix (verified 0/11,436): `alcohol`, `wine_classification`, `appellation`, `wine_color`** — they stay in the allowlist (harmless) but must NOT produce blank label rows. Description (if present), food pairing, critic badge. **`score_summary` is a JSON STRING, not an object** — use it as a presence flag for the badge; if rendering critic detail, `JSON.parse` it inside a try/catch (shape: `{"critics":[{abbr,critic,score_native,...}]}`). Render `StructuralGauges`/`TasteWheel` via the Step-0c adapter when taste data present. **When no description, the attribute matrix + taste viz are the hero (§10.2-C).** Per-product `ContactButtons`. Recommended-together rail read from the precomputed map (Step 1).
 - [ ] **Step 3: Per-product SEO** — `generateMetadata` sets title/description/OG image. Reuse `getProductBySku(sku)` (singleton-cached loader) — do NOT trigger a second full data scan.
 - [ ] **Step 4: Unknown SKU → `notFound()`** (clean 404 with link to Shop).
 - [ ] **Step 5: Browser-verify** a described product, a description-less product (attribute-hero), an OOS product, and a bad SKU (404). Verify each contact button's pre-filled text.
