@@ -123,6 +123,29 @@ map-first internal tool, the opposite of the calm Maison grid the audience needs
 
 **Critical:** margin/B2B fields must NEVER be exposed in the public catalog.
 
+### 4.1 Public projection (the margin-leak chokepoint — REQUIRED)
+The 49-field source object is **never** sent to the browser. `lib/catalog-data.ts`
+exposes a single `toPublicProduct(raw)` serializer that builds the client payload from
+an **explicit allowlist** of safe fields (id, sku, name, brand, classification,
+attributes, descriptions, image_url, price, currency, stock, score_summary, etc.) —
+by whitelist, NOT by deleting fields from the full object. Every client-bound payload
+(grid slice, detail page, recommendations) passes through `toPublicProduct`. Fields
+like `margin_pct`, `b2b_margin_pct`, and any internal enrichment/cost field are simply
+absent from the allowlist and therefore cannot leak. A unit test asserts the projected
+object's keys are a subset of the allowlist (§10).
+
+### 4.2 Routing key (validated against real data)
+Verified on the actual export: `sku` is present for all 11,436 rows, **unique**, and
+contains **zero URL-unsafe characters**. `/product/[sku]` uses `sku` directly as the
+route key; the SKU index is the lookup. No slugging needed.
+
+### 4.3 Field shapes (verified — drive rendering & recommender)
+- `food_matching` — **comma-separated string** (e.g. `"Grilled red meat, Lamb dishes,
+  Aged hard cheese"`). Split on `,` + trim for overlap scoring and chip display.
+- `flavor_tags` — **array of strings**.
+- `currency` — `THB` for all rows → display as `฿` with thousands separators.
+- `image_url` — external host `th.wine-now.com` (Magento media). See §8.
+
 ---
 
 ## 5. Pages & Layout
@@ -134,8 +157,13 @@ map-first internal tool, the opposite of the calm Maison grid the audience needs
 - **Sticky mobile contact button:** floating "Contact us" → LINE/FB/WhatsApp.
 
 ### 1. Home (`/`)
-Large hero (featured product or category) → featured/popular products section →
-"Shop by Category" block → footer band. Calm, lots of whitespace.
+Large hero (featured product or category) → featured products section → "Shop by
+Category" block → footer band. Calm, lots of whitespace.
+**Featured selection (no fake popularity):** `popularity_score` is 0/11,436, so
+"featured" is NOT data-driven. Phase 1 uses a **manual featured-SKU list** in config
+(team-editable), falling back to "in-stock products with critic `score_summary`" if
+the list is empty. Never labeled "best-selling" / "most popular" — avoids implying BI
+data we don't have.
 
 ### 2. Shop (`/shop`) — core
 - Category tabs across the top (Wine · Spirits · …)
@@ -169,8 +197,12 @@ getRecommendations(product, allProducts) -> ~4 products
 ```
 
 - **Launch (rule-based):** score every other product against the current one using
-  existing data — same region/grape (strong), overlapping `food_matching`,
-  complementary type, similar price tier. Return top 4, **in-stock, de-duplicated**.
+  existing data. Concrete scoring inputs (field shapes verified in §4.3):
+  - same `region` **+3**, same `grape_variety` **+2**, same `country` **+1**
+  - `food_matching` overlap (split both on `,`, trim) **+1 per shared item**
+  - same `classification` **+1**; **similar price tier** = within ±40% of this
+    product's price **+1**
+  Return top 4 by score, **in-stock, de-duplicated, excluding the product itself**.
   Framed as **"You might also like"** (attribute-based) — NOT implying real purchase
   data. Respects the rule against faking populated BI fields.
 - **Later (BI swap):** add a `coPurchaseStrategy` read first inside the same function,
@@ -198,12 +230,44 @@ getRecommendations(product, allProducts) -> ~4 products
 
 ## 8. Performance
 
-- Parse the 27 MB export **once** server-side; cache array + indexes in a module-level
-  singleton. Never sent whole to the browser.
-- Shop grid server-rendered and paginated (24/page); client receives only the current
-  slice + thumbnails.
-- Images via existing `ProductImage` with lazy-loading + width limits.
+**Rendering target — SSG, decided to avoid the serverless cold-start trap.** The
+catalog is built **statically at build time** (Next.js SSG / `generateStaticParams`),
+NOT per-request SSR. Rationale: on Vercel serverless, a module-level singleton is
+per-instance and every cold start would re-parse the 27 MB file — a real cost/latency
+risk. SSG parses the file **once at build**, emits static shop pages + 11,436 product
+pages, and serves them as static assets. Data updates ship via rebuild (§4), which the
+team already triggers — so SSG matches the update model exactly.
+
+- Parse the 27 MB export **once at build**; build SKU/category/region indexes then.
+- Shop grid pre-rendered + paginated (24/page); client receives only the current
+  slice + thumbnails, never the full file.
+- **Images:** `image_url` points at the external Magento host `th.wine-now.com`. Next
+  `next/image` requires this host in `images.remotePatterns` (unconfigured remote host
+  is a hard runtime failure, not a graceful degrade). Reuse the existing `ProductImage`
+  component with lazy-loading + width limits; 110 products without an image get a
+  placeholder (§9).
 - Build memory: reuse `NODE_OPTIONS=--max-old-space-size=4096`.
+
+### 8.1 Search (Phase 1 scope)
+The header search is **client-side over a prebuilt lightweight index** (sku + name +
+brand + region, projected via `toPublicProduct`) generated at build time. Substring +
+case-insensitive match, results shown as a dropdown linking to product pages. No
+server, no fuzzy ranking in Phase 1 (defer fuzzy to later). If this risks the 2-day
+deadline, the search icon degrades to "defer to Phase 2" — flagged at planning.
+Note: this index (sku+name+brand+region only, ~11.4k rows, est. ~1–2 MB) is the **one**
+allowlisted full-dataset payload sent to the client — an intentional exception to the
+"never ship the full file" rule (the 27 MB source with all 49 fields is still never
+shipped). If the index proves too large, fall back to a server search route.
+
+### 8.2 Deploy & env
+- `data/live_products_export.json` lives at repo root, two levels above `apps/catalog/`.
+  The Vercel project for the catalog must include it in the build context (root-relative
+  read at build time, not runtime). Confirm the monorepo build root in `vercel.json`.
+- Env vars in `apps/catalog/.env` (and Vercel project settings): `LINE_OFFICIAL_URL`,
+  `WHATSAPP_NUMBER`, `FB_MESSENGER_PAGE`. No secrets — public contact handles only.
+- Update trigger: rebuild on data change (manual redeploy now; scheduled daily re-pull
+  is the documented refresh SLA). Catalog may show prices/stock up to one rebuild stale
+  — acceptable for a contact-to-buy flow.
 
 ---
 
@@ -230,6 +294,16 @@ getRecommendations(product, allProducts) -> ~4 products
   "It compiles" is not done; a working UI is the only proof.
 
 ---
+
+## 10.1 i18n, currency & SEO
+
+- **Currency:** all prices `THB` → render `฿` with thousands separators (e.g.
+  `฿1,250`). Single `formatPrice()` helper.
+- **Language:** UI copy is English in Phase 1 (incl. "You might also like",
+  "I'm interested in [Name] — [SKU]"). Thai-language UI is deferred; flagged here so
+  it's a conscious choice, not an oversight, given the THB/Thai market.
+- **SEO:** per-product `<title>` + meta description + OpenGraph image from the product,
+  and a generated sitemap. Low effort under SSG; included since this is a public store.
 
 ## 11. Open Items for Phase 2
 - Cart → list → order-summary email (customer + order inbox)
