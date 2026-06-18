@@ -52,5 +52,8 @@ export interface PublicProduct {
   image_url?: string;
   score_summary?: string; // JSON STRING (not a parsed object)
   score_max?: number;
+  // NORMALIZED at load time. The raw live export stores this as a STRING "0"/"1" or null;
+  // toPublicProduct() in catalog-data.ts coerces it to a REAL boolean via isInStock() so this
+  // type is honest and plain-truthiness consumers are correct ("0" no longer reads as in-stock).
   is_in_stock?: boolean;
 }

@@ -19,6 +19,16 @@ describe('getRecommendations', () => {
     expect(recs.find(r => r.sku === 'E')).toBeUndefined();
     expect(new Set(recs.map(r => r.sku)).size).toBe(recs.length);
   });
+
+  // DEFENSIVE / REGRESSION (data-integrity bug): even if a caller passes a RAW,
+  // un-normalized product whose is_in_stock is the string "0" (the live-export shape),
+  // it must be treated as OUT-of-stock and excluded. Plain truthiness read "0" as
+  // in-stock, surfacing 5,683 out-of-stock products — this guards against that.
+  it('excludes a candidate whose is_in_stock is the raw string "0"', () => {
+    const rawOos = { ...base, sku: 'RAW0', name: 'RAW0', price: 1650, is_in_stock: '0' } as any;
+    const recs = getRecommendations(base, [...pool, rawOos]);
+    expect(recs.find(r => r.sku === 'RAW0')).toBeUndefined();
+  });
   it('ranks the most-similar product first', () => {
     expect(getRecommendations(base, pool)[0].sku).toBe('B');
   });

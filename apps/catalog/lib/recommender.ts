@@ -21,6 +21,7 @@
  */
 
 import type { PublicProduct } from '@/lib/types';
+import { isInStock } from '@/lib/utils';
 
 const MAX_RECS = 4;
 const PRICE_BAND = 0.4; // +/-40%
@@ -76,17 +77,23 @@ export function scoreCandidate(
  *
  * STOCK FILTER (intentional, applies in BOTH directions)
  * ------------------------------------------------------
- * Products with `is_in_stock` falsy/undefined are excluded from recommendations
- * in BOTH directions: they are never recommended TO anyone (this check), and in
+ * Out-of-stock products are excluded from recommendations in BOTH directions:
+ * they are never recommended TO anyone (this check), and in
  * `precomputeRecommendations` they are filtered out of `inStock` up front so they
- * never get recs computed FOR them either. Verified: 98 / 11,436 real products
- * have a null `is_in_stock` value — all treated as unavailable. This is
- * intentional, not a bug: a falsy `is_in_stock` (false, null, undefined, 0) means
- * "do not surface this product anywhere."
+ * never get recs computed FOR them either.
+ *
+ * STOCK VALUE SHAPE: is_in_stock is NORMALIZED to a real boolean at load time by
+ * toPublicProduct() (catalog-data.ts) — the raw live export stores it as a STRING
+ * "0"/"1" or null. Of 11,436 real products, 5,683 are out ("0"), 5,655 in ("1"),
+ * and 98 null (treated as out). We use isInStock() here rather than a plain
+ * truthiness check so this stays correct DEFENSIVELY even if a caller ever passes
+ * a raw (un-normalized) product: the helper maps "0"/0/""/null/undefined/false ->
+ * out, and "1"/1/true -> in. (Plain `!candidate.is_in_stock` would wrongly read the
+ * string "0" as in-stock — that was the original bug this fix closes.)
  */
 function isEligible(product: PublicProduct, candidate: PublicProduct): boolean {
   if (candidate.sku === product.sku) return false; // not self
-  if (!candidate.is_in_stock) return false; // not out-of-stock (falsy/undefined excluded)
+  if (!isInStock(candidate.is_in_stock)) return false; // out-of-stock excluded (handles raw "0" too)
   return true;
 }
 
@@ -176,7 +183,9 @@ export function precomputeRecommendations(
   all: readonly PublicProduct[],
 ): Map<string, string[]> {
   // In-stock candidates only (these are the only things we ever recommend).
-  const inStock = all.filter((p) => p.is_in_stock);
+  // is_in_stock is a normalized boolean post-load; isInStock() also handles a raw
+  // "0"/"1"/null product defensively (see isEligible docblock).
+  const inStock = all.filter((p) => isInStock(p.is_in_stock));
 
   const byRegion = new Map<string, PublicProduct[]>();
   const byClassification = new Map<string, PublicProduct[]>();

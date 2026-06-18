@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { PublicProduct } from './types';
+import { isInStock } from './utils';
 
 /**
  * PUBLIC_FIELDS — the allowlist. ONLY these keys are ever copied onto a
@@ -34,6 +35,15 @@ void _fieldsCheck;
 export function toPublicProduct(raw: Record<string, unknown>): PublicProduct {
   const out: Record<string, unknown> = {};
   for (const f of PUBLIC_FIELDS) if (raw[f] !== undefined) out[f] = raw[f];
+  // DATA-INTEGRITY NORMALIZATION (CLAUDE.md Rule 3 — inherited data shapes are NOT validated
+  // by the caller): the live export stores is_in_stock as a STRING "0"/"1" or null, NOT the
+  // boolean the type advertises. Because "0" is truthy in JS, any plain-truthiness consumer
+  // (the recommender did this) would treat 5,683 out-of-stock products as IN-STOCK. We normalize
+  // it to a REAL boolean ONCE here, at the single load chokepoint, using the same isInStock()
+  // helper the storefront uses, so the whole app sees an honest boolean. is_in_stock stays in
+  // PUBLIC_FIELDS (it is allowlisted); we only coerce its value after the allowlist copy, so the
+  // leak guarantee and drift guard are untouched. Coerce only when the field is present.
+  if ('is_in_stock' in out) out.is_in_stock = isInStock(out.is_in_stock);
   // Cast: the output is built from the allowlist, so its keys are a subset of PublicProduct.
   // This does NOT guarantee required fields (sku/name/price) are present — presence/validation
   // is the loader's responsibility (Task 2). null values pass through intentionally (see test).
