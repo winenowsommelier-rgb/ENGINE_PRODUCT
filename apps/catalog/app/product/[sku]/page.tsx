@@ -8,6 +8,7 @@ import { TasteWheel } from '@/components/product/TasteWheel';
 import { StructuralGauges } from '@/components/product/StructuralGauges';
 import { getAllProducts, getProductBySku } from '@/lib/catalog-data';
 import { precomputeRecommendations } from '@/lib/recommender';
+import { FEATURED_SKUS } from '@/lib/featured';
 import { formatPrice } from '@/lib/price-tiers';
 import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
@@ -26,19 +27,69 @@ import type { PublicProduct } from '@/lib/types';
  * SAFETY: every product comes from getProductBySku/getAllProducts, which project
  * through the PUBLIC_FIELDS allowlist (catalog-data.ts) — margin/b2b/internal
  * fields are structurally absent and cannot reach the HTML.
+ *
+ * RENDERING — ISR (Task 14): we PRE-RENDER only a small slice (~200 products) at
+ * build time so the build is fast (a couple of minutes, not ~17). Every other SKU
+ * is generated ON DEMAND on first request and then cached (dynamicParams=true),
+ * and all cached pages revalidate hourly so data updates appear without a full
+ * rebuild. notFound() still fires for genuinely-invalid SKUs.
  */
+
+/** ISR: SKUs not in generateStaticParams are generated on first request + cached. */
+export const dynamicParams = true;
+/** ISR: regenerate cached pages at most once an hour so data updates surface. */
+export const revalidate = 3600;
 
 /**
- * RECS — recommendations precomputed ONCE at module load for the whole catalog,
- * NOT per page. Per-page getRecommendations() would be O(n) each → O(n^2) across
- * the ~11,436-page build. We store sku→sku[] and resolve to products per page via
- * the cached getProductBySku.
+ * RECS — recommendations precomputed ONCE per server instance for the whole
+ * catalog, NOT per page. Per-page getRecommendations() would be O(n) each →
+ * O(n^2). We store sku→sku[] and resolve to products per page via the cached
+ * getProductBySku.
+ *
+ * LAZY + MEMOIZED (ISR): with on-demand page generation this module is imported
+ * inside the request that first renders an un-prerendered SKU. We therefore do NOT
+ * compute RECS eagerly at module top-level (that would run the full precompute on
+ * every cold start, even for a single page). Instead we compute it on the FIRST
+ * getRecsForSku() call and cache it for the instance lifetime.
  */
-const RECS: Map<string, string[]> = precomputeRecommendations(getAllProducts());
+let _recs: Map<string, string[]> | null = null;
+function getRecsForSku(sku: string): string[] {
+  if (_recs === null) _recs = precomputeRecommendations(getAllProducts());
+  return _recs.get(sku) ?? [];
+}
 
-/** SSG: one static page per SKU. */
+/**
+ * SSG slice (ISR): pre-render only a small, high-value set at build time. We take
+ * the curated FEATURED_SKUS first, then back-fill with in-stock products that have
+ * an image AND a critic score (score_summary), capped at ~200. Every other SKU is
+ * generated on demand (dynamicParams=true). Any reasonable ~200 is fine — the goal
+ * is a fast build; ISR covers the long tail.
+ */
+const PRERENDER_CAP = 200;
 export async function generateStaticParams(): Promise<Array<{ sku: string }>> {
-  return getAllProducts().map((p) => ({ sku: p.sku }));
+  const params: Array<{ sku: string }> = [];
+  const seen = new Set<string>();
+  const add = (sku: string) => {
+    if (sku && !seen.has(sku)) {
+      seen.add(sku);
+      params.push({ sku });
+    }
+  };
+
+  // 1) Curated featured SKUs first (only if they still resolve).
+  for (const sku of FEATURED_SKUS) {
+    if (params.length >= PRERENDER_CAP) break;
+    if (getProductBySku(sku)) add(sku);
+  }
+
+  // 2) Back-fill with in-stock + has-image + critic-reviewed products.
+  for (const p of getAllProducts()) {
+    if (params.length >= PRERENDER_CAP) break;
+    const reviewed = Boolean(p.score_summary && p.score_summary.trim() !== '');
+    if (isInStock(p.is_in_stock) && p.image_url && reviewed) add(p.sku);
+  }
+
+  return params;
 }
 
 // ── small presentational helpers (server-rendered) ──────────────────────────
@@ -138,7 +189,7 @@ export default function Page({ params }: { params: { sku: string } }) {
   const links = buildContactLinks(getContactEnv(), { name: product.name, sku: product.sku });
 
   // Recommendations: resolve precomputed skus → products (cached lookups).
-  const recs: PublicProduct[] = (RECS.get(product.sku) ?? [])
+  const recs: PublicProduct[] = getRecsForSku(product.sku)
     .map((sku) => getProductBySku(sku))
     .filter((p): p is PublicProduct => Boolean(p));
 
