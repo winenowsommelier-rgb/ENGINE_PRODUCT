@@ -8,6 +8,7 @@ import { QuickView } from '@/components/QuickView';
 import { formatPrice } from '@/lib/price-tiers';
 import { cn, isInStock } from '@/lib/utils';
 import type { PublicProduct } from '@/lib/types';
+import type { ContactLinks } from '@/lib/contact';
 
 /**
  * ProductCard — the Maison grid tile.
@@ -28,9 +29,15 @@ import type { PublicProduct } from '@/lib/types';
 
 interface ProductCardProps {
   product: PublicProduct;
+  /**
+   * Optional ready-made contact deep-links for this product (built server-side).
+   * Passed straight through to QuickView; when omitted, QuickView shows no
+   * contact buttons. Pages wire this in (Tasks 10/11).
+   */
+  contactLinks?: ContactLinks;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, contactLinks }: ProductCardProps) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const subtitle = product.brand || product.region;
   const inStock = isInStock(product.is_in_stock);
@@ -104,6 +111,7 @@ export function ProductCard({ product }: ProductCardProps) {
         product={product}
         open={quickViewOpen}
         onOpenChange={setQuickViewOpen}
+        contactLinks={contactLinks}
       />
     </>
   );

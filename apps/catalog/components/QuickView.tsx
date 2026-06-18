@@ -9,9 +9,11 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { StorefrontImage } from '@/components/StorefrontImage';
+import { ContactButtons } from '@/components/ContactButtons';
 import { formatPrice } from '@/lib/price-tiers';
 import { isInStock } from '@/lib/utils';
 import type { PublicProduct } from '@/lib/types';
+import type { ContactLinks } from '@/lib/contact';
 
 /**
  * QuickView — a Maison-clean modal preview of a product, opened from a card's
@@ -25,13 +27,23 @@ import type { PublicProduct } from '@/lib/types';
  * (country/region/grape/vintage — nulls skipped), short description, stock
  * status, and a "View full details" link to the product page.
  *
- * Per-product contact buttons are Task 9 (see placeholder below).
+ * Per-product contact buttons (LINE / WhatsApp / Messenger) render when
+ * `contactLinks` is supplied. The link STRINGS are computed by a SERVER parent
+ * (getContactEnv -> buildContactLinks) and passed down; QuickView is a client
+ * component and never reads process.env. When `contactLinks` is absent the
+ * contact row is simply omitted (graceful) — the shop/product pages wire it in
+ * (Tasks 10/11).
  */
 
 interface QuickViewProps {
   product: PublicProduct;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /**
+   * Ready-made contact deep-links for THIS product (built server-side). When
+   * omitted, no contact buttons are shown.
+   */
+  contactLinks?: ContactLinks;
 }
 
 /** Key attributes to surface, in display order. Nulls are skipped at render. */
@@ -48,7 +60,12 @@ function attributeRows(p: PublicProduct): Array<{ label: string; value: string }
     .map((r) => ({ label: r.label, value: String(r.value) }));
 }
 
-export function QuickView({ product, open, onOpenChange }: QuickViewProps) {
+export function QuickView({
+  product,
+  open,
+  onOpenChange,
+  contactLinks,
+}: QuickViewProps) {
   const subtitle = product.brand || product.region;
   const attributes = attributeRows(product);
   const inStock = isInStock(product.is_in_stock);
@@ -109,7 +126,14 @@ export function QuickView({ product, open, onOpenChange }: QuickViewProps) {
               </DialogDescription>
             )}
 
-            {/* Task 9: <ContactButtons product={product} /> goes here */}
+            {contactLinks ? (
+              <div className="mt-6">
+                <p className="mb-2 text-sm text-muted-foreground">
+                  Questions? Talk to us:
+                </p>
+                <ContactButtons links={contactLinks} variant="inline" size="sm" />
+              </div>
+            ) : null}
 
             <Link
               href={`/product/${product.sku}`}
