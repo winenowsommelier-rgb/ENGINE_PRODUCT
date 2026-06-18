@@ -123,3 +123,144 @@
     }
   }
 }
+
+/*
+ * ────────────────────────────────────────────────────────────────────────────
+ * TASTE-VIZ — light Maison stylesheet for the ported product components
+ * (TasteWheel / TasteNote / StructuralGauges, components/product/*).
+ *
+ * The internal app rendered these with semantic classNames but NO stylesheet, so
+ * they appeared mostly unstyled. These rules dress them for the near-white Maison
+ * canvas: calm warm-neutral surfaces, the burgundy accent (--primary) for
+ * emphasis, generous 18px-scale spacing, and readable contrast for the 40+
+ * audience. The SVG wheel itself is self-styling via inline fills; here we lay out
+ * the wheel container, the tier legend, the note chips and the gauges.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/* Wheel: SVG on top, legend below; centred. */
+.taste-wheel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+.taste-wheel > svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Tier legend: one row per tier (Primary / Secondary / Tertiary). */
+.taste-wheel-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+.taste-wheel-legend-row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  align-items: start;
+  gap: 0.75rem;
+}
+.taste-wheel-legend-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+  padding-top: 0.3rem;
+}
+/* A small colour key dot per tier, matching the wheel ring colours. */
+.taste-wheel-legend-label::before {
+  content: '';
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 9999px;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+.taste-wheel-legend-primary   .taste-wheel-legend-label::before { background: #7c2d3a; }
+.taste-wheel-legend-secondary .taste-wheel-legend-label::before { background: #8b5a2b; }
+.taste-wheel-legend-tertiary  .taste-wheel-legend-label::before { background: #6c6055; }
+
+/* Note chips row. */
+.taste-notes-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* Individual non-interactive note chip (TasteNote → <span>). */
+.taste-note {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--secondary));
+  color: hsl(var(--foreground));
+  border-radius: 9999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+/* Higher-intensity notes read a touch stronger (subtle, not loud). */
+.taste-note[data-intensity='3'] {
+  border-color: hsl(var(--primary) / 0.5);
+  font-weight: 600;
+}
+.taste-note[data-intensity='2'] {
+  border-color: hsl(var(--primary) / 0.3);
+}
+
+/* ── Structural gauges ──────────────────────────────────────────────────── */
+.structural-gauges {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.gauge-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.gauge-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.gauge-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+.gauge-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+/* The four-cell track. Filled vs empty colour is set inline per cell by the
+ * component (axis accent vs warm-neutral); here we lay them out as equal
+ * segments with rounded ends. */
+.gauge-track {
+  display: flex;
+  gap: 3px;
+  height: 0.7rem;
+}
+.gauge-cell {
+  flex: 1 1 0;
+  border-radius: 3px;
+}
+.gauge-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  color: hsl(var(--muted-foreground));
+}
+.gauge-scale-labels > span {
+  flex: 1 1 0;
+  text-align: center;
+}
+.gauge-scale-labels > span:first-child { text-align: left; }
+.gauge-scale-labels > span:last-child { text-align: right; }
