@@ -7,12 +7,14 @@
  * SEPARATE server-only module (./search-index.server.ts) so importing the pure
  * helper here never drags `fs` into the client.
  *
- * DATA FLOW (Task 12):
- *   1. buildSearchIndex() (search-index.server.ts) runs ONCE at build time in a
- *      SERVER component (app/layout.tsx) and projects each product to 4 short
- *      fields: { sku, name, brand, region }.
- *   2. That array crosses the server→client boundary as a prop into
- *      <SearchOverlay index={...} /> — embedded once for the whole site.
+ * DATA FLOW (perf fix):
+ *   1. scripts/gen-search-index.mjs runs ONCE at build time (npm "prebuild") and
+ *      projects each product to 4 short fields { sku, name, brand, region },
+ *      writing public/search-index.json — a single cacheable static asset.
+ *      (search-index.server.ts buildSearchIndex() applies the same projection and
+ *      is the leak-guarantee fixture the unit tests assert against.)
+ *   2. The static file is fetched LAZILY by <SearchOverlay> the first time a
+ *      shopper opens search — it is NO LONGER embedded in every page's HTML.
  *   3. On the client, searchEntries(index, query) (below) runs a pure,
  *      case-insensitive substring match and returns up to 10 results.
  *

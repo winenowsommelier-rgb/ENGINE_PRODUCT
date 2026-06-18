@@ -5,17 +5,16 @@ import Link from 'next/link';
 import { Search, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SearchOverlay } from '@/components/SearchOverlay';
-import type { SearchEntry } from '@/lib/search-index';
 
 /**
  * Global site header — Maison minimal style.
  *
  * - Big typographic WNLQ9 wordmark (left), links to home.
  * - Calm typographic primary nav (desktop), hamburger disclosure (mobile).
- * - Search icon on the right OPENS the client SearchOverlay (Task 12). The
- *   build-time search index is passed in via `searchIndex` from the server
- *   layout; when absent the icon falls back to a /shop link so it is never a
- *   broken/no-op control.
+ * - Search icon on the right OPENS the client SearchOverlay. The overlay
+ *   self-fetches the static search index (public/search-index.json) lazily on
+ *   first open — the index is NO LONGER embedded in the page (perf: it used to
+ *   ship ~1.5 MB in every page). The header just toggles open state.
  * - Sticky to top with a subtle bottom border on a white background.
  *
  * Client component (mobile-menu + search-overlay open/close state).
@@ -31,19 +30,9 @@ const NAV_LINKS = [
   { href: '/contact', label: 'Contact' },
 ] as const;
 
-interface HeaderProps {
-  /**
-   * Build-time search index ({sku,name,brand,region} only). Passed from the
-   * server layout. When provided, the search icon opens the SearchOverlay;
-   * when omitted, it falls back to a /shop link.
-   */
-  searchIndex?: SearchEntry[];
-}
-
-export function Header({ searchIndex }: HeaderProps = {}) {
+export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const hasSearch = Array.isArray(searchIndex);
 
   return (
     <header className="sticky top-0 z-50 w-full overflow-x-hidden border-b border-border bg-background">
@@ -75,24 +64,14 @@ export function Header({ searchIndex }: HeaderProps = {}) {
 
         {/* Right cluster: search + mobile toggle */}
         <div className="flex shrink-0 items-center gap-1">
-          {hasSearch ? (
-            <button
-              type="button"
-              onClick={() => setSearchOpen(true)}
-              aria-label="Search"
-              className="flex h-11 w-11 items-center justify-center rounded-md text-foreground transition-colors hover:text-primary"
-            >
-              <Search className="h-5 w-5" aria-hidden="true" />
-            </button>
-          ) : (
-            <Link
-              href="/shop"
-              aria-label="Search"
-              className="flex h-11 w-11 items-center justify-center rounded-md text-foreground transition-colors hover:text-primary"
-            >
-              <Search className="h-5 w-5" aria-hidden="true" />
-            </Link>
-          )}
+          <button
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            aria-label="Search"
+            className="flex h-11 w-11 items-center justify-center rounded-md text-foreground transition-colors hover:text-primary"
+          >
+            <Search className="h-5 w-5" aria-hidden="true" />
+          </button>
 
           <button
             type="button"
@@ -135,13 +114,7 @@ export function Header({ searchIndex }: HeaderProps = {}) {
         </ul>
       </nav>
 
-      {hasSearch ? (
-        <SearchOverlay
-          index={searchIndex!}
-          open={searchOpen}
-          onOpenChange={setSearchOpen}
-        />
-      ) : null}
+      <SearchOverlay open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
   );
 }
