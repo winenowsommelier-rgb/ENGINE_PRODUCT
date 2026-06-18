@@ -7,7 +7,19 @@ const config: Config = {
   theme: {
     container: {
       center: true,
-      padding: '2rem',
+      // Base padding is 16px so the container fits a 390px mobile viewport
+      // (390 − 32 = 358px content area) instead of the old flat 32px, which
+      // overflowed. The desktop step-up to 1.5rem / 2rem is restored in
+      // globals.css at the real sm/lg breakpoints.
+      //
+      // WHY NOT a responsive padding object here: Tailwind's container plugin
+      // only honours padding keys for breakpoints present in
+      // `container.screens`, and adding sm/lg there would ALSO cap the
+      // container's max-width at 640px/1024px — narrowing the desktop layout
+      // (a regression). Keeping `screens` at 2xl-only preserves the original
+      // full-width-until-1400px behaviour; the padding step-up is layered on
+      // separately in CSS so max-width is untouched.
+      padding: '1rem',
       screens: {
         '2xl': '1400px',
       },

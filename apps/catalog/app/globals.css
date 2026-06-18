@@ -96,4 +96,30 @@
     outline-offset: 2px;
     border-radius: 2px;
   }
+
+  /*
+   * Container horizontal padding step-up.
+   *
+   * The Tailwind container plugin gives a flat 1rem (16px) base padding so the
+   * frame fits a 390px mobile viewport without horizontal overflow. We restore
+   * the larger desktop gutters here — at the real sm/lg breakpoints — WITHOUT
+   * going through container.padding, because adding sm/lg to container.screens
+   * would also cap the container's max-width (a desktop regression). This keeps
+   * the original full-width-until-1400px behaviour while scaling the gutters:
+   *   mobile  <640px : 1rem   (16px)  — fits 390px
+   *   sm     >=640px : 1.5rem (24px)
+   *   lg    >=1024px : 2rem   (32px)  — original desktop gutter, unchanged
+   */
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
 }

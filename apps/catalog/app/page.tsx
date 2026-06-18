@@ -14,7 +14,7 @@ export default function Home() {
         <p className="text-base font-medium uppercase tracking-widest text-muted-foreground">
           Wine · Whisky · Spirits
         </p>
-        <h1 className="text-6xl font-bold tracking-tight text-foreground sm:text-7xl">
+        <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
           WNLQ9
         </h1>
         <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
