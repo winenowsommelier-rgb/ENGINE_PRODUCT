@@ -80,7 +80,7 @@ export default function FinderResultPage({
             />
 
             <div className="flex flex-wrap gap-3 border-t border-border pt-6">
-              <Link href={`/finder/2?${query}`} className={linkBtn}>
+              <Link href={`/finder/1?${query}`} className={linkBtn}>
                 Refine answers
               </Link>
               <Link

@@ -35,12 +35,12 @@ function foodChipLabel(key: string): string {
   return spaced.charAt(0).toUpperCase() + spaced.slice(1);
 }
 
-// Synthetic food sub-step. `field` is unused here — FoodChoice writes
-// answers.food directly (food isn't a ChoiceCards StepField) — so we set it to
-// a valid union member purely to satisfy the QuestionStep type.
+// Synthetic food sub-step. FoodChoice writes answers.food directly; `field: 'food'`
+// makes the QuestionStep honest so a future refactor that fell through to ChoiceCards
+// would not silently write food selections into flavorChips.
 const FOOD_STEP: QuestionStep = {
   id: 'food',
-  field: 'flavorChips',
+  field: 'food',
   title: 'What are you eating?',
   multi: true,
   optional: true,

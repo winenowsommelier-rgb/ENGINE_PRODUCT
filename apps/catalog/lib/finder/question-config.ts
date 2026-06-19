@@ -1,6 +1,6 @@
 import type { FinderCategory } from './answers';
 
-export type StepField = 'occasion' | 'budget' | 'axis1' | 'axis2' | 'flavorChips';
+export type StepField = 'occasion' | 'budget' | 'axis1' | 'axis2' | 'flavorChips' | 'food';
 
 export interface StepOption {
   token: string;
