@@ -172,35 +172,38 @@ import { describe, it, expect } from 'vitest';
 import { finderPrefilter } from '@/lib/finder/category-map';
 import type { Answers } from '@/lib/finder/answers';
 
+// IMPORTANT: groupForProduct resolves by SKU PREFIX FIRST (W*=Wine, LWH=Whisky,
+// L*=Spirits, A*/G*/CIG=Accessories…). Fixtures MUST use realistic prefixes or the
+// SKU-prefix override mis-buckets them (e.g. sku 'GIN' starts with 'G' → Accessories!).
 const P = (o: any) => ({ price: 1000, is_in_stock: true, ...o });
 const POOL = [
-  P({ sku:'RW', classification:'Red Wine' }),
-  P({ sku:'WW', classification:'White Wine' }),
-  P({ sku:'CH', classification:'Champagne' }),
-  P({ sku:'GIN', classification:'Gin' }),
-  P({ sku:'RUM', classification:'Rum' }),
-  P({ sku:'WHK', classification:'Whisky' }),
-  P({ sku:'OOS', classification:'Red Wine', is_in_stock:false }),
+  P({ sku:'WRW001', classification:'Red Wine' }),
+  P({ sku:'WWW001', classification:'White Wine' }),
+  P({ sku:'WSP001', classification:'Champagne' }),
+  P({ sku:'LGN001', classification:'Gin' }),
+  P({ sku:'LRM001', classification:'Rum' }),
+  P({ sku:'LWH001', classification:'Whisky' }),
+  P({ sku:'WRW999', classification:'Red Wine', is_in_stock:false }),
 ];
 
 const ans = (o: Partial<Answers>): Answers => ({ category:'red', ...o } as Answers);
 
 describe('finderPrefilter', () => {
   it('gin returns Gin only — NOT rum/vodka', () =>
-    expect(finderPrefilter(POOL as any, ans({category:'gin'})).map(p=>p.sku)).toEqual(['GIN']));
+    expect(finderPrefilter(POOL as any, ans({category:'gin'})).map(p=>p.sku)).toEqual(['LGN001']));
   it('spirits EXCLUDES gin', () =>
-    expect(finderPrefilter(POOL as any, ans({category:'spirits'})).map(p=>p.sku)).toEqual(['RUM']));
+    expect(finderPrefilter(POOL as any, ans({category:'spirits'})).map(p=>p.sku)).toEqual(['LRM001']));
   it('sparkling returns Champagne, excludes still wine', () =>
-    expect(finderPrefilter(POOL as any, ans({category:'sparkling'})).map(p=>p.sku)).toEqual(['CH']));
+    expect(finderPrefilter(POOL as any, ans({category:'sparkling'})).map(p=>p.sku)).toEqual(['WSP001']));
   it('red excludes white/sparkling', () =>
-    expect(finderPrefilter(POOL as any, ans({category:'red'})).map(p=>p.sku)).toEqual(['RW']));
+    expect(finderPrefilter(POOL as any, ans({category:'red'})).map(p=>p.sku)).toEqual(['WRW001']));
   it('always excludes out-of-stock', () =>
-    expect(finderPrefilter(POOL as any, ans({category:'red'})).some(p=>p.sku==='OOS')).toBe(false));
+    expect(finderPrefilter(POOL as any, ans({category:'red'})).some(p=>p.sku==='WRW999')).toBe(false));
   it('budget index 0 (Under ฿1,000) excludes a ฿1,500 wine; budget 1 includes it', () => {
-    const pool = [P({sku:'cheap', classification:'Red Wine', price:500}),
-                  P({sku:'mid', classification:'Red Wine', price:1500})];
-    expect(finderPrefilter(pool as any, ans({category:'red', budget:0})).map(p=>p.sku)).toEqual(['cheap']);
-    expect(finderPrefilter(pool as any, ans({category:'red', budget:1})).map(p=>p.sku)).toEqual(['mid']);
+    const pool = [P({sku:'WRW010', classification:'Red Wine', price:500}),
+                  P({sku:'WRW011', classification:'Red Wine', price:1500})];
+    expect(finderPrefilter(pool as any, ans({category:'red', budget:0})).map(p=>p.sku)).toEqual(['WRW010']);
+    expect(finderPrefilter(pool as any, ans({category:'red', budget:1})).map(p=>p.sku)).toEqual(['WRW011']);
   });
 });
 ```
@@ -370,16 +373,25 @@ describe('scoreProducts', () => {
     expect(out.map(p=>p.sku)).toContain('a'); // both present, neither boosted by body
   });
 
-  it('minimum-results guarantee: returns ≥4 even when nothing matches deeply', () => {
-    const pool = Array.from({length:6},(_,i)=>P({sku:`p${i}`, wine_body:undefined}));
-    expect(scoreProducts(ans({axis1:'bold', flavorChips:['oak']}), pool as any).length).toBeGreaterThanOrEqual(4);
+  it('minimum-results guarantee: returns ≥4 even when nothing matches deeply, flagged degraded', () => {
+    const pool = Array.from({length:6},(_,i)=>P({sku:`WRW${i}`, wine_body:undefined}));
+    const res = scoreProducts(ans({axis1:'bold', flavorChips:['oak']}), pool as any);
+    expect(res.products.length).toBeGreaterThanOrEqual(4);
+    expect(res.degraded).toBe(true); // nothing cleared the quality threshold → honest-label flag
+  });
+
+  it('a genuine deep match is NOT degraded', () => {
+    const pool = [P({sku:'WRW1', wine_body:'Full'}), P({sku:'WRW2', wine_body:'Light'}),
+                  P({sku:'WRW3', wine_body:'Medium-Full'}), P({sku:'WRW4', wine_body:'Full'})];
+    const res = scoreProducts(ans({axis1:'bold'}), pool as any);
+    expect(res.degraded).toBe(false);
   });
 
   it('never returns duplicates or out-of-stock', () => {
-    const pool = [P({sku:'x'}), P({sku:'x'}), P({sku:'oos', is_in_stock:false})];
-    const out = scoreProducts(ans({}), pool as any);
-    expect(new Set(out.map(p=>p.sku)).size).toBe(out.length);
-    expect(out.some(p=>p.sku==='oos')).toBe(false);
+    const pool = [P({sku:'WRW1'}), P({sku:'WRW1'}), P({sku:'WRW9', is_in_stock:false})];
+    const res = scoreProducts(ans({}), pool as any);
+    expect(new Set(res.products.map(p=>p.sku)).size).toBe(res.products.length);
+    expect(res.products.some(p=>p.sku==='WRW9')).toBe(false);
   });
 });
 ```
@@ -417,8 +429,17 @@ function ladderScore(distance: number | null, exact: number): number {
 }
 
 const MIN_RESULTS = 4;
+const TOP_N = 8;            // how many to show
+const QUALITY_MIN = 2;      // a product "matches well" if its score ≥ this
 
-export function scoreProducts(a: Answers, products: PublicProduct[]): PublicProduct[] {
+export interface ScoreResult {
+  products: PublicProduct[];  // top N, ranked
+  /** true when fewer than MIN_RESULTS cleared QUALITY_MIN → UI shows the honest
+   *  "Closest matches in your budget" label (spec §5 relax step). */
+  degraded: boolean;
+}
+
+export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResult {
   const pool = finderPrefilter(products, a);
 
   const scored = pool.map((p) => {
@@ -448,14 +469,22 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): PublicProd
     (x.p.price ?? 0) - (y.p.price ?? 0),
   );
 
-  // GUARANTEE: dedupe by sku; always return ≥ MIN_RESULTS when the pool has them.
+  // dedupe by sku (pool is already in-stock + category + budget).
   const seen = new Set<string>();
-  const out: PublicProduct[] = [];
-  for (const { p } of scored) {
-    if (seen.has(p.sku)) continue;
-    seen.add(p.sku); out.push(p);
+  const ranked: Array<{ p: PublicProduct; s: number }> = [];
+  for (const row of scored) {
+    if (seen.has(row.p.sku)) continue;
+    seen.add(row.p.sku); ranked.push(row);
   }
-  return out; // pool already in-stock+category+budget; caller shows top N (e.g. 8). ≥4 guaranteed if pool≥4.
+
+  // SPEC §5 quality-gate + relax: count how many cleared QUALITY_MIN. If fewer than
+  // MIN_RESULTS did, we "relax to the floor" (we still show the top-ranked in-budget
+  // products — the pool is already safe) and flag degraded so the UI shows the honest
+  // "Closest matches in your budget" label. Never empty as long as the pool is non-empty.
+  const wellMatched = ranked.filter((r) => r.s >= QUALITY_MIN).length;
+  const degraded = wellMatched < MIN_RESULTS;
+
+  return { products: ranked.slice(0, TOP_N).map((r) => r.p), degraded };
 }
 ```
 
@@ -582,9 +611,10 @@ git commit -m "feat(finder): style-profile archetype library + deterministic res
 
 - [ ] **Step 4: Build `StyleResult` + `app/finder/result/page.tsx`** — `decodeAnswers(searchParams)`;
   if `!category` → `redirect('/finder')`. Call `resolveProfile(answers)` and
-  `scoreProducts(answers, getAllProducts())`; render the archetype card (StyleResult) + top 8 products
-  via `ProductCard`. If the scored list is short, show the honest "Closest matches in your budget" label
-  (spec §5 guarantee). Add "Refine answers" (back to last step) and "Start over" (`/finder`).
+  `const { products, degraded } = scoreProducts(answers, getAllProducts())`; render the archetype card
+  (StyleResult) + the products via `ProductCard`. **When `degraded` is true, show the honest
+  "Closest matches in your budget" label** above the grid (spec §5 — the relax flag comes from
+  `scoreProducts`, not a UI guess). Add "Refine answers" (back to last step) and "Start over" (`/finder`).
 
 - [ ] **Step 5: Typecheck.** Run: `cd "apps/catalog" && npm run typecheck` — Expected: PASS.
 
@@ -631,4 +661,17 @@ git add -A && git commit -m "test(finder): verify all 7 category journeys + no m
 - **Data tasks P1–P6 (spec §8) need NO finder code change** — better data → better results after a rebuild.
 - Keep `scoring.ts`, `answers.ts`, `style-profiles.ts`, `category-map.ts`, `food-chips.ts` PURE
   (no Next/React/I-O) so they stay unit-testable and the finder plan's tests hold.
+- **KNOWN SIMPLIFICATIONS (intentional, launch against today's data):**
+  - **Flavor-chip scoring** (Task 4) is exact `flavor_tags.includes(chip)`. Because `flavor_tags`
+    has 5,521 messy values vs the 78-note master, this scores ~0 until data task **P4** normalizes
+    `flavor_tags` to the master set — at which point it works with NO code change. The style profile
+    (resolved from axis answers) carries the result regardless, so the flavor step is additive, not
+    load-bearing, at launch. Do not over-engineer fuzzy matching now (YAGNI).
+  - **Whisky axis2 "smoky→smooth"** is scored via `country` overlap only; the spec's reliable peat
+    signal is `region === 'Islay'`. Adding a `region`-based smoke score is a small, optional
+    enhancement — fine to defer; note it rather than silently dropping it.
+  - The **min-results "relax"** (spec §5) is implemented as the `degraded` flag on `ScoreResult`
+    (Task 4), consumed by the result page (Task 7 Step 4). It shows the whole in-budget pool ranked
+    and flags when <4 cleared the quality threshold — it never dead-ends and never silently pretends
+    a weak match is strong.
 ```
