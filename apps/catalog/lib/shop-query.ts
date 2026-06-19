@@ -27,9 +27,11 @@
  *   subregion → case-insensitive substring match on subregion
  *   grape     → case-insensitive substring match on grape_variety
  *   flavor    → keep products whose flavor_tags includes it (case-insensitive)
- *   body      → exact (case-insensitive) match on wine_body
- *   acidity   → exact (case-insensitive) match on wine_acidity
- *   tannin    → exact (case-insensitive) match on wine_tannin
+ *   body      → match the product's wine_body NORMALIZED via normalizeScale('body')
+ *               to the 4-step component scale (so the dropdown option matches the
+ *               same value the taste gauges render; off-scale tokens → null → drop)
+ *   acidity   → same, normalizeScale('acidity', wine_acidity)
+ *   tannin    → same, normalizeScale('tannin', wine_tannin)
  *   hasScore=1→ keep only products with a non-empty score_summary
  *
  * Sort (param `sort`):
@@ -46,6 +48,7 @@ import type { PublicProduct } from './types';
 import { groupForProduct, accessoryCategoryForSku, type CategoryGroup } from './category-groups';
 import { tierById } from './price-tiers';
 import { isInStock } from './utils';
+import { normalizeScale } from './taste-adapter';
 
 export const SHOP_PAGE_SIZE = 24;
 
@@ -142,11 +145,11 @@ export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
   }
 
   const body = norm(firstParam(params.body));
-  if (body && norm(p.wine_body) !== body) return false;
+  if (body && norm(normalizeScale('body', p.wine_body)) !== body) return false;
   const acidity = norm(firstParam(params.acidity));
-  if (acidity && norm(p.wine_acidity) !== acidity) return false;
+  if (acidity && norm(normalizeScale('acidity', p.wine_acidity)) !== acidity) return false;
   const tannin = norm(firstParam(params.tannin));
-  if (tannin && norm(p.wine_tannin) !== tannin) return false;
+  if (tannin && norm(normalizeScale('tannin', p.wine_tannin)) !== tannin) return false;
 
   if (firstParam(params.inStock) === '1' && !isInStock(p.is_in_stock)) return false;
   if (firstParam(params.hasScore) === '1' &&

@@ -316,3 +316,22 @@ describe('applyShopQuery still honors everything via matchesFilters', () => {
     expect(r.pageItems[0].sku).toBe('W1');
   });
 });
+
+describe('matchesFilters — body/acidity/tannin normalized to the 4-step scale', () => {
+  it('a product stored "Medium-Light" body matches the "Medium" dropdown option', () => {
+    const prod = { sku: 'W1', name: 'x', wine_body: 'Medium-Light' } as any;
+    expect(matchesFilters(prod, { body: 'Medium' })).toBe(true);
+  });
+  it('a product stored "Medium-Full" acidity matches the "Medium-High" option', () => {
+    const prod = { sku: 'W1', name: 'x', wine_acidity: 'Medium-Full' } as any;
+    expect(matchesFilters(prod, { acidity: 'Medium-High' })).toBe(true);
+  });
+  it('exact in-scale value still matches', () => {
+    const prod = { sku: 'W1', name: 'x', wine_acidity: 'High' } as any;
+    expect(matchesFilters(prod, { acidity: 'High' })).toBe(true);
+  });
+  it('off-scale/unknown → null normalize → does not match an unrelated option', () => {
+    const prod = { sku: 'W1', name: 'x', wine_tannin: 'unknowable' } as any;
+    expect(matchesFilters(prod, { tannin: 'High' })).toBe(false);
+  });
+});
