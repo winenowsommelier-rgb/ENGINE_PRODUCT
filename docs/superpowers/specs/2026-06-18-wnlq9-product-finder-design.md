@@ -80,9 +80,14 @@ categories (Gin, Other Spirits, Sake). Still no hard-filter on a sparse attribut
 - `flavor_tags` is an **array but has 5,521 distinct values** (long-tail, messy) →
   **NOT usable as a chip source.**
 - `taste_profile` is a dict (`{schema_version, structure:'tiered', tiers:{primary,
-  secondary,tertiary}}`, each note `{note, intensity}`) with only **71 distinct
-  canonical notes** (Minerality, Earth, Oak, Spice, Black Cherry…) → **this is the
-  chip source.**
+  secondary,tertiary}}`, each note `{note, intensity}`). The canonical note set is the
+  master taxonomy **`data/taxonomy/flavor_note_master.json` — 78 active notes**
+  (`note_id`/`note`/`note_slug`/`note_family`/`is_active`), NOT the ~71 distinct values
+  that happen to appear in the live `taste_profile` data (that 71 is an inherited
+  count, Rule 3 — use the master file as the source of truth). → **the master notes are
+  the chip source.** Gotcha: `taste_profile` carries off-master variants ("Dark Plum",
+  "Black Cherry") absent from the master — map raw → master canonical (case/plural/
+  qualifier collapse), the same normalization P4 (§8) performs.
 - Whisky **`country`** cleanly separates origin: Scotland 398 / USA 81 / Japan 80 /
   Ireland 31. Whisky **`region`** distinguishes style: **Islay (44)** = peat/smoke
   signal; Speyside (159)/Highland (88) = smooth. The `flavor_tags` "Smoke" tag appears
@@ -111,7 +116,7 @@ STEP 2  Occasion        (shared)  Everyday · With food · Gift · Special/cella
 STEP 3  Budget          (shared)  <฿1k · ฿1–3k · ฿3–7k · ฿7–15k · ฿15k+  (reuses catalog brackets)
 STEP 4  Taste axis 1    (adaptive — table below)
 STEP 5  Taste axis 2    (adaptive — table below)
-STEP 6  Flavor leanings (optional)  chips from the 71 canonical taste_profile notes, scoped to category
+STEP 6  Flavor leanings (optional)  chips from the canonical flavor_note_master notes (78), scoped to category
 
       →  /finder/result   :  Style profile (top)  +  matched products (below)
 
@@ -200,11 +205,17 @@ apps/catalog/
 
 ```
 PRE-FILTER (hard, safe):  classification ∈ chosen-category's class set  AND  in-stock  AND  in budget tier
-   • category membership uses the catalog's group→classification map (lib/category-groups.ts),
-     NOT raw equality — classification has 44 messy values (Whisky vs Whiskey, pipe-delimited
-     "Red Wine|Fruit Wine", etc.). The finder defines a FinderCategory→classifications[] map
-     that reuses/extends that catalog map; pipe-delimited values are split and matched on any part.
-     Raw-equality here would dead-end on exactly those messy rows.
+   • category membership uses the catalog's groupForProduct(p) (lib/category-groups.ts),
+     NOT raw classification equality. The SHIPPED catalog resolves group by SKU PREFIX
+     first (LWH=Whisky, L*=Spirits, LSK/LSJ=Sake, W*=Wine, A*/G*/CIG/WEV=Accessories),
+     falling back to the group→classification map. This is required because the raw
+     `classification` field dumps 1,509 rows into "Wine product" (only ~84 real wine) and
+     mislabels accessories — raw equality would dead-end / mis-bucket. The finder maps each
+     FinderCategory → catalog group and filters via groupForProduct(p).
+     FUTURE: `classification` is slated to be repurposed to the real DESIGNATION
+     (Grand Cru/XO/Reserva) with the browse group moving to a `category` field — the finder
+     filters by GROUP (via groupForProduct), so that remodel does not change this pre-filter;
+     it only ADDS a possible designation facet/signal later. See the remodel project note.
    • in-stock = is_in_stock === "1" (string — isInStock() normalizer; "0"/null are OOS).
    • budget is a coarse bracket the user chose — safe to filter.
 
@@ -213,7 +224,7 @@ TIER 1 — deep taste (highest weight; MISSING attribute = 0, never filters)
                  exact +4 · ±1 step +2 · ±2 steps +1 · else/missing 0
   Acidity/Tannin same ordinal ladder: exact +3 · ±1 +1 · missing 0
   Flavor chips   +2 per canonical taste_profile note matched
-                 (also fuzzy-map the product's flavor_tags into the 71-note set)
+                 (also fuzzy-map the product's flavor_tags into the master note set)
 
 TIER 2 — origin / varietal
   country match +2 · region match +2 · grape_variety match +2 · classification refine +1
@@ -308,10 +319,11 @@ The finder ships against **today's** data; these sharpen results later and run i
 
 | # | Enhancement | Field(s) | Today | Finder impact | Cost class | Gate |
 |---|---|---|---|---|---|---|
-| **P4** | Normalize `flavor_tags` → canonical 71-note set | `flavor_tags` | 5,521 messy | Clean flavor matching across both fields | **Rule-based, no API** | **Safe to start now, in parallel** |
+| **P4** | Normalize `flavor_tags` → canonical master set (`flavor_note_master.json`, 78 notes) | `flavor_tags` | 5,521 messy | Clean flavor matching across both fields | **Rule-based, no API** | **Safe to start now, in parallel** |
 | **P1** | Backfill body/acidity/tannin on wines | `wine_body`,`wine_acidity`,`wine_tannin` | ~55% wines | Powers Steps 4–5 for the 3 biggest categories — **highest leverage** | Paid LLM | **Rule 10 pre-flight** (backup → 5-SKU canary → cost estimate → user sign-off → verify in export) |
 | **P2** | Backfill `taste_profile` notes on wines | `taste_profile` | 49% wines | Powers Step-6 chips + flavor scoring | Paid LLM | Rule 10 pre-flight |
 | **P3** | Derive `spirit_style` tag (Peated/Sherried/Bourbon-cask…) | *new field* | 0% | Lets whisky/spirits quiz as richly as wine | Mostly rule-based + light LLM | Canary if any API |
+| **P6** | Extract designation (Grand Cru/XO/Reserva/DOCG/Single Malt) from `name` → structured field; rename group→`category`, repurpose `classification` to designation | `classification`/`category` (remodel) | 0% structured (~18% have a name token) | Prestige signal for Gift/Special occasion + a designation facet | Rule-based extraction | **MIGRATION** — must rename in lockstep with catalog code (reads classification as type); coordinate, verify in export |
 
 **Sequencing recommendation:** start **P4** now (no cost, pure win); queue **P1** as the
 first paid run *after* its canary and your sign-off. P1/P2/P5-class paid runs MUST NOT
