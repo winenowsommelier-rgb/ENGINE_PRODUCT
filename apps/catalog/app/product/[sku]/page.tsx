@@ -14,6 +14,7 @@ import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
 import { toTiers, toStructural } from '@/lib/taste-adapter';
 import { isInStock } from '@/lib/utils';
+import { sanitizeDescription } from '@/lib/sanitize-html';
 import type { PublicProduct } from '@/lib/types';
 
 /**
@@ -178,7 +179,11 @@ export default function Page({ params }: { params: { sku: string } }) {
   if (!product) notFound();
 
   const inStock = isInStock(product.is_in_stock);
-  const description = product.full_description || product.desc_en_short || '';
+  // Descriptions are Magento HTML (<p>/<strong>/<em>/<br>). RENDER the formatting,
+  // but SANITIZE first (allowlist, no attributes) — the field is attacker-shaped
+  // text, so this is the XSS boundary before dangerouslySetInnerHTML. Only render
+  // the block when sanitized output is non-empty (40% of products have none).
+  const description = sanitizeDescription(product.full_description || product.desc_en_short);
 
   // Taste viz inputs (rendered only when present).
   const tiers = toTiers(product.taste_profile);
@@ -238,11 +243,13 @@ export default function Page({ params }: { params: { sku: string } }) {
             </div>
           </header>
 
-          {/* Description — ONLY when present (40% have none; don't show an empty block). */}
+          {/* Description — ONLY when present (40% have none; don't show an empty block).
+              Sanitized Magento HTML rendered for formatting; safe per sanitizeDescription. */}
           {description ? (
-            <section className="max-w-prose text-base leading-relaxed text-foreground/90">
-              {description}
-            </section>
+            <section
+              className="product-description max-w-prose text-base leading-relaxed text-foreground/90"
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
           ) : null}
 
           {/* Attribute matrix. Omits always-empty fields (alcohol, wine_classification,

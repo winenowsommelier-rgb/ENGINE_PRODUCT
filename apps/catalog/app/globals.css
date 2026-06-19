@@ -264,3 +264,28 @@
 }
 .gauge-scale-labels > span:first-child { text-align: left; }
 .gauge-scale-labels > span:last-child { text-align: right; }
+
+/*
+ * ────────────────────────────────────────────────────────────────────────────
+ * PRODUCT DESCRIPTION — prose styling for the SANITIZED Magento HTML rendered on
+ * the product detail page (app/product/[sku]/page.tsx). The sanitizer
+ * (lib/sanitize-html.ts) emits only <p>/<strong>/<em>/<br>, so we only need rules
+ * for those. Goal: readable paragraphs on the 18px Maison scale for the 40+
+ * audience — paragraph spacing, generous line-height, normal bold/italic.
+ * ──────────────────────────────────────────────────────────────────────────── */
+.product-description {
+  line-height: 1.65;
+}
+.product-description p {
+  margin-bottom: 0.75em;
+}
+.product-description p:last-child {
+  margin-bottom: 0;
+}
+.product-description strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+.product-description em {
+  font-style: italic;
+}

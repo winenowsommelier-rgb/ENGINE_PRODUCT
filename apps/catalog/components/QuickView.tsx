@@ -11,6 +11,7 @@ import {
 import { StorefrontImage } from '@/components/StorefrontImage';
 import { ContactButtons } from '@/components/ContactButtons';
 import { formatPrice } from '@/lib/price-tiers';
+import { stripToText } from '@/lib/sanitize-html';
 import { isInStock } from '@/lib/utils';
 import type { PublicProduct } from '@/lib/types';
 import type { ContactLinks } from '@/lib/contact';
@@ -69,6 +70,10 @@ export function QuickView({
   const subtitle = product.brand || product.region;
   const attributes = attributeRows(product);
   const inStock = isInStock(product.is_in_stock);
+  // desc_en_short is plain prose today (0/5,786 contain tags), but strip any tags
+  // to text so the modal can never show raw <p>/<strong> markup, and render it as a
+  // normal React child (escaped → no XSS) inside the Radix <p> DialogDescription.
+  const shortDesc = stripToText(product.desc_en_short);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -115,9 +120,9 @@ export function QuickView({
               </dl>
             ) : null}
 
-            {product.desc_en_short ? (
+            {shortDesc ? (
               <DialogDescription className="mt-5 text-base leading-relaxed text-foreground">
-                {product.desc_en_short}
+                {shortDesc}
               </DialogDescription>
             ) : (
               // Radix logs a warning without a Description; keep an sr-only one.
