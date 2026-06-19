@@ -8,8 +8,33 @@ import { getAllProducts } from '@/lib/catalog-data';
 import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
 import { applyShopQuery, type ShopParams } from '@/lib/shop-query';
+import { shopFacets, topGrapes, topFlavors } from '@/lib/shop-facets';
+import { DrillBreadcrumb } from '@/components/DrillBreadcrumb';
 import { buildQuery } from '@/lib/build-query';
 import { cn } from '@/lib/utils';
+
+/**
+ * Fixed taste scales for the advanced-filter dropdowns (spec §6.6 minimum).
+ * NOT context-aware — these are the normalized scales taste-adapter renders to.
+ */
+const BODY_SCALE = ['Light', 'Medium', 'Medium-Full', 'Full'];
+const ACIDITY_SCALE = ['Low', 'Medium', 'Medium-High', 'High'];
+const TANNIN_SCALE = ['Low', 'Medium', 'Medium-High', 'High'];
+
+/**
+ * Grape/flavor typeahead seeds are catalog-wide (they do NOT depend on the
+ * active filters), so compute them once and reuse. getAllProducts() is itself
+ * process-cached; this lazy cache just avoids re-tallying ~8.5k products on
+ * every request to this dynamic route.
+ */
+let _grapeOptions: string[] | null = null;
+let _flavorOptions: string[] | null = null;
+function getGrapeOptions(): string[] {
+  return (_grapeOptions ??= topGrapes(getAllProducts()));
+}
+function getFlavorOptions(): string[] {
+  return (_flavorOptions ??= topFlavors(getAllProducts()));
+}
 
 /**
  * Shop — the core browsing experience (SSG-friendly server component).
@@ -82,6 +107,12 @@ export default function ShopPage({
   const countries = distinctCountries();
   const currentParams = toStringRecord(searchParams);
 
+  // Context-aware drill-down option lists (sub-category / region / sub-region).
+  const facets = shopFacets(products, searchParams);
+  // Catalog-wide typeahead seeds (cached; independent of active filters).
+  const grapeOptions = getGrapeOptions();
+  const flavorOptions = getFlavorOptions();
+
   const result = applyShopQuery(products, searchParams);
   const { pageItems, total, page, pageSize, totalPages } = result;
 
@@ -112,8 +143,21 @@ export default function ShopPage({
         </header>
 
         <Suspense fallback={<div className="min-h-[88px]" aria-hidden="true" />}>
-          <Filters countries={countries} initialParams={currentParams} />
+          <Filters
+            countries={countries}
+            initialParams={currentParams}
+            availableSubCategories={facets.subCategories}
+            availableRegions={facets.regions}
+            availableSubRegions={facets.subRegions}
+            grapeOptions={grapeOptions}
+            flavorOptions={flavorOptions}
+            bodyOptions={BODY_SCALE}
+            acidityOptions={ACIDITY_SCALE}
+            tanninOptions={TANNIN_SCALE}
+          />
         </Suspense>
+
+        <DrillBreadcrumb params={currentParams} pathname="/shop" />
 
         {total > 0 ? (
           <p
