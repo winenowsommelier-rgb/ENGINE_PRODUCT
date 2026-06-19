@@ -72,3 +72,27 @@ def test_dedupes_and_preserves_order(vocab):
     # A tag that resolves the same note twice must not duplicate it.
     # "Oak oak" -> ["Oak"], not ["Oak","Oak"].
     assert canonicalize_tag("Oak oak", vocab) == ["Oak"]
+
+
+# --- New aliases added for the high-frequency long-tail misses (P4 coverage) ---
+# Each maps to an ALREADY-EXISTING canonical note in taste_vocab.yml.
+
+@pytest.mark.parametrize("raw,expected", [
+    # Canonical names below are the vocab's true note names: "Herbal" and
+    # "Forest Floor" are aliases of Herbaceous / Earth respectively.
+    ("Dried herb", ["Herbaceous"]),
+    ("Dried herbs", ["Herbaceous"]),
+    ("Saline finish", ["Sea Salt"]),
+    ("Saline tension", ["Sea Salt"]),
+    ("Coastal brine", ["Sea Salt"]),
+    ("Candied orange peel", ["Citrus Zest"]),
+    ("Dried orange peel", ["Citrus Zest"]),
+    ("Orange peel", ["Citrus Zest"]),
+    ("Red currant", ["Cranberry"]),  # closest existing red-tart-berry note
+    ("Sous-bois", ["Earth"]),
+    ("Garrigue", ["Herbaceous"]),
+    ("Garrigue herbs", ["Herbaceous"]),
+    ("Crushed limestone", ["Wet Stone"]),
+])
+def test_new_aliases_map_to_existing_notes(vocab, raw, expected):
+    assert canonicalize_tag(raw, vocab) == expected
