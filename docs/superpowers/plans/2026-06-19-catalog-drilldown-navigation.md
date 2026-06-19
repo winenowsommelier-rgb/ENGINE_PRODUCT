@@ -74,6 +74,23 @@ describe('matchesFilters — class (first-segment classification)', () => {
   });
 });
 
+describe('matchesFilters — Accessories class = accessory sub-category (NOT classification)', () => {
+  it('matches accessoryCategoryForSku when group is Accessories', () => {
+    // A glassware SKU mislabeled "Wine product" in classification.
+    const p = P({ sku: 'GWN1', classification: 'Wine product' });
+    expect(matchesFilters(p, { group: 'Accessories', class: 'Glassware' })).toBe(true);
+    expect(matchesFilters(p, { group: 'Accessories', class: 'Cigars' })).toBe(false);
+  });
+  it('an AWC fridge matches the "Wine Fridges & Coolers" accessory class', () => {
+    const p = P({ sku: 'AWC100', classification: 'Wine product' });
+    expect(matchesFilters(p, { group: 'Accessories', class: 'Wine Fridges & Coolers' })).toBe(true);
+  });
+  it('for a NON-Accessories group, class still means classification first-segment', () => {
+    const p = P({ sku: 'W1', classification: 'Red Wine' });
+    expect(matchesFilters(p, { group: 'Wine', class: 'Red Wine' })).toBe(true);
+  });
+});
+
 describe('matchesFilters — subregion (substring, like region)', () => {
   const p = P({ region: 'Bordeaux', subregion: 'Pauillac' });
   it('substring-matches subregion case-insensitively', () => {
@@ -113,7 +130,11 @@ Expected: FAIL — `matchesFilters` is not exported / `class` & `subregion` not 
 
 - [ ] **Step 3: Refactor `shop-query.ts` — extract `matchesFilters`, add `class` + `subregion`**
 
-In `lib/shop-query.ts`, export a new pure predicate and have the filter `.filter()` call it. Add the two new params. Keep `firstParam`/`norm`/`tierById` usage identical.
+In `lib/shop-query.ts`, export a new pure predicate and have the filter `.filter()` call it. Add the two new params. Keep `firstParam`/`norm`/`tierById` usage identical. The existing import line `import { groupForProduct, type CategoryGroup } from './category-groups';` must be widened to also import `accessoryCategoryForSku` (used by the Accessories `class` branch):
+
+```ts
+import { groupForProduct, accessoryCategoryForSku, type CategoryGroup } from './category-groups';
+```
 
 ```ts
 /**
@@ -122,7 +143,8 @@ In `lib/shop-query.ts`, export a new pure predicate and have the filter `.filter
  *
  * All params optional; absent = no constraint. AND semantics.
  *   group     → groupForProduct(p) === group (SKU-prefix override)
- *   class     → first-segment classification (split('|')[0], trimmed) === value (ci)
+ *   class     → (a) when the product's group is Accessories: accessoryCategoryForSku(p.sku) === value (ci)
+ *               (b) otherwise: first-segment classification (split('|')[0], trimmed) === value (ci)
  *   price     → price in [tier.min, tier.max)
  *   country   → exact (ci)
  *   region    → substring (ci)
@@ -134,13 +156,23 @@ In `lib/shop-query.ts`, export a new pure predicate and have the filter `.filter
  *   hasScore=1→ non-empty score_summary
  */
 export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
+  const productGroup = groupForProduct(p); // resolve once — also drives the class branch
+
   const group = firstParam(params.group);
-  if (group && groupForProduct(p) !== (group as CategoryGroup)) return false;
+  if (group && productGroup !== (group as CategoryGroup)) return false;
 
   const klass = norm(firstParam(params.class));
   if (klass) {
-    const first = norm((p.classification ?? '').split('|')[0]);
-    if (first !== klass) return false;
+    if (productGroup === 'Accessories') {
+      // In the Accessories group, `class` is an accessory SUB-CATEGORY (Glassware,
+      // Cigars, Wine Fridges & Coolers, …) keyed off the SKU prefix — the raw
+      // `classification` is unreliable for accessories (§6.5). MUST match the grid
+      // and facets, which both use accessoryCategoryForSku.
+      if (norm(accessoryCategoryForSku(p.sku)) !== klass) return false;
+    } else {
+      const first = norm((p.classification ?? '').split('|')[0]);
+      if (first !== klass) return false;
+    }
   }
 
   const priceId = firstParam(params.price);
@@ -209,6 +241,8 @@ git commit -m "feat(catalog): factor matchesFilters predicate; add class + subre
 ---
 
 ## Task 2: `clearDescendants` patch helper (parent change resets children)
+
+> **Approved deviation from spec §3/§6:** the spec places `clearDescendants` inside `lib/build-query.ts`. This plan puts it in its own `lib/drill-query.ts` instead, to keep `buildQuery` a single-purpose generic patch applier and isolate the drill-down strand knowledge. Every consumer in this plan imports it from `@/lib/drill-query`. Spec tests that import it "from build-query" should import from `drill-query`. This is a deliberate design improvement, not an oversight.
 
 **Files:**
 - Create: `apps/catalog/lib/drill-query.ts`
@@ -316,7 +350,7 @@ git commit -m "feat(catalog): clearDescendants helper for drill-down parent/chil
 
 ```ts
 import {
-  subCategoriesFor, regionsFor, subRegionsFor, accessorySubCategoriesFor, valuesFor,
+  subCategoriesFor, regionsFor, subRegionsFor, accessorySubCategoriesFor,
 } from '../facets';
 import type { PublicProduct } from '../types';
 
@@ -341,19 +375,22 @@ describe('subCategoriesFor', () => {
 });
 
 describe('accessorySubCategoriesFor', () => {
-  it('groups accessories by accessoryCategoryForSku with counts', () => {
+  it('groups accessories by accessoryCategoryForSku with counts; omits zero-count categories', () => {
     const set = [
       P({ sku: 'AWC100' }), P({ sku: 'AWC200' }), // Wine Fridges & Coolers x2
       P({ sku: 'GWN1' }),                          // Glassware x1
       P({ sku: 'CIG1' }),                          // Cigars x1
+      P({ sku: 'W500' }),                          // not an accessory → ignored
     ];
-    expect(accessorySubCategoriesFor(set)).toEqual([
-      { value: 'Bar Tools & Gifts', count: 0 }, // omitted — assert it is NOT present
-    ].filter((x) => x.count > 0).length === 0 ? expect.arrayContaining([
+    const out = accessorySubCategoriesFor(set);
+    // sorted ascending by value, only present sub-categories
+    expect(out).toEqual([
       { value: 'Cigars', count: 1 },
       { value: 'Glassware', count: 1 },
       { value: 'Wine Fridges & Coolers', count: 2 },
-    ]) : []);
+    ]);
+    // Bar Tools & Gifts has no products here → must not appear at all.
+    expect(out).not.toContainEqual(expect.objectContaining({ value: 'Bar Tools & Gifts' }));
   });
 });
 
@@ -376,16 +413,7 @@ describe('regionsFor / subRegionsFor', () => {
     ]);
   });
 });
-
-describe('valuesFor (generic attribute facet)', () => {
-  it('counts distinct values of a field, omitting empties', () => {
-    const set = [P({ wine_body: 'Full' }), P({ wine_body: 'Full' }), P({ wine_body: '' })];
-    expect(valuesFor(set, (p) => p.wine_body)).toEqual([{ value: 'Full', count: 2 }]);
-  });
-});
 ```
-
-> Note: simplify the `accessorySubCategoriesFor` assertion to a plain `arrayContaining` of the three non-zero options and an explicit `expect(...).not.toContainEqual({ value: 'Bar Tools & Gifts', count: 0 })`. (The fixture above is intentionally awkward; the implementer should write a clean version — the behavior under test is: group by `accessoryCategoryForSku`, omit zero-count categories, sort by value.)
 
 - [ ] **Step 2: Run tests to verify they fail**
 
@@ -458,15 +486,9 @@ export function regionsFor(_country: string, products: PublicProduct[]): FacetOp
 export function subRegionsFor(_region: string, products: PublicProduct[]): FacetOption[] {
   return tally(products, (p) => p.subregion);
 }
-
-/** Generic attribute facet (body/acidity/tannin/etc.). */
-export function valuesFor(
-  products: PublicProduct[],
-  key: (p: PublicProduct) => string | null | undefined,
-): FacetOption[] {
-  return tally(products, key);
-}
 ```
+
+> YAGNI: this feature uses **fixed normalized scales** for the body/acidity/tannin dropdowns (spec §6.6 MINIMUM), so a generic `valuesFor(field)` context-aware attribute facet is NOT built. If the §6.6 "nice-to-have" context-aware attribute counts are added later, that's the seam — but don't build it now.
 
 > The `_country`/`_region` args are accepted for call-site clarity/symmetry even though the caller pre-filters; keep them (prefixed `_`) so the shop page reads `regionsFor(country, set)`.
 
@@ -497,12 +519,12 @@ git commit -m "feat(catalog): context-aware facet option lists (sub-category/reg
 ```ts
 import { getAllProducts } from '../catalog-data';
 import { applyShopQuery, matchesFilters } from '../shop-query';
-import { regionsFor } from '../facets';
+import { regionsFor, accessorySubCategoriesFor } from '../facets';
 
-describe('facet count == grid total (context-aware invariant)', () => {
+describe('facet count consistent with grid total (context-aware invariant)', () => {
   const all = getAllProducts();
 
-  it('count of each region under group=Wine equals the grid total when that region is selected', () => {
+  it('every region facet under group=Wine: count subset of grid, and grid >= count', () => {
     // Input set for regionsFor = everything active EXCEPT region/subregion → here just group=Wine.
     const wine = all.filter((p) => matchesFilters(p, { group: 'Wine' }));
     const regions = regionsFor('', wine);
@@ -510,12 +532,30 @@ describe('facet count == grid total (context-aware invariant)', () => {
 
     // Spot-check the top few regions to keep the test fast.
     for (const { value, count } of regions.slice(0, 5)) {
-      const grid = applyShopQuery(all, { group: 'Wine', region: value });
-      // region is a SUBSTRING filter; the facet counts exact stored values. The
-      // grid total is >= the facet count (substring may match sibling regions).
-      // Assert the facet count products are a SUBSET of the grid: every product the
-      // facet counted survives the grid filter.
+      const params = { group: 'Wine', region: value };
+      const grid = applyShopQuery(all, params);
+      // `region` is a SUBSTRING filter; the facet counts EXACT stored values. So
+      // grid.total >= count (substring may also catch sibling regions). The strong
+      // guard against grid/facet divergence is the SUBSET direction: every product
+      // the facet counted must survive the grid predicate.
       expect(grid.total).toBeGreaterThanOrEqual(count);
+      const facetCounted = wine.filter((p) => (p.region ?? '').trim() === value);
+      expect(facetCounted.length).toBe(count); // facet count is exact-value tally
+      for (const p of facetCounted) {
+        expect(matchesFilters(p, params)).toBe(true); // ...and all pass the grid
+      }
+    }
+  });
+
+  it('Accessories sub-category facet count EQUALS grid total (exact match, no substring)', () => {
+    // class for Accessories matches accessoryCategoryForSku exactly (both grid + facet),
+    // so this is a true equality — the strongest form of the §6 invariant.
+    const accessories = all.filter((p) => matchesFilters(p, { group: 'Accessories' }));
+    const subs = accessorySubCategoriesFor(accessories);
+    expect(subs.length).toBeGreaterThan(0);
+    for (const { value, count } of subs) {
+      const grid = applyShopQuery(all, { group: 'Accessories', class: value });
+      expect(grid.total).toBe(count);
     }
   });
 });
@@ -911,6 +951,17 @@ import { type CategoryGroup, CATEGORY_GROUPS } from './category-groups';
 
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
+/**
+ * Return a SHALLOW COPY of params with the given keys removed. Stays typed as
+ * ShopParams (no `as Record<string, unknown>` cast) so matchesFilters keeps its
+ * type safety. `class` is a contextual keyword but a perfectly legal object key.
+ */
+function omit(params: ShopParams, ...keys: string[]): ShopParams {
+  const copy: ShopParams = { ...params };
+  for (const k of keys) delete copy[k];
+  return copy;
+}
+
 export interface ShopFacets {
   subCategories: FacetOption[];
   regions: FacetOption[];
@@ -926,8 +977,7 @@ export function shopFacets(all: PublicProduct[], params: ShopParams): ShopFacets
   // subCategories: apply everything EXCEPT `class`.
   let subCategories: FacetOption[] = [];
   if (group && (CATEGORY_GROUPS as readonly string[]).includes(group)) {
-    const { class: _omit, ...exceptClass } = params as Record<string, unknown>;
-    const set = all.filter((p) => matchesFilters(p, exceptClass as ShopParams));
+    const set = all.filter((p) => matchesFilters(p, omit(params, 'class')));
     subCategories = group === 'Accessories'
       ? accessorySubCategoriesFor(set)
       : subCategoriesFor(group, set);
@@ -936,16 +986,14 @@ export function shopFacets(all: PublicProduct[], params: ShopParams): ShopFacets
   // regions: apply everything EXCEPT region + subregion.
   let regions: FacetOption[] = [];
   if (country) {
-    const { region: _r, subregion: _s, ...exceptRegions } = params as Record<string, unknown>;
-    const set = all.filter((p) => matchesFilters(p, exceptRegions as ShopParams));
+    const set = all.filter((p) => matchesFilters(p, omit(params, 'region', 'subregion')));
     regions = regionsFor(country, set);
   }
 
   // subRegions: apply everything EXCEPT subregion.
   let subRegions: FacetOption[] = [];
   if (region) {
-    const { subregion: _s, ...exceptSub } = params as Record<string, unknown>;
-    const set = all.filter((p) => matchesFilters(p, exceptSub as ShopParams));
+    const set = all.filter((p) => matchesFilters(p, omit(params, 'subregion')));
     subRegions = subRegionsFor(region, set);
   }
 
@@ -953,12 +1001,12 @@ export function shopFacets(all: PublicProduct[], params: ShopParams): ShopFacets
 }
 ```
 
-> Note for accessories: when `group === 'Accessories'`, the `class` param actually holds an accessory sub-category VALUE (e.g. "Glassware"). `matchesFilters`'s `class` branch compares first-segment `classification`, which won't match accessory sub-categories. The implementer MUST decide where accessory `class` filtering happens: simplest is to add to `matchesFilters` — when `group` resolves to Accessories AND a `class` is set, compare `accessoryCategoryForSku(p.sku) === class` instead of the classification first-segment. Add a unit test for this in shop-query.test.ts (Task 1 can be amended, or add here). Keep the grid and facets consistent.
+> Note for accessories (RESOLVED in Task 1): when `group === 'Accessories'`, the `class` param holds an accessory sub-category VALUE (e.g. "Glassware"), and `matchesFilters` already branches to `accessoryCategoryForSku(p.sku) === class` for Accessories products (Task 1, Step 3 + its tests). So `shopFacets` routing `group=Accessories` to `accessorySubCategoriesFor` is consistent with the grid by construction — no extra work here, and the Task 4 invariant asserts the equality. Do NOT re-implement the branch.
 
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `cd apps/catalog && npx vitest run lib/__tests__/shop-facets-wiring.test.ts`
-Expected: PASS. (If the Accessories `class` branch is needed, add it to `matchesFilters` + a test, re-run shop-query tests.)
+Expected: PASS. (The Accessories `class` branch already lives in `matchesFilters` from Task 1, so the grid and these facets agree by construction.)
 
 - [ ] **Step 5: Wire `app/shop/page.tsx`**
 
