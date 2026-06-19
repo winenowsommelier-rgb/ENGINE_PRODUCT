@@ -35,7 +35,7 @@ This is an **extension of already-shipped code**, not a greenfield build. Read t
 |---|---|---|
 | `lib/shop-query.ts` | Modify | Factor predicate into exported `matchesFilters(product, params)`; add `class` (first-segment exact) + `subregion` (substring) + normalize body/acidity/tannin matching. `applyShopQuery` calls `matchesFilters`. |
 | `lib/drill-query.ts` | **New** | `clearDescendants(strand, value)` pure helper → the multi-key patch that clears descendant params when a parent changes (§3). Small, pure, unit-tested. |
-| `lib/facets.ts` | **New** | `subCategoriesFor`, `regionsFor`, `subRegionsFor`, `accessorySubCategoriesFor`, `valuesFor` — context-aware `{value,count}[]`, only options with ≥1 product, sorted. Pure. |
+| `lib/facets.ts` | **New** | `subCategoriesFor`, `regionsFor`, `subRegionsFor`, `accessorySubCategoriesFor` — context-aware `{value,count}[]`, only options with ≥1 product, sorted. Pure. |
 | `components/ui/select.tsx` | **New** | shadcn Select primitive (Radix) — for body/acidity/tannin/sweetness dropdowns. |
 | `components/ui/command.tsx` + `popover.tsx` | **New** | shadcn Command (cmdk) + Popover — for the grape/flavor searchable typeahead. |
 | `components/SearchableSelect.tsx` | **New** | Thin wrapper: a typeahead built on Command+Popover; props `{label, value, options, onSelect, placeholder}`. Used for grape & flavor. |
@@ -1104,5 +1104,5 @@ Report: tasks done, tests added/passing, build status, and the browser-verified 
 - **YAGNI:** No per-facet landing pages, no grape/appellation drill-down, no recommender/home/product changes (spec §7).
 - **TDD:** every task is test-first. Real-data tests (Tasks 4, 10) use `getAllProducts()` — they're the Rule-6-style invariants guarding against grid/facet divergence.
 - **Region stays substring** (existing behavior, spec §4.2). Don't switch it to exact. The drill-down chips set exact canonical values; substring is a deliberate, accepted superset.
-- **Accessories `class`** means the accessory sub-category (via `accessoryCategoryForSku`), NOT a classification — handle that branch in `matchesFilters` (Task 10 note) and keep grid+facets consistent.
+- **Accessories `class`** means the accessory sub-category (via `accessoryCategoryForSku`), NOT a classification — handle that branch in `matchesFilters` (Task 1) and keep grid+facets consistent.
 - Reference skills: @superpowers:subagent-driven-development (recommended) or @superpowers:executing-plans.
