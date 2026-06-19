@@ -335,9 +335,9 @@ lower-priority paid item supporting the food step; listed for completeness.)
 - **Data invariant (Rule 6):** every product the finder returns passes through
   `toPublicProduct` — **no margin/B2B field ever appears** in a finder response.
 - **Browser verification (Rule 7 — mandatory before "done"):** dev server up; walk
-  **all 8 categories** end-to-end (including a "No preference" path and a "With food"
-  path) to a **non-empty** result — all **7 categories** (Red, White, Sparkling &
-  Champagne, Whisky, Gin, Other Spirits, Sake & Asian); confirm the style card +
+  **all 7 categories** end-to-end (including a "No preference" path and a "With food"
+  path) to a **non-empty** result — Red, White, Sparkling & Champagne, Whisky, Gin,
+  Other Spirits, Sake & Asian; confirm the style card +
   product grid render and the result URL is shareable/back-safe. "It compiles" is
   not done.
 
