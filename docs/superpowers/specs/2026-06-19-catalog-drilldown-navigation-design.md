@@ -74,9 +74,10 @@ NOT in the generic `buildQuery` (it's domain-agnostic and must stay so). Instead
 and the breadcrumb construct **multi-key patches** when a parent changes — e.g. selecting a
 new group calls `apply({ group: x, class: null })`; a new country calls
 `apply({ country: x, region: null, subregion: null })`. A tiny pure helper
-`clearDescendants(level, patch)` in `lib/facets.ts` (or `build-query.ts`) builds the correct
-null-out patch for a given level so the logic is unit-testable and not duplicated across
-Filters and breadcrumb.
+`clearDescendants(level, patch)` in **`lib/build-query.ts`** (alongside `buildQuery`, but a
+separate exported function — keeps `buildQuery` itself generic) builds the correct null-out
+patch for a given level so the logic is unit-testable and not duplicated across Filters and
+breadcrumb. (§6 tests import it from there.)
 
 ---
 
@@ -164,7 +165,7 @@ Compact active-path display in the filter area: e.g. `Wine › Red Wine · Franc
 
 - **Calm default:** only top categories + country dropdown visible; deeper rows appear only as the user commits. Breadcrumb collapses the chosen path so deep navigation never becomes a wall of chips.
 - **No dead-ends:** sub-options always come from the live filtered set, so a shown option always returns ≥1 product.
-- **Parent change resets descendants** (query-builder enforced) — pick a new country → region/subregion cleared.
+- **Parent change resets descendants** (enforced by Filters/breadcrumb via multi-key patches + the `clearDescendants` helper, §3 — NOT in the generic buildQuery) — pick a new country → region/subregion cleared.
 - **Empty levels hidden:** a country with one region, or products lacking subregion, simply don't reveal that row.
 - **Stale/invalid params:** a `region` that doesn't match the active `country` (e.g. hand-edited URL) yields 0 matches for that level → it's dropped from the breadcrumb and ignored gracefully; the grid still renders whatever the consistent params select. Don't crash.
 - **Missing-geo products:** the 30 no-country / 1,217 no-region / no-subregion products are absent from geo-filtered views, present in unfiltered — expected.
