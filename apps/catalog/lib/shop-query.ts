@@ -34,7 +34,7 @@
  */
 
 import type { PublicProduct } from './types';
-import { groupForClassification, type CategoryGroup } from './category-groups';
+import { groupForProduct, type CategoryGroup } from './category-groups';
 import { tierById } from './price-tiers';
 import { isInStock } from './utils';
 
@@ -104,7 +104,9 @@ export function applyShopQuery(
 
   // ---- FILTER ----
   const items = products.filter((p) => {
-    if (group && groupForClassification(p.classification) !== (group as CategoryGroup)) {
+    // Use groupForProduct (SKU-prefix override), NOT groupForClassification —
+    // the raw classification dumps whisky/spirits/sake/accessories into "Wine product".
+    if (group && groupForProduct(p) !== (group as CategoryGroup)) {
       return false;
     }
     if (tier) {
