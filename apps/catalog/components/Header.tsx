@@ -25,6 +25,7 @@ import { SearchOverlay } from '@/components/SearchOverlay';
 
 const NAV_LINKS = [
   { href: '/shop', label: 'Shop' },
+  { href: '/finder', label: 'Find Your Match' },
   { href: '/explore-map', label: 'Explore by Map' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },

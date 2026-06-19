@@ -62,6 +62,25 @@ export default function Home() {
         </Link>
       </section>
 
+      {/* Find Your Match — calm prompt steering undecided browsers into the finder quiz. */}
+      <section className="border-t border-border bg-secondary/40">
+        <div className="container flex flex-col items-center gap-5 py-16 text-center">
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+            Not sure where to start?
+          </h2>
+          <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
+            Answer a few quick questions and we&apos;ll find your style — then
+            the bottles that match it.
+          </p>
+          <Link
+            href="/finder"
+            className="inline-flex min-h-12 items-center justify-center rounded-md bg-primary px-8 text-base font-medium text-primary-foreground transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Find Your Match
+          </Link>
+        </div>
+      </section>
+
       {/* Featured */}
       {featured.length > 0 ? (
         <section className="container flex flex-col gap-8 pb-16">
