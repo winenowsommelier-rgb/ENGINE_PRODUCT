@@ -4,17 +4,23 @@ import { isInStock } from '@/lib/utils';
 import { PRICE_TIERS } from '@/lib/price-tiers';
 import type { Answers, FinderCategory } from './answers';
 
-interface CatRule { group: CategoryGroup; classMatch?: (classification: string | undefined) => boolean; }
+interface CatRule { group: CategoryGroup; match?: (p: PublicProduct) => boolean; }
 
 const firstSeg = (c?: string) => (c ?? '').split('|')[0].trim().toLowerCase();
 
+// SKU prefix is the reliable gin signal: 72/169 in-stock gins (Tanqueray, Gordon's,
+// Gilbey's...) are mis-tagged 'Wine product', not 'Gin'. SKU LGN* mirrors groupForProduct,
+// which already trusts the prefix over classification. classification is the fallback only.
+const isGin = (p: PublicProduct) =>
+  (p.sku ?? '').toUpperCase().startsWith('LGN') || firstSeg(p.classification) === 'gin';
+
 export const CATEGORY_MAP: Record<FinderCategory, CatRule> = {
-  red:       { group: 'Wine', classMatch: (c) => firstSeg(c) === 'red wine' },
-  white:     { group: 'Wine', classMatch: (c) => firstSeg(c) === 'white wine' },
-  sparkling: { group: 'Wine', classMatch: (c) => ['champagne','sparkling wine'].includes(firstSeg(c)) },
+  red:       { group: 'Wine', match: (p) => firstSeg(p.classification) === 'red wine' },
+  white:     { group: 'Wine', match: (p) => firstSeg(p.classification) === 'white wine' },
+  sparkling: { group: 'Wine', match: (p) => ['champagne','sparkling wine'].includes(firstSeg(p.classification)) },
   whisky:    { group: 'Whisky' },
-  gin:       { group: 'Spirits', classMatch: (c) => firstSeg(c) === 'gin' },
-  spirits:   { group: 'Spirits', classMatch: (c) => firstSeg(c) !== 'gin' },
+  gin:       { group: 'Spirits', match: (p) => isGin(p) },
+  spirits:   { group: 'Spirits', match: (p) => !isGin(p) },
   sake:      { group: 'Sake & Asian' },
 };
 
@@ -26,7 +32,7 @@ export function finderPrefilter(products: PublicProduct[], a: Answers): PublicPr
   return products.filter((p) => {
     if (!isInStock(p.is_in_stock)) return false;
     if (groupForProduct(p) !== rule.group) return false;
-    if (rule.classMatch && !rule.classMatch(p.classification)) return false;
+    if (rule.match && !rule.match(p)) return false;
     if (tier) {
       if (typeof p.price !== 'number' || Number.isNaN(p.price)) return false;
       if (p.price < tier.min || p.price >= tier.max) return false;

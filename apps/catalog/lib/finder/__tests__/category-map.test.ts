@@ -33,4 +33,16 @@ describe('finderPrefilter', () => {
     expect(finderPrefilter(pool as any, ans({category:'red', budget:0})).map(p=>p.sku)).toEqual(['WRW010']);
     expect(finderPrefilter(pool as any, ans({category:'red', budget:1})).map(p=>p.sku)).toEqual(['WRW011']);
   });
+  it('a gin tagged "Wine product" but SKU LGN* is classified as gin (not spirits)', () => {
+    const pool = [
+      { sku:'LGN0176BU', classification:'Wine product', price:1000, is_in_stock:true } as any,
+      { sku:'LRM001',    classification:'Rum',          price:1000, is_in_stock:true } as any,
+    ];
+    expect(finderPrefilter(pool, { category:'gin' } as any).map((p:any)=>p.sku)).toEqual(['LGN0176BU']);
+    expect(finderPrefilter(pool, { category:'spirits' } as any).map((p:any)=>p.sku)).toEqual(['LRM001']);
+  });
+  it('respects the string form of is_in_stock ("0" = OOS)', () => {
+    const pool = [{ sku:'WRW050', classification:'Red Wine', price:1000, is_in_stock:'0' } as any];
+    expect(finderPrefilter(pool, { category:'red' } as any)).toEqual([]);
+  });
 });
