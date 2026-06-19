@@ -7,6 +7,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { TasteWheel } from '@/components/product/TasteWheel';
 import { StructuralGauges } from '@/components/product/StructuralGauges';
 import { getAllProducts, getProductBySku } from '@/lib/catalog-data';
+import { groupForProduct } from '@/lib/category-groups';
 import { precomputeRecommendations } from '@/lib/recommender';
 import { FEATURED_SKUS } from '@/lib/featured';
 import { formatPrice } from '@/lib/price-tiers';
@@ -200,9 +201,18 @@ export default function Page({ params }: { params: { sku: string } }) {
 
   return (
     <main className="container flex flex-col gap-12 py-8 sm:py-10">
-      {/* Breadcrumb back to shop. */}
+      {/* Breadcrumb back to shop. Category comes from groupForProduct (SKU-prefix
+          override), NOT raw classification — so a whisky mislabeled "Wine product"
+          correctly breadcrumbs under Whisky, linking to its shop tab. */}
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <Link href="/shop" className="hover:text-primary">Shop</Link>
+        <span className="px-2" aria-hidden="true">/</span>
+        <Link
+          href={`/shop?group=${encodeURIComponent(groupForProduct(product))}`}
+          className="hover:text-primary"
+        >
+          {groupForProduct(product)}
+        </Link>
         <span className="px-2" aria-hidden="true">/</span>
         <span className="text-foreground">{product.name}</span>
       </nav>
