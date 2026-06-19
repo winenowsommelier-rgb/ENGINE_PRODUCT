@@ -184,32 +184,58 @@ Compact active-path display in the filter area: e.g. `Wine › Red Wine · Franc
 
 ---
 
-## 6.5 Accessories proper sub-categorization (ADDED per user)
+## 6.5 Accessories sub-categorization BY SKU PREFIX (ADDED/REVISED per user)
 
-The current 6-group map collapses non-beverage items under one **Accessories** group. The user
-wants these **separated as proper sub-categories** so accessories are browsable, with **Events
-as its own distinct sub-category**. Verified classifications in this group:
+**CRITICAL DATA FINDING:** the `classification` field is **unreliable for accessories**. Verified
+by SKU prefix: there are **1,120 accessories**, and **570 of them are MISCLASSIFIED as a beverage**
+(`Wine product` etc.) — e.g. **94 wine fridges (`AWC*`, Dometic coolers/cabinets), 58 of which
+currently show under the WINE category**, plus bar tools/glassware hidden under Wine. Categorizing
+by `classification` would leave these in the wrong place. **Decision (user-approved): categorize
+accessories by SKU PREFIX, and pull them OUT of the beverage groups.**
 
-| Sub-category | Source classification(s) | Count |
+### Verified SKU-prefix → accessory sub-category map (counts)
+| Accessory sub-category | SKU prefixes | Count |
 |---|---|---|
-| Glassware | `Glassware` | 232 |
-| Cigars | `Cigar` | 102 |
-| Events | `Events` | 10 |
-| Gifts & Other | `Accessories` (generic, 121) + `Others` (85) | ~206 |
+| **Bar Tools & Gifts** | `ABA`, `LOT` | 646 |
+| **Glassware** | `GWN`, `GDC`, `GLQ`, `GWA` | 268 |
+| **Cigars** | `CIG` | 102 |
+| **Wine Fridges & Coolers** | `AWC` | 94 |
+| **Events** | `WEV` | 10 |
+| | **TOTAL** | **1,120** |
 
-(Note: "wine fridge" is only ~2 products and lives under Glassware/Accessories — no own tier
-needed. `Non-Alcoholic` (63) + `Mineral Water` (1) belong to the **Beer & RTD** group per the
-existing map, NOT Accessories — leave them there.)
+Real beverages use other prefixes (`W*` wine, `L*` liquor, `N*` non-alc) — none collide with the
+accessory prefixes above. (`WEV` starts with W but is Events — wine dinners/tastings — confirmed by
+name; map by exact prefix `WEV`, not `W`.)
 
-**Design:** this is exactly the drill-down (§4): the **Accessories** top group, when selected,
-reveals sub-category chips **Glassware · Cigars · Events · Gifts & Other** (via the same
-`subCategoriesFor` mechanism). To make the labels friendly and to merge `Accessories`+`Others`
-into one "Gifts & Other" chip, add a small **sub-category display map** in `category-groups.ts`
-(`SUBCATEGORY_LABELS` / a grouping for the Accessories group) so the raw classifications map to
-these clean chip labels — and `class` filtering matches the underlying raw classification(s)
-(the "Gifts & Other" chip filters `classification ∈ {Accessories, Others}`). Keep the 6 top
-groups unchanged; this only enriches the Accessories drill-down level. Events being its own chip
-satisfies "Event as separate."
+### Design — prefix-based categorization is the source of truth for the Accessories group
+- Add `lib/accessory-prefixes.ts` (or extend `category-groups.ts`): `ACCESSORY_PREFIX_MAP:
+  Record<string, AccessorySubcategory>` for the prefixes above, and a helper
+  `accessoryCategoryForSku(sku): AccessorySubcategory | null` (uppercase, take first 3 chars,
+  look up; null if not an accessory prefix).
+- **`groupForProduct(product)`** becomes the new top-level classifier (replacing pure
+  `groupForClassification(classification)` at the grouping layer): **if the SKU matches an accessory
+  prefix → group = `Accessories`** (overriding any misclassification); else fall back to
+  `groupForClassification(product.classification)`. This is what pulls the 570 misclassified
+  fridges/tools OUT of Wine/Spirits and INTO Accessories. Use `groupForProduct` everywhere the shop
+  groups products (shop-query `group` filter, facets, home category cards count).
+- Within the Accessories group, the **drill-down sub-category** (the `class` level, §4) uses
+  `accessoryCategoryForSku(sku)` to produce the chips: **Bar Tools & Gifts · Glassware · Cigars ·
+  Wine Fridges & Coolers · Events** (with counts, via the same `subCategoriesFor`/`facets.ts`
+  machinery, but keyed on accessory sub-category for this group). So selecting Accessories →
+  reveals these 5 chips; selecting "Wine Fridges & Coolers" filters to the 94 `AWC` products.
+- For NON-accessory groups (Wine/Whisky/Spirits/Sake/Beer&RTD), the `class` sub-category level
+  continues to use the classification-based `classificationsInGroup` (unchanged). Only the
+  Accessories group switches to prefix-based sub-categorization.
+- `Non-Alcoholic` (63) + `Mineral Water` (1) stay in **Beer & RTD** (they ARE beverages) — NOT moved.
+
+**Net visible effect:** wine fridges, bar tools, and glassware no longer pollute the Wine/Spirits
+listings; Accessories becomes a real, browsable section with Events and Wine Fridges as their own
+sub-categories. Satisfies "separate all accessories properly" and "Event as separate."
+
+**Tests:** `accessoryCategoryForSku('AWC0099EJ') === 'Wine Fridges & Coolers'`; `groupForProduct`
+puts an `AWC` product (classified 'Wine product') into `Accessories`, NOT Wine; the Accessories
+drill-down yields the 5 sub-category chips with the verified counts (Bar Tools 646, Glassware 268,
+Cigars 102, Fridges 94, Events 10); a real wine (`WRW*`) is unaffected and still groups as Wine.
 
 ## 6.6 "More filters" as dropdowns + richer taste/attribute browsing (ADDED per user)
 
