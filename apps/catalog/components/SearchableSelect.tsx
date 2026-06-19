@@ -41,6 +41,10 @@ export function SearchableSelect({
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState('');
 
+  // Defensive cap: callers pass a pre-capped list (~top 40/50), but never render
+  // the full 844/5,521 if a future caller forgets — cmdk filters per keystroke.
+  const visibleOptions = React.useMemo(() => options.slice(0, 50), [options]);
+
   const choose = React.useCallback(
     (next: string | null) => {
       onSelect(next);
@@ -63,7 +67,13 @@ export function SearchableSelect({
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (!o) setQuery(''); // clear stale query so reopen starts fresh
+      }}
+    >
       <PopoverTrigger asChild>
         <button
           type="button"
@@ -103,7 +113,7 @@ export function SearchableSelect({
               </CommandGroup>
             ) : null}
             <CommandGroup>
-              {options.map((option) => (
+              {visibleOptions.map((option) => (
                 <CommandItem
                   key={option}
                   value={option}
