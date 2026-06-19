@@ -1,10 +1,30 @@
 # WNLQ9 Product Finder — Design Spec
 
 **Date:** 2026-06-18
-**Status:** Draft (design), pending spec review + implementation plan
-**Depends on:** the WNLQ9 catalog app (`apps/catalog/`) being scaffolded
-(see `2026-06-17-wnlq9-online-catalog-design.md`). The finder is a feature *inside*
-that app and reuses its `toPublicProduct` projection and `recommender.ts`.
+**Status:** IMPLEMENTED 2026-06-18 (`apps/catalog/lib/finder/` + `app/finder/` + `components/finder/`).
+Built via the plan `docs/superpowers/plans/2026-06-18-wnlq9-product-finder.md`; 44 unit tests;
+Rule 7 browser walk passed for all 7 categories. See "Implementation deltas" below.
+**Depends on:** the WNLQ9 catalog app (`apps/catalog/`) — already built. The finder is a
+feature *inside* it and reuses `getAllProducts`/`toPublicProduct` and `groupForProduct`.
+
+## Implementation deltas (what changed from this design during the build)
+These are the conscious deviations made while implementing; the design above is otherwise accurate.
+1. **Gin/Spirits split keys off the `LGN` SKU prefix, not classification.** 72/169 in-stock
+   gins (Tanqueray, Gordon's, Gilbey's…) are mis-tagged `"Wine product"`. `category-map.ts`
+   uses `isGin(p) = sku startsWith 'LGN' || firstSeg(classification)==='gin'` (mirrors
+   `groupForProduct`'s SKU authority). Without this they vanished from the gin path.
+2. **`scoreProducts` returns `{products, degraded}`** (not a bare array). `degraded` =
+   `ranked.length>0 && wellMatched<4` (never flagged on an empty pool). Body ladder rungs:
+   exact 4 / adjacent 3 / far(≥2 steps) 1 / off-ladder 0 — so an all-far pool correctly
+   degrades. The everyday/value-lean Tier-3 rule (`everyday` + budget≤1 → +1) is implemented.
+3. **Step routing is 1-based with occasion = `/finder/1`** (the §3 example's `/finder/2`
+   would have skipped occasion). Category cards link to `/finder/1?cat=…`. Out-of-range step
+   → redirect to result. The conditional food sub-step splices after occasion when `occ=food`;
+   `StepField` includes `'food'` and a dedicated `FoodChoice` component writes `answers.food`.
+4. **DATA-QUALITY note (not a finder bug):** a few SKUs are mis-classified at source (e.g.
+   `LOT0174GR` "Inchon Plum Umeshu" is classified `"Gin"`). With no group-level SKU signal,
+   the finder trusts the classification and shows it under Gin. Fix belongs in the data
+   (P3/P6 remodel, §8), not the finder.
 
 ---
 
