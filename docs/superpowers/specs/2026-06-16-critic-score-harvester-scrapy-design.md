@@ -126,8 +126,9 @@ that is the user feature and is independent of the operator console.
 
 ```
 data/db/products.db ──▶ catalog.py: distinct (producer, cuvee, vintage)
-                              │  for SKUs with NO curated score yet (§16 gap
-                              │  scope); start_requests source for spiders
+                              │  for BEVERAGE SKUs with NO curated score yet
+                              │  (§16 gap scope; category-aware — excludes
+                              │  accessories, see §18); start_requests for spiders
                               ▼
         ┌─────────────────────────────────────────────┐
         │ Scrapy project: scraper/                      │
@@ -362,6 +363,19 @@ products.db, and NOT critic_scores.** `critic_scores` row count is the
    The canary runs **only after** the binding join column is confirmed against
    the live schema (§14 open item 3) — a wrong join key produces a deceptively
    low precision that would be misblamed on the regex.
+   - ⚠️ **No-vintage canary stratum (mandatory — the gate's blind spot).** The
+     50-SKU recon set is vintage-rich, but the real backfill target is dominated
+     by no-vintage SKUs: of 9,886 unscored products, only ~2,436 have a usable
+     vintage; ~7,350 are NV / "Current vintage" / blank. The vintage filter
+     (old §7.2) is the main false-bind guard, so a 90% pass on vintage-rich SKUs
+     does **not** certify the no-vintage majority. The canary therefore reports
+     **two precision numbers**: (a) vintage-rich (the recon set) and (b) a
+     no-vintage stratum — a fresh ~25-SKU hand-labeled sample of NV / Current-vintage
+     SKUs. The 90% gate applies to **both**. If the no-vintage stratum fails, the
+     honest v1 move is to bind+show scores **only where vintage is confident** and
+     defer NV/Current-vintage binding to v2 — not to ship a quiet false-bind rate
+     across ~7,350 SKUs (risk #2). The all-7-spiders scope is approved *on the
+     condition* this stratum gates the backfill.
 
 6. **Rule 9 — refresh the live export.** The backfill job's final step calls
    `scripts/refresh_live_export.py`. Without it the UI reads stale JSON and
@@ -618,8 +632,17 @@ sequences three tracks; §12 is the third block:
    in supplier-intake. Independent of the scraper; can ship first as the
    lowest-risk new coverage.
 4. **Scraper (§6-§14, §12 day-plan)** — ~6 days + 2-day buffer + background
-   backfill. Scoped to SKUs with no curated score (catalog query filters
-   `WHERE products.score_summary IS NULL OR the critic is uncovered`).
+   backfill. Scoped to SKUs with no curated score **and** that are actually
+   beverages — the catalog query is **category-aware**, not just
+   `score_summary IS NULL`: it excludes the ~1,444 accessory / non-beverage
+   `other`-bucket SKUs (glassware, gift sets, etc.) so spiders don't burn
+   politeness budget searching Wine Enthusiast for a wine glass. Filter:
+   `WHERE products.score_summary IS NULL AND <is wine or spirit by
+   category/sku-prefix> (OR the critic is uncovered)`. Note the addressable
+   universe is two sub-targets — **~6,695 wine-ish** (served by the 4 wine
+   spiders, overlaps existing critics) and **~3,297 spirit-ish** (served by the
+   3 spirits spiders, 100% net-new — zero spirits have any score today). Both
+   are in scope per the all-7 decision; spirits is the higher-ROI half.
 
 Tracks 3 and 4 are independent after tracks 1-2; track 3 is the smaller, safer
 win and is a reasonable first ship.
