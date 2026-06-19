@@ -21,4 +21,9 @@ describe('answers URL codec', () => {
   it('returns category undefined when cat is invalid', () => {
     expect(decodeAnswers(new URLSearchParams('cat=banana')).category).toBeUndefined();
   });
+  // REGRESSION GUARD: budget 0 is falsy — a `if (a.budget)` encode check would drop it.
+  // Lock in that budget:0 ("Under ฿1,000") round-trips.
+  it('round-trips budget 0 (falsy-trap guard)', () => {
+    expect(decodeAnswers(new URLSearchParams(encodeAnswers({ category: 'red', budget: 0 }))).budget).toBe(0);
+  });
 });
