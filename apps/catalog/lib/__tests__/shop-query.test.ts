@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { applyShopQuery, SHOP_PAGE_SIZE } from '@/lib/shop-query';
+import { applyShopQuery, matchesFilters, SHOP_PAGE_SIZE } from '@/lib/shop-query';
 import type { PublicProduct } from '@/lib/types';
 
 /** Minimal product factory; only the fields a test cares about. */
@@ -243,5 +243,70 @@ describe('applyShopQuery — Next searchParams array shape', () => {
     const data = [p({ sku: 'w', classification: 'Red Wine' }), p({ sku: 'g', classification: 'Gin' })];
     const r = applyShopQuery(data, { group: ['Wine', 'Spirits'] });
     expect(r.items.map((x) => x.sku)).toEqual(['w']);
+  });
+});
+
+// ----------------------------------------------------------------------------
+// matchesFilters — shared per-product predicate (drill-down nav + facet counts)
+// ----------------------------------------------------------------------------
+
+const P = (over: Partial<import('@/lib/types').PublicProduct>): import('@/lib/types').PublicProduct =>
+  ({ sku: 'W1', name: 'x', ...over } as import('@/lib/types').PublicProduct);
+
+describe('matchesFilters — class (first-segment classification)', () => {
+  it('matches first segment case-insensitively', () => {
+    const prod = P({ sku: 'W1', classification: 'Red Wine|Fruit Wine' });
+    expect(matchesFilters(prod, { class: 'red wine' })).toBe(true);
+    expect(matchesFilters(prod, { class: 'fruit wine' })).toBe(false);
+  });
+  it('no class param → no constraint', () => {
+    expect(matchesFilters(P({ classification: 'Gin' }), {})).toBe(true);
+  });
+});
+
+describe('matchesFilters — Accessories class = accessory sub-category (NOT classification)', () => {
+  it('matches accessoryCategoryForSku when group is Accessories', () => {
+    const prod = P({ sku: 'GWN1', classification: 'Wine product' });
+    expect(matchesFilters(prod, { group: 'Accessories', class: 'Glassware' })).toBe(true);
+    expect(matchesFilters(prod, { group: 'Accessories', class: 'Cigars' })).toBe(false);
+  });
+  it('an AWC fridge matches the "Wine Fridges & Coolers" accessory class', () => {
+    const prod = P({ sku: 'AWC100', classification: 'Wine product' });
+    expect(matchesFilters(prod, { group: 'Accessories', class: 'Wine Fridges & Coolers' })).toBe(true);
+  });
+  it('for a NON-Accessories group, class still means classification first-segment', () => {
+    const prod = P({ sku: 'W1', classification: 'Red Wine' });
+    expect(matchesFilters(prod, { group: 'Wine', class: 'Red Wine' })).toBe(true);
+  });
+});
+
+describe('matchesFilters — subregion (substring, like region)', () => {
+  const prod = P({ region: 'Bordeaux', subregion: 'Pauillac' });
+  it('substring-matches subregion case-insensitively', () => {
+    expect(matchesFilters(prod, { subregion: 'pauil' })).toBe(true);
+    expect(matchesFilters(prod, { subregion: 'margaux' })).toBe(false);
+  });
+});
+
+describe('matchesFilters — combined drill-down AND', () => {
+  it('all of group+class+country+region+subregion must hold', () => {
+    const prod = P({ sku: 'W1', classification: 'Red Wine', country: 'France',
+      region: 'Bordeaux', subregion: 'Pauillac' });
+    const params = { group: 'Wine', class: 'Red Wine', country: 'France',
+      region: 'Bordeaux', subregion: 'Pauillac' };
+    expect(matchesFilters(prod, params)).toBe(true);
+    expect(matchesFilters(prod, { ...params, subregion: 'Margaux' })).toBe(false);
+  });
+});
+
+describe('applyShopQuery still honors everything via matchesFilters', () => {
+  it('class filter narrows the grid', () => {
+    const items = [
+      P({ sku: 'W1', classification: 'Red Wine' }),
+      P({ sku: 'W2', classification: 'White Wine' }),
+    ];
+    const r = applyShopQuery(items, { class: 'Red Wine' });
+    expect(r.total).toBe(1);
+    expect(r.pageItems[0].sku).toBe('W1');
   });
 });

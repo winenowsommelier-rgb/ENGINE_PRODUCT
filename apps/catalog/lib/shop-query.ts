@@ -10,12 +10,21 @@
  * No imports from next/* or react. Takes products + a plain params record,
  * returns the page slice plus pagination metadata.
  *
+ * `matchesFilters(p, params)` is the SINGLE per-product filter predicate. Both
+ * `applyShopQuery` (the grid) and the context-aware facet counters call it, so the
+ * grid and the facet counts can never diverge.
+ *
  * Filter semantics (all params optional; absent = no constraint):
- *   group     → CategoryGroup; keep products whose groupForClassification === group
+ *   group     → CategoryGroup; keep products whose groupForProduct === group
+ *   class     → (a) when groupForProduct === 'Accessories': exact (ci) on the
+ *               accessory sub-category (accessoryCategoryForSku);
+ *               (b) otherwise: exact (ci) on the first classification segment
+ *               (split('|')[0], trimmed)
  *   price     → PriceTier id; keep products with price in [min, max)
  *   country   → exact (case-insensitive) match on country
  *   inStock=1 → keep only in-stock products (normalized boolean via isInStock)
  *   region    → case-insensitive substring match on region
+ *   subregion → case-insensitive substring match on subregion
  *   grape     → case-insensitive substring match on grape_variety
  *   flavor    → keep products whose flavor_tags includes it (case-insensitive)
  *   body      → exact (case-insensitive) match on wine_body
@@ -34,7 +43,7 @@
  */
 
 import type { PublicProduct } from './types';
-import { groupForProduct, type CategoryGroup } from './category-groups';
+import { groupForProduct, accessoryCategoryForSku, type CategoryGroup } from './category-groups';
 import { tierById } from './price-tiers';
 import { isInStock } from './utils';
 
@@ -78,6 +87,75 @@ const SORTS: Record<string, SortKey> = {
 };
 
 /**
+ * The SINGLE per-product filter predicate. AND across all params; every param is
+ * optional and an absent param imposes no constraint.
+ *
+ * Pure: no Next, no React, no I/O, no allocation of shared state. Both the grid
+ * (`applyShopQuery`) and the context-aware facet counters call THIS so they can
+ * never disagree about which products match the active filters.
+ *
+ * Note on `class`: it is interpreted relative to the product's resolved group.
+ * For Accessories it means the accessory sub-category (accessoryCategoryForSku);
+ * for every other group it means the first segment of `classification`.
+ */
+export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
+  const productGroup = groupForProduct(p); // resolve once — also drives the class branch
+
+  const group = firstParam(params.group);
+  if (group && productGroup !== (group as CategoryGroup)) return false;
+
+  const klass = norm(firstParam(params.class));
+  if (klass) {
+    if (productGroup === 'Accessories') {
+      if (norm(accessoryCategoryForSku(p.sku)) !== klass) return false;
+    } else {
+      const first = norm((p.classification ?? '').split('|')[0]);
+      if (first !== klass) return false;
+    }
+  }
+
+  const priceId = firstParam(params.price);
+  const tier = priceId ? tierById(priceId) : undefined;
+  if (tier) {
+    // [min, max). Guard non-numeric/missing prices out of every tier.
+    const price = p.price;
+    if (typeof price !== 'number' || Number.isNaN(price)) return false;
+    if (price < tier.min || price >= tier.max) return false;
+  }
+
+  const country = norm(firstParam(params.country));
+  if (country && norm(p.country) !== country) return false;
+
+  const region = norm(firstParam(params.region));
+  if (region && !norm(p.region).includes(region)) return false;
+
+  const subregion = norm(firstParam(params.subregion));
+  if (subregion && !norm(p.subregion).includes(subregion)) return false;
+
+  const grape = norm(firstParam(params.grape));
+  if (grape && !norm(p.grape_variety).includes(grape)) return false;
+
+  const flavor = norm(firstParam(params.flavor));
+  if (flavor) {
+    const tags = p.flavor_tags;
+    if (!Array.isArray(tags) || !tags.some((t) => norm(t) === flavor)) return false;
+  }
+
+  const body = norm(firstParam(params.body));
+  if (body && norm(p.wine_body) !== body) return false;
+  const acidity = norm(firstParam(params.acidity));
+  if (acidity && norm(p.wine_acidity) !== acidity) return false;
+  const tannin = norm(firstParam(params.tannin));
+  if (tannin && norm(p.wine_tannin) !== tannin) return false;
+
+  if (firstParam(params.inStock) === '1' && !isInStock(p.is_in_stock)) return false;
+  if (firstParam(params.hasScore) === '1' &&
+      !(typeof p.score_summary === 'string' && p.score_summary.trim() !== '')) return false;
+
+  return true;
+}
+
+/**
  * Apply the shop's filter → sort → paginate pipeline.
  *
  * Pure: no Next, no React, no I/O. Does not mutate `products` (sort runs on a
@@ -87,52 +165,8 @@ export function applyShopQuery(
   products: PublicProduct[],
   params: ShopParams,
 ): ShopQueryResult {
-  const group = firstParam(params.group);
-  const priceId = firstParam(params.price);
-  const country = norm(firstParam(params.country));
-  const inStockOnly = firstParam(params.inStock) === '1';
-  const region = norm(firstParam(params.region));
-  const grape = norm(firstParam(params.grape));
-  const flavor = norm(firstParam(params.flavor));
-  const body = norm(firstParam(params.body));
-  const acidity = norm(firstParam(params.acidity));
-  const tannin = norm(firstParam(params.tannin));
-  const hasScoreOnly = firstParam(params.hasScore) === '1';
-
-  // Resolve the price tier ONCE (unknown id → no price constraint).
-  const tier = priceId ? tierById(priceId) : undefined;
-
-  // ---- FILTER ----
-  const items = products.filter((p) => {
-    // Use groupForProduct (SKU-prefix override), NOT groupForClassification —
-    // the raw classification dumps whisky/spirits/sake/accessories into "Wine product".
-    if (group && groupForProduct(p) !== (group as CategoryGroup)) {
-      return false;
-    }
-    if (tier) {
-      // [min, max). Guard non-numeric/missing prices out of every tier.
-      const price = p.price;
-      if (typeof price !== 'number' || Number.isNaN(price)) return false;
-      if (price < tier.min || price >= tier.max) return false;
-    }
-    if (country && norm(p.country) !== country) return false;
-    if (inStockOnly && !isInStock(p.is_in_stock)) return false;
-    if (region && !norm(p.region).includes(region)) return false;
-    if (grape && !norm(p.grape_variety).includes(grape)) return false;
-    if (flavor) {
-      const tags = p.flavor_tags;
-      if (!Array.isArray(tags) || !tags.some((t) => norm(t) === flavor)) {
-        return false;
-      }
-    }
-    if (body && norm(p.wine_body) !== body) return false;
-    if (acidity && norm(p.wine_acidity) !== acidity) return false;
-    if (tannin && norm(p.wine_tannin) !== tannin) return false;
-    if (hasScoreOnly && !(typeof p.score_summary === 'string' && p.score_summary.trim() !== '')) {
-      return false;
-    }
-    return true;
-  });
+  // ---- FILTER (shared predicate — same one the facet counters use) ----
+  const items = products.filter((p) => matchesFilters(p, params));
 
   // ---- SORT (on a copy; do not mutate the caller's array) ----
   const sortKey: SortKey = SORTS[firstParam(params.sort) ?? ''] ?? 'name';
