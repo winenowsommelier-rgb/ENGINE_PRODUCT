@@ -118,18 +118,47 @@ describe('precomputeRecommendations', () => {
     expect(recsForT.every((sku) => inStockSkus.has(sku))).toBe(true); // only valid in-stock skus
   });
 
-  // is_in_stock undefined => treated as unavailable in BOTH directions:
-  // (a) the product gets no recs computed (absent from the map), and
-  // (b) it is never recommended TO any other product.
-  it('a product with is_in_stock undefined gets no recs and is never recommended', () => {
+  // SUBJECT vs CANDIDATE invariant (the OOS-recs bug this fix closes):
+  // An OUT-OF-STOCK product is a valid SUBJECT (gets a map entry + recs) but is
+  // never a CANDIDATE (never recommended to anyone, never recommends itself).
+  // Previously the outer loop iterated only `inStock`, so OOS products got NO map
+  // entry and their product page rendered no "you might also like" section.
+  it('an OUT-OF-STOCK product still gets recs (all in-stock, excludes itself)', () => {
+    // OOS subject P shares region "Bordeaux" with several in-stock neighbours, so
+    // its own region bucket (built from in-stock candidates) yields recs FOR it.
+    const P = { ...base, sku:'POOS', region:'Bordeaux', grape_variety:'Merlot',
+      country:'France', classification:'Red Wine', food_matching:'Beef', price:1000,
+      is_in_stock:false };
+    const neighbours = ['IS1','IS2','IS3','IS4','IS5'].map((sku) => ({
+      ...base, sku, region:'Bordeaux', grape_variety:'Merlot', country:'France',
+      classification:'Red Wine', food_matching:'Beef', price:1000, is_in_stock:true,
+    }));
+    const inStockSkus = new Set(neighbours.map((n) => n.sku));
+
+    const map = precomputeRecommendations([P, ...neighbours]);
+    const recsForP = map.get('POOS');
+
+    expect(recsForP).toBeDefined();          // OOS product IS a key now
+    expect(recsForP!.length).toBeGreaterThan(0); // and it has recommendations
+    expect(recsForP).not.toContain('POOS');  // never recommends itself
+    // every returned sku is an IN-STOCK candidate
+    expect(recsForP!.every((sku) => inStockSkus.has(sku))).toBe(true);
+  });
+
+  // is_in_stock undefined => treated as unavailable as a CANDIDATE (never
+  // recommended TO any other product). It IS still a SUBJECT (gets a map entry),
+  // because an unavailable product page should still surface in-stock alternatives.
+  it('a product with is_in_stock undefined is a subject but never a candidate', () => {
     const ghost = { ...base, sku:'GHOST', is_in_stock: undefined };
     const inStockTwin = { ...base, sku:'TWIN', price:1650 }; // would otherwise match
     const map = precomputeRecommendations([base, inStockTwin, ghost]);
 
-    // (a) GHOST is not in the map (no recs computed for an unavailable product).
-    expect(map.has('GHOST')).toBe(false);
+    // (a) GHOST IS in the map now (OOS/unavailable products are valid subjects),
+    //     and its recs are in-stock candidates that exclude itself.
+    expect(map.has('GHOST')).toBe(true);
+    expect(map.get('GHOST')).not.toContain('GHOST');
 
-    // (b) GHOST is never recommended to anyone else.
+    // (b) GHOST is never recommended to anyone else (excluded as a candidate).
     for (const recs of map.values()) {
       expect(recs).not.toContain('GHOST');
     }

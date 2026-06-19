@@ -75,12 +75,14 @@ export function scoreCandidate(
 /**
  * True if a candidate is eligible to be recommended for `product`.
  *
- * STOCK FILTER (intentional, applies in BOTH directions)
- * ------------------------------------------------------
- * Out-of-stock products are excluded from recommendations in BOTH directions:
- * they are never recommended TO anyone (this check), and in
- * `precomputeRecommendations` they are filtered out of `inStock` up front so they
- * never get recs computed FOR them either.
+ * STOCK FILTER (intentional — CANDIDATE side only)
+ * ------------------------------------------------
+ * Out-of-stock products are excluded as CANDIDATES: they are never recommended TO
+ * anyone (this check). They are NOT excluded as SUBJECTS — an out-of-stock product
+ * page still receives recommendations (of other, in-stock products), because that
+ * is exactly when "you might also like" matters most: the item the shopper wanted
+ * is unavailable, so we surface in-stock alternatives. See the `for (const product
+ * of all)` loop in `precomputeRecommendations`.
  *
  * STOCK VALUE SHAPE: is_in_stock is NORMALIZED to a real boolean at load time by
  * toPublicProduct() (catalog-data.ts) — the raw live export stores it as a STRING
@@ -145,9 +147,20 @@ export function getRecommendations(
 }
 
 /**
- * Precompute recommendations for EVERY in-stock product, returning a lightweight
- * Map<sku, sku[]> (<=4 rec skus each). Pages resolve skus via getProductBySku, so
- * we store skus only — not full product objects.
+ * Precompute recommendations for EVERY product (in-stock OR out-of-stock),
+ * returning a lightweight Map<sku, sku[]> (<=4 rec skus each). Pages resolve skus
+ * via getProductBySku, so we store skus only — not full product objects.
+ *
+ * SUBJECTS vs CANDIDATES (the two invariants — keep them straight)
+ * ---------------------------------------------------------------
+ * - SUBJECTS (map KEYS): every product gets an entry, including out-of-stock ones.
+ *   An OOS product page must still show "you might also like" (in-stock alts) — its
+ *   own region/classification/country buckets contain in-stock neighbours, so it
+ *   gets sensible recs. The outer loop below iterates `all`, not `inStock`.
+ * - CANDIDATES (rec VALUES): only IN-STOCK products are ever recommended — the
+ *   buckets/pool are built solely from `inStock`, and isEligible() drops anything
+ *   out-of-stock defensively. We never surface a product we cannot sell, and a
+ *   subject never recommends itself (self-exclusion by sku in isEligible).
  *
  * APPROXIMATION OF getRecommendations (accepted tradeoff — DO NOT "fix" to parity)
  * -------------------------------------------------------------------------------
@@ -164,9 +177,10 @@ export function getRecommendations(
  *
  * BUCKETING STRATEGY (avoids O(n^2) over ~11,436 products)
  * --------------------------------------------------------
- * The dominant scoring signal is `region` (+3). We bucket all in-stock products
- * by region once. For each product we score it only against its own region
- * bucket. If that bucket is too small to yield MAX_RECS results, we widen with a
+ * The dominant scoring signal is `region` (+3). We bucket the in-stock CANDIDATES
+ * by region once. For each SUBJECT product (in-stock or not) we score it only
+ * against its own region bucket of in-stock candidates. If that bucket is too small
+ * to yield MAX_RECS results, we widen with a
  * fallback chain so a product in a tiny/unique region still gets neighbours:
  *   1. region bucket
  *   2. + classification bucket  (e.g. "Red Wine", "Gin")
@@ -178,13 +192,18 @@ export function getRecommendations(
  *
  * Complexity: ~O(n * b) where b is the average bucket size, plus a small bounded
  * global fallback — far below O(n^2) for a catalog with many regions/categories.
+ * Iterating `all` (not just `inStock`) for the outer SUBJECT loop only adds the
+ * OOS products as extra keys; each still scores against its own small bucket, so
+ * complexity stays ~O(n * b).
  */
 export function precomputeRecommendations(
   all: readonly PublicProduct[],
 ): Map<string, string[]> {
-  // In-stock candidates only (these are the only things we ever recommend).
-  // is_in_stock is a normalized boolean post-load; isInStock() also handles a raw
-  // "0"/"1"/null product defensively (see isEligible docblock).
+  // In-stock CANDIDATES only (these are the only things we ever recommend). The
+  // SUBJECT loop below iterates `all`, so OOS products still get recs computed FOR
+  // them — just never recommended themselves. is_in_stock is a normalized boolean
+  // post-load; isInStock() also handles a raw "0"/"1"/null product defensively
+  // (see isEligible docblock).
   const inStock = all.filter((p) => isInStock(p.is_in_stock));
 
   const byRegion = new Map<string, PublicProduct[]>();
@@ -213,7 +232,10 @@ export function precomputeRecommendations(
 
   const result = new Map<string, string[]>();
 
-  for (const product of inStock) {
+  // SUBJECTS: iterate ALL products (in-stock OR out-of-stock) so every product
+  // page gets recommendations. Candidates remain in-stock-only (buckets above are
+  // built from `inStock`); an OOS subject is self-excluded by isEligible (sku).
+  for (const product of all) {
     const pool: PublicProduct[] = [];
     const poolSeen = new Set<string>();
     const merge = (arr: PublicProduct[] | undefined) => {
