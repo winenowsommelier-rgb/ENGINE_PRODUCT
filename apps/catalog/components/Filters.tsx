@@ -14,6 +14,16 @@ import {
 import { CATEGORY_GROUPS } from '@/lib/category-groups';
 import { PRICE_TIERS } from '@/lib/price-tiers';
 import { buildQuery } from '@/lib/build-query';
+import { clearDescendants } from '@/lib/drill-query';
+import type { FacetOption } from '@/lib/facets';
+import { SearchableSelect } from './SearchableSelect';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
 /**
@@ -39,6 +49,22 @@ import { cn } from '@/lib/utils';
 interface FiltersProps {
   /** Distinct country values to offer in the Country dropdown (built upstream). */
   countries: string[];
+  /** Sub-category options for the active group (computed server-side). */
+  availableSubCategories?: FacetOption[];
+  /** Region options for the active country (computed server-side). */
+  availableRegions?: FacetOption[];
+  /** Sub-region options for the active region (computed server-side). */
+  availableSubRegions?: FacetOption[];
+  /** Capped grape typeahead options. */
+  grapeOptions?: string[];
+  /** Capped flavor typeahead options. */
+  flavorOptions?: string[];
+  /** Normalized body scale values, e.g. ['Light','Medium','Medium-Full','Full']. */
+  bodyOptions?: string[];
+  /** Normalized acidity scale values, e.g. ['Low','Medium','Medium-High','High']. */
+  acidityOptions?: string[];
+  /** Normalized tannin scale values, e.g. ['Low','Medium','Medium-High','High']. */
+  tanninOptions?: string[];
   /**
    * Optional seed for the current params — handy when rendering standalone /
    * in tests. In the live app the URL (useSearchParams) is authoritative.
@@ -46,20 +72,26 @@ interface FiltersProps {
   initialParams?: Record<string, string>;
 }
 
+/** Sentinel for the "Any" item in scale Selects (Radix items need a non-empty value). */
+const ANY = '__any__';
+
 const SORT_OPTIONS: Array<{ id: string; label: string }> = [
   { id: 'name', label: 'Name A–Z' },
   { id: 'price-asc', label: 'Price: low → high' },
   { id: 'price-desc', label: 'Price: high → low' },
 ];
 
-/** A calm pill/chip for single-select filters (category, price). */
+/** A calm pill/chip for single-select filters (category, price, drill-down). */
 function Chip({
   active,
   onClick,
+  count,
   children,
 }: {
   active: boolean;
   onClick: () => void;
+  /** Optional facet count rendered as a muted suffix (drill-down chip rows). */
+  count?: number;
   children: React.ReactNode;
 }) {
   return (
@@ -76,11 +108,25 @@ function Chip({
       )}
     >
       {children}
+      {count !== undefined ? (
+        <span className="ml-1 text-sm opacity-70">{count}</span>
+      ) : null}
     </button>
   );
 }
 
-export function Filters({ countries, initialParams }: FiltersProps) {
+export function Filters({
+  countries,
+  availableSubCategories = [],
+  availableRegions = [],
+  availableSubRegions = [],
+  grapeOptions = [],
+  flavorOptions = [],
+  bodyOptions = [],
+  acidityOptions = [],
+  tanninOptions = [],
+  initialParams,
+}: FiltersProps) {
   const router = useRouter();
   const pathname = usePathname() || '/';
   const searchParams = useSearchParams();
@@ -106,8 +152,11 @@ export function Filters({ countries, initialParams }: FiltersProps) {
   };
 
   const activeGroup = get('group');
+  const activeClass = get('class');
   const activePrice = get('price');
   const activeCountry = get('country');
+  const activeRegion = get('region');
+  const activeSubRegion = get('subregion');
   const inStockOnly = get('inStock') === '1';
   const activeSort = get('sort');
   const hasScoreOnly = get('hasScore') === '1';
@@ -125,12 +174,47 @@ export function Filters({ countries, initialParams }: FiltersProps) {
           <Chip
             key={group}
             active={activeGroup === group}
-            onClick={() => toggle('group', group)}
+            onClick={() =>
+              apply(
+                clearDescendants(
+                  'group',
+                  activeGroup === group ? null : group,
+                ),
+              )
+            }
           >
             {group}
           </Chip>
         ))}
       </div>
+
+      {/* Sub-category drill-down (progressive reveal): only when a group is set
+          AND the upstream-computed option list is non-empty. */}
+      {activeGroup && availableSubCategories.length > 0 ? (
+        <div
+          className="flex flex-wrap gap-2"
+          role="group"
+          aria-label="Sub-category"
+        >
+          {availableSubCategories.map((opt) => (
+            <Chip
+              key={opt.value}
+              active={activeClass === opt.value}
+              count={opt.count}
+              onClick={() =>
+                apply(
+                  clearDescendants(
+                    'class',
+                    activeClass === opt.value ? null : opt.value,
+                  ),
+                )
+              }
+            >
+              {opt.value}
+            </Chip>
+          ))}
+        </div>
+      ) : null}
 
       {/* Price tier chips */}
       <div className="flex flex-wrap gap-2" role="group" aria-label="Price">
@@ -162,13 +246,15 @@ export function Filters({ countries, initialParams }: FiltersProps) {
           <DropdownMenuContent className="max-h-72 overflow-y-auto">
             <DropdownMenuLabel>Country</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => apply({ country: null })}>
+            <DropdownMenuItem
+              onClick={() => apply(clearDescendants('country', null))}
+            >
               All countries
             </DropdownMenuItem>
             {countries.map((country) => (
               <DropdownMenuItem
                 key={country}
-                onClick={() => apply({ country })}
+                onClick={() => apply(clearDescendants('country', country))}
               >
                 {country}
               </DropdownMenuItem>
@@ -243,6 +329,57 @@ export function Filters({ countries, initialParams }: FiltersProps) {
         ) : null}
       </div>
 
+      {/* Region drill-down (progressive reveal): only when a country is set
+          AND the upstream-computed option list is non-empty. */}
+      {activeCountry && availableRegions.length > 0 ? (
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Region">
+          {availableRegions.map((opt) => (
+            <Chip
+              key={opt.value}
+              active={activeRegion === opt.value}
+              count={opt.count}
+              onClick={() =>
+                apply(
+                  clearDescendants(
+                    'region',
+                    activeRegion === opt.value ? null : opt.value,
+                  ),
+                )
+              }
+            >
+              {opt.value}
+            </Chip>
+          ))}
+        </div>
+      ) : null}
+
+      {/* Sub-region drill-down: only when a region is set AND options exist. */}
+      {activeRegion && availableSubRegions.length > 0 ? (
+        <div
+          className="flex flex-wrap gap-2"
+          role="group"
+          aria-label="Sub-region"
+        >
+          {availableSubRegions.map((opt) => (
+            <Chip
+              key={opt.value}
+              active={activeSubRegion === opt.value}
+              count={opt.count}
+              onClick={() =>
+                apply(
+                  clearDescendants(
+                    'subregion',
+                    activeSubRegion === opt.value ? null : opt.value,
+                  ),
+                )
+              }
+            >
+              {opt.value}
+            </Chip>
+          ))}
+        </div>
+      ) : null}
+
       {/* Advanced / "More filters" — hidden until expanded */}
       {advancedOpen ? (
         <div
@@ -250,41 +387,50 @@ export function Filters({ countries, initialParams }: FiltersProps) {
           aria-label="Advanced filters"
         >
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <TextFilter
-              label="Region"
-              value={get('region')}
-              onCommit={(v) => apply({ region: v || null })}
-              placeholder="e.g. Bordeaux"
-            />
-            <TextFilter
-              label="Grape"
-              value={get('grape')}
-              onCommit={(v) => apply({ grape: v || null })}
-              placeholder="e.g. Pinot Noir"
-            />
-            <TextFilter
-              label="Flavor tag"
-              value={get('flavor')}
-              onCommit={(v) => apply({ flavor: v || null })}
-              placeholder="e.g. Berry"
-            />
-            <TextFilter
+            {/* Grape: high-cardinality typeahead (region now lives in drill-down chips). */}
+            <label className="flex flex-col gap-1 text-sm text-muted-foreground">
+              Grape
+              <SearchableSelect
+                label="Grape"
+                value={get('grape')}
+                options={grapeOptions}
+                onSelect={(v) => apply({ grape: v })}
+                placeholder="Search grape…"
+              />
+            </label>
+
+            {/* Flavor: high-cardinality typeahead. */}
+            <label className="flex flex-col gap-1 text-sm text-muted-foreground">
+              Flavor
+              <SearchableSelect
+                label="Flavor"
+                value={get('flavor')}
+                options={flavorOptions}
+                onSelect={(v) => apply({ flavor: v })}
+                placeholder="Search flavor…"
+              />
+            </label>
+
+            <ScaleSelect
               label="Body"
+              paramKey="body"
               value={get('body')}
-              onCommit={(v) => apply({ body: v || null })}
-              placeholder="e.g. Full"
+              options={bodyOptions}
+              onChange={apply}
             />
-            <TextFilter
+            <ScaleSelect
               label="Acidity"
+              paramKey="acidity"
               value={get('acidity')}
-              onCommit={(v) => apply({ acidity: v || null })}
-              placeholder="e.g. High"
+              options={acidityOptions}
+              onChange={apply}
             />
-            <TextFilter
+            <ScaleSelect
               label="Tannin"
+              paramKey="tannin"
               value={get('tannin')}
-              onCommit={(v) => apply({ tannin: v || null })}
-              placeholder="e.g. Medium"
+              options={tanninOptions}
+              onChange={apply}
             />
           </div>
 
@@ -306,43 +452,49 @@ export function Filters({ countries, initialParams }: FiltersProps) {
 }
 
 /**
- * Small uncontrolled-on-commit text input for the advanced filters. Commits to
- * the URL on Enter or blur (not on every keystroke) so we don't push a history
- * entry per character.
+ * Controlled shadcn Select for a normalized taste scale (body / acidity /
+ * tannin). The trigger shows the current value or "Any {label}". A sentinel
+ * "Any" item at the top clears the param (Radix items require a non-empty
+ * value, hence ANY). Writes go through the parent's apply() — URL stays the
+ * single source of truth.
  */
-function TextFilter({
+function ScaleSelect({
   label,
+  paramKey,
   value,
-  onCommit,
-  placeholder,
+  options,
+  onChange,
 }: {
   label: string;
+  paramKey: string;
   value: string;
-  onCommit: (value: string) => void;
-  placeholder?: string;
+  options: string[];
+  onChange: (patch: Record<string, string | null>) => void;
 }) {
-  const [draft, setDraft] = useState(value);
-
   return (
     <label className="flex flex-col gap-1 text-sm text-muted-foreground">
       {label}
-      <input
-        type="text"
-        defaultValue={value}
-        placeholder={placeholder}
-        onChange={(e) => setDraft(e.target.value)}
-        onBlur={() => onCommit(draft.trim())}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            onCommit(draft.trim());
-          }
-        }}
-        className={cn(
-          'min-h-[44px] rounded-md border border-border bg-background px-3 text-base text-foreground',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-        )}
-      />
+      <Select
+        value={value || ANY}
+        onValueChange={(v) =>
+          onChange({ [paramKey]: v === ANY ? null : v })
+        }
+      >
+        <SelectTrigger
+          aria-label={label}
+          className="min-h-[44px] h-auto text-base text-foreground"
+        >
+          <SelectValue placeholder={`Any ${label.toLowerCase()}`} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={ANY}>{`Any ${label.toLowerCase()}`}</SelectItem>
+          {options.map((opt) => (
+            <SelectItem key={opt} value={opt}>
+              {opt}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </label>
   );
 }
