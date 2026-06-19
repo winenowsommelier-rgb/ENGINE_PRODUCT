@@ -23,8 +23,11 @@
  *   price     → PriceTier id; keep products with price in [min, max)
  *   country   → exact (case-insensitive) match on country
  *   inStock=1 → keep only in-stock products (normalized boolean via isInStock)
- *   region    → case-insensitive substring match on region
- *   subregion → case-insensitive substring match on subregion
+ *   region    → exact (case-insensitive) match on region. EXACT (not substring)
+ *               because the drill-down chips are the only writer of region/subregion
+ *               and they always emit exact canonical values; the free-text region input
+ *               was removed. Exact match makes the chip count == grid total everywhere.
+ *   subregion → exact (case-insensitive) match on subregion (same rationale as region)
  *   grape     → case-insensitive substring match on grape_variety
  *   flavor    → keep products whose flavor_tags includes it (case-insensitive)
  *   body      → match the product's wine_body NORMALIZED via normalizeScale('body')
@@ -130,10 +133,10 @@ export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
   if (country && norm(p.country) !== country) return false;
 
   const region = norm(firstParam(params.region));
-  if (region && !norm(p.region).includes(region)) return false;
+  if (region && norm(p.region) !== region) return false;
 
   const subregion = norm(firstParam(params.subregion));
-  if (subregion && !norm(p.subregion).includes(subregion)) return false;
+  if (subregion && norm(p.subregion) !== subregion) return false;
 
   const grape = norm(firstParam(params.grape));
   if (grape && !norm(p.grape_variety).includes(grape)) return false;

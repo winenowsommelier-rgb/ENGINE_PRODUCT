@@ -16,22 +16,16 @@
  */
 import Link from 'next/link';
 import { buildQuery } from '@/lib/build-query';
+import { DRILL_DESCENDANTS, type DrillStrand } from '@/lib/drill-query';
 import { cn } from '@/lib/utils';
 
-type DrillKey = 'group' | 'class' | 'country' | 'region' | 'subregion';
+// The deeper keys of a crumb's OWN strand that get nulled when jumping back come
+// from DRILL_DESCENDANTS — the single source of truth shared with drill-query's
+// clearDescendants(). Do not redefine the strand topology here.
 
-/** The deeper keys of a crumb's OWN strand that get nulled when jumping back. */
-const DEEPER: Record<DrillKey, DrillKey[]> = {
-  group: ['class'],
-  class: [],
-  country: ['region', 'subregion'],
-  region: ['subregion'],
-  subregion: [],
-};
-
-const CATEGORY_STRAND: DrillKey[] = ['group', 'class'];
-const GEO_STRAND: DrillKey[] = ['country', 'region', 'subregion'];
-const ALL_DRILL_KEYS: DrillKey[] = [...CATEGORY_STRAND, ...GEO_STRAND];
+const CATEGORY_STRAND: DrillStrand[] = ['group', 'class'];
+const GEO_STRAND: DrillStrand[] = ['country', 'region', 'subregion'];
+const ALL_DRILL_KEYS: DrillStrand[] = [...CATEGORY_STRAND, ...GEO_STRAND];
 
 const crumbClass =
   'inline-flex min-h-[44px] items-center px-1.5 text-base text-foreground ' +
@@ -58,14 +52,14 @@ export function DrillBreadcrumb({
   params: Record<string, string>;
   pathname: string;
 }) {
-  const renderStrand = (strand: DrillKey[]) =>
+  const renderStrand = (strand: DrillStrand[]) =>
     strand
       .filter((key) => isSet(params[key]))
       .map((key, i) => {
         // Jumping back to `key` nulls only the deeper levels of its own strand;
         // every other param (the other strand, price, sort, …) is preserved.
         const patch: Record<string, string | null> = {};
-        for (const d of DEEPER[key]) patch[d] = null;
+        for (const d of DRILL_DESCENDANTS[key]) patch[d] = null;
         return (
           <span key={key} className="inline-flex items-center">
             {i > 0 && <span className={sepClass} aria-hidden="true">{'›'}</span>}

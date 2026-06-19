@@ -104,8 +104,14 @@ describe('applyShopQuery — country / inStock / attribute filters', () => {
     expect(r.items.map((x) => x.sku).sort()).toEqual(['fr', 'fr2']);
   });
 
-  it('region is case-insensitive substring', () => {
-    expect(applyShopQuery(data, { region: 'bord' }).items.map((x) => x.sku)).toEqual(['fr']);
+  it('region is case-insensitive EXACT match', () => {
+    // regression guard: region/subregion are EXACT (was substring); drill-down chips emit
+    // exact canonical values, free-text region input removed.
+    // A partial like 'bord' must NO LONGER match 'Bordeaux'.
+    expect(applyShopQuery(data, { region: 'bord' }).items.map((x) => x.sku)).toEqual([]);
+    // The exact value (any case) SHOULD match.
+    expect(applyShopQuery(data, { region: 'bordeaux' }).items.map((x) => x.sku)).toEqual(['fr']);
+    expect(applyShopQuery(data, { region: 'Bordeaux' }).items.map((x) => x.sku)).toEqual(['fr']);
   });
 
   it('grape is case-insensitive substring', () => {
@@ -286,10 +292,14 @@ describe('matchesFilters — Accessories class = accessory sub-category (NOT cla
   });
 });
 
-describe('matchesFilters — subregion (substring, like region)', () => {
+describe('matchesFilters — subregion (EXACT, like region)', () => {
   const prod = P({ region: 'Bordeaux', subregion: 'Pauillac' });
-  it('substring-matches subregion case-insensitively', () => {
-    expect(matchesFilters(prod, { subregion: 'pauil' })).toBe(true);
+  it('EXACT-matches subregion case-insensitively', () => {
+    // regression guard: region/subregion are EXACT (was substring); drill-down chips emit
+    // exact canonical values, free-text region input removed.
+    expect(matchesFilters(prod, { subregion: 'pauil' })).toBe(false); // partial no longer matches
+    expect(matchesFilters(prod, { subregion: 'Pauillac' })).toBe(true);
+    expect(matchesFilters(prod, { subregion: 'pauillac' })).toBe(true);
     expect(matchesFilters(prod, { subregion: 'margaux' })).toBe(false);
   });
 });

@@ -12,8 +12,11 @@
 
 export type DrillStrand = 'group' | 'class' | 'country' | 'region' | 'subregion';
 
-/** Descendants cleared when each strand changes. */
-const DESCENDANTS: Record<DrillStrand, DrillStrand[]> = {
+/**
+ * The descendant params cleared/dropped below each drill strand. Single source of
+ * truth — also consumed by DrillBreadcrumb (jump-back nulls these deeper levels).
+ */
+export const DRILL_DESCENDANTS: Record<DrillStrand, DrillStrand[]> = {
   group: ['class'],
   class: [],
   country: ['region', 'subregion'],
@@ -30,6 +33,6 @@ export function clearDescendants(
   value: string | null,
 ): Record<string, string | null> {
   const patch: Record<string, string | null> = { [strand]: value };
-  for (const d of DESCENDANTS[strand]) patch[d] = null;
+  for (const d of DRILL_DESCENDANTS[strand]) patch[d] = null;
   return patch;
 }

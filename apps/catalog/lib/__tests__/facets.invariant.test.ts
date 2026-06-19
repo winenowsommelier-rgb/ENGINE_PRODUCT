@@ -15,11 +15,9 @@ describe('facet count consistent with grid total (context-aware invariant)', () 
     for (const { value, count } of regions.slice(0, 5)) {
       const params = { group: 'Wine', region: value };
       const grid = applyShopQuery(all, params);
-      // `region` is a SUBSTRING filter; the facet counts EXACT stored values. So
-      // grid.total >= count (substring may also catch sibling regions). The strong
-      // guard against grid/facet divergence is the SUBSET direction: every product
-      // the facet counted must survive the grid predicate.
-      expect(grid.total).toBeGreaterThanOrEqual(count);
+      // region is now EXACT (matches the chip): facet count == grid total exactly.
+      // Regression guard against the substring count-mismatch bug.
+      expect(grid.total).toBe(count);
       const facetCounted = wine.filter((p) => (p.region ?? '').trim() === value);
       expect(facetCounted.length).toBe(count); // facet count is exact-value tally
       for (const p of facetCounted) {
