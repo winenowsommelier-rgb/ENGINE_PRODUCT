@@ -78,6 +78,27 @@ def test_dedupes_and_preserves_order(vocab):
 # Each maps to an ALREADY-EXISTING canonical note in taste_vocab.yml.
 
 @pytest.mark.parametrize("raw,expected", [
+    # New master notes added for the long-tail (real, distinct aromatic notes).
+    ("Graphite", ["Graphite"]),
+    ("Pencil lead", ["Graphite"]),
+    ("Pomegranate", ["Pomegranate"]),
+    ("Black olive", ["Black Olive"]),
+    ("Tapenade", ["Black Olive"]),
+    ("Coconut", ["Coconut"]),
+    ("Toasted coconut", ["Coconut"]),
+    # New Caramel note absorbs the sweet/aged sugar family (was unmapped).
+    ("Caramel", ["Caramel"]),
+    ("Toffee", ["Caramel"]),
+    ("Dark toffee", ["Caramel"]),
+    ("Butterscotch", ["Caramel"]),
+    ("Molasses", ["Caramel"]),
+    ("Brown sugar", ["Caramel"]),
+])
+def test_new_master_notes(vocab, raw, expected):
+    assert canonicalize_tag(raw, vocab) == expected
+
+
+@pytest.mark.parametrize("raw,expected", [
     # Canonical names below are the vocab's true note names: "Herbal" and
     # "Forest Floor" are aliases of Herbaceous / Earth respectively.
     ("Dried herb", ["Herbaceous"]),

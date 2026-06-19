@@ -20,8 +20,22 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 DEFAULT_DB = REPO_ROOT / "data" / "db" / "products.db"
 DEFAULT_OUT = REPO_ROOT / "data" / "live_products_export.json"
+DEFAULT_VOCAB = REPO_ROOT / "data" / "lib" / "enrichment" / "shared" / "taste_vocab.yml"
+
+# P4: regenerate flavor_tags_canonical on every refresh so the field can never
+# drift stale. Import is guarded — a refresh must still succeed even if the
+# taste vocab is temporarily unavailable (the field is an enhancement, not a
+# load-bearing column). See scripts/apply_flavor_canonical.py.
+try:
+    from data.lib.enrichment.shared.flavor_canonicalizer import canonicalize_tag
+    from data.lib.enrichment.shared.vocab_loader import VocabLoader
+    _CANON_AVAILABLE = True
+except Exception:  # noqa: BLE001 — never let an optional import block a refresh
+    _CANON_AVAILABLE = False
 
 # Columns the explore endpoint reads (see ExploreProduct in lib/explore/types.ts).
 EXPORT_COLS = [
@@ -71,6 +85,16 @@ def main(argv: list[str] | None = None) -> int:
     if missing:
         print(f"WARN: skipping columns not in products table: {sorted(missing)}", file=sys.stderr)
 
+    # P4: load the taste vocab once if available, so we can (re)derive
+    # flavor_tags_canonical for every record below.
+    vocab = None
+    if _CANON_AVAILABLE and DEFAULT_VOCAB.exists():
+        try:
+            vocab = VocabLoader.from_path(DEFAULT_VOCAB)
+        except Exception as e:  # noqa: BLE001
+            print(f"WARN: taste vocab failed to load, skipping "
+                  f"flavor_tags_canonical: {e}", file=sys.stderr)
+
     rows = conn.execute(f"SELECT {', '.join(cols)} FROM products").fetchall()
     records: list[dict] = []
     for r in rows:
@@ -83,6 +107,15 @@ def main(argv: list[str] | None = None) -> int:
                     rec[jc] = json.loads(v)
                 except (ValueError, TypeError):
                     pass  # leave as-is if not valid JSON
+        # P4: derive canonical flavor notes from the (now-decoded) flavor_tags.
+        # Always present (empty list if no/unmappable tags) so it can't drift.
+        if vocab is not None:
+            canonical: list[str] = []
+            for raw in (rec.get("flavor_tags") or []):
+                for note in canonicalize_tag(raw, vocab):
+                    if note not in canonical:
+                        canonical.append(note)
+            rec["flavor_tags_canonical"] = canonical
         records.append(rec)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
@@ -94,11 +127,13 @@ def main(argv: list[str] | None = None) -> int:
     has_full = sum(1 for r in records if r.get("full_description"))
     has_taste = sum(1 for r in records if r.get("taste_profile"))
     has_flavors = sum(1 for r in records if r.get("flavor_tags"))
+    has_canon = sum(1 for r in records if r.get("flavor_tags_canonical"))
     has_stock = sum(1 for r in records if str(r.get("is_in_stock", "")) == "1")
     has_margin = sum(1 for r in records if r.get("b2b_margin_pct") or r.get("margin_pct"))
     print(f"  desc_en_short:    {has_desc}")
     print(f"  full_description: {has_full}")
     print(f"  flavor_tags:      {has_flavors}")
+    print(f"  flavor_tags_canonical: {has_canon}  ← P4 (re-derived each refresh)")
     print(f"  taste_profile:    {has_taste}")
     print(f"  is_in_stock=1:    {has_stock}  ← curation hard_filter uses this")
     print(f"  margin populated: {has_margin}  ← curation scoring uses this")

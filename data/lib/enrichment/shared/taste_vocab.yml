@@ -21,6 +21,7 @@ notes:
   - { name: Raspberry,     default_tier: primary,   family: fruit.red,    aliases: [raspberries],                           applies_to: [wine] }
   - { name: Strawberry,    default_tier: primary,   family: fruit.red,    aliases: [strawberries],                          applies_to: [wine] }
   - { name: Cranberry,     default_tier: primary,   family: fruit.red,    aliases: [red currant, redcurrant],                applies_to: [wine] }
+  - { name: Pomegranate,   default_tier: primary,   family: fruit.red,    aliases: [pomegranate seed],                       applies_to: [wine] }
   - { name: Red Fruit,     default_tier: primary,   family: fruit.red,    aliases: [red fruits, red berries, red berry],     applies_to: [wine] }
   - { name: Dark Fruit,    default_tier: primary,   family: fruit.black,  aliases: [dark fruits, black fruit, black fruits], applies_to: [wine, brown_spirit] }
   - { name: Green Apple,   default_tier: primary,   family: fruit.tree,   aliases: [granny smith, apple, tart apple],       applies_to: [wine] }
@@ -74,9 +75,11 @@ notes:
   - { name: Mocha,         default_tier: secondary, family: wood.sweet,   aliases: [coffee, espresso],                       applies_to: [wine, brown_spirit] }
   - { name: Smoke,         default_tier: secondary, family: smoke,        aliases: [smoky, smokiness, peat smoke, peat],    applies_to: [wine, brown_spirit] }
   - { name: Toast,         default_tier: secondary, family: wood,         aliases: [toasted, toasty bread],                  applies_to: [wine, beer] }
-  - { name: Butter,        default_tier: secondary, family: dairy,        aliases: [buttery, butterscotch],                  applies_to: [wine] }
+  - { name: Butter,        default_tier: secondary, family: dairy,        aliases: [buttery],                                applies_to: [wine] }
   - { name: Brioche,       default_tier: secondary, family: bread,        aliases: [bread, yeasty, autolytic, lees],        applies_to: [wine] }
   - { name: Hazelnut,      default_tier: secondary, family: nut,          aliases: [nutty, almond],                          applies_to: [wine, brown_spirit] }
+  - { name: Caramel,       default_tier: secondary, family: wood.sweet,   aliases: [toffee, dark toffee, butterscotch, molasses, brown sugar, caramelised, burnt sugar, dulce de leche], applies_to: [wine, brown_spirit, liqueur] }
+  - { name: Coconut,       default_tier: secondary, family: wood.sweet,   aliases: [toasted coconut, coconut cream, desiccated coconut], applies_to: [wine, brown_spirit] }
 
   # ===== TERTIARY — Aging =====
   - { name: Tobacco,       default_tier: tertiary,  family: earth.aged,   aliases: [tobacco leaf, cigar],                    applies_to: [wine, brown_spirit] }
@@ -84,6 +87,7 @@ notes:
   - { name: Dried Fruit,   default_tier: tertiary,  family: fruit.dried,  aliases: [dried fruits, raisin, prune, fig],      applies_to: [wine, brown_spirit] }
   - { name: Earth,         default_tier: tertiary,  family: earth.aged,   aliases: [earthy, forest floor, soil, sous bois, sous-bois, earthy minerality, earthy undertone, earthy undertones], applies_to: [wine] }
   - { name: Mushroom,      default_tier: tertiary,  family: earth.aged,   aliases: [truffle, fungal],                        applies_to: [wine] }
+  - { name: Black Olive,   default_tier: tertiary,  family: earth.aged,   aliases: [olive, tapenade, black olives, olive tapenade], applies_to: [wine] }
   - { name: Petrol,        default_tier: tertiary,  family: mineral,      aliases: [petroleum, kerosene],                    applies_to: [wine] }
   - { name: Honey,         default_tier: tertiary,  family: sweet.aged,   aliases: [honeyed, beeswax],                       applies_to: [wine, liqueur] }
 
@@ -91,6 +95,7 @@ notes:
   - { name: Wet Stone,     default_tier: primary,   family: mineral,      aliases: [stone, flint, gravel, limestone, crushed limestone, chalk, chalky, crushed rock, crushed stone, wet stones], applies_to: [wine] }
   - { name: Sea Salt,      default_tier: primary,   family: mineral,      aliases: [salinity, briny, oyster shell, saline, saline finish, saline tension, coastal brine, brine, sea breeze], applies_to: [wine] }
   - { name: Slate,         default_tier: primary,   family: mineral,      aliases: [],                                       applies_to: [wine] }
+  - { name: Graphite,      default_tier: primary,   family: mineral,      aliases: [pencil lead, pencil shavings, lead],     applies_to: [wine] }
   - { name: Minerality,    default_tier: primary,   family: mineral,      aliases: [mineral, mineral notes],                 applies_to: [wine] }
 
   # ===== WHITE SPIRIT — Juniper / gin botanicals =====
@@ -105,7 +110,7 @@ notes:
   - { name: Floral Hops,   default_tier: primary,   family: hops,         aliases: [],                                       applies_to: [beer] }
   - { name: Earthy Hops,   default_tier: primary,   family: hops,         aliases: [],                                       applies_to: [beer] }
   - { name: Malt Biscuit,  default_tier: primary,   family: malt,         aliases: [biscuit, biscuity malt, cracker],        applies_to: [beer] }
-  - { name: Caramel Malt,  default_tier: primary,   family: malt,         aliases: [caramel, toffee malt],                   applies_to: [beer] }
+  - { name: Caramel Malt,  default_tier: primary,   family: malt,         aliases: [caramel malt, toffee malt, crystal malt], applies_to: [beer] }
   - { name: Roasted Malt,  default_tier: primary,   family: malt,         aliases: [roast malt, dark roast],                 applies_to: [beer] }
   - { name: Bitter,        default_tier: flat,      family: bitter,       aliases: [bitterness],                             applies_to: [beer, rtd] }
   - { name: Banana Ester,  default_tier: secondary, family: ferment,      aliases: [banana, isoamyl],                        applies_to: [beer] }
