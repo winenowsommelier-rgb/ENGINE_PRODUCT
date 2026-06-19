@@ -143,7 +143,7 @@ interface Answers {
   budget?: Budget;                   // STEP 3
   axis1?: string;                    // STEP 4 — category-specific token (see config)
   axis2?: string;                    // STEP 5 — category-specific token
-  flavorChips?: string[];            // STEP 6 — canonical taste_profile notes (≤5)
+  flavorChips?: string[];            // STEP 6 — canonical flavor_note_master slugs (≤5)
 }
 // Any unset / "No preference" field is `undefined` and contributes 0 (§5).
 ```
@@ -152,6 +152,57 @@ interface Answers {
 `axis1 ∈ {light,medium,bold}`, whisky `axis1 ∈ {scotch,japanese,bourbon,irish,world}`).
 `question-config.ts` owns the token→option mapping AND the token→scoring mapping, so
 §5 never hard-codes per-category strings.
+
+### FinderCategory → catalog group + classification (REQUIRED — the 7≠6 mapping)
+
+The 7 finder categories do NOT map 1:1 to the catalog's 6 browse groups. Two finder
+categories share a group and MUST be split by classification, or a Gin quiz returns rum:
+
+| FinderCategory | catalog group (`groupForProduct`) | extra classification filter |
+|---|---|---|
+| `red` | Wine | `classification` ∈ {Red Wine, …\|first=Red Wine} |
+| `white` | Wine | `classification` = White Wine |
+| `sparkling` | Wine | `classification` ∈ {Champagne, Sparkling Wine} |
+| `whisky` | Whisky | — (whole group) |
+| `gin` | Spirits | `classification` = Gin |
+| `spirits` | Spirits | `classification` ≠ Gin (rum/vodka/tequila/brandy/liqueur/…) |
+| `sake` | Sake & Asian | — (whole group) |
+
+`question-config.ts` declares this `{group, classMatch?}` per category. Pre-filter (§5) =
+`groupForProduct(p) === group  &&  (classMatch ? classMatch(p.classification) : true)`.
+Note `red`/`white`/`sparkling` already need the classMatch because all three are catalog
+group "Wine". Pipe-delimited classifications are split on `|`, first segment matched.
+
+### Step count is per-category (resolves the `[step]` route)
+
+Each category's config declares an **ordered list of steps** (length 3–6 + optional food
+sub-step). `/finder/[step]` is bounded by that list: an out-of-range or unreachable step
+redirects to the last valid step (or the result if all answered). Thin categories (Gin,
+Other Spirits, Sake) simply declare fewer steps — there is no "axis2 is optional" special
+case; the step is either in the config list or it isn't.
+
+### Food-chip → keyword map (REQUIRED — `food_matching` has 6,078 raw values)
+
+`food_matching` is free-ish text with **6,078 distinct comma-split values** ("grilled red
+meat", "shellfish (lobster", "crab", "thai food (spicy & sour)"…). The friendly chips in
+Step 2's food sub-step map to **case-insensitive substring keywords** (grounded in real
+data — coverage in parens). Scoring (§5 TIER-3 food overlap) matches a chip if ANY keyword
+is a substring of the product's `food_matching`:
+
+| Chip | Keywords | Products |
+|---|---|---|
+| Red meat | red meat, beef, lamb, steak, game, venison | 2,714 |
+| Poultry | chicken, poultry, duck, turkey | 2,102 |
+| Seafood | seafood, fish, oyster, shellfish, prawn, crab, lobster, sushi, sashimi, shrimp | 1,978 |
+| Cheese | cheese, charcuterie | 2,557 |
+| Pasta & pizza | pasta, pizza, risotto | 1,688 |
+| Spicy / Asian | spicy, thai, dim sum, curry, asian, szechuan, korean | 809 |
+| Vegetarian | salad, vegetable, mushroom, vegetarian | 1,813 |
+| Dessert | dessert, chocolate, cake, sweet, fruit tart | 997 |
+| Apéritif / snacks | apéritif, aperitif, hors, tapas, small plates, snack, canapé | 1,087 |
+
+Lives in `question-config.ts` (or a `food-chips.ts`). The chip tokens stored in
+`Answers.food[]` are the chip keys (e.g. `red-meat`, `seafood`).
 
 ### Adaptive axes per category (verified data signals)
 
@@ -232,8 +283,9 @@ TIER 2 — origin / varietal
 TIER 3 — floor / context (always available)
   occasion weighting:  gift/special → +2 if score_summary present (critic-rated)
                        everyday → +1 if in lower budget tiers (value lean)
-  food_matching overlap (when food step answered): +1 per shared item
-                       (split food_matching on ',' + trim — same as catalog recommender)
+  food_matching overlap (when food step answered): +1 per chip whose keyword set
+                       matches the product's food_matching (food-chip→keyword map, §3;
+                       case-insensitive substring — handles the 6,078 raw values)
 
 RANK:    sort by score desc, tie-break by score_summary present then price asc
 DEDUPE:  by sku
@@ -339,7 +391,9 @@ lower-priority paid item supporting the food step; listed for completeness.)
   like Gin); **only in-stock returned — assert `is_in_stock === "1"`** explicitly
   (a truthy check would pass while shipping OOS `"0"` rows — the string gotcha);
   no duplicate skus; "No preference"/`undefined` answer contributes 0; pre-filter
-  category membership matches via the group→classification map, not raw equality.
+  category membership matches via `groupForProduct` + the FinderCategory classMatch
+  (§3) — assert a `gin` query excludes rum/vodka and a `spirits` query excludes gin,
+  and a `sparkling` query excludes still wine.
 - **Unit — `style-profiles.ts`:** archetype resolution is deterministic for a given
   answer set; every category has ≥1 reachable archetype.
 - **Unit — `answers.ts`:** URL ⇄ answers round-trip is lossless; partial/invalid params
