@@ -184,6 +184,71 @@ Compact active-path display in the filter area: e.g. `Wine › Red Wine · Franc
 
 ---
 
+## 6.5 Accessories proper sub-categorization (ADDED per user)
+
+The current 6-group map collapses non-beverage items under one **Accessories** group. The user
+wants these **separated as proper sub-categories** so accessories are browsable, with **Events
+as its own distinct sub-category**. Verified classifications in this group:
+
+| Sub-category | Source classification(s) | Count |
+|---|---|---|
+| Glassware | `Glassware` | 232 |
+| Cigars | `Cigar` | 102 |
+| Events | `Events` | 10 |
+| Gifts & Other | `Accessories` (generic, 121) + `Others` (85) | ~206 |
+
+(Note: "wine fridge" is only ~2 products and lives under Glassware/Accessories — no own tier
+needed. `Non-Alcoholic` (63) + `Mineral Water` (1) belong to the **Beer & RTD** group per the
+existing map, NOT Accessories — leave them there.)
+
+**Design:** this is exactly the drill-down (§4): the **Accessories** top group, when selected,
+reveals sub-category chips **Glassware · Cigars · Events · Gifts & Other** (via the same
+`subCategoriesFor` mechanism). To make the labels friendly and to merge `Accessories`+`Others`
+into one "Gifts & Other" chip, add a small **sub-category display map** in `category-groups.ts`
+(`SUBCATEGORY_LABELS` / a grouping for the Accessories group) so the raw classifications map to
+these clean chip labels — and `class` filtering matches the underlying raw classification(s)
+(the "Gifts & Other" chip filters `classification ∈ {Accessories, Others}`). Keep the 6 top
+groups unchanged; this only enriches the Accessories drill-down level. Events being its own chip
+satisfies "Event as separate."
+
+## 6.6 "More filters" as dropdowns + richer taste/attribute browsing (ADDED per user)
+
+The user wants the advanced facets in "More filters" to be **dropdowns, not free-text inputs**,
+and the taste/attribute matrix exposed **as fully as is useful** so users can browse effectively.
+Verified value cardinality drives the right control per facet:
+
+| Facet | Distinct values | Control |
+|---|---|---|
+| Body | 5 (Light…Full) | **Dropdown** (normalized scale order) |
+| Acidity | 8 → normalize to 4 (Low/Medium/Medium-High/High) | **Dropdown** (use `normalizeScale` from `taste-adapter.ts` so options are the clean 4-step scale, not raw 8) |
+| Tannin | 8 → normalize to 4 | **Dropdown** (normalized) |
+| Sweetness (if present in `taste_profile.structural`) | small | **Dropdown** when data exists |
+| Country / Region / Sub-region | — | already the §4 drill-down (no free-text) |
+| Grape variety | **844** distinct (many blends) | **Searchable select / typeahead** seeded with the **top ~40 single-varietal grapes** + free-type fallback — a flat 844-item dropdown is unusable. Filter = case-insensitive substring on `grape_variety` (matches blends too). |
+| Flavor tag | **5,521** distinct | **Searchable select / typeahead** over the tag list (or a dropdown of the **top ~50** tags). NOT a plain dropdown of all 5,521. Filter = product whose `flavor_tags` includes the chosen tag. |
+| Critic score | boolean | **Toggle** "Critic-reviewed only" (`hasScore`) — unchanged |
+
+**Implementation notes:**
+- Replace the current free-text `region`/`grape` inputs in "More filters" with the above
+  controls. Body/acidity/tannin/sweetness use shadcn `Select` (dropdown) populated from the
+  normalized scale constants (single source: `taste-adapter.ts` `SCALE_DEFINITIONS`/normalize).
+- Dropdown OPTIONS should ideally be **context-aware too** (only show values present in the
+  current filtered set, with counts) using the same `facets.ts`/`matchesFilters` machinery —
+  e.g. `valuesFor(field, products)`. If full context-awareness for every attribute risks scope,
+  the MINIMUM is: real dropdowns with the correct fixed scale for body/acidity/tannin, and a
+  searchable control for grape/flavor. Mark context-aware attribute counts as a nice-to-have.
+- All write to URL params via `buildQuery` (`body`, `acidity`, `tannin`, `grape`, `flavor`,
+  `hasScore`) — `grape`/`flavor` already exist as params; `body`/`acidity`/`tannin` may need
+  adding to `applyShopQuery` (normalize the product's value via `normalizeScale` before
+  comparing, so a product stored "Medium-Full" acidity matches the "Medium-High" dropdown
+  option — consistent with how the gauges render).
+- 44px targets, 18px, keyboard-accessible (shadcn Select is accessible by default).
+
+**Tests:** body/acidity/tannin dropdown filter matches normalized values (a "Medium-High"
+selection includes products stored "Medium-Full"); grape substring matches a blend; flavor
+filter matches a product containing that tag; Accessories drill-down reveals Glassware/Cigars/
+Events/Gifts&Other chips with correct counts and "Gifts & Other" matches {Accessories, Others}.
+
 ## 7. Out of scope (YAGNI)
 - Dedicated browse-tree pages / per-facet landing URLs (the brainstorm "B"/"C-cards" option) — could be added later for SEO; not now.
 - Grape-variety / appellation drill-down — only category + geography for this feature.
