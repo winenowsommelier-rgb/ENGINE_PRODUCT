@@ -117,7 +117,9 @@ def main(argv: Optional[list[str]] = None) -> int:
         shutil.copy2(args.export, backup)
         print(f"\nBackup: {backup}")
 
-    args.export.write_text(json.dumps(products, ensure_ascii=False, indent=2))
+    # Compact (no indent) to match refresh_live_export.py's output and keep the
+    # git diff / file size sane — this is a 27 MB+ data file.
+    args.export.write_text(json.dumps(products, ensure_ascii=False))
     print(f"Wrote {CANONICAL_FIELD} to {args.export}")
     return 0
 
