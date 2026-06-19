@@ -25,7 +25,7 @@ shareable result URL, send a customer their style + bottles).
 
 ### IN SCOPE (Phase 1)
 - Adaptive, config-driven question flow (one engine, per-category question sets)
-- 8 Step-1 categories (below); steps adapt per category (min 3, max 6 + 1 conditional)
+- 7 Step-1 categories (below); steps adapt per category (min 3, max 6 + 1 conditional)
 - Tiered scoring with a **minimum-results guarantee** (never dead-ends)
 - Curated style-profile archetype library (config, deterministic, team-editable)
 - Conditional **food-pairing** sub-step when occasion = "With food"
@@ -45,23 +45,36 @@ Per-session API calls, accounts, saving quiz history, A/B question variants.
 
 ## 2. Data Reality (verified against `data/live_products_export.json`, 11,436 products)
 
-In-stock counts and attribute coverage **per finder category** (verified):
+> **In-stock is the STRING `"1"`, not a boolean** (project memory: *is_in_stock is a
+> STRING gotcha*). `is_in_stock` holds `"0"` / `"1"` / null; a truthiness check treats
+> the OOS string `"0"` as in-stock and is **backwards**. All counts below and the §5
+> pre-filter use `is_in_stock === "1"` (the catalog's `isInStock()` normalizer).
+
+True **in-stock** counts and coverage **over the in-stock population** per finder
+category (verified with the correct string check):
 
 | Category | In-stock | `wine_body` | `taste_profile` | `flavor_tags` | `region` | `country` |
 |---|---|---|---|---|---|---|
-| Red Wine | 4,121 | 60% | 51% | 61% | ~100% | ~100% |
-| White Wine | 1,583 | 54% | 49% | 55% | ~100% | ~100% |
-| Sparkling & Champagne | 898 | 58% | 42% | 58% | ~100% | ~100% |
-| Whisky | 629 | 12% | 39% | 68% | 100% | 100% |
-| Gin | 207 | 42% | 46% | 48% | ~96% | — |
-| Other Spirits | 601 | 10% | 26% | 45% | ~95% | ~95% |
-| Sake & Asian | 432 | 7% | 48% | 53% | ~97% | — |
-| ~~Rosé~~ | 175 | **5%** | **0%** | 33% | ~100% | — |
+| Red Wine | 2,200 | 85% | 76% | 87% | ~100% | ~100% |
+| White Wine | 744 | 86% | 80% | 89% | ~100% | ~100% |
+| Sparkling & Champagne | 417 | 89% | 70% | 91% | ~100% | ~100% |
+| Whisky | 253 | 22% | 62% | 87% | 100% | 100% |
+| Gin | 99 | 71% | 78% | 82% | ~96% | — |
+| Other Spirits | 244 | 20% | 48% | 76% | ~95% | ~95% |
+| Sake & Asian | 272 | 7% | 71% | 74% | ~97% | — |
+| ~~Rosé~~ | ~90 | **5%** | **0%** | 33% | ~100% | — |
+
+**Read carefully:** coverage among true in-stock items is *higher* than the raw
+catalog (e.g. 85% body on in-stock Red Wine), but the **pools are smaller** (Gin = 99,
+not 207). Both facts shape the engine: deep-taste scoring is viable for wine, but the
+**minimum-results guarantee (§5) will fire often** in the small/floor-tier-heavy
+categories (Gin, Other Spirits, Sake). Still no hard-filter on a sparse attribute.
 
 **Field-shape facts that drive the engine (verified):**
-- `wine_body` is a **6-level ordinal string**: `Light · Medium-Light · Medium ·
-  Medium-Full · Full` (+ ~33% empty). NOT a free "light/bold" — scoring must map
-  onto these exact strings with **ordinal distance**, not exact-match.
+- `wine_body` is a **5-level ordinal string** — exactly these values:
+  `Light · Medium-Light · Medium · Medium-Full · Full` (+ empty). NOT a free
+  "light/bold" — scoring maps onto these exact strings with **ordinal distance**, not
+  exact-match. The ladder index array in §5 has **5 entries**.
 - `wine_acidity` / `wine_tannin`: same ordinal family (`Medium`, `Medium-High`,
   `High`, `Medium-Full`, `Light`, `Low`, …).
 - `flavor_tags` is an **array but has 5,521 distinct values** (long-tail, messy) →
@@ -72,8 +85,9 @@ In-stock counts and attribute coverage **per finder category** (verified):
   chip source.**
 - Whisky **`country`** cleanly separates origin: Scotland 398 / USA 81 / Japan 80 /
   Ireland 31. Whisky **`region`** distinguishes style: **Islay (44)** = peat/smoke
-  signal; Speyside/Highland = smooth. The `flavor_tags` "Smoke" tag appears on only
-  33/629 whiskies → **do NOT key smokiness on the tag; key it on `region`=Islay.**
+  signal; Speyside (159)/Highland (88) = smooth. The `flavor_tags` "Smoke" tag appears
+  on only **49/629** whiskies → **do NOT key smokiness on the tag; key it on
+  `region`=Islay** (covers the peat signal far more reliably than the sparse tag).
 - `food_matching` is a **comma-separated string** on 5,783 products (reused from the
   catalog recommender; split on `,` + trim).
 - `is_in_stock`, `price`, `classification` present for ~100%.
@@ -106,11 +120,43 @@ contributes 0 to scoring (neither filters nor scores) — nothing ever dead-ends
 Steps are declared per-category in config; thin categories declare fewer (min 3).
 ```
 
+### The `Answers` contract (consumed by §5 scoring, §6 archetypes, §7 result, §8 codec)
+
+This is the single shared contract every downstream piece depends on. Defined once in
+`lib/finder/answers.ts`:
+
+```ts
+type FinderCategory =
+  'red' | 'white' | 'sparkling' | 'whisky' | 'gin' | 'spirits' | 'sake';
+type Budget = 0 | 1 | 2 | 3 | 4;     // <฿1k · ฿1–3k · ฿3–7k · ฿7–15k · ฿15k+
+type Occasion = 'everyday' | 'food' | 'gift' | 'special' | 'exploring';
+
+interface Answers {
+  category: FinderCategory;          // STEP 1 (required)
+  occasion?: Occasion;               // STEP 2
+  food?: string[];                   // conditional sub-step (occasion==='food')
+  budget?: Budget;                   // STEP 3
+  axis1?: string;                    // STEP 4 — category-specific token (see config)
+  axis2?: string;                    // STEP 5 — category-specific token
+  flavorChips?: string[];            // STEP 6 — canonical taste_profile notes (≤5)
+}
+// Any unset / "No preference" field is `undefined` and contributes 0 (§5).
+```
+
+`axis1`/`axis2` carry **opaque tokens** the per-category config defines (e.g. red
+`axis1 ∈ {light,medium,bold}`, whisky `axis1 ∈ {scotch,japanese,bourbon,irish,world}`).
+`question-config.ts` owns the token→option mapping AND the token→scoring mapping, so
+§5 never hard-codes per-category strings.
+
 ### Adaptive axes per category (verified data signals)
+
+The three wine categories (**red, white, sparkling**) are **separate config entries**
+that **share one axis-definition template** (body + acidity/fruit). They are not one
+category — listed together below only because their axes are identical in shape.
 
 | Category | Step 4 | Step 5 | Primary signal | Notes |
 |---|---|---|---|---|
-| Red / White / Sparkling | Body `Light→Full` (ordinal) | Acidity / Fruit→Earthy | `wine_body`, `wine_acidity`, `taste_profile` | scores, never filters |
+| Red / White / Sparkling (3 entries) | Body `Light→Full` (ordinal) | Acidity / Fruit→Earthy | `wine_body`, `wine_acidity`, `taste_profile` | scores, never filters |
 | **Whisky** | **Origin** Scotch/Japanese/Bourbon/Irish/World | **Smoky→Smooth** (Islay vs Speyside/Highland) | `country` + `region` | NOT `wine_body`, NOT "Smoke" tag |
 | Gin | Classic/London Dry → Contemporary/botanical | (origin, optional) | `flavor_tags` + `region` | 48% taste coverage |
 | Other Spirits | Pick spirit type (Vodka/Rum/Tequila/Brandy/Mezcal…) | Origin/style | `classification` + `country` | floor-tier heavy |
@@ -153,8 +199,14 @@ apps/catalog/
 `scoreProducts(answers, products) → ranked[]` — pure, additive, tiered.
 
 ```
-PRE-FILTER (hard, safe):  classification ∈ chosen category  AND  in-stock  AND  in budget tier
-                          (budget is a coarse bracket the user chose — safe to filter)
+PRE-FILTER (hard, safe):  classification ∈ chosen-category's class set  AND  in-stock  AND  in budget tier
+   • category membership uses the catalog's group→classification map (lib/category-groups.ts),
+     NOT raw equality — classification has 44 messy values (Whisky vs Whiskey, pipe-delimited
+     "Red Wine|Fruit Wine", etc.). The finder defines a FinderCategory→classifications[] map
+     that reuses/extends that catalog map; pipe-delimited values are split and matched on any part.
+     Raw-equality here would dead-end on exactly those messy rows.
+   • in-stock = is_in_stock === "1" (string — isInStock() normalizer; "0"/null are OOS).
+   • budget is a coarse bracket the user chose — safe to filter.
 
 TIER 1 — deep taste (highest weight; MISSING attribute = 0, never filters)
   Body axis      ordinal ladder over [Light, Medium-Light, Medium, Medium-Full, Full]:
@@ -221,12 +273,27 @@ interface StyleProfile {
 
 ## 7. Result Page, Sharing, Errors
 
-- **Result page** `/finder/result?cat=red&occasion=dinner&budget=2&body=bold&...`:
-  archetype card on top (name · expert note · defining attributes · food/occasion),
-  then the matched-product grid (reuses catalog product cards + quick-view), then
-  "Refine answers" / "Start over".
-- **Shareable / back-safe:** answers are fully URL-encoded by `answers.ts` (round-trip
-  tested). A team member runs it and sends the link; the customer sees the same result.
+- **Result page** reads the `Answers` object from the query string. **URL schema**
+  (owned by `answers.ts`, one param per `Answers` field, lossless round-trip):
+
+  | Param | From | Encoding |
+  |---|---|---|
+  | `cat` | `category` (required) | one token: `red\|white\|sparkling\|whisky\|gin\|spirits\|sake` |
+  | `occ` | `occasion` | one token: `everyday\|food\|gift\|special\|exploring` |
+  | `food` | `food[]` | comma-joined tokens, URL-encoded (e.g. `food=redmeat,cheese`) |
+  | `b` | `budget` | single digit `0..4` |
+  | `a1` | `axis1` | one config token |
+  | `a2` | `axis2` | one config token |
+  | `fl` | `flavorChips[]` | comma-joined canonical-note slugs (≤5) |
+
+  Example: `/finder/result?cat=red&occ=food&food=redmeat,cheese&b=2&a1=bold&a2=earthy&fl=oak,leather`.
+  `decodeAnswers(searchParams) → Answers` and `encodeAnswers(Answers) → string` are
+  inverse; unknown params ignored, malformed values dropped to `undefined` (degrade,
+  never throw). Result page: archetype card on top (name · expert note · defining
+  attributes · food/occasion), matched-product grid below (catalog cards + quick-view),
+  then "Refine answers" / "Start over".
+- **Shareable / back-safe:** the URL fully encodes `Answers` (round-trip tested, §9).
+  A team member runs it and sends the link; the customer sees the same result.
 - **Error handling (catalog Rule 9 pattern):** invalid/partial params → fall back to
   the floor tier or redirect to `/finder`; a missing field hides its block; the page
   never crashes and the result rail is never empty (guarantee, §5).
@@ -255,9 +322,12 @@ lower-priority paid item supporting the food step; listed for completeness.)
 
 ## 9. Testing (per project rules)
 
-- **Unit — `scoring.ts`:** ordinal-ladder distances correct; **minimum-4 guarantee**
-  holds on a starved query; only in-stock returned; no duplicate skus; "No preference"
-  contributes 0; pre-filter respects budget bracket.
+- **Unit — `scoring.ts`:** ordinal-ladder distances correct (5-level body ladder);
+  **minimum-4 guarantee** holds on a starved query (assert against a small category
+  like Gin); **only in-stock returned — assert `is_in_stock === "1"`** explicitly
+  (a truthy check would pass while shipping OOS `"0"` rows — the string gotcha);
+  no duplicate skus; "No preference"/`undefined` answer contributes 0; pre-filter
+  category membership matches via the group→classification map, not raw equality.
 - **Unit — `style-profiles.ts`:** archetype resolution is deterministic for a given
   answer set; every category has ≥1 reachable archetype.
 - **Unit — `answers.ts`:** URL ⇄ answers round-trip is lossless; partial/invalid params
@@ -266,8 +336,10 @@ lower-priority paid item supporting the food step; listed for completeness.)
   `toPublicProduct` — **no margin/B2B field ever appears** in a finder response.
 - **Browser verification (Rule 7 — mandatory before "done"):** dev server up; walk
   **all 8 categories** end-to-end (including a "No preference" path and a "With food"
-  path) to a **non-empty** result; confirm the style card + product grid render and the
-  result URL is shareable/back-safe. "It compiles" is not done.
+  path) to a **non-empty** result — all **7 categories** (Red, White, Sparkling &
+  Champagne, Whisky, Gin, Other Spirits, Sake & Asian); confirm the style card +
+  product grid render and the result URL is shareable/back-safe. "It compiles" is
+  not done.
 
 ---
 
