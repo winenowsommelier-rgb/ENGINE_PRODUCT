@@ -17,13 +17,16 @@ export function bodyLadderDistance(target: string, value: string): number | null
 const BODY_TOKEN: Record<string, string> = { light:'Light', medium:'Medium', bold:'Full' };
 
 function ladderScore(distance: number | null, exact: number): number {
-  // A KNOWN body value on the ladder is always a real (in-category) match, so every
-  // on-ladder distance clears QUALITY_MIN — closer is just ranked higher. Off-ladder /
-  // missing body returns null above and scores 0 (the genuine "no signal" case).
+  // Exact/adjacent body matches clear QUALITY_MIN (rungs 4/3); a body ≥2 steps off the
+  // wanted level is a weak match (rung 1, BELOW QUALITY_MIN) so an all-far-body pool
+  // honestly degrades. Off-ladder / missing body returns null above and scores 0
+  // (the genuine "no signal" case).
   if (distance === null) return 0;
   if (distance === 0) return exact;       // exact     → 4
   if (distance === 1) return exact - 1;   // adjacent  → 3
-  return Math.max(exact - 2, QUALITY_MIN); // 2+ steps → 2 (still well-matched, ranked last)
+  return 1; // 2+ steps off the wanted body → rung 1, BELOW QUALITY_MIN (=2). A pool
+            // that is all far-body honestly degrades. The rung is a literal, deliberately
+            // decoupled from QUALITY_MIN so the ladder and the degrade gate move independently.
 }
 
 const MIN_RESULTS = 4;
@@ -52,6 +55,8 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
     if (a.axis2 && p.country && norm(p.country).includes(norm(a.axis2))) s += 2;
     if ((a.occasion === 'gift' || a.occasion === 'special') &&
         typeof p.score_summary === 'string' && p.score_summary.trim() !== '') s += 2;
+    // spec §5 Tier-3: everyday occasion + a low budget tier (0–1) gets a small value lean.
+    if (a.occasion === 'everyday' && a.budget != null && a.budget <= 1) s += 1;
     s += foodChipMatches(p, a.food);
     return { p, s };
   });
@@ -74,7 +79,9 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
   // degraded so the UI shows the honest "Closest matches in your budget" label. The pool
   // is already in-budget/in-stock/in-category, so we still show the top-ranked products.
   const wellMatched = ranked.filter((r) => r.s >= QUALITY_MIN).length;
-  const degraded = wellMatched < MIN_RESULTS;
+  // Never flag degraded on an empty pool: an empty result must not render the honest
+  // "Closest matches in your budget" label over nothing (spec §5 "never empty").
+  const degraded = ranked.length > 0 && wellMatched < MIN_RESULTS;
 
   return { products: ranked.slice(0, TOP_N).map((r) => r.p), degraded };
 }

@@ -34,7 +34,12 @@ describe('scoreProducts', () => {
   });
 
   it('a genuine deep match is NOT degraded', () => {
-    const pool = [P({sku:'WRW1', wine_body:'Full'}), P({sku:'WRW2', wine_body:'Light'}),
+    // Regression guard: needs ≥4 GENUINELY near-body products. Since the far-body rung
+    // was decoupled from QUALITY_MIN (dist≥2 → rung 1 < QUALITY_MIN 2), a distance-4
+    // body (Light vs wanted Full) no longer counts as well-matched. The old fixture had
+    // only 3 near + 1 Light (=3 well-matched < MIN_RESULTS) which now honestly degrades;
+    // WRW2 is Medium-Full so all four are near-body (rungs 4/3/3/4) → 4 well-matched.
+    const pool = [P({sku:'WRW1', wine_body:'Full'}), P({sku:'WRW2', wine_body:'Medium-Full'}),
                   P({sku:'WRW3', wine_body:'Medium-Full'}), P({sku:'WRW4', wine_body:'Full'})];
     const res = scoreProducts(ans({axis1:'bold'}), pool as any);
     expect(res.degraded).toBe(false);
@@ -45,5 +50,26 @@ describe('scoreProducts', () => {
     const res = scoreProducts(ans({}), pool as any);
     expect(new Set(res.products.map(p=>p.sku)).size).toBe(res.products.length);
     expect(res.products.some(p=>p.sku==='WRW9')).toBe(false);
+  });
+
+  it('empty pool → not degraded, empty products (never "closest matches" over nothing)', () => {
+    const res = scoreProducts(ans({ category:'red', budget:0 }), [] as any);
+    expect(res.products).toEqual([]);
+    expect(res.degraded).toBe(false);
+  });
+
+  it('a pool where every match is far from the wanted body IS degraded', () => {
+    // want bold (Full); all candidates Light (distance 4 → rung 1 < QUALITY_MIN 2)
+    const pool = Array.from({length:5},(_,i)=>P({sku:`WRWlt${i}`, wine_body:'Light'}));
+    const res = scoreProducts(ans({ axis1:'bold' }), pool as any);
+    expect(res.products.length).toBeGreaterThanOrEqual(4); // still shown
+    expect(res.degraded).toBe(true);                        // but honestly flagged
+  });
+
+  it('everyday + low budget gives a small value lean', () => {
+    // price 500 keeps it inside budget tier 0 (under ฿1,000) so the prefilter passes it through.
+    const pool = [P({sku:'WRWv', wine_body:'Full', price:500})];
+    const a1 = scoreProducts(ans({ occasion:'everyday', budget:0 }), pool as any);
+    expect(a1.products.map(p=>p.sku)).toContain('WRWv'); // present; rule adds +1, no crash
   });
 });
