@@ -72,4 +72,26 @@ describe('scoreProducts', () => {
     const a1 = scoreProducts(ans({ occasion:'everyday', budget:0 }), pool as any);
     expect(a1.products.map(p=>p.sku)).toContain('WRWv'); // present; rule adds +1, no crash
   });
+
+  // ── TIER-2 origin/style scoring for non-wine categories (regression: these
+  // axes used to feed only the archetype text, contributing nothing to ranking). ──
+  it('whisky: axis1=scotch ranks a Scotland bottle above a USA bottle', () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', ...o });
+    const pool = [W({sku:'LWHusa', country:'USA'}), W({sku:'LWHsco', country:'Scotland'})];
+    const out = scoreProducts({ category:'whisky', axis1:'scotch' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHsco');
+    expect(out.degraded).toBe(false); // +2 origin clears QUALITY_MIN
+  });
+  it('whisky: axis2=smoky ranks an Islay bottle above a Speyside bottle', () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    const pool = [W({sku:'LWHspey', region:'Speyside'}), W({sku:'LWHislay', region:'Islay'})];
+    const out = scoreProducts({ category:'whisky', axis1:'scotch', axis2:'smoky' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHislay');
+  });
+  it('spirits: axis1=rum ranks a Rum above a Vodka', () => {
+    const S = (o:any)=>({ price:1500, is_in_stock:true, ...o });
+    const pool = [S({sku:'LVKv', classification:'Vodka'}), S({sku:'LRMr', classification:'Rum'})];
+    const out = scoreProducts({ category:'spirits', axis1:'rum' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LRMr');
+  });
 });
