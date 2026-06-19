@@ -85,18 +85,26 @@ export function TasteWheel({ tiers, size = 240 }: TasteWheelProps) {
         })}
         <circle cx={cx} cy={cy} r={r * 0.22} fill="#f7f2ea" stroke="#d5cdb5" />
       </svg>
-      {/* Below the wheel: tier listings with non-interactive TasteNote chips. */}
+      {/* Below the wheel: tier listings with non-interactive TasteNote chips.
+          Each tier is a stacked block — a header line (colour-keyed dot + tier
+          name, tied to its wheel ring) above the wrapping pills. EMPTY tiers
+          (e.g. a SKU with no tertiary notes) are skipped entirely so no orphan
+          "Tertiary" header renders with zero pills. */}
       <div className="taste-wheel-legend">
-        {(['primary', 'secondary', 'tertiary'] as const).map(tier => (
-          <div key={tier} className={`taste-wheel-legend-row taste-wheel-legend-${tier}`}>
-            <span className="taste-wheel-legend-label">{tier.charAt(0).toUpperCase() + tier.slice(1)}</span>
-            <div className="taste-notes-row">
-              {(tiers[tier] ?? []).map((n, i) => (
-                <TasteNote key={`${tier}-${i}`} note={n.note} tier={tier} intensity={n.intensity} />
-              ))}
+        {(['primary', 'secondary', 'tertiary'] as const).map(tier => {
+          const notes = tiers[tier] ?? [];
+          if (notes.length === 0) return null;
+          return (
+            <div key={tier} className={`taste-wheel-legend-row taste-wheel-legend-${tier}`}>
+              <span className="taste-wheel-legend-label">{tier.charAt(0).toUpperCase() + tier.slice(1)}</span>
+              <div className="taste-notes-row">
+                {notes.map((n, i) => (
+                  <TasteNote key={`${tier}-${i}`} note={n.note} tier={tier} intensity={n.intensity} />
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

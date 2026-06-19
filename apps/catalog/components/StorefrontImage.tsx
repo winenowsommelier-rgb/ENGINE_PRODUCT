@@ -45,7 +45,7 @@ export function StorefrontImage({
   return (
     <div
       className={cn(
-        'relative aspect-[3/4] w-full overflow-hidden bg-secondary',
+        'relative aspect-[3/4] w-full overflow-hidden bg-white',
         className,
       )}
     >

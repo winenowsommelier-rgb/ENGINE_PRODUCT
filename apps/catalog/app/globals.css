@@ -149,68 +149,96 @@
   height: auto;
 }
 
-/* Tier legend: one row per tier (Primary / Secondary / Tertiary). */
+/* Tier legend: one stacked BLOCK per tier (Primary / Secondary / Tertiary).
+   Each block is a header line (colour-keyed dot + tier name) ABOVE the wrapping
+   pills — never a tight label column, so variable-width labels can't wrap into
+   or collide with the pills at any width. Empty tiers are not rendered at all
+   (handled in TasteWheel.tsx). */
 .taste-wheel-legend {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1.5rem;            /* generous separation between tier blocks */
   width: 100%;
 }
+/* Per-tier colour token: the ring colour the pill group belongs to. Drives both
+   the header dot and the pill left-accent so a group reads as ONE wheel ring. */
+.taste-wheel-legend-primary   { --tier-color: #7c2d3a; }  /* outer  ring */
+.taste-wheel-legend-secondary { --tier-color: #8b5a2b; }  /* middle ring */
+.taste-wheel-legend-tertiary  { --tier-color: #6c6055; }  /* inner  ring */
+
 .taste-wheel-legend-row {
-  display: grid;
-  grid-template-columns: 5.5rem 1fr;
-  align-items: start;
-  gap: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;            /* header → pills breathing room */
 }
+/* Header line: dot + tier name on its own line, above the pills. */
 .taste-wheel-legend-label {
-  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  line-height: 1.3;
   color: hsl(var(--muted-foreground));
-  padding-top: 0.3rem;
 }
-/* A small colour key dot per tier, matching the wheel ring colours. */
+/* The ring colour key dot, sized off the label so it scales with the 18px base. */
 .taste-wheel-legend-label::before {
   content: '';
-  display: inline-block;
+  flex: 0 0 auto;
   width: 0.6rem;
   height: 0.6rem;
   border-radius: 9999px;
-  margin-right: 0.4rem;
-  vertical-align: middle;
+  background: var(--tier-color);
 }
-.taste-wheel-legend-primary   .taste-wheel-legend-label::before { background: #7c2d3a; }
-.taste-wheel-legend-secondary .taste-wheel-legend-label::before { background: #8b5a2b; }
-.taste-wheel-legend-tertiary  .taste-wheel-legend-label::before { background: #6c6055; }
 
-/* Note chips row. */
+/* Note chips row — wraps freely with even gaps. */
 .taste-notes-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
-/* Individual non-interactive note chip (TasteNote → <span>). */
+/* Individual non-interactive note chip (TasteNote → <span>). A subtle left
+   accent in the tier colour ties each pill to its wheel ring without shouting. */
 .taste-note {
   display: inline-flex;
   align-items: center;
   border: 1px solid hsl(var(--border));
+  border-left: 3px solid var(--tier-color, hsl(var(--border)));
   background: hsl(var(--secondary));
   color: hsl(var(--foreground));
-  border-radius: 9999px;
-  padding: 0.2rem 0.7rem;
-  font-size: 0.85rem;
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.9rem;
   line-height: 1.4;
   white-space: nowrap;
 }
 /* Higher-intensity notes read a touch stronger (subtle, not loud). */
 .taste-note[data-intensity='3'] {
-  border-color: hsl(var(--primary) / 0.5);
   font-weight: 600;
+  background: color-mix(in srgb, var(--tier-color, hsl(var(--secondary))) 10%, hsl(var(--secondary)));
 }
 .taste-note[data-intensity='2'] {
-  border-color: hsl(var(--primary) / 0.3);
+  background: color-mix(in srgb, var(--tier-color, hsl(var(--secondary))) 5%, hsl(var(--secondary)));
+}
+
+/* Desktop: wheel and legend can sit side by side for a more composed block,
+   while mobile keeps the clean vertical stack. */
+@media (min-width: 768px) {
+  .taste-wheel {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2.5rem;
+  }
+  .taste-wheel > svg {
+    flex: 0 0 auto;
+  }
+  .taste-wheel-legend {
+    padding-top: 0.5rem;
+  }
 }
 
 /* ── Structural gauges ──────────────────────────────────────────────────── */
