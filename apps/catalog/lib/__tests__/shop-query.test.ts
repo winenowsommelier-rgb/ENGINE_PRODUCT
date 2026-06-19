@@ -278,6 +278,12 @@ describe('matchesFilters — Accessories class = accessory sub-category (NOT cla
     const prod = P({ sku: 'W1', classification: 'Red Wine' });
     expect(matchesFilters(prod, { group: 'Wine', class: 'Red Wine' })).toBe(true);
   });
+  it('an Accessories product whose SKU has no sub-category mapping never falsely matches a class', () => {
+    // 'AZZ999' resolves to the Accessories GROUP (A* prefix) but accessoryCategoryForSku
+    // returns null (no AZZ sub-category) → norm(null)='' must never equal a real class.
+    const prod = P({ sku: 'AZZ999', classification: 'Others' });
+    expect(matchesFilters(prod, { group: 'Accessories', class: 'Glassware' })).toBe(false);
+  });
 });
 
 describe('matchesFilters — subregion (substring, like region)', () => {
