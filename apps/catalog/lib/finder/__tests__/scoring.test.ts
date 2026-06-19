@@ -94,4 +94,15 @@ describe('scoreProducts', () => {
     const out = scoreProducts({ category:'spirits', axis1:'rum' } as any, pool as any);
     expect(out.products[0].sku).toBe('LRMr');
   });
+
+  // Honest-label guard: a THIN pool where NOTHING matches what the user asked must be
+  // degraded (the old `ranked.length >= 4` gate wrongly hid this — showed confident
+  // "Your matches" over poor fits). User wants Scotch; only 2 USA whiskies in budget.
+  it('whisky: a thin pool with NO genuine match IS degraded', () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'USA', ...o });
+    const pool = [W({sku:'LWHu1'}), W({sku:'LWHu2'})];
+    const out = scoreProducts({ category:'whisky', axis1:'scotch' } as any, pool as any);
+    expect(out.products.length).toBe(2); // still shown (never empty)
+    expect(out.degraded).toBe(true);     // but honestly flagged "closest matches"
+  });
 });

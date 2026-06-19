@@ -138,13 +138,16 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
   // degraded so the UI shows the honest "Closest matches in your budget" label. The pool
   // is already in-budget/in-stock/in-category, so we still show the top-ranked products.
   const wellMatched = ranked.filter((r) => r.s >= QUALITY_MIN).length;
-  // Never flag degraded on an empty pool: an empty result must not render the honest
-  // "Closest matches in your budget" label over nothing (spec §5 "never empty").
-  // Also don't flag when the in-budget pool itself has fewer than MIN_RESULTS items:
-  // "degraded" means we couldn't find enough GOOD matches among ENOUGH candidates,
-  // not that the catalog is simply thin for this filter. A tiny pool with a genuine
-  // top match (e.g. the one Scotch in a 2-bottle pool) is honest, not degraded.
-  const degraded = ranked.length >= MIN_RESULTS && wellMatched < MIN_RESULTS;
+  // SPEC §5 honest-label flag. "degraded" = we have products to show, but NOT ONE of
+  // them actually clears the quality bar for what the user asked — so the UI says
+  // "Closest matches in your budget" instead of "Your matches". This is honest for
+  // thin pools in BOTH directions and independent of pool size:
+  //   • 2-bottle pool, one genuinely matches (e.g. the Scotch the user wanted) → not degraded
+  //   • 2-bottle pool, none match (user wants Scotch, only Bourbon in budget) → degraded
+  //   • large pool, nothing clears (all far-body) → degraded
+  //   • empty pool → not degraded (never label "closest matches" over nothing)
+  // (MIN_RESULTS/TOP_N govern how many we SHOW, not whether the label is honest.)
+  const degraded = ranked.length > 0 && wellMatched === 0;
 
   return { products: ranked.slice(0, TOP_N).map((r) => r.p), degraded };
 }
