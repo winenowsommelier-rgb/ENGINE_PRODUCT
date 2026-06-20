@@ -26,4 +26,12 @@ describe('answers URL codec', () => {
   it('round-trips budget 0 (falsy-trap guard)', () => {
     expect(decodeAnswers(new URLSearchParams(encodeAnswers({ category: 'red', budget: 0 }))).budget).toBe(0);
   });
+  it('round-trips deep-dive fields', () => {
+    const a = { category:'red', acidity:'crisp', tannin:'firm', grape:'cabernet', age:'mature', adventure:'discovery', peat:'heavy' } as any;
+    expect(decodeAnswers(new URLSearchParams(encodeAnswers(a)))).toEqual(a);
+  });
+  it('omits deep-dive params when unset (minimal core round-trips clean)', () => {
+    const a = { category:'whisky' } as any;
+    expect(decodeAnswers(new URLSearchParams(encodeAnswers(a)))).toEqual(a);
+  });
 });
