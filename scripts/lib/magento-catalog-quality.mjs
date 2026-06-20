@@ -39,7 +39,7 @@ export function isBeverage(product) {
 }
 
 export function computeReviewPriority(product) {
-  const recentRevenue = Number(product.popularity_revenue_90d) || 0;
+  const recentRevenue = Number(product.popularity_revenue_window) || 0;
   const stock = Number(product.wn_stock ?? product.quantity_in_stock) || 0;
   if (recentRevenue > 0 || Number(product.has_recent_sales) === 1) return 'HIGH';
   if (stock > 0) return 'MEDIUM';

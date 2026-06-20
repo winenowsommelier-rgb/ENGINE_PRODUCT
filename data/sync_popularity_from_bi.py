@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 """Compute windowed popularity per SKU from BI DuckDB and upsert into Supabase.
 
-Window: default is now 365 days (was 90). The `*_90d` column NAMES below are
-legacy and retained for backward compatibility; the actual window used is
-recorded in popularity_window_days.
+Window: default 365 days (was 90). Column names are window-agnostic
+(`popularity_*_window`); the actual window in days is recorded in
+popularity_window_days. (These columns were renamed from a misleading `*_90d`
+suffix that no longer matched the 365-day data they hold.)
 
 Pipeline:
   1. Read marts.mart_pivot_base from the local BI DuckDB.
   2. Aggregate closed orders in the last N days (default 365) per SKU:
-        - popularity_qty_90d       = SUM(qty_ordered)      (legacy name)
-        - popularity_orders_90d    = COUNT(DISTINCT order_id)  (legacy name)
-        - popularity_revenue_90d   = SUM(item_revenue_thb)    (legacy name)
+        - popularity_qty_window       = SUM(qty_ordered)
+        - popularity_orders_window    = COUNT(DISTINCT order_id)
+        - popularity_revenue_window   = SUM(item_revenue_thb)
   3. Compute popularity_score = weighted blend of components:
-        0.5 * orders_90d + 0.3 * qty_90d + 0.2 * revenue_90d
+        0.5 * orders + 0.3 * qty + 0.2 * revenue
      Each component is 95th-percentile-CAPPED then min-max normalized to
      [0, 1] (NOT z-scored). The cap stops a single outlier from pinning the
      min-max scale (the pre-fix score was degenerate: median ≈ 0.0007), so
@@ -185,9 +186,9 @@ def push_supabase(rows: list[dict], env: dict[str, str], synced_at: str, window_
             "id": rid,
             "sku": r["sku"],
             "popularity_score":       r["score"],
-            "popularity_qty_90d":     r["qty"],
-            "popularity_orders_90d":  r["orders"],
-            "popularity_revenue_90d": r["revenue"],
+            "popularity_qty_window":     r["qty"],
+            "popularity_orders_window":  r["orders"],
+            "popularity_revenue_window": r["revenue"],
             "popularity_window_days": window_days,
             "popularity_synced_at":   synced_at,
         })
@@ -231,8 +232,8 @@ def write_sqlite(rows: list[dict], db_path: Path, synced_at: str, window_days: i
     Reset-then-update in ONE transaction so a re-run can't leave stale ranks on
     SKUs that scored last run but not this one (spec §'Re-run semantics').
     UPDATE-only: a SKU not already in products is silently skipped (never insert).
-    NOTE: the *_90d column names are legacy; the true window is window_days
-    (365), recorded in popularity_window_days. See
+    Column names are window-agnostic (popularity_*_window); the actual window
+    in days is recorded in popularity_window_days (365). See
     docs/superpowers/specs/2026-06-17-bi-popularity-backfill-design.md.
     Returns the number of rows actually updated (matched existing SKUs).
     """
@@ -245,8 +246,8 @@ def write_sqlite(rows: list[dict], db_path: Path, synced_at: str, window_days: i
         # 1. Reset every row (first run vs all-NULL table = harmless no-op).
         conn.execute(
             "UPDATE products SET "
-            "popularity_score=NULL, popularity_qty_90d=NULL, popularity_orders_90d=NULL, "
-            "popularity_revenue_90d=NULL, popularity_window_days=NULL, popularity_synced_at=NULL"
+            "popularity_score=NULL, popularity_qty_window=NULL, popularity_orders_window=NULL, "
+            "popularity_revenue_window=NULL, popularity_window_days=NULL, popularity_synced_at=NULL"
         )
         # 2. Update the matched set. An UPDATE...WHERE sku=? that matches 0 rows
         #    is a no-op (orphan SKU never inserted).
@@ -255,8 +256,8 @@ def write_sqlite(rows: list[dict], db_path: Path, synced_at: str, window_days: i
         for r in rows:
             cur.execute(
                 "UPDATE products SET "
-                "popularity_score=?, popularity_qty_90d=?, popularity_orders_90d=?, "
-                "popularity_revenue_90d=?, popularity_window_days=?, popularity_synced_at=? "
+                "popularity_score=?, popularity_qty_window=?, popularity_orders_window=?, "
+                "popularity_revenue_window=?, popularity_window_days=?, popularity_synced_at=? "
                 "WHERE sku=?",
                 (r["score"], r["qty"], r["orders"], r["revenue"],
                  window_days, synced_at, r["sku"]),
@@ -344,7 +345,7 @@ def main() -> int:
         "SELECT COUNT(*) FROM products WHERE popularity_synced_at = ?", (synced_at,)
     ).fetchone()[0]
     total_nonnull = _vc.execute(
-        "SELECT COUNT(*) FROM products WHERE popularity_orders_90d IS NOT NULL"
+        "SELECT COUNT(*) FROM products WHERE popularity_orders_window IS NOT NULL"
     ).fetchone()[0]
     _vc.close()
     print(f"  SQLite: updated={updated}  this-run(synced_at)={this_run}  "

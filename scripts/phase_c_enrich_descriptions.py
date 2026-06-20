@@ -233,12 +233,12 @@ def main(argv=None):
         FROM products
         WHERE COALESCE(is_active,1)=1
           AND (full_description IS NULL OR LENGTH(full_description) < 100)
-          AND (popularity_revenue_90d > 0 OR has_recent_sales = 1)
+          AND (popularity_revenue_window > 0 OR has_recent_sales = 1)
           AND classification NOT IN ('Accessories','Events','Glassware','Non-Alcoholic','Mineral Water','Cigar')
           AND sku NOT LIKE 'ABA%' AND sku NOT LIKE 'AWC%' AND sku NOT LIKE 'CIG%'
           AND sku NOT LIKE 'GBE%' AND sku NOT LIKE 'GDC%' AND sku NOT LIKE 'GLQ%'
           AND sku NOT LIKE 'GWN%' AND sku NOT LIKE 'WEV%'
-        ORDER BY popularity_revenue_90d DESC NULLS LAST, has_recent_sales DESC, sku
+        ORDER BY popularity_revenue_window DESC NULLS LAST, has_recent_sales DESC, sku
     """)]
 
     if args.skip_done:

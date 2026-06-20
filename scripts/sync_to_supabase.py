@@ -47,8 +47,8 @@ PRODUCT_SYNC_COLUMNS = [
     "overall_confidence", "validation_status",
     "taste_profile", "taste_profile_override",
     # Popularity / BI
-    "popularity_score", "popularity_orders_90d", "popularity_revenue_90d",
-    "popularity_qty_90d",
+    "popularity_score", "popularity_orders_window", "popularity_revenue_window",
+    "popularity_qty_window",
     # Stock/active flags (synced from BI via scripts/sync_stock_from_bi.py).
     # Requires Supabase columns is_active INT, has_recent_sales INT, bi_synced_at TEXT
     # (added in migration add_is_active_to_products).
@@ -77,8 +77,8 @@ _NUMERIC_COLUMNS = {
     "margin_thb", "margin_pct", "sp_discount_pct",
     "alcohol", "bottle_size", "score_max",
     "enrichment_confidence", "overall_confidence",
-    "popularity_score", "popularity_orders_90d", "popularity_revenue_90d",
-    "popularity_qty_90d", "quantity_in_stock", "wn_stock",
+    "popularity_score", "popularity_orders_window", "popularity_revenue_window",
+    "popularity_qty_window", "quantity_in_stock", "wn_stock",
 }
 
 

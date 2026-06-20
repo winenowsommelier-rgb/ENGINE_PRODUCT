@@ -23,7 +23,7 @@ const SEGMENT_MATCH: Record<string, (sku: string) => boolean> = {
 };
 
 const SORT_MAP: Record<string, string> = {
-  popular:    "popularity_score.desc.nullslast,popularity_orders_90d.desc.nullslast,price.desc.nullslast",
+  popular:    "popularity_score.desc.nullslast,popularity_orders_window.desc.nullslast,price.desc.nullslast",
   "price-asc":  "price.asc.nullslast",
   "price-desc": "price.desc.nullslast",
   newest:     "vintage.desc.nullslast,created_at.desc",
@@ -34,8 +34,8 @@ const SELECT_FIELDS = [
   "id", "sku", "name", "brand", "classification", "grape_variety", "wine_color",
   "vintage", "price", "currency", "country", "region", "subregion", "image_url",
   "desc_en_short", "wine_body", "wine_acidity", "wine_tannin", "flavor_tags",
-  "food_matching", "popularity_score", "popularity_qty_90d", "popularity_orders_90d",
-  "popularity_revenue_90d", "popularity_window_days", "popularity_synced_at",
+  "food_matching", "popularity_score", "popularity_qty_window", "popularity_orders_window",
+  "popularity_revenue_window", "popularity_window_days", "popularity_synced_at",
   // Wine enrichment pipeline outputs (2026-05-12 spec):
   "grape_blend_type", "wine_production_style", "score_max", "score_summary", "full_description",
   // Taste taxonomy v2 (2026-05-24): structured taste profile + food pairing rationale
@@ -119,8 +119,8 @@ function loadLocalProducts(): ExploreProduct[] {
   for (const p of dbProducts) if (p.sku) dbBySku.set(String(p.sku), p);
 
   const DB_SUPPLEMENT = ["id", "image_url", "image_scraped_url", "created_at", "updated_at",
-    "popularity_score", "popularity_orders_90d", "popularity_revenue_90d",
-    "popularity_qty_90d", "popularity_window_days", "popularity_synced_at"];
+    "popularity_score", "popularity_orders_window", "popularity_revenue_window",
+    "popularity_qty_window", "popularity_window_days", "popularity_synced_at"];
 
   const merged = liveProducts.map(live => {
     const db = dbBySku.get(String(live.sku ?? ""));
@@ -185,7 +185,7 @@ function sortLocal(products: ExploreProduct[], sortKey: string): ExploreProduct[
     switch (sortKey) {
       case "popular":
         return (Number(b.popularity_score ?? 0) - Number(a.popularity_score ?? 0)) ||
-               (Number(b.popularity_orders_90d ?? 0) - Number(a.popularity_orders_90d ?? 0)) ||
+               (Number(b.popularity_orders_window ?? 0) - Number(a.popularity_orders_window ?? 0)) ||
                (Number(b.price ?? 0) - Number(a.price ?? 0));
       case "price-asc":  return (Number(a.price ?? 0)) - (Number(b.price ?? 0));
       case "price-desc": return (Number(b.price ?? 0)) - (Number(a.price ?? 0));
