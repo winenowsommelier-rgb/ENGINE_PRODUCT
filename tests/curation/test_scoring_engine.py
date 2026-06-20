@@ -1,5 +1,5 @@
 import json, pathlib
-from lib.curation.scoring_engine import score_candidates
+from lib.curation.scoring_engine import score_candidates, _web_freshness
 from lib.curation.knowledge_base import load_knowledge_base
 from lib.curation.models import StructuredQuery
 from lib.curation.affinity_resolver import find_affinities
@@ -38,6 +38,39 @@ def test_occasion_override_changes_scores():
     r1 = score_candidates(PRODUCTS, q1, KB, SCORING_MODEL_PATH)
     r2 = score_candidates(PRODUCTS, q2, KB, SCORING_MODEL_PATH)
     assert all(0 <= r.final_score <= 100 for r in r1 + r2)
+
+
+# ── web_freshness regression guard ────────────────────────────────────────────
+# History: `wf` was hardcoded to 0.0 in score_candidates, so the model's
+# web_freshness weight (0.2) was allocated but never applied — critic scores
+# had zero effect on ranking. These tests lock in that critic scores DO move
+# the final score, and that the parse handles both score_max and the
+# score_summary JSON fallback (where score_native is a string in real data).
+
+def test_web_freshness_parses_score_max_above_floor():
+    # 91 with floor 85 -> (91-85)/(100-85) = 0.4
+    assert abs(_web_freshness({"score_max": 91.0}) - 0.4) < 1e-9
+
+def test_web_freshness_zero_below_floor():
+    assert _web_freshness({"score_max": 84.0}) == 0.0
+    assert _web_freshness({"score_max": 85.0}) == 0.0  # at floor -> 0
+    assert _web_freshness({}) == 0.0
+
+def test_web_freshness_falls_back_to_summary_string_scores():
+    # real score_summary has score_native as a STRING ("91")
+    summary = json.dumps({"critics": [{"score_native": "91"}, {"score_native": "88"}]})
+    # takes the max critic (91) -> 0.4
+    assert abs(_web_freshness({"score_summary": summary}) - 0.4) < 1e-9
+
+def test_high_critic_score_raises_final_score():
+    base = {"sku": "WRW900", "name": "Plain", "classification": "Red Wine",
+            "wine_body": "Full", "flavor_tags": ["blackcurrant", "cedar"],
+            "desc_en_short": "x", "taxonomy_confidence": 0.9, "b2b_margin_pct": "30%"}
+    acclaimed = {**base, "sku": "WRW901", "score_max": 98.0}
+    q = StructuredQuery(raw_brief="best wine")
+    results = {r.sku: r.final_score
+              for r in score_candidates([base, acclaimed], q, KB, SCORING_MODEL_PATH)}
+    assert results["WRW901"] > results["WRW900"]
 
 
 FULL_RED = {"sku": "WRW001", "name": "Napa Cab", "classification": "Red Wine",

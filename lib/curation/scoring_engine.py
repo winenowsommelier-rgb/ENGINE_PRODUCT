@@ -43,6 +43,30 @@ def _brand_prestige(product: dict) -> float:
     return min(1.0, float(product.get("taxonomy_confidence") or 0.5))
 
 
+_WF_FLOOR = 85.0  # scores below this get 0 freshness — minimum credible critic threshold
+
+
+def _web_freshness(product: dict) -> float:
+    raw = product.get("score_max")
+    if not raw:
+        # Try parsing from score_summary JSON
+        summary = product.get("score_summary")
+        if summary:
+            try:
+                data = json.loads(summary)
+                critics = data.get("critics", [])
+                if critics:
+                    raw = max(float(c.get("score_native", 0) or 0) for c in critics)
+            except (json.JSONDecodeError, ValueError, TypeError):
+                pass
+    if not raw:
+        return 0.0
+    score = float(raw)
+    if score < _WF_FLOOR:
+        return 0.0
+    return min(1.0, (score - _WF_FLOOR) / (100.0 - _WF_FLOOR))
+
+
 def _taste_match(product: dict, query: StructuredQuery, kb: PairingKnowledgeBase, avoid_tag_rate: float = -0.05) -> float:
     if not query.pairing_context:
         return 0.5
@@ -78,7 +102,7 @@ def score_candidates(
         tq = _taxonomy_quality(p)
         bp = _brand_prestige(p)
         ms = _normalise_margin(_parse_margin(p.get("b2b_margin_pct") or p.get("margin_pct")))
-        wf = 0.0
+        wf = _web_freshness(p)
 
         weighted = (
             tm * weights["taste_match"] +
