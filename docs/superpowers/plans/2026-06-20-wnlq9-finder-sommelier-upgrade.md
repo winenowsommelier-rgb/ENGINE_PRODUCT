@@ -17,8 +17,10 @@
 - **Real component scales (verified):** body `Light·Medium-Light·Medium·Medium-Full·Full`; acidity `Medium-Light·Medium·Medium-Full·Medium-High·High`(+rare Full); tannin `Low·Light·Medium-Light·Medium·Medium-Full·Medium-High·High`(+rare Full). **Sommelier labels ("Firm","crisp") are NOT data values.**
 - **`/shop` filters (exact param names, verified in `shop-query.ts`):** `group, class, country, region, subregion, grape, body, acidity, tannin, price, flavor, sort, page`. `class` = exact-ci on first `classification` segment; `region`/`subregion`/`country` = exact-ci; `grape` = substring-ci; `body/acidity/tannin` = exact-ci on the normalized scale value.
 - **typicalRegions field reality:** `Bordeaux`→region; `Médoc`/`Beaujolais`→subregion; `"Barossa"`→neither (data has `Barossa Valley`=subregion); whisky entries often country-level. MUST resolve per-value.
-- **Vintage shapes (in-stock red):** `"Current vintage"` (1,079, dominant)→young; `YYYY [**VINTAGE MAY CHANGE]` (631)→year; bare `YYYY` (471)→year; none/NV (18).
-- `spirit_style` IS populated (1,274) — whisky cask deep-dive is data-backed.
+- **Vintage shapes (in-stock red):** `"Current vintage"` (dominant)→young; `YYYY [**VINTAGE MAY CHANGE]`→year; bare `YYYY`→year; none/NV. **`vintage` is a STRING at runtime for ALL rows, but `PublicProduct.vintage` is currently typed `number?` — this is wrong and must be fixed to `string?` (Task 5) or string ops won't compile.**
+- **`spirit_style` is NOT populated (0 rows) — it does not exist in the export.** The whisky "cask character" deep-dive step the spec proposed has NO data backing → CUT it (Task 6). Whisky deep-dive keeps only data-backed steps: peat (region=Islay + flavor_tags, reuse v1 smoky scorer), origin/adventurousness (country). (If `spirit_style` is later backfilled + allowlisted, re-add then — not now.)
+- **Taxonomy refactored (parallel session):** `category-groups.ts` is now a shim over `sku-taxonomy.ts` + `data/taxonomy/sku_prefix_map.json` — a **10-group** model (Wine, Whisky, Spirits, Sake & Asian, Liqueur, Beer & RTD, Non-Alcoholic, Cigars, Events, Accessories). Every export row now carries backfilled `category_group` + `category_type` (100%). `groupForProduct(p)` prefers `category_group`; `typeForProduct(p)` gives the sub-type. The FinderCategory→{group, classValue} map (Task 3) must use this 10-group model (e.g. finder `spirits` → group `Spirits`; Liqueur is now its own group).
+- **`StepField` is a closed union** (`'occasion'|'budget'|'axis1'|'axis2'|'flavorChips'|'food'`) — Task 6 MUST widen it to include the new deep-dive fields or the step configs won't typecheck.
 - Tests: Vitest, files under `lib/finder/__tests__/*.test.ts`, `@/` alias works.
 
 ---
@@ -40,58 +42,77 @@
 
 ---
 
-## Task 1: `scales.ts` — token→scale-value maps (TDD)
+## Task 1: `scales.ts` — token→scale-value maps, in the SHOP FILTER scale (TDD)
 
 **Files:** Create `lib/finder/scales.ts`; Test `lib/finder/__tests__/scales.test.ts`
+
+**CRITICAL — two scales exist; links MUST use the filter scale.** `/shop` matches body/acidity/
+tannin via `normalizeScale(axis, value)` from `@/lib/taste-adapter`, whose output scale is
+**4-level**: body `[Light, Medium, Medium-Full, Full]`; acidity/tannin `[Low, Medium,
+Medium-High, High]`. Raw export values like `Medium-Light`/`Medium-Full` are remapped into
+these. So a link `acidity=Medium-Light` matches ZERO products. `scales.ts` therefore emits
+**normalized (filter-scale) values** for link-building, and REUSES `normalizeScale` so finder
+links and the shop never drift. (Scoring uses ordinal distance on the same normalized scale.)
 
 - [ ] **Step 1: Write the failing test**
 ```ts
 import { describe, it, expect } from 'vitest';
-import { SCALE_VALUES, primaryValue, valuesForToken } from '@/lib/finder/scales';
+import { primaryValue, FILTER_SCALE } from '@/lib/finder/scales';
 
-describe('scale maps (labels are NOT data values)', () => {
-  it('body bold → Full primary, [Full,Medium-Full] set', () => {
-    expect(primaryValue('body','bold')).toBe('Full');
-    expect(valuesForToken('body','bold')).toEqual(['Full','Medium-Full']);
+describe('scale maps emit FILTER-scale values (what /shop accepts)', () => {
+  it('body bold → Full', () => expect(primaryValue('body','bold')).toBe('Full'));
+  it('tannin firm → High (NOT "Firm", NOT "Medium-Full")', () => expect(primaryValue('tannin','firm')).toBe('High'));
+  it('acidity crisp → High', () => expect(primaryValue('acidity','crisp')).toBe('High'));
+  it('acidity soft → Medium (Medium-Light is OUT of the filter scale)', () =>
+    expect(primaryValue('acidity','soft')).toBe('Medium'));
+  it('every emitted primary value is in the filter scale (no dead links)', () => {
+    for (const [scale, tokens] of Object.entries({body:['bold','medium','light'],acidity:['crisp','balanced','soft'],tannin:['firm','silky']}))
+      for (const t of tokens) {
+        const v = primaryValue(scale as any, t);
+        if (v) expect(FILTER_SCALE[scale as keyof typeof FILTER_SCALE]).toContain(v);
+      }
   });
-  it('tannin firm → High primary (NOT "Firm")', () => {
-    expect(primaryValue('tannin','firm')).toBe('High');
-    expect(valuesForToken('tannin','firm')).toContain('Medium-High');
-  });
-  it('acidity crisp → High primary', () => expect(primaryValue('acidity','crisp')).toBe('High'));
-  it('acidity soft → Medium-Light primary', () => expect(primaryValue('acidity','soft')).toBe('Medium-Light'));
   it('unknown token → undefined', () => expect(primaryValue('body','zzz')).toBeUndefined());
-  it('SCALE_VALUES lists the real ordinal scales', () => {
-    expect(SCALE_VALUES.body).toEqual(['Light','Medium-Light','Medium','Medium-Full','Full']);
-  });
 });
 ```
 - [ ] **Step 2: Run, confirm FAIL.** `npx vitest run lib/finder/__tests__/scales.test.ts`
-- [ ] **Step 3: Implement `lib/finder/scales.ts`**
+- [ ] **Step 3: Implement `lib/finder/scales.ts`** — token→raw values, then normalize via the
+  shared `normalizeScale`, and expose the filter scale (the 4-level sets, sourced from
+  taste-adapter's scale definition — import it; do NOT re-hardcode a divergent list).
 ```ts
-export const SCALE_VALUES = {
-  body:    ['Light','Medium-Light','Medium','Medium-Full','Full'],
-  acidity: ['Medium-Light','Medium','Medium-Full','Medium-High','High'],
-  tannin:  ['Low','Light','Medium-Light','Medium','Medium-Full','Medium-High','High'],
-} as const;
-type Scale = keyof typeof SCALE_VALUES;
+import { normalizeScale } from '@/lib/taste-adapter';
 
-// token → ordered scale values (primary first). Primary is used for single-value /shop links;
-// the full set is used by scoring buckets. Labels ("Firm"/"crisp") never appear here.
-const TOKEN_MAP: Record<Scale, Record<string, string[]>> = {
-  body:    { bold:['Full','Medium-Full'], medium:['Medium','Medium-Light'], light:['Light','Medium-Light'] },
-  acidity: { crisp:['High','Medium-High'], balanced:['Medium','Medium-Full'], soft:['Medium-Light','Medium'] },
-  tannin:  { firm:['High','Medium-High','Medium-Full'], silky:['Low','Light','Medium-Light'], any:[] },
+// The 4-level scales /shop actually filters on (must match taste-adapter's SCALE).
+export const FILTER_SCALE = {
+  body:    ['Light','Medium','Medium-Full','Full'],
+  acidity: ['Low','Medium','Medium-High','High'],
+  tannin:  ['Low','Medium','Medium-High','High'],
+} as const;
+type Scale = keyof typeof FILTER_SCALE;
+
+// token → raw representative values (primary first). Normalized into FILTER_SCALE on the way out.
+const TOKEN_RAW: Record<Scale, Record<string, string[]>> = {
+  body:    { bold:['Full','Medium-Full'], medium:['Medium'], light:['Light'] },
+  acidity: { crisp:['High','Medium-High'], balanced:['Medium'], soft:['Medium-Light','Medium'] },
+  tannin:  { firm:['High','Medium-High'], silky:['Low','Light'], any:[] },
 };
-export function valuesForToken(scale: Scale, token: string): string[] { return TOKEN_MAP[scale]?.[token] ?? []; }
-export function primaryValue(scale: Scale, token: string): string | undefined { return valuesForToken(scale, token)[0]; }
-/** ordinal index of a real scale value (for ladder distance), or -1. */
-export function bucketForValue(scale: Scale, value: string | undefined): number {
-  return value ? (SCALE_VALUES[scale] as readonly string[]).indexOf(value) : -1;
+/** Filter-scale values for a token (normalized, deduped, in-scale only). */
+export function valuesForToken(scale: Scale, token: string): string[] {
+  const raw = TOKEN_RAW[scale]?.[token] ?? [];
+  const out: string[] = [];
+  for (const r of raw) { const n = normalizeScale(scale, r); if (n && !out.includes(n)) out.push(n); }
+  return out;
 }
+export function primaryValue(scale: Scale, token: string): string | undefined { return valuesForToken(scale, token)[0]; }
+/** ordinal index in the FILTER scale (for ladder distance in scoring), or -1. */
+export function bucketForValue(scale: Scale, normValue: string | undefined): number {
+  return normValue ? (FILTER_SCALE[scale] as readonly string[]).indexOf(normValue) : -1;
+}
+// NOTE scoring compares normalizeScale(axis, product.value) against the token's primary —
+// both sides normalized, so the ladder and the link agree.
 ```
-- [ ] **Step 4: Run, confirm PASS (6).**
-- [ ] **Step 5: Commit** `git add apps/catalog/lib/finder/scales.ts apps/catalog/lib/finder/__tests__/scales.test.ts && git commit -m "feat(finder): scale-value maps (sommelier labels → real data values)"`
+- [ ] **Step 4: Run, confirm PASS.**
+- [ ] **Step 5: Commit** `git add apps/catalog/lib/finder/scales.ts apps/catalog/lib/finder/__tests__/scales.test.ts && git commit -m "feat(finder): scale maps in shop-filter scale (reuse normalizeScale, no dead links)"`
 
 ---
 
@@ -162,7 +183,12 @@ describe('link builders', () => {
   - `breadcrumbLinks(scope, catalog)`: build ordered levels [category→ `class=`; country→`country=`; resolved typicalRegion→ its field]; URL-encode; NEVER appellation; drop unresolved levels.
   - `signatureChips(answers)`: chips for body/tannin/acidity (via `primaryValue` from scales.ts), grape family (substring token), region. Each `{label, href}`.
   - `styleShopUrl(answers)`: the "see all N" broad filter (taste params only, NO geo).
-  - All build on a `FinderCategory → {group, classValue}` map (reuse v1 category-map's mapping; `group=Wine&class=Red Wine` etc.). Use the same param NAMES as `shop-query.ts` verbatim.
+  - All build on a `FinderCategory → {group, classValue}` map using the **10-group taxonomy**
+    (`group=Wine&class=Red Wine`, `group=Spirits&class=Gin`, etc.). The `group` values must be
+    the canonical `CATEGORY_GROUPS` from `@/lib/sku-taxonomy` (re-exported via category-groups);
+    `class` matches `typeForProduct`/first-classification-segment. Use the same param NAMES as
+    `shop-query.ts` verbatim. Body/acidity/tannin chip values come from `primaryValue` (Task 1,
+    already filter-scale normalized).
 - [ ] **Step 4: Run, confirm PASS.**
 - [ ] **Step 5: Commit** `… && git commit -m "feat(finder): shop-link builder + origin field resolver for discovery map"`
 
@@ -218,6 +244,12 @@ it('every archetype typicalRegion resolves to a real field (no dead geo links)',
   });
 ```
 - [ ] **Step 2: Run, confirm new tests FAIL.**
+- [ ] **Step 2b: FIX the `vintage` type FIRST.** `PublicProduct.vintage` is typed `number?` in
+  `lib/types.ts` but is a STRING at runtime for all rows. Change it to `vintage?: string`
+  (or `string | number`). Check no existing consumer relies on it being numeric
+  (`grep -rn "\.vintage" apps/catalog/lib apps/catalog/components apps/catalog/app`); the
+  product detail page renders it as text, so string is correct. Without this, the age code's
+  `.toLowerCase()`/regex won't compile.
 - [ ] **Step 3: Implement** the new TIER terms in the per-product score (all gated on the answer being present, all 0 when absent):
   - acidity/tannin: ordinal-ladder distance via `bucketForValue` (scales.ts) against the token's primary bucket — exact +3 / ±1 +1 / else 0.
   - grape: +2 if `grape_variety` (lowercased) contains any family token (family→token map in config); `surprise`/absent → 0.
@@ -233,11 +265,15 @@ it('every archetype typicalRegion resolves to a real field (no dead geo links)',
 
 **Files:** Modify `lib/finder/question-config.ts`; extend its test
 
-- [ ] **Step 1: Add failing tests** — a `deepDiveStepsFor(category)` returns the sommelier steps; wine has acidity/tannin/grape/age/adventure; thin categories fewer; core `stepsFor` unchanged; every deep-dive step is `optional:true`.
-- [ ] **Step 2: Run, confirm FAIL.**
-- [ ] **Step 3: Implement** `deepDiveStepsFor(category)` (separate from core `stepsFor`) with the sommelier-voice titles + tokens from spec §3. Wine: acidity, tannin (reds), grape, age, adventure. Whisky: cask (`spirit_style`), peat, age, adventure. Gin/spirits/sake: shorter per spec. Each step `optional:true`, `field` = the new Answers field.
-- [ ] **Step 4: Run, confirm PASS.**
-- [ ] **Step 5: Commit** `… && git commit -m "feat(finder): per-category opt-in sommelier deep-dive steps"`
+- [ ] **Step 1: Widen `StepField` FIRST.** It's a closed union
+  (`'occasion'|'budget'|'axis1'|'axis2'|'flavorChips'|'food'`). Add the new deep-dive fields:
+  `'acidity'|'tannin'|'grape'|'age'|'adventure'|'peat'`. Without this, `QuestionStep.field`
+  for deep-dive steps won't typecheck.
+- [ ] **Step 2: Add failing tests** — a `deepDiveStepsFor(category)` returns the sommelier steps; wine has acidity/tannin/grape/age/adventure; thin categories fewer; core `stepsFor` unchanged; every deep-dive step is `optional:true`.
+- [ ] **Step 3: Run, confirm FAIL.**
+- [ ] **Step 4: Implement** `deepDiveStepsFor(category)` (separate from core `stepsFor`) with the sommelier-voice titles + tokens from spec §3. Wine: acidity, tannin (reds), grape, age, adventure. **Whisky: peat, age, adventure ONLY — NO cask step (`spirit_style` is 0/phantom, cut per "Verified facts").** Gin/spirits/sake: shorter per spec. Each step `optional:true`, `field` = the new Answers field (one of the widened `StepField`).
+- [ ] **Step 5: Run, confirm PASS.**
+- [ ] **Step 6: Commit** `… && git commit -m "feat(finder): per-category opt-in sommelier deep-dive steps (+widen StepField)"`
 
 ---
 
