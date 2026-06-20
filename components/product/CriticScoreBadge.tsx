@@ -43,8 +43,15 @@ export function CriticScoreBadge({
   }
 
   // variant === "detail" — segmented data strip.
+  // Guarantee the lead is shown even if it ranks below the maxCritics cap.
+  const cells = parsed.critics.some(
+    (c) => c.abbr === parsed.lead.abbr && c.score_value === parsed.lead.score_value,
+  )
+    ? parsed.critics
+    : [parsed.lead, ...parsed.critics.slice(0, Math.max(0, parsed.critics.length - 1))];
+
   return (
-    <div aria-label={parsed.ariaLabel}>
+    <div role="group" aria-label={parsed.ariaLabel}>
       <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 text-slate-500">
         Critic Scores
       </p>
@@ -53,7 +60,7 @@ export function CriticScoreBadge({
           light ? "bg-white border-slate-200" : "bg-white/[0.03] border-white/10"
         }`}
       >
-        {parsed.critics.map((c, i) => {
+        {cells.map((c, i) => {
           const isLead =
             c.abbr === parsed.lead.abbr && c.score_value === parsed.lead.score_value;
           const divider = light ? "border-slate-200" : "border-white/[0.08]";
@@ -66,7 +73,7 @@ export function CriticScoreBadge({
             <div
               key={`${c.abbr}-${i}`}
               className={`flex flex-col gap-0.5 px-3.5 py-2 min-w-[54px] ${leadBg} ${
-                i < parsed.critics.length - 1 ? `border-r ${divider}` : ""
+                i < cells.length - 1 ? `border-r ${divider}` : ""
               }`}
             >
               <span
