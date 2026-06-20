@@ -680,7 +680,7 @@ Expected: prints the reclassification breakdown; `unmapped prefixes: none`.
 
 - [ ] **Step 0: Expose the category fields through the allowlist chokepoint (BLOCKING — without this the fields are stripped before any consumer sees them).** `apps/catalog/lib/catalog-data.ts` projects every product through `toPublicProduct()`, copying ONLY keys in `PUBLIC_FIELDS` (lines 13-20). Add `'category_group','category_type'` to `PUBLIC_FIELDS`, AND add `category_group?: string;` + `category_type?: string;` to `PublicProduct` in `apps/catalog/lib/types.ts` (the `_AssertFieldsAreKnown` drift guard at types lines 24-26 / catalog-data line 25 will fail to compile if you add to one but not the other — that's the guard working). Run `cd apps/catalog && npx tsc --noEmit` → expect no error. **Decision recorded:** consumers read the export-provided `category_group`/`category_type` (written by Tasks 4/5), NOT a runtime `resolve()` call — keeps the catalog reading one source (the export) and matches every other enrichment field (flavor_tags_canonical, taste_profile). The `groupForProduct(p)` shim (Step 1) is for any caller that still wants to derive from SKU directly, but the primary path is the allowlisted field.
 
-- [ ] **Step 1: Re-home `category-groups.ts`** — re-export `CATEGORY_GROUPS`, `CategoryGroup`, `resolve`, `groupFor` from `sku-taxonomy.ts`. Keep `groupForProduct(p)` as a back-compat shim that returns `resolve(p).group` (SKU-derived; works even without the export field). Delete the SKU_PREFIX_TO_GROUP / CLASSIFICATION_TO_GROUP tables (their truth now lives in the JSON). **`ACCESSORY_SUBCATEGORY` (used by `shop-query.ts:116` + `facets.ts:52` via `accessoryCategoryForSku`) — see W5 handling in Step 1a; do NOT just delete it.** **Fix the LOT→Bar Tools bug in passing (LOT is now Sake & Asian/Umeshu via the map).**
+- [ ] **Step 1: Re-home `category-groups.ts`** — re-export `CATEGORY_GROUPS`, `CategoryGroup`, `resolve`, `groupFor` from `sku-taxonomy.ts`. Keep `groupForProduct(p)` as a back-compat shim that returns `resolve(p).group` (SKU-derived; works even without the export field). Delete the SKU_PREFIX_TO_GROUP / CLASSIFICATION_TO_GROUP tables (their truth now lives in the JSON). **`ACCESSORY_SUBCATEGORY` (used by `shop-query.ts:116` + `facets.ts:52` via `accessoryCategoryForSku`) — see W5 handling in Step 1a; do NOT just delete it.** **Fix the LOT→Bar Tools bug in passing: LOT is now Sake & Asian/Umeshu via the map, so REMOVE the `['LOT', ...]` row from any retained `ACCESSORY_SUBCATEGORY` table — it must no longer be treated as an accessory.**
 
 - [ ] **Step 1a: Reconcile accessory sub-categories (value mapping, not just "move it").** The old `ACCESSORY_SUBCATEGORY` emits strings like `Wine Fridges & Coolers` / `Bar Tools & Gifts`; the new JSON `category_type` for accessory prefixes emits `Wine Coolers & Fridges` / `Bar Tools & Gifts` / `Glassware`. If `accessoryCategoryForSku` is kept, its returned values MUST match whatever `shop-query.ts`/`facets.ts` compare against, or the Accessories drill-down silently returns empty. Choose ONE: (a) point the accessory drilldown at `category_type` and update its expected-value strings to the JSON's types; or (b) keep `accessoryCategoryForSku` but re-derive it from `category_type` with an explicit old→new value map. Add/adjust the relevant test in `category-groups.test.ts` to assert the chosen values. Verify the Accessories filter returns non-empty in Step 7.
 
@@ -731,9 +731,10 @@ def test_hard_filter_uses_category_group_not_classification():
     from lib.curation.models import StructuredQuery  # adjust import to actual
     wh = {"sku":"LWH0001","classification":"Wine product","category_group":"Whisky",
           "is_in_stock":"1","price":1000}
-    q = StructuredQuery(category_filter=["Whisky"])      # adjust constructor to actual
+    # NOTE: StructuredQuery requires raw_brief (positional, no default — see models.py:7-9).
+    q = StructuredQuery(raw_brief="test", category_filter=["Whisky"])   # adjust to actual signature
     assert wh in hard_filter([wh], q)
-    q2 = StructuredQuery(category_filter=["Wine"])
+    q2 = StructuredQuery(raw_brief="test", category_filter=["Wine"])
     assert wh not in hard_filter([wh], q2)
 ```
 (Inspect `lib/curation/models.py` for the real `StructuredQuery` constructor before writing.)
