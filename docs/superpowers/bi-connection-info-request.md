@@ -1,5 +1,29 @@
 # BI API — connection info request (paste into the BI session)
 
+> **⛔ BLOCKER (verified 2026-06-20): the provided key is REJECTED on all protected endpoints.**
+> Tested the key `CWNhpzx0…` (from the API & Data Access page) live:
+> - `GET /health` + key → **200** (but `/health` requires NO auth, so this proves nothing).
+> - `GET /products` + key → **401**, identical to sending NO key at all.
+> - Header name confirmed correct (`X-API-Key`, per the live OpenAPI `securitySchemes`),
+>   header confirmed transmitted (raw request trace). All endpoints exist
+>   (`/products/{sku}/affinities`, `/marts`, `/products/{sku}/performance` are in the live spec).
+> **Conclusion: the key value does not match what the deployed Vercel server checks against**
+> (likely the server's env var differs / rotated; the page's curl example only hits `/health`,
+> which never validates keys — so it looked valid but was never tested on a protected route).
+>
+> **To unblock, in the BI session, do ONE of:**
+> 1. Run `curl -H 'X-API-Key: <key>' https://wnlq9-bi-api.vercel.app/products` (a PROTECTED route,
+>    NOT /health). If it 401s, the page's key is stale.
+> 2. Read the deployed Vercel project's API-key env var (e.g. `API_KEY`/`WNLQ9_API_KEY`/`BI_API_KEYS`)
+>    — that's the value the server actually accepts — and provide THAT, or update Vercel's env to
+>    match the page + redeploy.
+> 3. If keys are per-consumer (`/health` showed `api_key_count:1`, `password_configured:true`),
+>    provision a key for the catalog.
+> Put the WORKING key in `apps/catalog/.env.local` as `BI_API_KEY=…` (gitignored; never in chat).
+> Until a key passes `/products`, the BI recommender build cannot start.
+
+---
+
 To wire the WNLQ9 catalog's BI-powered recommender, I need the following from the BI
 Marketing Engine. **Do NOT paste secret values into the catalog chat** — instead put the
 key in an env file (see §A) and answer the non-secret questions (§B–§D) in text.

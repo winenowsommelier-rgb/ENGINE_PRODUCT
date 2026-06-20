@@ -26,9 +26,12 @@ Make the WNLQ9 public catalog's recommendations **best in class**. The catalog (
 1. **BI-powered recommendations** (`docs/superpowers/specs/2026-06-20-wnlq9-bi-powered-recommendations-design.md`)
    — behavioral "Customers also bought" (co-purchase affinities + sales velocity from the BI
    Marketing Engine), baked at build time. **THE remaining best-in-class lever.** Plan NOT written.
-   **BLOCKER:** needs the BI API key + calibration data. Request doc:
-   `docs/superpowers/bi-connection-info-request.md` (paste into the BI session). The catalog
-   reads `process.env.BI_API_KEY` (key never in chat / never in browser).
+   **BLOCKER (verified live 2026-06-20): the provided BI API key is REJECTED on all protected
+   endpoints** (`/health`+key=200 because /health needs no auth; `/products`+key=401, same as no
+   key). Header/endpoints/shape all confirmed correct via live OpenAPI — it's a server-side key
+   mismatch (deployed Vercel env differs from the key on the API page). Fix + exact resume steps:
+   `docs/superpowers/bi-connection-info-request.md` (top ⛔ block). Until a key passes `/products`,
+   this build CANNOT start. Catalog reads `process.env.BI_API_KEY` (key never in chat/browser).
 2. **Shop by Collection** — NOT yet spec'd. Handoff to design+build in another session:
    `docs/superpowers/handoff-shop-by-collection.md`. (No `collection` field exists — must be
    defined; dual purpose: browsable library + a source of curated sets for the finder.)
