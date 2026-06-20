@@ -11,6 +11,7 @@ import type { PublicProduct } from './types';
 import {
   type CategoryGroup,
   groupForProduct,
+  typeForProduct,
   accessoryCategoryForSku,
 } from './category-groups';
 
@@ -36,18 +37,18 @@ function tally(
     .sort((a, b) => a.value.localeCompare(b.value, 'en', { sensitivity: 'base' }));
 }
 
-/** First-segment classification, but only for products in `group`. */
+/** Canonical sub-type (category_type), but only for products in `group`. */
 export function subCategoriesFor(
   group: CategoryGroup,
   products: PublicProduct[],
 ): FacetOption[] {
   return tally(
     products.filter((p) => groupForProduct(p) === group),
-    (p) => (p.classification ?? '').split('|')[0],
+    (p) => typeForProduct(p),
   );
 }
 
-/** Accessory sub-categories (Glassware / Cigars / Events / Wine Fridges & Coolers / Bar Tools & Gifts). */
+/** Accessory sub-categories (Glassware / Wine Coolers & Fridges / Bar Tools & Gifts). */
 export function accessorySubCategoriesFor(products: PublicProduct[]): FacetOption[] {
   return tally(products, (p) => accessoryCategoryForSku(p.sku));
 }

@@ -16,6 +16,9 @@ export const PUBLIC_FIELDS = [
   'wine_tannin','food_matching','flavor_tags','bottle_size','price','currency',
   'desc_en_short','full_description','taste_profile','wine_color','image_url',
   'score_summary','score_max','is_in_stock',
+  // SKU-derived canonical taxonomy (backfilled on every row). Safe to expose:
+  // shopper-facing category labels, no margin/pricing/internal signal.
+  'category_group','category_type',
 ] as const;
 
 // Drift guard: every PUBLIC_FIELDS key must be a known PublicProduct key.

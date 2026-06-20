@@ -5,13 +5,17 @@ import type { PublicProduct } from '../types';
 
 const P = (o: Partial<PublicProduct>): PublicProduct => ({ sku: 'W1', name: 'x', ...o } as PublicProduct);
 
+// NOTE (10-group migration): subCategoriesFor now tallies the canonical category_type
+// (typeForProduct), and group membership comes from groupForProduct (which prefers the
+// backfilled category_group). Synthetic products therefore carry category_group/type, the
+// same fields the real export backfills — classification is no longer consulted.
 describe('subCategoriesFor', () => {
-  it('returns first-segment classifications in the group, with counts, sorted, no zeroes', () => {
+  it('returns canonical category_type values in the group, with counts, sorted, no zeroes', () => {
     const set = [
-      P({ sku: 'W1', classification: 'Red Wine' }),
-      P({ sku: 'W2', classification: 'Red Wine|Fruit Wine' }),
-      P({ sku: 'W3', classification: 'White Wine' }),
-      P({ sku: 'LG1', classification: 'Gin' }), // not Wine → excluded
+      P({ sku: 'WRW1', category_group: 'Wine', category_type: 'Red Wine' }),
+      P({ sku: 'WRW2', category_group: 'Wine', category_type: 'Red Wine' }),
+      P({ sku: 'WWW3', category_group: 'Wine', category_type: 'White Wine' }),
+      P({ sku: 'LGN1', category_group: 'Spirits', category_type: 'Gin' }), // not Wine → excluded
     ];
     expect(subCategoriesFor('Wine', set)).toEqual([
       { value: 'Red Wine', count: 2 },
@@ -24,20 +28,24 @@ describe('subCategoriesFor', () => {
 });
 
 describe('accessorySubCategoriesFor', () => {
-  it('groups accessories by accessoryCategoryForSku with counts; omits zero-count categories', () => {
+  it('groups accessories by accessoryCategoryForSku (canonical type) with counts; omits zero-count', () => {
+    // In the 10-group model CIG -> Cigars group and WEV -> Events group are NO LONGER
+    // accessories, so they are excluded here. Accessory sub-types now come straight from
+    // the canonical typeFor: Bar Tools & Gifts / Glassware / Wine Coolers & Fridges.
     const set = [
-      P({ sku: 'AWC100' }), P({ sku: 'AWC200' }), // Wine Fridges & Coolers x2
+      P({ sku: 'AWC100' }), P({ sku: 'AWC200' }), // Wine Coolers & Fridges x2
       P({ sku: 'GWN1' }),                          // Glassware x1
-      P({ sku: 'CIG1' }),                          // Cigars x1
-      P({ sku: 'W500' }),                          // not an accessory → ignored
+      P({ sku: 'ABA1' }),                          // Bar Tools & Gifts x1
+      P({ sku: 'CIG1' }),                          // now Cigars GROUP → not an accessory → ignored
+      P({ sku: 'WRW500' }),                        // not an accessory → ignored
     ];
     const out = accessorySubCategoriesFor(set);
     expect(out).toEqual([
-      { value: 'Cigars', count: 1 },
+      { value: 'Bar Tools & Gifts', count: 1 },
       { value: 'Glassware', count: 1 },
-      { value: 'Wine Fridges & Coolers', count: 2 },
+      { value: 'Wine Coolers & Fridges', count: 2 },
     ]);
-    expect(out).not.toContainEqual(expect.objectContaining({ value: 'Bar Tools & Gifts' }));
+    expect(out).not.toContainEqual(expect.objectContaining({ value: 'Cigars' }));
   });
 });
 

@@ -9,11 +9,11 @@
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
-export const CATEGORY_GROUPS = [
-  'Wine', 'Whisky', 'Spirits', 'Sake & Asian', 'Liqueur',
-  'Beer & RTD', 'Non-Alcoholic', 'Cigars', 'Events', 'Accessories',
-] as const;
-export type CategoryGroup = (typeof CATEGORY_GROUPS)[number] | 'Unknown';
+// The group const + type live in a PURE (no-fs) module so client components can import
+// CATEGORY_GROUPS without dragging this `fs`-importing module into the browser bundle.
+// sku-taxonomy.ts remains the canonical taxonomy entrypoint by re-exporting them.
+export { CATEGORY_GROUPS, type CategoryGroup } from './category-constants';
+import type { CategoryGroup } from './category-constants';
 
 type Entry = { group: string; type: string };
 

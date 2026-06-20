@@ -18,8 +18,8 @@
  *   group     → CategoryGroup; keep products whose groupForProduct === group
  *   class     → (a) when groupForProduct === 'Accessories': exact (ci) on the
  *               accessory sub-category (accessoryCategoryForSku);
- *               (b) otherwise: exact (ci) on the first classification segment
- *               (split('|')[0], trimmed)
+ *               (b) otherwise: exact (ci) on the canonical sub-type
+ *               (typeForProduct → category_type, e.g. "Red Wine", "Whisky")
  *   price     → PriceTier id; keep products with price in [min, max)
  *   country   → exact (case-insensitive) match on country
  *   inStock=1 → keep only in-stock products (normalized boolean via isInStock)
@@ -48,7 +48,7 @@
  */
 
 import type { PublicProduct } from './types';
-import { groupForProduct, accessoryCategoryForSku, type CategoryGroup } from './category-groups';
+import { groupForProduct, typeForProduct, accessoryCategoryForSku, type CategoryGroup } from './category-groups';
 import { tierById } from './price-tiers';
 import { isInStock } from './utils';
 import { normalizeScale } from './taste-adapter';
@@ -102,7 +102,7 @@ const SORTS: Record<string, SortKey> = {
  *
  * Note on `class`: it is interpreted relative to the product's resolved group.
  * For Accessories it means the accessory sub-category (accessoryCategoryForSku);
- * for every other group it means the first segment of `classification`.
+ * for every other group it means the canonical sub-type (typeForProduct).
  */
 export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
   const productGroup = groupForProduct(p); // resolve once — also drives the class branch
@@ -115,8 +115,10 @@ export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
     if (productGroup === 'Accessories') {
       if (norm(accessoryCategoryForSku(p.sku)) !== klass) return false;
     } else {
-      const first = norm((p.classification ?? '').split('|')[0]);
-      if (first !== klass) return false;
+      // Canonical sub-type (category_type) — replaces the old "first classification
+      // segment" match, since classification is unreliable and category_type is the
+      // authoritative SKU-derived type (e.g. "Red Wine", "Whisky").
+      if (norm(typeForProduct(p)) !== klass) return false;
     }
   }
 
