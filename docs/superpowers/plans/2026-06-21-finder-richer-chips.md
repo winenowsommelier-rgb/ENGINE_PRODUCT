@@ -173,7 +173,14 @@ it('category Step-1 + budget + body options all carry icons', () => {
 });
 ```
 - [ ] **Step 2: Run, confirm FAIL.**
-- [ ] **Step 3: Implement** — add `icon?: string` to `StepOption`. Replace FLAVOR_STEP's 8 flat chips with the 12 family chips (tokens = FLAVOR_FAMILY keys from Task 3; icons per §4: 🍒🫐🍋🍑🍍🪵🌶️🍂🌸🪨💨🥜). Add icons to every existing option set: occasion (🥂/🍽️/🎁/✨/🧭), budget (💸 or tiered), wine body (🪶/⚖️/🍷), character (🍓/🍂/⚖️), whisky/gin/spirits/sake axis options, and the deep-dive acidity/tannin/age/adventure options. Keep all tokens unchanged — only add icons + swap the flavor option list.
+- [ ] **Step 3: Implement** — add `icon?: string` to `StepOption`. Replace FLAVOR_STEP's 8 flat chips with the 12 family chips (tokens = FLAVOR_FAMILY keys from Task 3; icons per §4: 🍒🫐🍋🍑🍍🪵🌶️🍂🌸🪨💨🥜). Add icons to every existing option set: occasion (🥂/🍽️/🎁/✨/🧭), budget (💸 or tiered), wine body (🪶/⚖️/🍷), character (🍓/🍂/⚖️), whisky/gin/spirits/sake axis options, and the deep-dive acidity/tannin/age/adventure options.
+  **FLAVOR-TOKEN RETIREMENT (explicit — the contract change):** the shipped FLAVOR_STEP tokens
+  are `oak, red-fruit, dark-fruit, citrus, spice, earth, floral, vanilla`. The new 12-token list
+  **REPLACES them entirely** — note `earth` is renamed to `earthy` and `vanilla` is dropped
+  (folded into the `oak` family). Safe because flavorChips are URL-only (decoded fresh each run,
+  never persisted), so no migration; but the OLD `earth`/`vanilla` tokens must NOT survive in
+  question-config OR scoring — the new list must fully overwrite FLAVOR_STEP. Every other step's
+  tokens (occasion/budget/body/axis/deep-dive) are UNCHANGED — only icons are added there.
 - [ ] **Step 4: Run, confirm PASS.** Full finder suite.
 - [ ] **Step 5: Commit**
 ```bash
@@ -188,7 +195,7 @@ git commit -m "feat(finder): 12 flavor-family chips + icons on all question opti
 **Files:** Modify `components/finder/ChoiceCards.tsx`, `FoodChoice.tsx`, `app/finder/[step]/page.tsx` (FOOD_STEP), `app/finder/page.tsx`
 
 - [ ] **Step 1: ChoiceCards + FoodChoice** — render `{opt.icon ? <span aria-hidden>{opt.icon}</span> : null} {opt.label}` (both the multi and single branches in ChoiceCards; the map in FoodChoice). Keep spacing/accessibility (icon decorative → `aria-hidden`).
-- [ ] **Step 2: FOOD_STEP** (`[step]/page.tsx`) — build options from the new FOOD_CHIPS carrying label+icon: `Object.entries(FOOD_CHIPS).map(([token,{label,icon}]) => ({token,label,icon}))`. (Drop the old TitleCase-from-key labelling.)
+- [ ] **Step 2: FOOD_STEP** (`[step]/page.tsx`) — build options from the new FOOD_CHIPS carrying label+icon: `Object.entries(FOOD_CHIPS).map(([token,{label,icon}]) => ({token,label,icon}))`. **DELETE the now-dead `foodChipLabel` helper and its usage** (it built TitleCase labels from keys; the labels now come from FOOD_CHIPS) — leaving it triggers an unused-symbol typecheck failure in Step 4.
 - [ ] **Step 3: Category cards** (`app/finder/page.tsx`) — add a leading icon to each of the 7 category cards (🍷 Red, 🥂 Sparkling, etc.). These are bespoke `<Link>` cards, not StepOptions — add the emoji inline.
 - [ ] **Step 4: Typecheck.** `npm run typecheck` — must pass.
 - [ ] **Step 5: Commit**
