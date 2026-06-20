@@ -68,6 +68,55 @@ def backfill_curated(conn) -> int:
     return cur.rowcount
 
 
+def rebuild_sku_nullable(conn) -> None:
+    """SQLite can't drop NOT NULL via ALTER — rebuild the table with nullable sku.
+    Preserves all rows + all (now-migrated) columns + indexes. Runs inside the
+    caller's transaction (no BEGIN/COMMIT/PRAGMA here)."""
+    conn.execute("""
+        CREATE TABLE critic_scores_new (
+          id            TEXT PRIMARY KEY,
+          sku           TEXT,                       -- now NULLABLE (scraped rows bind by producer+cuvee+vintage)
+          critic        TEXT NOT NULL,
+          score         REAL NOT NULL,
+          score_max     REAL NOT NULL DEFAULT 100,
+          vintage       TEXT,
+          tasting_year  INTEGER,
+          source_url    TEXT,
+          notes         TEXT,
+          added_by      TEXT,
+          added_at      TEXT DEFAULT CURRENT_TIMESTAMP,
+          source        TEXT,
+          score_native  TEXT,
+          score_scale   TEXT,
+          signal_class  TEXT,
+          signal_tier   INTEGER,
+          supporting_text TEXT,
+          confidence    REAL,
+          producer      TEXT,
+          cuvee         TEXT,
+          fetched_at    TEXT
+        )
+    """)
+    conn.execute("""
+        INSERT INTO critic_scores_new
+          (id, sku, critic, score, score_max, vintage, tasting_year, source_url,
+           notes, added_by, added_at, source, score_native, score_scale,
+           signal_class, signal_tier, supporting_text, confidence, producer,
+           cuvee, fetched_at)
+        SELECT
+           id, sku, critic, score, score_max, vintage, tasting_year, source_url,
+           notes, added_by, added_at, source, score_native, score_scale,
+           signal_class, signal_tier, supporting_text, confidence, producer,
+           cuvee, fetched_at
+        FROM critic_scores
+    """)
+    conn.execute("DROP TABLE critic_scores")
+    conn.execute("ALTER TABLE critic_scores_new RENAME TO critic_scores")
+    conn.execute("CREATE INDEX idx_critic_scores_sku ON critic_scores (sku)")
+    conn.execute("CREATE INDEX idx_critic_scores_critic_score ON critic_scores (critic, score DESC)")
+    # NO COMMIT / PRAGMA here — main() owns the single transaction.
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--db", type=Path, default=DEFAULT_DB)
