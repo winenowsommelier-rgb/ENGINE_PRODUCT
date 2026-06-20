@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { REGION_CENTROIDS, centroidFor } from '@/lib/explore/region-centroids';
-import { LENS_GROUPS, lensCount, shopHref } from '@/lib/explore/map-data';
+import { LENS_GROUPS, lensCount, shopHref, loadExploreMapData } from '@/lib/explore/map-data';
+import { CENTROIDS as MJS_CENTROIDS } from '@/scripts/gen-explore-map-data.mjs';
 import type { MapRegion } from '@/lib/explore/types';
 
 const bordeaux: MapRegion = {
@@ -66,5 +67,28 @@ describe('shopHref', () => {
     expect(qs.get('bev')).toBe('1');
     expect(qs.get('inStock')).toBe('1');
     expect(qs.get('region')).toBe('Bordeaux');
+  });
+});
+
+describe('loadExploreMapData', () => {
+  it('loads the generated file and returns curated regions + countries', () => {
+    const data = loadExploreMapData();
+    expect(Array.isArray(data.regions)).toBe(true);
+    expect(data.regions.length).toBeGreaterThan(0);
+    expect(data.countries.length).toBeGreaterThan(0);
+    for (const r of data.regions) {
+      expect(typeof r.lat).toBe('number');
+      expect(r.country.length).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe('centroid parity (TS module vs .mjs inline copy)', () => {
+  it('the two hand-maintained centroid tables agree on keys + lat/lng', () => {
+    expect(Object.keys(MJS_CENTROIDS).sort()).toEqual(Object.keys(REGION_CENTROIDS).sort());
+    for (const k of Object.keys(REGION_CENTROIDS)) {
+      expect(MJS_CENTROIDS[k].lat).toBe(REGION_CENTROIDS[k].lat);
+      expect(MJS_CENTROIDS[k].lng).toBe(REGION_CENTROIDS[k].lng);
+    }
   });
 });

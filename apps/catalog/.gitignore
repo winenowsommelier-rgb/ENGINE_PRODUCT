@@ -23,3 +23,6 @@ tsconfig.tsbuildinfo
 
 # generated at prebuild (scripts/gen-search-index.mjs) — regenerated on every build
 /public/search-index.json
+
+# generated at prebuild (scripts/gen-explore-map-data.mjs) — regenerated on every build
+/data/explore-map-data.json
