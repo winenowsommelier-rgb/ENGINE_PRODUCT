@@ -32,6 +32,23 @@ def test_unknown_N_prefix_is_unknown_not_nonalcoholic():
 def test_blank_sku_is_unknown():
     assert resolve(_p(""))["group"] == "Unknown"
 
+def test_non_string_sku_is_unknown_not_crash():
+    assert resolve({"sku": 12345})["group"] == "Unknown"
+
+def test_lowercase_sku_normalizes():
+    assert group_for("wrw0001") == "Wine"
+
+def test_lbd_brandy_default():
+    assert resolve({"sku": "LBD0001", "name": "Vecchia Romagna Brandy"})["type"] == "Brandy"
+
+def test_parity_fixture_matches_resolve():
+    import json as _j
+    from pathlib import Path as _P
+    fx = _j.loads((_P(__file__).resolve().parent / "fixtures" / "sku_taxonomy_cases.json").read_text())
+    assert len(fx["cases"]) == 47
+    for c in fx["cases"]:
+        assert resolve({"sku": c["sku"], "name": c["name"]}) == c["expected"], f"mismatch on {c['sku']}"
+
 
 import json as _json
 from pathlib import Path as _Path

@@ -21,8 +21,10 @@ def _load() -> dict:
     return json.loads(MAP_PATH.read_text())
 
 
+# Invariant: all map prefixes are exactly 3 chars. A hypothetical 2-char entry
+# would be silently unreachable (we slice [:3] then fall back to [:1]).
 def _prefix3(sku: str) -> str:
-    return (sku or "").upper()[:3]
+    return str(sku or "").upper()[:3]
 
 
 def refine_type(prefix: str, base_type: str, name: str) -> str:
@@ -43,7 +45,7 @@ def refine_type(prefix: str, base_type: str, name: str) -> str:
 def resolve(product: dict) -> dict:
     """Return {'group','type'} for a product. SKU prefix wins; classification ignored."""
     data = _load()
-    sku = (product.get("sku") or "").upper()
+    sku = str(product.get("sku") or "").upper()
     if not sku.strip():
         return {"group": "Unknown", "type": "Unknown"}
     p3 = _prefix3(sku)
