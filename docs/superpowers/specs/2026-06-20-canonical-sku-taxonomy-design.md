@@ -74,12 +74,13 @@ drift (the exact problem being fixed).
 **⚠️ This is a BREAKING migration, not a transparent re-export.** The existing
 `apps/catalog/lib/category-groups.ts` defines only **6** groups
 (`CATEGORY_GROUPS` = Wine, Whisky, Spirits, Sake & Asian, Beer & RTD,
-Accessories). This spec introduces **3 new top-level groups** — Cigars, Events,
-Non-Alcoholic — so the `CategoryGroup` union type changes, and **~419 products
-change group** vs. the current code:
+Accessories). This spec introduces **4 new top-level groups** — Cigars, Events,
+Non-Alcoholic, Liqueur — so the `CategoryGroup` union type changes, and
+**~797 products change group** vs. the current code:
 
 | Prefix | n | Current TS group | New (this spec) |
 |---|---|---|---|
+| LLQ | 378 | Spirits | Liqueur |
 | LOT | 127 | Spirits | Sake & Asian |
 | NNA | 138 | Beer & RTD | Non-Alcoholic |
 | CIG | 102 | Accessories | Cigars |
@@ -93,7 +94,7 @@ change group** vs. the current code:
 So `category-groups.ts` cannot be a drop-in re-export. The implementation plan
 MUST treat this as a typed breaking change and migrate every consumer of the
 old `CategoryGroup` union (nav, filters, footer, facets, finder category-map)
-to the 9-group model — see §4.1 for the full consumer inventory and dispositions.
+to the 10-group model — see §4.1 for the full consumer inventory and dispositions.
 The accessory drill-down (recently pinned in `category-groups.ts`
 `ACCESSORY_SUBCATEGORY`) must also be reconciled: it currently lists
 `LOT → "Bar Tools & Gifts"`, which is **wrong** (LOT is Umeshu — verified, see §3).
@@ -137,17 +138,18 @@ The accessory drill-down (recently pinned in `category-groups.ts`
 
 ---
 
-## 3. The Validated Category Model (all 41 prefixes → 9 groups)
+## 3. The Validated Category Model (all 41 prefixes → 10 groups)
 
 Counts are live (sum = 11,436).
 
 | Group | n | Prefixes → type |
 |---|---|---|
 | **Wine** | 6,983 | WRW Red · WWW White · WSP Sparkling/Champagne · WRS Rosé · WDW Dessert/Port · WOW Orange · WBS Wine Set |
-| **Spirits** | 1,555 | LGN Gin · LVK Vodka · LTQ Tequila · LRM Rum · LBD Brandy · LGP Grappa · LCC Cachaça · LAB Absinthe · LWS/LSN White Spirits · LWL Baijiu · LAQ Aquavit · LBS Spirit Set · **LLQ Liqueur** |
+| **Spirits** | 1,177 | LGN Gin · LVK Vodka · LTQ Tequila · LRM Rum · LBD Brandy · LGP Grappa · LCC Cachaça · LAB Absinthe · LWS/LSN White Spirits · LWL Baijiu · LAQ Aquavit · LBS Spirit Set |
 | **Accessories** | 893 | ABA Bar Tools & Gifts · GWN/GLQ/GDC/GBE/GWA Glassware · AWC Wine Coolers/Fridges |
 | **Whisky** | 847 | LWH · LWF |
 | **Sake & Asian** | 663 | LSK Sake/Shochu · LSJ Shochu · LOT Umeshu · LKS Makgeolli |
+| **Liqueur** | 378 | LLQ Liqueur |
 | **Beer & RTD** | 232 | LBE Beer · LRD Ready-to-Drink |
 | **Non-Alcoholic** | 151 | NNA Mixer/Soft · MNA Tonic/Mineral Water · WNA De-alcoholised Wine |
 | **Cigars** | 102 | CIG |
@@ -159,13 +161,14 @@ Counts are live (sum = 11,436).
 - **Baijiu (LWL)** → Spirits; **Makgeolli (LKS)** → Sake & Asian (split by alcohol type).
 - **LGP Grappa**, **LCC Cachaça**, **LAB Absinthe** stay in Spirits but carry a
   specific `type`; `spirit_style` (P3) augments `type`, not replaces it.
-- **LLQ Liqueur (378)** → Spirits group, `type=Liqueur`. *(Open item for user
-  review: confirm Liqueur belongs under Spirits vs. its own group.)*
+- **LLQ Liqueur (378)** → its own top-level **Liqueur** group (user decision:
+  Baileys/limoncello etc. are distinct from base spirits). This is the 10th group
+  and is a divergence from the existing TS code, which places Liqueur under Spirits.
 
 **Two-level model:** `group` drives top-nav; `type` drives the "Type" filter,
 finder facets, and pairs with `spirit_style`. Both come from the one map.
 
-**Catalog presentation note (separate concern):** the data model has all 9
+**Catalog presentation note (separate concern):** the data model has all 10
 groups; the storefront nav decides prominence — small groups (Events 10, Cigars
 102) may live in a "More"/footer menu rather than a prime tab, per the catalog's
 accessibility driver. The taxonomy does not dictate nav layout.
@@ -188,7 +191,7 @@ inspect, likely migrate; **LEAVE** = may keep reading advisory `classification`.
 
 | Consumer | Disposition | Why |
 |---|---|---|
-| `apps/catalog/lib/category-groups.ts` | **MIGRATE** (source) | Becomes the canonical TS loader; the 6→9 group breaking change lives here |
+| `apps/catalog/lib/category-groups.ts` | **MIGRATE** (source) | Becomes the canonical TS loader; the 6→10 group breaking change lives here |
 | catalog `page.tsx` / `Filters.tsx` / `Footer.tsx` / `shop-query.ts` / facets | **MIGRATE** | Top-nav + Type filter must read `category_group`/`category_type` |
 | `apps/catalog/lib/finder/category-map.ts` + finder scoring/split keys | **MIGRATE** | Finder category gating must use SKU-derived group, not classification |
 | `apps/catalog/lib/recommender.ts` | **VERIFY** | "same classification +1" rule — switch to `category_type` for correct same-type scoring |
@@ -252,23 +255,24 @@ After backfill, a count query confirms:
   omitted prefix entry that shifts a group's count is caught).
 - **Completeness obligation (asserted in tests):** the JSON MUST contain an
   explicit 3-char entry for every prefix whose group ≠ its first-letter fallback
-  group (the 10 divergent prefixes: LBE, LKS, LOT, LRD, LSJ, LSK, LWF, LWH, WEV,
-  WNA). A test asserts each resolves to its §3 group — guarding the silent-misroute
-  failure mode (e.g. a missing `LWF` entry would drop malts into Spirits via "L").
+  group (the 11 divergent prefixes: LBE, LKS, LLQ, LOT, LRD, LSJ, LSK, LWF, LWH,
+  WEV, WNA). A test asserts each resolves to its §3 group — guarding the
+  silent-misroute failure mode (e.g. a missing `LWF` entry would drop malts into
+  Spirits via "L", or a missing `LLQ` entry would drop liqueurs into Spirits).
 - **Browser verification (Rule 7 — catalog is a UI change):** after the catalog
   swaps `classification` → `category_group`, start the dev server and confirm the
-  shop nav renders all 9 groups, the Type filter populates from `category_type`,
+  shop nav renders all 10 groups, the Type filter populates from `category_type`,
   and a previously-"Wine product" item (e.g. a whisky, a bar tool) now appears in
   its correct group. "It compiles" is not done.
 
 ---
 
 ## 6. Open Items / Follow-ups (separate specs)
-- **Liqueur placement** — confirm LLQ under Spirits vs. its own group (user review).
+- ~~Liqueur placement~~ — RESOLVED: LLQ is its own top-level group (10th).
 - **`appellation ⊆ region/subregion`** — field is empty in the export; model +
   populate as its own project.
 - **Magento `classification` cleanup** — optionally feed the mismatch report back
   to correct the source field.
-- **Storefront nav layout** for 9 groups (prominence of small groups) — catalog
+- **Storefront nav layout** for 10 groups (prominence of small groups) — catalog
   UI concern, decided in the catalog work, not here.
 - **Other premium/professional-experience adjustments** — to be brainstormed.
