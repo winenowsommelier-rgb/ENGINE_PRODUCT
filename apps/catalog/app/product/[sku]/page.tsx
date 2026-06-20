@@ -6,6 +6,7 @@ import { ContactButtons } from '@/components/ContactButtons';
 import { ProductCard } from '@/components/ProductCard';
 import { TasteWheel } from '@/components/product/TasteWheel';
 import { StructuralGauges } from '@/components/product/StructuralGauges';
+import { CriticScoreStrip } from '@/components/CriticScoreStrip';
 import { getAllProducts, getProductBySku } from '@/lib/catalog-data';
 import { groupForProduct } from '@/lib/category-groups';
 import { precomputeRecommendations } from '@/lib/recommender';
@@ -104,33 +105,6 @@ function AttrRow({ label, value }: { label: string; value?: string | number | nu
       <dt className="text-sm text-muted-foreground">{label}</dt>
       <dd className="text-right text-sm font-medium text-foreground">{value}</dd>
     </div>
-  );
-}
-
-/**
- * Critic-score badge. score_summary is a JSON STRING; parse DEFENSIVELY in a
- * try/catch. On success show "Critic reviewed" + the top critic score; on any
- * parse failure render nothing (never crash a whole page over a malformed badge).
- */
-function CriticBadge({ scoreSummary }: { scoreSummary?: string }) {
-  if (!scoreSummary) return null;
-  let top: number | null = null;
-  try {
-    const parsed = JSON.parse(scoreSummary) as { critics?: Array<{ score_value?: number }> };
-    const scores = (parsed.critics ?? [])
-      .map((c) => (typeof c.score_value === 'number' ? c.score_value : NaN))
-      .filter((n) => !Number.isNaN(n));
-    if (scores.length > 0) top = Math.max(...scores);
-  } catch {
-    // Malformed JSON → show nothing rather than crash. (Rule 2: don't pretend
-    // it succeeded, just degrade quietly for a non-critical badge.)
-    return null;
-  }
-  return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-sm font-medium text-primary">
-      <span aria-hidden="true">★</span>
-      {top !== null ? `Critic reviewed · ${top}` : 'Critic reviewed'}
-    </span>
   );
 }
 
@@ -249,7 +223,10 @@ export default function Page({ params }: { params: { sku: string } }) {
                   Out of stock
                 </span>
               )}
-              <CriticBadge scoreSummary={product.score_summary} />
+              <CriticScoreStrip
+                scoreMax={product.score_max}
+                scoreSummary={product.score_summary}
+              />
             </div>
           </header>
 
