@@ -40,8 +40,18 @@ interface ChoiceCardsProps {
   extraQuery?: string;
 }
 
-/** Merge a chosen value for `field` into a copy of `answers`. */
-function withAnswer(
+/**
+ * Merge a chosen value for `field` into a copy of `answers`.
+ *
+ * EXPORTED so the UI<->Answers seam is unit-testable. History: this switch once
+ * handled only the 5 v1 fields (occasion/budget/axis1/axis2/flavorChips). The 6
+ * sommelier deep-dive fields fell through writing NOTHING, so the entire deep-
+ * dive collected zero answers in the browser (the result URL carried no deep-
+ * dive params, the scoring bump was always 0) — and every unit test passed
+ * because this seam was untested. The `default` exhaustiveness guard below now
+ * makes any future StepField addition fail to COMPILE rather than silently drop.
+ */
+export function withAnswer(
   answers: Answers,
   field: StepField,
   value: string | string[],
@@ -67,6 +77,28 @@ function withAnswer(
         ? (value as string[])
         : undefined;
       break;
+    case 'food':
+      // `food` is normally written inline by FoodChoice (the synthetic food
+      // sub-step is never routed through ChoiceCards). Handled here only so the
+      // StepField union is exhausted and the `never` guard below compiles.
+      next.food = (value as string[]).length ? (value as string[]) : undefined;
+      break;
+    // ── Sommelier deep-dive single-value string fields. Same shape as axis1.
+    case 'acidity':
+    case 'tannin':
+    case 'grape':
+    case 'age':
+    case 'adventure':
+    case 'peat':
+      next[field] = value as string;
+      break;
+    default: {
+      // Exhaustiveness guard: if a new StepField is added without a case here,
+      // `field` is no longer `never` and this assignment fails to compile —
+      // surfacing the dropped field at build time instead of silently in prod.
+      const _exhaustive: never = field;
+      return answers;
+    }
   }
   return next;
 }

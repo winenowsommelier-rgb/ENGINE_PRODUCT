@@ -173,6 +173,19 @@ function adventureScore(token: string | undefined, region: string | undefined): 
   return famous ? 0 : 2; // discovery: reward NON-famous regions
 }
 
+// Whisky peat. The peat answer (none | light | heavy) has structured backing via
+// region: peated single malts come from Islay, so region=Islay is the peat signal.
+//   heavy → +2 for an Islay bottle (the user wants smoke; Islay delivers it)
+//   none  → +2 for a NON-Islay bottle (the user wants it clean; reward away-from-Islay)
+//   light / absent / unknown → 0 (no confident signal either way)
+// Like every deep-dive term this is ADDITIVE (rank-only) and never touches `degraded`.
+function peatScore(token: string | undefined, region: string | undefined): number {
+  if (token !== 'none' && token !== 'heavy') return 0; // 'light' / any → no rule
+  const isIslay = norm(region) === 'islay';
+  if (token === 'heavy') return isIslay ? 2 : 0;
+  return isIslay ? 0 : 2; // none: reward non-Islay
+}
+
 /** Sum of all deep-dive terms for one product (each 0 when its answer is absent). */
 function deepDiveBump(a: Answers, p: PublicProduct): number {
   return (
@@ -180,7 +193,8 @@ function deepDiveBump(a: Answers, p: PublicProduct): number {
     intensityScore('tannin', a.tannin, p.wine_tannin) +
     grapeScore(a.grape, p.grape_variety) +
     ageScore(a.age, p.vintage) +
-    adventureScore(a.adventure, p.region)
+    adventureScore(a.adventure, p.region) +
+    peatScore(a.peat, p.region)
   );
 }
 

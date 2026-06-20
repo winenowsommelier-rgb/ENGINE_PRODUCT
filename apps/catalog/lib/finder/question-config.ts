@@ -269,7 +269,8 @@ const ADVENTURE_STEP: QuestionStep = {
   ],
 };
 
-// Whisky — peat (scoring uses axis2 "smoky"; tokens: none | light | heavy)
+// Whisky — peat (scored via peatScore in scoring.ts using region=Islay;
+// tokens: none | light | heavy). Writes field:'peat' — NOT axis2.
 const WHISKY_PEAT_STEP: QuestionStep = {
   id: 'peat',
   field: 'peat',

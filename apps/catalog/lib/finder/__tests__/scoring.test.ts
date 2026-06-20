@@ -129,6 +129,18 @@ describe('scoreProducts', () => {
     const pool=[P({sku:'WRWf',region:'Bordeaux'}),P({sku:'WRWd',region:'Swartland'})];
     expect(scoreProducts(ans({adventure:'discovery'}),pool).products[0].sku).toBe('WRWd');
   });
+  it('whisky: peat heavy ranks an Islay bottle above a Speyside bottle', () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    const pool = [W({sku:'LWHspey', region:'Speyside'}), W({sku:'LWHislay', region:'Islay'})];
+    const out = scoreProducts({ category:'whisky', peat:'heavy' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHislay');
+  });
+  it('whisky: peat none ranks a non-Islay bottle above an Islay bottle', () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    const pool = [W({sku:'LWHislay', region:'Islay'}), W({sku:'LWHspey', region:'Speyside'})];
+    const out = scoreProducts({ category:'whisky', peat:'none' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHspey');
+  });
   it('a core-only Answers scores identically with the new code (additive)', () => {
     const pool=[P({sku:'WRW1',wine_body:'Full'}),P({sku:'WRW2',wine_body:'Light'})];
     expect(scoreProducts(ans({axis1:'bold'}),pool).products[0].sku).toBe('WRW1');
