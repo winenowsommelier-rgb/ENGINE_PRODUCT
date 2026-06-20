@@ -69,8 +69,34 @@ data/taxonomy/sku_prefix_map.json          ← SINGLE SOURCE OF TRUTH (41 prefix
 ```
 
 **Why this shape:** add a prefix once, every process updates. No fourth copy to
-drift (the exact problem being fixed). The existing `category-groups.ts` becomes
-a re-export so current catalog/finder imports keep working unchanged.
+drift (the exact problem being fixed).
+
+**⚠️ This is a BREAKING migration, not a transparent re-export.** The existing
+`apps/catalog/lib/category-groups.ts` defines only **6** groups
+(`CATEGORY_GROUPS` = Wine, Whisky, Spirits, Sake & Asian, Beer & RTD,
+Accessories). This spec introduces **3 new top-level groups** — Cigars, Events,
+Non-Alcoholic — so the `CategoryGroup` union type changes, and **~419 products
+change group** vs. the current code:
+
+| Prefix | n | Current TS group | New (this spec) |
+|---|---|---|---|
+| LOT | 127 | Spirits | Sake & Asian |
+| NNA | 138 | Beer & RTD | Non-Alcoholic |
+| CIG | 102 | Accessories | Cigars |
+| LWF | 18 | Spirits | Whisky |
+| MNA | 10 | (unmapped) | Non-Alcoholic |
+| WEV | 10 | Accessories | Events |
+| LKS | 6 | Spirits | Sake & Asian |
+| LRD | 5 | Spirits | Beer & RTD |
+| WNA | 3 | Wine | Non-Alcoholic |
+
+So `category-groups.ts` cannot be a drop-in re-export. The implementation plan
+MUST treat this as a typed breaking change and migrate every consumer of the
+old `CategoryGroup` union (nav, filters, footer, facets, finder category-map)
+to the 9-group model — see §4.1 for the full consumer inventory and dispositions.
+The accessory drill-down (recently pinned in `category-groups.ts`
+`ACCESSORY_SUBCATEGORY`) must also be reconciled: it currently lists
+`LOT → "Bar Tools & Gifts"`, which is **wrong** (LOT is Umeshu — verified, see §3).
 
 ### Map file shape
 
@@ -87,8 +113,11 @@ a re-export so current catalog/finder imports keep working unchanged.
   },
   "letter_fallback": {
     "W": "Wine", "L": "Spirits", "G": "Accessories",
-    "A": "Accessories", "C": "Cigars", "N": "Non-Alcoholic", "M": "Non-Alcoholic"
+    "A": "Accessories", "C": "Cigars"
   }
+  // NOTE: no "N"/"M" fallback — those letters are backed by a single prefix each
+  // (NNA, MNA), so an UNKNOWN N**/M** resolves to "Unknown" + audit rather than a
+  // confident Non-Alcoholic guess. The known NNA/MNA have explicit 3-char entries.
 }
 ```
 
@@ -108,7 +137,7 @@ a re-export so current catalog/finder imports keep working unchanged.
 
 ---
 
-## 3. The Validated Category Model (all 41 prefixes → 10 groups)
+## 3. The Validated Category Model (all 41 prefixes → 9 groups)
 
 Counts are live (sum = 11,436).
 
@@ -136,7 +165,7 @@ Counts are live (sum = 11,436).
 **Two-level model:** `group` drives top-nav; `type` drives the "Type" filter,
 finder facets, and pairs with `spirit_style`. Both come from the one map.
 
-**Catalog presentation note (separate concern):** the data model has all 10
+**Catalog presentation note (separate concern):** the data model has all 9
 groups; the storefront nav decides prominence — small groups (Events 10, Cigars
 102) may live in a "More"/footer menu rather than a prime tab, per the catalog's
 accessibility driver. The taxonomy does not dictate nav layout.
@@ -146,6 +175,32 @@ Because category logic stops reading `classification`, every "Wine product" row
 resolves to its real group/type via SKU. A Dometic shelf (`ABA`) → Accessories;
 Johnnie Walker (`LWH`) → Whisky. The `classification` field is left untouched as
 an advisory audit trail.
+
+---
+
+## 4.1 `classification` consumer inventory & dispositions
+
+`classification` is read widely (grep: ~400+ TS hits across the catalog, ~100+
+Python hits — many are types/comments, but the logic consumers below are the
+ones that matter). Each must get an explicit disposition in the implementation
+plan. **MIGRATE** = switch to `category_group`/`category_type`; **VERIFY** =
+inspect, likely migrate; **LEAVE** = may keep reading advisory `classification`.
+
+| Consumer | Disposition | Why |
+|---|---|---|
+| `apps/catalog/lib/category-groups.ts` | **MIGRATE** (source) | Becomes the canonical TS loader; the 6→9 group breaking change lives here |
+| catalog `page.tsx` / `Filters.tsx` / `Footer.tsx` / `shop-query.ts` / facets | **MIGRATE** | Top-nav + Type filter must read `category_group`/`category_type` |
+| `apps/catalog/lib/finder/category-map.ts` + finder scoring/split keys | **MIGRATE** | Finder category gating must use SKU-derived group, not classification |
+| `apps/catalog/lib/recommender.ts` | **VERIFY** | "same classification +1" rule — switch to `category_type` for correct same-type scoring |
+| `lib/curation/hard_filter.py` | **MIGRATE** (correctness-critical) | Hard category filters on classification would wrongly include/exclude the 1,509 mislabeled rows |
+| `lib/curation/pairing_resolver.py` / `affinity_resolver.py` / `rationale_writer.py` | **VERIFY** | Category-dependent pairing/rationale — migrate where category drives logic |
+| `scripts/derive_spirit_style.py` | **MIGRATE** | Already SKU-routed; formalize on the shared loader |
+| `data/enrich_wines.py` + enrichment scripts | **VERIFY** | Wine-gating should use `category_group == "Wine"` not classification |
+| internal API routes (`app/api/products/**`) | **VERIFY** | Surface `category_group`/`category_type`; keep classification as advisory passthrough |
+| anything displaying classification as a label only | **LEAVE** | Advisory display is fine; just never branch on it |
+
+The plan must walk this list file-by-file; no consumer is "done" until it either
+migrated or is confirmed display-only.
 
 ---
 
@@ -161,8 +216,12 @@ an advisory audit trail.
 
 ### Error handling
 - **Unknown 3-char prefix** → letter-fallback **+ logged**. A future `LXX` lands
-  in a sane group and appears in the audit report for explicit mapping. Never
-  silent, never a crash.
+  in a sane group (`L`→Spirits) and appears in the audit report for explicit
+  mapping. Never silent, never a crash. **Letter-fallback only covers letters
+  with an established family** — `W`→Wine, `L`→Spirits, `G`/`A`/`C`→Accessories/
+  Cigars. For `N`/`M` (each backed by a single prefix today), an unknown
+  `N**`/`M**` resolves to **`Unknown` + audit**, NOT a confident Non-Alcoholic
+  guess (Rule 3 — don't let a one-row fallback silently misfile future SKUs).
 - **Blank/missing SKU** → group `"Unknown"`, logged. (Currently 0 such rows;
   guard anyway.)
 - **Mismatch audit** — `scripts/taxonomy_audit.py` (no spend): lists every
@@ -188,8 +247,14 @@ After backfill, a count query confirms:
   the same SKU set (guards against the two-copies-drift being eliminated). A
   shared fixture file of `[sku → expected {group,type}]` drives both suites.
 - **Data invariant (Rule 6):** every export row has a non-empty `category_group`;
-  no row's effective category is "Wine product"; group counts within tolerance
-  of §3.
+  no row's effective category is "Wine product"; group counts **match §3 exactly**
+  (SKU resolution is deterministic — assert equality, not tolerance, so an
+  omitted prefix entry that shifts a group's count is caught).
+- **Completeness obligation (asserted in tests):** the JSON MUST contain an
+  explicit 3-char entry for every prefix whose group ≠ its first-letter fallback
+  group (the 10 divergent prefixes: LBE, LKS, LOT, LRD, LSJ, LSK, LWF, LWH, WEV,
+  WNA). A test asserts each resolves to its §3 group — guarding the silent-misroute
+  failure mode (e.g. a missing `LWF` entry would drop malts into Spirits via "L").
 - **Browser verification (Rule 7 — catalog is a UI change):** after the catalog
   swaps `classification` → `category_group`, start the dev server and confirm the
   shop nav renders all 10 groups, the Type filter populates from `category_type`,
