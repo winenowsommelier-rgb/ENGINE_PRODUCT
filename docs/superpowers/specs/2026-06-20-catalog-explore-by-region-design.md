@@ -180,7 +180,7 @@ apps/catalog/
   data/
     explore-map-data.json         # generated at prebuild (gitignored or committed — see plan)
   scripts/
-    gen-explore-map-data.mjs      # prebuild generator (reuses catalog loaders)
+    gen-explore-map-data.mjs      # prebuild generator (raw read + re-impl allowlist; see §3)
 ```
 
 `page.tsx` is a server component (SSG). The atlas is interactive but is plain
