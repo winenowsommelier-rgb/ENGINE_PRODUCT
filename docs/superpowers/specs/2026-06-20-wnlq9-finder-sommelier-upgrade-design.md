@@ -70,7 +70,7 @@ CORE PATH (everyone, ~5 steps — unchanged from v1 shape)
 Each attribute is phrased as a sensory question with a plain-English hint, never bare jargon.
 The on-screen wording is the contract; the token→attribute mapping is behind the scenes.
 
-| Field | Question | Options (token → label) |
+| Field | Question | Token → on-screen LABEL |
 |---|---|---|
 | `wine_acidity` | "How should it feel in your mouth? *(acidity = freshness)*" | crisp→Bright & mouth-watering · balanced→Balanced · soft→Soft & round |
 | `wine_tannin` | "How much structure do you enjoy? *(tannin = grippy, like strong tea)*" | silky→Silky & smooth · firm→Firm & structured · any→No preference |
@@ -78,9 +78,37 @@ The on-screen wording is the contract; the token→attribute mapping is behind t
 | `vintage` (age) | "Fresh and lively, or with some age on it?" | young→Young & vibrant · mature→Mature & developed · any→Either |
 | adventurousness | "Stick with the classics, or discover something off the beaten path?" | classic→Classic & reliable · twist→A little adventurous · discovery→Show me something new |
 
-**Whisky deep-dive wording** (data-backed): Cask character (sherried/rich vs bourbon-cask/
-vanilla → `spirit_style`) · Peat level (none→heavy → `region`=Islay + tags) · Age statement
-(→ vintage/name) · Adventurousness (classic distilleries → world/craft).
+> **CRITICAL — labels ≠ filter values.** The labels above are what the USER sees. They are
+> NOT the values stored in the data or accepted by `/shop` filters. The real component
+> scales (verified) are **ordinal, 5–8 levels**, with NO "Firm"/"crisp"/"soft" values:
+> - `wine_body`: `Light · Medium-Light · Medium · Medium-Full · Full`
+> - `wine_acidity`: `Medium-Light · Medium · Medium-Full · Medium-High · High` (+ rare `Full`)
+> - `wine_tannin`: `Low · Light · Medium-Light · Medium · Medium-Full · Medium-High · High` (+ rare `Full`)
+>
+> So a token maps to a **set of scale values** for scoring/linking, never to its label:
+>
+> | Token | maps to scale values (for shop links + scoring buckets) |
+> |---|---|
+> | body `bold` | `Full`, `Medium-Full` |
+> | body `medium` | `Medium`, `Medium-Light` |
+> | body `light` | `Light`, `Medium-Light` |
+> | acidity `crisp` | `High`, `Medium-High` |
+> | acidity `balanced` | `Medium`, `Medium-Full` |
+> | acidity `soft` | `Medium-Light`, `Medium` |
+> | tannin `firm` | `High`, `Medium-High`, `Medium-Full` |
+> | tannin `silky` | `Low`, `Light`, `Medium-Light` |
+>
+> Scoring uses the ordinal-ladder distance (as v1 body does). **Shop links** built from a
+> token use the token's PRIMARY scale value (e.g. `bold`→`body=Full`, `firm`→`tannin=High`)
+> — since `/shop` filters are single-value exact-match. This token→scale-value map lives in
+> ONE place (`lib/finder/scales.ts` or within `question-config.ts`), shared by scoring and
+> link-building so they never drift.
+
+**Whisky deep-dive wording** (data-backed — `spirit_style` IS populated, 1,274 rows from the
+P3 backfill): Cask character (sherried/rich vs bourbon-cask/vanilla → `spirit_style`) · Peat
+level (none→heavy → `region`=Islay + `flavor_tags`, reusing v1's smoky scorer) · Age
+statement (→ vintage/name) · Adventurousness (classic distilleries → world/craft via
+country). Whisky deep-dive steps gate on these fields being present; absent → fewer steps.
 
 ---
 
@@ -102,13 +130,27 @@ interface Answers {
 **Scoring (extends `finder/scoring.ts`, same tiered model, ordinal ladders where applicable):**
 - **Acidity / Tannin**: ordinal-ladder distance on the real value scales (same pattern as
   body) — exact +3 / ±1 +1 / missing 0. NEVER hard-filter (sparse outside wine).
-- **Grape**: +2 if `grape_variety` is in the chosen varietal family; `surprise` → 0 (no
-  constraint).
-- **Age**: parse `vintage` (strip the `[**VINTAGE MAY CHANGE]` suffix seen in data) → young
-  vs mature bucket vs current year; +1 on match; `any`/unparseable → 0.
-- **Adventurousness**: maps to **region familiarity** — `classic` boosts well-known regions
-  (Bordeaux/Napa/Champagne/Rioja…), `discovery` boosts everything else, `twist` neutral.
-  A small curated "famous regions" set (config, Rule 3 tunable), not hardcoded magic.
+- **Grape**: +2 if `grape_variety` (a comma-joined blend string, 346 distinct values)
+  CONTAINS any substring in the chosen family's token set; `surprise` → 0. The family→token
+  map is explicit config (substring, ci) — e.g. `cabernet→["cabernet"]`,
+  `pinot-noir→["pinot noir"]`, `syrah-shiraz→["syrah","shiraz"]`, `sangiovese→["sangiovese"]`,
+  `tempranillo→["tempranillo","rioja"]`, `merlot→["merlot"]`, `grenache→["grenache","garnacha"]`.
+  Shop links reuse the same primary token (`grape=Cabernet` — substring filter, catches blends).
+- **Age**: parse `vintage` into young/mature. **Verified value shapes (in-stock red):**
+  `"Current vintage"` (any casing) = **1,079 — the DOMINANT value** → treat as **young**;
+  `"YYYY [**VINTAGE MAY CHANGE]"` = 631 → strip suffix, use the year; bare `"YYYY"` = 471 →
+  use the year; `""/N/V` = none. A year is **mature** if (currentYear − year) ≥ ~8, else
+  young (threshold = config tunable, Rule 3). `young` answer +1 on young; `mature` +1 on
+  mature; `any`/unparseable → 0. (Handling only `[**VINTAGE MAY CHANGE]`, as the first draft
+  did, would mis-bucket the "Current vintage" majority into 0 — killing the age signal.)
+- **Adventurousness**: maps to **region familiarity**. `classic` → +2 if the product's
+  `region` is in the FAMOUS_REGIONS set; `discovery` → +2 if NOT in it; `twist`/`any` → 0.
+  FAMOUS_REGIONS is explicit config, **every entry validated to exist in the `region` field**
+  (counts verified): `Bordeaux`(783) · `Burgundy`(565) · `Champagne`(509) · `Tuscany`(457) ·
+  `Piedmont`(323) · `Mendoza`(194) · `Napa Valley`(123) · `Marlborough`(117) · `Rioja`(80) ·
+  `Mosel`(39) · `Douro`(24). NOTE: `Barossa Valley` is a **subregion**, NOT a region (0 in the
+  region field) — so it is EXCLUDED from this region-keyed set (the exact zero-match trap to
+  avoid). Rule 3 tunable; re-validate against the real `region` distribution at build.
 - All additive, all degrade to 0 when unanswered (deep-dive is opt-in) → **core-only runs
   score exactly as v1**. The `degraded` flag is still computed from the taste tiers only.
 
@@ -131,7 +173,8 @@ WHERE IT'S CLASSICALLY FOUND   (each level → a live /shop filter link)
 
 BROWSE BY YOUR STYLE'S SIGNATURE   (chips → pre-filtered shop sets)
    [Full-bodied reds ↗] [Firm-tannin ↗] [Cabernet family ↗] [Bordeaux ↗]
-   e.g. /shop?group=Wine&class=Red%20Wine&body=Full   /shop?...&tannin=Firm   /shop?...&grape=Cabernet
+   e.g. /shop?group=Wine&class=Red%20Wine&body=Full   /shop?...&tannin=High   /shop?...&grape=Cabernet
+   (chip VALUES are scale tokens — body=Full, tannin=High — NOT labels "Firm"; see §3 map)
 
 YOUR TOP MATCHES   (the existing ranked grid, with per-bottle "why" reasons)
    🍷 Château X — "Firm tannin & cassis — your structured profile."  · Customers also bought
@@ -142,6 +185,18 @@ YOUR TOP MATCHES   (the existing ranked grid, with per-bottle "why" reasons)
 - Geo scope = the style's **typical/classic** origin (from the resolved archetype's
   `typicalRegions`/`typicalGrapes`), labeled **"classically found in"** — NOT a literal
   filter of the user's answers (a bold red isn't only Bordeaux).
+- **CRITICAL — resolve each origin value to the field it actually lives in.** An archetype
+  `typicalRegions` entry is NOT always a `region` value (verified): `Bordeaux`→region (783),
+  `Napa Valley`→region (123) AND subregion (153), but `Médoc`/`Beaujolais`→**subregion**,
+  `Barossa Valley`→**subregion** (and the literal `"Barossa"` exists in NEITHER field → 0
+  matches). Whisky/gin archetype origins are often **country**-level (`Japan`, `Ireland`) or
+  **non-data labels** (`Worldwide`, `Cognac`, `Jalisco`) that exact-match no field.
+  → A shared resolver `resolveOriginField(value)` checks, in order, exact-match against
+  `region`, then `subregion`, then `country`; returns `{field, value}` or null. The link uses
+  that field (`region=`|`subregion=`|`country=`); **a value matching no field is dropped, not
+  linked** (no dead links). Archetype origin strings SHOULD be normalized to real data values
+  (e.g. `"Barossa"`→`"Barossa Valley"`) as part of this work — validate every archetype's
+  `typicalRegions` against the export.
 - The **"See all N in your style ↗"** catch-all links to the broader style filter
   (body/tannin/etc., no region constraint) so nothing is hidden behind the geo scope.
 - Only link levels with data: `category → country → region → subregion`. **Never link
