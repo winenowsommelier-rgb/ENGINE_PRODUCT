@@ -23,9 +23,14 @@ it is not best-in-class: it cannot know *what people actually buy together*. Ver
 `popularity_*`, `co_purchase`, ratings, views are **all 0** in the catalog export.
 
 The data we were missing **already exists** in the BI Marketing Engine:
-- **`GET /products/{sku}/affinities`** → co-purchase pairs `{sku_a, sku_b, lift, co_count}`
-  (semantic view `v_bundle_affinity_pairs`) — "customers who bought X also bought Y."
-- **`GET /products/{sku}/performance`** → real sales velocity per SKU.
+- **`GET /products/{sku}/affinities`** → JSON `{ pairs: [ { sku, lift, co_count }, ... ] }`
+  — "customers who bought this SKU also bought these." (NOTE: the `sku_a/sku_b` names are
+  SQL *view* aliases in `v_bundle_affinity_pairs`; the API **payload** nests the list under
+  `pairs` and inner items use key `sku` + `lift` + `co_count`. Verified against
+  `migrations/003_semantic_views.sql` `json_extract(payload,'$.pairs')` + `'$.sku'`.)
+- **`GET /products/{sku}/performance`** → monthly rows of `{ month_start, sales_thb,
+  qty_ordered, ... }` (NOT a single "velocity" scalar). The fetch script DERIVES a velocity
+  measure from these — see §3/§6.
 
 This spec wires those into BOTH recommendation surfaces (product rail + finder) as a
 **behavioral-first, content-fallback hybrid** — the Amazon "customers also bought" pattern.
@@ -91,7 +96,11 @@ const MIN_CO_COUNT = 3;
  *  SKU has no BI data or nothing clears the floor → caller falls back to content (§4). */
 export function getAffinities(sku: string): Affinity[];
 
-/** Sales-velocity signal for a SKU, or undefined. Finder booster only (§5). */
+/** Sales-velocity signal for a SKU, or undefined. `velocity` is a DERIVED scalar the
+ *  fetch script computes from the monthly /performance rows (§6) — there is NO velocity
+ *  field in the BI API. Definition: velocity = trailing_12m_qty = SUM(qty_ordered) over
+ *  the last 12 months (mirrors v_product_catalog_enriched.trailing_12m_qty). Finder
+ *  booster only (§5). */
 export function getPerformance(sku: string): { velocity: number } | undefined;
 
 /** True if the BI artifact loaded at all. Lets callers no-op cleanly when absent. */
@@ -109,31 +118,52 @@ export function hasBiData(): boolean;
 
 ## 4. Product-rail integration — behavioral-first + content fallback
 
-Plug into the existing `coPurchaseStrategy` seam in `recommender.ts` (its `FUTURE:`
-comment). **Public API (`getRecommendations`, `precomputeRecommendations`) and all callers
-are unchanged** — only internals get smarter.
+**The rail is served by `precomputeRecommendations`, NOT `getRecommendations`.** Verified:
+`app/product/[sku]/page.tsx` consumes `precomputeRecommendations` → `Map<string, string[]>`
+(sku → up-to-4 rec skus). `getRecommendations` is exported but **not called by any page**.
+So the function that must learn BI is `precomputeRecommendations`; `getRecommendations`
+(the exact, full-pool ranker) gets the same behavioral-first logic for consistency and its
+own unit tests, but wiring BI ONLY into it would ship zero UI change. Both are updated; the
+rail's behavior comes from `precomputeRecommendations`.
 
 ```
-getRecommendations(product, all):                    // signature UNCHANGED
-  bi = getAffinities(product.sku)                     // floor-filtered, lift-ranked
-  if bi.length > 0:
-     lead = resolve bi skus → PublicProduct, apply existing isEligible
-            (in-stock, not self, dedupe); keep order by lift
+For each subject product (build-time, all ~11,436 — in-stock AND out-of-stock subjects):
+  bi = getAffinities(product.sku)                     // floor-filtered, lift-ranked (§3)
+  lead = resolve bi skus → PublicProduct (getProductBySku); apply existing isEligible
+         (in-stock candidate, not self, dedupe); keep lift order
+  if lead.length > 0:
+     source = 'behavioral'
      if lead.length < MAX_RECS(4):
-        fill remaining slots from the rule-based ranking (excluding already-picked)
-     return lead (+fill)                              // SOURCE = behavioral
+        fill remaining from the existing rule-based ranking (excluding already-picked)
   else:
-     return today's rule-based ranking                // SOURCE = content
+     lead   = today's rule-based ranking
+     source = 'content'
+  store recsBySku[sku] = lead.map(sku)   AND   sourceBySku[sku] = source
 ```
 
-- **Same eligibility for BI candidates:** an affinity bottle now out of stock is skipped;
-  slots backfill from content. (Mirrors the existing `isEligible`.)
-- **Honest labels per source (Q4):** "Customers also bought" ONLY when behavioral data was
-  used; "You might also like" for content. Never imply purchase data we don't have. The
-  source (behavioral|content) is returned to the UI so the rail header is accurate.
-- `precomputeRecommendations` (build-time, all ~11,436 pages) uses the same logic so the
-  static rail reflects BI. Performance: affinity lookups are O(1) map reads from the baked
-  artifact — no per-page API calls.
+**Carrying the source label (resolves the signature contradiction).** A `Map<string,
+string[]>` cannot carry the behavioral|content channel. Two acceptable options — the plan
+picks one; the spec mandates that the choice is explicit, not a silent signature break:
+- **(Recommended) parallel map:** `precomputeRecommendations` returns
+  `{ recs: Map<sku, sku[]>, source: Map<sku, 'behavioral'|'content'> }`. Update the one
+  caller (`product/[sku]/page.tsx`) to read both. Smallest blast radius; keeps rec values
+  as lightweight sku arrays.
+- **OR richer value:** `Map<sku, { skus: string[]; source: 'behavioral'|'content' }>`.
+  Also fine; same one-caller update.
+Either way the public *names* stay (`precomputeRecommendations`), but its RETURN TYPE
+changes by design — and the single caller is updated in the same task. `getRecommendations`
+similarly returns `{ products, source }` (or keeps `PublicProduct[]` plus a sibling
+`getRecommendationSource(product, all)` — plan's call).
+
+- **Same eligibility for BI candidates:** affinity skus are resolved via `getProductBySku`
+  and run through the existing `isEligible` (in-stock, not self). A co-purchased bottle now
+  out of stock is skipped; slots backfill from content. BI candidates are NOT assumed to be
+  in any pre-built in-stock bucket — they are resolved + checked explicitly.
+- **Honest labels per source (Q4):** UI shows "Customers also bought" only when
+  `source==='behavioral'`; "You might also like" for content. Never imply purchase data we
+  don't have.
+- Performance: affinity lookups are O(1) map reads from the baked artifact — no per-page
+  API calls; the build stays fast.
 
 ---
 
@@ -143,18 +173,26 @@ In `finder/scoring.ts`, add ONE behavioral term to the existing tiered score. It
 **tie-breaker/booster**, intentionally weaker than the taste tiers, so the user's stated
 preference still leads.
 
+**CRITICAL — the booster MUST NOT feed the `degraded` computation.** Current
+`scoring.ts`: `degraded = ranked.length > 0 && wellMatched === 0`, where
+`wellMatched = ranked.filter(r => r.s >= QUALITY_MIN).length`. If the booster were added to
+the same `s` used there, a +0..+2 velocity bump could push a row from `s=1` (below
+QUALITY_MIN=2) to `s≥2`, flipping an honest "Closest matches" (degraded) pool to "Your
+matches" — a real correctness regression. So scoring keeps TWO numbers per product:
+
 ```
-(existing TIER 1 taste / TIER 2 origin / TIER 3 context …)
-+ behavioral booster:  normalize getPerformance(sku).velocity → a small additive
-                       bump in roughly the +0..+2 range (BELOW the taste-tier weights)
+tasteScore   = TIER1 + TIER2 + TIER3                 // exactly today's score
+biBump       = hasBiData() ? normalize(getPerformance(sku)?.velocity) : 0   // +0..~2
+rankScore    = tasteScore + biBump                   // used ONLY for sort order
+degraded     = computed from tasteScore (wellMatched = count of tasteScore >= QUALITY_MIN)
 ```
 
+- **`degraded` is computed from `tasteScore`, NOT `rankScore`** — the booster only re-orders
+  within the matched set, it can never change whether the pool is honestly "degraded."
 - Preference leads: "bold Scotch" → bold Scotch ranks first; among **equally good taste
   matches**, proven sellers rise. That is the best-in-class nuance.
-- **`degraded` flag untouched** — the booster only re-orders within the matched set; it does
-  not change whether a result qualifies as a good match.
-- Absent BI data → booster contributes 0 → finder behaves exactly as today.
-- The normalization constant is a tunable (Rule 3), calibrated on the real velocity
+- Absent BI data → `biBump = 0` → finder ranking AND `degraded` are byte-for-byte today.
+- The `normalize` mapping is a tunable (Rule 3), calibrated on the real velocity
   distribution; documented, not hardcoded blindly.
 
 ---
@@ -162,9 +200,18 @@ preference still leads.
 ## 6. The fetch script — `scripts/fetch_bi_signals.*`
 
 - Reuses `WNLQ9_MKT_ENGINE`'s `biClient` (auth/retry/contract). Reads `BI_API_KEY` from
-  local env; **never logs or commits the key.**
+  local env; **never logs or commits the key.** `biClient.getSkuDetail` returns `unknown` —
+  the script OWNS parsing/validating each payload (the BI repo models no response schema).
 - Iterates sellable SKUs (the catalog's own SKU list / export), calls `/affinities` +
-  `/performance`, writes `data/bi_signals.json`.
+  `/performance`, writes `data/bi_signals.json`. Exact mapping (verified payload shapes):
+  - **affinities:** read `payload.pairs` (array); for each item keep `{ sku, lift, co_count }`
+    (inner key is `sku`, NOT `sku_b`); store as `affinities[subjectSku] = [...]`. Drop items
+    with non-numeric `lift`/`co_count`. (Support-floor filtering happens at READ time in
+    `bi-signals.ts`, not here — keep the artifact raw so the floor is tunable without a re-fetch.)
+  - **performance:** the payload is monthly rows (`{month_start, sales_thb, qty_ordered}`).
+    Derive `velocity = SUM(qty_ordered)` over the trailing 12 months (drop rows older than
+    12 months). Store `performance[sku] = { velocity }`. (Matches
+    `v_product_catalog_enriched.trailing_12m_qty`.) If a SKU has no perf rows → omit it.
 - **Fail-safe (Rule 1 + Rule 2):** on BI API failure it does NOT overwrite a good
   `bi_signals.json` with partial/garbage data — fail loud, keep last-good. Prints a
   **coverage summary** ("affinities for N/total SKUs, performance for M/total") so we
@@ -193,7 +240,9 @@ preference still leads.
   to MAX_RECS; OOS affinity candidate skipped + backfilled; absent BI → byte-for-byte
   today's ranking; correct source label returned.
 - **Unit — `finder/scoring.ts`:** velocity booster orders within an equal-taste set;
-  contributes 0 when BI absent; never flips `degraded`.
+  contributes 0 when BI absent; **`degraded` computed from `tasteScore` is identical with and
+  without the booster** (regression guard: a high-velocity row with `tasteScore=1` must NOT
+  flip a degraded pool to non-degraded — the exact bug the two-score split prevents).
 - **Data invariant (Rule 6):** every recommended product still passes `toPublicProduct` —
   **no margin/B2B/internal field ever leaks** via the BI path (BI signals are sku+lift+
   co_count+velocity only; product objects still come from the allowlist projection).
