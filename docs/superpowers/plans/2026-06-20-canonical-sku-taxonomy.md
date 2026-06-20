@@ -295,12 +295,21 @@ for p in prods:
     if pre and pre not in seen:
         seen[pre]=1
         cases.append({'sku':p['sku'],'name':p.get('name',''),'expected':resolve(p)})
-# add explicit refinement cases (cognac, marsala) if present
+# REQUIRED: explicit §3.1 refinement cases so the parity test guards the riskiest
+# TS/Python drift surface (default-type-per-prefix alone would NOT exercise these).
+def add_case(sku,name):
+    cases.append({'sku':sku,'name':name,'expected':resolve({'sku':sku,'name':name})})
+add_case('WDW9001','Cantine Pellegrino Marsala Superiore')   # -> Wine/Fortified
+add_case('WDW9002','Massolino Moscato D Asti')               # -> Wine/Sweet/Dessert
+add_case('LBD9001','Courvoisier VSOP Cognac')                # -> Spirits/Cognac
+add_case('LBD9002','Chabot XO Armagnac')                     # -> Spirits/Armagnac
+add_case('LBD9003','Vecchia Romagna Brandy')                 # -> Spirits/Brandy
+add_case('LWS9001','KAO HOM Chaiyaphum')                     # -> Spirits/Thai Rice Spirit
 json.dump({'cases':cases}, open('tests/fixtures/sku_taxonomy_cases.json','w'), ensure_ascii=False, indent=1)
-print('wrote', len(cases), 'cases')
+print('wrote', len(cases), 'cases (41 prefixes + 6 refinement cases)')
 "
 ```
-Expected: `wrote 41 cases` (one per prefix).
+Expected: `wrote 47 cases (41 prefixes + 6 refinement cases)`.
 
 - [ ] **Step 7: Run full Python suite, verify GREEN**
 
@@ -368,7 +377,7 @@ Expected: FAIL — cannot find `../sku-taxonomy`.
 - [ ] **Step 3: Implement** (`apps/catalog/lib/sku-taxonomy.ts`) — reads the same JSON at module load; mirror `refine_type` exactly.
 
 ```typescript
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
 export const CATEGORY_GROUPS = [
@@ -378,9 +387,20 @@ export const CATEGORY_GROUPS = [
 export type CategoryGroup = (typeof CATEGORY_GROUPS)[number] | 'Unknown';
 
 type Entry = { group: string; type: string };
-const MAP = JSON.parse(
-  readFileSync(join(process.cwd(), '..', '..', 'data', 'taxonomy', 'sku_prefix_map.json'), 'utf8')
-) as { prefixes: Record<string, Entry>; letter_fallback: Record<string, string> };
+// Robust multi-candidate resolver — MIRRORS exportPath() in catalog-data.ts.
+// cwd is repo root in the SSG/Vercel build, apps/catalog in local dev. Probe both.
+function mapPath(): string {
+  const candidates = [
+    join(process.cwd(), 'data', 'taxonomy', 'sku_prefix_map.json'),             // cwd = repo root
+    join(process.cwd(), '..', '..', 'data', 'taxonomy', 'sku_prefix_map.json'), // cwd = apps/catalog
+    process.env.CATALOG_TAXONOMY_PATH ?? '',
+  ];
+  const found = candidates.find((p) => p && existsSync(p));
+  if (!found) throw new Error('sku_prefix_map.json not found in any known location');
+  return found;
+}
+const MAP = JSON.parse(readFileSync(mapPath(), 'utf8'))
+  as { prefixes: Record<string, Entry>; letter_fallback: Record<string, string> };
 
 const FORTIFIED = /\b(port|marsala|madeira|sherry|oloroso|amontillado|fino)\b/i;
 
@@ -410,7 +430,10 @@ export const groupFor = (sku: string): CategoryGroup => resolve({ sku }).group;
 export const typeFor = (sku: string): string => resolve({ sku }).type;
 ```
 
-> NOTE on the JSON path: catalog runs with cwd = `apps/catalog`, so `../../data/...` resolves to repo root. If a consumer runs from repo root (SSG build context), verify the relative read in Task 7 Step 6 and adjust to a robust resolver (try both `process.cwd()/../../` and `process.cwd()/`) if the build fails — same pattern as `catalog-data.ts`.
+> NOTE: `mapPath()` mirrors `exportPath()` in `catalog-data.ts` (verified: that
+> function probes `cwd/data`, `cwd/../../data`, and an env override). This handles
+> both local dev (cwd = `apps/catalog`) and the SSG build (cwd = repo root) up
+> front, so the build won't fail on path resolution.
 
 - [ ] **Step 4: Run to verify GREEN**
 
@@ -639,9 +662,27 @@ Expected: prints the reclassification breakdown; `unmapped prefixes: none`.
 
 **Files:**
 - Modify: `apps/catalog/lib/category-groups.ts` (re-home onto sku-taxonomy.ts)
-- Modify: `apps/catalog/app/page.tsx`, `apps/catalog/app/product/[sku]/page.tsx`, `apps/catalog/components/Footer.tsx`, `apps/catalog/components/Filters.tsx`, `apps/catalog/lib/shop-query.ts`, `apps/catalog/lib/shop-facets.ts`, `apps/catalog/lib/facets.ts`, `apps/catalog/lib/finder/category-map.ts`
+- Modify: `apps/catalog/lib/catalog-data.ts` + `apps/catalog/lib/types.ts` (allowlist, Step 0)
+- Modify: `apps/catalog/app/page.tsx`, `apps/catalog/app/product/[sku]/page.tsx`, `apps/catalog/components/Footer.tsx`, `apps/catalog/components/Filters.tsx`, `apps/catalog/lib/shop-query.ts`, `apps/catalog/lib/shop-facets.ts`, `apps/catalog/lib/facets.ts`, `apps/catalog/lib/finder/category-map.ts`, **`apps/catalog/lib/recommender.ts`** (spec §4.1 VERIFY: its "same `classification` +1" rule and classification bucketing → switch to `category_type` so same-type scoring is correct)
 
-- [ ] **Step 1: Re-home `category-groups.ts`** — re-export `CATEGORY_GROUPS`, `CategoryGroup`, `resolve`, `groupFor` from `sku-taxonomy.ts`. Keep `groupForProduct(p)` as a back-compat shim that now returns `resolve(p).group`. Delete the SKU_PREFIX_TO_GROUP / CLASSIFICATION_TO_GROUP / ACCESSORY_SUBCATEGORY tables (their truth now lives in the JSON) — OR, if accessory sub-categorization is still needed for the drilldown, move it to read `category_type` (which is now `Glassware`/`Bar Tools & Gifts`/etc.). **Fix the LOT→Bar Tools bug in passing (LOT is now Sake & Asian/Umeshu via the map).**
+> **SCOPE — this plan migrates the CATALOG (TypeScript) consumers only.** The
+> Python consumers in spec §4.1 are a separate follow-up plan, EXCEPT one that is
+> correctness-critical and must be done with this work:
+> - **`lib/curation/hard_filter.py` (MIGRATE, do in this plan as Task 7b below)** —
+>   it hard-filters by `classification`; left unmigrated it would wrongly
+>   include/exclude the 1,509 mislabeled rows in curation runs.
+> - **Deferred to a follow-up plan (flagged, not silently dropped):**
+>   `pairing_resolver.py`, `affinity_resolver.py`, `rationale_writer.py`,
+>   `scripts/derive_spirit_style.py`, `data/enrich_wines.py`, `app/api/products/**`.
+>   Each must eventually MIGRATE or be confirmed display-only per §4.1; none is
+>   blocked by leaving it for now (they read the same export, which now carries
+>   `category_group`/`category_type` for them to adopt).
+
+- [ ] **Step 0: Expose the category fields through the allowlist chokepoint (BLOCKING — without this the fields are stripped before any consumer sees them).** `apps/catalog/lib/catalog-data.ts` projects every product through `toPublicProduct()`, copying ONLY keys in `PUBLIC_FIELDS` (lines 13-20). Add `'category_group','category_type'` to `PUBLIC_FIELDS`, AND add `category_group?: string;` + `category_type?: string;` to `PublicProduct` in `apps/catalog/lib/types.ts` (the `_AssertFieldsAreKnown` drift guard at types lines 24-26 / catalog-data line 25 will fail to compile if you add to one but not the other — that's the guard working). Run `cd apps/catalog && npx tsc --noEmit` → expect no error. **Decision recorded:** consumers read the export-provided `category_group`/`category_type` (written by Tasks 4/5), NOT a runtime `resolve()` call — keeps the catalog reading one source (the export) and matches every other enrichment field (flavor_tags_canonical, taste_profile). The `groupForProduct(p)` shim (Step 1) is for any caller that still wants to derive from SKU directly, but the primary path is the allowlisted field.
+
+- [ ] **Step 1: Re-home `category-groups.ts`** — re-export `CATEGORY_GROUPS`, `CategoryGroup`, `resolve`, `groupFor` from `sku-taxonomy.ts`. Keep `groupForProduct(p)` as a back-compat shim that returns `resolve(p).group` (SKU-derived; works even without the export field). Delete the SKU_PREFIX_TO_GROUP / CLASSIFICATION_TO_GROUP tables (their truth now lives in the JSON). **`ACCESSORY_SUBCATEGORY` (used by `shop-query.ts:116` + `facets.ts:52` via `accessoryCategoryForSku`) — see W5 handling in Step 1a; do NOT just delete it.** **Fix the LOT→Bar Tools bug in passing (LOT is now Sake & Asian/Umeshu via the map).**
+
+- [ ] **Step 1a: Reconcile accessory sub-categories (value mapping, not just "move it").** The old `ACCESSORY_SUBCATEGORY` emits strings like `Wine Fridges & Coolers` / `Bar Tools & Gifts`; the new JSON `category_type` for accessory prefixes emits `Wine Coolers & Fridges` / `Bar Tools & Gifts` / `Glassware`. If `accessoryCategoryForSku` is kept, its returned values MUST match whatever `shop-query.ts`/`facets.ts` compare against, or the Accessories drill-down silently returns empty. Choose ONE: (a) point the accessory drilldown at `category_type` and update its expected-value strings to the JSON's types; or (b) keep `accessoryCategoryForSku` but re-derive it from `category_type` with an explicit old→new value map. Add/adjust the relevant test in `category-groups.test.ts` to assert the chosen values. Verify the Accessories filter returns non-empty in Step 7.
 
 - [ ] **Step 2: Verify existing catalog tests still pass / update them** — `cd apps/catalog && npx vitest run lib/__tests__/category-groups.test.ts`. Update expectations to the 10-group model (e.g. CIG → Cigars, NNA → Non-Alcoholic). Expected: GREEN after updates.
 
@@ -671,11 +712,60 @@ git commit -m "feat(catalog): migrate category nav/filters/finder to SKU-derived
 
 ---
 
+## Task 7b: Migrate curation `hard_filter.py` (correctness-critical, TDD)
+
+> `lib/curation/hard_filter.py:26-29` filters candidates by substring-matching
+> `query.category_filter` against `classification`. With 1,509 mislabeled rows,
+> curation runs silently include/exclude the wrong products. Switch to
+> `category_group`/`category_type`.
+
+**Files:**
+- Modify: `lib/curation/hard_filter.py`
+- Test: `tests/curation/` (add/extend the hard_filter test)
+
+- [ ] **Step 1: Write the failing test** — a whisky row classified "Wine product" must pass a `category_filter=["Whisky"]` and be excluded by `category_filter=["Wine"]`.
+
+```python
+def test_hard_filter_uses_category_group_not_classification():
+    from lib.curation.hard_filter import hard_filter
+    from lib.curation.models import StructuredQuery  # adjust import to actual
+    wh = {"sku":"LWH0001","classification":"Wine product","category_group":"Whisky",
+          "is_in_stock":"1","price":1000}
+    q = StructuredQuery(category_filter=["Whisky"])      # adjust constructor to actual
+    assert wh in hard_filter([wh], q)
+    q2 = StructuredQuery(category_filter=["Wine"])
+    assert wh not in hard_filter([wh], q2)
+```
+(Inspect `lib/curation/models.py` for the real `StructuredQuery` constructor before writing.)
+
+- [ ] **Step 2: Run, verify FAIL** (current code matches on classification "Wine product" → wrong result).
+
+- [ ] **Step 3: Implement** — replace lines 26-29 category block:
+
+```python
+        if query.category_filter:
+            grp = p.get("category_group", "")
+            typ = p.get("category_type", "")
+            hay = f"{grp} {typ}".lower()
+            if not any(f.lower() in hay for f in query.category_filter):
+                continue
+```
+(Falls back gracefully: if `category_group` is absent on a record, the match simply fails closed — acceptable, since every export row now has it. Do NOT read `classification` here anymore.)
+
+- [ ] **Step 4: Run, verify GREEN** — `cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT" && .venv/bin/python -m pytest tests/curation -q` → PASS.
+
+- [ ] **Step 5: Commit** — `git add lib/curation/hard_filter.py tests/curation && git commit -m "fix(curation): hard_filter category gate uses category_group, not classification"`
+
+---
+
 ## Done criteria
 - [ ] `data/taxonomy/sku_prefix_map.json` is the only place the prefix→category mapping lives.
 - [ ] Python + TS loaders pass identical parity fixtures (no drift).
 - [ ] `live_products_export.json`: every row has `category_group`/`category_type`; 0 "Wine product"; 0 "Unknown"; counts == spec §3.
 - [ ] `refresh_live_export.py` re-derives the fields every run (drift-proof).
 - [ ] Catalog builds, all tests green, browser-verified: misclassified items now appear in their correct group.
-- [ ] `classification` is never read for category logic (only displayed / audited).
+- [ ] `category_group`/`category_type` are in `PUBLIC_FIELDS` + `PublicProduct` (reach the browser).
+- [ ] `classification` is never read for category logic in the catalog OR `hard_filter.py` (only displayed / audited).
+- [ ] Curation `hard_filter` gates on `category_group`/`category_type` (Task 7b).
+- [ ] Remaining Python consumers (pairing/affinity/rationale/derive_spirit_style/enrich/api) flagged as a follow-up plan, not silently left.
 - [ ] Audit report available for the data team.
