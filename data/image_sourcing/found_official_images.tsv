@@ -1,0 +1,7 @@
+sku	product	status	image_url	source	note
+LWH0185AE	Kilchoman Machir Bay (700 ml)	CONFIRMED	https://www.kilchomandistillery.com/wp-content/uploads/2018/06/MachirBay70cl_BC_Low.png	kilchomandistillery.com (official)	200 OK 2.3MB PNG transparent bg; exact 70cl match. READY.
+WWW6018AD	Argiolas Iselis Nasco Bianco di Cagliari	CONFIRMED	https://www.argiolas.it/wp-content/uploads/2021/11/iselis-nasco-senza-annata2025.png	argiolas.it (official)	200 OK 494KB PNG; non-vintage label, matches. READY.
+WRW6985AD	Orin Swift 8 Years in the Desert	SKIP-AMBIGUOUS	https://www.orinswift.com/wp-content/uploads/2025/10/OSC_8Years8_horizontal.png	orinswift.com (official)	8-label wine; this is label #8 only. No single correct bottle. SKIP.
+WRW7601GT	Torbreck The Pict 2006	SKIP-VINTAGE	https://torbreck.com/cdn/shop/files/torbreck-the-pict.png	torbreck.com (official)	Official image is CURRENT vintage; SKU is 2006. Wrong-vintage label. SKIP.
+WRW7602GT	Torbreck The Pict 2007	SKIP-VINTAGE	https://torbreck.com/cdn/shop/files/torbreck-the-pict.png	torbreck.com (official)	Official image is CURRENT vintage; SKU is 2007. SKIP.
+WRW7603GT	Torbreck The Pict 2008	SKIP-VINTAGE	https://torbreck.com/cdn/shop/files/torbreck-the-pict.png	torbreck.com (official)	Official image is CURRENT vintage; SKU is 2008. SKIP.
