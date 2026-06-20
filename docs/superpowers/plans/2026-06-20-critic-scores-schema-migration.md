@@ -335,49 +335,18 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 2.2: Dry-run the ALTER+backfill on a COPY (never the live DB yet)**
+- [ ] **Step 2.2: Confirm the script imports/parses (do NOT run it end-to-end yet)**
 
-Run:
-```bash
-cp data/db/products.db /tmp/migrate_test.db
-.venv/bin/python scripts/migrate_critic_scores_schema.py --db /tmp/migrate_test.db --no-backup
-```
-Expected: `added 10 columns; backfilled 3144 curated rows`
+⚠️ `main()` references `rebuild_sku_nullable`, which is **added in Task 3**. Running the script end-to-end now would `NameError`. So Task 2's check is parse-only; the first real dry-run happens in Step 3.2 once the rebuild function exists.
 
-- [ ] **Step 2.3: Verify the copy — provenance populated, score_native correct, badges untouched**
+Run: `.venv/bin/python -c "import ast; ast.parse(open('scripts/migrate_critic_scores_schema.py').read()); print('parses OK')"`
+Expected: `parses OK`. (The full ALTER+backfill+rebuild dry-run and its provenance/score_native/badge verification are Steps 3.2-3.3 — deferred here because the script isn't complete until Task 3.)
 
-Run:
-```bash
-.venv/bin/python - <<'PY'
-import sqlite3
-c = sqlite3.connect("/tmp/migrate_test.db")
-print("rows:", c.execute("SELECT count(*) FROM critic_scores").fetchone()[0])          # 3144
-print("null provenance:", c.execute("SELECT count(*) FROM critic_scores WHERE source IS NULL").fetchone()[0])  # 0
-print("sample native:", c.execute("SELECT score, score_native FROM critic_scores LIMIT 3").fetchall())  # (91.0,'91')...
-print("badges:", c.execute("SELECT count(*) FROM products WHERE score_summary IS NOT NULL").fetchone()[0])  # 1550
-PY
-```
-Expected: rows=3144, null provenance=0, native values are integer strings (`'91'` not `'91.0'`), badges=1550.
+  The end-to-end dry-run and its provenance / score_native / badge verification
+  are **deferred to Steps 3.2-3.3** (the script is only runnable once Task 3 adds
+  `rebuild_sku_nullable`).
 
-- [ ] **Step 2.4: Point the invariant test at the copy — confirm post-migration asserts now run and pass**
-
-Run: `DB=/tmp/migrate_test.db` is not wired into the test, so instead temporarily verify via the test's logic on the copy:
-```bash
-.venv/bin/python - <<'PY'
-import sqlite3
-c = sqlite3.connect("/tmp/migrate_test.db")
-cols = {r[1] for r in c.execute("PRAGMA table_info(critic_scores)")}
-assert {"source","signal_tier","confidence"} <= cols, "rich cols missing"
-bad = c.execute("""SELECT count(*) FROM critic_scores WHERE added_by LIKE 'magento_csv%'
-  AND score = CAST(score AS INTEGER)
-  AND score_native <> CAST(CAST(score AS INTEGER) AS TEXT)""").fetchone()[0]
-assert bad == 0, f"{bad} score_native corrupted"
-print("copy passes post-migration invariants")
-PY
-```
-Expected: `copy passes post-migration invariants`
-
-- [ ] **Step 2.5: Commit (script only — not yet run on live DB)**
+- [ ] **Step 2.3: Commit (partial script — completed in Task 3)**
 
 ```bash
 git add scripts/migrate_critic_scores_schema.py
@@ -456,9 +425,9 @@ Run:
 cp data/db/products.db /tmp/migrate_test2.db
 .venv/bin/python scripts/migrate_critic_scores_schema.py --db /tmp/migrate_test2.db --no-backup
 ```
-Expected: `added 10 columns; backfilled 3144 curated rows` then `rebuilt critic_scores with nullable sku`
+Expected (one line): `added 10 columns; backfilled 3144 curated rows; rebuilt critic_scores with nullable sku`
 
-- [ ] **Step 3.3: Verify sku is now nullable + rows/badges/indexes intact**
+- [ ] **Step 3.3: Verify the migrated copy — nullable sku, rows/indexes/badges, AND provenance/score_native (the checks deferred from Task 2)**
 
 Run:
 ```bash
@@ -468,6 +437,11 @@ c = sqlite3.connect("/tmp/migrate_test2.db")
 notnull = [r for r in c.execute("PRAGMA table_info(critic_scores)") if r[1]=="sku"][0][3]
 print("sku notnull flag (want 0):", notnull)                                   # 0
 print("rows:", c.execute("SELECT count(*) FROM critic_scores").fetchone()[0])  # 3144
+print("null provenance:", c.execute("SELECT count(*) FROM critic_scores WHERE source IS NULL").fetchone()[0])  # 0
+print("sample native:", c.execute("SELECT score, score_native FROM critic_scores LIMIT 3").fetchall())  # (91.0,'91')...
+bad = c.execute("""SELECT count(*) FROM critic_scores WHERE added_by LIKE 'magento_csv%'
+  AND score = CAST(score AS INTEGER) AND score_native <> CAST(CAST(score AS INTEGER) AS TEXT)""").fetchone()[0]
+print("score_native corrupted (want 0):", bad)                                 # 0
 print("indexes:", [r[1] for r in c.execute("PRAGMA index_list(critic_scores)")])
 print("badges:", c.execute("SELECT count(*) FROM products WHERE score_summary IS NOT NULL").fetchone()[0])  # 1550
 # prove a null-sku insert now works (then roll back)
@@ -476,7 +450,7 @@ print("null-sku insert OK")
 c.rollback()
 PY
 ```
-Expected: sku notnull flag = 0, rows=3144, both indexes present, badges=1550, `null-sku insert OK`.
+Expected: sku notnull flag = 0, rows=3144, null provenance=0, native values are integer strings (`'91'` not `'91.0'`), score_native corrupted=0, both indexes present, badges=1550, `null-sku insert OK`.
 
 - [ ] **Step 3.4: Verify re-run guard works (run-once safety)**
 
