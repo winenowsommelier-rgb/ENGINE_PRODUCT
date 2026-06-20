@@ -59,11 +59,25 @@ Two consequences:
 - The docstring claims the components are "z-scored." **They are not** — the code
   is min-max. The docstring is wrong and will be corrected.
 
-**Fix (Phase 1):** clip each component at its **~95th percentile** before
+**Fix (Phase 1):** clip each component at its **95th percentile** before
 min-max-normalizing, then apply the same 0.5/0.3/0.2 blend. This removes the
 single-outlier pin and gives a usable spread. The 0.5/0.3/0.2 weights are
 inherited (Rule 3) and accepted as-is — the fix is the percentile cap, not a
 re-tune of the blend.
+
+**Percentile method (specified, so it's reproducible/testable):** use
+`numpy.percentile(values, 95, method="linear")` (or the stdlib equivalent —
+sort, linear-interpolate at the 0.95 index) per component, then
+`clipped = min(v, p95)`. Same cap method for all three components.
+
+**Degenerate-after-clip guard:** if a component's clipped values are all equal
+(possible in a tiny matched set), `minmax_normalize` returns all-zeros for that
+component — recreating the bug for that column. Phase 1 MUST `log()` the
+post-fix score distribution (new median + a small histogram) and explicitly
+warn if any component collapses to all-zeros, so the fix is *verified to have
+worked*, not assumed (Rule 1 — verify, don't infer). Reporting the actual 95th-
+percentile value per component is part of this output, so the cap's effect is
+visible before the full run is trusted.
 
 ---
 
@@ -77,10 +91,21 @@ No category dependency.
 ### Decisions
 - **Window:** 365 days (stored in `popularity_window_days`, auditable/re-runnable).
   Coverage at last dry-run: 90d=1,241 · 180d=2,320 · **365d=3,295** · 730d=4,283.
-  - **Window-label trap:** the field names are `popularity_orders_90d` etc. but
-    will hold **365-day** data. No user-facing label says "90d" (verified), so
-    it is an internal-only trap. **Propose renaming** `*_90d` → `*_window` (or
-    `*_365d`) at the implementation-plan stage; not blocking.
+  - **Window-label trap (DECISION, not deferred):** the field names are
+    `popularity_orders_90d` etc. but will hold **365-day** data. No user-facing
+    label says "90d" (verified), so it is an internal-only trap. A rename is NOT
+    free: `*_90d` is referenced in 6 files — `scripts/refresh_live_export.py`,
+    `scripts/sync_to_supabase.py`, `scripts/phase_c_enrich_descriptions.py`,
+    `data/push_products_to_new_project.py`, `data/sync_popularity_from_bi.py`,
+    and `app/api/explore/products/route.ts` — plus the SQLite schema and Supabase
+    columns. So a rename is a cross-cutting migration, not a one-line tweak.
+    **Decision:** keep the committed names in Phase 1 (no migration mid-backfill),
+    and make `popularity_window_days` the authoritative record of the actual
+    window. Phase 1 MUST (success criterion) add an explicit code comment at the
+    column write site stating "`*_90d` is a legacy name; the true window is
+    `popularity_window_days` (365)". The rename is a **tracked follow-up**
+    (separate small migration spec touching the 6 files above), not silently
+    dropped — captured in §6 Follow-ups so it can't be forgotten.
   - **Window semantics caveat:** the SQL is
     `month_start >= CURRENT_DATE - INTERVAL N DAY`, and `month_start` is
     month-bucketed, so "365 days" snaps to ~11 calendar months. Whether to make
@@ -162,6 +187,13 @@ Add `tests/test_popularity_export_invariant.py`, asserting **both directions**:
 
 Mirrors `tests/test_enrichment_db_invariants.py`.
 
+**Re-run / stale-rank test (the reset-then-update is the whole point — test it):**
+run the sync, then re-run against a deliberately *shrunken* matched set (e.g. a
+fixture or filter that scores fewer SKUs). Assert that a SKU scored in run 1 but
+absent from run 2 is reset to NULL (not left with a stale rank), and that the
+export reflects the reset after refresh. Without this, the transaction's
+correctness is asserted but never exercised.
+
 ### Phase 1 implementation order (Rule 10 pre-flight)
 1. `cp data/db/products.db data/db/products.db.bak-pre-popularity` — **before**
    the canary, since the canary mutates the real DB.
@@ -181,8 +213,22 @@ Mirrors `tests/test_enrichment_db_invariants.py`.
 - Fixed `popularity_score` has a usable spread (not ~all-zero); report new median.
 - `sort=popular` in the live UI orders by real 365-day sales; top SKUs match the
   sync's top-5 preview.
-- Supabase push reports `failed == 0` (else surfaced, not silent).
-- Bidirectional regression-guard test passes.
+- Supabase push reports `failed == 0` (else surfaced, not silent). If it fails,
+  SQLite (the UI source) is still correct; recovery is a plain re-run of the sync
+  — the SQLite write is an idempotent reset-then-update and the Supabase push is
+  an idempotent upsert, so re-running heals the divergence with no special path.
+- Bidirectional regression-guard test + re-run/stale-rank test pass.
+- A code comment at the column write site documents the legacy `*_90d` name vs.
+  the real 365-day window (window-label trap decision).
+
+**What Phase 1 does NOT deliver (honest framing):** Phase 1 gives correct
+popularity *data* and a working `sort=popular` *ordering*. It does **not**
+deliver the user's headline goal — *Magento rendering popular-in-category recs*.
+That is Phase 2, and Phase 2 cannot start until the **taxonomy backfill lands**
+(`category_group` in the export). So the end-to-end goal's critical path runs
+through the taxonomy implementation, not just this spec. Phase 1 is real,
+verifiable progress and unblocks `sort=popular`, but it is a prerequisite, not
+the finish line.
 
 ---
 
@@ -246,3 +292,21 @@ The plan stage picks one based on the actual Magento import workflow in use.
 Build order: **{ Phase 1  ∥  taxonomy backfill } → Phase 2**.
 Phase 1 and the taxonomy work touch disjoint fields/scripts and can run as
 parallel subagents. Phase 2 joins on both.
+
+## Follow-ups (tracked, NOT in this spec — so they can't be silently dropped)
+
+- **Rename `popularity_*_90d` → window-accurate names** (`*_window` or `*_365d`).
+  A cross-cutting migration touching the SQLite schema, Supabase columns, and 6
+  code files: `scripts/refresh_live_export.py`, `scripts/sync_to_supabase.py`,
+  `scripts/phase_c_enrich_descriptions.py`, `data/push_products_to_new_project.py`,
+  `data/sync_popularity_from_bi.py`, `app/api/explore/products/route.ts`. Its own
+  small migration spec; deferred so the backfill doesn't carry a rename mid-flight.
+  Phase 1 leaves a code comment pointing here.
+- **Magento export format decision** (related-products CSV vs `catalog_product_link`
+  API) — resolved at Phase 2's implementation-plan stage with the Magento owner,
+  per user decision. If API: must include an explicit dry-run + verify + rollback
+  path before any live write.
+- **NULL-popularity rec strategy validation** — confirm with the ecommerce/UX
+  side whether the ~8,100 no-sales products should receive category recs at all,
+  or a fallback ordering. Default per current decision: top-10 by popularity from
+  the scored set, all stock, shorter list where the category is thin.
