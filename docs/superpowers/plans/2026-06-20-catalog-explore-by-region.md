@@ -235,7 +235,12 @@ git commit -m "feat(catalog): explore-map data types"
 - Modify: `apps/catalog/lib/shop-query.ts` (add one guard in `matchesFilters`)
 - Test: `apps/catalog/lib/__tests__/shop-query.test.ts` (extend)
 
-**Why:** the map counts in-stock **beverages** (excludes Accessories/Events/Cigars/Non-Alcoholic), but a bare `?country&region` `/shop` query counts *everything* in the region (incl. a wine fridge). For the 5 mixed regions that carry accessories (Champagne, South Australia, Rhône Valley, London, Caribbean — verified), the drawer's "View all 226 →" would land on a grid of 230 — the count≠grid bug the catalog already fixed. Add an opt-in `bev=1` flag (mirroring the existing `inStock=1`/`hasScore=1` flags at `shop-query.ts:159-161`) that excludes the non-beverage groups, so the hand-off filters the SAME set the map counts. It's purely additive — no existing `/shop` behavior changes.
+**Why:** the map counts **in-stock beverages**, so the hand-off must filter `/shop` to the same set on BOTH axes. `bev=1` handles the GROUP axis here; the STOCK axis is handled by reusing `/shop`'s existing `inStock=1` flag (composed in `shopHref`, Task 3) — so `bev` stays a pure group filter and nothing is overloaded.
+
+- GROUP axis (this task): a bare `?country&region` query counts a wine fridge in Champagne. For the 5 mixed regions carrying accessories (Champagne, South Australia, Rhône Valley, London, Caribbean — verified), "View all 226 →" would hit a grid of 230.
+- STOCK axis (handled by existing `inStock=1`, NOT this flag): `/shop`'s in-stock filter is opt-in/off by default (`shop-query.ts:159`), so a bare query also counts OOS (Bordeaux 323 in-stock vs 753 incl. OOS — the bigger gap). `shopHref` emits `inStock=1` to close it.
+
+Add an opt-in `bev=1` flag (mirroring the `inStock=1`/`hasScore=1` idiom at `shop-query.ts:159-161`) that excludes the non-beverage groups. Purely additive — no existing `/shop` behavior changes.
 
 - [ ] **Step 1: Write the failing test (extend shop-query.test.ts)**
 
@@ -326,19 +331,21 @@ describe('lens mapping', () => {
 });
 
 describe('shopHref', () => {
-  it('emits bev=1 + region NAME + parent country + group (not slug)', () => {
+  it('emits bev=1 + inStock=1 + region NAME + parent country + group (not slug)', () => {
     const href = shopHref(bordeaux, 'wine');
     expect(href.startsWith('/shop?')).toBe(true);
     const qs = new URLSearchParams(href.split('?')[1]);
-    expect(qs.get('bev')).toBe('1');             // beverages-only -> grid matches map count
+    expect(qs.get('bev')).toBe('1');             // beverages only (group axis)
+    expect(qs.get('inStock')).toBe('1');         // in-stock only (stock axis) -> grid matches map count
     expect(qs.get('region')).toBe('Bordeaux');   // NAME, never the slug
     expect(qs.get('country')).toBe('France');
     expect(qs.get('group')).toBe('Wine');
   });
-  it('lens=all omits the group param but KEEPS bev=1', () => {
+  it('lens=all omits the group param but KEEPS bev=1 AND inStock=1', () => {
     const qs = new URLSearchParams(shopHref(bordeaux, 'all').split('?')[1]);
     expect(qs.get('group')).toBeNull();
     expect(qs.get('bev')).toBe('1');
+    expect(qs.get('inStock')).toBe('1');
     expect(qs.get('region')).toBe('Bordeaux');
   });
 });
@@ -389,10 +396,13 @@ export function lensCount(region: MapRegion, lens: LensKey): number {
  */
 export function shopHref(region: MapRegion, lens: LensKey): string {
   const group = lensPrimaryGroup(lens);
-  // bev=1 restricts /shop to the SAME beverage subset the map counts, so the
-  // resulting grid total == the drawer's "View all N" count exactly.
+  // bev=1 (beverages only) + inStock=1 (in-stock only) restrict /shop to the SAME
+  // in-stock-beverage subset the map counts on BOTH axes, so the resulting grid
+  // total == the drawer's "View all N" count exactly. bev is a pure group filter;
+  // inStock supplies the freshness axis (reusing /shop's existing opt-in flag).
   const qs = buildQuery({}, {
     bev: '1',
+    inStock: '1',
     country: region.country,
     region: region.name,
     group: group ?? null,
@@ -823,7 +833,7 @@ git commit -m "feat(catalog): explore-map generator IO, deterministic curation, 
 **Files:**
 - Create: `apps/catalog/lib/__tests__/explore-map.invariant.test.ts`
 
-Asserts the spec's core guarantee: for every curated region, the build-time `total` **strictly equals** (`===`) what `/shop`'s `matchesFilters` produces for the same `{bev:1, country, region}` beverage subset; and no peek leaks a non-allowlisted field. This is the CLAUDE.md Rule 6 end-to-end invariant. (Depends on Task 2b's `bev=1` flag and Task 6 having generated the data file.)
+Asserts the spec's core guarantee: for every curated region, the build-time `total` **strictly equals** (`===`) what `/shop`'s `matchesFilters` produces for the same `{bev:1, inStock:1, country, region}` in-stock-beverage subset (both axes); and no peek leaks a non-allowlisted field. This is the CLAUDE.md Rule 6 end-to-end invariant. (Depends on Task 2b's `bev=1` flag, `/shop`'s existing `inStock=1` flag, and Task 6 having generated the data file.)
 
 - [ ] **Step 1: Write the test**
 
@@ -841,11 +851,14 @@ describe('explore-map invariant: panel count == /shop grid total', () => {
   const data = loadExploreMapData();
   const all = getAllProducts();
 
-  it('every curated region: map total === /shop grid total for {bev:1,country,region} (STRICT)', () => {
+  it('every curated region: map total === /shop grid total for {bev:1,inStock:1,country,region} (STRICT)', () => {
     for (const r of data.regions) {
-      // bev:1 makes /shop count the SAME beverage subset the generator counted.
+      // bev:1 (group axis) + inStock:1 (stock axis) make /shop count the SAME
+      // in-stock-beverage subset the generator counted. getAllProducts() returns
+      // in-stock AND OOS, so inStock:1 is REQUIRED — without it grid counts OOS too
+      // (Bordeaux 323 in-stock vs 753 incl. OOS) and this strict test fails.
       // applyShopQuery returns { items, total, ... }; total is the full filtered count.
-      const grid = applyShopQuery(all, { bev: '1', country: r.country, region: r.name });
+      const grid = applyShopQuery(all, { bev: '1', inStock: '1', country: r.country, region: r.name });
       // STRICT equality — Rule 5: a <= test would green-light the count!=grid bug.
       expect(grid.total, `count mismatch for ${r.name}`).toBe(r.total);
       expect(r.total).toBeGreaterThan(0);
@@ -854,7 +867,7 @@ describe('explore-map invariant: panel count == /shop grid total', () => {
 
   it('lens handoff group is a real /shop group for a represented lens', () => {
     const r = data.regions.find((x) => (x.countsByGroup['Wine'] ?? 0) > 0)!;
-    const grid = applyShopQuery(all, { bev: '1', country: r.country, region: r.name, group: lensPrimaryGroup('wine')! });
+    const grid = applyShopQuery(all, { bev: '1', inStock: '1', country: r.country, region: r.name, group: lensPrimaryGroup('wine')! });
     expect(grid.total).toBeGreaterThan(0);
   });
 

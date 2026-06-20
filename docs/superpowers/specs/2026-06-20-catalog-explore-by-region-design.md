@@ -146,26 +146,33 @@ passed through to `/shop` as `?group=<CatalogGroup>` on hand-off.
 
 `/shop` matches `region` and `country` **exact, case-insensitive**
 (`shop-query.ts:134-138`), written via `buildQuery` as
-`?bev=1&country=…&region=…&group=…`. The hand-off MUST emit the region
+`?bev=1&inStock=1&country=…&region=…&group=…`. The hand-off MUST emit the region
 **NAME** (e.g. `"Barossa Valley"`), **not** the taxonomy slug, and MUST include
 the parent **country** so the `/shop` DrillBreadcrumb (`country › region`)
 renders coherently. Link built with
-`buildQuery({}, { bev: '1', country, region, group? })`.
+`buildQuery({}, { bev: '1', inStock: '1', country, region, group? })`.
 
 **The count==grid guarantee requires the hand-off to filter the SAME product set
-the map counts.** The map counts in-stock **beverages** (excludes
-Accessories/Events/Cigars/Non-Alcoholic). A bare `?country&region` `/shop` query
-counts *everything* in that region, including a wine fridge — so for the 5
-mixed regions that carry accessories (Champagne, South Australia, Rhône Valley,
-London, Caribbean — verified) the drawer's "View all 226 →" would land on a grid
-of 230. To prevent this, add a small opt-in **`bev=1`** flag to `matchesFilters`
-(mirroring the existing `inStock=1`/`hasScore=1` opt-in flags) that excludes the
-non-beverage groups; the `lens=all` hand-off always emits `bev=1`. With the map's
-`total` and the `/shop` grid now computed over the **same** beverage subset by
+the map counts — on BOTH axes (group AND stock).** The map counts **in-stock
+beverages** (excludes Accessories/Events/Cigars/Non-Alcoholic). A bare
+`?country&region` `/shop` query differs on two axes:
+- **Group axis:** it counts everything incl. a wine fridge. For the 5 mixed
+  regions that carry accessories (Champagne, South Australia, Rhône Valley,
+  London, Caribbean — verified) "View all 226 →" would hit a grid of 230.
+- **Stock axis (larger):** `/shop`'s in-stock filter is **opt-in/off by default**
+  (`shop-query.ts:159`), so a bare query counts in-stock + out-of-stock. Verified:
+  Bordeaux is 323 in-stock vs 753 incl. OOS. This dwarfs the group gap.
+
+To make count==grid on both axes, the hand-off composes **two existing-style
+opt-in flags**: a small new **`bev=1`** flag on `matchesFilters` (excludes the
+non-beverage groups; mirrors the `inStock=1`/`hasScore=1` idiom) **and** the
+catalog's existing **`inStock=1`** flag (`shop-query.ts:159`). `bev` stays a pure
+group filter (matching its name); `inStock` supplies the freshness axis — no flag
+is overloaded. The `lens=all` hand-off always emits BOTH. With the map's `total`
+and the `/shop` grid now computed over the **same** in-stock-beverage subset by
 the **same** `matchesFilters` predicate, **panel count == grid total exactly**
-(the §8 invariant asserts strict equality, not `≤`). Note `matchesFilters`
-already excludes nothing by default, so `bev=1` is purely additive and changes
-no existing `/shop` behavior.
+(the §8 invariant asserts strict equality, not `≤`). Both flags are purely
+additive — they change no existing `/shop` behavior.
 
 ---
 
@@ -263,7 +270,8 @@ static HTML and is crawlable. The hotspots and region list are real anchors to
     group and round-trips through `/shop`'s `shop-query` matcher.
   - **Invariant test (CLAUDE.md Rule 6):** for every curated region, the
     build-time `total` **strictly equals** the count `/shop`'s `matchesFilters`
-    produces for the same `{bev:1, country, region}` (the SAME beverage subset).
+    produces for the same `{bev:1, inStock:1, country, region}` (the SAME
+    in-stock-beverage subset — both axes).
     Assert `===`, NOT `≤` — a `≤` test would pass while the user-visible "View
     all N" count silently disagrees with the grid (CLAUDE.md Rule 5: don't
     write a test that locks in the bug). Guards the count==grid promise.
