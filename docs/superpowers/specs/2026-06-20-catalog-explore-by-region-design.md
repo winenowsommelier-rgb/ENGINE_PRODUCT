@@ -84,17 +84,30 @@ static taxonomy" plan. Verified facts driving the rewrite:
 name → lat/long lookup.**
 
 A prebuild script (`apps/catalog/scripts/gen-explore-map-data.mjs`, wired into
-the existing `prebuild`) does the following, reusing the catalog's own loaders
-so it cannot drift from `/shop`:
+the existing `prebuild` — change `package.json` to
+`"prebuild": "node scripts/gen-search-index.mjs && node scripts/gen-explore-map-data.mjs"`)
+does the following. Its output must be **provably identical to the
+`getAllProducts()` projection**, enforced by tests (§8), NOT by importing it.
 
-1. Load products via the catalog's `getAllProducts()` path — this already runs
-   the `PUBLIC_FIELDS` allowlist **and** the `isInStock()` string-coercion
-   (`is_in_stock` is a string `"0"/"1"/null`; "0" is truthy — verified 5,683
-   OOS). The script must NOT re-read the raw export (that would bypass the
-   margin-leak allowlist and the stock normalizer).
-2. Resolve each product's group via `groupForProduct` (SKU-prefix
-   authoritative). **Exclude** Accessories / Events / Cigars / Non-Alcoholic
-   from map counts and peeks (a wine fridge is not a Bordeaux).
+1. **Projection (must match `getAllProducts()`, enforced by test — see note).**
+   Read the raw export and project each row down to **only** `PUBLIC_FIELDS`,
+   then coerce `is_in_stock` with the same `isInStock()` logic (`is_in_stock`
+   is a string `"0"/"1"/null`; "0" is truthy — verified 5,683 OOS). This
+   mirrors the **existing** `gen-search-index.mjs`, which is a plain Node `.mjs`
+   that *cannot* import the TypeScript `catalog-data.ts` (`node scripts/*.mjs`
+   runs before Next/tsc, so `.ts` modules aren't importable without a loader).
+   It therefore re-reads the raw export and hand-builds the allowlisted object —
+   we follow that proven pattern. **The anti-drift / margin-safety guarantee is
+   provided by the §8 invariant + margin-leak tests, not by code reuse:** a test
+   asserts (a) every emitted object's keys ⊆ `PUBLIC_FIELDS`, and (b) the
+   generator's in-stock + count results equal what `matchesFilters` /
+   `isInStock` produce for the same inputs. (If a future refactor makes the TS
+   loaders importable from a `tsx`-run prebuild, switching to literal reuse is a
+   clean follow-up — not required for v1.)
+2. Resolve each product's group via `groupForProduct` (imported from
+   `apps/catalog/lib/category-groups.ts` — note: NOT `sku-taxonomy.ts`;
+   SKU-prefix authoritative). **Exclude** Accessories / Events / Cigars /
+   Non-Alcoholic from map counts and peeks (a wine fridge is not a Bordeaux).
 3. Aggregate by `country` then `region` NAME from the live data: fresh
    `total`, per-`category_group` counts, `priceRange {min,max}`, and the
    in-stock peek set.
@@ -106,8 +119,10 @@ so it cannot drift from `/shop`:
      Valley, Languedoc-Roussillon, Maule Valley, etc. — one-time, no API
      spend), else
    - **country roll-up**: a region with no coordinate contributes to its
-     COUNTRY hotspot (country coords from the taxonomy are reliable —
-     11,288/11,406 match). Nothing is ever dropped.
+     COUNTRY hotspot. All 66 taxonomy countries carry lat/long (verified), and
+     the vast majority of country-bearing products map to a taxonomy country
+     (a handful — Malaysia, South Korea, Singapore — don't; they fall through
+     to the escape hatch). Nothing on a known country is ever dropped.
 5. **Curate**: auto-select the top regions by **in-stock beverage depth**
    (threshold e.g. ≥30 in-stock bottles), capped at ~20–25, ensuring each
    category lens (Wine/Whisky/Spirits/Sake) has representation. Everything not
@@ -269,9 +284,24 @@ hand-authored centroid supplement).
 
 ## 10. Open items for the implementation plan
 
-- Decide whether `explore-map-data.json` is committed or gitignored+generated
-  (lean: generated at prebuild, like `gen-search-index.mjs`).
-- Final curated-set threshold + cap, and the exact lens→`category_group` map.
+- **`prebuild` wiring:** chain the new generator —
+  `"prebuild": "node scripts/gen-search-index.mjs && node scripts/gen-explore-map-data.mjs"`.
+  Lean: `explore-map-data.json` is generated at prebuild (gitignored), like the
+  search index — not committed.
+- **Curated-set determinism** (affects which static pages exist, so must be
+  deterministic for `generateStaticParams`): the cap (~20–25) is a HARD limit.
+  Within the cap, fill by in-stock beverage depth descending, ties broken by
+  region name (alphabetical). Then guarantee ≥1 region per lens that has any
+  eligible region: if a lens (e.g. Sake) is unrepresented within the cap,
+  **substitute** its deepest region for the lowest-depth currently-included
+  region (never exceed the cap). If a lens has zero eligible regions at all,
+  the lens is omitted (per §7), not shown empty. Finalize threshold + the exact
+  lens→`category_group` map here.
 - The ~15 centroid values for `region-centroids.ts`.
-- The atlas SVG source (a simple stylized world silhouette; hotspots placed by
-  projecting lat/long → SVG x/y with a basic equirectangular transform).
+- **Atlas SVG + hotspot placement:** do NOT math-derive positions from a
+  stylized (non-projection) silhouette — they'll misplace. Instead store an
+  explicit `{ x, y }` per hotspot in `region-centroids.ts` alongside `lat/lng`
+  (placement is authored, not computed), OR use a known equirectangular basemap
+  with a stated `viewBox`/bounds so lat/long→x/y is exact. Specify a
+  min-separation rule (jitter or label-stacking) for near-coincident hotspots
+  (e.g. multiple Scotch regions).
