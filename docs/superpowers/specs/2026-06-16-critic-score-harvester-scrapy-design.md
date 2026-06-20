@@ -67,7 +67,7 @@ operator signal. Scrapy's `RobotsTxtMiddleware` instead **silently filters**
 disallowed requests (a `robotstxt/forbidden` stat, DEBUG log only). Risk: a
 source whose search path (`/?s=`) is robots-disallowed yields **zero rows that
 look identical to "no reviews found"** — a Rule 2 violation (buried skip). Two
-mitigations are mandatory and specced below: (a) the §11.2 "what shipped" report
+mitigations are mandatory and specced below: (a) the §11.3 "what shipped" report
 surfaces the per-source `robotstxt/forbidden` count, so a robots-blocked source
 is visibly distinct from an empty one; (b) §14 promotes "is the search path
 robots-allowed?" to a **day-0 gating check per source**, not an impl-time
@@ -300,7 +300,7 @@ job config and are applied via `custom_settings` on each spider. Circuit-breaker
 on sustained 429/403 = the custom retry middleware + a small
 `CloseSpider`-on-threshold extension. **On a ban-triggered close, the source is
 marked `backoff` (not `permanent_skip`) so the next day's run resumes from its
-JOBDIR** — and the close reason is surfaced in the §11.2 report so a half-crawled
+JOBDIR** — and the close reason is surfaced in the §11.3 report so a half-crawled
 source is never mistaken for "no reviews found" (Rule 2).
 
 **Backfill timing:** sources run as separate `scrapy crawl` processes in
@@ -432,9 +432,9 @@ day-4 overload split across two days.
 |---|---|---|
 | **0** | Send Levine email (CT→v2, background). `pip install -r requirements-scraper.txt`. Scaffold `scraper/` Scrapy project; `settings.py` politeness; `catalog.py` reads triplets from products.db. **Day-0 gating checks (per source):** (a) is the search path robots-allowed? (b) is the score in raw HTML or JS-rendered? Record both in the job config. **Confirm the binding join columns** (`brand`/`vintage` or actual names) against the live products.db schema. | `scrapy list` runs; catalog prints N triplets; robots + HTML/JS + join-column results recorded for all 7 sources. |
 | **1** | Port `extract/` (score_patterns, scale_conversion, critic_registry, binder) verbatim from old §7 as pure functions. `items.py`, `pipelines.py` (Extraction + Invariant + Sqlite with WAL+busy_timeout+write-retry). `persist/schema.sql` applied to products.db. Unit tests for extraction/binding (no network). | `pytest tests/critic_reviews/unit` green; invariant rejects a crafted bad row. |
-| **2** | `BaseCriticSpider` (per-source JOBDIR, RetryAfterMiddleware) + Wine Enthusiast spider. Golden-fixture parser tests. Canary subset crawl writes real rows. | `SELECT count(*) FROM critic_scores` > 0 after WE canary crawl. |
-| **3** | Remaining spiders: WineAlign, Natalie MacLean, The Real Review, Whiskybase, Master of Malt, Distiller. Per-source fixtures + Playwright per the day-0 decision. | Each spider yields ≥1 row on its canary SKU. |
-| **4** | `refresh_products_summary.py` (the 7 deterministic merge rules → score_max/score_summary). **Rule 6 integration test** (`test_critic_db_invariants.py`). Precision canary on 50-SKU set. | Precision ≥ 90% gate; integration invariant test green. |
+| **2** | `BaseCriticSpider` (per-source JOBDIR, RetryAfterMiddleware) + **Whiskybase spider first** (spirits, deterministic-URL — simplest strategy, net-new category; §18.4a spirits-before-wine). Golden-fixture parser tests. Canary subset crawl writes real rows. | `SELECT count(*) FROM critic_scores` > 0 after Whiskybase canary crawl. |
+| **3** | Remaining **spirits** spiders: Master of Malt, Distiller. Then **§18.4b gate** (precision canary incl. spirits stratum + rank-sanity probe) before wine. Then **wine** spiders: Wine Enthusiast, WineAlign, Natalie MacLean, The Real Review. Per-source fixtures + Playwright per the day-0 decision. | Each spider yields ≥1 row on its canary SKU; spirits gate passes before wine spiders start. |
+| **4** | `refresh_products_summary.py` (the 7 deterministic merge rules → score_max/score_summary). **Rule 6 integration test** (`test_critic_db_invariants.py`). Precision canary on 50-SKU set **(both vintage-rich and no-vintage strata, §11.5)**. | Precision ≥ 90% gate on **both** strata; integration invariant test green. |
 | **5** | Extend `app/api/products/[id]/route.ts` with `reviews[]`. `CriticScoreBadges.tsx`. Run `refresh_live_export.py`. **Layer-3 destination probe** (python, §11.2). Browser walkthrough (Rule 7) on 5 SKUs. | `curl /api/products/<id>` returns non-empty `reviews`; Layer-3 export count (python probe, §11.2) > 0; browser walkthrough signed off. |
 | **6+** | **Backup products.db (Rule 10).** Full backfill kickoff (parallel processes, per-source `JOBDIR`, ~5-10 days wall). Final "what shipped" report (Layer-3 headline) + live-export refresh. | Rule 4 report shows SKUs-newly-populated **in the live export**; UI shows badges. |
 | **buffer** | 2 days reserve for per-source parser quirks, a Playwright flip, or a robots-blocked search path forcing a deterministic-URL fallback. | — |
@@ -450,7 +450,7 @@ day-4 overload split across two days.
 | 5 | `refresh_live_export.py` not run → stale UI; or run but Layer-3 export still empty | M | Backfill final step runs it by default (Rule 9); §11.2 Layer-3 probe fails the run if export count = 0 while DB count > 0. |
 | 6 | Coverage lands below ~50% without CT | L | Honest invisible empty state; CT in v2 restores ~64%. |
 | 7 | scrapy-playwright pulls heavy browser deps into env | L | Kept in separate `requirements-scraper.txt`; main app env untouched. |
-| 8 | A source's search path (`/?s=`) is robots-disallowed → spider silently yields zero rows, looks like "no reviews" | M | Day-0 robots gate per source (§14); §11.2 report surfaces per-source `robotstxt/forbidden` count; robots-blocked search forces a deterministic-URL fallback for that source or drops it with a logged reason (Rule 2). |
+| 8 | A source's search path (`/?s=`) is robots-disallowed → spider silently yields zero rows, looks like "no reviews" | M | Day-0 robots gate per source (§14); §11.3 report surfaces per-source `robotstxt/forbidden` count; robots-blocked search forces a deterministic-URL fallback for that source or drops it with a logged reason (Rule 2). |
 | 9 | Multi-process SQLite `database is locked` during parallel backfill | M | `SqlitePipeline` uses WAL + `busy_timeout=10000` + bounded write-retry (§6). |
 
 ## 14. Day-0 gating checks (promoted from "open items" — they determine coverage)
@@ -675,8 +675,19 @@ sequences three tracks; §12 is the third block:
      Distiller. **100% net-new — zero spirits scored today.** No curated overlap,
      so precedence (§16) and the 85-pt floor barely apply; the cleanest, highest-
      ROI half. Ships an entire category the CSV can never cover.
-   - **4b. GATE on 4a results** — run the §11.5 canary (incl. no-vintage stratum)
-     + the §11 curation-rank sanity probe on the spirits data before starting wine.
+   - ⚠️ **Spirits canary is thin — harden it before trusting the gate.** The
+     50-SKU recon set is **36 wine / 14 spirits** (whisky 6, sake_shochu 4,
+     gin/vodka/rum 4), and **no v1 source covers sake/shochu** (the 7 sources are
+     whisky/general-spirits only). So the spirits precision gate effectively rests
+     on ~10 SKUs, and 4 sake/shochu SKUs can never be validated. Before the §18.4b
+     gate certifies the spirits backfill, **hand-label ~15-20 additional spirit
+     SKUs** (spanning whisky + gin/vodka/rum) to give the 90% gate a real basis —
+     or explicitly accept a lower-confidence canary for spirits and log it (Rule 2:
+     don't let a thin gate masquerade as a passed one). Sake/shochu is a documented
+     v1 non-coverage, not a silent miss.
+   - **4b. GATE on 4a results** — run the §11.5 canary (incl. no-vintage stratum
+     AND the hardened spirits stratum above) + the §11 curation-rank sanity probe
+     on the spirits data before starting wine.
    - **4c. Wine spiders** (~6,695 SKUs): Wine Enthusiast, WineAlign, Real Review,
      Natalie MacLean. Overlaps the existing 4 wine critics (diminishing returns),
      carries the no-vintage false-bind risk, and has the full ranking blast radius.
