@@ -43,16 +43,16 @@ export interface OriginField {
  *   Wine, Whisky, Spirits, Sake & Asian, …
  *
  * Notes on choices:
- *   - sparkling → {Wine, 'Sparkling Wine'}: sparkling SKUs live in the Wine group
- *     with canonical type "Sparkling Wine". Champagne is a REGION, not a group/type,
- *     so it is not used as the class value.
+ *   - sparkling → {Wine, 'Sparkling & Champagne'}: sparkling SKUs live in the Wine
+ *     group with canonical type "Sparkling & Champagne" (the value /shop's class
+ *     filter matches; "Sparkling Wine" matches 0 products → was a dead link).
  *   - whisky/spirits/sake → no class (undefined): the group alone is the right scope
  *     (whisky has many sub-types; "spirits"/"sake" are group-level concepts).
  */
 const CATEGORY_SCOPE: Record<FinderCategory, { group: string; classValue?: string }> = {
   red:       { group: 'Wine',        classValue: 'Red Wine' },
   white:     { group: 'Wine',        classValue: 'White Wine' },
-  sparkling: { group: 'Wine',        classValue: 'Sparkling Wine' },
+  sparkling: { group: 'Wine',        classValue: 'Sparkling & Champagne' },
   whisky:    { group: 'Whisky' },
   gin:       { group: 'Spirits',     classValue: 'Gin' },
   spirits:   { group: 'Spirits' },
