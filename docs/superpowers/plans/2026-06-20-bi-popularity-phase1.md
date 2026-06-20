@@ -80,14 +80,27 @@ _spec.loader.exec_module(sync_pop)
 
 
 def test_outlier_does_not_pin_the_scale():
-    # 99 rows at qty=1, one outlier at qty=673 (the real-world shape).
-    rows = [{"qty": 1.0, "orders": 1, "revenue": 100.0} for _ in range(99)]
-    rows.append({"qty": 673.0, "orders": 50, "revenue": 50000.0})
+    # The real-world shape: a band of typical sellers WITH internal spread, plus
+    # one extreme outlier that (pre-fix) pinned the min-max scale and crushed the
+    # typical band toward zero. The fixture MUST give typical rows variation —
+    # if every typical row were identical, min-max would (correctly) score them
+    # all 0 and this test would be meaningless. Here typical orders span 1..40.
+    rows = [
+        {"qty": float(o), "orders": o, "revenue": float(o) * 100.0}
+        for o in range(1, 41)  # 40 typical sellers, orders 1..40
+    ]
+    rows.append({"qty": 673.0, "orders": 400, "revenue": 673000.0})  # outlier
     sync_pop.compute_scores(rows)
-    typical = [r["score"] for r in rows[:99]]
+    typical = [r["score"] for r in rows[:40]]
     median = sorted(typical)[len(typical) // 2]
-    # Pre-fix this was ~0.0007. Post-fix the cap lifts the typical band well off zero.
-    assert median > 0.05, f"score still degenerate (median={median})"
+    # Pre-fix (no cap): the 400-order outlier pins the scale and the typical
+    # median lands near ~0.05. With the 95th-pctile cap the outlier is clipped
+    # back to the top of the typical band, so the typical median lifts well up.
+    assert median > 0.2, f"score still pinned by outlier (median={median})"
+
+    # And the cap must NOT flatten everyone to one value — order must survive.
+    scores = [r["score"] for r in rows[:40]]
+    assert max(scores) > min(scores) + 0.3, "cap over-flattened the typical band"
 
 
 def test_score_in_unit_range():
@@ -403,13 +416,24 @@ Replace the body of `main()` after `compute_scores(rows)` (keep everything up to
     # 1. SQLite first — the UI source of truth (Rule 9).
     print(f"\nWriting {len(rows)} SKUs to SQLite {args.sqlite_db} (reset-then-update)...")
     updated = write_sqlite(rows, args.sqlite_db, synced_at, args.window_days)
-    # Verify destination, don't trust the return value alone (Rule 1).
+    # Verify destination, don't trust the return value alone (Rule 1). Count by
+    # THIS run's synced_at so a prior partial run can't inflate the number, AND
+    # report the total non-NULL for sanity. Because write_sqlite resets every row
+    # first, total-non-NULL should equal this-run's count — if they differ, a
+    # concurrent writer touched the table and the run is suspect.
     _vc = sqlite3.connect(str(args.sqlite_db))
-    shipped = _vc.execute(
+    this_run = _vc.execute(
+        "SELECT COUNT(*) FROM products WHERE popularity_synced_at = ?", (synced_at,)
+    ).fetchone()[0]
+    total_nonnull = _vc.execute(
         "SELECT COUNT(*) FROM products WHERE popularity_orders_90d IS NOT NULL"
     ).fetchone()[0]
     _vc.close()
-    print(f"  SQLite: updated={updated}  rows with popularity_orders_90d NOT NULL={shipped}")
+    print(f"  SQLite: updated={updated}  this-run(synced_at)={this_run}  "
+          f"total non-NULL={total_nonnull}")
+    if this_run != total_nonnull:
+        print("  WARNING: this-run count != total non-NULL — unexpected rows in "
+              "the table (concurrent writer?); investigate before trusting.", file=sys.stderr)
 
     if args.no_supabase:
         print("  (--no-supabase) skipping Supabase push.")
