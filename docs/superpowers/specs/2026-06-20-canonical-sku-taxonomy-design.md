@@ -257,7 +257,7 @@ After backfill, a count query confirms:
   failure mode (e.g. a missing `LWF` entry would drop malts into Spirits via "L").
 - **Browser verification (Rule 7 — catalog is a UI change):** after the catalog
   swaps `classification` → `category_group`, start the dev server and confirm the
-  shop nav renders all 10 groups, the Type filter populates from `category_type`,
+  shop nav renders all 9 groups, the Type filter populates from `category_type`,
   and a previously-"Wine product" item (e.g. a whisky, a bar tool) now appears in
   its correct group. "It compiles" is not done.
 
@@ -269,6 +269,6 @@ After backfill, a count query confirms:
   populate as its own project.
 - **Magento `classification` cleanup** — optionally feed the mismatch report back
   to correct the source field.
-- **Storefront nav layout** for 10 groups (prominence of small groups) — catalog
+- **Storefront nav layout** for 9 groups (prominence of small groups) — catalog
   UI concern, decided in the catalog work, not here.
 - **Other premium/professional-experience adjustments** — to be brainstormed.
