@@ -6,8 +6,9 @@ Steps:
   2. backfill the existing magento_csv rows (source/tier/confidence/score_native…)
   3. table-rebuild to make `sku` nullable (SQLite can't drop NOT NULL via ALTER)
 
-NOT idempotent: re-running errors on the duplicate ALTER / re-rebuild. Take the
-Rule 10 backup first; on failure, restore from backup and re-run from the top.
+Run-once: a second run detects the `source` column and aborts cleanly with exit
+code 2 (no duplicate ALTER). Take the Rule 10 backup before the first run; on
+failure, restore from backup and re-run from the top.
 
 Pure local — NO API spend. After running, refresh the live export (Rule 9):
     .venv/bin/python scripts/refresh_live_export.py
@@ -78,18 +79,22 @@ def main(argv=None) -> int:
         print(f"ERROR: db not found: {args.db}", file=sys.stderr)
         return 1
 
-    # Rule 10: backup before any irreversible write.
-    if not args.no_backup:
-        bak = args.db.with_suffix(args.db.suffix + ".bak-pre-critic-migration")
-        shutil.copy2(args.db, bak)
-        print(f"backup -> {bak}")
-
     conn = sqlite3.connect(args.db)
     try:
+        # Run-once guard FIRST: a re-run must NOT overwrite the good
+        # pre-migration backup with a post-migration copy (destroys rollback).
         if already_migrated(conn):
             print("ALREADY MIGRATED (source column present) — aborting (run-once).",
                   file=sys.stderr)
             return 2
+
+        # Rule 10: backup only now that we're actually about to migrate.
+        # Safe to copy the file with the connection open — no write tx is
+        # active yet (we back up BEFORE BEGIN).
+        if not args.no_backup:
+            bak = args.db.with_suffix(args.db.suffix + ".bak-pre-critic-migration")
+            shutil.copy2(args.db, bak)
+            print(f"backup -> {bak}")
 
         # ALL THREE STEPS in ONE transaction so a failure rolls back atomically
         # (no half-migrated DB). foreign_keys pragma must be set OUTSIDE the tx.
@@ -99,7 +104,9 @@ def main(argv=None) -> int:
         n = backfill_curated(conn)
         rebuild_sku_nullable(conn)          # Task 3 — runs inside this same tx
         conn.execute("COMMIT")
-        conn.execute("PRAGMA foreign_keys=ON")
+        # COMMIT succeeded → migration is durable; success is now locked in.
+        # The PRAGMA re-enable below runs in finally so a PRAGMA throw can NOT
+        # flip this committed run to exit 1.
         print(f"added {len(NEW_COLUMNS)} columns; backfilled {n} curated rows; "
               f"rebuilt critic_scores with nullable sku")
         return 0
@@ -108,6 +115,11 @@ def main(argv=None) -> int:
         print(f"ERROR — rolled back: {e}", file=sys.stderr)
         return 1
     finally:
+        # Always restore the default; not part of the success/failure verdict.
+        try:
+            conn.execute("PRAGMA foreign_keys=ON")
+        except Exception:
+            pass
         conn.close()
 
 
