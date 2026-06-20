@@ -4,6 +4,6 @@ data/backups/
 data/needs_ai_review.json
 data/triage_summary.json
 data/t1_t2_product_library.*
-scripts/
+/scripts/
 supabase/.temp/
 *.py
