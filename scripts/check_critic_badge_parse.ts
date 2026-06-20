@@ -30,5 +30,20 @@ const noMatch = parseCriticScores(101, good);
 check("fallback lead = critics[0]", noMatch !== null && noMatch.lead.abbr === "JS");
 check("maxCritics cap", parseCriticScores(100, good, 2)!.critics.length === 2);
 
+const fiveCritics = JSON.stringify({
+  critics: [
+    { abbr: "JS", critic: "James Suckling", score_native: "100", score_value: 100 },
+    { abbr: "WA", critic: "Wine Advocate", score_native: "99", score_value: 99 },
+    { abbr: "WS", critic: "Wine Spectator", score_native: "98", score_value: 98 },
+    { abbr: "WE", critic: "Wine Enthusiast", score_native: "97", score_value: 97 },
+    { abbr: "VN", critic: "Vinous", score_native: "96", score_value: 96 },
+  ],
+  community: [], medals: [],
+});
+const capped = parseCriticScores(100, fiveCritics, 2)!;
+check("capped renders only 2", capped.critics.length === 2);
+check("aria-label includes beyond-cap critic", capped.ariaLabel.includes("Vinous 96"));
+check("overflow beyond lead = 4", capped.overflow === 4);
+
 if (failures) { console.error(`\n${failures} FAILED`); process.exit(1); }
 console.log("\nALL PASS");

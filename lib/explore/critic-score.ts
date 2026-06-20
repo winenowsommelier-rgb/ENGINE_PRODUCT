@@ -11,7 +11,7 @@ export interface CriticEntry {
 export interface ParsedCriticScores {
   critics: CriticEntry[]; // sorted desc, capped at maxCritics
   lead: CriticEntry;      // the score_max critic (or critics[0] fallback)
-  overflow: number;       // count of critics beyond the lead (for "+N")
+  overflow: number;       // critics beyond the LEAD (for the compact chip's "+N"); not relative to maxCritics
   ariaLabel: string;      // "Critic scores: James Suckling 100, Wine Advocate 99, ..."
 }
 
@@ -43,6 +43,8 @@ export function parseCriticScores(
         (c): c is CriticEntry =>
           !!c && typeof c === "object" &&
           typeof (c as CriticEntry).abbr === "string" &&
+          typeof (c as CriticEntry).critic === "string" &&
+          typeof (c as CriticEntry).score_native === "string" &&
           typeof (c as CriticEntry).score_value === "number",
       ))
     : [];
