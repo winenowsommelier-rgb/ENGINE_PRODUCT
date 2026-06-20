@@ -144,8 +144,8 @@ Counts are live (sum = 11,436).
 
 | Group | n | Prefixes → type |
 |---|---|---|
-| **Wine** | 6,983 | WRW Red · WWW White · WSP Sparkling/Champagne · WRS Rosé · WDW Dessert/Port · WOW Orange · WBS Wine Set |
-| **Spirits** | 1,177 | LGN Gin · LVK Vodka · LTQ Tequila · LRM Rum · LBD Brandy · LGP Grappa · LCC Cachaça · LAB Absinthe · LWS/LSN White Spirits · LWL Baijiu · LAQ Aquavit · LBS Spirit Set |
+| **Wine** | 6,983 | WRW Red · WWW White · WSP Sparkling/Champagne · WRS Rosé · WDW Sweet/Dessert **or** Fortified (see §3.1) · WOW Orange · WBS Wine Set |
+| **Spirits** | 1,177 | LGN Gin · LVK Vodka · LTQ Tequila · LRM Rum · LBD Brandy (Cognac/Armagnac sub-typed, §3.1) · LGP Grappa · LCC Cachaça · LAB Absinthe · LWS/LSN Thai Rice Spirit (Lao Khao) · LWL Baijiu · LAQ Aquavit · LBS Spirit Set |
 | **Accessories** | 893 | ABA Bar Tools & Gifts · GWN/GLQ/GDC/GBE/GWA Glassware · AWC Wine Coolers/Fridges |
 | **Whisky** | 847 | LWH · LWF |
 | **Sake & Asian** | 663 | LSK Sake/Shochu · LSJ Shochu · LOT Umeshu · LKS Makgeolli |
@@ -167,6 +167,40 @@ Counts are live (sum = 11,436).
 
 **Two-level model:** `group` drives top-nav; `type` drives the "Type" filter,
 finder facets, and pairs with `spirit_style`. Both come from the one map.
+
+### 3.1 Type-level refinements (expert review — sommelier/ecommerce lenses)
+
+These sharpen the `type` value; **none changes a top-level group** (the
+`{group, type}` model already supports them). Verified against live data.
+
+- **WDW splits by `type`, not group:** the WDW prefix (85) holds *both*
+  unfortified sweet wine (Moscato, late-harvest) **and** fortified wine (Port,
+  Marsala, Sherry, Amontillado). A sommelier flags conflating them. Resolution
+  (deterministic, name-keyword): name contains `port|marsala|madeira|sherry|
+  oloroso|amontillado|fino` → `type = "Fortified"`; otherwise `type =
+  "Sweet/Dessert"`. Both stay in the **Wine** group.
+- **Thai Rice Spirit label:** `LWS`/`LSN` → `type = "Thai Rice Spirit"` (Lao
+  Khao), NOT "White Spirits" — the trade term "white spirits" means all clear
+  spirits (gin/vodka included) and would mislead. Group stays **Spirits**.
+- **Cognac/Armagnac visible under Brandy:** `LBD` (177) → name contains
+  `cognac` → `type = "Cognac"`; `armagnac` → `type = "Armagnac"`; else
+  `type = "Brandy"`. Premium Thai gifting category; surfaced as a filterable type.
+  Group stays **Spirits**.
+- **"Sake & Asian" is a customer-facing GROUP, with honest member TYPEs:** the
+  group is a useful discovery collection (Japanese/Korean drinks), but its members
+  keep type-true values — `LSK/LSJ` Sake / Shochu, `LOT` Umeshu, `LKS` Makgeolli.
+  This resolves the type-vs-geography inconsistency a sommelier noted without a
+  redesign (the group is geographic; the types are honest).
+- **Vermouth stays SKU-truth:** the 32 vermouth items carry the `LLQ` prefix, so
+  they resolve to the **Liqueur** group with `type = "Vermouth"` (a sommelier
+  would call vermouth fortified *wine*, but the project rule is SKU-is-truth; the
+  honest `type` keeps it findable, and the mismatch-audit (§4.1) surfaces it for
+  the data team if a re-SKU is ever wanted).
+
+> Sommelier "fortified-wine gap" finding was checked against data and is NOT a
+> missing top-level group: most port/sherry/madeira name-hits are **whisky
+> cask-finishes** (`LWH`, correctly Whisky); the real fortified wines live in
+> WDW (handled above) and the LLQ vermouths (handled above).
 
 **Catalog presentation note (separate concern):** the data model has all 10
 groups; the storefront nav decides prominence — small groups (Events 10, Cigars
@@ -273,6 +307,18 @@ After backfill, a count query confirms:
   populate as its own project.
 - **Magento `classification` cleanup** — optionally feed the mismatch report back
   to correct the source field.
-- **Storefront nav layout** for 10 groups (prominence of small groups) — catalog
-  UI concern, decided in the catalog work, not here.
+- **Storefront nav presentation** for the 10 groups — catalog UI concern, NOT
+  this spec, but the ecommerce-expert review gave concrete guidance to carry
+  forward: present ~5 drinks tabs + a **"More"** menu (Wine · Whisky · Spirits ·
+  Sake & Asian · Liqueur up front; Accessories/Cigars/Non-Alcoholic/Beer & RTD/
+  Events behind More); **Wine leads and opens into its sub-types** (Red/White/
+  Sparkling…); **never render a tab whose in-stock count is 0** (Events = 0
+  in-stock today) and **auto-demote any group under ~25–30 live SKUs** out of
+  primary nav (catches Beer & RTD at 16). All 10 stay as Type filters / URLs.
+  *(In-stock reality at spec time: Wine 3,503 · Spirits 588 · Whisky 419 · Sake &
+  Asian 399 · Accessories 391 · Liqueur 198 · Non-Alcoholic 79 · Cigars 62 ·
+  Beer & RTD 16 · Events 0.)*
+- **Cognac/Armagnac & fortified-wine merchandising** — the §3.1 types enable
+  premium sub-collections (Cognac landing, Fortified Wine shelf); surface in the
+  catalog when those types ship.
 - **Other premium/professional-experience adjustments** — to be brainstormed.
