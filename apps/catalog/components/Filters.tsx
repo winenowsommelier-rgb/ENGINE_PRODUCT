@@ -11,7 +11,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import { CATEGORY_GROUPS } from '@/lib/category-groups';
+// Import the const from the PURE (no-fs) constants module: this is a client component,
+// and lib/category-groups → lib/sku-taxonomy imports `fs`, which cannot resolve in the
+// browser bundle. category-constants holds the same canonical CATEGORY_GROUPS.
+import { CATEGORY_GROUPS } from '@/lib/category-constants';
 import { PRICE_TIERS } from '@/lib/price-tiers';
 import { buildQuery } from '@/lib/build-query';
 import { clearDescendants } from '@/lib/drill-query';

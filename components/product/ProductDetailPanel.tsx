@@ -12,6 +12,7 @@ import {
 import { ProductImage } from "@/components/ProductImage";
 import { TasteProfileSection, type TasteProfile } from "@/components/product/TasteProfileSection";
 import { SimilarProductsRail } from "@/components/product/SimilarProductsRail";
+import { CriticScoreBadge } from "@/components/product/CriticScoreBadge";
 import { getAccent } from "@/lib/explore/category-config";
 import type {
   ExploreProduct,
@@ -382,6 +383,14 @@ export function ProductDetailPanel({
             </p>
             <div className="mt-1">{confBadge(confValue(product))}</div>
           </div>
+        </div>
+        <div className="mt-4">
+          <CriticScoreBadge
+            variant="detail"
+            scoreMax={typeof product.score_max === "number" ? product.score_max : null}
+            scoreSummary={product.score_summary ?? null}
+            theme={theme}
+          />
         </div>
         <div className="mt-3">
           <ConfBar value={confValue(product)} />

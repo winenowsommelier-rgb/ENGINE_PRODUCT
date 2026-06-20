@@ -20,9 +20,14 @@ interface FoodChoiceProps {
   options: StepOption[];
   /** Path (no query) for the next step. */
   nextPath: string;
+  /**
+   * Extra query string (no leading '?'/'&') appended after the encoded answers,
+   * e.g. 'deep=1' to keep the sommelier deep-dive flag in the URL across steps.
+   */
+  extraQuery?: string;
 }
 
-export function FoodChoice({ answers, options, nextPath }: FoodChoiceProps) {
+export function FoodChoice({ answers, options, nextPath, extraQuery }: FoodChoiceProps) {
   const router = useRouter();
   const [selected, setSelected] = useState<string[]>(answers.food ?? []);
 
@@ -37,7 +42,8 @@ export function FoodChoice({ answers, options, nextPath }: FoodChoiceProps) {
       ...answers,
       food: selected.length ? selected : undefined,
     };
-    router.push(`${nextPath}?${encodeAnswers(next)}`);
+    const suffix = extraQuery ? `&${extraQuery}` : '';
+    router.push(`${nextPath}?${encodeAnswers(next)}${suffix}`);
   };
 
   return (

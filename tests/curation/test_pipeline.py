@@ -42,7 +42,12 @@ def test_run_curation_returns_ranked_list():
             MagicMock(status_code=200, json=lambda: {"message": {"content": BRIEF_JSON}}),
             MagicMock(status_code=200, json=lambda: {"message": {"content": RATIONALE_LINE}}),
         ]
-        result = run_curation("Best USA red wine", products_path=_pathlib2.Path("data/db/products.json"))
+        # Use the curation fixture, which carries SKU-derived category_group/
+        # category_type. The real data/db/products.json has not yet been
+        # backfilled with those fields (all None), so the category gate — now
+        # correctly keyed on category_group/category_type rather than the
+        # unreliable classification field — would filter everything out there.
+        result = run_curation("Best USA red wine", products_path=_pathlib2.Path("tests/curation/fixtures/sample_products.json"))
     assert "products" in result
     assert len(result["products"]) > 0
     assert "score" in result["products"][0]

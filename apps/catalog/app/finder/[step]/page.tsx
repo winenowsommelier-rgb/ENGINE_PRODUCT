@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { TrustBar } from '@/components/TrustBar';
 import { StepShell } from '@/components/finder/StepShell';
@@ -6,9 +7,11 @@ import { FoodChoice } from '@/components/finder/FoodChoice';
 import { decodeAnswers, encodeAnswers, type Answers } from '@/lib/finder/answers';
 import {
   stepsFor,
+  deepDiveStepsFor,
   type QuestionStep,
 } from '@/lib/finder/question-config';
 import { FOOD_CHIPS } from '@/lib/finder/food-chips';
+import { cn } from '@/lib/utils';
 
 /**
  * Finder step page — one adaptive question.
@@ -51,11 +54,11 @@ const FOOD_STEP: QuestionStep = {
 };
 
 /**
- * The effective ordered step list for a finder run: the category's config steps
- * with the synthetic food sub-step spliced in right after occasion when the user
- * chose the "food" occasion.
+ * The CORE ordered step list for a finder run: the category's config steps with
+ * the synthetic food sub-step spliced in right after occasion when the user chose
+ * the "food" occasion. Excludes the opt-in sommelier deep-dive.
  */
-function effectiveSteps(answers: Answers): QuestionStep[] {
+function coreSteps(answers: Answers): QuestionStep[] {
   const base = stepsFor(answers.category);
   if (answers.occasion !== 'food') return base;
 
@@ -67,6 +70,18 @@ function effectiveSteps(answers: Answers): QuestionStep[] {
   return out;
 }
 
+/**
+ * The effective ordered step list. Without the `deep` opt-in flag this is just
+ * the core steps. When the user has opted into the sommelier branch (`deep=1`),
+ * the deep-dive steps (all `optional`) are appended after the core steps — which
+ * simply lengthens the index→step mapping the page already relies on.
+ */
+function effectiveSteps(answers: Answers, deep: boolean): QuestionStep[] {
+  const core = coreSteps(answers);
+  if (!deep) return core;
+  return [...core, ...deepDiveStepsFor(answers.category)];
+}
+
 /** Flatten Next's searchParams into a URLSearchParams the decoder expects. */
 function toSearchParams(sp: SearchParams): URLSearchParams {
   const out = new URLSearchParams();
@@ -76,6 +91,9 @@ function toSearchParams(sp: SearchParams): URLSearchParams {
   }
   return out;
 }
+
+const transitionBtn =
+  'inline-flex min-h-[44px] items-center rounded-md border border-border bg-background px-6 text-base font-medium text-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 
 export default function FinderStepPage({
   params,
@@ -90,13 +108,63 @@ export default function FinderStepPage({
   // Guard: a valid category is required for any step.
   if (!answers.category) redirect('/finder');
 
-  const steps = effectiveSteps(answers);
+  // `deep=1` opts into the sommelier deep-dive (appends optional steps).
+  const deep = sp.get('deep') === '1';
+  const core = coreSteps(answers);
+  const steps = effectiveSteps(answers, deep);
 
   const stepNum = Number(params.step);
   const index = Number.isInteger(stepNum) ? stepNum - 1 : -1;
 
-  // Below range → back to the intro; at/above range → run the result.
+  // Below range → back to the intro.
   if (index < 0) redirect('/finder');
+
+  // Transition point: core steps are done but the user has NOT opted into the
+  // deep-dive yet. Offer both "See my result" and "Refine like a sommelier".
+  // (When deep=1, this index is a real deep-dive step instead, handled below.)
+  if (!deep && index === core.length && deepDiveStepsFor(answers.category).length > 0) {
+    const query = encodeAnswers(answers);
+    return (
+      <>
+        <TrustBar />
+        <main className="container max-w-2xl py-8">
+          <div className="flex flex-col gap-6">
+            <Link
+              href={`/finder/${core.length}?${query}`}
+              className={cn(
+                'inline-flex min-h-[44px] items-center gap-1 self-start rounded-md px-2 -ml-2 text-base text-muted-foreground',
+                'hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              )}
+            >
+              Back
+            </Link>
+            <div className="flex flex-col gap-2">
+              <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+                Ready for your match
+              </h1>
+              <p className="text-base text-muted-foreground">
+                See your result now, or answer a few more sommelier questions to
+                fine-tune your style.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Link href={`/finder/result?${query}`} className={transitionBtn}>
+                See my result →
+              </Link>
+              <Link
+                href={`/finder/${core.length + 1}?${query}&deep=1`}
+                className={cn(transitionBtn, 'border-primary text-primary')}
+              >
+                Refine like a sommelier →
+              </Link>
+            </div>
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  // At/above range → run the result.
   if (index >= steps.length) {
     redirect(`/finder/result?${encodeAnswers(answers)}`);
   }
@@ -107,15 +175,33 @@ export default function FinderStepPage({
   // union doesn't cover, so we handle it inline here rather than via ChoiceCards.
   const isFoodStep = step.id === 'food' && step.title === 'What are you eating?';
 
+  // Keep the deep-dive flag in the URL across step navigation, so the effective
+  // step list (which includes the deep-dive steps) stays consistent.
+  const extraQuery = deep ? 'deep=1' : undefined;
+  const deepSuffix = deep ? '&deep=1' : '';
+
+  // Whether the transition screen sits one past the last core step (no deep flag
+  // yet, and this category actually has a deep-dive to offer).
+  const hasTransition =
+    !deep && deepDiveStepsFor(answers.category).length > 0;
+
   // Next / previous paths (the [step] route is 1-based).
+  // When NOT in the deep-dive and a transition screen exists, the last core step
+  // advances to that transition screen (index core.length → /finder/core.length+1)
+  // rather than jumping straight to the result.
+  const isLastCoreStep = !deep && index === core.length - 1;
   const nextPath =
-    index + 1 >= steps.length ? '/finder/result' : `/finder/${index + 2}`;
+    isLastCoreStep && hasTransition
+      ? `/finder/${core.length + 1}`
+      : index + 1 >= steps.length
+        ? '/finder/result'
+        : `/finder/${index + 2}`;
   const backHref =
     index === 0
       ? '/finder'
-      : `/finder/${index}?${encodeAnswers(answers)}`;
+      : `/finder/${index}?${encodeAnswers(answers)}${deepSuffix}`;
   const skipHref = step.optional
-    ? `${nextPath}?${encodeAnswers(answers)}`
+    ? `${nextPath}?${encodeAnswers(answers)}${deepSuffix}`
     : undefined;
 
   return (
@@ -134,6 +220,7 @@ export default function FinderStepPage({
               answers={answers}
               options={step.options}
               nextPath={nextPath}
+              extraQuery={extraQuery}
             />
           ) : (
             <ChoiceCards
@@ -142,6 +229,7 @@ export default function FinderStepPage({
               options={step.options}
               multi={step.multi}
               nextPath={nextPath}
+              extraQuery={extraQuery}
             />
           )}
         </StepShell>

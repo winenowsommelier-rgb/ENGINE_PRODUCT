@@ -1,0 +1,4 @@
+# local review artifacts — not for the repo
+downloads/
+candidates_canary.tsv
+targets_canary.tsv

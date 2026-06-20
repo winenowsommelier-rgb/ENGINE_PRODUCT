@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { ProductImage } from '@/components/ProductImage';
 import { ProductDetailPanel } from '@/components/product/ProductDetailPanel';
+import { CriticScoreBadge } from '@/components/product/CriticScoreBadge';
 import { toExploreProduct } from '@/lib/explore/adapters';
 import type { CharDimension, RelatedProduct, AffinityItem, ProductAffinities } from '@/lib/explore/types';
 
@@ -583,6 +584,16 @@ export function ProductsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 mt-1.5">
+                  <CriticScoreBadge
+                    variant="compact"
+                    theme="dark"
+                    scoreMax={
+                      p.score_max != null && p.score_max !== ''
+                        ? Number(p.score_max)
+                        : null
+                    }
+                    scoreSummary={p.score_summary != null ? String(p.score_summary) : null}
+                  />
                   {classificationBadge(p.classification != null ? String(p.classification) : null)}
                   {tierValue(p) && (
                     <span className="px-1.5 py-0.5 rounded text-[10px] bg-white/8 text-white/60 font-medium">

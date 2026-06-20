@@ -15,7 +15,7 @@ import { CATEGORY_GROUPS } from '@/lib/category-groups';
  *   3. Featured — ~8 hand-picked, in-stock, image-bearing products (lib/featured).
  *      Labelled "From the collection" — NEVER "best-selling"/"most popular",
  *      because there is no real popularity signal (popularity_score is 0 for all).
- *   4. Shop by Category — the 6 CATEGORY_GROUPS as large tap targets → /shop?group=.
+ *   4. Shop by Category — the 10 CATEGORY_GROUPS as large tap targets → /shop?group=.
  *
  * SAFETY: featured products come from getAllProducts() via the PUBLIC_FIELDS
  * allowlist (catalog-data.ts) — internal margin/b2b/popularity fields are

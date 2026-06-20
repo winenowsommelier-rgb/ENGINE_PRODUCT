@@ -22,13 +22,16 @@ function many(n: number, fn?: (i: number) => Partial<PublicProduct>): PublicProd
   });
 }
 
+// NOTE (10-group migration): the group filter is driven by groupForProduct, which now
+// prefers the backfilled category_group field (the same field the export carries). Test
+// fixtures set category_group explicitly rather than relying on the unreliable classification.
 describe('applyShopQuery — group filter', () => {
   const data = [
-    p({ sku: 'w1', classification: 'Red Wine' }),
-    p({ sku: 'w2', classification: 'Champagne' }),
-    p({ sku: 'k1', classification: 'Whisky' }),
-    p({ sku: 'k2', classification: 'Whiskey' }), // both map to group "Whisky"
-    p({ sku: 'g1', classification: 'Gin' }),
+    p({ sku: 'w1', category_group: 'Wine', category_type: 'Red Wine' }),
+    p({ sku: 'w2', category_group: 'Wine', category_type: 'Sparkling & Champagne' }),
+    p({ sku: 'k1', category_group: 'Whisky', category_type: 'Whisky' }),
+    p({ sku: 'k2', category_group: 'Whisky', category_type: 'Whisky' }),
+    p({ sku: 'g1', category_group: 'Spirits', category_type: 'Gin' }),
   ];
 
   it('keeps only products in the requested group', () => {
@@ -37,7 +40,7 @@ describe('applyShopQuery — group filter', () => {
     expect(r.items.map((x) => x.sku).sort()).toEqual(['w1', 'w2']);
   });
 
-  it('maps both Whisky and Whiskey classifications into the Whisky group', () => {
+  it('keeps both Whisky products in the Whisky group', () => {
     const r = applyShopQuery(data, { group: 'Whisky' });
     expect(r.total).toBe(2);
     expect(r.items.map((x) => x.sku).sort()).toEqual(['k1', 'k2']);
@@ -259,35 +262,39 @@ describe('applyShopQuery — Next searchParams array shape', () => {
 const P = (over: Partial<import('@/lib/types').PublicProduct>): import('@/lib/types').PublicProduct =>
   ({ sku: 'W1', name: 'x', ...over } as import('@/lib/types').PublicProduct);
 
-describe('matchesFilters — class (first-segment classification)', () => {
-  it('matches first segment case-insensitively', () => {
-    const prod = P({ sku: 'W1', classification: 'Red Wine|Fruit Wine' });
+// NOTE (10-group migration): for non-accessory groups, `class` now matches the canonical
+// category_type (typeForProduct), not the first classification segment. category_type is the
+// authoritative SKU-derived sub-type. For Accessories it still matches accessoryCategoryForSku.
+describe('matchesFilters — class (canonical category_type)', () => {
+  it('matches category_type case-insensitively', () => {
+    const prod = P({ sku: 'WRW1', category_group: 'Wine', category_type: 'Red Wine' });
     expect(matchesFilters(prod, { class: 'red wine' })).toBe(true);
     expect(matchesFilters(prod, { class: 'fruit wine' })).toBe(false);
   });
   it('no class param → no constraint', () => {
-    expect(matchesFilters(P({ classification: 'Gin' }), {})).toBe(true);
+    expect(matchesFilters(P({ category_type: 'Gin' }), {})).toBe(true);
   });
 });
 
 describe('matchesFilters — Accessories class = accessory sub-category (NOT classification)', () => {
   it('matches accessoryCategoryForSku when group is Accessories', () => {
-    const prod = P({ sku: 'GWN1', classification: 'Wine product' });
+    const prod = P({ sku: 'GWN1' });
     expect(matchesFilters(prod, { group: 'Accessories', class: 'Glassware' })).toBe(true);
-    expect(matchesFilters(prod, { group: 'Accessories', class: 'Cigars' })).toBe(false);
+    expect(matchesFilters(prod, { group: 'Accessories', class: 'Bar Tools & Gifts' })).toBe(false);
   });
-  it('an AWC fridge matches the "Wine Fridges & Coolers" accessory class', () => {
-    const prod = P({ sku: 'AWC100', classification: 'Wine product' });
-    expect(matchesFilters(prod, { group: 'Accessories', class: 'Wine Fridges & Coolers' })).toBe(true);
+  it('an AWC fridge matches the "Wine Coolers & Fridges" accessory class', () => {
+    const prod = P({ sku: 'AWC100' });
+    expect(matchesFilters(prod, { group: 'Accessories', class: 'Wine Coolers & Fridges' })).toBe(true);
   });
-  it('for a NON-Accessories group, class still means classification first-segment', () => {
-    const prod = P({ sku: 'W1', classification: 'Red Wine' });
+  it('for a NON-Accessories group, class matches the canonical category_type', () => {
+    const prod = P({ sku: 'WRW1', category_group: 'Wine', category_type: 'Red Wine' });
     expect(matchesFilters(prod, { group: 'Wine', class: 'Red Wine' })).toBe(true);
   });
   it('an Accessories product whose SKU has no sub-category mapping never falsely matches a class', () => {
-    // 'AZZ999' resolves to the Accessories GROUP (A* prefix) but accessoryCategoryForSku
-    // returns null (no AZZ sub-category) → norm(null)='' must never equal a real class.
-    const prod = P({ sku: 'AZZ999', classification: 'Others' });
+    // 'AZZ999' resolves to the Accessories GROUP (A* letter fallback) but has no specific
+    // accessory sub-type → accessoryCategoryForSku yields 'Unknown', which must never equal
+    // a real accessory class like 'Glassware'.
+    const prod = P({ sku: 'AZZ999' });
     expect(matchesFilters(prod, { group: 'Accessories', class: 'Glassware' })).toBe(false);
   });
 });
@@ -306,7 +313,7 @@ describe('matchesFilters — subregion (EXACT, like region)', () => {
 
 describe('matchesFilters — combined drill-down AND', () => {
   it('all of group+class+country+region+subregion must hold', () => {
-    const prod = P({ sku: 'W1', classification: 'Red Wine', country: 'France',
+    const prod = P({ sku: 'WRW1', category_group: 'Wine', category_type: 'Red Wine', country: 'France',
       region: 'Bordeaux', subregion: 'Pauillac' });
     const params = { group: 'Wine', class: 'Red Wine', country: 'France',
       region: 'Bordeaux', subregion: 'Pauillac' };
@@ -318,12 +325,12 @@ describe('matchesFilters — combined drill-down AND', () => {
 describe('applyShopQuery still honors everything via matchesFilters', () => {
   it('class filter narrows the grid', () => {
     const items = [
-      P({ sku: 'W1', classification: 'Red Wine' }),
-      P({ sku: 'W2', classification: 'White Wine' }),
+      P({ sku: 'WRW1', category_group: 'Wine', category_type: 'Red Wine' }),
+      P({ sku: 'WWW2', category_group: 'Wine', category_type: 'White Wine' }),
     ];
     const r = applyShopQuery(items, { class: 'Red Wine' });
     expect(r.total).toBe(1);
-    expect(r.pageItems[0].sku).toBe('W1');
+    expect(r.pageItems[0].sku).toBe('WRW1');
   });
 });
 

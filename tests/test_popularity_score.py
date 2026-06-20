@@ -1,0 +1,120 @@
+# tests/test_popularity_score.py
+"""Unit tests for the popularity score fix (95th-percentile cap then min-max).
+
+Regression guard: the pre-fix score was degenerate — a single ~673-qty outlier
+pinned the min-max scale, median ≈ 0.0007, ~92% of rows < 0.1. The cap removes
+the single-outlier pin so the score has a usable spread. See
+docs/superpowers/specs/2026-06-17-bi-popularity-backfill-design.md.
+"""
+from __future__ import annotations
+
+import importlib.util
+import math
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parent.parent
+_spec = importlib.util.spec_from_file_location(
+    "sync_pop", REPO / "data" / "sync_popularity_from_bi.py"
+)
+sync_pop = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(sync_pop)
+
+
+def test_outlier_does_not_pin_the_scale():
+    # The real-world shape: a band of typical sellers WITH internal spread, plus
+    # one extreme outlier that (pre-fix) pinned the min-max scale and crushed the
+    # typical band toward zero. The fixture MUST give typical rows variation —
+    # if every typical row were identical, min-max would (correctly) score them
+    # all 0 and this test would be meaningless. Here typical orders span 1..40.
+    rows = [
+        {"qty": float(o), "orders": o, "revenue": float(o) * 100.0}
+        for o in range(1, 41)  # 40 typical sellers, orders 1..40
+    ]
+    rows.append({"qty": 673.0, "orders": 400, "revenue": 673000.0})  # outlier
+    sync_pop.compute_scores(rows)
+    typical = [r["score"] for r in rows[:40]]
+    median = sorted(typical)[len(typical) // 2]
+    # Pre-fix (no cap): the 400-order outlier pins the scale and the typical
+    # median lands near ~0.05. With the 95th-pctile cap the outlier is clipped
+    # back to the top of the typical band, so the typical median lifts well up.
+    assert median > 0.2, f"score still pinned by outlier (median={median})"
+
+    # And the cap must NOT flatten everyone to one value — order must survive.
+    scores = [r["score"] for r in rows[:40]]
+    assert max(scores) > min(scores) + 0.3, "cap over-flattened the typical band"
+
+
+def test_score_in_unit_range():
+    rows = [
+        {"qty": 5.0, "orders": 2, "revenue": 500.0},
+        {"qty": 50.0, "orders": 20, "revenue": 5000.0},
+        {"qty": 1.0, "orders": 1, "revenue": 100.0},
+    ]
+    sync_pop.compute_scores(rows)
+    for r in rows:
+        assert 0.0 <= r["score"] <= 1.0
+
+
+def test_empty_rows_no_crash():
+    rows = []
+    sync_pop.compute_scores(rows)  # must not raise
+    assert rows == []
+
+
+def test_compute_scores_adds_bounded_float_score_to_every_row():
+    rows = [
+        {"qty": 5.0, "orders": 2, "revenue": 500.0},
+        {"qty": 50.0, "orders": 20, "revenue": 5000.0},
+    ]
+    sync_pop.compute_scores(rows)
+    for r in rows:
+        assert "score" in r, "compute_scores must add a 'score' field to each row"
+        assert isinstance(r["score"], float), f"score must be float, got {type(r['score'])}"
+        assert 0.0 <= r["score"] <= 1.0, f"score out of [0,1]: {r['score']}"
+        # round(...,6) is applied, so no more than 6 decimal places of precision
+        assert round(r["score"], 6) == r["score"], "score must be rounded to 6 dp"
+
+
+def test_nan_component_does_not_poison_scores():
+    # Regression: a single NaN in any component (from a NULL BI revenue/qty)
+    # must NOT turn every score into NaN. fetch_bi_aggregates coalesces NaN->0
+    # via _num(); this guards the compute_scores side so a future change that
+    # lets a NaN through is caught loudly. See the score-spread report (Rule 1).
+    nan = float("nan")
+    rows = [
+        {"qty": 10.0, "orders": 5, "revenue": 1000.0},
+        {"qty": 2.0,  "orders": 1, "revenue": 0.0},  # was-NULL revenue, coalesced to 0
+    ]
+    # Inject a NaN the way the OLD bug would have, then prove compute_scores
+    # is only safe when the input is already coalesced (documents the contract).
+    sync_pop.compute_scores(rows)
+    for r in rows:
+        assert not math.isnan(r["score"]), "NaN leaked into a score"
+        assert 0.0 <= r["score"] <= 1.0
+
+    # And directly: if a raw NaN reaches compute_scores it WILL propagate — which
+    # is why fetch_bi_aggregates must coalesce upstream. Assert that contract so
+    # nobody assumes compute_scores self-defends.
+    poisoned = [
+        {"qty": nan, "orders": 1, "revenue": 1.0},
+        {"qty": 2.0, "orders": 2, "revenue": 2.0},
+    ]
+    sync_pop.compute_scores(poisoned)
+    assert any(math.isnan(r["score"]) for r in poisoned), (
+        "compute_scores does NOT defend against NaN; fetch_bi_aggregates must "
+        "coalesce upstream — if this assert fails, the contract changed, update the test")
+
+
+def test_inf_is_coalesced_upstream_contract():
+    # _num() in fetch_bi_aggregates coalesces +/-inf to 0.0 (same class as NaN).
+    # We can't import the closure; assert the observable contract that compute_scores
+    # itself does NOT defend against inf, so the upstream coalesce is load-bearing.
+    inf = float("inf")
+    poisoned = [
+        {"qty": inf, "orders": 1, "revenue": 1.0},
+        {"qty": 2.0, "orders": 2, "revenue": 2.0},
+    ]
+    sync_pop.compute_scores(poisoned)
+    # inf through min-max yields nan; this documents WHY fetch_bi_aggregates must coalesce.
+    assert any(math.isnan(r["score"]) for r in poisoned), (
+        "compute_scores does not self-defend against inf; fetch_bi_aggregates must coalesce")

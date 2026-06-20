@@ -105,4 +105,50 @@ describe('scoreProducts', () => {
     expect(out.products.length).toBe(2); // still shown (never empty)
     expect(out.degraded).toBe(true);     // but honestly flagged "closest matches"
   });
+
+  // ── DEEP-DIVE sommelier upgrade (acidity/tannin/grape/age/adventurousness).
+  // ADDITIVE: these affect SORT ORDER only; the honest-label `degraded` flag stays
+  // computed from the v1 taste-tier score ONLY. ──
+  it('acidity crisp ranks High-acidity above Soft', () => {
+    const pool=[P({sku:'WRWs',wine_acidity:'Medium-Light'}),P({sku:'WRWc',wine_acidity:'High'})];
+    expect(scoreProducts(ans({acidity:'crisp'}),pool).products[0].sku).toBe('WRWc');
+  });
+  it('tannin firm ranks High-tannin above silky', () => {
+    const pool=[P({sku:'WRWsi',wine_tannin:'Low'}),P({sku:'WRWf',wine_tannin:'High'})];
+    expect(scoreProducts(ans({tannin:'firm'}),pool).products[0].sku).toBe('WRWf');
+  });
+  it('grape cabernet boosts a Cabernet blend; surprise does not constrain', () => {
+    const pool=[P({sku:'WRWo',grape_variety:'Merlot'}),P({sku:'WRWc',grape_variety:'Cabernet Sauvignon, Merlot'})];
+    expect(scoreProducts(ans({grape:'cabernet'}),pool).products[0].sku).toBe('WRWc');
+  });
+  it('age young buckets "Current vintage" as young', () => {
+    const pool=[P({sku:'WRWm',vintage:'2005'}),P({sku:'WRWy',vintage:'Current vintage'})];
+    expect(scoreProducts(ans({age:'young'}),pool).products[0].sku).toBe('WRWy');
+  });
+  it('adventurousness discovery boosts a non-famous region over Bordeaux', () => {
+    const pool=[P({sku:'WRWf',region:'Bordeaux'}),P({sku:'WRWd',region:'Swartland'})];
+    expect(scoreProducts(ans({adventure:'discovery'}),pool).products[0].sku).toBe('WRWd');
+  });
+  it('whisky: peat heavy ranks an Islay bottle above a Speyside bottle', () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    const pool = [W({sku:'LWHspey', region:'Speyside'}), W({sku:'LWHislay', region:'Islay'})];
+    const out = scoreProducts({ category:'whisky', peat:'heavy' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHislay');
+  });
+  it('whisky: peat none ranks a non-Islay bottle above an Islay bottle', () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    const pool = [W({sku:'LWHislay', region:'Islay'}), W({sku:'LWHspey', region:'Speyside'})];
+    const out = scoreProducts({ category:'whisky', peat:'none' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHspey');
+  });
+  it('a core-only Answers scores identically with the new code (additive)', () => {
+    const pool=[P({sku:'WRW1',wine_body:'Full'}),P({sku:'WRW2',wine_body:'Light'})];
+    expect(scoreProducts(ans({axis1:'bold'}),pool).products[0].sku).toBe('WRW1');
+  });
+  it('deep-dive terms do NOT change the degraded flag (computed from taste tiers only)', () => {
+    // a pool where taste tiers give 0 well-matched but a deep-dive term would add points
+    const pool=[P({sku:'WRWx',wine_body:undefined,region:'Swartland'})];
+    const out=scoreProducts(ans({adventure:'discovery'}),pool);
+    expect(out.degraded).toBe(true); // adventure bump must not clear the quality gate
+  });
 });

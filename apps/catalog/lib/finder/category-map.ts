@@ -1,23 +1,26 @@
 import type { PublicProduct } from '@/lib/types';
-import { groupForProduct, type CategoryGroup } from '@/lib/category-groups';
+import { groupForProduct, typeForProduct, type CategoryGroup } from '@/lib/category-groups';
 import { isInStock } from '@/lib/utils';
 import { PRICE_TIERS } from '@/lib/price-tiers';
 import type { Answers, FinderCategory } from './answers';
 
 interface CatRule { group: CategoryGroup; match?: (p: PublicProduct) => boolean; }
 
-const firstSeg = (c?: string) => (c ?? '').split('|')[0].trim().toLowerCase();
+const ctype = (p: PublicProduct) => typeForProduct(p).trim().toLowerCase();
 
 // SKU prefix is the reliable gin signal: 72/169 in-stock gins (Tanqueray, Gordon's,
 // Gilbey's...) are mis-tagged 'Wine product', not 'Gin'. SKU LGN* mirrors groupForProduct,
-// which already trusts the prefix over classification. classification is the fallback only.
+// which already trusts the prefix over classification. category_type is the fallback only.
 const isGin = (p: PublicProduct) =>
-  (p.sku ?? '').toUpperCase().startsWith('LGN') || firstSeg(p.classification) === 'gin';
+  (p.sku ?? '').toUpperCase().startsWith('LGN') || ctype(p) === 'gin';
 
+// Sub-type matches use the canonical SKU-derived category_type (typeForProduct), not the
+// unreliable `classification` field. Canonical wine types: "Red Wine", "White Wine",
+// "Sparkling & Champagne". Group membership is still gated by groupForProduct upstream.
 export const CATEGORY_MAP: Record<FinderCategory, CatRule> = {
-  red:       { group: 'Wine', match: (p) => firstSeg(p.classification) === 'red wine' },
-  white:     { group: 'Wine', match: (p) => firstSeg(p.classification) === 'white wine' },
-  sparkling: { group: 'Wine', match: (p) => ['champagne','sparkling wine'].includes(firstSeg(p.classification)) },
+  red:       { group: 'Wine', match: (p) => ctype(p) === 'red wine' },
+  white:     { group: 'Wine', match: (p) => ctype(p) === 'white wine' },
+  sparkling: { group: 'Wine', match: (p) => ctype(p) === 'sparkling & champagne' },
   whisky:    { group: 'Whisky' },
   gin:       { group: 'Spirits', match: (p) => isGin(p) },
   spirits:   { group: 'Spirits', match: (p) => !isGin(p) },

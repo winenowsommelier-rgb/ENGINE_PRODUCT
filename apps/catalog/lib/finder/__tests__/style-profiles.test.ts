@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { resolveProfile, STYLE_PROFILES } from '@/lib/finder/style-profiles';
 import type { Answers } from '@/lib/finder/answers';
+import { getAllProducts } from '@/lib/catalog-data';
+import { resolveOriginField } from '@/lib/finder/shop-links';
 
 const ALL = ['red','white','sparkling','whisky','gin','spirits','sake'] as const;
 
@@ -31,5 +33,13 @@ describe('style profiles', () => {
       expect(p.expertNote.length).toBeGreaterThan(0);
       expect(p.foodGuidance.length).toBeGreaterThan(0);
     }
+  });
+  it('every archetype typicalRegion resolves to a real catalog field (no dead geo links)', () => {
+    const cat = getAllProducts();
+    const dead: string[] = [];
+    for (const p of STYLE_PROFILES)
+      for (const r of (p.definingAttributes.typicalRegions ?? []))
+        if (!resolveOriginField(r, cat)) dead.push(`${p.id}:${r}`);
+    expect(dead, `dead geo values: ${dead.join(', ')}`).toEqual([]);
   });
 });

@@ -80,7 +80,7 @@ export const STYLE_PROFILES: StyleProfile[] = [
       acidity: 'Medium',
       tannin: 'Medium-High',
       typicalGrapes: ['Cabernet Sauvignon', 'Syrah'],
-      typicalRegions: ['Bordeaux', 'Napa Valley', 'Barossa'],
+      typicalRegions: ['Bordeaux', 'Napa Valley', 'Barossa Valley'],
     },
     foodGuidance: 'Red meat, aged hard cheese, venison, slow-braised dishes',
     occasionFit: ['food', 'special'],
@@ -164,7 +164,7 @@ export const STYLE_PROFILES: StyleProfile[] = [
       body: 'Light',
       acidity: 'High',
       typicalGrapes: ['Glera', 'Moscato'],
-      typicalRegions: ['Prosecco DOC', 'Asti', 'Veneto'],
+      typicalRegions: ['Prosecco', 'Asti', 'Veneto'],
     },
     foodGuidance: 'Canapés, fresh fruit, light desserts, brunch',
     occasionFit: ['everyday', 'gift'],
@@ -290,7 +290,7 @@ export const STYLE_PROFILES: StyleProfile[] = [
     expertNote:
       'A modern, new-wave style that dials back the juniper to spotlight floral, citrus, and exotic botanicals. The result is more aromatic and approachable, opening gin up to a wider range of mixers and lighter serves. Ideal for the curious drinker.',
     definingAttributes: {
-      typicalRegions: ['Worldwide'],
+      typicalRegions: [],
     },
     foodGuidance: 'Citrus tonic serves, ceviche, herb salads, light seafood',
     occasionFit: ['exploring', 'everyday'],

@@ -8,6 +8,32 @@ internal PIM or the active parallel data session.
 **Who does what:** Steps marked **[YOU]** are Vercel-dashboard / account actions only you
 can do. Steps marked **[CLAUDE]** are git/build/verify actions Claude can run on request.
 
+> **STATUS UPDATE — verified live via Vercel API 2026-06-20 (supersedes the older reality
+> check below):** The `wnlq9-catalog` Vercel project **already exists**
+> (`prj_a9miruiNzapADFoKYdahw402RMl5`, team `winenowsommelier-rgbs-projects`) and
+> **auto-deploys from GitHub** on push to `feat/wnlq9-catalog`. The latest deployment is
+> **READY** and verified working:
+> - `/finder` → 200, full render (7 categories, "Find Your Match" nav, 10-group footer).
+> - `/shop?group=Wine` → 58 products, **0 margin leaks**.
+> - Both build "landmines" (prebuild search-index + monorepo data read) **passed in the real
+>   Vercel build** — the deployment is READY, proving they work in prod.
+>
+> So Phase 2 (create project) + Phase 3 (build landmines) are **DONE**. **4 things remain,
+> all [YOU] dashboard actions Claude cannot do (account/secret/domain settings):**
+> 1. **🔴 Deployment Protection is ON** → the site requires Vercel login (not public).
+>    Settings → Deployment Protection → disable for Production. **This is the ONE thing
+>    blocking "public".**
+> 2. **🟡 Contact env vars unset** → footer LINE/Facebook/WhatsApp link to `#`. Set
+>    `LINE_OFFICIAL_URL`, `WHATSAPP_NUMBER`, `FB_MESSENGER_PAGE` in Settings → Environment
+>    Variables, then redeploy.
+> 3. **🟡 Production domain** → currently a `*.vercel.app` preview alias; `project.live:false`.
+>    Assign the WNLQ9 domain in Settings → Domains to make it "main".
+> 4. **🟡 Production target** → deploying from `feat/wnlq9-catalog`; merge to `main` (coordinate
+>    with the parallel session) for a stable production branch, or set the project's production
+>    branch to `feat/wnlq9-catalog` deliberately.
+> Internal-PIM project (`new.mgfdev.com`) and `wnlq9-bi-api` are untouched. The OLD reality
+> check below is superseded.
+
 > **Reality check (verified 2026-06-20):**
 > - The catalog has **no Vercel project yet**. The only Vercel project deploys the
 >   *internal PIM* from the repo root (`vercel.json` = `{"framework":"nextjs"}`).

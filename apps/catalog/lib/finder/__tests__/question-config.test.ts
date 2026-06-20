@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { QUESTION_CONFIG, stepsFor } from '@/lib/finder/question-config';
+import { QUESTION_CONFIG, stepsFor, deepDiveStepsFor } from '@/lib/finder/question-config';
 
 const ALL = ['red','white','sparkling','whisky','gin','spirits','sake'] as const;
 
@@ -43,5 +43,32 @@ describe('question config', () => {
   it('budget options use index tokens 0..4', () => {
     const budget = stepsFor('red').find(s => s.field === 'budget')!;
     expect(budget.options.map(o => o.token)).toEqual(['0','1','2','3','4']);
+  });
+});
+
+describe('deepDiveStepsFor (opt-in sommelier branch)', () => {
+  const ALL = ['red','white','sparkling','whisky','gin','spirits','sake'] as const;
+  it('wine categories include acidity, grape, age, adventure (and tannin for red)', () => {
+    for (const c of ['red','white','sparkling'] as const) {
+      const fields = deepDiveStepsFor(c).map(s=>s.field);
+      expect(fields).toContain('acidity'); expect(fields).toContain('grape');
+      expect(fields).toContain('age'); expect(fields).toContain('adventure');
+    }
+    expect(deepDiveStepsFor('red').map(s=>s.field)).toContain('tannin');
+  });
+  it('whisky deep-dive has peat/age/adventure and NO cask (spirit_style is phantom)', () => {
+    const fields = deepDiveStepsFor('whisky').map(s=>s.field);
+    expect(fields).toContain('peat'); expect(fields).toContain('age');
+    expect(fields).not.toContain('cask');
+  });
+  it('every deep-dive step is optional', () => {
+    for (const c of ALL) for (const s of deepDiveStepsFor(c)) expect(s.optional).toBe(true);
+  });
+  it('thin categories (gin/sake) have a shorter deep-dive than wine', () => {
+    expect(deepDiveStepsFor('gin').length).toBeLessThan(deepDiveStepsFor('red').length);
+  });
+  it('core stepsFor is unchanged (no deep-dive fields leak into core)', () => {
+    for (const c of ALL) for (const s of stepsFor(c))
+      expect(['occasion','budget','axis1','axis2','flavorChips','food']).toContain(s.field);
   });
 });

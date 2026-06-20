@@ -16,12 +16,13 @@
  * The static build renders ~11,436 product pages. Naive per-page scoring against
  * the full pool is O(n) per page => O(n^2) ~= 130M comparisons, which can stall
  * the build. `precomputeRecommendations` does the scoring ONCE, bucketing
- * candidates by region (then classification / country) so each product only
+ * candidates by region (then category_type / country) so each product only
  * scores against a small bucket instead of the whole catalog. See its docblock.
  */
 
 import type { PublicProduct } from '@/lib/types';
 import { isInStock } from '@/lib/utils';
+import { typeForProduct } from '@/lib/category-groups';
 
 const MAX_RECS = 4;
 const PRICE_BAND = 0.4; // +/-40%
@@ -61,7 +62,12 @@ export function scoreCandidate(
     if (a.has(item)) score += 1; // +1 per shared food item
   }
 
-  if (product.classification && candidate.classification && product.classification === candidate.classification) score += 1;
+  // Same canonical TYPE (category_type), not raw classification: a whisky mislabeled
+  // "Wine product" must score with other whiskies, not with wine. typeForProduct prefers
+  // the backfilled category_type, else resolves from the SKU.
+  const pt = typeForProduct(product);
+  const ct = typeForProduct(candidate);
+  if (pt && ct && pt !== 'Unknown' && pt === ct) score += 1;
 
   if (typeof product.price === 'number' && typeof candidate.price === 'number' && product.price > 0) {
     const lo = product.price * (1 - PRICE_BAND);
@@ -155,7 +161,7 @@ export function getRecommendations(
  * ---------------------------------------------------------------
  * - SUBJECTS (map KEYS): every product gets an entry, including out-of-stock ones.
  *   An OOS product page must still show "you might also like" (in-stock alts) — its
- *   own region/classification/country buckets contain in-stock neighbours, so it
+ *   own region/category_type/country buckets contain in-stock neighbours, so it
  *   gets sensible recs. The outer loop below iterates `all`, not `inStock`.
  * - CANDIDATES (rec VALUES): only IN-STOCK products are ever recommended — the
  *   buckets/pool are built solely from `inStock`, and isEligible() drops anything
@@ -183,7 +189,7 @@ export function getRecommendations(
  * to yield MAX_RECS results, we widen with a
  * fallback chain so a product in a tiny/unique region still gets neighbours:
  *   1. region bucket
- *   2. + classification bucket  (e.g. "Red Wine", "Gin")
+ *   2. + category_type bucket  (e.g. "Red Wine", "Gin")
  *   3. + country bucket
  *   4. + a bounded global slice  (last resort; capped so we never re-scan all n)
  * Buckets are merged and de-duplicated per product, then ranked with the same
@@ -207,17 +213,20 @@ export function precomputeRecommendations(
   const inStock = all.filter((p) => isInStock(p.is_in_stock));
 
   const byRegion = new Map<string, PublicProduct[]>();
-  const byClassification = new Map<string, PublicProduct[]>();
+  const byType = new Map<string, PublicProduct[]>();
   const byCountry = new Map<string, PublicProduct[]>();
   const addTo = (m: Map<string, PublicProduct[]>, key: string | undefined | null, p: PublicProduct) => {
-    if (!key) return;
+    if (!key || key === 'Unknown') return;
     const arr = m.get(key);
     if (arr) arr.push(p);
     else m.set(key, [p]);
   };
+  // Bucket by canonical category_type (via typeForProduct), NOT raw classification:
+  // classification is unreliable, so a whisky dumped into "Wine product" would otherwise
+  // bucket with wines. category_type buckets it with whiskies (correct same-type scoring).
   for (const p of inStock) {
     addTo(byRegion, p.region, p);
-    addTo(byClassification, p.classification, p);
+    addTo(byType, typeForProduct(p), p);
     addTo(byCountry, p.country, p);
   }
 
@@ -248,7 +257,7 @@ export function precomputeRecommendations(
     };
 
     merge(byRegion.get(product.region ?? ''));
-    if (pool.length < MIN_POOL) merge(byClassification.get(product.classification ?? ''));
+    if (pool.length < MIN_POOL) merge(byType.get(typeForProduct(product)));
     if (pool.length < MIN_POOL) merge(byCountry.get(product.country ?? ''));
     if (pool.length < MIN_POOL) merge(globalFallback);
 

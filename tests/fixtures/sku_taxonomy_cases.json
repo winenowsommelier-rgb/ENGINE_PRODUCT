@@ -1,0 +1,380 @@
+{
+ "cases": [
+  {
+   "sku": "WRW2106AC",
+   "name": "Coastal Ridge  Cabernet Sauvignon",
+   "expected": {
+    "group": "Wine",
+    "type": "Red Wine"
+   }
+  },
+  {
+   "sku": "WWW1361AC",
+   "name": "Coastal Ridge  Chardonnay",
+   "expected": {
+    "group": "Wine",
+    "type": "White Wine"
+   }
+  },
+  {
+   "sku": "WSP2628FP",
+   "name": "Antech  Cuvee Elegance Brut AOC Blanquette de Limoux",
+   "expected": {
+    "group": "Wine",
+    "type": "Sparkling & Champagne"
+   }
+  },
+  {
+   "sku": "WRS0200FP",
+   "name": "La Collection by Maison Boutinot  Cotes de Thau Rose",
+   "expected": {
+    "group": "Wine",
+    "type": "Rosé Wine"
+   }
+  },
+  {
+   "sku": "LRM0228GF",
+   "name": "Nasan  Handcraft Rum  (700 ml)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Rum"
+   }
+  },
+  {
+   "sku": "LBE0258AX",
+   "name": "Fuller's   London Porter  500ml x 12",
+   "expected": {
+    "group": "Beer & RTD",
+    "type": "Beer"
+   }
+  },
+  {
+   "sku": "LWH0078BU",
+   "name": "Johnnie Walker  Double Black (1 L)",
+   "expected": {
+    "group": "Whisky",
+    "type": "Whisky"
+   }
+  },
+  {
+   "sku": "LVK0073BU",
+   "name": "Ciroc Vodka  (3 L)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Vodka"
+   }
+  },
+  {
+   "sku": "LGN0176BU",
+   "name": "Tanqueray  No. TEN Distilled Gin (700 ml)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Gin"
+   }
+  },
+  {
+   "sku": "LLQ0085BU",
+   "name": "Baileys  Original (700 ml)",
+   "expected": {
+    "group": "Liqueur",
+    "type": "Liqueur"
+   }
+  },
+  {
+   "sku": "LTQ0078BU",
+   "name": "Don Julio  Blanco (750 ml)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Tequila"
+   }
+  },
+  {
+   "sku": "LBD0055BU",
+   "name": "Hennessy  Paradis Extra (700 ml)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Brandy"
+   }
+  },
+  {
+   "sku": "ABA0643EJ",
+   "name": "Dometic  Presentation Shelf (595 mm)",
+   "expected": {
+    "group": "Accessories",
+    "type": "Bar Tools & Gifts"
+   }
+  },
+  {
+   "sku": "AWC0099EJ",
+   "name": "Dometic Macave  C Series One Temp Zone C50G (Glass Door)",
+   "expected": {
+    "group": "Accessories",
+    "type": "Wine Coolers & Fridges"
+   }
+  },
+  {
+   "sku": "WOW0015DH",
+   "name": "2Naturkinder  Weinschwärmer",
+   "expected": {
+    "group": "Wine",
+    "type": "Orange Wine"
+   }
+  },
+  {
+   "sku": "GDC0049BM",
+   "name": "Final Touch  Conundrum Decanter (375 ml)",
+   "expected": {
+    "group": "Accessories",
+    "type": "Glassware"
+   }
+  },
+  {
+   "sku": "GWN0381BM",
+   "name": "Final Touch  Conundrum Red Wine Glasses  (Set of 4)",
+   "expected": {
+    "group": "Accessories",
+    "type": "Glassware"
+   }
+  },
+  {
+   "sku": "GLQ0083BM",
+   "name": "Final Touch  On the Rocks Decanter Set",
+   "expected": {
+    "group": "Accessories",
+    "type": "Glassware"
+   }
+  },
+  {
+   "sku": "WDW0073AE",
+   "name": "Massolino  Moscato D'Asti DOCG",
+   "expected": {
+    "group": "Wine",
+    "type": "Sweet/Dessert"
+   }
+  },
+  {
+   "sku": "LGP0092FX",
+   "name": "Granmonte  Red Jungle Grappa (700 ml)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Grappa"
+   }
+  },
+  {
+   "sku": "GBE0039BR",
+   "name": "Spiegelau  Craft Beer Barrel Aged Beer Glass Set of 2",
+   "expected": {
+    "group": "Accessories",
+    "type": "Glassware"
+   }
+  },
+  {
+   "sku": "LOT0174GR",
+   "name": "Inchon  Plum Umeshu (750 ml)",
+   "expected": {
+    "group": "Sake & Asian",
+    "type": "Umeshu"
+   }
+  },
+  {
+   "sku": "NNA0161AA",
+   "name": "Monin  Rantcho Lemon (700 ml)",
+   "expected": {
+    "group": "Non-Alcoholic",
+    "type": "Mixer / Soft"
+   }
+  },
+  {
+   "sku": "LAB0005AA",
+   "name": "La Fee  Blanche (700 ml)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Absinthe"
+   }
+  },
+  {
+   "sku": "LSK0348AD",
+   "name": "Tamanohikari  Junmai Ginjo Shuraku Sake (1.8 L)",
+   "expected": {
+    "group": "Sake & Asian",
+    "type": "Sake / Shochu"
+   }
+  },
+  {
+   "sku": "LWL0001ER",
+   "name": "Yushan Mau Tai  Liquor (500 ml)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Baijiu"
+   }
+  },
+  {
+   "sku": "LCC0015ER",
+   "name": "Cachaca Maracatu (700 ml)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Cachaça"
+   }
+  },
+  {
+   "sku": "LSJ0083FS",
+   "name": "Hakutake  Kumamon (900 ml)",
+   "expected": {
+    "group": "Sake & Asian",
+    "type": "Shochu"
+   }
+  },
+  {
+   "sku": "LAQ0001EQ",
+   "name": "Arvesølvet  Aquavit (700 ml)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Aquavit"
+   }
+  },
+  {
+   "sku": "CIG0375BT",
+   "name": "Romeo Y Julieta  Mini (20 Sticks per Box)",
+   "expected": {
+    "group": "Cigars",
+    "type": "Cigar"
+   }
+  },
+  {
+   "sku": "MNA0041AE",
+   "name": "Fever-Tree  Premium Indian Tonic Water (200 ml) (Pack 24 Bottles)",
+   "expected": {
+    "group": "Non-Alcoholic",
+    "type": "Tonic / Mineral Water"
+   }
+  },
+  {
+   "sku": "LBS00272GT",
+   "name": "818 Tequila  Premium Set (750 ml) (Set of 4)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Spirit Set"
+   }
+  },
+  {
+   "sku": "LWF0001HC",
+   "name": "Game of Thrones Single Malt Scotch Whisky Collection @Blue Moon Siam Paragon",
+   "expected": {
+    "group": "Whisky",
+    "type": "Whisky"
+   }
+  },
+  {
+   "sku": "LWS0001HE",
+   "name": "KAO HOM Chaiyaphum (700 ml)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Thai Rice Spirit"
+   }
+  },
+  {
+   "sku": "WEV0064WN",
+   "name": "Texica Wine Market @TEXICA WINE CELLAR (Saturday 25 October 2025)",
+   "expected": {
+    "group": "Events",
+    "type": "Event"
+   }
+  },
+  {
+   "sku": "GWA0013AB",
+   "name": "Riedel  Coca-Cola : Coca Cola Glass (Pack 2 piece)",
+   "expected": {
+    "group": "Accessories",
+    "type": "Glassware"
+   }
+  },
+  {
+   "sku": "LKS0001GM",
+   "name": "Kook Soon Dang   Ssal Makgeollii (750 ml) (Pack 20 Bottles)",
+   "expected": {
+    "group": "Sake & Asian",
+    "type": "Makgeolli"
+   }
+  },
+  {
+   "sku": "LRD0016DG",
+   "name": "Signature Cocktail The Lychee Martini (Ready to drink) (1000 ml)",
+   "expected": {
+    "group": "Beer & RTD",
+    "type": "Ready-to-Drink"
+   }
+  },
+  {
+   "sku": "LSN0001EL",
+   "name": "Spacewurz  (500 ml)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Thai Rice Spirit"
+   }
+  },
+  {
+   "sku": "WBS0272WN",
+   "name": "Bordeaux Easy Drinking Trio",
+   "expected": {
+    "group": "Wine",
+    "type": "Wine Set"
+   }
+  },
+  {
+   "sku": "WNA0001AM",
+   "name": "Billabong  Red wine (De-Alcoholised)",
+   "expected": {
+    "group": "Non-Alcoholic",
+    "type": "De-alcoholised Wine"
+   }
+  },
+  {
+   "sku": "WDW9001",
+   "name": "Cantine Pellegrino Marsala Superiore",
+   "expected": {
+    "group": "Wine",
+    "type": "Fortified"
+   }
+  },
+  {
+   "sku": "WDW9002",
+   "name": "Massolino Moscato D Asti",
+   "expected": {
+    "group": "Wine",
+    "type": "Sweet/Dessert"
+   }
+  },
+  {
+   "sku": "LBD9001",
+   "name": "Courvoisier VSOP Cognac",
+   "expected": {
+    "group": "Spirits",
+    "type": "Cognac"
+   }
+  },
+  {
+   "sku": "LBD9002",
+   "name": "Chabot XO Armagnac",
+   "expected": {
+    "group": "Spirits",
+    "type": "Armagnac"
+   }
+  },
+  {
+   "sku": "LBD9003",
+   "name": "Vecchia Romagna Brandy",
+   "expected": {
+    "group": "Spirits",
+    "type": "Brandy"
+   }
+  },
+  {
+   "sku": "LWS9001",
+   "name": "KAO HOM Chaiyaphum",
+   "expected": {
+    "group": "Spirits",
+    "type": "Thai Rice Spirit"
+   }
+  }
+ ]
+}

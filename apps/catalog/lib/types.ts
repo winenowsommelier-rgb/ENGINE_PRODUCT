@@ -33,7 +33,8 @@ export interface PublicProduct {
   classification?: string;
   wine_classification?: string;
   grape_variety?: string;
-  vintage?: number;
+  vintage?: string; // STRING at runtime: "Current vintage", "2005", "2005 [**VINTAGE MAY CHANGE]" — never numeric math, only displayed as text
+
   country?: string;
   region?: string;
   subregion?: string;
@@ -52,6 +53,11 @@ export interface PublicProduct {
   image_url?: string;
   score_summary?: string; // JSON STRING (not a parsed object)
   score_max?: number;
+  // SKU-derived canonical taxonomy, backfilled on every export row. These are the
+  // authoritative shopper-facing category fields (the raw `classification` field is
+  // unreliable). Resolved by lib/sku-taxonomy.ts; see category-groups.ts shims.
+  category_group?: string; // one of CATEGORY_GROUPS (or 'Unknown')
+  category_type?: string;  // sub-type within the group, e.g. "Red Wine", "Glassware"
   // NORMALIZED at load time. The raw live export stores this as a STRING "0"/"1" or null;
   // toPublicProduct() in catalog-data.ts coerces it to a REAL boolean via isInStock() so this
   // type is honest and plain-truthiness consumers are correct ("0" no longer reads as in-stock).

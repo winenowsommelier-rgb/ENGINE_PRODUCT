@@ -31,3 +31,36 @@ def test_filter_no_constraints_returns_in_stock_only_by_default():
     q = StructuredQuery(raw_brief="test")
     result = hard_filter(_products(), q)
     assert all(p["is_in_stock"] == "1" for p in result)
+
+def test_category_filter_uses_category_group_not_classification():
+    # Regression guard: classification mislabels ~1,509 rows "Wine product".
+    # The category gate must use SKU-derived category_group/category_type,
+    # NOT the unreliable classification field.
+    wh = {"sku": "LWH0001", "name": "Lagavulin", "classification": "Wine product",
+          "category_group": "Whisky", "category_type": "Whisky",
+          "is_in_stock": "1", "price": 1000}
+    assert wh in hard_filter([wh], StructuredQuery(raw_brief="t", category_filter=["Whisky"]))
+    assert wh not in hard_filter([wh], StructuredQuery(raw_brief="t", category_filter=["Wine"]))
+
+def test_wine_filter_excludes_wine_fridges_and_dealc():
+    from lib.curation.hard_filter import hard_filter
+    from lib.curation.models import StructuredQuery
+    fridge = {"sku":"AWC0001","name":"Wine Fridge","category_group":"Accessories",
+              "category_type":"Wine Coolers & Fridges","is_in_stock":"1","price":9000}
+    dealc  = {"sku":"WNA0001","name":"Zero Wine","category_group":"Non-Alcoholic",
+              "category_type":"De-alcoholised Wine","is_in_stock":"1","price":300}
+    red    = {"sku":"WRW0001","name":"A Red","category_group":"Wine",
+              "category_type":"Red Wine","is_in_stock":"1","price":800}
+    out = hard_filter([fridge, dealc, red], StructuredQuery(raw_brief="t", category_filter=["Wine"]))
+    assert red in out
+    assert fridge not in out      # was leaking via substring
+    assert dealc not in out       # was leaking via substring
+
+def test_type_name_filter_still_works():
+    # "Gin" is a TYPE (group=Spirits) — filtering by type name must still match.
+    from lib.curation.hard_filter import hard_filter
+    from lib.curation.models import StructuredQuery
+    gin = {"sku":"LGN0001","name":"A Gin","category_group":"Spirits",
+           "category_type":"Gin","is_in_stock":"1","price":900}
+    out = hard_filter([gin], StructuredQuery(raw_brief="t", category_filter=["Gin"]))
+    assert gin in out

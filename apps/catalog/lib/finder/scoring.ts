@@ -2,6 +2,8 @@ import type { PublicProduct } from '@/lib/types';
 import type { Answers } from './answers';
 import { finderPrefilter } from './category-map';
 import { foodChipMatches } from './food-chips';
+import { primaryValue, bucketForValue } from './scales';
+import { normalizeScale } from '@/lib/taste-adapter';
 
 const BODY_LADDER = ['light','medium-light','medium','medium-full','full'];
 const norm = (s?: string) => (s ?? '').trim().toLowerCase();
@@ -89,6 +91,113 @@ const MIN_RESULTS = 4;
 const TOP_N = 8;
 const QUALITY_MIN = 2;
 
+// ── DEEP-DIVE sommelier scoring (acidity / tannin / grape / age / adventurousness).
+// ADDITIVE by design: these terms add to the RANK score only. The honest-label
+// `degraded` flag is computed from the v1 taste-tier score ONLY (see scoreProducts),
+// so a deep-dive bump can re-order results but can never clear the quality gate.
+
+/**
+ * Ordinal-ladder match on a 4-level intensity scale (acidity / tannin). Both the
+ * product value and the answer token are normalised into the SAME FILTER_SCALE
+ * bucket, then compared by ordinal distance: exact +3, ±1 +1, else 0. Returns 0
+ * for any off-ladder / missing value (the genuine "no signal" case).
+ */
+function intensityScore(scale: 'acidity' | 'tannin', token: string | undefined, value: string | undefined): number {
+  if (!token) return 0;
+  const want = bucketForValue(scale, primaryValue(scale, token) ?? undefined);
+  const have = bucketForValue(scale, normalizeScale(scale, value) ?? undefined);
+  if (want < 0 || have < 0) return 0;
+  const d = Math.abs(want - have);
+  if (d === 0) return 3;
+  if (d === 1) return 1;
+  return 0;
+}
+
+// Grape family → tokens that, if present in p.grape_variety, signal that family.
+// 'surprise' (and any unmapped token) intentionally has no entry → never constrains.
+const GRAPE_FAMILY: Record<string, string[]> = {
+  cabernet:      ['cabernet'],
+  'pinot-noir':  ['pinot noir'],
+  'syrah-shiraz':['syrah', 'shiraz'],
+  sangiovese:    ['sangiovese'],
+  tempranillo:   ['tempranillo', 'rioja'],
+  merlot:        ['merlot'],
+  grenache:      ['grenache', 'garnacha'],
+};
+
+function grapeScore(token: string | undefined, grapeVariety: string | undefined): number {
+  if (!token) return 0;
+  const family = GRAPE_FAMILY[token];
+  if (!family) return 0; // 'surprise' / unknown → no constraint
+  const hay = norm(grapeVariety);
+  return family.some((t) => hay.includes(t)) ? 2 : 0;
+}
+
+// Age scoring. vintage is a STRING at runtime ("Current vintage", "2005",
+// "2005 [**VINTAGE MAY CHANGE]"). CURRENT_YEAR is a hardcoded const (not
+// `new Date()`) so age scoring is deterministic and test-stable across the
+// year boundary — bump it on the annual catalog refresh.
+const CURRENT_YEAR = 2026;
+const AGE_THRESHOLD = 8; // years old at/after which a wine reads as "mature"
+
+/** Classify a runtime vintage string into 'young' | 'mature' | null (unparseable/any). */
+function vintageAge(vintage: string | undefined): 'young' | 'mature' | null {
+  if (!vintage) return null;
+  const raw = vintage.trim();
+  if (/current vintage/i.test(raw)) return 'young';
+  const cleaned = raw.replace(/\[\*\*VINTAGE MAY CHANGE\]/i, '').trim();
+  const m = cleaned.match(/^(\d{4})$/);
+  if (!m) return null;
+  const year = Number(m[1]);
+  return CURRENT_YEAR - year >= AGE_THRESHOLD ? 'mature' : 'young';
+}
+
+function ageScore(token: string | undefined, vintage: string | undefined): number {
+  if (!token) return 0;
+  const age = vintageAge(vintage);
+  if (!age) return 0; // unparseable / 'any' → no signal
+  return age === token ? 1 : 0;
+}
+
+// Regions famous enough to anchor the classic/discovery adventurousness axis
+// (validated to exist in the live export's `region` field).
+const FAMOUS_REGIONS = new Set(
+  ['Bordeaux','Burgundy','Champagne','Tuscany','Piedmont','Mendoza',
+   'Napa Valley','Marlborough','Rioja','Mosel','Douro'].map((r) => r.toLowerCase()),
+);
+
+function adventureScore(token: string | undefined, region: string | undefined): number {
+  if (token !== 'classic' && token !== 'discovery') return 0; // 'twist'/any → no rule
+  const famous = FAMOUS_REGIONS.has(norm(region));
+  if (token === 'classic') return famous ? 2 : 0;
+  return famous ? 0 : 2; // discovery: reward NON-famous regions
+}
+
+// Whisky peat. The peat answer (none | light | heavy) has structured backing via
+// region: peated single malts come from Islay, so region=Islay is the peat signal.
+//   heavy → +2 for an Islay bottle (the user wants smoke; Islay delivers it)
+//   none  → +2 for a NON-Islay bottle (the user wants it clean; reward away-from-Islay)
+//   light / absent / unknown → 0 (no confident signal either way)
+// Like every deep-dive term this is ADDITIVE (rank-only) and never touches `degraded`.
+function peatScore(token: string | undefined, region: string | undefined): number {
+  if (token !== 'none' && token !== 'heavy') return 0; // 'light' / any → no rule
+  const isIslay = norm(region) === 'islay';
+  if (token === 'heavy') return isIslay ? 2 : 0;
+  return isIslay ? 0 : 2; // none: reward non-Islay
+}
+
+/** Sum of all deep-dive terms for one product (each 0 when its answer is absent). */
+function deepDiveBump(a: Answers, p: PublicProduct): number {
+  return (
+    intensityScore('acidity', a.acidity, p.wine_acidity) +
+    intensityScore('tannin', a.tannin, p.wine_tannin) +
+    grapeScore(a.grape, p.grape_variety) +
+    ageScore(a.age, p.vintage) +
+    adventureScore(a.adventure, p.region) +
+    peatScore(a.peat, p.region)
+  );
+}
+
 export interface ScoreResult {
   products: PublicProduct[];  // top N, ranked
   /** true when fewer than MIN_RESULTS cleared QUALITY_MIN → UI shows the honest
@@ -117,18 +226,23 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
     // spec §5 Tier-3: everyday occasion + a low budget tier (0–1) gets a small value lean.
     if (a.occasion === 'everyday' && a.budget != null && a.budget <= 1) s += 1;
     s += foodChipMatches(p, a.food);
-    return { p, s };
+    // `s` is the v1 TASTE-TIER score — the SOLE basis for the honest-label `degraded`
+    // flag (unchanged from v1). The deep-dive bump is kept SEPARATE so it can only
+    // re-order results, never clear the quality gate.
+    const tasteScore = s;
+    const rankScore = tasteScore + deepDiveBump(a, p);
+    return { p, s: tasteScore, rankScore };
   });
 
   scored.sort((x, y) =>
-    y.s - x.s ||
+    y.rankScore - x.rankScore ||
     Number(!!y.p.score_summary) - Number(!!x.p.score_summary) ||
     (x.p.price ?? 0) - (y.p.price ?? 0),
   );
 
   // dedupe by sku (pool is already in-stock + category + budget).
   const seen = new Set<string>();
-  const ranked: Array<{ p: PublicProduct; s: number }> = [];
+  const ranked: Array<{ p: PublicProduct; s: number; rankScore: number }> = [];
   for (const row of scored) {
     if (seen.has(row.p.sku)) continue;
     seen.add(row.p.sku); ranked.push(row);

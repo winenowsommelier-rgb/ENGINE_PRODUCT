@@ -11,6 +11,12 @@ export interface Answers {
   axis1?: string;             // category-specific token
   axis2?: string;
   flavorChips?: string[];     // flavor_note_master slugs (≤5)
+  acidity?: string;           // deep-dive: sommelier upgrade
+  tannin?: string;
+  grape?: string;
+  age?: string;
+  adventure?: string;
+  peat?: string;
 }
 
 const CATEGORIES: FinderCategory[] = ['red','white','sparkling','whisky','gin','spirits','sake'];
@@ -26,6 +32,12 @@ export function encodeAnswers(a: Answers): string {
   if (a.axis1) p.set('a1', a.axis1);
   if (a.axis2) p.set('a2', a.axis2);
   if (a.flavorChips?.length) p.set('fl', a.flavorChips.join(','));
+  if (a.acidity) p.set('ac', a.acidity);
+  if (a.tannin) p.set('tn', a.tannin);
+  if (a.grape) p.set('gr', a.grape);
+  if (a.age) p.set('ag', a.age);
+  if (a.adventure) p.set('adv', a.adventure);
+  if (a.peat) p.set('pt', a.peat);
   return p.toString();
 }
 
@@ -48,5 +60,8 @@ export function decodeAnswers(sp: URLSearchParams): Answers {
     occasion, food: csv(sp.get('food')), budget,
     axis1: sp.get('a1') ?? undefined, axis2: sp.get('a2') ?? undefined,
     flavorChips: csv(sp.get('fl')),
+    acidity: sp.get('ac') ?? undefined, tannin: sp.get('tn') ?? undefined,
+    grape: sp.get('gr') ?? undefined, age: sp.get('ag') ?? undefined,
+    adventure: sp.get('adv') ?? undefined, peat: sp.get('pt') ?? undefined,
   };
 }
