@@ -137,10 +137,15 @@ does the following. Its output must be **provably identical to the
 ### Category lens
 
 Defined over the catalog's real `category_group`, mapped to friendly lens
-labels: **All / Wine / Whisky / Spirits / Sake** (Sake = "Sake & Asian";
-Spirits groups Spirits+Liqueur; Beer & RTD optionally folded or omitted in
-v1). Per-hotspot per-lens counts are precomputed at build. The lens value is
-passed through to `/shop` as `?group=<CatalogGroup>` on hand-off.
+labels: **All / Wine / Whisky / Spirits / Sake**. **Each lens maps to exactly
+ONE `category_group`** (Wine→Wine, Whisky→Whisky, Spirits→Spirits, Sake→"Sake &
+Asian"). This is a count==grid requirement: `/shop` hands off a single
+`?group=` value, so a multi-group lens would make the drawer count (summing
+groups) diverge from the grid (filtering one group) — verified, e.g. Piedmont
+under a Spirits+Liqueur lens would show 19 but grid 2. Liqueur (and Beer & RTD)
+are NOT folded into a lens; they stay reachable via the **All** lens. Per-hotspot
+per-lens counts are precomputed at build. The lens value is passed to `/shop` as
+`?group=<CatalogGroup>` on hand-off.
 
 ### Hand-off to /shop (verified convention)
 

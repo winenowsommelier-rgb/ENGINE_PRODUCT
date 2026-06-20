@@ -29,11 +29,20 @@ describe('region-centroids', () => {
 });
 
 describe('lens mapping', () => {
-  it('all = total; wine = Wine group; spirits folds Liqueur', () => {
+  it('all = total; wine = Wine group; each lens is exactly ONE group', () => {
     expect(lensCount(bordeaux, 'all')).toBe(323);
     expect(lensCount(bordeaux, 'wine')).toBe(321);
-    expect(lensCount(bordeaux, 'spirits')).toBe(2); // Liqueur counted under Spirits lens
+    // Spirits lens = ['Spirits'] ONLY (Liqueur is NOT folded in) — Bordeaux has no
+    // Spirits group, so this is 0. Regression guard for the count==grid fix: folding
+    // Liqueur into the Spirits lens made the drawer count diverge from the /shop grid
+    // (drawer summed Spirits+Liqueur, grid filtered group=Spirits only).
+    expect(lensCount(bordeaux, 'spirits')).toBe(0);
     expect(lensCount(bordeaux, 'whisky')).toBe(0);
+  });
+  it('every lens maps to exactly one group (count == single-group /shop grid)', () => {
+    for (const groups of Object.values(LENS_GROUPS)) {
+      expect(groups).toHaveLength(1);
+    }
   });
   it('LENS_GROUPS maps sake to the catalog "Sake & Asian" group', () => {
     expect(LENS_GROUPS.sake).toContain('Sake & Asian');

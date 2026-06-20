@@ -373,7 +373,7 @@ import type { LensKey, MapRegion } from './types';
 export const LENS_GROUPS: Record<Exclude<LensKey, 'all'>, string[]> = {
   wine: ['Wine'],
   whisky: ['Whisky'],
-  spirits: ['Spirits', 'Liqueur'],
+  spirits: ['Spirits'],
   sake: ['Sake & Asian'],
 };
 
@@ -668,7 +668,7 @@ Append to `gen-explore-map-data.mjs` (key logic — implement per spec §3/§10)
 const CURATE_CAP = 22;
 const CURATE_MIN_DEPTH = 30;
 // Lens -> category_group(s), mirrored from lib/explore/map-data.ts (kept in sync by test).
-const LENS_GROUPS = { wine: ['Wine'], whisky: ['Whisky'], spirits: ['Spirits', 'Liqueur'], sake: ['Sake & Asian'] };
+const LENS_GROUPS = { wine: ['Wine'], whisky: ['Whisky'], spirits: ['Spirits'], sake: ['Sake & Asian'] }; // one group per lens (count==grid); keep in sync with lib/explore/map-data.ts
 
 function resolveExportPath() {
   const c = [

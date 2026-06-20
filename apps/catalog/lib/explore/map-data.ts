@@ -6,11 +6,20 @@ import type { LensKey, MapRegion } from './types';
  * (Wine / Whisky / Spirits / Sake); it maps onto the catalog's real 10-group
  * `category_group` (the taxonomy's wine/spirits/beer/sake buckets are NOT used).
  * 'all' has no groups (means "no group filter").
+ *
+ * Each lens maps to EXACTLY ONE group. This is deliberate: /shop hands off a
+ * single `?group=` value, so a multi-group lens (e.g. Spirits+Liqueur) would make
+ * the drawer's "View all N" count diverge from the /shop grid total — the count
+ * would sum both groups while the grid filtered only the primary (verified:
+ * Piedmont would show 19 but land on a grid of 2). Liqueur is its own catalog
+ * group and stays reachable via the 'All' lens; we do NOT fold it into Spirits.
+ * One group per lens keeps count == grid by construction. (Modeled as string[]
+ * to leave room for a future multi-group /shop hand-off if ever needed.)
  */
 export const LENS_GROUPS: Record<Exclude<LensKey, 'all'>, string[]> = {
   wine: ['Wine'],
   whisky: ['Whisky'],
-  spirits: ['Spirits', 'Liqueur'],
+  spirits: ['Spirits'],
   sake: ['Sake & Asian'],
 };
 
