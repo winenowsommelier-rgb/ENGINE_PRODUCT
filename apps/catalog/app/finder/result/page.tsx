@@ -45,7 +45,8 @@ export default function FinderResultPage({
   // Guard: no valid category → start over.
   if (!answers.category) redirect('/finder');
 
-  const { products, degraded } = scoreProducts(answers, getAllProducts());
+  const allProducts = getAllProducts();
+  const { products, degraded } = scoreProducts(answers, allProducts);
   const profile = resolveProfile(answers);
   const query = encodeAnswers(answers);
 
@@ -77,6 +78,8 @@ export default function FinderResultPage({
               profile={profile}
               products={products}
               degraded={degraded}
+              answers={answers}
+              allProducts={allProducts}
             />
 
             <div className="flex flex-wrap gap-3 border-t border-border pt-6">

@@ -33,6 +33,11 @@ interface ChoiceCardsProps {
   multi?: boolean;
   /** Path (no query) for the NEXT step, e.g. '/finder/3' or '/finder/result'. */
   nextPath: string;
+  /**
+   * Extra query string (no leading '?'/'&') appended after the encoded answers,
+   * e.g. 'deep=1' to keep the sommelier deep-dive flag in the URL across steps.
+   */
+  extraQuery?: string;
 }
 
 /** Merge a chosen value for `field` into a copy of `answers`. */
@@ -72,6 +77,7 @@ export function ChoiceCards({
   options,
   multi,
   nextPath,
+  extraQuery,
 }: ChoiceCardsProps) {
   const router = useRouter();
 
@@ -81,7 +87,8 @@ export function ChoiceCards({
   const [selected, setSelected] = useState<string[]>(initialMulti);
 
   const go = (next: Answers) => {
-    router.push(`${nextPath}?${encodeAnswers(next)}`);
+    const suffix = extraQuery ? `&${extraQuery}` : '';
+    router.push(`${nextPath}?${encodeAnswers(next)}${suffix}`);
   };
 
   if (multi) {
