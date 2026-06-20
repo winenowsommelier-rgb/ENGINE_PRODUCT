@@ -113,7 +113,10 @@ def main(argv: list[str] | None = None) -> int:
                 row_id = str(uuid.uuid4())
                 score_rows.append(
                     (row_id, sku, critic_name, score, 100.0, vintage,
-                     None, None, notes, SOURCE_TAG)
+                     None, None, notes, SOURCE_TAG,
+                     "magento_csv", clean(row.get(score_col)), "100pt",
+                     "critic_numeric", 1, 1.0, None,
+                     datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"))
                 )
                 by_sku.setdefault(sku, []).append(
                     {"abbr": abbr, "critic": critic_name,
@@ -144,8 +147,10 @@ def main(argv: list[str] | None = None) -> int:
     cur.executemany(
         """INSERT INTO critic_scores
            (id, sku, critic, score, score_max, vintage, tasting_year,
-            source_url, notes, added_by)
-           VALUES (?,?,?,?,?,?,?,?,?,?)""",
+            source_url, notes, added_by,
+            source, score_native, score_scale, signal_class, signal_tier,
+            confidence, supporting_text, fetched_at)
+           VALUES (?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?)""",
         score_rows,
     )
 
