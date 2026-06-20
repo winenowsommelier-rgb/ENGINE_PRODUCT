@@ -26,7 +26,10 @@ export default function RegionPage({ params }: { params: { region: string } }) {
   return (
     <section className="container py-10">
       <h1 className="text-4xl font-semibold tracking-tight text-foreground">Explore by Region</h1>
-      <div className="mt-8"><ExploreRegionClient data={data} initialRegionSlug={params.region} /></div>
+      {/* key on the slug forces a remount on region→region soft navigation so the
+          drawer re-derives `selected` from the new initialRegionSlug (the state is
+          only read in the useState initializer, which runs once per mount). */}
+      <div className="mt-8"><ExploreRegionClient key={params.region} data={data} initialRegionSlug={params.region} /></div>
       <div className="mt-6"><EscapeHatch totalProducts={total} /></div>
       <RegionList regions={data.regions} lens="all" />
     </section>
