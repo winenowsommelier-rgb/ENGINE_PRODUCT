@@ -37,6 +37,16 @@ try:
 except Exception:  # noqa: BLE001 — never let an optional import block a refresh
     _CANON_AVAILABLE = False
 
+# Taxonomy: re-derive category_group / category_type from the SKU prefix on
+# every refresh so these fields can never drift stale (same drift-proofing as
+# flavor_tags_canonical above). Import is guarded — a refresh must still
+# succeed even if the taxonomy module is temporarily unavailable.
+try:
+    from data.lib.taxonomy.sku_taxonomy import resolve as _resolve_category
+    _CATEGORY_AVAILABLE = True
+except Exception:  # noqa: BLE001 — never let an optional import block a refresh
+    _CATEGORY_AVAILABLE = False
+
 # Columns the explore endpoint reads (see ExploreProduct in lib/explore/types.ts).
 EXPORT_COLS = [
     "id", "sku", "name", "brand", "classification", "wine_classification",
@@ -116,6 +126,12 @@ def main(argv: list[str] | None = None) -> int:
                     if note not in canonical:
                         canonical.append(note)
             rec["flavor_tags_canonical"] = canonical
+        # Taxonomy: SKU prefix is the source of truth for category. Always
+        # present so a future refresh can't drop these (drift-proof).
+        if _CATEGORY_AVAILABLE:
+            _cat = _resolve_category(rec)
+            rec["category_group"] = _cat["group"]
+            rec["category_type"] = _cat["type"]
         records.append(rec)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
@@ -134,6 +150,8 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  full_description: {has_full}")
     print(f"  flavor_tags:      {has_flavors}")
     print(f"  flavor_tags_canonical: {has_canon}  ← P4 (re-derived each refresh)")
+    has_category = sum(1 for r in records if r.get("category_group"))
+    print(f"  category_group set: {has_category}  ← taxonomy (re-derived each refresh)")
     print(f"  taste_profile:    {has_taste}")
     print(f"  is_in_stock=1:    {has_stock}  ← curation hard_filter uses this")
     print(f"  margin populated: {has_margin}  ← curation scoring uses this")

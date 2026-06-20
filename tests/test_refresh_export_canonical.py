@@ -27,6 +27,8 @@ def _make_db(path: Path) -> None:
             ("A2", "Wine B", json.dumps(["Subtle oak", "Graphite"]), "1", 800.0),
             ("A3", "Vodka", json.dumps(["clean spirit", "mild ethanol"]), "1", 300.0),
             ("A4", "No tags", None, "1", 200.0),
+            # Recognizable SKU prefix -> resolves to a precise category group.
+            ("LWH0001", "Some Whisky", None, "1", 1200.0),
         ],
     )
     conn.commit()
@@ -55,3 +57,25 @@ def test_refresh_writes_canonical_field(tmp_path):
     # Flavorless spirit and no-tag row -> empty canonical list, no crash.
     assert by_sku["A3"]["flavor_tags_canonical"] == []
     assert by_sku["A4"]["flavor_tags_canonical"] == []
+
+
+def test_refresh_writes_category_fields(tmp_path):
+    """Guards taxonomy drift: every refresh must re-derive category_group /
+    category_type from the SKU prefix, so a future regen can't drop them."""
+    db = tmp_path / "products.db"
+    out = tmp_path / "export.json"
+    _make_db(db)
+
+    rc = refresh.main(["--db", str(db), "--out", str(out)])
+    assert rc == 0
+
+    records = json.loads(out.read_text())
+    by_sku = {r["sku"]: r for r in records}
+
+    # Every record gets a non-empty category_group (present -> can't drift).
+    assert all(r.get("category_group") for r in records)
+    assert all("category_type" in r for r in records)
+
+    # Recognizable prefix resolves to a precise group.
+    assert by_sku["LWH0001"]["category_group"] == "Whisky"
+    assert by_sku["LWH0001"]["category_type"] == "Whisky"
