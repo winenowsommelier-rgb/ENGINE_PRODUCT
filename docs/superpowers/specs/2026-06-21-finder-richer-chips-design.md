@@ -51,26 +51,39 @@ distinct one in build, e.g. 🍖 for Korean BBQ vs 🥩 grilled.)
 
 ## 4. Flavor chips — "Any flavors you love?" (grouped by family, iconed)
 Replaces the current flat 8. ~12 family chips, each maps to a SET of canonical master
-notes (the chip matches if the product carries any note in its set). Verified product counts:
+notes (the chip matches if the product carries any note in its set).
 
-| Icon | Label | key | maps to notes (canonical) | in-stock |
+> **CRITICAL — field + matcher (fixes a SHIPPED bug):**
+> 1. Flavor scoring MUST read **`flavor_tags_canonical`** (Title-Case canonical notes, e.g.
+>    "Dark Plum", "Minerality") — NOT `flavor_tags`, which `scoring.ts:217` reads today and
+>    which carries variant strings. All counts below are verified against `flavor_tags_canonical`.
+> 2. The current matcher `tags.includes(norm(chip))` (scoring.ts:218) is **already broken**:
+>    chip keys are hyphenated (`red-fruit`) and never equal the spaced tag (`red fruit`), so
+>    `red-fruit` + `dark-fruit` score 0 in production right now. The build MUST replace it with
+>    a `FLAVOR_FAMILY: Record<key, string[]>` map and test **set-intersection** of the chip's
+>    canonical note set against the product's `flavor_tags_canonical` (normalized) — exactly the
+>    `GRAPE_FAMILY`/`FOOD_CHIPS` pattern. Do NOT keep `tags.includes(chip)`.
+> 3. Build MUST add a regression test asserting `dark-fruit` (and a previously-dead chip) now
+>    scores > 0 (Rule 5 — don't leave an inert path green).
+
+| Icon | Label | key | maps to notes (canonical, normalized) | in-stock |
 |---|---|---|---|---|
-| 🍒 | Red fruit | red-fruit | red fruit, cherry, red cherry, strawberry, raspberry | 1,210 |
-| 🫐 | Dark fruit | dark-fruit | dark plum, plum, blackcurrant, blackberry, black cherry | 1,727 |
+| 🍒 | Red fruit | red-fruit | red fruit, cherry, strawberry, raspberry | 1,210 |
+| 🫐 | Dark fruit | dark-fruit | dark plum, plum, blackcurrant, blackberry, black cherry | ~1,650 |
 | 🍋 | Citrus | citrus | citrus, citrus zest, lemon, lime, grapefruit | 1,751 |
 | 🍑 | Stone & orchard fruit | stone-fruit | stone fruit, peach, apricot, green apple, pear | 1,575 |
 | 🍍 | Tropical | tropical | tropical, pineapple, mango, passion fruit | 337 |
 | 🪵 | Oak & vanilla | oak | oak, vanilla, cedar, toast | 2,161 |
 | 🌶️ | Spice | spice | spice, black pepper, baking spice, cinnamon, clove | 1,867 |
-| 🍂 | Earthy & savory | earthy | earth, tobacco, leather, mushroom, graphite | 2,048 |
+| 🍂 | Earthy & savory | earthy | earth, tobacco, leather, mushroom, graphite | ~1,730 |
 | 🌸 | Floral | floral | floral, rose, violet, blossom | 1,116 |
 | 🪨 | Mineral & saline | mineral | minerality, wet stone, sea salt, flint, chalk | 2,081 |
 | 💨 | Smoky | smoky | smoke, smoky, peat | 356 |
 | 🥜 | Nutty & creamy | nutty | hazelnut, almond, brioche, cocoa, caramel, honey | 1,626 |
 
-Scoring: +2 if the product carries any note in the chosen chip's set (extends the existing
-flavor scoring in scoring.ts; the note set replaces the single-token match). Multi-select
-(pick a few), as today.
+Scoring: +2 if the product's `flavor_tags_canonical` (normalized) intersects the chosen
+chip's note set — via a `FLAVOR_FAMILY` key→note-set map, replacing the broken
+`tags.includes(chip)` line (see CRITICAL box above). Multi-select (pick a few), as today.
 
 ## 5. Character step
 The wine "character" axis2 (fruity / earthy / balanced) stays as-is conceptually but gets
@@ -82,7 +95,10 @@ ALL finder choice chips get a leading emoji/icon — not just food/flavor: occas
 body (🪶 light · ⚖️ medium · 🍷 bold), acidity/tannin/age/adventure, and the Step-1
 category cards (🍷 Red · 🥂 Sparkling · 🥃 Whisky · …). Implementation: add an optional
 `icon?: string` to `StepOption` (question-config.ts) and render it before the label in
-`ChoiceCards`/`StepShell`. Purely additive; a missing icon just renders the label.
+**`ChoiceCards` and `FoodChoice`** (these are the components that map over `options` and
+render chips; `StepShell` only renders children/Back/Skip, so it needs no change). The
+Step-1 category cards render in `app/finder/page.tsx`. Purely additive; a missing icon
+just renders the label.
 
 ## 7. Implementation surface (additive, no architecture change)
 - `lib/finder/food-chips.ts` — replace FOOD_CHIPS with the §3 map (key→{label, icon, keywords}).
@@ -90,7 +106,8 @@ category cards (🍷 Red · 🥂 Sparkling · 🥃 Whisky · …). Implementatio
   steps use the new chip sets; add icons to all existing option sets (§6).
 - `lib/finder/scoring.ts` — flavor scoring matches against the note SET per chip (§4); food
   scoring unchanged (already keyword-substring). Keep additive/degraded discipline intact.
-- `components/finder/{ChoiceCards,StepShell,FoodChoice}.tsx` — render `option.icon` before label.
+- `components/finder/{ChoiceCards,FoodChoice}.tsx` — render `option.icon` before label
+  (StepShell renders no chips — no change needed there).
 - `app/finder/page.tsx` — category cards get icons.
 
 ## 8. Testing
