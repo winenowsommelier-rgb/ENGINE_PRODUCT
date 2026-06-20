@@ -40,6 +40,7 @@ REPO = Path(__file__).resolve().parent.parent
 ENV = REPO / ".env.local"
 DEFAULT_BI_DB = Path("/Users/admin/Desktop/CLAUDE DATA_WNLQ9 M REPORT ALL/data/processed/ecommerce_bi.duckdb")
 PRODUCTS_PATH = REPO / "data" / "db" / "products.json"
+DEFAULT_SQLITE_DB = REPO / "data" / "db" / "products.db"
 
 # Score weights — tunable. Sum should be 1.0.
 W_ORDERS = 0.5
@@ -78,13 +79,21 @@ def fetch_bi_aggregates(db_path: Path, window_days: int) -> list[dict]:
         df = con.execute(sql).fetchdf()
     finally:
         con.close()
+    # NOTE: `x or 0` does NOT catch NaN (NaN is truthy), so SUM() over rows with
+    # NULL revenue/qty leaks a NaN that poisons min-max normalization for EVERY
+    # SKU (one NaN -> all scores NaN). Coalesce NaN explicitly. (Surfaced by the
+    # score-spread report during the Phase-1 dry-run smoke test.)
+    def _num(v) -> float:
+        f = float(v or 0)
+        return 0.0 if math.isnan(f) else f
+
     rows: list[dict] = []
     for _, r in df.iterrows():
         rows.append({
             "sku": str(r["sku"]).strip(),
-            "qty": float(r["qty"] or 0),
+            "qty": _num(r["qty"]),
             "orders": int(r["orders"] or 0),
-            "revenue": float(r["revenue"] or 0),
+            "revenue": _num(r["revenue"]),
         })
     return rows
 
@@ -260,9 +269,12 @@ def write_sqlite(rows: list[dict], db_path: Path, synced_at: str, window_days: i
 
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--window-days", type=int, default=90)
+    p.add_argument("--window-days", type=int, default=365)
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--bi-db", type=Path, default=DEFAULT_BI_DB)
+    p.add_argument("--sqlite-db", type=Path, default=DEFAULT_SQLITE_DB)
+    p.add_argument("--no-supabase", action="store_true",
+                   help="SQLite-only run; skip the Supabase upsert")
     args = p.parse_args()
 
     if not args.bi_db.exists():
@@ -270,8 +282,11 @@ def main() -> int:
         return 1
 
     env = load_env(ENV)
-    if not env.get("NEXT_PUBLIC_SUPABASE_URL") or not env.get("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"):
-        print("ERROR: Supabase env not set in .env.local", file=sys.stderr)
+    if not args.no_supabase and (
+        not env.get("NEXT_PUBLIC_SUPABASE_URL")
+        or not env.get("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY")):
+        print("ERROR: Supabase env not set in .env.local "
+              "(use --no-supabase for a SQLite-only run)", file=sys.stderr)
         return 1
 
     started = time.time()
@@ -284,24 +299,71 @@ def main() -> int:
 
     compute_scores(rows)
 
-    # Top 5 preview
+    # Score-spread report — the fix is verified here, not assumed (Rule 1).
+    scores = sorted(r["score"] for r in rows)
+    if scores:
+        med = scores[len(scores) // 2]
+        buckets = [0] * 10
+        for s in scores:
+            buckets[min(int(s * 10), 9)] += 1
+        print(f"\nScore spread: n={len(scores)}  median={med:.4f}  "
+              f"min={scores[0]:.4f}  max={scores[-1]:.4f}")
+        print("  histogram (0.0-1.0 in 0.1 bins): " +
+              " ".join(f"{b}" for b in buckets))
+        if med < 0.01:
+            print("  WARNING: median still near zero - score may still be "
+                  "degenerate; investigate before trusting this run.", file=sys.stderr)
+
     rows.sort(key=lambda r: -r["score"])
     print("\nTop 5 by popularity_score:")
     for r in rows[:5]:
-        print(f"  {r['sku']:<10}  score={r['score']:.4f}  orders={r['orders']:>3}  qty={r['qty']:>5.0f}  revenue={r['revenue']:>10.0f}")
+        print(f"  {r['sku']:<10}  score={r['score']:.4f}  orders={r['orders']:>3}  "
+              f"qty={r['qty']:>5.0f}  revenue={r['revenue']:>10.0f}")
 
     synced_at = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
-    print(f"\nsynced_at = {synced_at}")
+    print(f"\nsynced_at = {synced_at}   window_days = {args.window_days}")
 
     if args.dry_run:
-        print(f"[dry-run] would upsert {len(rows)} rows to Supabase")
+        print(f"[dry-run] would update {len(rows)} SKUs in SQLite "
+              f"({'SQLite only' if args.no_supabase else '+Supabase'})")
         return 0
 
+    # 1. SQLite first - the UI source of truth (Rule 9).
+    print(f"\nWriting {len(rows)} SKUs to SQLite {args.sqlite_db} (reset-then-update)...")
+    updated = write_sqlite(rows, args.sqlite_db, synced_at, args.window_days)
+    # Verify destination (Rule 1). Count by THIS run's synced_at so a prior
+    # partial run can't inflate the number, AND report total non-NULL. Because
+    # write_sqlite resets every row first, the two should match - if not, a
+    # concurrent writer touched the table and the run is suspect.
+    _vc = sqlite3.connect(str(args.sqlite_db))
+    this_run = _vc.execute(
+        "SELECT COUNT(*) FROM products WHERE popularity_synced_at = ?", (synced_at,)
+    ).fetchone()[0]
+    total_nonnull = _vc.execute(
+        "SELECT COUNT(*) FROM products WHERE popularity_orders_90d IS NOT NULL"
+    ).fetchone()[0]
+    _vc.close()
+    print(f"  SQLite: updated={updated}  this-run(synced_at)={this_run}  "
+          f"total non-NULL={total_nonnull}")
+    if this_run != total_nonnull:
+        print("  WARNING: this-run count != total non-NULL - unexpected rows in "
+              "the table (concurrent writer?); investigate before trusting.", file=sys.stderr)
+
+    if args.no_supabase:
+        print("  (--no-supabase) skipping Supabase push.")
+        print("\nNEXT: run  python scripts/refresh_live_export.py  to carry this into the export.")
+        return 0
+
+    # 2. Supabase second - general store consistency.
     print(f"\nUpserting {len(rows)} rows to Supabase...")
     sent, failed = push_supabase(rows, env, synced_at, args.window_days)
-    elapsed = time.time() - started
-    print(f"\nDone in {elapsed:.1f}s — sent={sent}, failed={failed}")
-    return 0 if failed == 0 else 2
+    print(f"  Supabase: sent={sent}, failed={failed}")
+    print("\nNEXT: run  python scripts/refresh_live_export.py  to carry this into the export.")
+    if failed > 0:
+        print(f"ERROR: {failed} Supabase rows failed. SQLite (UI source) is correct, "
+              f"but Supabase diverged - re-run to heal.", file=sys.stderr)
+        return 2
+    return 0
 
 
 if __name__ == "__main__":
