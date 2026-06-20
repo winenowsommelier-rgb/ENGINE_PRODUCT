@@ -321,6 +321,33 @@ load-bearing principle: **the destination is the live export the UI reads, NOT
 products.db, and NOT critic_scores.** `critic_scores` row count is the
 "counting cache rows" anti-pattern Rule 1 explicitly forbids.
 
+> **⚠️ Critic scores are NOT display-only — they drive product ranking.** As of
+> commit `956fa29` (2026-06-20), `lib/curation/scoring_engine.py` consumes
+> `products.score_max` (falling back to the `score_summary` critics JSON) as the
+> **`web_freshness` signal: weight 0.2 — a fifth of the product's final curation
+> score — with an 85-point credibility floor** (scores below 85 contribute
+> nothing to rank). Implications the verification MUST cover:
+> - **A false-bind doesn't just show a wrong badge — it inflates that product's
+>   catalog rank.** The §9 "invisible empty state" framing understated the blast
+>   radius. The no-vintage false-bind risk (§11.5) is now a *ranking* risk, not
+>   just a display one — another reason the no-vintage canary stratum gates the
+>   backfill.
+> - **Two gates must agree.** The scraper's `signal_tier`/precedence (§16) and the
+>   scoring engine's 85-pt floor are independent. A scraped tier-3/community score
+>   < 85 renders as a badge but moves rank by 0.0 — that's intended, but the spec
+>   must not assume "badge shown ⇒ rank moved." Verification checks both.
+> - **Rule 1 destination test is extended:** beyond "badge present in live export,"
+>   the post-backfill check includes a **curation-rank sanity probe** — pick 5
+>   newly-scored SKUs with score ≥ 85 and confirm their `scoring_engine` output
+>   rose vs the pre-backfill snapshot; pick 2 with score < 85 and confirm rank is
+>   unchanged (floor working). Guards against the score landing in the table but
+>   never reaching the ranking signal — the same "paid for data the engine never
+>   used" failure mode, one layer deeper than the badge.
+> - The existing scoring-engine regression tests (`tests/curation/test_scoring_engine.py`,
+>   added in `956fa29`) must still pass after the migration changes `score_native`
+>   to a string in more rows — the engine already parses `score_native` as a
+>   string in its fallback path, but re-run them to confirm.
+
 1. **Pre-flight (Rule 10) — backup before any bulk write.** Both the backfill
    AND the `refresh_products_summary.py` step mutate `products.db` and the live
    export, which CLAUDE.md classifies as irreversible high-risk operations.
@@ -634,15 +661,54 @@ sequences three tracks; §12 is the third block:
 4. **Scraper (§6-§14, §12 day-plan)** — ~6 days + 2-day buffer + background
    backfill. Scoped to SKUs with no curated score **and** that are actually
    beverages — the catalog query is **category-aware**, not just
-   `score_summary IS NULL`: it excludes the ~1,444 accessory / non-beverage
-   `other`-bucket SKUs (glassware, gift sets, etc.) so spiders don't burn
-   politeness budget searching Wine Enthusiast for a wine glass. Filter:
-   `WHERE products.score_summary IS NULL AND <is wine or spirit by
-   category/sku-prefix> (OR the critic is uncovered)`. Note the addressable
-   universe is two sub-targets — **~6,695 wine-ish** (served by the 4 wine
-   spiders, overlaps existing critics) and **~3,297 spirit-ish** (served by the
-   3 spirits spiders, 100% net-new — zero spirits have any score today). Both
-   are in scope per the all-7 decision; spirits is the higher-ROI half.
+   `score_summary IS NULL`. ⚠️ **Accessories are identified by SKU prefix, NOT by
+   classification** ([[project_accessory_sku_prefixes]] — 570 products are
+   misclassified as "Wine product"). The catalog filter must reuse the **canonical
+   prefix set** `ACCESSORY_PREFIXES` from `lib/enrichment/rules.ts`
+   (`ABA, AWC, GWN, GLQ, GBE, GNB, GAC, GDC, GDE`) — the scraper is Python, so
+   either port this set to a shared constant or read it from one source of truth;
+   do **not** hand-roll a new prefix list or trust the `classification` column.
+   Excluding accessories stops spiders from burning politeness budget searching
+   Wine Enthusiast for glassware.
+   **Scraper build sub-order (spirits before wine):**
+   - **4a. Spirits spiders first** (~3,297 SKUs): Whiskybase, Master of Malt,
+     Distiller. **100% net-new — zero spirits scored today.** No curated overlap,
+     so precedence (§16) and the 85-pt floor barely apply; the cleanest, highest-
+     ROI half. Ships an entire category the CSV can never cover.
+   - **4b. GATE on 4a results** — run the §11.5 canary (incl. no-vintage stratum)
+     + the §11 curation-rank sanity probe on the spirits data before starting wine.
+   - **4c. Wine spiders** (~6,695 SKUs): Wine Enthusiast, WineAlign, Real Review,
+     Natalie MacLean. Overlaps the existing 4 wine critics (diminishing returns),
+     carries the no-vintage false-bind risk, and has the full ranking blast radius.
+     The lower-ROI, higher-risk half — built only after spirits proves the pipeline.
 
-Tracks 3 and 4 are independent after tracks 1-2; track 3 is the smaller, safer
-win and is a reasonable first ship.
+Tracks 3 and 4 are independent after tracks 1-2; track 3 (supplier) and track 4a
+(spirits) are the two lowest-risk, highest-net-new wins and either is a reasonable
+first ship. Track 4c (wine) is the speculative half.
+
+---
+
+## 19. Assumptions to re-verify at build time (anti-drift)
+
+This spec is a point-in-time snapshot. The codebase is actively developed — in
+the days between drafting and approval, the scoring engine began consuming critic
+scores (`956fa29`, §11) and a memory landed that invalidated the accessory filter
+(§18). To stop the spec silently desyncing, the implementer **re-verifies each
+fact below on day 0** (a 15-minute check, output recorded alongside the §14
+gates). If any has changed, reconcile before building — do not trust this doc's
+numbers blindly.
+
+| # | Assumption (as of 2026-06-20) | How to re-verify |
+|---|---|---|
+| 1 | `critic_scores` is still sku-keyed/simple, no `source`/`signal_tier` columns | `sqlite3 products.db ".schema critic_scores"` |
+| 2 | 3,144 rows / 1,631 SKUs, single source tag `magento_csv_2026-06-15` | `SELECT count(*), count(DISTINCT sku), count(DISTINCT added_by) FROM critic_scores` |
+| 3 | 1,550 products have `score_summary` (live badges) | `SELECT count(*) FROM products WHERE score_summary IS NOT NULL` + the §11.2 python Layer-3 probe on the live export |
+| 4 | scoring engine consumes critic scores @ weight 0.2 + 85-pt floor | check `_web_freshness` in `lib/curation/scoring_engine.py` is still wired (not reverted) |
+| 5 | `ACCESSORY_PREFIXES` set unchanged in `lib/enrichment/rules.ts` | grep the constant; the catalog filter must match it exactly |
+| 6 | products join columns are `brand` / `vintage` (no `producer`/`cuvee`) | `PRAGMA table_info(products)` (§14 binding-column gate) |
+| 7 | live export and products.db are in sync (Rule 9) | compare mtimes; if export is stale, run `refresh_live_export.py` first |
+| 8 | branch `feat/critic-score-harvester` hasn't had a conflicting critic-score change merged | `git log --oneline -- lib/critic_reviews scripts/load_critic_scores_from_csv.py lib/curation/scoring_engine.py` |
+
+Item 8 is not paranoia: this branch's working tree was reset/merged twice during
+spec authoring (once orphaning commits, once discarding fixes in a merge). Confirm
+the spec's starting state still holds before the migration's irreversible writes.
