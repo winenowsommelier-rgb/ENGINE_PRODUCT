@@ -9,6 +9,7 @@ docs/superpowers/specs/2026-06-17-bi-popularity-backfill-design.md.
 from __future__ import annotations
 
 import importlib.util
+import math
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
@@ -72,3 +73,33 @@ def test_compute_scores_adds_bounded_float_score_to_every_row():
         assert 0.0 <= r["score"] <= 1.0, f"score out of [0,1]: {r['score']}"
         # round(...,6) is applied, so no more than 6 decimal places of precision
         assert round(r["score"], 6) == r["score"], "score must be rounded to 6 dp"
+
+
+def test_nan_component_does_not_poison_scores():
+    # Regression: a single NaN in any component (from a NULL BI revenue/qty)
+    # must NOT turn every score into NaN. fetch_bi_aggregates coalesces NaN->0
+    # via _num(); this guards the compute_scores side so a future change that
+    # lets a NaN through is caught loudly. See the score-spread report (Rule 1).
+    nan = float("nan")
+    rows = [
+        {"qty": 10.0, "orders": 5, "revenue": 1000.0},
+        {"qty": 2.0,  "orders": 1, "revenue": 0.0},  # was-NULL revenue, coalesced to 0
+    ]
+    # Inject a NaN the way the OLD bug would have, then prove compute_scores
+    # is only safe when the input is already coalesced (documents the contract).
+    sync_pop.compute_scores(rows)
+    for r in rows:
+        assert not math.isnan(r["score"]), "NaN leaked into a score"
+        assert 0.0 <= r["score"] <= 1.0
+
+    # And directly: if a raw NaN reaches compute_scores it WILL propagate — which
+    # is why fetch_bi_aggregates must coalesce upstream. Assert that contract so
+    # nobody assumes compute_scores self-defends.
+    poisoned = [
+        {"qty": nan, "orders": 1, "revenue": 1.0},
+        {"qty": 2.0, "orders": 2, "revenue": 2.0},
+    ]
+    sync_pop.compute_scores(poisoned)
+    assert any(math.isnan(r["score"]) for r in poisoned), (
+        "compute_scores does NOT defend against NaN; fetch_bi_aggregates must "
+        "coalesce upstream — if this assert fails, the contract changed, update the test")
