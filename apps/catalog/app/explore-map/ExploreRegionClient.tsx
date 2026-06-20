@@ -24,7 +24,7 @@ export function ExploreRegionClient({ data, initialRegionSlug }: {
     <div className="relative">
       <div className="mb-4"><CategoryLens active={lens} onSelect={setLens} available={available} /></div>
       <div className="grid gap-4 lg:grid-cols-[1fr_24rem]">
-        <RegionAtlas regions={data.regions} lens={lens}
+        <RegionAtlas regions={data.regions} lens={lens} selectedSlug={selected?.slug}
           onSelect={(r) => { setSelected(r); router.push(`/explore-map/${r.slug}`, { scroll: false }); }} />
         {selected && (
           <RegionDrawer region={selected} lens={lens}
