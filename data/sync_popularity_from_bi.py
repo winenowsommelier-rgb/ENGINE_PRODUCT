@@ -7,10 +7,12 @@ Pipeline:
         - popularity_qty_90d       = SUM(qty_ordered)
         - popularity_orders_90d    = COUNT(DISTINCT order_id)
         - popularity_revenue_90d   = SUM(item_revenue_thb)
-  3. Compute popularity_score = weighted blend of z-scored components:
-        0.5 * z(orders_90d) + 0.3 * z(qty_90d) + 0.2 * z(revenue_90d)
-     z-scores are min-max normalized to [0, 1] then weighted, so
-     popularity_score is in [0, 1].
+  3. Compute popularity_score = weighted blend of components:
+        0.5 * orders_90d + 0.3 * qty_90d + 0.2 * revenue_90d
+     Each component is 95th-percentile-CAPPED then min-max normalized to
+     [0, 1] (NOT z-scored). The cap stops a single outlier from pinning the
+     min-max scale (the pre-fix score was degenerate: median ≈ 0.0007), so
+     popularity_score is in [0, 1] with usable spread.
   4. Upsert {sku, popularity_*, popularity_synced_at} to Supabase via PostgREST
      in chunks of 500. Only SKUs that already exist in Supabase are updated.
 
@@ -96,11 +98,43 @@ def minmax_normalize(values: list[float]) -> list[float]:
     return [(v - lo) / (hi - lo) for v in values]
 
 
+def percentile(values: list[float], pct: float) -> float:
+    """Linear-interpolated percentile (matches numpy.percentile default 'linear').
+    pct in [0, 100]. Pure stdlib so the script keeps zero deps."""
+    if not values:
+        return 0.0
+    s = sorted(values)
+    if len(s) == 1:
+        return s[0]
+    rank = (pct / 100.0) * (len(s) - 1)
+    lo = int(math.floor(rank))
+    hi = int(math.ceil(rank))
+    if lo == hi:
+        return s[lo]
+    frac = rank - lo
+    return s[lo] + (s[hi] - s[lo]) * frac
+
+
+def _cap(values: list[float], pct: float = 95.0) -> list[float]:
+    """Clip each value at the pct-th percentile so a single outlier can't pin
+    the min-max scale (the degenerate-score fix). See spec §'The score bug'."""
+    if not values:
+        return []
+    p = percentile(values, pct)
+    return [min(v, p) for v in values]
+
+
 def compute_scores(rows: list[dict]) -> None:
-    """Mutates rows: adds 'score' field in [0, 1] = weighted blend of normalized cols."""
-    qty_n     = minmax_normalize([r["qty"]     for r in rows])
-    orders_n  = minmax_normalize([r["orders"]  for r in rows])
-    revenue_n = minmax_normalize([r["revenue"] for r in rows])
+    """Mutates rows: adds 'score' in [0,1] = weighted blend of MIN-MAX-normalized,
+    95th-percentile-CAPPED components (orders/qty/revenue). NOT z-scores.
+
+    The cap removes the single-outlier pin that made the raw min-max score
+    degenerate (median ≈ 0.0007). Score is rank-only across the matched set."""
+    if not rows:
+        return
+    qty_n     = minmax_normalize(_cap([r["qty"]     for r in rows]))
+    orders_n  = minmax_normalize(_cap([float(r["orders"])  for r in rows]))
+    revenue_n = minmax_normalize(_cap([r["revenue"] for r in rows]))
     for i, r in enumerate(rows):
         r["score"] = round(
             W_ORDERS * orders_n[i] + W_QTY * qty_n[i] + W_REVENUE * revenue_n[i],
