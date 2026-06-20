@@ -1,42 +1,24 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
-
-/**
- * Explore by Map — an honest, static placeholder (server component, SSG).
- *
- * The full interactive region map is intentionally OUT of scope here (it's a
- * separate, large WebGL/SVG build). This page is a calm, on-brand "coming soon"
- * with a single CTA back into the full collection, so the header nav link
- * resolves cleanly instead of 404-ing.
- */
+import { loadExploreMapData } from '@/lib/explore/map-data';
+import { ExploreRegionClient } from './ExploreRegionClient';
+import { RegionList } from '@/components/explore/RegionList';
+import { EscapeHatch } from '@/components/explore/EscapeHatch';
 
 export const metadata: Metadata = {
-  title: 'Explore by Map — WNLQ9',
-  description:
-    'An interactive map view of the regions behind our collection is coming soon. Browse the full collection in the meantime.',
+  title: 'Explore by Region — WNLQ9',
+  description: 'Browse our wine, whisky and spirits by the regions they come from.',
 };
 
 export default function ExploreMapPage() {
+  const data = loadExploreMapData();
+  const total = data.countries.reduce((n, c) => n + c.total, 0);
   return (
-    <section className="container flex max-w-xl flex-col items-center py-20 text-center sm:py-28">
-      <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-        Explore by Map
-      </h1>
-
-      <p className="mt-8 text-lg leading-relaxed text-muted-foreground">
-        An interactive map view of the regions behind our collection is coming
-        soon. In the meantime, browse the full selection of wine, whisky and
-        spirits.
-      </p>
-
-      <div className="mt-10">
-        <Link
-          href="/shop"
-          className="inline-flex min-h-12 items-center justify-center rounded-md bg-primary px-8 text-base font-medium text-primary-foreground transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          Browse the full collection
-        </Link>
-      </div>
+    <section className="container py-10">
+      <h1 className="text-4xl font-semibold tracking-tight text-foreground">Explore by Region</h1>
+      <p className="mt-3 text-lg text-muted-foreground">Discover the collection by place — tap a region to see what we carry there.</p>
+      <div className="mt-8"><ExploreRegionClient data={data} /></div>
+      <div className="mt-6"><EscapeHatch totalProducts={total} /></div>
+      <RegionList regions={data.regions} lens="all" />
     </section>
   );
 }
