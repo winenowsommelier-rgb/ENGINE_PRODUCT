@@ -1,5 +1,12 @@
 # Canonical SKU Taxonomy — Implementation Plan
 
+> **EXECUTION STATUS (2026-06-20):**
+> ✅ **Tasks 1–6 DONE & committed** on `feat/wnlq9-catalog` (map, Python loader,
+> TS loader+parity, backfill applied+verified, refresh drift-proofed, audit).
+> The export now carries `category_group`/`category_type` on all 11,436 rows.
+> ⏳ **Task 7 (catalog migration, BREAKING — needs browser-verify) + Task 7b
+> (curation hard_filter) PENDING** — resume here. See `project_sku_taxonomy` memory.
+>
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Make SKU prefix the single source of truth for product category across every process, replacing the unreliable `classification` field, via one canonical JSON map consumed by a Python loader and a TypeScript loader.
