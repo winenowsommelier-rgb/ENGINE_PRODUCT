@@ -160,6 +160,13 @@ export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
   if (firstParam(params.hasScore) === '1' &&
       !(typeof p.score_summary === 'string' && p.score_summary.trim() !== '')) return false;
 
+  // bev=1 — beverages only: exclude non-drink groups. Opt-in (additive), used by
+  // the Explore-by-Region hand-off so its "View all N" count == this grid exactly.
+  if (firstParam(params.bev) === '1') {
+    const NON_BEVERAGE = new Set(['Accessories', 'Events', 'Cigars', 'Non-Alcoholic']);
+    if (NON_BEVERAGE.has(productGroup)) return false;
+  }
+
   return true;
 }
 

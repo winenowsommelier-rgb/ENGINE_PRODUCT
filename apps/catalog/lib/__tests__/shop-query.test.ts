@@ -352,3 +352,16 @@ describe('matchesFilters — body/acidity/tannin normalized to the 4-step scale'
     expect(matchesFilters(prod, { tannin: 'High' })).toBe(false);
   });
 });
+
+describe('bev=1 opt-in filter (beverages only)', () => {
+  const fridge = { sku: 'GWN-FRIDGE', name: 'Wine Cooler', category_group: 'Accessories', is_in_stock: '1', region: 'Champagne' } as any;
+  const wine = { sku: 'WIN1', name: 'Champ', category_group: 'Wine', is_in_stock: '1', region: 'Champagne' } as any;
+
+  it('bev=1 excludes Accessories/Events/Cigars/Non-Alcoholic', () => {
+    expect(matchesFilters(fridge, { bev: '1', region: 'Champagne' })).toBe(false);
+    expect(matchesFilters(wine, { bev: '1', region: 'Champagne' })).toBe(true);
+  });
+  it('without bev, accessories still match (no behavior change)', () => {
+    expect(matchesFilters(fridge, { region: 'Champagne' })).toBe(true);
+  });
+});
