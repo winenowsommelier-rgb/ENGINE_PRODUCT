@@ -33,7 +33,8 @@ export interface PublicProduct {
   classification?: string;
   wine_classification?: string;
   grape_variety?: string;
-  vintage?: number;
+  vintage?: string; // STRING at runtime: "Current vintage", "2005", "2005 [**VINTAGE MAY CHANGE]" — never numeric math, only displayed as text
+
   country?: string;
   region?: string;
   subregion?: string;
