@@ -145,13 +145,27 @@ passed through to `/shop` as `?group=<CatalogGroup>` on hand-off.
 ### Hand-off to /shop (verified convention)
 
 `/shop` matches `region` and `country` **exact, case-insensitive**
-(`shop-query.ts:24-30`), written via `buildQuery` as
-`?group=…&country=…&region=…`. The hand-off MUST emit the region **NAME**
-(e.g. `"Barossa Valley"`), **not** the taxonomy slug, and MUST include the
-parent **country** so the `/shop` DrillBreadcrumb (`country › region`) renders
-coherently. Link built with `buildQuery({}, { country, region, group? })`.
-Because the same `matchesFilters` predicate produces both the build-time count
-and the `/shop` grid, **panel count == grid total** by construction.
+(`shop-query.ts:134-138`), written via `buildQuery` as
+`?bev=1&country=…&region=…&group=…`. The hand-off MUST emit the region
+**NAME** (e.g. `"Barossa Valley"`), **not** the taxonomy slug, and MUST include
+the parent **country** so the `/shop` DrillBreadcrumb (`country › region`)
+renders coherently. Link built with
+`buildQuery({}, { bev: '1', country, region, group? })`.
+
+**The count==grid guarantee requires the hand-off to filter the SAME product set
+the map counts.** The map counts in-stock **beverages** (excludes
+Accessories/Events/Cigars/Non-Alcoholic). A bare `?country&region` `/shop` query
+counts *everything* in that region, including a wine fridge — so for the 5
+mixed regions that carry accessories (Champagne, South Australia, Rhône Valley,
+London, Caribbean — verified) the drawer's "View all 226 →" would land on a grid
+of 230. To prevent this, add a small opt-in **`bev=1`** flag to `matchesFilters`
+(mirroring the existing `inStock=1`/`hasScore=1` opt-in flags) that excludes the
+non-beverage groups; the `lens=all` hand-off always emits `bev=1`. With the map's
+`total` and the `/shop` grid now computed over the **same** beverage subset by
+the **same** `matchesFilters` predicate, **panel count == grid total exactly**
+(the §8 invariant asserts strict equality, not `≤`). Note `matchesFilters`
+already excludes nothing by default, so `bev=1` is purely additive and changes
+no existing `/shop` behavior.
 
 ---
 
@@ -248,8 +262,11 @@ static HTML and is crawlable. The hotspots and region list are real anchors to
   - `map-data.ts` lens helpers; hand-off URL builder emits NAME + country +
     group and round-trips through `/shop`'s `shop-query` matcher.
   - **Invariant test (CLAUDE.md Rule 6):** for every curated region, the
-    build-time count == the count `/shop`'s `matchesFilters` produces for the
-    same `{country,region,group}`. Guards the count==grid promise.
+    build-time `total` **strictly equals** the count `/shop`'s `matchesFilters`
+    produces for the same `{bev:1, country, region}` (the SAME beverage subset).
+    Assert `===`, NOT `≤` — a `≤` test would pass while the user-visible "View
+    all N" count silently disagrees with the grid (CLAUDE.md Rule 5: don't
+    write a test that locks in the bug). Guards the count==grid promise.
 - **Margin-leak guard:** assert no peek object contains any non-`PUBLIC_FIELDS`
   key (especially margin_*/popularity_*/cost_price).
 - **Browser verification (CLAUDE.md Rule 7 — mandatory):** run the catalog
