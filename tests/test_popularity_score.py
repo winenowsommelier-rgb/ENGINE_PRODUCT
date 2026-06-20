@@ -103,3 +103,18 @@ def test_nan_component_does_not_poison_scores():
     assert any(math.isnan(r["score"]) for r in poisoned), (
         "compute_scores does NOT defend against NaN; fetch_bi_aggregates must "
         "coalesce upstream — if this assert fails, the contract changed, update the test")
+
+
+def test_inf_is_coalesced_upstream_contract():
+    # _num() in fetch_bi_aggregates coalesces +/-inf to 0.0 (same class as NaN).
+    # We can't import the closure; assert the observable contract that compute_scores
+    # itself does NOT defend against inf, so the upstream coalesce is load-bearing.
+    inf = float("inf")
+    poisoned = [
+        {"qty": inf, "orders": 1, "revenue": 1.0},
+        {"qty": 2.0, "orders": 2, "revenue": 2.0},
+    ]
+    sync_pop.compute_scores(poisoned)
+    # inf through min-max yields nan; this documents WHY fetch_bi_aggregates must coalesce.
+    assert any(math.isnan(r["score"]) for r in poisoned), (
+        "compute_scores does not self-defend against inf; fetch_bi_aggregates must coalesce")

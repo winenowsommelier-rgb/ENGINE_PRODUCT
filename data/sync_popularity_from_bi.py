@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
-"""Compute 90-day popularity per SKU from BI DuckDB and upsert into Supabase.
+"""Compute windowed popularity per SKU from BI DuckDB and upsert into Supabase.
+
+Window: default is now 365 days (was 90). The `*_90d` column NAMES below are
+legacy and retained for backward compatibility; the actual window used is
+recorded in popularity_window_days.
 
 Pipeline:
   1. Read marts.mart_pivot_base from the local BI DuckDB.
-  2. Aggregate closed orders in the last N days (default 90) per SKU:
-        - popularity_qty_90d       = SUM(qty_ordered)
-        - popularity_orders_90d    = COUNT(DISTINCT order_id)
-        - popularity_revenue_90d   = SUM(item_revenue_thb)
+  2. Aggregate closed orders in the last N days (default 365) per SKU:
+        - popularity_qty_90d       = SUM(qty_ordered)      (legacy name)
+        - popularity_orders_90d    = COUNT(DISTINCT order_id)  (legacy name)
+        - popularity_revenue_90d   = SUM(item_revenue_thb)    (legacy name)
   3. Compute popularity_score = weighted blend of components:
         0.5 * orders_90d + 0.3 * qty_90d + 0.2 * revenue_90d
      Each component is 95th-percentile-CAPPED then min-max normalized to
@@ -17,7 +21,7 @@ Pipeline:
      in chunks of 500. Only SKUs that already exist in Supabase are updated.
 
 CLI:
-    --window-days N    (default 90)
+    --window-days N    (default 365; was 90)
     --dry-run          print summary, don't push
     --bi-db PATH       override DuckDB path
 """
@@ -85,7 +89,7 @@ def fetch_bi_aggregates(db_path: Path, window_days: int) -> list[dict]:
     # score-spread report during the Phase-1 dry-run smoke test.)
     def _num(v) -> float:
         f = float(v or 0)
-        return 0.0 if math.isnan(f) else f
+        return 0.0 if (math.isnan(f) or math.isinf(f)) else f
 
     rows: list[dict] = []
     for _, r in df.iterrows():
