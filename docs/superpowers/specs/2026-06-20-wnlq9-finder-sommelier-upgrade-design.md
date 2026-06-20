@@ -242,7 +242,8 @@ components/finder/
 
 ## 8. Testing (per project rules)
 - **Unit — scoring:** acidity/tannin ordinal ladders correct; grape-family +2; age parsing
-  handles `[**VINTAGE MAY CHANGE]`; adventurousness region-familiarity mapping; **a
+  buckets "Current vintage" (the dominant value) → young, `YYYY [**VINTAGE MAY CHANGE]` →
+  year, bare `YYYY` → year, none/NV → 0; adventurousness region-familiarity mapping; **a
   core-only Answers object scores byte-for-byte like v1** (deep-dive additive).
 - **Unit — `shop-links.ts`:** builds correct `/shop?…` params for each scope level and chip;
   omits appellation always; omits subregion when absent; URL-encodes values (e.g. `Médoc`).
