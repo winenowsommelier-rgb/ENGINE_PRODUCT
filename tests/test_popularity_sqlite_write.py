@@ -88,3 +88,15 @@ def test_never_inserts_orphans(temp_db):
     count = conn.execute("SELECT COUNT(*) FROM products WHERE sku='ZZZ'").fetchone()[0]
     conn.close()
     assert count == 0, "must UPDATE only; never INSERT new SKUs"
+
+
+def test_empty_rows_resets_all(temp_db):
+    """Empty rows list still resets all popularity_* to NULL (re-run with no matches)."""
+    sync_pop.write_sqlite(
+        [{"sku": "A1", "score": 0.9, "qty": 10.0, "orders": 5, "revenue": 1000.0}],
+        temp_db, synced_at="run1", window_days=365)
+    assert _row(temp_db, "A1")["popularity_score"] == 0.9
+    n = sync_pop.write_sqlite([], temp_db, synced_at="run2", window_days=365)
+    assert n == 0, "no rows matched"
+    assert _row(temp_db, "A1")["popularity_score"] is None, "reset even with empty input"
+    assert _row(temp_db, "A1")["popularity_synced_at"] is None
