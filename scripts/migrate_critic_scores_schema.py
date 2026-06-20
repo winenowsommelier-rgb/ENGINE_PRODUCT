@@ -12,6 +12,9 @@ failure, restore from backup and re-run from the top.
 
 Pure local — NO API spend. After running, refresh the live export (Rule 9):
     .venv/bin/python scripts/refresh_live_export.py
+
+NOTE: Always pass --db explicitly when running from a git worktree; the default
+path resolves relative to the script and can point at the wrong DB.
 """
 from __future__ import annotations
 
@@ -126,6 +129,31 @@ def main(argv=None) -> int:
 
     if not args.db.exists():
         print(f"ERROR: db not found: {args.db}", file=sys.stderr)
+        return 1
+
+    # Guard against the worktree/stray-empty-DB trap: refuse to migrate a DB that
+    # doesn't actually contain the critic_scores table we expect. A 0-byte or
+    # wrong-path DB (e.g. the default resolving into a git worktree) would
+    # otherwise "succeed" silently against the wrong file. (CLAUDE.md Rule 1.)
+    probe = sqlite3.connect(args.db)
+    try:
+        has_table = probe.execute(
+            "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='critic_scores'"
+        ).fetchone()[0]
+        row_count = (
+            probe.execute("SELECT count(*) FROM critic_scores").fetchone()[0]
+            if has_table else 0
+        )
+    finally:
+        probe.close()
+    if not has_table or row_count == 0:
+        print(
+            f"ERROR: {args.db} has no populated critic_scores table "
+            f"(has_table={bool(has_table)}, rows={row_count}). Refusing to migrate "
+            f"— pass --db with the real database path. This guards the worktree/"
+            f"empty-DB trap (CLAUDE.md Rule 1).",
+            file=sys.stderr,
+        )
         return 1
 
     conn = sqlite3.connect(args.db)
