@@ -99,6 +99,10 @@ def main(argv: list[str] | None = None) -> int:
     score_rows: list[tuple] = []
     orphan_skus: set[str] = set()
 
+    # One timestamp per load batch — a batch is fetched at one moment, and with
+    # seconds precision per-row now() would split rows across a second boundary.
+    loaded_at = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
     with args.csv.open(newline="") as f:
         for row in csv.DictReader(f):
             sku = clean(row.get("sku"))
@@ -113,7 +117,12 @@ def main(argv: list[str] | None = None) -> int:
                 row_id = str(uuid.uuid4())
                 score_rows.append(
                     (row_id, sku, critic_name, score, 100.0, vintage,
-                     None, None, notes, SOURCE_TAG)
+                     None, None, notes, SOURCE_TAG,
+                     # rich-schema cols: source, score_native, score_scale,
+                     # signal_class, signal_tier, confidence, supporting_text, fetched_at
+                     "magento_csv", clean(row.get(score_col)), "100pt",
+                     "critic_numeric", 1, 1.0, None,
+                     loaded_at)
                 )
                 by_sku.setdefault(sku, []).append(
                     {"abbr": abbr, "critic": critic_name,
@@ -141,11 +150,15 @@ def main(argv: list[str] | None = None) -> int:
     if deleted:
         print(f"  cleared {deleted} prior rows tagged {SOURCE_TAG}")
 
+    # guard against positional drift between the tuple and the INSERT column list
+    assert all(len(r) == 18 for r in score_rows), "score_rows width != 18 — INSERT column/value mismatch"
     cur.executemany(
         """INSERT INTO critic_scores
            (id, sku, critic, score, score_max, vintage, tasting_year,
-            source_url, notes, added_by)
-           VALUES (?,?,?,?,?,?,?,?,?,?)""",
+            source_url, notes, added_by,
+            source, score_native, score_scale, signal_class, signal_tier,
+            confidence, supporting_text, fetched_at)
+           VALUES (?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?)""",
         score_rows,
     )
 
