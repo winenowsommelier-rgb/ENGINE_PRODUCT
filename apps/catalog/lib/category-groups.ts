@@ -48,7 +48,8 @@ export function typeForProduct(
  * Accessory sub-category for the Accessories drill-down. Returns null for any
  * non-accessory SKU. The sub-category values come from the ONE canonical source
  * (sku-taxonomy's typeFor) so the drill-down values always match `category_type`:
- *   Bar Tools & Gifts, Glassware, Wine Coolers & Fridges, Cigars, Events.
+ *   Bar Tools & Gifts, Glassware, Wine Coolers & Fridges.
+ * (Cigars and Events are their OWN top-level groups now, so they return null here.)
  *
  * (Historically this had its own ACCESSORY_SUBCATEGORY map with a 'LOT' entry;
  * LOT is now Sake & Asian / Umeshu, not an accessory, and the strings drifted
