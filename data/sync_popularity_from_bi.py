@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import sqlite3
 import sys
 import time
 import urllib.error
@@ -209,6 +210,52 @@ def push_supabase(rows: list[dict], env: dict[str, str], synced_at: str, window_
             failed += len(chunk)
             print(f"  [{chunk_idx}/{total_chunks}] URLError: {e}", file=sys.stderr)
     return sent, failed
+
+
+def write_sqlite(rows: list[dict], db_path: Path, synced_at: str, window_days: int) -> int:
+    """Reset all popularity_* to NULL, then UPDATE the matched SKUs — atomically.
+
+    Reset-then-update in ONE transaction so a re-run can't leave stale ranks on
+    SKUs that scored last run but not this one (spec §'Re-run semantics').
+    UPDATE-only: a SKU not already in products is silently skipped (never insert).
+    NOTE: the *_90d column names are legacy; the true window is window_days
+    (365), recorded in popularity_window_days. See
+    docs/superpowers/specs/2026-06-17-bi-popularity-backfill-design.md.
+    Returns the number of rows actually updated (matched existing SKUs).
+    """
+    conn = sqlite3.connect(str(db_path), check_same_thread=False, timeout=30)
+    try:
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA synchronous=NORMAL")
+        conn.execute("PRAGMA busy_timeout=10000")
+        conn.execute("BEGIN")
+        # 1. Reset every row (first run vs all-NULL table = harmless no-op).
+        conn.execute(
+            "UPDATE products SET "
+            "popularity_score=NULL, popularity_qty_90d=NULL, popularity_orders_90d=NULL, "
+            "popularity_revenue_90d=NULL, popularity_window_days=NULL, popularity_synced_at=NULL"
+        )
+        # 2. Update the matched set. An UPDATE...WHERE sku=? that matches 0 rows
+        #    is a no-op (orphan SKU never inserted).
+        updated = 0
+        cur = conn.cursor()
+        for r in rows:
+            cur.execute(
+                "UPDATE products SET "
+                "popularity_score=?, popularity_qty_90d=?, popularity_orders_90d=?, "
+                "popularity_revenue_90d=?, popularity_window_days=?, popularity_synced_at=? "
+                "WHERE sku=?",
+                (r["score"], r["qty"], r["orders"], r["revenue"],
+                 window_days, synced_at, r["sku"]),
+            )
+            updated += cur.rowcount
+        conn.commit()
+        return updated
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
 
 
 def main() -> int:
