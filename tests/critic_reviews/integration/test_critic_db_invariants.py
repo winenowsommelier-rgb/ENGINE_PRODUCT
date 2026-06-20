@@ -23,12 +23,22 @@ import pytest
 # local checkout root first, then fall back to the MAIN checkout above any
 # .worktrees/ segment. This makes the test connect to the real DB whether run
 # from the worktree OR later from main.
+#
+# Guard against a 0-byte stray: tooling can `touch` data/db/products.db inside
+# the worktree, creating an EMPTY file that passes .exists() but has no tables.
+# Selecting it would make this load-bearing test silently validate an empty DB
+# (the exact "prove nothing" failure this file warns about). So the predicate is
+# "exists AND non-empty" — an empty placeholder is skipped and resolution falls
+# through to the real MAIN-checkout DB.
+def _is_real_db(p: Path) -> bool:
+    return p.exists() and p.stat().st_size > 0
+
 _CANDIDATES = [Path(__file__).resolve().parents[3] / "data" / "db" / "products.db"]
 _p = Path(__file__).resolve()
 if ".worktrees" in _p.parts:
     _i = _p.parts.index(".worktrees")
     _CANDIDATES.append(Path(*_p.parts[:_i]) / "data" / "db" / "products.db")
-DEFAULT_DB = next((p for p in _CANDIDATES if p.exists()), _CANDIDATES[0])
+DEFAULT_DB = next((p for p in _CANDIDATES if _is_real_db(p)), _CANDIDATES[0])
 
 # Expected steady-state, asserted by the §19 pre-flight. If the catalog grows
 # and the loader re-runs, update these together with a documented reason.
@@ -38,9 +48,9 @@ EXPECTED_BADGE_SKUS = 1550
 
 @pytest.fixture(scope="module")
 def conn():
-    if not DEFAULT_DB.exists():
-        pytest.skip(f"live db not present: {DEFAULT_DB}")
-    c = sqlite3.connect(DEFAULT_DB)
+    if not _is_real_db(DEFAULT_DB):
+        pytest.skip(f"live db not present (or empty): {DEFAULT_DB}")
+    c = sqlite3.connect(f"file:{DEFAULT_DB}?mode=ro", uri=True)
     c.row_factory = sqlite3.Row
     yield c
     c.close()
@@ -113,3 +123,13 @@ def test_score_native_not_corrupted(conn):
         f"score_native mismatch on {len(bad)}+ rows, e.g. "
         f"{[(r['id'], r['score'], r['score_native']) for r in bad]}"
     )
+
+
+def test_migration_has_run(conn):
+    """HARD assertion: once the migration is applied, the rich columns MUST exist.
+    Converts the post-migration tests from 'silently skip forever' to a hard
+    failure if the migration is expected but absent. Activate (un-skip) this only
+    after the live migration in Task 5 — see the skip guard below."""
+    if not _has_columns(conn):
+        pytest.skip("pre-migration baseline — migration not yet applied")
+    assert _has_columns(conn), "rich columns missing — migration did not apply"
