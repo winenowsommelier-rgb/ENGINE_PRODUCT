@@ -58,3 +58,17 @@ def test_empty_rows_no_crash():
     rows = []
     sync_pop.compute_scores(rows)  # must not raise
     assert rows == []
+
+
+def test_compute_scores_adds_bounded_float_score_to_every_row():
+    rows = [
+        {"qty": 5.0, "orders": 2, "revenue": 500.0},
+        {"qty": 50.0, "orders": 20, "revenue": 5000.0},
+    ]
+    sync_pop.compute_scores(rows)
+    for r in rows:
+        assert "score" in r, "compute_scores must add a 'score' field to each row"
+        assert isinstance(r["score"], float), f"score must be float, got {type(r['score'])}"
+        assert 0.0 <= r["score"] <= 1.0, f"score out of [0,1]: {r['score']}"
+        # round(...,6) is applied, so no more than 6 decimal places of precision
+        assert round(r["score"], 6) == r["score"], "score must be rounded to 6 dp"
