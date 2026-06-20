@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { toPublicProduct, PUBLIC_FIELDS } from '@/lib/catalog-data';
+import { toPublicProduct, PUBLIC_FIELDS, getAllProducts } from '@/lib/catalog-data';
 
 const RAW = {
   sku: 'WRW2106AC', name: 'Test Red', price: 1600, currency: 'THB',
@@ -35,5 +35,10 @@ describe('toPublicProduct', () => {
   it('returns {} when raw has no safe fields', () => {
     const pub = toPublicProduct({ margin_pct: 42, id: 7, popularity_rank: 3 } as any);
     expect(Object.keys(pub)).toHaveLength(0);
+  });
+  it('exposes flavor_tags_canonical on projected products', () => {
+    const withCanon = getAllProducts().find(p => (p as any).flavor_tags_canonical?.length);
+    expect(withCanon, 'at least one product has canonical flavor tags').toBeTruthy();
+    expect(Array.isArray((withCanon as any).flavor_tags_canonical)).toBe(true);
   });
 });
