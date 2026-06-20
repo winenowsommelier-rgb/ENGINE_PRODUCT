@@ -24,13 +24,15 @@ def hard_filter(products: list[dict], query: StructuredQuery) -> list[dict]:
         if query.in_stock_only and str(p.get("is_in_stock", "0")) != "1":
             continue
         if query.category_filter:
-            # Gate on SKU-derived category_group/category_type, NOT the
-            # unreliable `classification` field (mislabels ~1,509 rows
-            # "Wine product"). See test_category_filter_uses_category_group_not_classification.
-            grp = p.get("category_group", "")
-            typ = p.get("category_type", "")
-            hay = f"{grp} {typ}".lower()
-            if not any(f.lower() in hay for f in query.category_filter):
+            # Match a filter term against the product's SKU-derived category_group
+            # OR category_type by EXACT (case-insensitive) equality — NOT substring,
+            # so "Wine" matches the Wine group but not the "Wine Coolers & Fridges"
+            # type (an Accessory). classification is never consulted (it mislabels
+            # ~1,509 rows "Wine product").
+            grp = str(p.get("category_group", "")).lower()
+            typ = str(p.get("category_type", "")).lower()
+            wanted = {f.lower() for f in query.category_filter}
+            if grp not in wanted and typ not in wanted:
                 continue
         if query.country_filter:
             country = p.get("country", "")
