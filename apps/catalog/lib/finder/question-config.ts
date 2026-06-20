@@ -1,6 +1,19 @@
 import type { FinderCategory } from './answers';
 
-export type StepField = 'occasion' | 'budget' | 'axis1' | 'axis2' | 'flavorChips' | 'food';
+export type StepField =
+  | 'occasion'
+  | 'budget'
+  | 'axis1'
+  | 'axis2'
+  | 'flavorChips'
+  | 'food'
+  // ── Opt-in sommelier deep-dive fields (separate from the core flow) ──
+  | 'acidity'
+  | 'tannin'
+  | 'grape'
+  | 'age'
+  | 'adventure'
+  | 'peat';
 
 export interface StepOption {
   token: string;
@@ -174,4 +187,147 @@ export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
 /** Ordered steps for a category (after Step 1 category selection). */
 export function stepsFor(category: FinderCategory): QuestionStep[] {
   return QUESTION_CONFIG[category];
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Opt-in "deep dive" (sommelier branch)
+//
+// These steps are SEPARATE from the core flow above. They are surfaced only
+// when the user explicitly asks to go deeper, and every step is `optional`
+// (the UI offers "No preference / Skip"). Tokens here MUST match what
+// lib/finder/scoring.ts reads, or the extra answers score nothing.
+// ─────────────────────────────────────────────────────────────────────────
+
+// Wine — acidity (scoring tokens: crisp | balanced | soft)
+const WINE_ACIDITY_STEP: QuestionStep = {
+  id: 'acidity',
+  field: 'acidity',
+  title: 'How should it feel in your mouth?',
+  optional: true,
+  options: [
+    { token: 'crisp', label: 'Crisp & refreshing' },
+    { token: 'balanced', label: 'Balanced' },
+    { token: 'soft', label: 'Soft & round' },
+  ],
+};
+
+// Wine (red only) — tannin (scoring tokens: firm | silky | any)
+const WINE_TANNIN_STEP: QuestionStep = {
+  id: 'tannin',
+  field: 'tannin',
+  title: 'How much grip and structure do you like?',
+  optional: true,
+  options: [
+    { token: 'firm', label: 'Firm & gripping' },
+    { token: 'silky', label: 'Silky & smooth' },
+    { token: 'any', label: 'No preference' },
+  ],
+};
+
+// Wine — grape family (scoring tokens: cabernet | pinot-noir | syrah-shiraz |
+// sangiovese | tempranillo | merlot | grenache | surprise)
+const WINE_GRAPE_STEP: QuestionStep = {
+  id: 'grape',
+  field: 'grape',
+  title: 'Is there a grape you gravitate toward?',
+  optional: true,
+  options: [
+    { token: 'cabernet', label: 'Cabernet Sauvignon' },
+    { token: 'pinot-noir', label: 'Pinot Noir' },
+    { token: 'syrah-shiraz', label: 'Syrah / Shiraz' },
+    { token: 'sangiovese', label: 'Sangiovese' },
+    { token: 'tempranillo', label: 'Tempranillo' },
+    { token: 'merlot', label: 'Merlot' },
+    { token: 'grenache', label: 'Grenache' },
+    { token: 'surprise', label: 'Surprise me' },
+  ],
+};
+
+// Wine — age / readiness (scoring tokens: young | mature | any)
+const WINE_AGE_STEP: QuestionStep = {
+  id: 'age',
+  field: 'age',
+  title: 'Drinking now, or something with some age?',
+  optional: true,
+  options: [
+    { token: 'young', label: 'Young & vibrant' },
+    { token: 'mature', label: 'Mature & developed' },
+    { token: 'any', label: 'No preference' },
+  ],
+};
+
+// Adventure level — shared by wine & spirits (scoring tokens: classic | twist | discovery)
+const ADVENTURE_STEP: QuestionStep = {
+  id: 'adventure',
+  field: 'adventure',
+  title: 'How adventurous are you feeling?',
+  optional: true,
+  options: [
+    { token: 'classic', label: 'Stick to a classic' },
+    { token: 'twist', label: 'A little twist' },
+    { token: 'discovery', label: 'Surprise & discovery' },
+  ],
+};
+
+// Whisky — peat (scoring uses axis2 "smoky"; tokens: none | light | heavy)
+const WHISKY_PEAT_STEP: QuestionStep = {
+  id: 'peat',
+  field: 'peat',
+  title: 'How much smoke and peat do you want?',
+  optional: true,
+  options: [
+    { token: 'none', label: 'None — clean & unpeated' },
+    { token: 'light', label: 'A whisper of smoke' },
+    { token: 'heavy', label: 'Big, bold & smoky' },
+  ],
+};
+
+// Whisky — age (scoring tokens: young | mature | any)
+const WHISKY_AGE_STEP: QuestionStep = {
+  id: 'age',
+  field: 'age',
+  title: 'Younger and lively, or older and mellow?',
+  optional: true,
+  options: [
+    { token: 'young', label: 'Younger & lively' },
+    { token: 'mature', label: 'Older & mellow' },
+    { token: 'any', label: 'No preference' },
+  ],
+};
+
+const WINE_DEEP_DIVE_RED: QuestionStep[] = [
+  WINE_ACIDITY_STEP,
+  WINE_TANNIN_STEP,
+  WINE_GRAPE_STEP,
+  WINE_AGE_STEP,
+  ADVENTURE_STEP,
+];
+
+// White & sparkling: same as red but NO tannin.
+const WINE_DEEP_DIVE_NO_TANNIN: QuestionStep[] = [
+  WINE_ACIDITY_STEP,
+  WINE_GRAPE_STEP,
+  WINE_AGE_STEP,
+  ADVENTURE_STEP,
+];
+
+const DEEP_DIVE_CONFIG: Record<FinderCategory, QuestionStep[]> = {
+  red: WINE_DEEP_DIVE_RED,
+  white: WINE_DEEP_DIVE_NO_TANNIN,
+  sparkling: WINE_DEEP_DIVE_NO_TANNIN,
+  whisky: [WHISKY_PEAT_STEP, WHISKY_AGE_STEP, ADVENTURE_STEP],
+  // Thin categories — kept deliberately short (gin MUST be shorter than red).
+  // Gin's classic/contemporary axis is profile-only, so a single adventure
+  // step is all the extra signal worth collecting.
+  gin: [ADVENTURE_STEP],
+  spirits: [ADVENTURE_STEP, WHISKY_AGE_STEP],
+  sake: [WINE_AGE_STEP],
+};
+
+/**
+ * Ordered OPT-IN deep-dive steps for a category (sommelier branch).
+ * Separate from {@link stepsFor}; every step is `optional`.
+ */
+export function deepDiveStepsFor(category: FinderCategory): QuestionStep[] {
+  return DEEP_DIVE_CONFIG[category];
 }
