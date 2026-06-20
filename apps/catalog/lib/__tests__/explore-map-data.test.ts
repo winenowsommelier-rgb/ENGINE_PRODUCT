@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { REGION_CENTROIDS, centroidFor } from '@/lib/explore/region-centroids';
-import { LENS_GROUPS, lensCount, shopHref, loadExploreMapData } from '@/lib/explore/map-data';
+import { LENS_GROUPS, lensCount, shopHref } from '@/lib/explore/map-data';
+import { loadExploreMapData } from '@/lib/explore/map-data.server';
 import { CENTROIDS as MJS_CENTROIDS } from '@/scripts/gen-explore-map-data.mjs';
 import type { MapRegion } from '@/lib/explore/types';
 

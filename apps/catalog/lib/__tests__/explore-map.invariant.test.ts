@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { getAllProducts } from '@/lib/catalog-data';
 import { applyShopQuery } from '@/lib/shop-query';
-import { loadExploreMapData, lensPrimaryGroup } from '@/lib/explore/map-data';
+import { lensPrimaryGroup } from '@/lib/explore/map-data';
+import { loadExploreMapData } from '@/lib/explore/map-data.server';
 
 const PEEK_KEYS = new Set(['sku', 'name', 'price', 'image_url']);
 
