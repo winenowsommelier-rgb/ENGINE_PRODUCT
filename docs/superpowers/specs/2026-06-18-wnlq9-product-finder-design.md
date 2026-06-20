@@ -1,0 +1,437 @@
+# WNLQ9 Product Finder — Design Spec
+
+**Date:** 2026-06-18
+**Status:** IMPLEMENTED 2026-06-18 (`apps/catalog/lib/finder/` + `app/finder/` + `components/finder/`).
+Built via the plan `docs/superpowers/plans/2026-06-18-wnlq9-product-finder.md`; 44 unit tests;
+Rule 7 browser walk passed for all 7 categories. See "Implementation deltas" below.
+**Depends on:** the WNLQ9 catalog app (`apps/catalog/`) — already built. The finder is a
+feature *inside* it and reuses `getAllProducts`/`toPublicProduct` and `groupForProduct`.
+
+## Implementation deltas (what changed from this design during the build)
+These are the conscious deviations made while implementing; the design above is otherwise accurate.
+1. **Gin/Spirits split keys off the `LGN` SKU prefix, not classification.** 72/169 in-stock
+   gins (Tanqueray, Gordon's, Gilbey's…) are mis-tagged `"Wine product"`. `category-map.ts`
+   uses `isGin(p) = sku startsWith 'LGN' || firstSeg(classification)==='gin'` (mirrors
+   `groupForProduct`'s SKU authority). Without this they vanished from the gin path.
+2. **`scoreProducts` returns `{products, degraded}`** (not a bare array). `degraded` =
+   `ranked.length>0 && wellMatched<4` (never flagged on an empty pool). Body ladder rungs:
+   exact 4 / adjacent 3 / far(≥2 steps) 1 / off-ladder 0 — so an all-far pool correctly
+   degrades. The everyday/value-lean Tier-3 rule (`everyday` + budget≤1 → +1) is implemented.
+3. **Step routing is 1-based with occasion = `/finder/1`** (the §3 example's `/finder/2`
+   would have skipped occasion). Category cards link to `/finder/1?cat=…`. Out-of-range step
+   → redirect to result. The conditional food sub-step splices after occasion when `occ=food`;
+   `StepField` includes `'food'` and a dedicated `FoodChoice` component writes `answers.food`.
+4. **DATA-QUALITY note (not a finder bug):** a few SKUs are mis-classified at source (e.g.
+   `LOT0174GR` "Inchon Plum Umeshu" is classified `"Gin"`). With no group-level SKU signal,
+   the finder trusts the classification and shows it under Gin. Fix belongs in the data
+   (P3/P6 remodel, §8), not the finder.
+
+---
+
+## 1. Goal & Scope
+
+A guided, step-by-step **Product Finder** ("style quiz") inside the public WNLQ9
+catalog. The user answers a short, adaptive series of questions; the finder returns:
+
+1. **A style profile** first — a teachable, reusable archetype (e.g. *"The Bold &
+   Structured Red"*) with an expert note, defining attributes, and food/occasion
+   guidance. This is the primary, "product-expert" output and a **reusable team
+   artifact**.
+2. **Matched products** second — the in-stock bottles that best fit that style and
+   the user's budget, shown below the profile.
+
+Serves both customers (self-serve discovery) and the team (run it, copy the
+shareable result URL, send a customer their style + bottles).
+
+### IN SCOPE (Phase 1)
+- Adaptive, config-driven question flow (one engine, per-category question sets)
+- 7 Step-1 categories (below); steps adapt per category (min 3, max 6 + 1 conditional)
+- Tiered scoring with a **minimum-results guarantee** (never dead-ends)
+- Curated style-profile archetype library (config, deterministic, team-editable)
+- Conditional **food-pairing** sub-step when occasion = "With food"
+- Shareable, back-button-safe result via URL-encoded answers
+- Unit tests (scoring, archetype resolution, URL codec) + browser verification
+
+### OUT OF SCOPE (Phase 2 / other sessions)
+- LLM-generated bespoke profile copy (config archetypes only at launch)
+- An internal team-only scoring-breakdown view (shareable URL covers team use)
+- The parallel **data enhancements** (§8) — the finder ships against today's data
+- Rosé as a dedicated quiz path (demoted to a filter inside Wine — see §3)
+
+### YAGNI — explicitly excluded
+Per-session API calls, accounts, saving quiz history, A/B question variants.
+
+---
+
+## 2. Data Reality (verified against `data/live_products_export.json`, 11,436 products)
+
+> **In-stock is the STRING `"1"`, not a boolean** (project memory: *is_in_stock is a
+> STRING gotcha*). `is_in_stock` holds `"0"` / `"1"` / null; a truthiness check treats
+> the OOS string `"0"` as in-stock and is **backwards**. All counts below and the §5
+> pre-filter use `is_in_stock === "1"` (the catalog's `isInStock()` normalizer).
+
+True **in-stock** counts and coverage **over the in-stock population** per finder
+category (verified with the correct string check):
+
+| Category | In-stock | `wine_body` | `taste_profile` | `flavor_tags` | `region` | `country` |
+|---|---|---|---|---|---|---|
+| Red Wine | 2,200 | 85% | 76% | 87% | ~100% | ~100% |
+| White Wine | 744 | 86% | 80% | 89% | ~100% | ~100% |
+| Sparkling & Champagne | 417 | 89% | 70% | 91% | ~100% | ~100% |
+| Whisky | 253 | 22% | 62% | 87% | 100% | 100% |
+| Gin | 99 | 71% | 78% | 82% | ~96% | — |
+| Other Spirits | 244 | 20% | 48% | 76% | ~95% | ~95% |
+| Sake & Asian | 272 | 7% | 71% | 74% | ~97% | — |
+| ~~Rosé~~ | ~90 | **5%** | **0%** | 33% | ~100% | — |
+
+**Read carefully:** coverage among true in-stock items is *higher* than the raw
+catalog (e.g. 85% body on in-stock Red Wine), but the **pools are smaller** (Gin = 99,
+not 207). Both facts shape the engine: deep-taste scoring is viable for wine, but the
+**minimum-results guarantee (§5) will fire often** in the small/floor-tier-heavy
+categories (Gin, Other Spirits, Sake). Still no hard-filter on a sparse attribute.
+
+**Field-shape facts that drive the engine (verified):**
+- `wine_body` is a **5-level ordinal string** — exactly these values:
+  `Light · Medium-Light · Medium · Medium-Full · Full` (+ empty). NOT a free
+  "light/bold" — scoring maps onto these exact strings with **ordinal distance**, not
+  exact-match. The ladder index array in §5 has **5 entries**.
+- `wine_acidity` / `wine_tannin`: same ordinal family (`Medium`, `Medium-High`,
+  `High`, `Medium-Full`, `Light`, `Low`, …).
+- `flavor_tags` is an **array but has 5,521 distinct values** (long-tail, messy) →
+  **NOT usable as a chip source.**
+- `taste_profile` is a dict (`{schema_version, structure:'tiered', tiers:{primary,
+  secondary,tertiary}}`, each note `{note, intensity}`). The canonical note set is the
+  master taxonomy **`data/taxonomy/flavor_note_master.json` — 78 active notes**
+  (`note_id`/`note`/`note_slug`/`note_family`/`is_active`), NOT the ~71 distinct values
+  that happen to appear in the live `taste_profile` data (that 71 is an inherited
+  count, Rule 3 — use the master file as the source of truth). → **the master notes are
+  the chip source.** Gotcha: `taste_profile` carries off-master variants ("Dark Plum",
+  "Black Cherry") absent from the master — map raw → master canonical (case/plural/
+  qualifier collapse), the same normalization P4 (§8) performs.
+- Whisky **`country`** cleanly separates origin: Scotland 398 / USA 81 / Japan 80 /
+  Ireland 31. Whisky **`region`** distinguishes style: **Islay (44)** = peat/smoke
+  signal; Speyside (159)/Highland (88) = smooth. The `flavor_tags` "Smoke" tag appears
+  on only **49/629** whiskies → **do NOT key smokiness on the tag; key it on
+  `region`=Islay** (covers the peat signal far more reliably than the sparse tag).
+- `food_matching` is a **comma-separated string** on 5,783 products (reused from the
+  catalog recommender; split on `,` + trim).
+- `is_in_stock`, `price`, `classification` present for ~100%.
+
+**Implication:** 40–95% of items in some categories lack the deep fields a taste
+question asks about. The engine **must score gracefully and never hard-filter on a
+sparse attribute** (project Rules 3 & 9). See §5 scoring + minimum-results guarantee.
+
+---
+
+## 3. The Flow (config-driven, adaptive)
+
+```
+STEP 1  Category        (always)
+        Red · White · Sparkling & Champagne · Whisky · Gin · Other Spirits · Sake & Asian
+        (Rosé demoted to a one-click filter inside Wine — 5% body data, too thin to quiz)
+
+STEP 2  Occasion        (shared)  Everyday · With food · Gift · Special/cellar · Just exploring
+        └─ if "With food":  CONDITIONAL  "What are you eating?"  (optional, chips)
+                            red meat · seafood · cheese · spicy · poultry · dessert …
+STEP 3  Budget          (shared)  <฿1k · ฿1–3k · ฿3–7k · ฿7–15k · ฿15k+  (reuses catalog brackets)
+STEP 4  Taste axis 1    (adaptive — table below)
+STEP 5  Taste axis 2    (adaptive — table below)
+STEP 6  Flavor leanings (optional)  chips from the canonical flavor_note_master notes (78), scoped to category
+
+      →  /finder/result   :  Style profile (top)  +  matched products (below)
+
+Every step: progress bar · Back button · a "No preference / Surprise me" choice that
+contributes 0 to scoring (neither filters nor scores) — nothing ever dead-ends.
+Steps are declared per-category in config; thin categories declare fewer (min 3).
+```
+
+### The `Answers` contract (consumed by §5 scoring, §6 archetypes, §7 result, §8 codec)
+
+This is the single shared contract every downstream piece depends on. Defined once in
+`lib/finder/answers.ts`:
+
+```ts
+type FinderCategory =
+  'red' | 'white' | 'sparkling' | 'whisky' | 'gin' | 'spirits' | 'sake';
+type Budget = 0 | 1 | 2 | 3 | 4;     // <฿1k · ฿1–3k · ฿3–7k · ฿7–15k · ฿15k+
+type Occasion = 'everyday' | 'food' | 'gift' | 'special' | 'exploring';
+
+interface Answers {
+  category: FinderCategory;          // STEP 1 (required)
+  occasion?: Occasion;               // STEP 2
+  food?: string[];                   // conditional sub-step (occasion==='food')
+  budget?: Budget;                   // STEP 3
+  axis1?: string;                    // STEP 4 — category-specific token (see config)
+  axis2?: string;                    // STEP 5 — category-specific token
+  flavorChips?: string[];            // STEP 6 — canonical flavor_note_master slugs (≤5)
+}
+// Any unset / "No preference" field is `undefined` and contributes 0 (§5).
+```
+
+`axis1`/`axis2` carry **opaque tokens** the per-category config defines (e.g. red
+`axis1 ∈ {light,medium,bold}`, whisky `axis1 ∈ {scotch,japanese,bourbon,irish,world}`).
+`question-config.ts` owns the token→option mapping AND the token→scoring mapping, so
+§5 never hard-codes per-category strings.
+
+### FinderCategory → catalog group + classification (REQUIRED — the 7≠6 mapping)
+
+The 7 finder categories do NOT map 1:1 to the catalog's 6 browse groups. Two finder
+categories share a group and MUST be split by classification, or a Gin quiz returns rum:
+
+| FinderCategory | catalog group (`groupForProduct`) | extra classification filter |
+|---|---|---|
+| `red` | Wine | `classification` ∈ {Red Wine, …\|first=Red Wine} |
+| `white` | Wine | `classification` = White Wine |
+| `sparkling` | Wine | `classification` ∈ {Champagne, Sparkling Wine} |
+| `whisky` | Whisky | — (whole group) |
+| `gin` | Spirits | `classification` = Gin |
+| `spirits` | Spirits | `classification` ≠ Gin (rum/vodka/tequila/brandy/liqueur/…) |
+| `sake` | Sake & Asian | — (whole group) |
+
+`question-config.ts` declares this `{group, classMatch?}` per category. Pre-filter (§5) =
+`groupForProduct(p) === group  &&  (classMatch ? classMatch(p.classification) : true)`.
+Note `red`/`white`/`sparkling` already need the classMatch because all three are catalog
+group "Wine". Pipe-delimited classifications are split on `|`, first segment matched.
+
+### Step count is per-category (resolves the `[step]` route)
+
+Each category's config declares an **ordered list of steps** (length 3–6 + optional food
+sub-step). `/finder/[step]` is bounded by that list: an out-of-range or unreachable step
+redirects to the last valid step (or the result if all answered). Thin categories (Gin,
+Other Spirits, Sake) simply declare fewer steps — there is no "axis2 is optional" special
+case; the step is either in the config list or it isn't.
+
+### Food-chip → keyword map (REQUIRED — `food_matching` has 6,078 raw values)
+
+`food_matching` is free-ish text with **6,078 distinct comma-split values** ("grilled red
+meat", "shellfish (lobster", "crab", "thai food (spicy & sour)"…). The friendly chips in
+Step 2's food sub-step map to **case-insensitive substring keywords** (grounded in real
+data — coverage in parens). Scoring (§5 TIER-3 food overlap) matches a chip if ANY keyword
+is a substring of the product's `food_matching`:
+
+| Chip | Keywords | Products |
+|---|---|---|
+| Red meat | red meat, beef, lamb, steak, game, venison | 2,714 |
+| Poultry | chicken, poultry, duck, turkey | 2,102 |
+| Seafood | seafood, fish, oyster, shellfish, prawn, crab, lobster, sushi, sashimi, shrimp | 1,978 |
+| Cheese | cheese, charcuterie | 2,557 |
+| Pasta & pizza | pasta, pizza, risotto | 1,688 |
+| Spicy / Asian | spicy, thai, dim sum, curry, asian, szechuan, korean | 809 |
+| Vegetarian | salad, vegetable, mushroom, vegetarian | 1,813 |
+| Dessert | dessert, chocolate, cake, sweet, fruit tart | 997 |
+| Apéritif / snacks | apéritif, aperitif, hors, tapas, small plates, snack, canapé | 1,087 |
+
+Lives in `question-config.ts` (or a `food-chips.ts`). The chip tokens stored in
+`Answers.food[]` are the chip keys (e.g. `red-meat`, `seafood`).
+
+### Adaptive axes per category (verified data signals)
+
+The three wine categories (**red, white, sparkling**) are **separate config entries**
+that **share one axis-definition template** (body + acidity/fruit). They are not one
+category — listed together below only because their axes are identical in shape.
+
+| Category | Step 4 | Step 5 | Primary signal | Notes |
+|---|---|---|---|---|
+| Red / White / Sparkling (3 entries) | Body `Light→Full` (ordinal) | Acidity / Fruit→Earthy | `wine_body`, `wine_acidity`, `taste_profile` | scores, never filters |
+| **Whisky** | **Origin** Scotch/Japanese/Bourbon/Irish/World | **Smoky→Smooth** (Islay vs Speyside/Highland) | `country` + `region` | NOT `wine_body`, NOT "Smoke" tag |
+| Gin | Classic/London Dry → Contemporary/botanical | (origin, optional) | `flavor_tags` + `region` | 48% taste coverage |
+| Other Spirits | Pick spirit type (Vodka/Rum/Tequila/Brandy/Mezcal…) | Origin/style | `classification` + `country` | floor-tier heavy |
+| Sake & Asian | Style (Sake/Shochu/Umeshu) | Dry → Sweet | `classification` + `taste_profile` | floor-tier heavy |
+
+---
+
+## 4. Architecture & File Layout
+
+```
+apps/catalog/
+├── app/finder/
+│   ├── page.tsx              /finder        intro + Step 1 (category)
+│   ├── [step]/page.tsx       /finder/2..6   adaptive question steps
+│   └── result/page.tsx       /finder/result style profile + matched products
+├── lib/finder/
+│   ├── question-config.ts    per-category question definitions (the adaptive engine's data)
+│   ├── style-profiles.ts     curated archetype library (the reusable team artifact)
+│   ├── scoring.ts            pure scoreProducts(answers, products) → ranked[]  (unit-tested)
+│   └── answers.ts            URL <-> answers codec (shareable, back-safe state)
+├── lib/recommender.ts        (catalog's existing recommender — reused for "more like this")
+└── components/finder/
+    ├── StepShell.tsx         progress bar + Back + "No preference" affordance
+    ├── ChoiceCards.tsx       big tap targets (≥44px — accessibility, 40+ audience)
+    └── StyleResult.tsx       archetype card + matched-product grid
+```
+
+**Principles**
+- **Data-driven engine:** `question-config.ts` declares each category's steps/options.
+  Adding or tuning a category is a config edit, not new control flow.
+- **Pure scoring:** `scoring.ts` takes answers + product list, returns a ranked list.
+  No I/O, no React — unit-testable in isolation.
+- **Reuses the catalog's safety rails:** every product shown passes through the
+  catalog's `toPublicProduct` allowlist (no margin/B2B leak — catalog spec §4.1).
+
+---
+
+## 5. Scoring Engine (the core)
+
+`scoreProducts(answers, products) → ranked[]` — pure, additive, tiered.
+
+```
+PRE-FILTER (hard, safe):  classification ∈ chosen-category's class set  AND  in-stock  AND  in budget tier
+   • category membership uses the catalog's groupForProduct(p) (lib/category-groups.ts),
+     NOT raw classification equality. The SHIPPED catalog resolves group by SKU PREFIX
+     first (LWH=Whisky, L*=Spirits, LSK/LSJ=Sake, W*=Wine, A*/G*/CIG/WEV=Accessories),
+     falling back to the group→classification map. This is required because the raw
+     `classification` field dumps 1,509 rows into "Wine product" (only ~84 real wine) and
+     mislabels accessories — raw equality would dead-end / mis-bucket. The finder maps each
+     FinderCategory → catalog group and filters via groupForProduct(p).
+     FUTURE: `classification` is slated to be repurposed to the real DESIGNATION
+     (Grand Cru/XO/Reserva) with the browse group moving to a `category` field — the finder
+     filters by GROUP (via groupForProduct), so that remodel does not change this pre-filter;
+     it only ADDS a possible designation facet/signal later. See the remodel project note.
+   • in-stock = is_in_stock === "1" (string — isInStock() normalizer; "0"/null are OOS).
+   • budget is a coarse bracket the user chose — safe to filter.
+
+TIER 1 — deep taste (highest weight; MISSING attribute = 0, never filters)
+  Body axis      ordinal ladder over [Light, Medium-Light, Medium, Medium-Full, Full]:
+                 exact +4 · ±1 step +2 · ±2 steps +1 · else/missing 0
+  Acidity/Tannin same ordinal ladder: exact +3 · ±1 +1 · missing 0
+  Flavor chips   +2 per canonical taste_profile note matched
+                 (also fuzzy-map the product's flavor_tags into the master note set)
+
+TIER 2 — origin / varietal
+  country match +2 · region match +2 · grape_variety match +2 · classification refine +1
+
+TIER 3 — floor / context (always available)
+  occasion weighting:  gift/special → +2 if score_summary present (critic-rated)
+                       everyday → +1 if in lower budget tiers (value lean)
+  food_matching overlap (when food step answered): +1 per chip whose keyword set
+                       matches the product's food_matching (food-chip→keyword map, §3;
+                       case-insensitive substring — handles the 6,078 raw values)
+
+RANK:    sort by score desc, tie-break by score_summary present then price asc
+DEDUPE:  by sku
+GUARANTEE (minimum results): if fewer than 4 products clear a minimum quality score,
+         relax to TIER-3 floor only and label the rail honestly:
+         "Closest matches in your budget." → NEVER returns an empty result.
+```
+
+**Ordinal ladder is mandatory, not exact-match** — because the real vocabularies are
+`Medium-Full`, `Medium-High`, etc. Exact-match would discard near-matches and starve
+results. The ladder is defined as an index array per scale field in `scoring.ts`.
+
+**"No preference / Surprise me"** on any step sets that answer to null → the
+corresponding scoring block is skipped (adds 0). It neither filters nor scores.
+
+---
+
+## 6. Style Profiles (the reusable artifact)
+
+`style-profiles.ts` — curated archetype library, deterministic resolution.
+
+```ts
+interface StyleProfile {
+  id: string;                       // 'bold-structured-red'
+  category: FinderCategory;
+  name: string;                     // 'The Bold & Structured Red'
+  tagline: string;                  // one line
+  expertNote: string;               // 2–3 sentences, sommelier voice
+  definingAttributes: {
+    body?: string; acidity?: string; tannin?: string;
+    typicalGrapes?: string[]; typicalRegions?: string[];
+  };
+  foodGuidance: string;             // 'Red meat, aged hard cheese'
+  occasionFit: string[];            // ['dinner','special']
+  match: (answers: Answers) => number;  // deterministic score; highest wins
+}
+```
+
+- ~3–5 archetypes per category (~30 total), hand-authored, team-editable.
+- The user's answers resolve to the **single highest-scoring archetype** (deterministic
+  → unit-testable). The archetype's `definingAttributes` also **seed the product
+  scoring** so the profile and the products below it are consistent.
+- This file *is* the team artifact: readable, reusable for marketing/segmentation.
+- **Phase-2 hook:** an optional LLM pass could later rewrite `expertNote` per session;
+  the archetype resolution stays the deterministic spine. Not built now.
+
+---
+
+## 7. Result Page, Sharing, Errors
+
+- **Result page** reads the `Answers` object from the query string. **URL schema**
+  (owned by `answers.ts`, one param per `Answers` field, lossless round-trip):
+
+  | Param | From | Encoding |
+  |---|---|---|
+  | `cat` | `category` (required) | one token: `red\|white\|sparkling\|whisky\|gin\|spirits\|sake` |
+  | `occ` | `occasion` | one token: `everyday\|food\|gift\|special\|exploring` |
+  | `food` | `food[]` | comma-joined tokens, URL-encoded (e.g. `food=redmeat,cheese`) |
+  | `b` | `budget` | single digit `0..4` |
+  | `a1` | `axis1` | one config token |
+  | `a2` | `axis2` | one config token |
+  | `fl` | `flavorChips[]` | comma-joined canonical-note slugs (≤5) |
+
+  Example: `/finder/result?cat=red&occ=food&food=redmeat,cheese&b=2&a1=bold&a2=earthy&fl=oak,leather`.
+  `decodeAnswers(searchParams) → Answers` and `encodeAnswers(Answers) → string` are
+  inverse; unknown params ignored, malformed values dropped to `undefined` (degrade,
+  never throw). Result page: archetype card on top (name · expert note · defining
+  attributes · food/occasion), matched-product grid below (catalog cards + quick-view),
+  then "Refine answers" / "Start over".
+- **Shareable / back-safe:** the URL fully encodes `Answers` (round-trip tested, §9).
+  A team member runs it and sends the link; the customer sees the same result.
+- **Error handling (catalog Rule 9 pattern):** invalid/partial params → fall back to
+  the floor tier or redirect to `/finder`; a missing field hides its block; the page
+  never crashes and the result rail is never empty (guarantee, §5).
+
+---
+
+## 8. Parallel Data-Enhancement Plan (separate session — NOT in this build)
+
+The finder ships against **today's** data; these sharpen results later and run in a
+**parallel session**. The UI needs **zero changes** after each lands — just a rebuild
+(catalog Rule 9: refresh `live_products_export.json`). Priority order:
+
+| # | Enhancement | Field(s) | Today | Finder impact | Cost class | Gate |
+|---|---|---|---|---|---|---|
+| **P4** | Normalize `flavor_tags` → canonical master set (`flavor_note_master.json`, 78 notes) | `flavor_tags` | 5,521 messy | Clean flavor matching across both fields | **Rule-based, no API** | **Safe to start now, in parallel** |
+| **P1** | Backfill body/acidity/tannin on wines | `wine_body`,`wine_acidity`,`wine_tannin` | ~55% wines | Powers Steps 4–5 for the 3 biggest categories — **highest leverage** | Paid LLM | **Rule 10 pre-flight** (backup → 5-SKU canary → cost estimate → user sign-off → verify in export) |
+| **P2** | Backfill `taste_profile` notes on wines | `taste_profile` | 49% wines | Powers Step-6 chips + flavor scoring | Paid LLM | Rule 10 pre-flight |
+| **P3** | Derive `spirit_style` tag (Peated/Sherried/Bourbon-cask…) | *new field* | 0% | Lets whisky/spirits quiz as richly as wine | Mostly rule-based + light LLM | Canary if any API |
+| **P6** | Extract designation (Grand Cru/XO/Reserva/DOCG/Single Malt) from `name` → structured field; rename group→`category`, repurpose `classification` to designation | `classification`/`category` (remodel) | 0% structured (~18% have a name token) | Prestige signal for Gift/Special occasion + a designation facet | Rule-based extraction | **MIGRATION** — must rename in lockstep with catalog code (reads classification as type); coordinate, verify in export |
+
+**Sequencing recommendation:** start **P4** now (no cost, pure win); queue **P1** as the
+first paid run *after* its canary and your sign-off. P1/P2/P5-class paid runs MUST NOT
+be launched in parallel without the Rule 10 gate. (P5 — backfill `food_matching` — is a
+lower-priority paid item supporting the food step; listed for completeness.)
+
+---
+
+## 9. Testing (per project rules)
+
+- **Unit — `scoring.ts`:** ordinal-ladder distances correct (5-level body ladder);
+  **minimum-4 guarantee** holds on a starved query (assert against a small category
+  like Gin); **only in-stock returned — assert `is_in_stock === "1"`** explicitly
+  (a truthy check would pass while shipping OOS `"0"` rows — the string gotcha);
+  no duplicate skus; "No preference"/`undefined` answer contributes 0; pre-filter
+  category membership matches via `groupForProduct` + the FinderCategory classMatch
+  (§3) — assert a `gin` query excludes rum/vodka and a `spirits` query excludes gin,
+  and a `sparkling` query excludes still wine.
+- **Unit — `style-profiles.ts`:** archetype resolution is deterministic for a given
+  answer set; every category has ≥1 reachable archetype.
+- **Unit — `answers.ts`:** URL ⇄ answers round-trip is lossless; partial/invalid params
+  degrade safely.
+- **Data invariant (Rule 6):** every product the finder returns passes through
+  `toPublicProduct` — **no margin/B2B field ever appears** in a finder response.
+- **Browser verification (Rule 7 — mandatory before "done"):** dev server up; walk
+  **all 7 categories** end-to-end (including a "No preference" path and a "With food"
+  path) to a **non-empty** result — Red, White, Sparkling & Champagne, Whisky, Gin,
+  Other Spirits, Sake & Asian; confirm the style card +
+  product grid render and the result URL is shareable/back-safe. "It compiles" is
+  not done.
+
+---
+
+## 10. Open Items / Phase 2
+- LLM-rewritten `expertNote` per session (archetype spine stays deterministic).
+- Internal scoring-breakdown view for the team (if the shareable URL proves insufficient).
+- Saving / emailing a finder result (ties into the catalog's Phase-2 cart/order flow).
+- Data enhancements P1–P5 (§8) landing and re-rendering the finder via rebuild.
+```

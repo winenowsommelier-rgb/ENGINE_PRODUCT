@@ -1,0 +1,319 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * WNLQ9 — Maison theme tokens
+ *
+ * Visual direction: a premium, understated wine boutique. Near-white background,
+ * near-black text, ONE restrained accent (a deep muted burgundy). Lots of
+ * whitespace, calm typographic navigation.
+ *
+ * Accessibility (primary users are 40+ with eyesight challenges):
+ *   - 18px base font (html font-size below)
+ *   - high-contrast near-black text on white (no gray-on-gray primary text)
+ *   - generous line-height (1.6) on body
+ *   - visible :focus-visible ring for keyboard nav
+ *   - 44px min tap targets are enforced per-component
+ *
+ * Colour values are HSL triplets (no hsl() wrapper) so Tailwind can compose
+ * them with opacity, matching the shadcn convention.
+ */
+
+@layer base {
+  :root {
+    /* Near-white canvas, near-black ink. */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%; /* ~#1a1a1a — high contrast primary text */
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+
+    /*
+     * Accent = deep muted burgundy (#7c2d3a → hsl(350 47% 33%)).
+     * Wired into --primary so shadcn buttons/links inherit it. Used sparingly
+     * for primary actions, links, and hover states.
+     */
+    --primary: 350 47% 33%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Quiet warm-neutral secondary surface. */
+    --secondary: 30 6% 96%;
+    --secondary-foreground: 0 0% 12%;
+
+    --muted: 30 6% 96%;
+    /*
+     * Secondary text. Kept dark enough to stay readable (>=4.5:1 on white):
+     * hsl(0 0% 38%) ~ #616161, ~5.7:1. Not gray-on-gray.
+     */
+    --muted-foreground: 0 0% 32%;
+
+    --accent: 30 6% 95%;
+    --accent-foreground: 0 0% 12%;
+
+    --destructive: 0 72% 38%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 88%;
+    --input: 0 0% 85%;
+
+    /* Focus ring uses the burgundy accent — clearly visible on white. */
+    --ring: 350 47% 33%;
+
+    --radius: 0.375rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  /*
+   * 18px base — do NOT lower. Sets the rem scale for the whole store so every
+   * rem-based size inherits the accessible baseline.
+   */
+  html {
+    font-size: 18px;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    line-height: 1.6;
+    font-feature-settings: 'kern';
+    text-rendering: optimizeLegibility;
+  }
+
+  /*
+   * Strong, global keyboard-focus ring. Mouse clicks don't trigger it
+   * (:focus-visible), but Tab navigation shows a clear 3px burgundy ring with
+   * a white offset so it reads against any background.
+   */
+  :focus-visible {
+    outline: 3px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /*
+   * Container horizontal padding step-up.
+   *
+   * The Tailwind container plugin gives a flat 1rem (16px) base padding so the
+   * frame fits a 390px mobile viewport without horizontal overflow. We restore
+   * the larger desktop gutters here — at the real sm/lg breakpoints — WITHOUT
+   * going through container.padding, because adding sm/lg to container.screens
+   * would also cap the container's max-width (a desktop regression). This keeps
+   * the original full-width-until-1400px behaviour while scaling the gutters:
+   *   mobile  <640px : 1rem   (16px)  — fits 390px
+   *   sm     >=640px : 1.5rem (24px)
+   *   lg    >=1024px : 2rem   (32px)  — original desktop gutter, unchanged
+   */
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+}
+
+/*
+ * ────────────────────────────────────────────────────────────────────────────
+ * TASTE-VIZ — light Maison stylesheet for the ported product components
+ * (TasteWheel / TasteNote / StructuralGauges, components/product/*).
+ *
+ * The internal app rendered these with semantic classNames but NO stylesheet, so
+ * they appeared mostly unstyled. These rules dress them for the near-white Maison
+ * canvas: calm warm-neutral surfaces, the burgundy accent (--primary) for
+ * emphasis, generous 18px-scale spacing, and readable contrast for the 40+
+ * audience. The SVG wheel itself is self-styling via inline fills; here we lay out
+ * the wheel container, the tier legend, the note chips and the gauges.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/* Wheel: SVG on top, legend below; centred. */
+.taste-wheel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+.taste-wheel > svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Tier legend: one stacked BLOCK per tier (Primary / Secondary / Tertiary).
+   Each block is a header line (colour-keyed dot + tier name) ABOVE the wrapping
+   pills — never a tight label column, so variable-width labels can't wrap into
+   or collide with the pills at any width. Empty tiers are not rendered at all
+   (handled in TasteWheel.tsx). */
+.taste-wheel-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;            /* generous separation between tier blocks */
+  width: 100%;
+}
+/* Per-tier colour token: the ring colour the pill group belongs to. Drives both
+   the header dot and the pill left-accent so a group reads as ONE wheel ring. */
+.taste-wheel-legend-primary   { --tier-color: #7c2d3a; }  /* outer  ring */
+.taste-wheel-legend-secondary { --tier-color: #8b5a2b; }  /* middle ring */
+.taste-wheel-legend-tertiary  { --tier-color: #6c6055; }  /* inner  ring */
+
+.taste-wheel-legend-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;            /* header → pills breathing room */
+}
+/* Header line: dot + tier name on its own line, above the pills. */
+.taste-wheel-legend-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  color: hsl(var(--muted-foreground));
+}
+/* The ring colour key dot, sized off the label so it scales with the 18px base. */
+.taste-wheel-legend-label::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 9999px;
+  background: var(--tier-color);
+}
+
+/* Note chips row — wraps freely with even gaps. */
+.taste-notes-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Individual non-interactive note chip (TasteNote → <span>). A subtle left
+   accent in the tier colour ties each pill to its wheel ring without shouting. */
+.taste-note {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid hsl(var(--border));
+  border-left: 3px solid var(--tier-color, hsl(var(--border)));
+  background: hsl(var(--secondary));
+  color: hsl(var(--foreground));
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+/* Higher-intensity notes read a touch stronger (subtle, not loud). */
+.taste-note[data-intensity='3'] {
+  font-weight: 600;
+  background: color-mix(in srgb, var(--tier-color, hsl(var(--secondary))) 10%, hsl(var(--secondary)));
+}
+.taste-note[data-intensity='2'] {
+  background: color-mix(in srgb, var(--tier-color, hsl(var(--secondary))) 5%, hsl(var(--secondary)));
+}
+
+/* Desktop: wheel and legend can sit side by side for a more composed block,
+   while mobile keeps the clean vertical stack. */
+@media (min-width: 768px) {
+  .taste-wheel {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2.5rem;
+  }
+  .taste-wheel > svg {
+    flex: 0 0 auto;
+  }
+  .taste-wheel-legend {
+    padding-top: 0.5rem;
+  }
+}
+
+/* ── Structural gauges ──────────────────────────────────────────────────── */
+.structural-gauges {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.gauge-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.gauge-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.gauge-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+.gauge-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+/* The four-cell track. Filled vs empty colour is set inline per cell by the
+ * component (axis accent vs warm-neutral); here we lay them out as equal
+ * segments with rounded ends. */
+.gauge-track {
+  display: flex;
+  gap: 3px;
+  height: 0.7rem;
+}
+.gauge-cell {
+  flex: 1 1 0;
+  border-radius: 3px;
+}
+.gauge-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  color: hsl(var(--muted-foreground));
+}
+.gauge-scale-labels > span {
+  flex: 1 1 0;
+  text-align: center;
+}
+.gauge-scale-labels > span:first-child { text-align: left; }
+.gauge-scale-labels > span:last-child { text-align: right; }
+
+/*
+ * ────────────────────────────────────────────────────────────────────────────
+ * PRODUCT DESCRIPTION — prose styling for the SANITIZED Magento HTML rendered on
+ * the product detail page (app/product/[sku]/page.tsx). The sanitizer
+ * (lib/sanitize-html.ts) emits only <p>/<strong>/<em>/<br>, so we only need rules
+ * for those. Goal: readable paragraphs on the 18px Maison scale for the 40+
+ * audience — paragraph spacing, generous line-height, normal bold/italic.
+ * ──────────────────────────────────────────────────────────────────────────── */
+.product-description {
+  line-height: 1.65;
+}
+.product-description p {
+  margin-bottom: 0.75em;
+}
+.product-description p:last-child {
+  margin-bottom: 0;
+}
+.product-description strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+.product-description em {
+  font-style: italic;
+}

@@ -37,6 +37,7 @@
   "exclude": [
     "node_modules",
     "tests/**/*.test.ts",
-    "tests/**/*.spec.ts"
+    "tests/**/*.spec.ts",
+    "apps/**"
   ]
 }

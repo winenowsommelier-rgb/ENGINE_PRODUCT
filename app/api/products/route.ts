@@ -93,9 +93,21 @@ function loadLocalProducts(): LocalProduct[] {
     if (!liveSkus.has(String(db.sku ?? ''))) merged.push(db);
   }
 
-  _localCache = merged;
+  // Coerce all currency to THB. This catalog is THB-only (every price/currency
+  // path in the API defaults to THB), but old enrichment scripts mislabelled
+  // ~4,300 db rows as lowercase 'usd' while the prices were always THB. Those
+  // rows are normally shadowed by the THB live-export values, but coerce here so
+  // any db-only or Supabase row that leaks a non-THB label still renders as THB.
+  const normalised = merged.map(p => {
+    if (p.currency && String(p.currency).toLowerCase() !== 'thb') {
+      return { ...p, currency: 'THB' };
+    }
+    return p;
+  });
+
+  _localCache = normalised;
   _localCacheAt = Date.now();
-  return merged;
+  return normalised;
 }
 
 // ── Supabase fetch (parallel, best-effort) ────────────────────────────────────
