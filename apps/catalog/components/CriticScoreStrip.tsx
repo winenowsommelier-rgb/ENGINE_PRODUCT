@@ -4,17 +4,45 @@ export interface CriticScoreStripProps {
   scoreMax?: number | null;
   scoreSummary?: string | null;
   maxCritics?: number;
+  /**
+   * "strip" (default) — full segmented data strip, one cell per critic. Used on
+   *   the product detail page.
+   * "compact" — a single small pill (lead score + abbr + "+N"). Used as an
+   *   overlay on grid cards where the full strip is too heavy.
+   */
+  variant?: 'strip' | 'compact';
 }
 
 /**
- * Storefront critic-score strip. Segmented data strip — one cell per critic,
- * the score_max critic accented in the boutique's burgundy (--primary). Renders
- * nothing when there is no score or the payload is malformed (the parse helper
- * gates that), so it can be placed unconditionally without leaving an empty box.
+ * Storefront critic-score badge. Renders nothing when there is no score or the
+ * payload is malformed (the parse helper gates that), so it can be placed
+ * unconditionally without leaving an empty box.
  */
-export function CriticScoreStrip({ scoreMax, scoreSummary, maxCritics = 4 }: CriticScoreStripProps) {
+export function CriticScoreStrip({
+  scoreMax,
+  scoreSummary,
+  maxCritics = 4,
+  variant = 'strip',
+}: CriticScoreStripProps) {
   const parsed = parseCriticScores(scoreMax, scoreSummary, maxCritics);
   if (!parsed) return null;
+
+  if (variant === 'compact') {
+    // A single pill — lead score + abbr + "+N" for the remaining critics. The
+    // full critic list rides in aria-label + title so nothing is lost.
+    return (
+      <span
+        role="group"
+        aria-label={parsed.ariaLabel}
+        title={parsed.ariaLabel}
+        className="inline-flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-xs font-semibold tabular-nums text-primary-foreground shadow-sm ring-1 ring-primary/20"
+      >
+        <span>{parsed.lead.score_native}</span>
+        <span className="opacity-80">{parsed.lead.abbr}</span>
+        {parsed.overflow > 0 ? <span className="opacity-70">+{parsed.overflow}</span> : null}
+      </span>
+    );
+  }
 
   // Guarantee the lead is shown even if it ranks below the maxCritics cap.
   const cells = parsed.critics.some(

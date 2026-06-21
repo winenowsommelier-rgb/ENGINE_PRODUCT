@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Eye } from 'lucide-react';
 import { StorefrontImage } from '@/components/StorefrontImage';
+import { CriticScoreStrip } from '@/components/CriticScoreStrip';
 import { QuickView } from '@/components/QuickView';
 import { formatPrice } from '@/lib/price-tiers';
 import { cn, isInStock } from '@/lib/utils';
@@ -73,6 +74,16 @@ export function ProductCard({ product, contactLinks }: ProductCardProps) {
                 Out of stock
               </span>
             ) : null}
+
+            {/* Critic score — compact pill, top-right. Renders nothing for
+                unscored products (helper-gated), so no empty overlay. */}
+            <div className="absolute right-2 top-2">
+              <CriticScoreStrip
+                variant="compact"
+                scoreMax={product.score_max}
+                scoreSummary={product.score_summary}
+              />
+            </div>
 
             {/* Quick look — visible on mobile, fades in on desktop hover. */}
             <button

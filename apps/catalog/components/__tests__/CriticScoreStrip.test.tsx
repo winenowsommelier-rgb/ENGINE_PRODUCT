@@ -61,3 +61,44 @@ describe('CriticScoreStrip', () => {
     expect(wa).toHaveAttribute('title', 'Wine Advocate — 91');
   });
 });
+
+describe('CriticScoreStrip variant="compact"', () => {
+  it('renders nothing when there is no score', () => {
+    const { container } = render(
+      <CriticScoreStrip variant="compact" scoreMax={undefined} scoreSummary={undefined} />,
+    );
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('renders a single pill with the lead score + abbr', () => {
+    render(<CriticScoreStrip variant="compact" scoreMax={92} scoreSummary={twoCritics} />);
+    const pill = screen.getByRole('group');
+    expect(pill.textContent).toContain('JS');
+    expect(pill.textContent).toContain('92');
+    // It does NOT spell out every critic in the visible pill (compact = lead only).
+    expect(pill.textContent).not.toContain('91');
+  });
+
+  it('carries the full critic list in aria-label and a title tooltip', () => {
+    render(<CriticScoreStrip variant="compact" scoreMax={92} scoreSummary={twoCritics} />);
+    const pill = screen.getByRole('group');
+    expect(pill).toHaveAttribute('aria-label', 'Critic scores: James Suckling 92, Wine Advocate 91');
+    expect(pill).toHaveAttribute('title', 'Critic scores: James Suckling 92, Wine Advocate 91');
+  });
+
+  it('shows a +N overflow count when there is more than one critic', () => {
+    render(<CriticScoreStrip variant="compact" scoreMax={92} scoreSummary={twoCritics} />);
+    // two critics → lead + 1 more → "+1"
+    expect(screen.getByRole('group').textContent).toContain('+1');
+  });
+
+  it('omits the +N when there is only one critic', () => {
+    const one = JSON.stringify({
+      critics: [{ abbr: 'WA', critic: 'Wine Advocate', score_native: '95', score_value: 95 }],
+      community: [],
+      medals: [],
+    });
+    render(<CriticScoreStrip variant="compact" scoreMax={95} scoreSummary={one} />);
+    expect(screen.getByRole('group').textContent).not.toContain('+');
+  });
+});
