@@ -87,13 +87,18 @@ describe('getAllProducts — Recommended order + no score leak', () => {
       else expect(seenOutOfStock, `in-stock ${p.sku} appears after an out-of-stock product`).toBe(false);
     }
   });
-  it('within the in-stock block, a tier-2 product never appears after a tier-0 product', () => {
-    let seenTier0 = false;
+  it('within the in-stock block, no scored (tier 1|2) product appears after an unscored (tier 0) one', () => {
+    let seenUnscored = false;
     for (const p of all) {
-      if (p.is_in_stock !== true) break;
-      if (p.popularity_tier === 0) seenTier0 = true;
-      if (p.popularity_tier === 2) {
-        expect(seenTier0, `tier-2 ${p.sku} appears after a tier-0 in-stock product`).toBe(false);
+      if (p.is_in_stock !== true) break; // only inspect the leading in-stock block
+      if (p.popularity_tier === 0) {
+        seenUnscored = true;
+      } else {
+        // tier 1 or 2 = scored; it must NOT come after any unscored in-stock product
+        expect(
+          seenUnscored,
+          `scored ${p.sku} (tier ${p.popularity_tier}) appears after an unscored in-stock product`,
+        ).toBe(false);
       }
     }
   });
