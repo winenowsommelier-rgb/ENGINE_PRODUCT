@@ -564,8 +564,11 @@ cd apps/catalog && grep -rn "from '@/components/product/TasteWheel'\|from './Tas
 For each hit, confirm it imports only `TasteWheel`, `Note`, or `Tiers` — all still
 exported with identical shapes (`Note = { note: string; intensity: 1|2|3 }`,
 `Tiers = { primary; secondary; tertiary }`). If anything imports a symbol the
-rewrite drops, keep that export. The catalog page imports only `TasteWheel`
-(value), so it is unaffected.
+rewrite drops, keep that export. Known importers and why each survives:
+- `app/product/[sku]/page.tsx` — imports `TasteWheel` (value) only → unaffected.
+- `lib/taste-adapter.ts` — imports `type { Tiers }` → covered by the
+  `export type { Tiers } from '@/lib/taste-geometry'` re-export; do NOT drop it.
+- `components/__tests__/TasteWheel.test.tsx` — imports `type Tiers` → same re-export.
 
 - [ ] **Step 1: Extend the existing test**
 
