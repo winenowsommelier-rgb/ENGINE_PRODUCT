@@ -128,22 +128,27 @@ const GRAPE_FAMILY: Record<string, string[]> = {
 // Flavor family → canonical-note SET that signals that family. Chip tokens are
 // hyphenated (`dark-fruit`); canonical notes are spaced Title-Case (`Dark Plum`).
 // We match by lowercased set-intersection, so the historical hyphen-vs-space bug
-// (chip `dark-fruit` never equalled tag `dark fruit`) cannot recur. Notes here are
-// already lowercase; product notes are lowercased via `norm` at compare time.
+// (chip `dark-fruit` never equalled tag `dark fruit`) cannot recur. Both sides are
+// lowercased at compare time (product notes via `norm`, family notes via `.map(norm)`
+// in the matcher) — so the invariant is self-enforcing, not comment-enforced: a
+// future Title-Case note added here still matches. Every note below was verified to
+// exist (>0 rows) in `flavor_tags_canonical`; zero-count notes (passion fruit,
+// baking spice, blossom, flint, chalk, smoky, peat, almond) were dropped so the
+// note universe doesn't overstate the matcher's reach.
 // Exported so a later coverage test can import and assert the key/note universe.
 export const FLAVOR_FAMILY: Record<string, string[]> = {
   'red-fruit':  ['red fruit','cherry','strawberry','raspberry'],
   'dark-fruit': ['dark plum','plum','blackcurrant','blackberry','black cherry'],
   citrus:       ['citrus','citrus zest','lemon','lime','grapefruit'],
   'stone-fruit':['stone fruit','peach','apricot','green apple','pear'],
-  tropical:     ['tropical','pineapple','mango','passion fruit'],
+  tropical:     ['tropical','pineapple','mango'],
   oak:          ['oak','vanilla','cedar','toast'],
-  spice:        ['spice','black pepper','baking spice','cinnamon','clove'],
+  spice:        ['spice','black pepper','cinnamon','clove'],
   earthy:       ['earth','tobacco','leather','mushroom','graphite'],
-  floral:       ['floral','rose','violet','blossom'],
-  mineral:      ['minerality','wet stone','sea salt','flint','chalk'],
-  smoky:        ['smoke','smoky','peat'],
-  nutty:        ['hazelnut','almond','brioche','cocoa','caramel','honey'],
+  floral:       ['floral','rose','violet'],
+  mineral:      ['minerality','wet stone','sea salt'],
+  smoky:        ['smoke'],
+  nutty:        ['hazelnut','brioche','cocoa','caramel','honey'],
 };
 
 function grapeScore(token: string | undefined, grapeVariety: string | undefined): number {
@@ -242,7 +247,9 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
       const notes = new Set((p.flavor_tags_canonical ?? []).map(norm));
       for (const chip of a.flavorChips) {
         const fam = FLAVOR_FAMILY[chip];
-        if (fam && fam.some((n) => notes.has(n))) s += 2;
+        // norm() both sides so the match is case/whitespace-insensitive — a future
+        // Title-Case note in FLAVOR_FAMILY still matches (invariant self-enforcing).
+        if (fam && fam.some((n) => notes.has(norm(n)))) s += 2;
       }
     }
     // TIER-2 origin/style for non-wine categories (whisky origin→country & style→region,

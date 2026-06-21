@@ -26,4 +26,16 @@ describe('no dead chips — every finder chip returns >=1 in-stock product', () 
       expect(n, `flavor chip "${key}" returned 0 in-stock products`).toBeGreaterThan(0);
     }
   });
+
+  // Stricter than the per-family guard above: every INDIVIDUAL note in a family must
+  // exist in the data. A zero-count note is inert — it overstates the matcher's reach
+  // and is the same dead-path class as the hyphen-vs-space bug this feature fixed.
+  it('no dead sub-notes — every note in every family exists in flavor_tags_canonical', () => {
+    const universe = new Set<string>();
+    for (const p of inStock)
+      for (const t of p.flavor_tags_canonical ?? []) universe.add(t.trim().toLowerCase());
+    for (const [key, notes] of Object.entries(FLAVOR_FAMILY))
+      for (const note of notes)
+        expect(universe.has(note.toLowerCase()), `family "${key}" note "${note}" matches 0 in-stock products`).toBe(true);
+  });
 });
