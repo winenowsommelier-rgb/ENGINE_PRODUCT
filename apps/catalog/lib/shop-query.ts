@@ -38,7 +38,9 @@
  *   hasScore=1→ keep only products with a non-empty score_summary
  *
  * Sort (param `sort`):
- *   name (default) → A–Z by name (locale-aware, case-insensitive)
+ *   recommended (default) → business order computed at load (in-stock → proven
+ *                  sellers → premium); applyShopQuery preserves the pre-ranked order
+ *   name           → A–Z by name (locale-aware, case-insensitive)
  *   price-asc      → cheapest first
  *   price-desc     → most expensive first
  *
@@ -55,7 +57,7 @@ import { normalizeScale } from './taste-adapter';
 
 export const SHOP_PAGE_SIZE = 24;
 
-export type SortKey = 'name' | 'price-asc' | 'price-desc';
+export type SortKey = 'recommended' | 'name' | 'price-asc' | 'price-desc';
 
 /** Raw, untrusted params. Values may be string | string[] | undefined (Next's shape). */
 export type ShopParams = Record<string, string | string[] | undefined>;
@@ -87,6 +89,7 @@ function norm(v: string | null | undefined): string {
 }
 
 const SORTS: Record<string, SortKey> = {
+  recommended: 'recommended',
   name: 'name',
   'price-asc': 'price-asc',
   'price-desc': 'price-desc',
@@ -184,9 +187,14 @@ export function applyShopQuery(
   const items = products.filter((p) => matchesFilters(p, params));
 
   // ---- SORT (on a copy; do not mutate the caller's array) ----
-  const sortKey: SortKey = SORTS[firstParam(params.sort) ?? ''] ?? 'name';
+  const sortKey: SortKey = SORTS[firstParam(params.sort) ?? ''] ?? 'recommended';
   const sorted = [...items];
-  if (sortKey === 'name') {
+  if (sortKey === 'recommended') {
+    // No-op: products arrive PRE-RANKED from getAllProducts() (Recommended order is
+    // computed server-side at load, where the raw popularity_score is in scope). `items`
+    // is filter()'d from that array, so it already preserves the Recommended order.
+    // Intentionally do NOT sort here.
+  } else if (sortKey === 'name') {
     sorted.sort((a, b) =>
       (a.name ?? '').localeCompare(b.name ?? '', 'en', { sensitivity: 'base' }),
     );

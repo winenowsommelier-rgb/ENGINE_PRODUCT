@@ -155,8 +155,9 @@ describe('applyShopQuery — sort', () => {
     p({ sku: 'b', name: 'beaujolais', price: 200 }), // lowercase — case-insensitive sort
   ];
 
-  it('default sort is name A–Z, case-insensitive', () => {
-    expect(applyShopQuery(data, {}).items.map((x) => x.name)).toEqual([
+  it('explicit name sort is A–Z, case-insensitive', () => {
+    // explicit name sort (default is now 'recommended')
+    expect(applyShopQuery(data, { sort: 'name' }).items.map((x) => x.name)).toEqual([
       'Albarino',
       'beaujolais',
       'Cabernet',
@@ -171,8 +172,9 @@ describe('applyShopQuery — sort', () => {
     expect(applyShopQuery(data, { sort: 'price-desc' }).items.map((x) => x.price)).toEqual([300, 200, 100]);
   });
 
-  it('unknown sort falls back to name', () => {
-    expect(applyShopQuery(data, { sort: 'bogus' }).items.map((x) => x.name)[0]).toBe('Albarino');
+  it('unknown sort falls back to recommended (preserves input order)', () => {
+    // fallback is now 'recommended' (no-op, preserves pre-ranked order), not name A–Z
+    expect(applyShopQuery(data, { sort: 'bogus' }).items.map((x) => x.sku)).toEqual(['c', 'a', 'b']);
   });
 
   it('does not mutate the input array order', () => {
@@ -350,6 +352,40 @@ describe('matchesFilters — body/acidity/tannin normalized to the 4-step scale'
   it('off-scale/unknown → null normalize → does not match an unrelated option', () => {
     const prod = { sku: 'W1', name: 'x', wine_tannin: 'unknowable' } as any;
     expect(matchesFilters(prod, { tannin: 'High' })).toBe(false);
+  });
+});
+
+describe('applyShopQuery — recommended sort (default)', () => {
+  // Input order here stands in for the pre-ranked order from getAllProducts().
+  const preRanked = [
+    p({ sku: 'c', name: 'Cherry', price: 50 }),
+    p({ sku: 'a', name: 'Apple', price: 999 }),
+    p({ sku: 'b', name: 'Banana', price: 10 }),
+  ];
+
+  it('no sort param → preserves incoming (pre-ranked) order, NOT A–Z', () => {
+    const r = applyShopQuery(preRanked, {});
+    expect(r.items.map((x) => x.sku)).toEqual(['c', 'a', 'b']);
+  });
+
+  it('sort=recommended → also preserves incoming order', () => {
+    const r = applyShopQuery(preRanked, { sort: 'recommended' });
+    expect(r.items.map((x) => x.sku)).toEqual(['c', 'a', 'b']);
+  });
+
+  it('explicit sort=name still reorders A–Z (override works)', () => {
+    const r = applyShopQuery(preRanked, { sort: 'name' });
+    expect(r.items.map((x) => x.sku)).toEqual(['a', 'b', 'c']);
+  });
+
+  it('explicit sort=price-asc still reorders cheapest-first', () => {
+    const r = applyShopQuery(preRanked, { sort: 'price-asc' });
+    expect(r.items.map((x) => x.sku)).toEqual(['b', 'c', 'a']);
+  });
+
+  it('unknown sort value falls back to recommended (preserves order)', () => {
+    const r = applyShopQuery(preRanked, { sort: 'bogus' });
+    expect(r.items.map((x) => x.sku)).toEqual(['c', 'a', 'b']);
   });
 });
 
