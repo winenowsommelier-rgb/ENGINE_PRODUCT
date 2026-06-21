@@ -374,6 +374,16 @@ describe('TasteWheelInteractive', () => {
     expect(document.querySelectorAll('path.is-hot')).toHaveLength(0);
     expect(screen.getByText('Cabernet Sauvignon')).toBeInTheDocument();
   });
+
+  it('Escape clears a locked selection (spec §6c)', () => {
+    setup();
+    const chip = screen.getByRole('button', { name: /Blackcurrant/i });
+    fireEvent.click(chip);                 // lock
+    expect(document.querySelectorAll('path.is-hot')).toHaveLength(1);
+    fireEvent.keyDown(chip, { key: 'Escape' });  // bubbles to the wheel root
+    expect(document.querySelectorAll('path.is-hot')).toHaveLength(0);
+    expect(screen.getByText('Cabernet Sauvignon')).toBeInTheDocument();
+  });
 });
 ```
 
@@ -420,7 +430,11 @@ export function TasteWheelInteractive({ segments, tiers, order, size, varietalLa
   const focusedSeg = segments.find(s => s.id === focused);
 
   return (
-    <div className="taste-wheel" onClick={() => { if (locked) clear(); }}>
+    <div
+      className="taste-wheel"
+      onClick={() => { if (locked) clear(); }}
+      onKeyDown={(e) => { if (e.key === 'Escape' && (locked || hover)) clear(); }}
+    >
       <div className="taste-wheel__svgwrap">
         <svg
           viewBox={`0 0 ${size} ${size}`} width={size} height={size}
@@ -521,7 +535,7 @@ export function TasteWheelInteractive({ segments, tiers, order, size, varietalLa
 - [ ] **Step 4: Run to verify it passes**
 
 Run: `cd apps/catalog && npx vitest run components/__tests__/TasteWheelInteractive.test.tsx`
-Expected: PASS (3 tests).
+Expected: PASS (4 tests, including Escape-clears).
 
 - [ ] **Step 5: Commit**
 
@@ -537,6 +551,21 @@ git commit -m "feat(catalog): TasteWheelInteractive — linked chip<->wedge high
 **Files:**
 - Modify: `apps/catalog/components/product/TasteWheel.tsx`
 - Modify: `apps/catalog/components/__tests__/TasteWheel.test.tsx`
+
+- [ ] **Step 0: Enumerate importers of `Note`/`Tiers` from TasteWheel before changing its export shape**
+
+The rewrite changes how `TasteWheel.tsx` declares `Note`/`Tiers` (re-exports `Tiers`
+from the geometry module). Confirm no importer breaks:
+
+```bash
+cd apps/catalog && grep -rn "from '@/components/product/TasteWheel'\|from './TasteWheel'\|from '../product/TasteWheel'" . --include=*.ts --include=*.tsx | grep -v node_modules
+```
+
+For each hit, confirm it imports only `TasteWheel`, `Note`, or `Tiers` — all still
+exported with identical shapes (`Note = { note: string; intensity: 1|2|3 }`,
+`Tiers = { primary; secondary; tertiary }`). If anything imports a symbol the
+rewrite drops, keep that export. The catalog page imports only `TasteWheel`
+(value), so it is unaffected.
 
 - [ ] **Step 1: Extend the existing test**
 
@@ -634,6 +663,14 @@ Find the existing `.taste-note { ... }` block (around line 205) and the
 whole group with:
 
 ```css
+/* Per-tier color token — MUST be set or every `var(--tier-color, …)` below falls
+   back to gray and the swatch/bars lose their tier color (the whole point of the
+   chip<->wheel tie). Driven by the data-tier attribute the components already emit. */
+.taste-note[data-tier='primary']   { --tier-color: #7c2d3a; }
+.taste-note[data-tier='secondary'] { --tier-color: #8b5a2b; }
+.taste-note[data-tier='tertiary']  { --tier-color: #6c6055; }
+.taste-note[data-tier='flat']      { --tier-color: hsl(var(--border)); }
+
 /* Note chip — presentational <span> OR focus <button>. A color swatch + intensity
    bars now carry tier & strength so the link to the wheel reads at rest; hover/tap
    highlights the chip and its wedge together. */
@@ -730,6 +767,14 @@ button.taste-note:focus-visible {
 > `'Cormorant Garamond', Georgia, serif`. Check `globals.css`/layout for an
 > existing serif token first; if the catalog has no Cormorant loaded, the Georgia
 > fallback is acceptable (verify visually in Task 7).
+
+> **Reduced-motion testing (spec §10 reconciliation):** the spec's §10 mentions a
+> "mocked matchMedia" reduced-motion unit test. We deliberately DROP that unit
+> test: reduced-motion here is pure CSS (`@media (prefers-reduced-motion: reduce)`),
+> which jsdom cannot evaluate (no layout, no `matchMedia` by default). There is no
+> JS branch on the media query to assert. Reduced-motion is instead verified in the
+> browser at Task 7 Step 6. If a guard is wanted, add a CSS-presence assertion in a
+> follow-up; not blocking.
 
 - [ ] **Step 2: Build to verify CSS is valid / Tailwind compiles**
 
@@ -836,6 +881,18 @@ copies, with ONE difference: the internal chip click navigates to `/explore`.
 - Create: `components/product/TasteWheelInteractive.tsx` (internal)
 - Modify: `components/product/TasteWheel.tsx` (internal → server-style wrapper; note it currently has `"use client"` — keep it client OR split like catalog; simplest is to keep the wrapper client since the internal app already ships client here)
 - Modify: `components/product/TasteNote.tsx` (internal — keep `useRouter` + `/explore` click; ADD swatch/bars + hover highlight via a hover callback prop; click still navigates)
+
+- [ ] **Step 0: Discover the internal app's toolchain** (this task is gated behind
+  catalog success, so do the lookups now rather than assuming):
+
+```bash
+cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT"
+cat package.json | grep -A3 '"scripts"'        # test + typecheck commands
+cat tsconfig.json | grep -A3 '"paths"'          # does '@/' resolve at repo root?
+grep -rn "TasteWheel\|TasteProfileSection" components/ app/ --include=*.tsx | grep -v node_modules
+```
+Record: internal test runner = ____, typecheck cmd = ____, `@/` alias resolves? = ____.
+Use relative imports in the internal copies if `@/` does NOT resolve at repo root.
 
 - [ ] **Step 1: Mirror geometry** with internal tier colors (`primary #c64633`). If the internal app can import the catalog module, prefer that; otherwise copy and change the one color constant. Add a parity test asserting internal primary color `#c64633`.
 
