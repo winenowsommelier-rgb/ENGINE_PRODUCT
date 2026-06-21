@@ -1,8 +1,3 @@
-/* Cormorant Garamond powers the taste-wheel center note (var(--font-serif)).
-   @import must precede all other rules per the CSS spec, so it sits above the
-   Tailwind directives. */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -27,9 +22,6 @@
 
 @layer base {
   :root {
-    /* Serif for editorial accents (taste-wheel center note). */
-    --font-serif: 'Cormorant Garamond', Georgia, serif;
-
     /* Near-white canvas, near-black ink. */
     --background: 0 0% 100%;
     --foreground: 0 0% 10%; /* ~#1a1a1a — high contrast primary text */
@@ -273,15 +265,25 @@ button.taste-note:focus-visible {
   position: absolute; inset: 0; display: flex; flex-direction: column;
   align-items: center; justify-content: center; text-align: center; pointer-events: none;
 }
+/* Center readout — themed to match the storefront's sans typography (the product
+   <h1> is sans, semibold, tracking-tight; the brand eyebrow is uppercase, wide-
+   tracked, muted). The wheel text inherits the page font rather than introducing
+   a one-off serif, so it reads as part of the same design system. */
 .taste-wheel-center__tier {
   font-size: 0.62rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 600;
+  color: hsl(var(--muted-foreground));
 }
 .taste-wheel-center__note {
-  font-family: var(--font-serif, 'Cormorant Garamond', Georgia, serif);
-  font-size: 1.25rem; font-weight: 600; line-height: 1.05; max-width: 8rem;
+  font-size: 1.15rem; font-weight: 600; line-height: 1.1; letter-spacing: -0.01em;
+  max-width: 8rem; color: hsl(var(--foreground));
 }
-.taste-wheel-center__note.is-idle { font-style: italic; font-weight: 500; font-size: 1rem; color: hsl(var(--muted-foreground)); }
-.taste-wheel-center__sub { font-size: 0.62rem; color: hsl(var(--muted-foreground)); margin-top: .2rem; letter-spacing: .04em; }
+.taste-wheel-center__note.is-idle {
+  font-size: 0.95rem; font-weight: 600; letter-spacing: -0.01em; color: hsl(var(--foreground));
+}
+.taste-wheel-center__sub {
+  font-size: 0.62rem; color: hsl(var(--muted-foreground)); margin-top: .25rem;
+  letter-spacing: .04em; text-transform: uppercase;
+}
 
 /* Wedge interaction + draw-in. */
 .taste-wheel__wedge {
