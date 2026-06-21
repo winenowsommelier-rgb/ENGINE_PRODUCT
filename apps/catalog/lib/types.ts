@@ -46,6 +46,7 @@ export interface PublicProduct {
   wine_acidity?: string;
   wine_tannin?: string;
   food_matching?: string; // pipe-separated string; see parseFoodMatching() in lib/utils
+  food_matching_detail?: string; // pipe-separated original detailed dishes; see signatureDishes() in lib/utils
   flavor_tags?: string[]; // array of tag strings
   flavor_tags_canonical?: string[]; // canonical Title-Case flavor notes (e.g. ["Dark Plum","Minerality"]); used by the finder's flavor scoring
   bottle_size?: string;

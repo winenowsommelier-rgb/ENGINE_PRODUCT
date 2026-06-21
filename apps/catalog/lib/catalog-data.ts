@@ -13,7 +13,7 @@ import { isInStock } from './utils';
 export const PUBLIC_FIELDS = [
   'sku','name','brand','classification','wine_classification','grape_variety',
   'vintage','country','region','subregion','appellation','wine_body','wine_acidity',
-  'wine_tannin','food_matching','flavor_tags','flavor_tags_canonical','bottle_size','price','currency',
+  'wine_tannin','food_matching','food_matching_detail','flavor_tags','flavor_tags_canonical','bottle_size','price','currency',
   'desc_en_short','full_description','taste_profile','wine_color','image_url',
   'score_summary','score_max','is_in_stock',
   // SKU-derived canonical taxonomy (backfilled on every row). Safe to expose:

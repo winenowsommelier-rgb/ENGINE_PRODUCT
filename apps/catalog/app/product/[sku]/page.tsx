@@ -15,7 +15,7 @@ import { formatPrice } from '@/lib/price-tiers';
 import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
 import { toTiers, toStructural } from '@/lib/taste-adapter';
-import { isInStock, parseFoodMatching } from '@/lib/utils';
+import { isInStock, parseFoodMatching, signatureDishes } from '@/lib/utils';
 import { sanitizeDescription } from '@/lib/sanitize-html';
 import type { PublicProduct } from '@/lib/types';
 
@@ -108,11 +108,16 @@ function AttrRow({ label, value }: { label: string; value?: string | number | nu
   );
 }
 
-/** food_matching string → readable chips (pipe-first, paren-aware fallback). */
-function FoodPairing({ food }: { food?: string }) {
+/**
+ * "Pairs well with" — clean category chips, plus a few aspirational signature
+ * dishes pulled from food_matching_detail when the product has genuinely
+ * elaborate suggestions (e.g. "Dry-aged Wagyu ribeye with bone marrow butter").
+ */
+function FoodPairing({ food, detail }: { food?: string; detail?: string }) {
   if (!food) return null;
   const items = parseFoodMatching(food);
   if (items.length === 0) return null;
+  const dishes = signatureDishes(detail, items);
   return (
     <section className="flex flex-col gap-3">
       <h2 className="text-base font-semibold text-foreground">Pairs well with</h2>
@@ -126,6 +131,12 @@ function FoodPairing({ food }: { food?: string }) {
           </li>
         ))}
       </ul>
+      {dishes.length > 0 && (
+        <p className="text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">Sommelier’s pick:</span>{' '}
+          {dishes.join(' · ')}
+        </p>
+      )}
     </section>
   );
 }
@@ -262,7 +273,7 @@ export default function Page({ params }: { params: { sku: string } }) {
             </section>
           ) : null}
 
-          <FoodPairing food={product.food_matching} />
+          <FoodPairing food={product.food_matching} detail={product.food_matching_detail} />
 
           {/* Contact — per-product pre-filled. Renders the section even if env is
               unset; ContactButtons simply omits any unconfigured channel. */}
