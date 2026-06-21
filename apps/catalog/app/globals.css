@@ -200,28 +200,103 @@
   gap: 0.5rem;
 }
 
-/* Individual non-interactive note chip (TasteNote → <span>). A subtle left
-   accent in the tier colour ties each pill to its wheel ring without shouting. */
+/* Per-tier color token — MUST be set or every `var(--tier-color, …)` below falls
+   back to gray and the swatch/bars lose their tier color (the whole point of the
+   chip<->wheel tie). Driven by the data-tier attribute the components emit. */
+.taste-note[data-tier='primary']   { --tier-color: #7c2d3a; }
+.taste-note[data-tier='secondary'] { --tier-color: #8b5a2b; }
+.taste-note[data-tier='tertiary']  { --tier-color: #6c6055; }
+.taste-note[data-tier='flat']      { --tier-color: hsl(var(--border)); }
+
+/* Note chip — presentational <span> OR focus <button>. A color swatch + intensity
+   bars now carry tier & strength so the link to the wheel reads at rest; hover/tap
+   highlights the chip and its wedge together. */
 .taste-note {
   display: inline-flex;
   align-items: center;
-  border: 1px solid hsl(var(--border));
-  border-left: 3px solid var(--tier-color, hsl(var(--border)));
-  background: hsl(var(--secondary));
+  gap: 0.5rem;
+  border: 1.5px solid hsl(var(--border));
+  background: #fff;
   color: hsl(var(--foreground));
-  border-radius: 0.5rem;
-  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem 0.4rem 0.65rem;
   font-size: 0.9rem;
   line-height: 1.4;
   white-space: nowrap;
+  cursor: default;
+  transition: transform .2s cubic-bezier(.34,1.4,.5,1), border-color .2s, background .2s, box-shadow .2s;
 }
-/* Higher-intensity notes read a touch stronger (subtle, not loud). */
-.taste-note[data-intensity='3'] {
-  font-weight: 600;
-  background: color-mix(in srgb, var(--tier-color, hsl(var(--secondary))) 10%, hsl(var(--secondary)));
+button.taste-note { cursor: pointer; }
+button.taste-note:hover,
+button.taste-note:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--tier-color, currentColor);
+  box-shadow: 0 6px 16px -8px var(--tier-color, rgba(0,0,0,.3));
 }
-.taste-note[data-intensity='2'] {
-  background: color-mix(in srgb, var(--tier-color, hsl(var(--secondary))) 5%, hsl(var(--secondary)));
+.taste-note.is-active {
+  border-color: var(--tier-color, currentColor);
+  background: color-mix(in srgb, var(--tier-color, hsl(var(--secondary))) 12%, #fff);
+  transform: translateY(-2px);
+}
+.taste-note.is-faded { opacity: .4; }
+
+.taste-note__swatch {
+  width: 11px; height: 11px; border-radius: 4px; flex: 0 0 auto;
+  background: var(--tier-color, hsl(var(--border)));
+}
+.taste-note[data-intensity='1'] .taste-note__swatch { opacity: .56; }
+.taste-note[data-intensity='2'] .taste-note__swatch { opacity: .78; }
+.taste-note[data-intensity='3'] .taste-note__swatch { opacity: 1; }
+
+.taste-note__bars { display: inline-flex; gap: 2px; align-items: flex-end; }
+.taste-note__bars i {
+  width: 3px; border-radius: 2px; background: var(--tier-color, currentColor); opacity: .22;
+}
+.taste-note__bars i:nth-child(1) { height: 7px; }
+.taste-note__bars i:nth-child(2) { height: 10px; }
+.taste-note__bars i:nth-child(3) { height: 13px; }
+.taste-note[data-intensity='1'] .taste-note__bars i:nth-child(-n+1),
+.taste-note[data-intensity='2'] .taste-note__bars i:nth-child(-n+2),
+.taste-note[data-intensity='3'] .taste-note__bars i:nth-child(-n+3) { opacity: 1; }
+
+/* Wheel center readout + wrapper for absolute positioning. */
+.taste-wheel__svgwrap { position: relative; display: flex; justify-content: center; }
+.taste-wheel-center {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center; pointer-events: none;
+}
+.taste-wheel-center__tier {
+  font-size: 0.62rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 600;
+}
+.taste-wheel-center__note {
+  font-family: var(--font-serif, 'Cormorant Garamond', Georgia, serif);
+  font-size: 1.25rem; font-weight: 600; line-height: 1.05; max-width: 8rem;
+}
+.taste-wheel-center__note.is-idle { font-style: italic; font-weight: 500; font-size: 1rem; color: hsl(var(--muted-foreground)); }
+.taste-wheel-center__sub { font-size: 0.62rem; color: hsl(var(--muted-foreground)); margin-top: .2rem; letter-spacing: .04em; }
+
+/* Wedge interaction + draw-in. */
+.taste-wheel__wedge {
+  cursor: pointer;
+  transform-box: fill-box; transform-origin: center;
+  transition: transform .28s cubic-bezier(.34,1.4,.5,1), opacity .25s, filter .25s;
+  animation: taste-wedge-in .42s both;
+  animation-delay: var(--draw-delay, 0ms);
+}
+.taste-wheel__wedge.is-dim { opacity: .22; }
+.taste-wheel__wedge.is-hot { transform: scale(1.07); filter: drop-shadow(0 4px 10px rgba(0,0,0,.30)); }
+@keyframes taste-wedge-in {
+  from { transform: scale(.4); opacity: 0; }
+  to   { transform: scale(1);  opacity: 1; }
+}
+
+/* Motion is enhancement, never the mechanism — kill it under reduced-motion,
+   keep the chip<->wedge link fully functional. */
+@media (prefers-reduced-motion: reduce) {
+  .taste-wheel__wedge { animation: none; transition: opacity .15s; }
+  .taste-wheel__wedge.is-hot { transform: none; }
+  button.taste-note, .taste-note.is-active { transform: none; }
+  button.taste-note { transition: border-color .15s, background .15s; }
 }
 
 /* Desktop: wheel and legend can sit side by side for a more composed block,
