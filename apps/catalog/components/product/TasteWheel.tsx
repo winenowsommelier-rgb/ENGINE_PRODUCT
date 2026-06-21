@@ -8,8 +8,7 @@
 import { buildSegments, type Tiers } from '@/lib/taste-geometry';
 import { TasteWheelInteractive } from './TasteWheelInteractive';
 
-export type { Tiers } from '@/lib/taste-geometry';
-export interface Note { note: string; intensity: 1 | 2 | 3; }
+export type { Tiers, Note } from '@/lib/taste-geometry';
 
 interface TasteWheelProps {
   tiers: Tiers;

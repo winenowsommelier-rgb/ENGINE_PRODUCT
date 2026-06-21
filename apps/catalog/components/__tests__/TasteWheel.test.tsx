@@ -19,7 +19,7 @@ describe('TasteWheel legend', () => {
       secondary: [note('Oak')],
       tertiary: [], // empty → must not render a "Tertiary" header
     };
-    render(<TasteWheel tiers={tiers} />);
+    const { container } = render(<TasteWheel tiers={tiers} />);
 
     expect(screen.getByText('Primary')).toBeInTheDocument();
     expect(screen.getByText('Secondary')).toBeInTheDocument();
@@ -28,6 +28,9 @@ describe('TasteWheel legend', () => {
     // Pills for the present tiers still render.
     expect(screen.getByText('Cherry')).toBeInTheDocument();
     expect(screen.getByText('Oak')).toBeInTheDocument();
+
+    // Empty tertiary still draws its faint placeholder ring (spec §9).
+    expect(container.querySelector('[data-placeholder="tertiary"]')).toBeInTheDocument();
   });
 
   it('renders all three tier headers when all are populated', () => {

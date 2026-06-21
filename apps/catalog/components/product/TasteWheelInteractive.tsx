@@ -61,7 +61,7 @@ export function TasteWheelInteractive({ segments, tiers, order, size, varietalLa
             return (
               <circle key={`empty-${t}`} cx={cx} cy={cy} r={rMid}
                 fill="none" stroke="#ece7df" strokeWidth={R * (ring.rOuter - ring.rInner)}
-                aria-hidden="true" />
+                data-placeholder={t} aria-hidden="true" />
             );
           })}
           {segments.map((s) => {
