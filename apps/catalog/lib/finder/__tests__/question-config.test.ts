@@ -44,6 +44,28 @@ describe('question config', () => {
     const budget = stepsFor('red').find(s => s.field === 'budget')!;
     expect(budget.options.map(o => o.token)).toEqual(['0','1','2','3','4']);
   });
+  it('StepOption supports optional icon; occasion options all have icons', () => {
+    const occ = stepsFor('red').find(s=>s.field==='occasion')!;
+    expect(occ.options.every(o=>typeof o.icon==='string' && o.icon!.length>0)).toBe(true);
+  });
+  it('flavor step has 12 family chips (tokens = FLAVOR_FAMILY keys), all iconed', () => {
+    const flavor = stepsFor('red').find(s=>s.field==='flavorChips')!;
+    expect(flavor.options).toHaveLength(12);
+    const tokens = flavor.options.map(o=>o.token).sort();
+    expect(tokens).toEqual(['citrus','dark-fruit','earthy','floral','mineral','nutty','oak','red-fruit','smoky','spice','stone-fruit','tropical']);
+    expect(flavor.options.every(o=>o.icon)).toBe(true);
+  });
+  it('budget + body options carry icons', () => {
+    for (const f of ['budget','axis1'] as const) {
+      const step = stepsFor('red').find(s=>s.field===f)!;
+      expect(step.options.every(o=>o.icon)).toBe(true);
+    }
+  });
+  it('retired flavor tokens earth/vanilla are gone', () => {
+    const tokens = stepsFor('red').find(s=>s.field==='flavorChips')!.options.map(o=>o.token);
+    expect(tokens).not.toContain('earth');
+    expect(tokens).not.toContain('vanilla');
+  });
 });
 
 describe('deepDiveStepsFor (opt-in sommelier branch)', () => {

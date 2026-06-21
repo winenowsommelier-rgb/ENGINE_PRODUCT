@@ -18,6 +18,7 @@ export type StepField =
 export interface StepOption {
   token: string;
   label: string;
+  icon?: string;
 }
 
 export interface QuestionStep {
@@ -35,11 +36,11 @@ const OCCASION_STEP: QuestionStep = {
   field: 'occasion',
   title: "What's the occasion?",
   options: [
-    { token: 'everyday', label: 'Everyday' },
-    { token: 'food', label: 'With food' },
-    { token: 'gift', label: 'A gift' },
-    { token: 'special', label: 'Special / cellar' },
-    { token: 'exploring', label: 'Just exploring' },
+    { token: 'everyday', label: 'Everyday', icon: '🥂' },
+    { token: 'food', label: 'With food', icon: '🍽️' },
+    { token: 'gift', label: 'A gift', icon: '🎁' },
+    { token: 'special', label: 'Special / cellar', icon: '✨' },
+    { token: 'exploring', label: 'Just exploring', icon: '🧭' },
   ],
 };
 
@@ -48,11 +49,11 @@ const BUDGET_STEP: QuestionStep = {
   field: 'budget',
   title: "What's your budget?",
   options: [
-    { token: '0', label: 'Under ฿1,000' },
-    { token: '1', label: '฿1,000–3,000' },
-    { token: '2', label: '฿3,000–7,000' },
-    { token: '3', label: '฿7,000–15,000' },
-    { token: '4', label: '฿15,000+' },
+    { token: '0', label: 'Under ฿1,000', icon: '🪙' },
+    { token: '1', label: '฿1,000–3,000', icon: '💵' },
+    { token: '2', label: '฿3,000–7,000', icon: '💳' },
+    { token: '3', label: '฿7,000–15,000', icon: '💎' },
+    { token: '4', label: '฿15,000+', icon: '👑' },
   ],
 };
 
@@ -63,9 +64,9 @@ const WINE_BODY_STEP: QuestionStep = {
   title: 'How full-bodied do you like it?',
   optional: true,
   options: [
-    { token: 'light', label: 'Light & easy' },
-    { token: 'medium', label: 'Medium-bodied' },
-    { token: 'bold', label: 'Bold & full' },
+    { token: 'light', label: 'Light & easy', icon: '🪶' },
+    { token: 'medium', label: 'Medium-bodied', icon: '⚖️' },
+    { token: 'bold', label: 'Bold & full', icon: '🍷' },
   ],
 };
 
@@ -75,9 +76,9 @@ const WINE_CHARACTER_STEP: QuestionStep = {
   title: 'What character do you prefer?',
   optional: true,
   options: [
-    { token: 'fruity', label: 'Fruit-forward' },
-    { token: 'earthy', label: 'Earthy & savory' },
-    { token: 'balanced', label: 'Balanced' },
+    { token: 'fruity', label: 'Fruit-forward', icon: '🍓' },
+    { token: 'earthy', label: 'Earthy & savory', icon: '🍂' },
+    { token: 'balanced', label: 'Balanced', icon: '⚖️' },
   ],
 };
 
@@ -88,15 +89,22 @@ const FLAVOR_STEP: QuestionStep = {
   title: 'Any flavors you love? (pick a few)',
   multi: true,
   optional: true,
+  // Tokens MUST equal the FLAVOR_FAMILY keys in scoring.ts — chips that don't map
+  // to a family score nothing. (Retired the old `earth`/`vanilla` tokens, which
+  // never matched any FLAVOR_FAMILY key.)
   options: [
-    { token: 'oak', label: 'Oak' },
-    { token: 'red-fruit', label: 'Red fruit' },
-    { token: 'dark-fruit', label: 'Dark fruit' },
-    { token: 'citrus', label: 'Citrus' },
-    { token: 'spice', label: 'Spice' },
-    { token: 'earth', label: 'Earthy' },
-    { token: 'floral', label: 'Floral' },
-    { token: 'vanilla', label: 'Vanilla' },
+    { token: 'red-fruit', label: 'Red fruit', icon: '🍒' },
+    { token: 'dark-fruit', label: 'Dark fruit', icon: '🫐' },
+    { token: 'citrus', label: 'Citrus', icon: '🍋' },
+    { token: 'stone-fruit', label: 'Stone & orchard fruit', icon: '🍑' },
+    { token: 'tropical', label: 'Tropical', icon: '🍍' },
+    { token: 'oak', label: 'Oak & vanilla', icon: '🪵' },
+    { token: 'spice', label: 'Spice', icon: '🌶️' },
+    { token: 'earthy', label: 'Earthy & savory', icon: '🍂' },
+    { token: 'floral', label: 'Floral', icon: '🌸' },
+    { token: 'mineral', label: 'Mineral & saline', icon: '🪨' },
+    { token: 'smoky', label: 'Smoky', icon: '💨' },
+    { token: 'nutty', label: 'Nutty & creamy', icon: '🥜' },
   ],
 };
 
@@ -107,11 +115,11 @@ const WHISKY_ORIGIN_STEP: QuestionStep = {
   title: 'Where should it come from?',
   optional: true,
   options: [
-    { token: 'scotch', label: 'Scotch' },
-    { token: 'japanese', label: 'Japanese' },
-    { token: 'bourbon', label: 'Bourbon / American' },
-    { token: 'irish', label: 'Irish' },
-    { token: 'world', label: 'World / other' },
+    { token: 'scotch', label: 'Scotch', icon: '🏴' },
+    { token: 'japanese', label: 'Japanese', icon: '🇯🇵' },
+    { token: 'bourbon', label: 'Bourbon / American', icon: '🥃' },
+    { token: 'irish', label: 'Irish', icon: '☘️' },
+    { token: 'world', label: 'World / other', icon: '🌍' },
   ],
 };
 
@@ -121,8 +129,8 @@ const WHISKY_STYLE_STEP: QuestionStep = {
   title: 'What style do you prefer?',
   optional: true,
   options: [
-    { token: 'smoky', label: 'Smoky & peaty' },
-    { token: 'smooth', label: 'Smooth & mellow' },
+    { token: 'smoky', label: 'Smoky & peaty', icon: '💨' },
+    { token: 'smooth', label: 'Smooth & mellow', icon: '🥃' },
   ],
 };
 
@@ -133,8 +141,8 @@ const GIN_STYLE_STEP: QuestionStep = {
   title: 'Classic or contemporary?',
   optional: true,
   options: [
-    { token: 'classic', label: 'Classic / London Dry' },
-    { token: 'contemporary', label: 'Contemporary / botanical' },
+    { token: 'classic', label: 'Classic / London Dry', icon: '🍸' },
+    { token: 'contemporary', label: 'Contemporary / botanical', icon: '🌿' },
   ],
 };
 
@@ -145,11 +153,11 @@ const SPIRITS_TYPE_STEP: QuestionStep = {
   title: 'What kind of spirit?',
   optional: true,
   options: [
-    { token: 'vodka', label: 'Vodka' },
-    { token: 'rum', label: 'Rum' },
-    { token: 'tequila', label: 'Tequila / mezcal' },
-    { token: 'brandy', label: 'Brandy / cognac' },
-    { token: 'other', label: 'Something else' },
+    { token: 'vodka', label: 'Vodka', icon: '🍸' },
+    { token: 'rum', label: 'Rum', icon: '🥃' },
+    { token: 'tequila', label: 'Tequila / mezcal', icon: '🌵' },
+    { token: 'brandy', label: 'Brandy / cognac', icon: '🍷' },
+    { token: 'other', label: 'Something else', icon: '✨' },
   ],
 };
 
@@ -160,9 +168,9 @@ const SAKE_SWEETNESS_STEP: QuestionStep = {
   title: 'Dry or sweet?',
   optional: true,
   options: [
-    { token: 'dry', label: 'Dry' },
-    { token: 'sweet', label: 'Sweet / fruity' },
-    { token: 'any', label: 'No preference' },
+    { token: 'dry', label: 'Dry', icon: '🍶' },
+    { token: 'sweet', label: 'Sweet / fruity', icon: '🍯' },
+    { token: 'any', label: 'No preference', icon: '🤷' },
   ],
 };
 
@@ -205,9 +213,9 @@ const WINE_ACIDITY_STEP: QuestionStep = {
   title: 'How should it feel in your mouth?',
   optional: true,
   options: [
-    { token: 'crisp', label: 'Crisp & refreshing' },
-    { token: 'balanced', label: 'Balanced' },
-    { token: 'soft', label: 'Soft & round' },
+    { token: 'crisp', label: 'Crisp & refreshing', icon: '⚡' },
+    { token: 'balanced', label: 'Balanced', icon: '⚖️' },
+    { token: 'soft', label: 'Soft & round', icon: '🫧' },
   ],
 };
 
@@ -218,9 +226,9 @@ const WINE_TANNIN_STEP: QuestionStep = {
   title: 'How much grip and structure do you like?',
   optional: true,
   options: [
-    { token: 'firm', label: 'Firm & gripping' },
-    { token: 'silky', label: 'Silky & smooth' },
-    { token: 'any', label: 'No preference' },
+    { token: 'firm', label: 'Firm & gripping', icon: '🧱' },
+    { token: 'silky', label: 'Silky & smooth', icon: '🪶' },
+    { token: 'any', label: 'No preference', icon: '🤷' },
   ],
 };
 
@@ -232,14 +240,14 @@ const WINE_GRAPE_STEP: QuestionStep = {
   title: 'Is there a grape you gravitate toward?',
   optional: true,
   options: [
-    { token: 'cabernet', label: 'Cabernet Sauvignon' },
-    { token: 'pinot-noir', label: 'Pinot Noir' },
-    { token: 'syrah-shiraz', label: 'Syrah / Shiraz' },
-    { token: 'sangiovese', label: 'Sangiovese' },
-    { token: 'tempranillo', label: 'Tempranillo' },
-    { token: 'merlot', label: 'Merlot' },
-    { token: 'grenache', label: 'Grenache' },
-    { token: 'surprise', label: 'Surprise me' },
+    { token: 'cabernet', label: 'Cabernet Sauvignon', icon: '🍇' },
+    { token: 'pinot-noir', label: 'Pinot Noir', icon: '🍒' },
+    { token: 'syrah-shiraz', label: 'Syrah / Shiraz', icon: '🌶️' },
+    { token: 'sangiovese', label: 'Sangiovese', icon: '🍅' },
+    { token: 'tempranillo', label: 'Tempranillo', icon: '🪵' },
+    { token: 'merlot', label: 'Merlot', icon: '🫐' },
+    { token: 'grenache', label: 'Grenache', icon: '🍓' },
+    { token: 'surprise', label: 'Surprise me', icon: '🎲' },
   ],
 };
 
@@ -250,9 +258,9 @@ const WINE_AGE_STEP: QuestionStep = {
   title: 'Drinking now, or something with some age?',
   optional: true,
   options: [
-    { token: 'young', label: 'Young & vibrant' },
-    { token: 'mature', label: 'Mature & developed' },
-    { token: 'any', label: 'No preference' },
+    { token: 'young', label: 'Young & vibrant', icon: '🌱' },
+    { token: 'mature', label: 'Mature & developed', icon: '🍂' },
+    { token: 'any', label: 'No preference', icon: '🤷' },
   ],
 };
 
@@ -263,9 +271,9 @@ const ADVENTURE_STEP: QuestionStep = {
   title: 'How adventurous are you feeling?',
   optional: true,
   options: [
-    { token: 'classic', label: 'Stick to a classic' },
-    { token: 'twist', label: 'A little twist' },
-    { token: 'discovery', label: 'Surprise & discovery' },
+    { token: 'classic', label: 'Stick to a classic', icon: '🏛️' },
+    { token: 'twist', label: 'A little twist', icon: '🧭' },
+    { token: 'discovery', label: 'Surprise & discovery', icon: '🌍' },
   ],
 };
 
@@ -277,9 +285,9 @@ const WHISKY_PEAT_STEP: QuestionStep = {
   title: 'How much smoke and peat do you want?',
   optional: true,
   options: [
-    { token: 'none', label: 'None — clean & unpeated' },
-    { token: 'light', label: 'A whisper of smoke' },
-    { token: 'heavy', label: 'Big, bold & smoky' },
+    { token: 'none', label: 'None — clean & unpeated', icon: '🧼' },
+    { token: 'light', label: 'A whisper of smoke', icon: '🌫️' },
+    { token: 'heavy', label: 'Big, bold & smoky', icon: '💨' },
   ],
 };
 
@@ -290,9 +298,9 @@ const WHISKY_AGE_STEP: QuestionStep = {
   title: 'Younger and lively, or older and mellow?',
   optional: true,
   options: [
-    { token: 'young', label: 'Younger & lively' },
-    { token: 'mature', label: 'Older & mellow' },
-    { token: 'any', label: 'No preference' },
+    { token: 'young', label: 'Younger & lively', icon: '🌱' },
+    { token: 'mature', label: 'Older & mellow', icon: '🍂' },
+    { token: 'any', label: 'No preference', icon: '🤷' },
   ],
 };
 
