@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { PublicProduct } from './types';
 import { isInStock } from './utils';
+import { compareRecommended, popularityCutoffP75, popularityTier } from './recommended-rank';
 
 /**
  * PUBLIC_FIELDS — the allowlist. ONLY these keys are ever copied onto a
@@ -19,6 +20,10 @@ export const PUBLIC_FIELDS = [
   // SKU-derived canonical taxonomy (backfilled on every row). Safe to expose:
   // shopper-facing category labels, no margin/pricing/internal signal.
   'category_group','category_type',
+  // Coarse client-SAFE popularity bucket (0/1/2). Derived server-side from the
+  // FORBIDDEN popularity_score; the raw score itself is never copied. Set by the
+  // popularityTierBucket argument below, NOT read from the raw row's popularity_* keys.
+  'popularity_tier',
 ] as const;
 
 // Drift guard: every PUBLIC_FIELDS key must be a known PublicProduct key.
@@ -35,7 +40,10 @@ void _fieldsCheck;
  * fields (margins, enrichment confidence, etc.) are structurally impossible to
  * leak — even if the raw record carries them.
  */
-export function toPublicProduct(raw: Record<string, unknown>): PublicProduct {
+export function toPublicProduct(
+  raw: Record<string, unknown>,
+  popularityTierBucket: 0 | 1 | 2 = 0,
+): PublicProduct {
   const out: Record<string, unknown> = {};
   for (const f of PUBLIC_FIELDS) if (raw[f] !== undefined) out[f] = raw[f];
   // DATA-INTEGRITY NORMALIZATION (CLAUDE.md Rule 3 — inherited data shapes are NOT validated
@@ -47,6 +55,10 @@ export function toPublicProduct(raw: Record<string, unknown>): PublicProduct {
   // PUBLIC_FIELDS (it is allowlisted); we only coerce its value after the allowlist copy, so the
   // leak guarantee and drift guard are untouched. Coerce only when the field is present.
   if ('is_in_stock' in out) out.is_in_stock = isInStock(out.is_in_stock);
+  // Attach the coarse tier. 'popularity_tier' is allowlisted, but the raw export does
+  // NOT carry that key (it carries popularity_score, which is forbidden), so the loop
+  // above never copies it — we set it explicitly here. The raw score is never written.
+  out.popularity_tier = popularityTierBucket;
   // Cast: the output is built from the allowlist, so its keys are a subset of PublicProduct.
   // This does NOT guarantee required fields (sku/name/price) are present — presence/validation
   // is the loader's responsibility (Task 2). null values pass through intentionally (see test).
@@ -92,11 +104,18 @@ function load(): void {
     ? raw
     : ((raw as { products?: unknown[] })?.products ?? []);
 
+  const typedRows = rows as Record<string, unknown>[];
+  // PASS 1 — p75 cutoff over the scored population (raw popularity_score in scope).
+  const cutoff = popularityCutoffP75(typedRows);
+  // SORT raw rows by the Recommended comparator (raw score still in scope here).
+  const sortedRows = [...typedRows].sort(compareRecommended);
+  // PASS 2 — project each sorted raw row, deriving the client-safe tier.
   const all: PublicProduct[] = [];
   const bySku = new Map<string, PublicProduct>();
-  for (const row of rows) {
+  for (const row of sortedRows) {
     // Project through the allowlist chokepoint so NO internal field can leak.
-    const p = toPublicProduct(row as Record<string, unknown>);
+    const tier = popularityTier(row.popularity_score, cutoff);
+    const p = toPublicProduct(row, tier);
     all.push(p);
     if (p.sku) bySku.set(p.sku, p);
   }
