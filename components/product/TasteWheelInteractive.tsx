@@ -77,7 +77,7 @@ export function TasteWheelInteractive({ segments, tiers, order, size, varietalLa
                 d={s.path}
                 fill={s.color}
                 fillOpacity={s.fillOpacity}
-                stroke="#080808"
+                stroke="#1f1f1f"
                 strokeWidth={2.5}
                 className={`taste-wheel__wedge${isHot ? ' is-hot' : ''}${isDim ? ' is-dim' : ''}`}
                 style={{ '--draw-delay': `${90 + (orderIndex.get(s.id) ?? 0) * 55}ms` } as React.CSSProperties}
