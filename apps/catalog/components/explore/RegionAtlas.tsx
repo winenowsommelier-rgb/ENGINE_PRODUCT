@@ -35,31 +35,43 @@ export interface CountryPin {
 }
 
 /**
- * Frame a set of points (a country's regions) by ZOOMING INTO their centroid.
- * Returns a `transform` + `transformOrigin` pair: `scale(S)` about the centroid
- * point. This is the mathematically-correct way to zoom a plane to a sub-region —
- * scaling about transform-origin keeps that point fixed and magnifies around it,
- * so the country ends up centred and enlarged. (The previous scale()+translate(%)
- * composed in the wrong order and never actually centred the target.)
+ * Frame a set of points (a country's regions) by PANNING their centroid to the
+ * middle of the visible box and ZOOMING in. Returns a ready-to-use `transform`
+ * string built on `transform-origin: 0 0` (top-left), which makes the math exact:
  *
- * The map plane has a 2:1 aspect (xPct 0..100, yPct 0..100 but the visible box is
- * half as tall), so a given xPct and yPct are NOT equal screen distances. We frame
- * on the X span (longitude) since that's the wider axis on this projection, and cap
- * the zoom so a single-region country doesn't blow up absurdly.
+ *   transform = scale(S) translate((50/S − cx)%, (50/S − cy)%)
+ *
+ * With origin at the top-left, `scale(S)` first magnifies the plane about (0,0),
+ * then the translate (in the plane's OWN, post-scale % units) shifts it so the
+ * centroid (cx%, cy%) lands at the box centre (50%, 50%). The earlier version
+ * scaled about a transform-origin AT the centroid, which keeps that point fixed
+ * in PLACE rather than moving it to centre — so the country never actually framed
+ * up (it stayed wherever it sat on the world plane, only slightly larger).
+ *
+ * The visible box aspect varies (4:3 → 16:9 → 2:1). The map plane is a 2:1
+ * equirectangular grid drawn with object-cover, so 1 unit of yPct ≈ 2× the screen
+ * distance of 1 unit of xPct. We size the zoom off the LARGER normalised span and
+ * lift the floor so even a single-region country gets a real, clickable zoom.
  */
-function frame(points: { lat: number; lng: number }[]): { scale: number; ox: number; oy: number } {
-  if (points.length === 0) return { scale: 1, ox: 50, oy: 50 };
+function frame(
+  points: { lat: number; lng: number }[],
+  minScale = 1,
+): { scale: number; tx: number; ty: number } {
+  if (points.length === 0) return { scale: minScale, tx: 0, ty: 0 };
   const xs = points.map((p) => project(p.lat, p.lng).xPct);
   const ys = points.map((p) => project(p.lat, p.lng).yPct);
   const minX = Math.min(...xs), maxX = Math.max(...xs);
   const minY = Math.min(...ys), maxY = Math.max(...ys);
-  const ox = (minX + maxX) / 2, oy = (minY + maxY) / 2;
-  // Visible box is 2:1, so 1 unit of yPct is 2x the screen distance of 1 unit of
-  // xPct. Normalise the Y span to X-equivalent units before sizing the zoom.
-  const spanX = Math.max(maxX - minX, 4) + 10;     // padding so pins/labels fit
-  const spanY = (Math.max(maxY - minY, 4) + 10) * 2;
-  const scale = Math.max(1, Math.min(100 / Math.max(spanX, spanY), 5)); // 1x..5x
-  return { scale, ox, oy };
+  const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+  // Normalise the Y span to X-equivalent screen units (2:1 plane) before sizing.
+  const spanX = Math.max(maxX - minX, 3) + 8;      // padding so pins/labels fit
+  const spanY = (Math.max(maxY - minY, 3) + 8) * 2;
+  // Fit the span to the box; floor (minScale) keeps a single country zoomed enough
+  // that its pins are big and tappable; cap at 7× so a tiny country isn't absurd.
+  const scale = Math.max(minScale, Math.min(100 / Math.max(spanX, spanY), 7));
+  const tx = 50 / scale - cx;
+  const ty = 50 / scale - cy;
+  return { scale, tx, ty };
 }
 
 /**
@@ -137,45 +149,81 @@ export function RegionAtlas({
     return spaced.sort((a, b) => a.dy - b.dy); // paint north→south so labels layer sanely
   }, [countries, focusCountry, lens]);
 
-  // Zoom: scale about the focused country's centroid (transform-origin), so that
-  // point stays fixed and the country fills the frame. scale(1) at world level.
-  const zoom = useMemo(
-    () => (focusCountry ? frame(focusCountry.regions) : { scale: 1, ox: 50, oy: 50 }),
-    [focusCountry],
-  );
+  // Zoom: frame the points that actually have data, centering on the user's focus.
+  //   • A region is SELECTED   → center on that region (zoomed in tight on it).
+  //   • A country is focused   → frame all its regions.
+  //   • World view             → frame ALL country pins (scope to where data exists,
+  //                              not an empty whole-globe).
+  const zoom = useMemo(() => {
+    if (focusCountry) {
+      const sel = selectedSlug
+        ? focusCountry.regions.find((r) => r.slug === selectedSlug)
+        : undefined;
+      // Center on the selected region (single point → frame()'s span floor gives a
+      // comfortable tight zoom); otherwise frame the whole country.
+      if (sel) return frame([{ lat: sel.lat, lng: sel.lng }], 4.5);
+      return frame(focusCountry.regions, 3.5);
+    }
+    const worldPts = countries.flatMap((c) =>
+      c.regions.reduce((s, r) => s + lensCount(r, lens), 0) > 0 ? [{ lat: c.lat, lng: c.lng }] : [],
+    );
+    return frame(worldPts, 1);
+  }, [focusCountry, selectedSlug, countries, lens]);
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-2xl border border-border bg-[hsl(36_33%_98%)] shadow-sm"
-      style={{ aspectRatio: `${VIEW_W} / ${VIEW_H}` }}
+      className={[
+        'relative w-full overflow-hidden rounded-2xl border border-border bg-[hsl(36_33%_98%)] shadow-sm',
+        // SHORT band at every size — the view is zoomed/scoped to just the data
+        // points, so it needs little vertical room. Capped tight on desktop.
+        'aspect-[3/2] sm:aspect-[12/5] lg:aspect-[3/1] max-h-[22rem]',
+      ].join(' ')}
     >
-      {/* The whole map plane (background + pins) zooms together: scale about the
-          focused country's centroid via transform-origin. */}
+      {/* PROJECTION-LOCKED PLANE: an inner 2:1 layer that exactly matches the SVG's
+          equirectangular 0..100 x / 0..50 y viewBox, so pin %s land on real land
+          (no object-cover crop to desync the art from the pins). It is taller than
+          the short visible window; the zoom transform pans/scales it to frame the
+          data, and the window's overflow-hidden crops the rest. */}
       <div
-        className="absolute inset-0 transition-transform duration-500 ease-out motion-reduce:transition-none"
-        style={{ transform: `scale(${zoom.scale})`, transformOrigin: `${zoom.ox}% ${zoom.oy}%` }}
+        className="absolute left-0 top-0 w-full origin-top-left transition-transform duration-500 ease-out motion-reduce:transition-none"
+        style={{
+          aspectRatio: `${VIEW_W} / ${VIEW_H}`,
+          transform: `scale(${zoom.scale}) translate(${zoom.tx}%, ${zoom.ty}%)`,
+        }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/explore-world.svg"
           alt=""
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover opacity-90"
+          // object-fill (not cover): the plane IS the SVG's 2:1 viewBox, so fill it
+          // 1:1 — this is what keeps pins exactly over their land.
+          className="pointer-events-none absolute inset-0 h-full w-full select-none object-fill opacity-90"
           draggable={false}
         />
-        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-1/2 border-t border-dashed border-[hsl(36_14%_88%)]" />
 
         {pins.map((p) => {
           const isSelected = p.kind === 'region' && p.region.slug === selectedSlug;
           // Counter-scale the pin contents by 1/zoom so dots + labels stay a
           // constant on-screen size regardless of how far the plane is zoomed.
           const inv = 1 / zoom.scale;
+          // On-screen position of this pin (% of the container) after the plane's
+          // scale()+translate(). Plane width === container width, so screen-x maps
+          // directly; the plane is 2:1 (height = width/2 in container %), so screen-y
+          // is in 0..50 container%. A pin whose dot lands outside [−4, 104]×[−4, 54]
+          // is in the cropped-away area — hide it AND disable its pointer events so it
+          // can't steal a click meant for empty visible map (the phantom-click bug).
+          const sx = zoom.scale * (p.dx + zoom.tx);
+          const sy = (zoom.scale * (p.dy + zoom.ty)) / 2;
+          const offFrame = sx < -4 || sx > 104 || sy < -4 || sy > 54;
           return (
             <button
               key={p.key}
               type="button"
               onClick={() => (p.kind === 'country' ? onSelectCountry(p.country) : onSelectRegion(p.region))}
               aria-pressed={isSelected}
+              aria-hidden={offFrame}
+              tabIndex={offFrame ? -1 : 0}
               aria-label={
                 p.kind === 'country'
                   ? `${p.label} — ${p.n.toLocaleString()} bottles. Show regions.`
@@ -183,10 +231,15 @@ export function RegionAtlas({
               }
               title={`${p.label} · ${p.n.toLocaleString()} bottles`}
               className={[
-                'group absolute z-10 flex h-11 w-11 items-center justify-center rounded-full',
+                'group absolute z-10 flex h-8 w-8 items-center justify-center rounded-full',
                 'transition-[left,top] duration-500 ease-out motion-reduce:transition-none',
                 'hover:z-30 focus-visible:z-30', isSelected ? 'z-30' : '',
+                // Cull off-frame pins from both sight and interaction.
+                offFrame ? 'pointer-events-none opacity-0' : '',
               ].join(' ')}
+              // Hit area hugs the dot (not a wide 44px box), so a pin whose dot sits
+              // just outside the cropped frame can't reach its hit area into the
+              // visible map and steal a click meant for empty space.
               style={{ left: `${p.dx}%`, top: `${p.dy}%`, transform: `translate(-50%, -50%) scale(${inv})` }}
             >
               <span
@@ -203,9 +256,10 @@ export function RegionAtlas({
                   'pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2',
                   'flex items-center gap-1.5 whitespace-nowrap rounded-full border border-primary px-3 py-1',
                   'text-sm font-medium text-primary-foreground shadow-md',
-                  // Counter the map scale so labels stay readable at any zoom.
                   'bg-primary',
-                  isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100',
+                  // HOVER/FOCUS ONLY — the selected region is shown by the highlighted
+                  // pill in the chip row above the map, so we don't double-label it here.
+                  'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100',
                   'transition-opacity duration-150',
                 ].join(' ')}
               >
