@@ -34,3 +34,19 @@ export function foodChipMatches(p: PublicProduct, chips: string[] | undefined): 
   }
   return n;
 }
+
+/**
+ * Tokens of food chips that currently match ZERO in-stock products — so the UI can
+ * grey them out and make them unselectable instead of leading users to an empty
+ * result. A chip going empty is a data state (stock sold out / pairing vocabulary
+ * changed), not a code bug; today all chips have matches, but this guards the future.
+ * `inStock` should be the in-stock product pool (the caller filters by isInStock).
+ */
+export function emptyFoodChips(inStock: PublicProduct[]): Set<string> {
+  const empty = new Set<string>();
+  for (const token of Object.keys(FOOD_CHIPS)) {
+    const has = inStock.some((p) => foodChipMatches(p, [token]) > 0);
+    if (!has) empty.add(token);
+  }
+  return empty;
+}
