@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 import { CategoryLens } from '@/components/explore/CategoryLens';
 import { RegionAtlas, type CountryPin } from '@/components/explore/RegionAtlas';
+import { CountryChips } from '@/components/explore/CountryChips';
 import { RegionDrawer } from '@/components/explore/RegionDrawer';
 import type { ExploreMapData, LensKey, MapRegion } from '@/lib/explore/types';
 import { LENS_GROUPS } from '@/lib/explore/map-data';
@@ -52,49 +53,78 @@ export function ExploreRegionClient({ data, initialRegionSlug }: {
 
   const goWorld = () => { setSelected(null); setFocusCountry(null); router.push('/explore-map', { scroll: false }); };
   const goCountry = (c: CountryPin) => { setSelected(null); setFocusCountry(c); };
+  const selectRegion = (r: MapRegion) => {
+    setSelected(r);
+    if (!focusCountry) setFocusCountry(countryPins.find((c) => c.name === r.country) ?? null);
+    router.push(`/explore-map/${r.slug}`, { scroll: false });
+  };
 
   return (
     <div className="relative">
-      {/* Top controls: lens + breadcrumb */}
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      {/* Top controls: lens only (breadcrumb moved onto the map). */}
+      <div className="mb-4">
         <CategoryLens active={lens} onSelect={(l) => { setLens(l); }} available={available} />
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm text-muted-foreground">
-          <button onClick={goWorld} className="min-h-9 rounded px-2 font-medium text-foreground hover:text-primary">
-            World
-          </button>
-          {focusCountry && (
-            <>
-              <ChevronRight size={14} aria-hidden />
-              <button
-                onClick={() => goCountry(focusCountry)}
-                className="min-h-9 rounded px-2 font-medium text-foreground hover:text-primary"
-              >
-                {focusCountry.name}
-              </button>
-            </>
-          )}
-          {selected && (
-            <>
-              <ChevronRight size={14} aria-hidden />
-              <span className="px-2 font-medium text-primary">{selected.name}</span>
-            </>
-          )}
-        </nav>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_24rem]">
-        <RegionAtlas
-          countries={countryPins}
-          focusCountry={focusCountry}
-          lens={lens}
-          selectedSlug={selected?.slug}
-          onSelectCountry={goCountry}
-          onSelectRegion={(r) => {
-            setSelected(r);
-            if (!focusCountry) setFocusCountry(countryPins.find((c) => c.name === r.country) ?? null);
-            router.push(`/explore-map/${r.slug}`, { scroll: false });
-          }}
-        />
+      {/* Full-width map; the region detail panel renders BELOW it (vertical stack,
+          all viewports). The map always spans the container width; the panel is
+          full-width too so its bottle grid can fan out / resize fluidly. */}
+      <div className="flex flex-col gap-4">
+        {/* Chip menu ABOVE the map (not overlaid) — a single scroll row so it stays a
+            thin band and never covers the country pins, which must stay tappable. */}
+        <div className="flex flex-col gap-1.5">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground">
+            {focusCountry ? `Regions in ${focusCountry.name}` : 'Browse by country'}
+          </p>
+          <CountryChips
+            countries={countryPins}
+            focusCountry={focusCountry}
+            lens={lens}
+            selectedSlug={selected?.slug}
+            onSelectCountry={goCountry}
+            onSelectRegion={selectRegion}
+          />
+        </div>
+
+        <div className="relative">
+          {/* Breadcrumb overlaid on the map's top-left corner (frosted pill). Small
+              corner element — clear of the pin cluster. */}
+          <nav
+            aria-label="Breadcrumb"
+            className="absolute left-3 top-3 z-20 flex items-center gap-0.5 rounded-full border border-border/70 bg-background/85 px-2 py-1 text-sm text-muted-foreground shadow-sm backdrop-blur-sm"
+          >
+            <button onClick={goWorld} className="rounded px-1.5 font-medium text-foreground hover:text-primary">
+              World
+            </button>
+            {focusCountry && (
+              <>
+                <ChevronRight size={13} aria-hidden className="shrink-0" />
+                <button
+                  onClick={() => goCountry(focusCountry)}
+                  className="rounded px-1.5 font-medium text-foreground hover:text-primary"
+                >
+                  {focusCountry.name}
+                </button>
+              </>
+            )}
+            {selected && (
+              <>
+                <ChevronRight size={13} aria-hidden className="shrink-0" />
+                <span className="px-1.5 font-medium text-primary">{selected.name}</span>
+              </>
+            )}
+          </nav>
+
+          <RegionAtlas
+            countries={countryPins}
+            focusCountry={focusCountry}
+            lens={lens}
+            selectedSlug={selected?.slug}
+            onSelectCountry={goCountry}
+            onSelectRegion={selectRegion}
+          />
+        </div>
+
         {selected && (
           <RegionDrawer
             region={selected}
@@ -107,7 +137,7 @@ export function ExploreRegionClient({ data, initialRegionSlug }: {
       {/* Hint */}
       {!focusCountry && (
         <p className="mt-3 text-sm text-muted-foreground">
-          Tap a country to zoom in and explore its regions.
+          Tap a country pin or chip to zoom in and explore its regions.
         </p>
       )}
     </div>
