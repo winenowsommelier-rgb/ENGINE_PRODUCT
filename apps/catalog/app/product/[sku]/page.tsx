@@ -269,7 +269,7 @@ export default function Page({ params }: { params: { sku: string } }) {
             <section className="flex flex-col gap-8">
               <h2 className="text-base font-semibold text-foreground">Taste profile</h2>
               {hasStructural ? <StructuralGauges structural={structural} /> : null}
-              {tiers ? <TasteWheel tiers={tiers} /> : null}
+              {tiers ? <TasteWheel tiers={tiers} varietalLabel={product.grape_variety || product.name} /> : null}
             </section>
           ) : null}
 
