@@ -1,3 +1,8 @@
+/* Cormorant Garamond powers the taste-wheel center note (var(--font-serif)).
+   @import must precede all other rules per the CSS spec, so it sits above the
+   Tailwind directives. */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -22,6 +27,9 @@
 
 @layer base {
   :root {
+    /* Serif for editorial accents (taste-wheel center note). */
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+
     /* Near-white canvas, near-black ink. */
     --background: 0 0% 100%;
     --foreground: 0 0% 10%; /* ~#1a1a1a — high contrast primary text */
@@ -144,7 +152,7 @@
   align-items: center;
   gap: 1.25rem;
 }
-.taste-wheel > svg {
+.taste-wheel__svgwrap > svg {
   max-width: 100%;
   height: auto;
 }
@@ -280,7 +288,7 @@ button.taste-note:focus-visible {
   cursor: pointer;
   transform-box: fill-box; transform-origin: center;
   transition: transform .28s cubic-bezier(.34,1.4,.5,1), opacity .25s, filter .25s;
-  animation: taste-wedge-in .42s both;
+  animation: taste-wedge-in .42s backwards;
   animation-delay: var(--draw-delay, 0ms);
 }
 .taste-wheel__wedge.is-dim { opacity: .22; }
@@ -308,7 +316,7 @@ button.taste-note:focus-visible {
     justify-content: center;
     gap: 2.5rem;
   }
-  .taste-wheel > svg {
+  .taste-wheel__svgwrap > svg {
     flex: 0 0 auto;
   }
   .taste-wheel-legend {
