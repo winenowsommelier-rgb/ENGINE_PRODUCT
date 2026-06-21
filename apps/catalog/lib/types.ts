@@ -23,7 +23,8 @@
  *  - margin_pct         (internal pricing)
  *  - b2b_margin_pct     (internal pricing)
  *  - enrichment_*       (e.g. enrichment_confidence — internal pipeline metadata)
- *  - popularity_*       (e.g. popularity_rank/score — internal ranking signals)
+ *  - popularity_score / popularity_rank  (internal raw ranking signals — FORBIDDEN)
+ *    (the ONE allowed derivative is the coarse popularity_tier 0|1|2 field below)
  */
 export interface PublicProduct {
   // Required identity / commercial fields.
@@ -67,4 +68,9 @@ export interface PublicProduct {
   // toPublicProduct() in catalog-data.ts coerces it to a REAL boolean via isInStock() so this
   // type is honest and plain-truthiness consumers are correct ("0" no longer reads as in-stock).
   is_in_stock?: boolean;
+  // Coarse, client-SAFE popularity bucket derived server-side from popularity_score
+  // (which is itself FORBIDDEN from the public shape). 0 = no sales data, 1 = sells,
+  // 2 = top seller (>= p75 of scored population). Drives Recommended ordering upstream
+  // and is available for optional "Bestseller" badging. The raw score never ships.
+  popularity_tier?: 0 | 1 | 2;
 }
