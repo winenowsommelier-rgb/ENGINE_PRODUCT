@@ -1,11 +1,13 @@
 /**
  * featured — the home page's "Featured" row.
  *
- * WHY THIS IS A MANUAL LIST (not "best-selling" / "most popular"):
- *   popularity_score is 0 for all 11,436 products, so there is NO real
- *   popularity signal to rank by. Inventing one would be a fake trust signal.
- *   Instead we hand-pick a small, confident set of real SKUs and present them
- *   honestly as "From the collection" / "Featured" — never as popularity.
+ * WHY THIS IS A MANUAL LIST (not auto "best-selling" / "most popular"):
+ *   popularity_score now exists for ~29% of products (BI backfill, 2026-06), but
+ *   it is sparse and skewed, so it drives the /shop Recommended ORDER rather than a
+ *   home-page "best seller" claim. Inventing a per-tile popularity badge from such
+ *   thin coverage would be a fake trust signal. Instead we hand-pick a small,
+ *   confident set of real SKUs and present them honestly as "From the collection"
+ *   / "Featured" — never as a popularity ranking.
  *
  * Each seeded SKU was verified against the live export as: in-stock, has an
  * image_url, has a positive price, and is critic-reviewed (non-empty
