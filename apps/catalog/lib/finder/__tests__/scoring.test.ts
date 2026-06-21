@@ -151,4 +151,23 @@ describe('scoreProducts', () => {
     const out=scoreProducts(ans({adventure:'discovery'}),pool);
     expect(out.degraded).toBe(true); // adventure bump must not clear the quality gate
   });
+
+  // ── FLAVOR scoring via FLAVOR_FAMILY set-intersection against flavor_tags_canonical.
+  // regression: dark-fruit was DEAD (hyphen vs space). Must now score + out-rank a non-match.
+  it('dark-fruit chip scores a "Dark Plum" product and ranks it above a non-match', () => {
+    const pool=[P({sku:'WRWno', flavor_tags_canonical:['Citrus Zest']}), P({sku:'WRWyes', flavor_tags_canonical:['Black Cherry']})];
+    expect(scoreProducts(ans({flavorChips:['dark-fruit']}),pool).products[0].sku).toBe('WRWyes');
+  });
+  it('mineral chip matches "Minerality"', () => {
+    const pool=[P({sku:'WRWx', flavor_tags_canonical:['Oak']}), P({sku:'WRWm', flavor_tags_canonical:['Minerality']})];
+    expect(scoreProducts(ans({flavorChips:['mineral']}),pool).products[0].sku).toBe('WRWm');
+  });
+  it('flavor scoring reads flavor_tags_canonical, NOT flavor_tags', () => {
+    const pool=[P({sku:'WRWc', flavor_tags:['nope'], flavor_tags_canonical:['Oak']})];
+    expect(scoreProducts(ans({flavorChips:['oak']}),pool).products.length).toBe(1);
+  });
+  it('core-only run (no flavorChips) scores identically (additive)', () => {
+    const pool=[P({sku:'WRW1', wine_body:'Full'}), P({sku:'WRW2', wine_body:'Light'})];
+    expect(scoreProducts(ans({axis1:'bold'}),pool).products[0].sku).toBe('WRW1');
+  });
 });

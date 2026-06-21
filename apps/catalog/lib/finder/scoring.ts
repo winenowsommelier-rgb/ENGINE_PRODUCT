@@ -125,6 +125,27 @@ const GRAPE_FAMILY: Record<string, string[]> = {
   grenache:      ['grenache', 'garnacha'],
 };
 
+// Flavor family → canonical-note SET that signals that family. Chip tokens are
+// hyphenated (`dark-fruit`); canonical notes are spaced Title-Case (`Dark Plum`).
+// We match by lowercased set-intersection, so the historical hyphen-vs-space bug
+// (chip `dark-fruit` never equalled tag `dark fruit`) cannot recur. Notes here are
+// already lowercase; product notes are lowercased via `norm` at compare time.
+// Exported so a later coverage test can import and assert the key/note universe.
+export const FLAVOR_FAMILY: Record<string, string[]> = {
+  'red-fruit':  ['red fruit','cherry','strawberry','raspberry'],
+  'dark-fruit': ['dark plum','plum','blackcurrant','blackberry','black cherry'],
+  citrus:       ['citrus','citrus zest','lemon','lime','grapefruit'],
+  'stone-fruit':['stone fruit','peach','apricot','green apple','pear'],
+  tropical:     ['tropical','pineapple','mango','passion fruit'],
+  oak:          ['oak','vanilla','cedar','toast'],
+  spice:        ['spice','black pepper','baking spice','cinnamon','clove'],
+  earthy:       ['earth','tobacco','leather','mushroom','graphite'],
+  floral:       ['floral','rose','violet','blossom'],
+  mineral:      ['minerality','wet stone','sea salt','flint','chalk'],
+  smoky:        ['smoke','smoky','peat'],
+  nutty:        ['hazelnut','almond','brioche','cocoa','caramel','honey'],
+};
+
 function grapeScore(token: string | undefined, grapeVariety: string | undefined): number {
   if (!token) return 0;
   const family = GRAPE_FAMILY[token];
@@ -214,8 +235,15 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
       s += ladderScore(bodyLadderDistance(BODY_TOKEN[a.axis1], p.wine_body), 4);
     }
     if (a.flavorChips?.length) {
-      const tags = (p.flavor_tags ?? []).map(norm);
-      for (const chip of a.flavorChips) if (tags.includes(norm(chip))) s += 2;
+      // Set-intersection against flavor_tags_canonical (Title-Case notes). Reading the
+      // canonical field + matching via FLAVOR_FAMILY fixes the historical bug where the
+      // old code did `tags.includes(norm(chip))` — hyphenated chips (red-fruit, dark-fruit)
+      // never equalled spaced tags (red fruit), so those chips scored 0 in production.
+      const notes = new Set((p.flavor_tags_canonical ?? []).map(norm));
+      for (const chip of a.flavorChips) {
+        const fam = FLAVOR_FAMILY[chip];
+        if (fam && fam.some((n) => notes.has(n))) s += 2;
+      }
     }
     // TIER-2 origin/style for non-wine categories (whisky origin→country & style→region,
     // spirits type→classification). Replaces the old axis2-vs-country line, which was
