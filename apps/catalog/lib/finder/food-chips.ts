@@ -4,9 +4,14 @@ export const FOOD_CHIPS: Record<string, { label: string; icon: string; keywords:
   thai:       { label: 'Thai food',            icon: '🌶️', keywords: ['thai'] },
   sushi:      { label: 'Sushi & sashimi',      icon: '🍣', keywords: ['sushi','sashimi'] },
   dimsum:     { label: 'Dim sum & Chinese',    icon: '🥟', keywords: ['dim sum','chinese'] },
-  korean:     { label: 'Korean BBQ',           icon: '🍖', keywords: ['korean'] },
-  vietnamese: { label: 'Vietnamese',           icon: '🍜', keywords: ['vietnamese'] },
-  spicy:      { label: 'Spicy dishes',         icon: '🔥', keywords: ['spicy','curry'] },
+  // korean/vietnamese/spicy: the curated food_matching vocabulary has no literal
+  // 'korean'/'vietnamese'/'spicy'/'curry' phrases, so these chips matched nothing
+  // (dead chips — see chip-coverage.test.ts). Anchor each to the category that
+  // DOES exist in the data: Korean BBQ ⊂ grilled red meat, Vietnamese ⊂ SE-Asian,
+  // spicy ⊂ "indian & spiced dishes". Specific terms kept first for future data.
+  korean:     { label: 'Korean BBQ',           icon: '🍖', keywords: ['korean','grilled'] },
+  vietnamese: { label: 'Vietnamese',           icon: '🍜', keywords: ['vietnamese','southeast asian'] },
+  spicy:      { label: 'Spicy dishes',         icon: '🔥', keywords: ['spicy','curry','spiced'] },
   grilled:    { label: 'Grilled & BBQ meat',   icon: '🥩', keywords: ['grilled','bbq','barbecue','steak'] },
   roast:      { label: 'Roast & duck',         icon: '🍗', keywords: ['roast','duck'] },
   lamb:       { label: 'Lamb & game',          icon: '🐑', keywords: ['lamb','game','venison'] },

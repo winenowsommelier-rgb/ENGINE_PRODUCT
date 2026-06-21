@@ -158,6 +158,8 @@ export default function ShopPage({
         <Suspense fallback={<div className="min-h-[88px]" aria-hidden="true" />}>
           <Filters
             countries={countries}
+            groupOptions={facets.groups}
+            countryOptions={facets.countries}
             initialParams={currentParams}
             availableSubCategories={facets.subCategories}
             availableRegions={facets.regions}

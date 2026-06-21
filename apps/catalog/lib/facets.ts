@@ -20,7 +20,14 @@ export interface FacetOption {
   count: number;
 }
 
-/** Tally a key-extractor over products → sorted {value,count}[], dropping empties. */
+/**
+ * Tally a key-extractor over products → {value,count}[], dropping empties.
+ *
+ * Ordering: most-stocked first (count DESC), then alphabetical as a stable
+ * tie-break. This puts the regions/sub-regions the shop actually carries depth
+ * in at the front of the chip rail, so the longest pill lists lead with the
+ * options worth scanning instead of an alphabetical accident.
+ */
 function tally(
   products: PublicProduct[],
   key: (p: PublicProduct) => string | null | undefined,
@@ -34,7 +41,11 @@ function tally(
   }
   return [...counts.entries()]
     .map(([value, count]) => ({ value, count }))
-    .sort((a, b) => a.value.localeCompare(b.value, 'en', { sensitivity: 'base' }));
+    .sort(
+      (a, b) =>
+        b.count - a.count ||
+        a.value.localeCompare(b.value, 'en', { sensitivity: 'base' }),
+    );
 }
 
 /** Canonical sub-type (category_type), but only for products in `group`. */
@@ -51,6 +62,16 @@ export function subCategoriesFor(
 /** Accessory sub-categories (Glassware / Wine Coolers & Fridges / Bar Tools & Gifts). */
 export function accessorySubCategoriesFor(products: PublicProduct[]): FacetOption[] {
   return tally(products, (p) => accessoryCategoryForSku(p.sku));
+}
+
+/** Top-level category groups present, with SKU counts (most-stocked first). */
+export function groupsFor(products: PublicProduct[]): FacetOption[] {
+  return tally(products, (p) => groupForProduct(p));
+}
+
+/** Distinct countries present, with SKU counts (most-stocked first). */
+export function countriesFor(products: PublicProduct[]): FacetOption[] {
+  return tally(products, (p) => p.country);
 }
 
 /** Distinct regions present (caller passes the country-filtered set). */

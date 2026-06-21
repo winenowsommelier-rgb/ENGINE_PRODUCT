@@ -2,7 +2,7 @@ import type { PublicProduct } from './types';
 import type { ShopParams } from './shop-query';
 import { matchesFilters } from './shop-query';
 import {
-  subCategoriesFor, accessorySubCategoriesFor, regionsFor, subRegionsFor, type FacetOption,
+  subCategoriesFor, accessorySubCategoriesFor, groupsFor, countriesFor, regionsFor, subRegionsFor, type FacetOption,
 } from './facets';
 import { type CategoryGroup, CATEGORY_GROUPS } from './category-groups';
 
@@ -20,16 +20,32 @@ function omit(params: ShopParams, ...keys: string[]): ShopParams {
 }
 
 export interface ShopFacets {
+  groups: FacetOption[];
+  countries: FacetOption[];
   subCategories: FacetOption[];
   regions: FacetOption[];
   subRegions: FacetOption[];
 }
 
-/** Build the three drill-down option lists per design §4.1 input-set table. */
+/** Build the drill-down option lists per design §4.1 input-set table. */
 export function shopFacets(all: PublicProduct[], params: ShopParams): ShopFacets {
   const group = first(params.group) as CategoryGroup | undefined;
   const country = first(params.country);
   const region = first(params.region);
+
+  // groups: apply everything EXCEPT the category strand (group + class), so each
+  // group chip's count reflects the OTHER active filters (country/price/taste)
+  // and picking a group doesn't zero out its siblings.
+  const groupSet = all.filter((p) => matchesFilters(p, omit(params, 'group', 'class')));
+  const groups = groupsFor(groupSet);
+
+  // countries: apply everything EXCEPT the geo strand, so each chip's count
+  // reflects what's available under the current non-geo filters (group/price/
+  // taste) — and stays stable as the user picks a country.
+  const countrySet = all.filter((p) =>
+    matchesFilters(p, omit(params, 'country', 'region', 'subregion')),
+  );
+  const countries = countriesFor(countrySet);
 
   // subCategories: apply everything EXCEPT `class`.
   let subCategories: FacetOption[] = [];
@@ -54,7 +70,7 @@ export function shopFacets(all: PublicProduct[], params: ShopParams): ShopFacets
     subRegions = subRegionsFor(region, set);
   }
 
-  return { subCategories, regions, subRegions };
+  return { groups, countries, subCategories, regions, subRegions };
 }
 
 /** Top-N most frequent non-empty grape varietals across the catalog (single source for the typeahead seed). */
