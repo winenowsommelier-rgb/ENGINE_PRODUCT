@@ -187,7 +187,10 @@ export function applyShopQuery(
   const items = products.filter((p) => matchesFilters(p, params));
 
   // ---- SORT (on a copy; do not mutate the caller's array) ----
-  const sortKey: SortKey = SORTS[firstParam(params.sort) ?? ''] ?? 'recommended';
+  const rawSort = firstParam(params.sort) ?? '';
+  const sortKey: SortKey = Object.prototype.hasOwnProperty.call(SORTS, rawSort)
+    ? SORTS[rawSort]
+    : 'recommended';
   const sorted = [...items];
   if (sortKey === 'recommended') {
     // No-op: products arrive PRE-RANKED from getAllProducts() (Recommended order is

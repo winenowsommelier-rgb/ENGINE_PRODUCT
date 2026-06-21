@@ -389,6 +389,34 @@ describe('applyShopQuery — recommended sort (default)', () => {
   });
 });
 
+describe('applyShopQuery — recommended preserves pre-ranked order across pages', () => {
+  it('page 2 slice keeps the incoming order (not re-sorted)', () => {
+    // Build 50 products whose sku/name order is REVERSED vs alphabetical, so an
+    // accidental A–Z (or any) sort would visibly change the page-2 slice.
+    const n = 50;
+    const preRanked = Array.from({ length: n }, (_, i) => {
+      const idx = n - 1 - i; // descending → name 'P049','P048',... is the INPUT order
+      const id = String(idx).padStart(3, '0');
+      return p({ sku: `P${id}`, name: `P${id}`, price: 100 + i });
+    });
+    const expectedSkus = preRanked.map((x) => x.sku);
+
+    const page1 = applyShopQuery(preRanked, {}); // default recommended
+    expect(page1.pageItems.map((x) => x.sku)).toEqual(
+      expectedSkus.slice(0, SHOP_PAGE_SIZE),
+    );
+
+    const page2 = applyShopQuery(preRanked, { page: '2' });
+    expect(page2.pageItems.map((x) => x.sku)).toEqual(
+      expectedSkus.slice(SHOP_PAGE_SIZE, SHOP_PAGE_SIZE * 2),
+    );
+
+    // Sanity: the full items list is still in the reversed (pre-ranked) order, NOT A–Z.
+    expect(page1.items.map((x) => x.sku)).toEqual(expectedSkus);
+    expect(page1.items[0].sku).toBe('P049'); // would be 'P000' if A–Z sorted
+  });
+});
+
 describe('bev=1 opt-in filter (beverages only)', () => {
   const fridge = { sku: 'GWN-FRIDGE', name: 'Wine Cooler', category_group: 'Accessories', is_in_stock: '1', region: 'Champagne' } as any;
   const wine = { sku: 'WIN1', name: 'Champ', category_group: 'Wine', is_in_stock: '1', region: 'Champagne' } as any;
