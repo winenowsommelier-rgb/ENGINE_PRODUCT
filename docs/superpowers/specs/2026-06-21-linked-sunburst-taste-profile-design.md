@@ -1,7 +1,12 @@
 # Linked Sunburst Taste Profile — Design Spec
 
 **Date:** 2026-06-21
-**Status:** Approved design, pre-implementation
+**Status:** Implemented (2026-06-22) — catalog + internal. Verified in browser on
+SKU `WRW2106AC` (full 3-tier) and `WRW2107AC` (missing-tertiary edge case);
+catalog build green (232/232 SSG pages, `/product/[sku]` still SSG); internal
+typecheck green; chip↔wedge link, draw-in, Esc-clear, reduced-motion, and the
+internal `/explore` chip navigation all confirmed. Center text themed to each
+app's sans body type (per user review).
 **Components:** `TasteWheel.tsx`, `TasteNote.tsx` (catalog + internal copies)
 
 ---
