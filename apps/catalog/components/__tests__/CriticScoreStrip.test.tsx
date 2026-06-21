@@ -50,4 +50,14 @@ describe('CriticScoreStrip', () => {
     const leads = document.querySelectorAll('[data-lead="true"]');
     expect(leads.length).toBe(1);
   });
+
+  it('gives each cell a native title tooltip with the full critic name + score', () => {
+    render(<CriticScoreStrip scoreMax={92} scoreSummary={twoCritics} />);
+    const js = document.querySelector('[data-lead="true"]');
+    expect(js).toHaveAttribute('title', 'James Suckling — 92');
+    const wa = Array.from(document.querySelectorAll('[role="group"] > div')).find(
+      (d) => !d.hasAttribute('data-lead'),
+    );
+    expect(wa).toHaveAttribute('title', 'Wine Advocate — 91');
+  });
 });

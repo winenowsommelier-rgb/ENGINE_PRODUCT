@@ -36,6 +36,7 @@ export function CriticScoreStrip({ scoreMax, scoreSummary, maxCritics = 4 }: Cri
           <div
             key={`${c.abbr}-${i}`}
             data-lead={isLead || undefined}
+            title={`${c.critic} — ${c.score_native}`}
             className={[
               'flex items-baseline gap-1.5 px-3 py-1',
               i < cells.length - 1 ? 'border-r border-border' : '',
