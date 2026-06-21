@@ -85,3 +85,81 @@ describe('compareRecommended (tuple order: stock → scored → score desc → p
     expect(compareRecommended(scored, zero)).toBeLessThan(0);
   });
 });
+
+describe('compareRecommended — integration & robustness', () => {
+  const sign = (n: number): number => (n > 0 ? 1 : n < 0 ? -1 : 0);
+
+  it('full sort over a mixed fixture produces the exact expected ranking', () => {
+    // One unambiguous ordering across every tier of the tuple:
+    //   1. in-stock before out-of-stock (null/absent stock => out)
+    //   2. scored before unscored (score === number > 0)
+    //   3. score DESC   4. price DESC   5. name A–Z
+    const rows = [
+      // in-stock, scored (score DESC wins): 0.9 > 0.3
+      r({ sku: 'IN_TOP', name: 'Bordeaux', is_in_stock: '1', popularity_score: 0.9, price: 100 }),
+      r({ sku: 'IN_MID', name: 'Chianti', is_in_stock: '1', popularity_score: 0.3, price: 9999 }),
+      // in-stock, unscored (price DESC wins): 5000 > 50
+      r({ sku: 'IN_PREMIUM', name: 'Champagne', is_in_stock: '1', popularity_score: 0, price: 5000 }),
+      r({ sku: 'IN_CHEAP', name: 'Soju', is_in_stock: '1', popularity_score: 0, price: 50 }),
+      // in-stock, unscored, MISSING price -> NEGATIVE_INFINITY (ranks last among in-stock)
+      r({ sku: 'IN_NOPRICE', name: 'Mystery', is_in_stock: '1', popularity_score: 0, price: undefined }),
+      // out-of-stock, scored (beats out-of-stock unscored)
+      r({ sku: 'OOS_SELLER', name: 'Rioja', is_in_stock: '0', popularity_score: 0.99, price: 200 }),
+      // out-of-stock, unscored
+      r({ sku: 'OOS_UNSCORED', name: 'Port', is_in_stock: '0', popularity_score: 0, price: 8000 }),
+      // null stock -> treated as out-of-stock; unscored; cheapest of the OOS-unscored bucket,
+      // so it sorts AFTER OOS_UNSCORED (8000 > 30).
+      r({ sku: 'NULL_STOCK', name: 'Ghost', is_in_stock: null, popularity_score: 0, price: 30 }),
+    ];
+
+    const sorted = [...rows].sort(compareRecommended).map((x) => x.sku);
+    expect(sorted).toEqual([
+      'IN_TOP',       // in-stock, scored 0.9
+      'IN_MID',       // in-stock, scored 0.3
+      'IN_PREMIUM',   // in-stock, unscored, price 5000
+      'IN_CHEAP',     // in-stock, unscored, price 50
+      'IN_NOPRICE',   // in-stock, unscored, price -Inf
+      'OOS_SELLER',   // out-of-stock, scored
+      'OOS_UNSCORED', // out-of-stock, unscored, price 8000
+      'NULL_STOCK',   // out-of-stock (null), unscored, price 30
+    ]);
+  });
+
+  it('is antisymmetric: sign(cmp(a,b)) === -sign(cmp(b,a)) at each tier', () => {
+    // differ only at the stock tier
+    const inStock = r({ sku: 'a', is_in_stock: '1', popularity_score: 0.5, price: 100 });
+    const outStock = r({ sku: 'b', is_in_stock: '0', popularity_score: 0.5, price: 100 });
+    expect(sign(compareRecommended(inStock, outStock))).toBe(
+      -sign(compareRecommended(outStock, inStock)),
+    );
+
+    // differ only at the score tier (both in-stock, both scored, different score)
+    const hi = r({ sku: 'a', is_in_stock: '1', popularity_score: 0.9, price: 100 });
+    const lo = r({ sku: 'b', is_in_stock: '1', popularity_score: 0.1, price: 100 });
+    expect(sign(compareRecommended(hi, lo))).toBe(-sign(compareRecommended(lo, hi)));
+
+    // differ only at the price tier (both in-stock, both unscored, different price)
+    const prem = r({ sku: 'a', is_in_stock: '1', popularity_score: 0, price: 5000 });
+    const cheap = r({ sku: 'b', is_in_stock: '1', popularity_score: 0, price: 100 });
+    expect(sign(compareRecommended(prem, cheap))).toBe(-sign(compareRecommended(cheap, prem)));
+  });
+
+  it('two unscored rows BOTH missing price fall through to name (no NaN)', () => {
+    const zebra = r({ sku: 'z', name: 'Zebra', is_in_stock: '1', popularity_score: 0, price: undefined });
+    const apple = r({ sku: 'a', name: 'Apple', is_in_stock: '1', popularity_score: 0, price: undefined });
+    // price tie at -Inf on BOTH sides => must reach the name tiebreak, never NaN.
+    expect(Number.isNaN(compareRecommended(zebra, apple))).toBe(false);
+    expect(compareRecommended(apple, zebra)).toBeLessThan(0);
+    expect(compareRecommended(zebra, apple)).toBeGreaterThan(0);
+  });
+
+  it('is transitive: x<y and y<z implies x<z across mixed tiers', () => {
+    // x beats y on the stock tier; y beats z on the score tier.
+    const x = r({ sku: 'x', name: 'Aaa', is_in_stock: '1', popularity_score: 0.5, price: 100 });
+    const y = r({ sku: 'y', name: 'Bbb', is_in_stock: '0', popularity_score: 0.9, price: 100 });
+    const z = r({ sku: 'z', name: 'Ccc', is_in_stock: '0', popularity_score: 0.1, price: 100 });
+    expect(compareRecommended(x, y)).toBeLessThan(0);
+    expect(compareRecommended(y, z)).toBeLessThan(0);
+    expect(compareRecommended(x, z)).toBeLessThan(0);
+  });
+});
