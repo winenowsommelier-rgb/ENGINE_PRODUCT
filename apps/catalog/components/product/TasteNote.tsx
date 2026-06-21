@@ -8,17 +8,26 @@
 
 export type Tier = 'primary' | 'secondary' | 'tertiary' | 'flat';
 
-export interface TasteNoteProps {
+interface TasteNoteBase {
   note: string;
   tier: Tier;
   intensity: 1 | 2 | 3;
-  segmentId?: string;
   active?: boolean;
   faded?: boolean;
-  onFocusNote?: (id?: string) => void;   // hover: enter -> id, leave -> undefined
-  onToggleNote?: (id: string) => void;   // click: lock/unlock this id
   className?: string;
 }
+
+// Either a plain presentational chip (no interaction), OR an interactive chip
+// that MUST carry a segmentId so click/hover always have an id to report.
+// The union makes "interactive callback without segmentId" a compile error,
+// so the dead-button state (focusable button that no-ops) is unrepresentable.
+export type TasteNoteProps =
+  | (TasteNoteBase & { segmentId?: undefined; onFocusNote?: undefined; onToggleNote?: undefined })
+  | (TasteNoteBase & {
+      segmentId: string;
+      onFocusNote?: (id?: string) => void;   // hover: enter -> id, leave -> undefined
+      onToggleNote?: (id: string) => void;   // click: lock/unlock this id
+    });
 
 function Decoration() {
   // swatch + 3 bars; tier color & intensity fill are applied via CSS using the
@@ -35,9 +44,12 @@ function Decoration() {
 
 export function TasteNote({ note, tier, intensity, segmentId, active, faded, onFocusNote, onToggleNote, className }: TasteNoteProps) {
   const cls = `${className ?? 'taste-note'}${active ? ' is-active' : ''}${faded ? ' is-faded' : ''}`;
-  const interactive = !!onFocusNote || !!onToggleNote;
+  const interactive = !!onToggleNote || !!onFocusNote;
 
-  if (!interactive) {
+  // When interactive, the union guarantees segmentId is present. The extra
+  // segmentId check is belt-and-suspenders: if it's somehow absent, fall back
+  // to the presentational span rather than render a no-op button.
+  if (!interactive || !segmentId) {
     return (
       <span data-intensity={intensity} data-tier={tier} className={cls}>
         <Decoration />
@@ -53,7 +65,7 @@ export function TasteNote({ note, tier, intensity, segmentId, active, faded, onF
       className={cls}
       aria-pressed={!!active}
       aria-label={`${note}, ${tier} note, intensity ${intensity}`}
-      onClick={(e) => { e.stopPropagation(); if (segmentId) onToggleNote?.(segmentId); }}
+      onClick={(e) => { e.stopPropagation(); onToggleNote?.(segmentId); }}
       onMouseEnter={() => onFocusNote?.(segmentId)}
       onMouseLeave={() => onFocusNote?.(undefined)}
     >
