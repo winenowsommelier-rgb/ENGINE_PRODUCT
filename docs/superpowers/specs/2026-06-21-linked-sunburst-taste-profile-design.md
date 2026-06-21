@@ -73,10 +73,16 @@ client-rendered and re-running geometry math in the browser.
 > in both for one shared mental model. The internal `TasteWheelInteractive` is
 > identical except its chips render the navigating `TasteNote` button.
 
-### 4.3 Why not just make TasteWheel `"use client"`?
-That would re-run the wedge-path trig in every visitor's browser and pull the
-whole tier list into the client bundle for ~3,689 SSG pages. The split keeps the
-expensive, static part on the server and ships only the ~interaction reducer.
+### 4.3 Why not just make TasteWheel `"use client"`? (W4 — corrected rationale)
+The goal of the split is to **keep the geometry code and tier data out of the
+client bundle**, shipping only the small interaction layer. If `TasteWheel`
+itself were `"use client"`, the wedge-path trig function and the per-product
+tier list would be serialized into the client bundle/hydration payload for
+every product page. The split lets the server component do the one-time
+geometry and hand `TasteWheelInteractive` plain precomputed props, so the client
+ships only the highlight reducer + event handlers. (This is a bundle-size /
+payload argument, not a "re-run trig N times" argument — for SSG the static HTML
+is built once regardless.)
 
 ## 5. Component contracts
 
@@ -93,18 +99,31 @@ export interface TasteNoteProps {
   className?: string;
 }
 ```
-- Catalog `TasteNote` renders a `<button type="button">` now (was `<span>`) so
-  it is keyboard-focusable and tappable, BUT it does **not** navigate — its
-  `onClick`/`onMouseEnter`/`onMouseLeave` call `onFocusNote`. (No `useRouter`,
-  no `/explore` — the grep invariant in its header comment still holds.)
-- Internal `TasteNote` KEEPS its `/explore` navigation on click. Highlight is
-  driven by hover only there, OR we add a small affordance: hover highlights +
-  click still navigates. **Decision:** internal click = navigate (unchanged);
-  hover = highlight. This preserves the existing "find similar" behavior.
+- Catalog `TasteNote` renders a `<button type="button">` now (was `<span>`)
+  **only when `onFocusNote` is provided**, so it is keyboard-focusable and
+  tappable. It does **not** navigate — its `onClick`/`onMouseEnter`/
+  `onMouseLeave` call `onFocusNote`. No `useRouter` import, no `router.push`
+  call, no `/explore` string in code.
+  - **Invariant (corrected, C2):** the real guard is *code-level*, not a bare
+    grep. The catalog header comments legitimately contain the words
+    `useRouter` and `/explore` (explaining why they were removed), so a naive
+    `grep useRouter` is already non-empty today. The enforceable invariant is:
+    **no `import { useRouter }`, no `router.push(`, and no `'/explore'` string
+    literal in JSX or a handler** under the catalog `components/product/`.
+    Any CI check must exclude comment lines (or grep for the import/call forms).
+- **`tier="flat"` / no `onFocusNote` (W1):** when `TasteNote` receives no
+  `onFocusNote` (the `TasteChipCard` flat path), it renders a **non-interactive
+  `<span>`** exactly as today — no button, no focus, no behavior change. The
+  new props are all optional; absent `onFocusNote` = legacy presentational
+  chip. This keeps `TasteChipCard` genuinely out of scope.
+- Internal `TasteNote` KEEPS its `/explore` navigation on click (unchanged).
+  Highlight there is driven by **hover only**; click still navigates. See §6
+  for how this branches the interaction model per app.
 - Visual additions (both): a color swatch (`tier` color, opacity ramped by
   intensity) and 1–3 intensity bars, rendered as child spans. Driven by CSS
   using existing `data-intensity` / `data-tier` attributes plus new
-  `.taste-note__swatch` / `.taste-note__bars` elements.
+  `.taste-note__swatch` / `.taste-note__bars` elements. These render on the
+  presentational `<span>` form too (swatch/bars are not interactive).
 
 ### 5.2 `TasteWheelInteractive` (new, both apps)
 ```
@@ -126,37 +145,75 @@ interface Props {
 }
 ```
 
-### 5.3 `TasteWheel` (server, catalog) — new prop
+### 5.3 `TasteWheel` (both apps) — new prop + call-site plumbing (C1)
 ```
 interface TasteWheelProps {
   tiers: Tiers;
   size?: number;                // default 240
-  varietalLabel?: string;       // NEW: shown in idle center
+  varietalLabel?: string;       // NEW: shown in idle center; OPTIONAL
 }
 ```
-Call site [page.tsx:272] passes
-`varietalLabel={product.grape_variety || product.name}`.
+`varietalLabel` is **optional**. When absent, the idle center falls back to a
+generic label (see §6). Plumbing differs per app — the call site does NOT pass
+it today; both edits below are required work:
+
+- **Catalog** — edit [page.tsx:272], currently `{tiers ? <TasteWheel tiers={tiers} /> : null}`,
+  to `{tiers ? <TasteWheel tiers={tiers} varietalLabel={product.grape_variety || product.name} /> : null}`.
+  Both fields are confirmed present on `product` in `page.tsx` scope.
+- **Internal** — `TasteProfileSection.tsx` receives only `{ profile, productId }`;
+  it has **no varietal/grape/name field** in scope. Two options:
+  1. (Preferred, smallest) Accept the generic fallback internally — pass nothing,
+     idle center shows the generic label. No upstream plumbing.
+  2. Thread a `varietalLabel` prop down from whatever renders
+     `TasteProfileSection` (a larger change touching that parent).
+  **Decision:** Option 1 — internal idle center uses the generic fallback. The
+  internal app is a PIM where the product name is already on the page; the
+  varietal-in-center flourish is a catalog nicety. Revisit only if requested.
 
 ## 6. Interaction model
 
+The model **branches by app** (W2), because the catalog chip is a non-navigating
+focus toggle while the internal chip navigates to `/explore`.
+
+### 6a. Catalog (chips do not navigate)
 | Input | Desktop | Mobile / touch |
 |-------|---------|----------------|
 | hover chip/wedge | focus that pair | (no hover) |
 | tap/click chip/wedge | toggle-lock focus | toggle-lock focus |
 | tap empty space / Esc | clear | clear |
 
+### 6b. Internal (chip click navigates to `/explore` — preserved)
+| Input | Desktop | Mobile / touch |
+|-------|---------|----------------|
+| hover chip/wedge | focus that pair | (no hover) |
+| **click chip** | navigate to `/explore` (unchanged) | navigate to `/explore` |
+| tap/click **wedge** | toggle-lock focus | toggle-lock focus |
+
+> Internal mobile focus path (W2): since a chip tap navigates, **the wedge is
+> the focus control on touch** — tapping a wedge highlights its chip. The chip
+> list still works as a navigation list. This is acceptable because the
+> internal app's primary chip action has always been "find similar," not
+> "inspect this note"; the wheel-tap gives touch users the inspect path. If a
+> dedicated touch inspect-without-navigate is later wanted, add a long-press;
+> out of scope now.
+
 - Focus state: focused wedge gets `.hot` (scale 1.07 + drop-shadow); all other
   wedges get `.dim` (opacity ~0.22). Focused chip gets `.active`; siblings get
   `.faded`. Center shows tier label + note (serif) + intensity word.
-- Idle state: center shows `varietalLabel` (serif) + faint "hover · tap to
-  explore" hint. No dimming.
-- Keyboard: chips are buttons → Tab to them, Enter/Space toggles focus, Esc
-  clears. Wheel `<svg>` wedges get `role="button"` + `tabindex` OR (simpler,
-  preferred) we make wedges focusable-by-proxy: keyboard users drive everything
-  through the chips, wedges are pointer-only. **Decision:** chips are the
-  keyboard path; wedges are pointer-enhancement. Each wedge has an
-  `<title>`/aria so SR users hear it, but the chip list is the accessible
-  source of truth.
+- Idle state (both): center shows `varietalLabel` when provided (serif), else
+  the generic fallback `Aroma profile` / `Tasting notes`, plus a faint
+  "hover · tap to explore" hint. No dimming.
+
+### 6c. Keyboard & a11y (W3 — resolved, no contradiction)
+- **Chips are the single keyboard/SR path.** Catalog: chip `<button>` → Tab,
+  Enter/Space toggles focus, Esc clears. Internal: chip `<button>` → Tab,
+  Enter activates navigation (its existing behavior).
+- **Wedges are pointer-only decoration.** They get **NO `role="button"` and NO
+  `tabindex`** (avoids the "announced actionable but not keyboard-operable"
+  trap). The `<svg>` carries `role="img"` + `aria-label` as today; individual
+  wedges are `aria-hidden="true"` since every wedge is already represented by an
+  accessible chip. The chip list is the accessible source of truth; the wheel
+  is a visual enhancement of it.
 
 ## 7. Motion (bold & dynamic)
 
@@ -191,15 +248,27 @@ tertiary `#6c6055`). No new color tokens.
   guards `tiers ? <TasteWheel/> : null` at the catalog call site).
 - **Long note names** in center: center text wraps / clamps to the inner-circle
   width; max 2 lines, the inner radius is sized so 2 lines fit.
+- **Empty rings & the draw-in (I3):** a tier with no notes renders the existing
+  faint stroke circle, which is **not** a segment and is **excluded from
+  `order[]`** — the stagger only animates real wedges. Hovering a single-note
+  full-ring wedge focuses normally (center shows that note); there is no special
+  case for full rings.
 
 ## 10. Testing
 
-- **Unit (catalog `TasteWheel.test.tsx` — extend existing):**
+- **Unit (extend existing `apps/catalog/components/__tests__/TasteWheel.test.tsx`
+  — I1; it imports from `@/components/product/TasteWheel`):**
   - geometry: N notes → N `<path>` segments with stable ids (regression guard
     on the existing no-dead-segment intent).
-  - empty tertiary → no tertiary segments, no crash.
+  - empty tertiary → no tertiary segments, no crash; the empty ring's faint
+    stroke circle is **excluded from `order[]`** so the draw-in never targets a
+    non-segment (I3).
   - each chip has a `segmentId` matching exactly one wedge id (the invariant
     that fixes the original bug: every chip links to one and only one wedge).
+    Ids are **index-based** (`${tier}-${index}`), NOT note-based — this is
+    deliberate so two notes with the same name in one tier still get distinct
+    ids. Do not "simplify" to `${tier}-${note}` (I2). Add a test with a
+    duplicate note name in a tier asserting two distinct segment ids.
 - **Interaction (jsdom / testing-library):** clicking a chip sets `aria`/class
   state on the matching wedge; clicking again clears; Esc clears.
 - **a11y:** chips are buttons with accessible names incl. intensity; reduced-
@@ -209,8 +278,17 @@ tertiary `#6c6055`). No new color tokens.
 ## 11. Verification (CLAUDE.md Rule 7 — non-negotiable)
 
 UI change → browser walkthrough required before "done":
+0. **Precondition:** `NEXT_PUBLIC_TASTE_PROFILE_ENABLED=true` must be set in the
+   internal app's env, or `TasteProfileSection` returns `null` and the section
+   silently renders nothing (the catalog page renders the wheel directly and is
+   not gated, but verify the same flag for the internal walkthrough). Confirm the
+   section is visible before testing interaction.
 1. `cd apps/catalog && npm run dev`
-2. Open a real product URL that has a full taste profile (3 tiers).
+2. Open a real product URL that has a full 3-tier taste profile. **Pin a
+   specific known-good SKU** during the walkthrough (pick one from
+   `data/live_products_export.json` where `taste_profile.tiers` has all three of
+   primary/secondary/tertiary populated) and record it in the implementation
+   notes so the walkthrough is reproducible.
 3. Desktop: hover each tier's chips → confirm correct wedge pops + center names
    it; hover wedges → confirm correct chip activates.
 4. Resize to 375px: confirm tap-to-lock works, tap-away clears, no layout shift,
