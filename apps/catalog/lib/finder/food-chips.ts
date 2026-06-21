@@ -18,10 +18,20 @@ export const FOOD_CHIPS: Record<string, { label: string; icon: string; keywords:
   dessert:    { label: 'Chocolate & dessert',  icon: '🍫', keywords: ['chocolate','dessert','cake','sweet'] },
 };
 
-/** Number of chosen chips whose keyword set hits the product's food_matching (substring, ci). */
+/**
+ * Number of chosen chips whose keyword set hits the product (substring, ci).
+ *
+ * Matches against BOTH food_matching (broad display categories, e.g. "Thai &
+ * Southeast Asian") AND food_matching_detail (the original specific dishes/
+ * cuisines, e.g. "Vietnamese cuisine", "Spicy tteokbokki", "Korean BBQ
+ * samgyeopsal"). The 2026-06-21 category remap collapsed cuisine granularity
+ * out of food_matching, which silently killed the korean/vietnamese/spicy
+ * chips — detail preserves that granularity so the finder stays precise.
+ */
 export function foodChipMatches(p: PublicProduct, chips: string[] | undefined): number {
-  if (!chips?.length || !p.food_matching) return 0;
-  const hay = p.food_matching.toLowerCase();
+  if (!chips?.length) return 0;
+  const hay = `${p.food_matching ?? ''} ${p.food_matching_detail ?? ''}`.toLowerCase();
+  if (!hay.trim()) return 0;
   let n = 0;
   for (const chip of chips) {
     const kws = FOOD_CHIPS[chip]?.keywords;
