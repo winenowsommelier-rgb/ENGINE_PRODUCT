@@ -15,7 +15,7 @@ import { formatPrice } from '@/lib/price-tiers';
 import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
 import { toTiers, toStructural } from '@/lib/taste-adapter';
-import { isInStock } from '@/lib/utils';
+import { isInStock, parseFoodMatching } from '@/lib/utils';
 import { sanitizeDescription } from '@/lib/sanitize-html';
 import type { PublicProduct } from '@/lib/types';
 
@@ -108,13 +108,10 @@ function AttrRow({ label, value }: { label: string; value?: string | number | nu
   );
 }
 
-/** food_matching is a comma string → readable chips. */
+/** food_matching string → readable chips (pipe-first, paren-aware fallback). */
 function FoodPairing({ food }: { food?: string }) {
   if (!food) return null;
-  const items = food
-    .split(',')
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0);
+  const items = parseFoodMatching(food);
   if (items.length === 0) return null;
   return (
     <section className="flex flex-col gap-3">

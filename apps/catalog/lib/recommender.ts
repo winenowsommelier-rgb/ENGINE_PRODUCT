@@ -21,21 +21,18 @@
  */
 
 import type { PublicProduct } from '@/lib/types';
-import { isInStock } from '@/lib/utils';
+import { isInStock, parseFoodMatching } from '@/lib/utils';
 import { typeForProduct } from '@/lib/category-groups';
 
 const MAX_RECS = 4;
 const PRICE_BAND = 0.4; // +/-40%
 
-/** Split a comma-separated food_matching string into a lowercased, trimmed set. */
+/**
+ * Lowercased, trimmed set of food_matching items, using the shared
+ * pipe-first / paren-aware parser (see parseFoodMatching in lib/utils).
+ */
 function foodSet(food: string | undefined | null): Set<string> {
-  if (!food) return new Set();
-  return new Set(
-    food
-      .split(',')
-      .map((s) => s.trim().toLowerCase())
-      .filter((s) => s.length > 0),
-  );
+  return new Set(parseFoodMatching(food).map((s) => s.toLowerCase()));
 }
 
 /**

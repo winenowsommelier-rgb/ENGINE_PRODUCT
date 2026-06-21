@@ -32,3 +32,48 @@ export function isInStock(value: unknown): boolean {
   }
   return Boolean(value);
 }
+
+/**
+ * Parse a `food_matching` string into clean chip items.
+ *
+ * Data-shape note — the canonical separator is the pipe '|' (migrated
+ * 2026-06-21 by scripts/migrate_food_matching_delimiter.py). Legacy rows used
+ * a comma, but commas ALSO appear inside parenthetical clarifications, e.g.
+ * "Shellfish (lobster, crab, prawn)" or "Comfort food (pasta bakes, casseroles,
+ * roasts)". A naive `.split(',')` shatters those into broken chips.
+ *
+ * Strategy (defense-in-depth so un-migrated data still renders correctly):
+ *   1. If '|' is present, split on it (unambiguous).
+ *   2. Otherwise split on commas at parenthesis-depth 0 only, preserving any
+ *      parenthetical that itself contains commas as a single item.
+ *
+ * Returns trimmed, non-empty items in source order.
+ */
+export function parseFoodMatching(food: string | undefined | null): string[] {
+  if (!food) return [];
+  if (food.includes('|')) {
+    return food
+      .split('|')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+  }
+  const items: string[] = [];
+  let buf = '';
+  let depth = 0;
+  for (const ch of food) {
+    if (ch === '(') {
+      depth += 1;
+      buf += ch;
+    } else if (ch === ')') {
+      depth = Math.max(0, depth - 1);
+      buf += ch;
+    } else if (ch === ',' && depth === 0) {
+      items.push(buf);
+      buf = '';
+    } else {
+      buf += ch;
+    }
+  }
+  items.push(buf);
+  return items.map((s) => s.trim()).filter((s) => s.length > 0);
+}
