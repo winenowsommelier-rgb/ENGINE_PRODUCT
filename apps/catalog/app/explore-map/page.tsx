@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { loadExploreMapData } from '@/lib/explore/map-data';
+import { loadExploreMapData } from '@/lib/explore/map-data.server';
 import { ExploreRegionClient } from './ExploreRegionClient';
 import { RegionList } from '@/components/explore/RegionList';
 import { EscapeHatch } from '@/components/explore/EscapeHatch';

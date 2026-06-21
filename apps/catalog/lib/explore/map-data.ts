@@ -1,7 +1,10 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import { buildQuery } from '@/lib/build-query';
-import type { ExploreMapData, LensKey, MapRegion } from './types';
+import type { LensKey, MapRegion } from './types';
+
+// NOTE: this module is CLIENT-SAFE — it has NO node:fs/node:path imports, so it
+// can be imported by 'use client' components (ExploreRegionClient pulls LENS_GROUPS
+// from here). The server-only data LOADER lives in ./map-data.server.ts to keep
+// node built-ins out of the client bundle (webpack rejects node: schemes there).
 
 /**
  * UI lens -> catalog category_group(s). The lens is the SHOPPER's mental model
@@ -54,22 +57,4 @@ export function shopHref(region: MapRegion, lens: LensKey): string {
     group: group ?? null,
   });
   return qs ? `/shop?${qs}` : '/shop';
-}
-
-function dataPath(): string {
-  const candidates = [
-    path.join(process.cwd(), 'apps', 'catalog', 'data', 'explore-map-data.json'),
-    path.join(process.cwd(), 'data', 'explore-map-data.json'),
-    process.env.EXPLORE_MAP_DATA_PATH ?? '',
-  ];
-  const found = candidates.find((p) => p && fs.existsSync(p));
-  if (!found) throw new Error('explore-map-data.json not found — run the prebuild generator');
-  return found;
-}
-
-let _cache: ExploreMapData | null = null;
-export function loadExploreMapData(): ExploreMapData {
-  if (_cache) return _cache;
-  _cache = JSON.parse(fs.readFileSync(dataPath(), 'utf8')) as ExploreMapData;
-  return _cache;
 }
