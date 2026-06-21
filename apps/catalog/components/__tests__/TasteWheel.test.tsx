@@ -43,4 +43,16 @@ describe('TasteWheel legend', () => {
     expect(screen.getByText('Tertiary')).toBeInTheDocument();
     expect(screen.getByText('Leather')).toBeInTheDocument();
   });
+
+  it('each chip has a wedge with a matching data-id (no orphan chip)', () => {
+    const tiers: Tiers = {
+      primary: [note('Blackcurrant', 3), note('Plum', 2)],
+      secondary: [note('Cedar')],
+      tertiary: [],
+    };
+    const { container } = render(<TasteWheel tiers={tiers} varietalLabel="Cab" />);
+    const wedgeIds = [...container.querySelectorAll('path[data-id]')].map(p => p.getAttribute('data-id'));
+    expect(wedgeIds).toEqual(['primary-0', 'primary-1', 'secondary-0']);
+    expect(screen.getByTestId('center-note')).toHaveTextContent('Cab');
+  });
 });
