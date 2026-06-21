@@ -32,12 +32,6 @@ import { cn } from '@/lib/utils';
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
-/** Friendly Title Case label for a food chip key, e.g. 'red-meat' → 'Red meat'. */
-function foodChipLabel(key: string): string {
-  const spaced = key.replace(/-/g, ' ');
-  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
-}
-
 // Synthetic food sub-step. FoodChoice writes answers.food directly; `field: 'food'`
 // makes the QuestionStep honest so a future refactor that fell through to ChoiceCards
 // would not silently write food selections into flavorChips.
@@ -47,9 +41,10 @@ const FOOD_STEP: QuestionStep = {
   title: 'What are you eating?',
   multi: true,
   optional: true,
-  options: Object.keys(FOOD_CHIPS).map((key) => ({
-    token: key,
-    label: foodChipLabel(key),
+  options: Object.entries(FOOD_CHIPS).map(([token, { label, icon }]) => ({
+    token,
+    label,
+    icon,
   })),
 };
 

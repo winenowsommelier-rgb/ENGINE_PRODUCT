@@ -66,6 +66,11 @@ export function FoodChoice({ answers, options, nextPath, extraQuery }: FoodChoic
               )}
             >
               {active ? <Check className="h-4 w-4" aria-hidden="true" /> : null}
+              {opt.icon ? (
+                <span aria-hidden="true" className="mr-2">
+                  {opt.icon}
+                </span>
+              ) : null}
               {opt.label}
             </button>
           );

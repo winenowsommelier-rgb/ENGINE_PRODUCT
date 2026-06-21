@@ -154,6 +154,11 @@ export function ChoiceCards({
                 {active ? (
                   <Check className="h-4 w-4" aria-hidden="true" />
                 ) : null}
+                {opt.icon ? (
+                  <span aria-hidden="true" className="mr-2">
+                    {opt.icon}
+                  </span>
+                ) : null}
                 {opt.label}
               </button>
             );
@@ -190,6 +195,11 @@ export function ChoiceCards({
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
           )}
         >
+          {opt.icon ? (
+            <span aria-hidden="true" className="mr-2">
+              {opt.icon}
+            </span>
+          ) : null}
           {opt.label}
         </button>
       ))}

@@ -21,14 +21,19 @@ import type { FinderCategory } from '@/lib/finder/answers';
  * category cards to `/finder/1?cat=<category>` so no config step is skipped.
  */
 
-const CATEGORIES: Array<{ id: FinderCategory; label: string; blurb: string }> = [
-  { id: 'red', label: 'Red Wine', blurb: 'From bright & elegant to bold & structured' },
-  { id: 'white', label: 'White Wine', blurb: 'Crisp and zesty through rich and textured' },
-  { id: 'sparkling', label: 'Sparkling & Champagne', blurb: 'Festive fizz to fine traditional method' },
-  { id: 'whisky', label: 'Whisky', blurb: 'Scotch, Japanese, bourbon, Irish & world' },
-  { id: 'gin', label: 'Gin', blurb: 'Classic London Dry to contemporary botanical' },
-  { id: 'spirits', label: 'Other Spirits', blurb: 'Vodka, rum, tequila, brandy & more' },
-  { id: 'sake', label: 'Sake & Asian', blurb: 'Crisp and dry through fragrant and fruity' },
+const CATEGORIES: Array<{
+  id: FinderCategory;
+  label: string;
+  icon: string;
+  blurb: string;
+}> = [
+  { id: 'red', label: 'Red Wine', icon: '🍷', blurb: 'From bright & elegant to bold & structured' },
+  { id: 'white', label: 'White Wine', icon: '🥂', blurb: 'Crisp and zesty through rich and textured' },
+  { id: 'sparkling', label: 'Sparkling & Champagne', icon: '🍾', blurb: 'Festive fizz to fine traditional method' },
+  { id: 'whisky', label: 'Whisky', icon: '🥃', blurb: 'Scotch, Japanese, bourbon, Irish & world' },
+  { id: 'gin', label: 'Gin', icon: '🍸', blurb: 'Classic London Dry to contemporary botanical' },
+  { id: 'spirits', label: 'Other Spirits', icon: '✨', blurb: 'Vodka, rum, tequila, brandy & more' },
+  { id: 'sake', label: 'Sake & Asian', icon: '🍶', blurb: 'Crisp and dry through fragrant and fruity' },
 ];
 
 export default function FinderIntroPage() {
@@ -64,6 +69,9 @@ export default function FinderIntroPage() {
                 )}
               >
                 <span className="text-lg font-medium text-foreground">
+                  <span aria-hidden="true" className="mr-2">
+                    {cat.icon}
+                  </span>
                   {cat.label}
                 </span>
                 <span className="text-sm text-muted-foreground">
