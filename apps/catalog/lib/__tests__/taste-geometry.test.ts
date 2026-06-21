@@ -29,4 +29,16 @@ describe('buildSegments', () => {
     expect(segments).toHaveLength(1);
     expect(order).toHaveLength(1);
   });
+
+  it('maps intensity to fill opacity via 0.42 + (intensity/3)*0.55', () => {
+    const hi = buildSegments({ primary: [note('A', 3)], secondary: [], tertiary: [] }, 320);
+    expect(hi.segments[0].fillOpacity).toBeCloseTo(0.97, 2);
+    const lo = buildSegments({ primary: [note('A', 1)], secondary: [], tertiary: [] }, 320);
+    expect(lo.segments[0].fillOpacity).toBeCloseTo(0.603, 2);
+  });
+
+  it('draws each wedge as an annulus (two arc commands)', () => {
+    const { segments } = buildSegments({ primary: [note('A', 3)], secondary: [], tertiary: [] }, 320);
+    expect((segments[0].path.match(/A /g) || []).length).toBe(2);
+  });
 });

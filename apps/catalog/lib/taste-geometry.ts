@@ -32,14 +32,20 @@ const RINGS: Array<{ key: keyof Tiers; rOuter: number; rInner: number }> = [
 
 // Exposed so the interactive layer can place faint placeholder rings for empty
 // tiers at exactly the radii their wedges would occupy (spec §9).
-export const RING_GEOMETRY: Record<keyof Tiers, { rOuter: number; rInner: number }> = {
-  primary: { rOuter: 0.98, rInner: 0.66 },
-  secondary: { rOuter: 0.64, rInner: 0.40 },
-  tertiary: { rOuter: 0.38, rInner: 0.16 },
-};
+// Derived from RINGS so the radii have a single source of truth (no drift).
+export const RING_GEOMETRY = Object.fromEntries(
+  RINGS.map(({ key, rOuter, rInner }) => [key, { rOuter, rInner }])
+) as Record<keyof Tiers, { rOuter: number; rInner: number }>;
 
 function describeWedge(cx: number, cy: number, rO: number, rI: number, a0: number, a1: number): string {
-  const p = (r: number, a: number) => [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  // Quantize coords + radii to 3 decimals so SSR and CSR emit byte-identical
+  // path strings (avoids React hydration mismatch from float drift).
+  rO = +rO.toFixed(3);
+  rI = +rI.toFixed(3);
+  const p = (r: number, a: number) => [
+    +(cx + r * Math.cos(a)).toFixed(3),
+    +(cy + r * Math.sin(a)).toFixed(3),
+  ];
   const [x1, y1] = p(rO, a0);
   const [x2, y2] = p(rO, a1);
   const [x3, y3] = p(rI, a1);
