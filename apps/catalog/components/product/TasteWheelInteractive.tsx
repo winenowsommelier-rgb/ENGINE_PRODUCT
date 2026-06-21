@@ -1,7 +1,7 @@
 // components/product/TasteWheelInteractive.tsx
 "use client";
 
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { TasteNote } from './TasteNote';
 import { RING_GEOMETRY, type Segment, type Tiers } from '@/lib/taste-geometry';
 
@@ -29,13 +29,22 @@ export function TasteWheelInteractive({ segments, tiers, order, size, varietalLa
 
   const clear = useCallback(() => { setLocked(undefined); setHover(undefined); }, []);
 
+  useEffect(() => {
+    if (!locked && !hover) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') clear(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [locked, hover, clear]);
+
+  const orderIndex = useMemo(() => new Map(order.map((id, i) => [id, i])), [order]);
+
   const focusedSeg = segments.find(s => s.id === focused);
+  const lockedSeg = segments.find(s => s.id === locked);
 
   return (
     <div
       className="taste-wheel"
       onClick={() => { if (locked) clear(); }}
-      onKeyDown={(e) => { if (e.key === 'Escape' && (locked || hover)) clear(); }}
     >
       <div className="taste-wheel__svgwrap">
         <svg
@@ -68,7 +77,7 @@ export function TasteWheelInteractive({ segments, tiers, order, size, varietalLa
                 stroke="#fff"
                 strokeWidth={2.5}
                 className={`taste-wheel__wedge${isHot ? ' is-hot' : ''}${isDim ? ' is-dim' : ''}`}
-                style={{ ['--draw-delay' as string]: `${90 + order.indexOf(s.id) * 55}ms` }}
+                style={{ '--draw-delay': `${90 + (orderIndex.get(s.id) ?? 0) * 55}ms` } as React.CSSProperties}
                 aria-hidden="true"
                 onMouseEnter={() => setHover(s.id)}
                 onMouseLeave={() => setHover(undefined)}
@@ -78,7 +87,7 @@ export function TasteWheelInteractive({ segments, tiers, order, size, varietalLa
           })}
           <circle cx={cx} cy={cy} r={R * 0.15} fill="#faf8f4" stroke="#e3ddcf" />
         </svg>
-        <div className="taste-wheel-center" aria-live="polite">
+        <div className="taste-wheel-center">
           {focusedSeg ? (
             <>
               <span className="taste-wheel-center__tier" style={{ color: focusedSeg.color }}>{TIER_LABEL[focusedSeg.tier]}</span>
@@ -91,6 +100,12 @@ export function TasteWheelInteractive({ segments, tiers, order, size, varietalLa
               <span className="taste-wheel-center__sub">hover · tap to explore</span>
             </>
           )}
+        </div>
+        <div
+          aria-live="polite"
+          style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap', border: 0 }}
+        >
+          {lockedSeg ? `${TIER_LABEL[lockedSeg.tier]} note: ${lockedSeg.note}, ${INTENSITY_WORD[lockedSeg.intensity]} intensity` : ''}
         </div>
       </div>
 

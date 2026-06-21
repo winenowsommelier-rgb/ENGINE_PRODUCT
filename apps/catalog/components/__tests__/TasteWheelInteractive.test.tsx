@@ -49,4 +49,18 @@ describe('TasteWheelInteractive', () => {
     expect(document.querySelectorAll('path.is-hot')).toHaveLength(0);
     expect(screen.getByTestId('center-note')).toHaveTextContent('Cabernet Sauvignon');
   });
+
+  it('clicking empty space clears a locked selection', () => {
+    setup();
+    fireEvent.click(screen.getByRole('button', { name: /Blackcurrant/i }));
+    fireEvent.click(document.querySelector('.taste-wheel')!);
+    expect(document.querySelectorAll('path.is-hot')).toHaveLength(0);
+  });
+
+  it('Escape clears even when focus is not on a chip (document-level)', () => {
+    setup();
+    fireEvent.click(screen.getByRole('button', { name: /Blackcurrant/i }));
+    fireEvent.keyDown(document.body, { key: 'Escape' });
+    expect(document.querySelectorAll('path.is-hot')).toHaveLength(0);
+  });
 });
