@@ -17,7 +17,7 @@ function setup() {
 describe('TasteWheelInteractive', () => {
   it('idle center shows the varietal label', () => {
     setup();
-    expect(screen.getByText('Cabernet Sauvignon')).toBeInTheDocument();
+    expect(screen.getByTestId('center-note')).toHaveTextContent('Cabernet Sauvignon');
   });
 
   it('clicking a chip activates exactly its matching wedge and names it in the center', () => {
@@ -28,7 +28,7 @@ describe('TasteWheelInteractive', () => {
     const hot = document.querySelectorAll('path.is-hot');
     expect(hot).toHaveLength(1);
     expect(hot[0].getAttribute('data-id')).toBe('primary-0');
-    expect(screen.getByText('Blackcurrant')).toBeInTheDocument();
+    expect(screen.getByTestId('center-note')).toHaveTextContent('Blackcurrant');
   });
 
   it('clicking the same chip again clears (toggle)', () => {
@@ -37,7 +37,7 @@ describe('TasteWheelInteractive', () => {
     fireEvent.click(chip);
     fireEvent.click(chip);
     expect(document.querySelectorAll('path.is-hot')).toHaveLength(0);
-    expect(screen.getByText('Cabernet Sauvignon')).toBeInTheDocument();
+    expect(screen.getByTestId('center-note')).toHaveTextContent('Cabernet Sauvignon');
   });
 
   it('Escape clears a locked selection (spec §6c)', () => {
@@ -47,6 +47,6 @@ describe('TasteWheelInteractive', () => {
     expect(document.querySelectorAll('path.is-hot')).toHaveLength(1);
     fireEvent.keyDown(chip, { key: 'Escape' });
     expect(document.querySelectorAll('path.is-hot')).toHaveLength(0);
-    expect(screen.getByText('Cabernet Sauvignon')).toBeInTheDocument();
+    expect(screen.getByTestId('center-note')).toHaveTextContent('Cabernet Sauvignon');
   });
 });

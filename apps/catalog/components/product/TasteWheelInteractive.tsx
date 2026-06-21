@@ -82,16 +82,12 @@ export function TasteWheelInteractive({ segments, tiers, order, size, varietalLa
           {focusedSeg ? (
             <>
               <span className="taste-wheel-center__tier" style={{ color: focusedSeg.color }}>{TIER_LABEL[focusedSeg.tier]}</span>
-              {/* Note word composed into a single text node WITH its tier prefix so
-                  getByText(note) resolves uniquely to the active chip — the center
-                  still names the note, just never as a bare standalone text node
-                  that would collide with the chip's own label. */}
-              <span className="taste-wheel-center__note">{`${TIER_LABEL[focusedSeg.tier]} · ${focusedSeg.note}`}</span>
+              <span className="taste-wheel-center__note" data-testid="center-note">{focusedSeg.note}</span>
               <span className="taste-wheel-center__sub">{INTENSITY_WORD[focusedSeg.intensity]} intensity</span>
             </>
           ) : (
             <>
-              <span className="taste-wheel-center__note is-idle">{varietalLabel ?? 'Tasting notes'}</span>
+              <span className="taste-wheel-center__note is-idle" data-testid="center-note">{varietalLabel ?? 'Tasting notes'}</span>
               <span className="taste-wheel-center__sub">hover · tap to explore</span>
             </>
           )}
