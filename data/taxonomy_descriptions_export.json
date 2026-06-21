@@ -1,0 +1,568 @@
+{
+"regions": {
+"champagne": {
+"short": "Cool chalk soils yield high-acid base wines for traditional-method sparkling.",
+"full": "Champagne's cool climate and chalk soils produce high-acid base wines. Chardonnay, Pinot Noir, and Pinot Meunier are blended for traditional-method sparkling. Villages ranked Grand Cru, Premier Cru, or unclassified."
+},
+"alsace": {
+"short": "France's aromatic white wine paradise — Riesling, Gewurztraminer, Pinot Gris.",
+"full": "Sheltered by Vosges. 51 Grand Cru sites. Labelled by variety. Crémant d'Alsace is France's largest non-Champagne sparkling AOC."
+},
+"sicily": {
+"short": "Mediterranean island producing Nero d'Avola reds and Marsala fortified wine.",
+"full": "Sicily's hot, dry Mediterranean climate and volcanic soils suit Nero d'Avola, Nerello Mascalese, and Grillo. Mount Etna's high-altitude vineyards produce structured reds and whites. Marsala is the island's historic fortified wine."
+},
+"piedmont": {
+"short": "Piedmont's king is Nebbiolo, producing Barolo and Barbaresco from the Langhe hills.",
+"full": "Piedmont centres on Nebbiolo, the grape behind Barolo and Barbaresco DOCG. Calcareous Tortonian and Helvetian soils in the Langhe hills shape tannic, high-acid reds built for ageing. Barbera and Moscato d'Asti are key secondary varieties."
+},
+"provence": {
+"short": "The world capital of rosé — accounting for nearly 90% of its production — with serious reds from Bandol.",
+"full": "Provence produces more rosé than any other French region, and these pale, elegant, gastronomic rosés have become a global phenomenon. The region stretches from the Rhône delta to Nice, with key appellations including Côtes de Provence, Coteaux d'Aix-en-Provence, and Bandol. Bandol is the region's most serious appellation, producing age-worthy reds from Mourvèdre. Cassis produces distinctive white wines. The \"Provence style\" rosé — pale salmon, bone-dry, with restrained fruit and herbal notes — has been widely imitated worldwide. Château d'Esclans (Whispering Angel) and Domaines Ott are benchmark producers."
+},
+"bordeaux": {
+"short": "Cabernet-dominant Left Bank blends; Merlot-led Right Bank on clay-limestone.",
+"full": "Bordeaux sets the reference point for blended red wine. Gravel soils on the Left Bank favour Cabernet Sauvignon; clay-limestone on the Right Bank suits Merlot. The 1855 Classification remains the leading quality benchmark."
+},
+"jerez": {
+"short": "Andalusian sherry triangle producing fortified wines and Brandy de Jerez through the solera aging system.",
+"full": "Jerez de la Frontera, together with El Puerto de Santa Maria and Sanlucar de Barrameda, forms the \"Sherry Triangle\" in southwestern Andalusia, Spain. The region's albariza soils (bright white chalk) retain moisture through hot summers, sustaining Palomino and Pedro Ximenez vines. Brandy de Jerez, aged through the solera fractional-blending system in former sherry casks, is a major product alongside the fortified wines themselves. Styles range from bone-dry Fino and Manzanilla to rich, sweet Pedro Ximenez. The biological aging under flor yeast (a film of yeast on the wine surface) produces the distinctive tangy, saline character of Fino and Manzanilla sherries. Key houses include Gonzalez Byass (Tio Pepe), Lustau, Osborne, and Bodegas Tradicion."
+},
+"douro": {
+"short": "Portugal's most dramatic region — birthplace of Port and celebrated unfortified reds.",
+"full": "UNESCO site. Port from Touriga Nacional blends. Unfortified Douro reds offer structure and concentration at great value."
+},
+"veneto": {
+"short": "Italy's most productive region — Prosecco, Amarone, Soave, Valpolicella.",
+"full": "Veneto produces Prosecco from Glera, Amarone by appassimento method, and crisp Soave from Garganega."
+},
+"languedoc": {
+"short": "France's largest wine region, reinventing itself with quality-focused Mediterranean wines.",
+"full": "Corbières, Minervois, Faugères, Pic Saint-Loup. IGP Pays d'Oc makes France's most accessible wines internationally."
+},
+"south australia": {
+"short": "Australia's wine engine room — home to Barossa, McLaren Vale, Clare Valley, and over half of national production.",
+"full": "South Australia produces approximately 50% of Australia's wine and contains its most celebrated regions. The Barossa Valley is the epicentre of Australian Shiraz. McLaren Vale offers Mediterranean-influenced Grenache and Shiraz. Clare Valley produces some of Australia's finest Riesling. Adelaide Hills provides cool-climate Sauvignon Blanc, Chardonnay, and Pinot Noir. Coonawarra's terra rossa soils over limestone yield distinctive Cabernet Sauvignon. The Limestone Coast zone encompasses several emerging regions. South Australia is phylloxera-free — a critical advantage that protects its old-vine heritage. Penfolds, Henschke, and Wynns are iconic producers."
+},
+"california": {
+"short": "America's wine powerhouse — Napa Cabernet to Sonoma Pinot Noir.",
+"full": "Over 80% of American wine. Paso Robles, Santa Barbara, Monterey, Lodi add diversity beyond Napa/Sonoma."
+},
+"napa": {
+"short": "America's most famous wine valley — Cabernet Sauvignon of power, concentration, and global acclaim.",
+"full": "Napa Valley's 16 AVAs produce distinct Cabernet styles. The Stags Leap District won the 1976 Judgement of Paris. Napa's average bottle price is the highest of any major wine region globally."
+},
+"tuscany": {
+"short": "Sangiovese dominates; Chianti Classico and Brunello di Montalcino lead.",
+"full": "Tuscany's hilly terrain and warm continental climate suit Sangiovese. Chianti Classico requires DOCG rules on galestro and alberese soils. Brunello di Montalcino ages minimum five years before release."
+},
+"mendoza": {
+"short": "Argentina's wine capital at the foot of the Andes — the world's definitive Malbec region.",
+"full": "Mendoza produces over 70% of Argentine wine. Uco Valley subregions at 1,000-1,500m produce refined, mineral Malbec. Luján de Cuyo offers rounder wines. Beyond Malbec, excellent Cabernet Franc is emerging."
+},
+"rioja": {
+"short": "Spain's most recognised wine region, defined by Tempranillo and oak aging.",
+"full": "Rioja divides into Alta, Alavesa, and Oriental. The aging classification — Joven, Crianza, Reserva, Gran Reserva — reflects mandatory minimum aging. Modern Rioja increasingly includes single-vineyard wines."
+},
+"ribera del duero": {
+"short": "Spain's other great Tempranillo region — powerful, structured reds from the high Castilian meseta.",
+"full": "Ribera del Duero sits on the northern Castilian meseta at 700-1,000 metres elevation, where extreme continental conditions — freezing winters, scorching summers, and vast day-night temperature swings — produce Tempranillo (locally called Tinto Fino or Tinta del País) of extraordinary concentration and structure. Vega Sicilia, Spain's most legendary estate, has produced wines here since 1864. Pingus brought modern, high-extraction winemaking in the 1990s. Pesquera and Emilio Moro represent the region's more traditional style. The DO was only established in 1982, but has rapidly risen to rival Rioja in prestige."
+},
+"burgundy": {
+"short": "Terroir in its purest expression — single-vineyard Pinot Noir and Chardonnay of transcendent quality.",
+"full": "Burgundy is wine's ultimate terroir expression. The hierarchy — Regional, Village, Premier Cru, Grand Cru — reflects centuries of observation. The Côte d'Or contains 33 Grand Cru vineyards. Small production and enormous demand make top Burgundy among the world's most expensive wines."
+},
+"barossa": {
+"short": "Australia's Shiraz heartland — old vines, warm climate, extraordinary depth.",
+"full": "Home to some of the world's oldest continuously producing vineyards — pre-phylloxera Shiraz from the 1840s. Penfolds Grange draws primarily on Barossa fruit. Eden Valley at higher elevation produces Australia's finest Riesling."
+},
+"sonoma": {
+"short": "California's most diverse wine county — from foggy Pinot Noir coastline to warm inland Zinfandel valleys.",
+"full": "Sonoma County encompasses 18 AVAs and extraordinary diversity, from the fog-shrouded Sonoma Coast (world-class Pinot Noir and Chardonnay) to the warmer Alexander Valley and Dry Creek Valley (Cabernet Sauvignon and old-vine Zinfandel). Russian River Valley is one of America's finest Pinot Noir regions. Sonoma's identity has increasingly differentiated from neighbouring Napa — less corporate, more agricultural, with a strong sustainability ethic. Kistler, Williams Selyem, and Peter Michael are among the most sought-after producers. Sonoma County was the first wine region in the US to become 99% certified sustainable."
+},
+"marlborough": {
+"short": "World capital of Sauvignon Blanc — explosive aromatics from New Zealand.",
+"full": "Marlborough produces 75%+ of NZ wine. Passionfruit, gooseberry, cut-grass Sauvignon Blanc with bracing acidity."
+},
+"puglia": {
+"short": "Italy's heel — a prolific wine region rediscovering quality through Primitivo, Negroamaro, and Nero di Troia.",
+"full": "Puglia is Italy's second-largest wine-producing region by volume, historically a source of bulk wine used to add colour and body to northern blends. A quality revolution has transformed the region. Primitivo di Manduria produces rich, concentrated reds from the same grape as California's Zinfandel. Negroamaro is the backbone of Salice Salentino — darker, more tannic, with bitter cherry character. Nero di Troia (Uva di Troia) from the north of the region is gaining recognition for its structure and ageability. Old-vine (alberello) bush-trained vineyards on the Salento peninsula produce some of the most characterful wines in southern Italy."
+},
+"colchagua valley": {
+"short": "Chile's premier red wine valley, known for Carménère and Cabernet Sauvignon.",
+"full": "Colchagua Valley sits in Chile's Central Valley, sheltered by the Andes to the east. A warm, dry Mediterranean climate suits Carménère, Cabernet Sauvignon, and Syrah. Alluvial soils and significant diurnal range preserve acidity in ripe, structured reds."
+},
+"margaret river": {
+"short": "Western Australia's premium wine region — world-class Cabernet Sauvignon and Chardonnay from maritime-influenced terroir.",
+"full": "Margaret River produces only 3% of Australia's wine but accounts for over 20% of the premium segment. The region's maritime climate, moderated by the Indian Ocean, produces Cabernet Sauvignon and Bordeaux-style blends of remarkable elegance — often compared to the best of Pessac-Léognan. Chardonnay is equally impressive, with producers like Leeuwin Estate, Vasse Felix, and Cullen producing world-class examples. The region was only planted in the late 1960s following research by agronomist Dr. John Gladstones, yet it has rapidly established itself as one of Australia's finest wine regions."
+},
+"rhône valley": {
+"short": "Syrah-driven Northern Rhône and Grenache-dominated Southern Rhône — two wine worlds in one valley.",
+"full": "Northern Rhône: steep terraced Syrah at Côte-Rôtie, Hermitage, Cornas. Southern Rhône: Grenache blends at Châteauneuf-du-Pape, Gigondas. Côtes du Rhône provides everyday drinking of remarkable quality."
+},
+"mosel": {
+"short": "Germany's most dramatic wine landscape — steep slate slopes, Riesling of unmatched delicacy.",
+"full": "Steep slate vineyards along the Mosel River produce low-alcohol, high-acidity Riesling of crystalline purity."
+},
+"maipo valley": {
+"short": "Chile's benchmark Cabernet Sauvignon zone, centred on the Andes foothills near Santiago.",
+"full": "Maipo Valley is Chile's reference point for Cabernet Sauvignon. Andean alluvial soils, low rainfall, and warm days with cool nights concentrate fruit while retaining acidity. Alto Maipo's granite subsoils produce the most structured, age-worthy examples."
+},
+"priorat": {
+"short": "Spain's most dramatic wine region — old-vine Garnacha and Cariñena from steep licorella slate terraces.",
+"full": "Priorat is one of only two DOCa (Denominación de Origen Calificada) regions in Spain, alongside Rioja. Abandoned in the late 19th century after phylloxera, it was revived in the 1980s by a group of pioneers (Álvaro Palacios, René Barbier, and others) who recognised the extraordinary potential of its ancient licorella (slate and quartz) soils. Old-vine Garnacha and Cariñena grown on precipitous terraces at low yields produce wines of searing intensity, mineral complexity, and remarkable concentration. L'Ermita by Álvaro Palacios is Spain's most expensive wine. Production is tiny — the entire DOCa produces less than some single Bordeaux châteaux."
+},
+"hawke's bay": {
+"short": "New Zealand's oldest wine region and its finest for Bordeaux-style reds, Syrah, and Chardonnay.",
+"full": "Hawke's Bay on the North Island's east coast is New Zealand's warmest and driest major wine region, making it ideally suited to red varieties. The Gimblett Gravels subregion — an area of free-draining, heat-retaining river gravels — has established itself as New Zealand's premier Cabernet and Merlot terroir. Syrah from Hawke's Bay, particularly from Bridge Pa Triangle and Te Awanga, is increasingly recognised as world-class, combining Northern Rhône structure with New World fruit purity. Craggy Range, Te Mata (Coleraine), and Trinity Hill are leading producers. Chardonnay from Hawke's Bay is among New Zealand's best."
+},
+"mclaren vale": {
+"short": "South Australia's coastal wine region — old-vine Grenache, Shiraz, and innovative Mediterranean blends.",
+"full": "McLaren Vale lies between the Mount Lofty Ranges and Gulf St Vincent, creating a warm but maritime-moderated climate. The region is celebrated for Shiraz but increasingly recognised for old-vine Grenache and GSM (Grenache-Shiraz-Mourvèdre) blends that express a distinctly Mediterranean character. d'Arenberg, Wirra Wirra, and Chapel Hill are established names, while a wave of younger winemakers champion low-intervention, single-vineyard wines. McLaren Vale was the first wine region in the world to map its soil types at a commercial vineyard scale, identifying 40+ distinct soil types across 75 square kilometres."
+},
+"rías baixas": {
+"short": "Galicia's premier white wine region — crisp, aromatic Albariño from Atlantic-influenced granite terroir.",
+"full": "Rías Baixas in northwest Spain's Galicia produces Spain's finest white wines from the Albariño grape. The Atlantic climate brings abundant rainfall, and vineyards are traditionally trained on pergolas (parras) to promote air circulation and prevent rot. The resulting wines are crisp, aromatic, and mineral, with stone fruit, citrus, and saline notes — perfect partners for Galicia's exceptional seafood. Val do Salnés is the most prized subzone, closest to the coast. Pazo de Señoráns, Martín Códax, and Do Ferreiro are benchmark producers. The DO was established in 1988."
+},
+"central otago": {
+"short": "The world's southernmost wine region — Pinot Noir of extraordinary intensity from New Zealand's dramatic mountain landscape.",
+"full": "Central Otago in the South Island is the world's southernmost wine region (45th parallel) and the only major wine region in New Zealand with a continental rather than maritime climate. The combination of extreme UV levels, massive diurnal temperature variation (up to 20°C), and poor schist soils produces Pinot Noir of remarkable intensity, dark fruit concentration, and mineral drive. Bannockburn, Gibbston Valley, Bendigo, and Wanaka are key subregions, each with distinct character. The region is spectacularly beautiful, with vineyards set against mountains and lakes. Felton Road, Mt Difficulty, and Burn Cottage are benchmark producers."
+},
+"islay": {
+"short": "Peat-smoke capital of Scotch whisky with nine active distilleries producing intensely maritime single malts.",
+"full": "Islay is a small Hebridean island off Scotland's west coast, renowned as the spiritual home of peated Scotch whisky. Its nine distilleries — Laphroaig, Ardbeg, Lagavulin, Bowmore, Bruichladdich, Kilchoman, Caol Ila, Bunnahabhain, and Ardnahoe — produce whiskies shaped by Atlantic winds, peat bogs, and coastal exposure. Styles range from the medicinal intensity of Laphroaig to the unpeated elegance of Bunnahabhain. The island's annual Feis Ile festival draws whisky enthusiasts worldwide. Islay malts are characterised by smoky, briny, iodine-laced profiles that remain among Scotch whisky's most distinctive expressions."
+},
+"highland": {
+"short": "Scotland's largest whisky region, producing an enormous diversity of styles from coastal to inland malts.",
+"full": "The Highland region encompasses the vast majority of Scotland's landmass north of an imaginary line from Greenock to Dundee. This geographic diversity yields a wide spectrum of whisky styles: coastal distilleries like Oban and Old Pulteney produce briny, maritime malts; inland producers such as Dalwhinnie and Edradour craft heathery, honeyed spirits; and northern operations like Glenmorangie are known for elegant, fruity complexity. Highland whiskies tend toward full-bodied, robust character, though the region resists easy generalisation. Notable distilleries also include Dalmore, Clynelish, and Ben Nevis."
+},
+"lowland": {
+"short": "Gentle, grassy Scotch whisky region known for light, approachable single malts, historically triple-distilled.",
+"full": "The Lowlands occupy the southern belt of Scotland below the Highland line. Historically the region favoured triple distillation, producing lighter, more delicate whiskies than their Highland and Islay counterparts. Active distilleries include Auchentoshan (the only Scottish distillery still triple-distilling every drop), Glenkinchie (Edinburgh's malt), and Bladnoch (Scotland's most southerly distillery). New wave producers like Kingsbarns and Lindores Abbey have joined the ranks. Lowland malts are typically grassy, floral, and citrus-noted — ideal aperitif whiskies."
+},
+"campbeltown": {
+"short": "Once Scotland's whisky capital with 30+ distilleries, now a revered three-distillery region producing complex, briny malts.",
+"full": "Campbeltown sits on the Kintyre peninsula and was once the Victorian-era whisky capital of Scotland, housing over 30 distilleries at its peak. Today only three remain — Springbank, Glen Scotia, and Glengyle (producing Kilkerran) — yet the region retains its own official classification. Springbank is particularly celebrated for its fully on-site production, from floor malting to bottling. Campbeltown whiskies are characterised by a distinctive combination of maritime salt, slight peat smoke, fruit, and oily texture that is unlike any other Scotch region."
+},
+"kentucky": {
+"short": "Heartland of American bourbon, producing 95% of the world's bourbon supply with limestone-filtered water and corn-rich mash bills.",
+"full": "Kentucky is the undisputed centre of bourbon production, responsible for approximately 95% of the global supply. The state's unique geological advantage — extensive limestone shelf filtering iron from water while adding calcium — provides ideal distilling conditions. Kentucky's hot summers and cold winters drive aggressive barrel interaction, accelerating maturation. Major producers include Maker's Mark (Loretto), Woodford Reserve (Versailles), Buffalo Trace and Wild Turkey (Lawrenceburg), Four Roses (Lawrenceburg), Jim Beam (Clermont), and Heaven Hill (Bardstown). The Kentucky Bourbon Trail draws over 1.5 million visitors annually."
+},
+"tennessee": {
+"short": "Home of Tennessee whiskey, distinguished by the Lincoln County Process of charcoal mellowing before barrel aging.",
+"full": "Tennessee whiskey is legally distinct from bourbon through the Lincoln County Process, in which new-make spirit is filtered drop by drop through sugar maple charcoal before entering barrels. This mellowing step imparts a smooth, slightly sweet character. Jack Daniel's in Lynchburg dominates production and is the world's best-selling American whiskey. George Dickel in Tullahoma offers a contrasting, slightly drier style and chills its spirit before charcoal filtering. Newer entrants include Nelson's Green Brier and Chattanooga Whiskey. Tennessee's climate, similar to Kentucky's, provides strong barrel maturation dynamics."
+},
+"jalisco": {
+"short": "Tequila's heartland in western Mexico, where highland and lowland zones produce distinctly different agave spirit styles.",
+"full": "Jalisco is the birthplace and primary production zone of tequila, accounting for the vast majority of the spirit's output. The state contains two principal growing zones: the highlands (Los Altos), where red clay soils and cooler temperatures produce larger agave plants yielding sweeter, fruitier tequilas; and the lowlands (Tequila Valley), where volcanic soil and warmer conditions create earthier, more herbaceous expressions. Only Blue Weber agave (Agave tequilana) may be used. Major producers based in Jalisco include Jose Cuervo, Sauza, Patrón, Don Julio, Herradura, and Fortaleza. The town of Tequila is a UNESCO World Heritage Site."
+},
+"oaxaca": {
+"short": "Mezcal's spiritual home, producing over 90% of Mexico's mezcal from wild and cultivated agave using artisanal pit-roasting methods.",
+"full": "Oaxaca is the epicentre of mezcal production, responsible for more than 90% of certified output. The state's rugged mountainous terrain, diverse microclimates, and rich agave biodiversity — over 30 species used — make it mezcal's most complex producing region. Traditional production involves roasting agave hearts (piñas) in earthen pit ovens, crushing with a tahona (stone wheel) or by hand, and fermenting in open-air wooden vats. Key mezcal-producing districts include Santiago Matatlán (self-proclaimed \"world capital of mezcal\"), Sola de Vega, Miahuatlán, and Ejutla. The artisanal and ancestral categories are legally protected production methods."
+},
+"cognac": {
+"short": "Premier French brandy region with six classified crus, producing double-distilled grape spirit aged in Limousin and Tronçais oak.",
+"full": "Cognac is an AOC-protected brandy from the Charente and Charente-Maritime departments in southwestern France. The region is divided into six crus ranked by quality potential: Grande Champagne (finest, longest-aging), Petite Champagne, Borderies (smallest, distinctive violet and iris notes), Fins Bois, Bons Bois, and Bois Ordinaires. Production requires double distillation in copper pot stills (alembic charentais) and minimum aging in French oak. Major houses include Hennessy, Rémy Martin, Martell, and Courvoisier. Age designations — VS (minimum 2 years), VSOP (minimum 4 years), XO (minimum 10 years) — govern the category. Ugni Blanc is the dominant grape variety."
+},
+"armagnac": {
+"short": "France's oldest brandy region in Gascony, single-distilled in column stills for a rustic, characterful spirit.",
+"full": "Armagnac predates Cognac by roughly 150 years, making it France's oldest grape brandy. Produced in the Gers, Landes, and Lot-et-Garonne departments of Gascony, it is traditionally single-distilled through a continuous copper column still (alambic armagnacais), yielding a more robust, aromatic spirit than its double-distilled Cognac cousin. The region divides into three production zones: Bas-Armagnac (finest, sandy Fezensac soils), Ténarèze (clay-limestone, fuller style), and Haut-Armagnac (smallest output). Vintage-dated bottlings and single-estate production are far more common than in Cognac. Key grape varieties include Ugni Blanc, Baco 22A, Folle Blanche, and Colombard."
+},
+"sauternes": {
+"short": "Bordeaux appellation producing the world's greatest botrytised sweet wines from Semillon, Sauvignon Blanc, and Muscadelle.",
+"full": "Sauternes is a prestigious appellation within Bordeaux's Graves district, renowned for producing lusciously sweet white wines through noble rot (Botrytis cinerea). The confluence of the cold Ciron tributary with the warmer Garonne creates morning mists that encourage botrytis development, concentrating sugars and aromatics in the grapes. Chateau d'Yquem, classified Premier Cru Supérieur in the 1855 Classification, stands as the benchmark. Other top estates include Suduiraut, Climens (in neighbouring Barsac), Rieussec, and Coutet. The wines combine honeyed richness with vibrant acidity, enabling decades of cellar development."
+},
+"willamette valley": {
+"short": "Oregon's premier wine region, internationally acclaimed for cool-climate Pinot Noir on volcanic Jory soils.",
+"full": "The Willamette Valley stretches 150 miles south from Portland through western Oregon, sheltered by the Coast Range and Cascades. Its cool, marine-influenced climate closely parallels Burgundy, making it one of the New World's finest Pinot Noir sources. The volcanic Jory soils — deep, red, basalt-derived clay — are particularly prized in sub-AVAs like Dundee Hills, Eola-Amity Hills, and Ribbon Ridge. Chardonnay and Pinot Gris also perform exceptionally. The region has grown from a handful of pioneers in the 1960s (David Lett, Dick Erath) to over 700 wineries. Key producers include Domaine Drouhin, Eyrie Vineyards, Bergstrom, and Beaux Freres."
+},
+"paso robles": {
+"short": "Central California wine region celebrated for bold Rhone-style blends, Zinfandel, and Cabernet Sauvignon with extreme diurnal swings.",
+"full": "Paso Robles is a sprawling AVA in San Luis Obispo County on California's Central Coast, encompassing over 40,000 vineyard acres across 11 sub-districts. The region's defining feature is an extreme diurnal temperature variation — often exceeding 50°F (28°C) between day and night — which preserves acidity while allowing full phenolic ripeness. Rhone varieties (Grenache, Syrah, Mourvèdre) and Zinfandel have become signatures, though Cabernet Sauvignon dominates plantings. The western Adelaida District, with its calcareous soils and coastal influence, produces particularly structured wines. Notable producers include Tablas Creek, Justin, Daou, and Epoch."
+},
+"swartland": {
+"short": "South Africa's revolution region, leading the old-vine, minimal-intervention movement with Chenin Blanc, Syrah, and Grenache.",
+"full": "Swartland (meaning \"black land,\" for its indigenous renosterbos shrub) lies northwest of Cape Town in the Western Cape. Once dismissed as a bulk-wine and wheat-farming zone, it has undergone a dramatic transformation since the early 2000s, driven by a new generation of winemakers committed to old-vine Chenin Blanc, Mediterranean red varieties, and minimal-intervention winemaking. The Swartland Independent Producers guild champions site-specific, low-yield viticulture. Key figures include Eben Sadie (Sadie Family), Adi Badenhorst, Chris and Andrea Mullineux, and David Sadie (Lammershoek). The region's granite, shale, and schist soils, combined with a warm Mediterranean climate tempered by coastal breezes, produce wines of remarkable depth and complexity."
+},
+"wachau": {
+"short": "UNESCO-listed Danube terrace vineyards producing Austria's most prestigious dry Riesling and Gruner Veltliner.",
+"full": "The Wachau is a narrow, 33-kilometre stretch of the Danube valley west of Vienna, designated a UNESCO World Heritage cultural landscape. Its steep, terraced vineyards on primary rock (gneiss and granite) soils produce some of Austria's most intense and age-worthy dry white wines. The region operates its own unique quality classification — Steinfeder (lightest, up to 11% ABV), Federspiel (medium, 11.5-12.5%), and Smaragd (richest, 12.5%+) — administered by the Vinea Wachau association. Gruner Veltliner and Riesling dominate, with top sites like Achleiten, Kellerberg, and Loibenberg commanding premium prices. Leading producers include F.X. Pichler, Domane Wachau, Knoll, Hirtzberger, and Prager."
+},
+"kamptal": {
+"short": "Leading Austrian DAC wine region in the Kamp valley, excelling in Gruner Veltliner and Riesling on loess and primary rock soils.",
+"full": "Kamptal takes its name from the Kamp river valley north of the Danube, centred around the town of Langenlois — Austria's largest wine-producing municipality. The region benefits from a convergence of two geological zones: warm loess soils on the eastern slopes (producing broader, fruit-driven wines) and cool primary rock (gneiss, schist) on the western terraces (yielding mineral, structured expressions). Kamptal was among the first Austrian regions to adopt the DAC (Districtus Austriae Controllatus) appellation system in 2008. Top vineyard sites include Heiligenstein (a celebrated Riesling cru), Lamm, and Kogelberg. Key producers are Schloss Gobelsburg, Brundlmayer, Hiedler, and Jurtschitsch."
+},
+"tokaj": {
+"short": "Historic Hungarian wine region producing legendary botrytised Tokaji Aszu from the Furmint grape, with centuries of documented winemaking.",
+"full": "Tokaj (or Tokaj-Hegyalja) in northeastern Hungary is one of the world's oldest classified wine regions, with royal decree establishing vineyard classifications as early as 1730 — predating Bordeaux's 1855 system by over a century. The region's signature wine, Tokaji Aszu, is made from botrytis-affected Furmint and Harslevelu grapes, with sweetness historically measured in puttonyos (baskets of aszu berries added to base wine). The volcanic soils, sheltered valley microclimate, and autumn mists from the Bodrog and Tisza rivers create ideal conditions for noble rot. Modern Tokaj also excels in dry Furmint, which has gained international recognition. Key producers include Royal Tokaji, Disznoko, Oremus, Szepsy, and Dobogo."
+}
+},
+"subregions": {
+"asti": {
+"short": "Asti produces Moscato Bianco-based sparkling wines and Barbera on calcareous clay.",
+"full": "Asti is home to Moscato d'Asti DOCG and Asti Spumante DOCG, both from Moscato Bianco on calcareous clay hills. Barbera d'Asti DOCG offers higher acidity and lower tannin than Barolo's Nebbiolo. A Superiore tier requires longer ageing."
+},
+"etna": {
+"short": "Nerello Mascalese thrives on volcanic slopes up to 1,000m on Europe's tallest active volcano.",
+"full": "Etna's active volcano provides mineral-rich basalt soils and high-altitude diurnal temperature swings. Nerello Mascalese dominates red production; Carricante leads whites. Old ungrafted bush vines, some pre-phylloxera, define the appellation."
+},
+"riverland": {
+"short": "Warm inland region on the Murray River, known for high-volume Shiraz, Cabernet, and Chardonnay.",
+"full": "Riverland follows the Murray River through arid, flat terrain with sandy loam and clay soils. A hot continental climate suits Shiraz, Cabernet Sauvignon, and Chardonnay. High yields supply bulk wine and cask production; drip irrigation from the Murray is essential."
+},
+"central coast": {
+"short": "Coastal California region producing Pinot Noir, Chardonnay, and Rhône varieties.",
+"full": "Stretching from San Francisco to Santa Barbara, Central Coast channels Pacific fog and wind through transverse valleys. Pinot Noir and Chardonnay dominate cooler AVAs; Syrah and Grenache thrive in warmer inland sites."
+},
+"médoc": {
+"short": "Bordeaux's Left Bank powerhouse — gravelly soils producing structured, long-lived Cabernet Sauvignon.",
+"full": "The Médoc peninsula stretches north of Bordeaux along the Gironde estuary. Its deep gravel beds over clay produce Bordeaux's most structured and age-worthy Cabernet-dominant reds. Home to four of the five 1855 First Growths (Lafite, Latour, Margaux, Mouton)."
+},
+"chianti": {
+"short": "Sangiovese-dominant DOCG zone on hills between Florence and Siena.",
+"full": "Chianti DOCG centres on Sangiovese grown on galestro and alberese soils at 250–700m elevation. Seven sub-zones exist; Classico is the historic core. Blending with Canaiolo and Colorino is permitted. Minimum ageing varies by category."
+},
+"amarone": {
+"short": "Corvina-based appassimento red from Valpolicella's hillside vineyards.",
+"full": "Amarone della Valpolicella is made from Corvina, Corvinone, and Rondinella dried for 90–120 days under appassimento. Concentration and partial fermentation of sugars produce a dry, high-alcohol red. DOCG status since 2010."
+},
+"côte de beaune": {
+"short": "Southern Côte d'Or — Burgundy's finest white wine villages.",
+"full": "The Côte de Beaune produces Burgundy's greatest Chardonnay from Meursault, Puligny-Montrachet, and Chassagne-Montrachet, plus excellent Pinot Noir from Volnay and Pommard."
+},
+"langhe": {
+"short": "Langhe: Piedmont hills producing Nebbiolo, Barbera, and Dolcetto.",
+"full": "Langhe is the hilly heartland of Piedmont, centred on Alba. Nebbiolo dominates on calcareous Tortonian soils, producing Barolo and Barbaresco. Barbera and Dolcetto ripen on younger Helvetian clay. Continental climate drives acidity and tannin."
+},
+"fronsac": {
+"short": "Merlot-dominant Right Bank appellation on limestone and clay west of Pomerol.",
+"full": "Fronsac produces Merlot-dominant blends with Cabernet Franc on clay-limestone and molasse soils. The appellation sits west of Pomerol on elevated terrain above the Isle river, giving structured, age-worthy wines without a formal classification system."
+},
+"graves": {
+"short": "Graves: Bordeaux's oldest named wine district, producing both red and dry white.",
+"full": "Graves sits south of Bordeaux city on deep gravel over clay. Cabernet Sauvignon and Merlot drive reds; Sauvignon Blanc and Sémillon produce dry whites. The 1959 classification covers both colours, unique in Bordeaux."
+},
+"mendocino county": {
+"short": "Cool coastal valleys and warm inland ridges yield Pinot Noir, Zinfandel, and Chardonnay.",
+"full": "Mendocino County's diverse terrain spans fog-cooled coastal valleys to warm inland ridges. Anderson Valley focuses on Pinot Noir and Chardonnay; Redwood Valley favours Zinfandel. High proportion of certified organic vineyards defines the county."
+},
+"taranto": {
+"short": "Taranto produces Primitivo and Negroamaro on flat, sandy plains bordering the Ionian Sea.",
+"full": "Taranto sits on flat, sandy plains along the Ionian coast. Hot summers and low rainfall concentrate sugars in Primitivo and Negroamaro, yielding high-alcohol reds. The gulf moderates extremes slightly. Few DOC wines carry the Taranto name specifically."
+},
+"gevrey-chambertin": {
+"short": "Gevrey-Chambertin: Côte de Nuits village with nine Grands Crus, all Pinot Noir.",
+"full": "Gevrey-Chambertin anchors the northern Côte de Nuits. Nine Grands Crus, including Chambertin and Chambertin Clos de Bèze, grow on limestone-marl soils. Pinot Noir dominates; wines trend fuller and firmer than neighbouring villages."
+},
+"coonawarra / mclaren vale / barossa valley / adelaide hills": {
+"short": "Four distinct South Australian subregions spanning cool hills to warm inland valleys.",
+"full": "South Australia's key subregions: Coonawarra's terra rossa over limestone suits Cabernet Sauvignon; Barossa Valley's old Shiraz vines thrive in warm, dry conditions; McLaren Vale blends Mediterranean climate with Shiraz and Grenache; Adelaide Hills' elevation drives cool-climate Chardonnay and Pinot Noir."
+},
+"monterey county": {
+"short": "Cool, windy valley producing Chardonnay, Pinot Noir, and Riesling with high acidity.",
+"full": "Monterey County's long valley channels cold Pacific air from Monterey Bay, producing high-acid Chardonnay, Pinot Noir, and Riesling. Sandy loam soils and a wide diurnal range preserve freshness. Santa Lucia Highlands AVA is the benchmark sub-appellation."
+},
+"montalcino": {
+"short": "Sangiovese Grosso (Brunello) on elevated clay-limestone hills south of Siena.",
+"full": "Montalcino produces Brunello di Montalcino from Sangiovese Grosso on clay-limestone at 300–600m. The dry, sunny microclimate and DOCG rules requiring extended ageing yield structured, long-lived reds."
+},
+"manduria": {
+"short": "Manduria is Puglia's Primitivo heartland, producing rich, high-alcohol reds.",
+"full": "Manduria, in the Taranto province, is the stronghold of Primitivo. DOC and DOCG (Primitivo di Manduria Dolce Naturale) rules govern dry and sweet styles. Sandy soils over limestone and a hot, dry climate yield dense, high-alcohol reds."
+},
+"vinci": {
+"short": "Vinci, Leonardo's birthplace, grows Sangiovese and Trebbiano on steep Apennine foothills.",
+"full": "Vinci sits in the Florentine hills west of Florence, within the Montalbano zone. Sangiovese and Trebbiano dominate on clay-limestone slopes. Elevation and Apennine influence moderate the Tuscan heat, preserving acidity in both red and white wines."
+},
+"maremma": {
+"short": "Coastal Tuscany DOC known for Sangiovese and Bordeaux-variety blends on iron-rich soils.",
+"full": "Maremma Toscana DOC covers Tuscany's coastal strip. Iron-rich soils and a warm Mediterranean climate suit Sangiovese, Cabernet Sauvignon, and Syrah. Morellino di Scansano DOCG is the key appellation for Sangiovese within the zone."
+},
+"pauillac": {
+"short": "Home to three First Growths — the pinnacle of Bordeaux Cabernet Sauvignon.",
+"full": "Pauillac contains Lafite Rothschild, Latour, and Mouton Rothschild. Deep gravel soils over limestone produce powerful, concentrated Cabernet-dominant wines with extraordinary aging potential."
+},
+"pessac-léognan": {
+"short": "Graves-based AC for both red Cabernet blends and dry white Sauvignon Blanc/Sémillon.",
+"full": "Pessac-Léognan, appellation since 1987, sits on deep gravel beds north of Graves. Produces Cabernet Sauvignon-led reds and dry Sauvignon Blanc–Sémillon whites. Home to all 16 Crus Classés de Graves, including Haut-Brion."
+},
+"margaux": {
+"short": "The most elegant and perfumed of Bordeaux's Médoc appellations.",
+"full": "Margaux is renowned for producing the most perfumed and silky wines of the Médoc. Château Margaux leads, with Rauzan-Ségla, Palmer, and Brane-Cantenac as notable estates."
+},
+"blaye": {
+"short": "Right Bank appellation producing Merlot-dominant blends on limestone and clay soils.",
+"full": "Blaye sits on Bordeaux's Right Bank, facing the Gironde estuary. Merlot dominates on clay-limestone soils. Blaye Côtes de Bordeaux is the main red AC; Blaye AOC covers dry whites from Colombard and Ugni Blanc."
+},
+"côte de nuits": {
+"short": "Northern Côte d'Or — Burgundy's greatest red wine villages.",
+"full": "The Côte de Nuits runs from Marsannay to Nuits-Saint-Georges, containing legendary Grand Crus: Chambertin, Musigny, Romanée-Conti, Clos de Vougeot. Pinot Noir at its most profound."
+},
+"saint-julien": {
+"short": "Saint-Julien: Cabernet Sauvignon-dominant blends on deep Médoc gravel.",
+"full": "Saint-Julien sits between Pauillac and Margaux on the Médoc's Left Bank. Deep gravel over clay produces structured Cabernet Sauvignon-dominant blends. Eleven Crus Classés, all Second through Fourth Growth, define the appellation."
+},
+"volnay": {
+"short": "Volnay: Côte de Beaune Pinot Noir village prized for finesse and silky texture.",
+"full": "Volnay produces Pinot Noir on the Côte de Beaune's limestone and clay slopes. No Grands Crus exist, but 35 Premiers Crus dominate. Wines show pale colour, red-fruit character, and fine tannins—distinct from the broader structure of neighbouring Pommard."
+},
+"saint-émilion": {
+"short": "Bordeaux's Right Bank — Merlot-dominant wines from limestone and clay.",
+"full": "Saint-Émilion's limestone plateau and clay slopes produce rounder, more approachable Merlot-dominant wines. Cheval Blanc and Ausone lead the classification."
+},
+"prosecco": {
+"short": "Glera-based sparkling wine from the Treviso hills, made by Charmat method.",
+"full": "Prosecco DOC and DOCG (Conegliano Valdobbiadene) are produced from Glera on steep hillsides in Treviso. Secondary fermentation in tank (Charmat method) preserves fresh, light character. Superiore di Cartizze is the single-hill apex."
+},
+"montagne de reims": {
+"short": "Pinot Noir heartland on the forested northern slopes of the Reims mountain.",
+"full": "Montagne de Reims favours Pinot Noir on chalk-based soils beneath a forested plateau. Several Grand Cru villages—Verzenay, Verzy, Mailly—face north yet ripen fully, producing structured base wines with red-fruit character and firm acidity."
+},
+"chablis": {
+"short": "Northernmost Burgundy appellation producing crystalline, mineral-driven Chardonnay on Kimmeridgian limestone.",
+"full": "Chablis lies in the Yonne department, roughly 100 miles northwest of the Cote d'Or, making it Burgundy's coolest and most northerly district. Its signature Kimmeridgian limestone-marl soils — packed with fossilised Exogyra virgula oyster shells — impart a distinctive flinty, mineral character to the Chardonnay grape. The appellation hierarchy runs from Petit Chablis and Chablis through seven Premiers Crus to seven Grands Crus (Blanchot, Bougros, Les Clos, Grenouilles, Les Preuses, Valmur, Vaudesir) on a single southwest-facing slope above the Serein river. A philosophical divide persists between producers who ferment in stainless steel (preserving steely purity) and those who favour oak (adding breadth and complexity). Key producers include Raveneau, Dauvissat, William Fevre, and Long-Depaquit."
+},
+"marsala": {
+"short": "Sicily's fortified wine capital, producing oxidative Marsala from Grillo, Catarratto, and Inzolia.",
+"full": "Marsala DOC occupies Sicily's western tip near Trapani. Grillo, Catarratto, and Inzolia are fortified with grape spirit and aged oxidatively. Styles range from Fino to Vergine; sweetness levels from Secco to Dolce."
+},
+"nero d'avola": {
+"short": "Sicily's flagship red grape, producing full-bodied wines on sun-baked volcanic and limestone soils.",
+"full": "Nero d'Avola thrives in southeastern Sicily on calcareous clay soils under intense Mediterranean heat. It produces deep-coloured, tannic reds with high alcohol. Noto and Pachino are its historic heartlands, yielding the most concentrated expressions."
+},
+"puente alto": {
+"short": "Puente Alto: Maipo's premium Cabernet Sauvignon zone at Andean foothills.",
+"full": "Puente Alto sits at Maipo's eastern edge near the Andes, where alluvial gravel soils and cool afternoon winds concentrate Cabernet Sauvignon. Home to Almaviva and Concha y Toro's Don Melchor, it anchors Chile's reputation for structured reds."
+},
+"valpolicella": {
+"short": "Corvina-based reds from Verona's hills, including Amarone and Ripasso.",
+"full": "Valpolicella, near Verona, produces Corvina-dominant reds across four styles: fresh Classico, Ripasso (refermented on Amarone skins), dried-grape Amarone, and sweet Recioto. Hillside vineyards on limestone and clay define the appellation."
+},
+"beaujolais": {
+"short": "Granite-soiled Burgundy cru region famous for Gamay, from light Nouveau to age-worthy Morgon and Moulin-a-Vent.",
+"full": "Beaujolais occupies the southern end of Greater Burgundy, extending from the Maconnais south to the outskirts of Lyon. Its granite and schist soils are ideally suited to the Gamay grape, which is the region's sole permitted red variety. Ten cru appellations — Morgon, Moulin-a-Vent, Fleurie, Brouilly, Cote de Brouilly, Chiroubles, Saint-Amour, Julienas, Chenas, and Regnie — produce structured, terroir-driven wines that can age for a decade or more. Beaujolais Nouveau, released each November, remains commercially significant but represents only a fraction of the region's quality spectrum. Semi-carbonic maceration (whole-cluster fermentation) is the traditional vinification method, yielding fresh, aromatic wines with soft tannins."
+},
+"right bank": {
+"short": "Merlot-dominant blends from clay-limestone soils around Pomerol and St-Émilion.",
+"full": "Right Bank centres on Pomerol and St-Émilion. Clay-limestone soils favour Merlot and Cabernet Franc over Cabernet Sauvignon. St-Émilion has its own classification, revised periodically, with Premier Grand Cru Classé at the apex."
+},
+"uco valley": {
+"short": "Argentina's highest-altitude wine frontier — refined, mineral Malbec.",
+"full": "The Uco Valley (Tupungato, Tunuyán, San Carlos) at 1,000-1,500m produces Argentina's most structured, mineral-driven Malbec. Altitude creates extreme diurnal temperature swings."
+},
+"côtes de bourg": {
+"short": "Right Bank appellation producing Merlot-dominant reds on clay-limestone slopes.",
+"full": "Côtes de Bourg sits on the Right Bank opposite the Médoc, where clay-limestone hillsides favour Merlot-dominant blends with Cabernet Franc. A historic trade port, it produces structured reds with good concentration at accessible price points."
+},
+"pomerol": {
+"short": "Tiny, prestigious Right Bank appellation — home to Pétrus.",
+"full": "Pomerol has no classification system but commands Bordeaux's highest prices. Clay soils with iron-rich crasse de fer produce opulent Merlot of extraordinary concentration."
+},
+"beaune": {
+"short": "Beaune: Burgundy's wine capital, known for Pinot Noir and Chardonnay Premiers Crus.",
+"full": "Beaune is Burgundy's historic wine trade hub. Its east-facing Côte slopes yield Pinot Noir and Chardonnay on limestone-clay soils. No Grands Crus, but 42 Premiers Crus, led by Grèves and Fèves. Home to the Hospices de Beaune annual charity auction."
+},
+"pommard": {
+"short": "Pommard: robust, tannic Pinot Noir from clay-rich soils on Côte de Beaune.",
+"full": "Pommard produces Pinot Noir with notable structure and tannin, atypical for Côte de Beaune. Clay-heavy soils on mid-slope sites drive density. Two Premier Crus—Les Épenots and Les Rugiens—anchor the appellation's reputation for age-worthy reds."
+},
+"luján de cuyo / valle de uco": {
+"short": "Mendoza's premium Malbec zones, elevated between 900–1,500m in the Andes foothills.",
+"full": "Luján de Cuyo and Valle de Uco anchor Mendoza's fine wine production. High-altitude sites on alluvial, sandy-loam soils and strong diurnal shifts concentrate Malbec and Cabernet Sauvignon with firm structure and natural acidity."
+},
+"piave": {
+"short": "Piave DOC follows the river plain; Raboso is the signature red grape.",
+"full": "Piave DOC runs along the Piave river in eastern Veneto. Alluvial plains favour Raboso, a tannic, high-acid native red. Merlot and Cabernet are also grown. Cool continental winters and warm summers define the growing season."
+},
+"maipú": {
+"short": "Maipú is Mendoza's historic core, known for old-vine Malbec and traditional winemaking.",
+"full": "Maipú sits at 700–900m in central Mendoza on alluvial sandy-loam soils. Old-vine Malbec dominates, alongside Cabernet Sauvignon and Tempranillo. The continental climate delivers warm days and cool nights, concentrating fruit with natural acidity."
+},
+"barbaresco": {
+"short": "Nebbiolo on calcareous marl east of Alba; DOCG since 1980.",
+"full": "Barbaresco produces Nebbiolo on Tortonian calcareous marl and sand east of Alba. Slightly warmer and lower than Barolo, it yields earlier-drinking wines. DOCG since 1980; minimum ageing 26 months, 9 in oak."
+},
+"saint-estèphe": {
+"short": "Saint-Estèphe: Cabernet Sauvignon-led blends on heavy clay soils, the most structured Left Bank AC.",
+"full": "Saint-Estèphe is the northernmost major Médoc appellation. Heavy clay soils retain moisture and produce Cabernet Sauvignon-dominant blends with firm tannins and high acidity. Five Cru Classés include Cos d'Estournel and Montrose."
+},
+"chassagne-montrachet": {
+"short": "Côte de Beaune village renowned for white Burgundy from Chardonnay.",
+"full": "Côte de Beaune village split between white and red production. Chardonnay dominates the east-facing limestone premiers crus; Pinot Noir covers southern clay soils. Shares Le Montrachet and Bâtard-Montrachet grands crus with Puligny."
+},
+"bolgheri": {
+"short": "Tuscany's Cabernet coast — home to Sassicaia and the Super Tuscan revolution.",
+"full": "Bolgheri on Tuscany's coast launched the Super Tuscan movement. Sassicaia (1968) proved Cabernet Sauvignon could produce world-class wine outside Bordeaux. Maritime climate."
+},
+"pouilly-fuissé": {
+"short": "Pouilly-Fuissé: Chardonnay AC in Mâconnais on Jurassic limestone.",
+"full": "Pouilly-Fuissé produces Chardonnay from Jurassic limestone and clay soils in the Mâconnais. Elevated premier cru classifications were introduced in 2020. Warmer than Côte d'Or, yielding richer, rounder whites with moderate acidity."
+},
+"soave": {
+"short": "Garganega-dominant whites from volcanic hillside vineyards east of Verona.",
+"full": "Soave produces dry whites from Garganega, blended with Trebbiano di Soave. Classico zone covers the original volcanic basalt hills; Colli Scaligeri extends to alluvial plains. Top Recioto di Soave is a sweet passito style."
+}
+},
+"countries": {
+"usa": {
+"short": "Diverse wine and spirits producer spanning coast to coast.",
+"full": "California dominates wine production; Napa Valley's Cabernet Sauvignon and Sonoma's Pinot Noir and Chardonnay lead. Oregon excels with Burgundian Pinot Noir. Washington state favours Merlot and Cabernet. Kentucky produces the majority of the world's Bourbon."
+},
+"cuba": {
+"short": "The birthplace of light, elegant rum — the foundation of the Daiquiri, Mojito, and Cuba Libre.",
+"full": "Cuban rum defined the light, refined style that dominates global rum consumption. Havana Club, jointly owned by the Cuban government and Pernod Ricard, is the island's flagship brand. Don Facundo Bacardí Massó revolutionised rum production in Santiago de Cuba in 1862 by introducing charcoal filtration and barrel aging, creating the template for light rum. The Cuban style emphasises column-still distillation for elegance, with aging in tropical conditions developing complexity. Santiago de Cuba and Havana Club produce aged rums of genuine sophistication. US trade restrictions have kept Cuban rum from its largest potential market for decades."
+},
+"austria": {
+"short": "A quality-obsessed wine culture built on Grüner Veltliner and world-class Riesling from the Danube terraces.",
+"full": "Austria's wine industry was rebuilt on a foundation of strict quality controls after the 1985 wine scandal, emerging as one of Europe's most exciting wine countries. Grüner Veltliner is the signature grape, producing wines ranging from crisp, peppery quaffers to profound, age-worthy single-vineyard bottlings. The Wachau, Kamptal, and Kremstal along the Danube produce extraordinary Riesling and Grüner Veltliner. Burgenland produces outstanding sweet wines from Neusiedlersee and powerful reds (Blaufränkisch, Zweigelt) from Mittelburgenland. The DAC (Districtus Austriae Controllatus) system ties grape varieties to specific regions."
+},
+"france": {
+"short": "France's diverse regions define global benchmarks across still, sparkling, and fortified wines.",
+"full": "France spans climates from cool Champagne to warm Roussillon. Key regions include Bordeaux, Burgundy, Rhône, Loire, and Alsace, each defined by strict AOC rules governing permitted grapes, yields, and vinification methods."
+},
+"italy": {
+"short": "Italy's rich spirits tradition encompasses grappa, amaro, vermouth, and a growing craft gin scene.",
+"full": "Italy produces a vast array of spirits deeply embedded in its food culture. Grappa, distilled from grape pomace, ranges from raw and fiery to elegant and barrel-aged. The amaro family — bitter herbal liqueurs including Campari, Aperol, Averna, Amaro Montenegro, and Fernet-Branca — is central to Italian drinking culture and the global cocktail renaissance. Vermouth originated in Turin, with Carpano, Cocchi, and Martini & Rossi as historic houses. Limoncello from the Amalfi Coast is Italy's most popular liqueur. Italian craft gin is a growing category, with Mediterranean botanicals lending distinctive character."
+},
+"thailand": {
+"short": "Tropical wine producer using high-altitude sites and two harvests per year.",
+"full": "Thailand produces wine at altitudes up to 1,400m, moderating tropical heat. Two harvests per year exploit dry and wet seasons. Chenin Blanc, Syrah, and Sangiovese lead; Khao Yai and Doi Inthanon are key regions."
+},
+"brazil": {
+"short": "Home to cachaça — the world's third most-consumed spirit — the essential base of the Caipirinha.",
+"full": "Brazil is the world's largest sugarcane producer, and cachaça — distilled from fresh sugarcane juice — is its national spirit. Over 1.5 billion litres are produced annually by an estimated 40,000 producers. Cachaça differs from rum in its use of fresh cane juice rather than molasses, and its distinctive fermentation using wild or cultivated yeasts. Unaged cachaça (prata/branca) is used in Caipirinhas. Aged cachaça (ouro/amarela) is matured in a remarkable variety of Brazilian woods — amburana, bálsamo, jequitibá — each imparting unique flavours. Leblon, Avuá, and Novo Fogo have led cachaça's international premium positioning."
+},
+"england": {
+"short": "The birthplace of gin, experiencing a craft distilling renaissance with over 800 distilleries.",
+"full": "England's spirits heritage is dominated by gin. The Gin Craze of the 18th century established London Dry as a global style. Today, England leads a worldwide gin renaissance, with over 800 distilleries producing an extraordinary range of styles. Sipsmith helped reignite craft gin in 2009. The country also produces growing quantities of single malt whisky (The English Whisky Company, Cotswolds), rum, and vodka. London remains the world's most important market for spirits innovation and cocktail culture."
+},
+"germany": {
+"short": "A major spirits producer known for Korn, Obstbrand (fruit brandies), and an emerging whisky scene.",
+"full": "Germany has a long distilling tradition encompassing Korn (grain spirit), Obstbrand (fruit brandies, especially Kirschwasser from cherries and Williams pear brandy), and herbal liqueurs like Jägermeister and Underberg. German whisky has emerged as a notable category, with over 200 distilleries now producing single malts — many using local grain and innovative cask programs. Monkey 47 gin from the Black Forest has become a global benchmark for botanical complexity. The country's strict quality standards and strong agricultural base support premium spirit production."
+},
+"scotland": {
+"short": "The birthplace of Scotch whisky, with five distinct regions producing the world's most revered single malts.",
+"full": "Scotland is synonymous with whisky. Its five regions each impart distinct character: Speyside (fruity, elegant), Islay (peaty, maritime), Highlands (diverse), Lowlands (gentle, grassy), Campbeltown (complex, briny). Scotch must be matured minimum three years in oak."
+},
+"spain": {
+"short": "The most-planted wine country on earth, from Rioja's Tempranillo to Priorat's old-vine Garnacha.",
+"full": "Spain has more vineyard acreage than any country. Rioja remains its most recognised region, producing Tempranillo-based reds. Priorat revived old-vine Garnacha. Ribera del Duero makes powerful Tempranillo. Rías Baixas produces crisp Albariño. Sherry from Jerez is one of the world's great fortified wines. Cava from Penedès provides excellent-value traditional-method sparkling."
+},
+"japan": {
+"short": "Japan produces delicate whisky and gin, plus sake and koshu wine from Koshu grapes.",
+"full": "Japan's cool, humid climate suits whisky distillation and Koshu white wine. Scottish-influenced pot stills produce light, subtle single malts. Sake relies on Yamadanishiki and Gohyakumangoku rice; koshu wine uses the indigenous Koshu grape."
+},
+"ireland": {
+"short": "Triple-distilled for smoothness, Irish whiskey is the world's fastest-growing spirits category.",
+"full": "Irish whiskey's renaissance is remarkable — from two distilleries in the 1980s to over 40 today. Triple distillation produces smoother character. Single Pot Still whiskey, from malted and unmalted barley, is uniquely Irish — creamy, spicy, and complex."
+},
+"chile": {
+"short": "Long Pacific coast nation with diverse climates producing Carménère, Cabernet, and Sauvignon Blanc.",
+"full": "Chile's Andes-to-Pacific geography creates cool coastal valleys and warmer inland zones. Carménère is the signature red; Cabernet Sauvignon dominates Maipo. Coastal Casablanca and Leyda yield crisp Sauvignon Blanc and Chardonnay."
+},
+"netherlands": {
+"short": "The birthplace of genever (jenever) — the precursor to modern gin — and home to Bols, De Kuyper, and Lucas Bols.",
+"full": "The Netherlands has a distilling heritage dating to the 16th century. Genever (jenever), the malt wine-based juniper spirit, is the direct ancestor of London Dry gin. Bols, founded in 1575, is the world's oldest distilled spirits brand. De Kuyper is a global leader in liqueurs and cocktail ingredients. Ketel One vodka, from the Nolet family distillery, has become a major international brand. Dutch genever comes in two main styles: oude (old-style, maltier) and jonge (young, lighter). Schiedam, near Rotterdam, was historically the centre of Dutch distilling."
+},
+"canada": {
+"short": "Home to Canadian whisky — historically rye-forward blends — and a growing craft distilling movement.",
+"full": "Canadian whisky has a distinctive identity built on smoothness and versatility. Traditionally blended from corn-based and rye-based distillates, Canadian whisky can legally be called \"rye whisky\" regardless of grain composition. Crown Royal, Canadian Club, and Lot No. 40 are leading brands. The craft movement has brought single-grain and single-malt expressions. Canada also produces notable ice wines-based spirits, maple-influenced liqueurs, and an expanding gin category. Quebec's Ungava gin uses Arctic botanicals. Alberta Premium is made from 100% rye."
+},
+"trinidad": {
+"short": "Home to Angostura — the world's most famous bitters brand and a major rum producer.",
+"full": "Trinidad's spirits identity centres on the House of Angostura, founded in 1824. Angostura Aromatic Bitters is the single most essential cocktail ingredient worldwide. Beyond bitters, Angostura produces a significant range of aged rums, including the acclaimed Angostura 1919 and 1824. The Fernandes family produces Forres Park Puncheon (a high-proof staple) and 10 Cane (made from fresh sugarcane juice). Trinidad rum tends towards a lighter, more refined style than Jamaican, often produced on column stills. The island's Carnival culture has made rum central to its national identity."
+},
+"mexico": {
+"short": "Tequila and mezcal — agave-based spirits rooted in centuries of tradition.",
+"full": "Mexico's spirits identity is built on agave. Tequila from blue Weber agave ranges from crisp Blanco to complex Añejo. Mezcal from various agave species features characteristic smokiness from earthen pit roasting. Both categories are experiencing unprecedented global demand."
+},
+"jamaica": {
+"short": "The spiritual home of funky, ester-rich rum — from Appleton Estate to Hampden Estate and Worthy Park.",
+"full": "Jamaica produces some of the world's most characterful rums. The island's distinctive \"hogo\" (funk) comes from natural ester production during fermentation, often using dunder pits and wild yeasts. Appleton Estate in the Nassau Valley has distilled since 1749. Hampden Estate is legendary among rum enthusiasts for its extremely high-ester marks. Worthy Park produces both light and heavy pot-still rums. Jamaica classifies rums by ester levels (Common Clean, Plummer, Wedderburn, Continental Flavoured), providing a unique technical framework. The Geographical Indication for Jamaica Rum was established to protect the island's heritage."
+},
+"guatemala": {
+"short": "Producer of rich, sweet aged rums — Ron Zacapa is the country's flagship, using a solera-influenced system.",
+"full": "Guatemala's rum industry is dominated by Industrias Licoreras de Guatemala, producer of the internationally acclaimed Ron Zacapa. Distilled from virgin sugarcane honey (rather than molasses), Zacapa is aged at altitude (2,300 metres above sea level in Quetzaltenango) using a solera-inspired system that blends rums of different ages. This produces a distinctively smooth, sweet style that has proven enormously popular globally. Botran is another significant Guatemalan rum brand from the same company. The country's rum style tends towards richness and sweetness, appealing to whisky and Cognac drinkers."
+},
+"barbados": {
+"short": "A founding nation of rum production, home to Mount Gay — the oldest documented rum brand, dating to 1703.",
+"full": "Barbados claims to be the birthplace of rum, with Mount Gay's documented distilling history beginning in 1703. The island produces a refined, balanced style of rum that bridges the gap between lighter Spanish-style and heavier Jamaican rums. Mount Gay, Foursquare, and Cockspur are the principal producers. Richard Seale at Foursquare Rum Distillery has become one of the most acclaimed rum makers in the world, producing single-blended vintage rums of extraordinary quality. Barbados uses both pot and column stills, and ages rum in a variety of cask types. The country established a Geographical Indication for Barbados Rum."
+},
+"belgium": {
+"short": "Known for genever, fruit liqueurs, and herbal spirits — Belgium bridges Dutch and French distilling traditions.",
+"full": "Belgium straddles two spirits cultures: the genever tradition of Flanders (shared with the Netherlands) and the liqueur-making heritage influenced by France. Belgian genever, particularly from Hasselt and East Flanders, has its own character — often smoother and more grain-forward than Dutch versions. Filliers produces genever and gin from a five-generation family distillery. Belgium also produces notable fruit liqueurs, herbal digestifs, and a growing number of craft gins and whiskies. The Belgian Owl was one of the first European single malts outside traditional whisky nations."
+},
+"colombia": {
+"short": "Aguardiente is the national spirit — anise-flavoured and deeply woven into Colombian culture and celebration.",
+"full": "Colombia's spirits culture is dominated by aguardiente, an anise-flavoured spirit distilled from sugarcane. Each department traditionally has its own aguardiente brand — Antioqueño, Cristal, Néctar — and brand loyalty runs deep. Colombian aguardiente is distinct from other Latin American aguardientes in its consistent anise flavouring. Beyond aguardiente, Colombia's emerging craft scene includes rum producers (Dictador from Cartagena produces highly regarded aged rums using a solera system) and a nascent gin and whisky interest. The country's rum exports have grown significantly, particularly in the premium segment."
+},
+"russia": {
+"short": "The world's most iconic vodka nation, with a centuries-old tradition of grain and potato distillation.",
+"full": "Russia's distilling history is inseparable from vodka. Commercial production dates to at least the 14th century, and vodka has been central to Russian culture, economy, and politics for centuries. Traditional Russian vodka is typically made from wheat or rye, distilled for purity and filtered through birch charcoal. Stolichnaya (now produced in Latvia) and Russian Standard are major brands. Beyond vodka, Russia produces samogon (home-distilled spirits), nastoykas (infused spirits), and honey-based medovukha. The domestic market remains overwhelmingly vodka-focused."
+},
+"sweden": {
+"short": "Synonymous with vodka (Absolut) and aquavit, with an emerging whisky scene including Mackmyra.",
+"full": "Sweden's spirits heritage centres on vodka and aquavit. Absolut Vodka, from Åhus in southern Sweden, is one of the world's best-selling premium spirits. Swedish aquavit, flavoured primarily with dill, caraway, and anise, is essential to Scandinavian food culture, particularly at Midsommar and Christmas. Mackmyra, founded in 1999, pioneered Swedish whisky and now produces internationally recognised single malts using Swedish oak and distinctive seasonal variations. The Swedish government monopoly on alcohol retail (Systembolaget) shapes the domestic market."
+},
+"portugal": {
+"short": "One of Europe's most exciting wine countries — from Port and Douro reds to Vinho Verde and the emerging Alentejo.",
+"full": "Portugal offers extraordinary diversity from a compact geography. The Douro Valley produces both Port and outstanding unfortified reds from indigenous varieties like Touriga Nacional. Vinho Verde from the Minho is a crisp, refreshing style that has become a global favourite. The Alentejo in the south produces generous, modern reds. Dão offers elegant, mineral wines often compared to Burgundy. Madeira produces one of the world's most long-lived fortified wines. Portugal has over 250 indigenous grape varieties, giving its wines a distinctiveness that sets them apart. The DOC system protects 31 regions."
+},
+"georgia": {
+"short": "The cradle of wine — 8,000 years of qvevri (clay vessel) winemaking tradition.",
+"full": "Georgia is the oldest wine-producing region on earth. Traditional qvevri (buried clay vessel) fermentation produces distinctive amber wines from Rkatsiteli and Saperavi grapes."
+},
+"australia": {
+"short": "Vast continent with diverse climates producing Shiraz, Chardonnay, and Cabernet.",
+"full": "Australia spans cool-climate regions like Yarra Valley and Coonawarra to warm Barossa and Hunter valleys. Shiraz is the flagship grape; Riesling excels in Eden and Clare. Coonawarra's terra rossa over limestone defines its Cabernet."
+},
+"argentina": {
+"short": "The world's fifth-largest wine producer, synonymous with Malbec from Mendoza's high-altitude vineyards.",
+"full": "Argentina transformed its international reputation through Malbec — a grape that had been a minor blending component in Bordeaux but found its ultimate expression in Mendoza's high-altitude vineyards. The Uco Valley (Tupungato, Tunuyán, San Carlos) at 1,000-1,500 metres produces the most refined examples. Beyond Malbec, Cabernet Franc is emerging as a star variety, and Torrontés from Salta offers a distinctively aromatic white. San Juan province to the north and Patagonia's Río Negro to the south extend the country's viticultural range. Argentine wine culture is deeply embedded in daily life — per capita consumption remains among the world's highest."
+},
+"south africa": {
+"short": "A New World wine country with over 350 years of history, defined by Chenin Blanc, Pinotage, and the Cape Winelands.",
+"full": "South African wine dates to 1659. The Cape Winelands benefit from the cooling influence of the Atlantic and Indian oceans. Stellenbosch is the quality heartland for Cabernet and Bordeaux blends. Swartland has emerged as the centre of South Africa's natural wine revolution, producing remarkable old-vine Chenin Blanc, Syrah, and Grenache. Constantia is historically famous for its dessert wine, Vin de Constance. Pinotage — a South African cross of Pinot Noir and Cinsault — remains the country's unique contribution to world wine, though Chenin Blanc (locally called Steen) is the most-planted variety. The Wine of Origin (WO) system governs appellations."
+},
+"new zealand": {
+"short": "Cool-climate island nation best known for Marlborough Sauvignon Blanc.",
+"full": "Long, narrow islands create diverse climates. Marlborough dominates with Sauvignon Blanc on alluvial soils. Central Otago, the world's southernmost wine region, produces Pinot Noir on schist at high altitude."
+},
+"uruguay": {
+"short": "Tannat's adopted home — full-bodied reds from South America's fourth-largest producer.",
+"full": "Uruguay has made Tannat its own — this Basque grape produces rich, deeply coloured reds suited to the country's cattle-rich cuisine. Bodega Garzón leads the modern era."
+},
+"china": {
+"short": "The world's fastest-growing wine market and producer — Ningxia leads quality.",
+"full": "China's Ningxia region in the Yellow River corridor has emerged as a serious Cabernet Sauvignon producer. Ao Yun in Yunnan and Changyu are notable."
+},
+"peru": {
+"short": "South America's oldest wine tradition — Ica Valley and emerging Pisco production.",
+"full": "Peru's Ica Valley has produced wine since the 16th century. Tacama is the leading producer. The region is better known for Pisco, the grape-based spirit."
+},
+"vietnam": {
+"short": "Traditional rice-based spirits are deeply embedded in Vietnamese culture, with craft distilling beginning to emerge.",
+"full": "Vietnam has a long tradition of rice-based spirit production. Rượu (rice wine/spirit) is produced throughout the country in countless local variations. Rượu gạo is a basic rice spirit; Rượu nếp is made from glutinous rice. Snake wine and other infused spirits are traditional but primarily symbolic. The Son Tinh distillery produces premium rice spirits using traditional methods. An emerging craft scene includes Vietnamese gin using local botanicals like pho spices and lotus. Commercial production is dominated by Halico (Hanoi Vodka). The market potential is enormous given Vietnam's large, young, and increasingly affluent population."
+},
+"poland": {
+"short": "One of the world's great vodka nations, with a distilling tradition spanning centuries and legal protection for Polish Vodka.",
+"full": "Poland disputes Russia's claim to inventing vodka, with documented distillation from the 15th century. Polish vodka has legal EU protection as a geographical indication — it must be made from Polish grain or potatoes using water from Polish sources. Żubrówka (Bison Grass Vodka) is one of the most distinctive flavoured vodkas in the world. Belvedere and Chopin are premium brands that have elevated Polish vodka internationally. Sliwowica (plum brandy) is a traditional spirit from the Tatra Mountains. A growing craft scene is producing gins and single malts."
+},
+"taiwan": {
+"short": "Kavalan whisky has stunned the world — Taiwan's subtropical climate produces remarkably mature single malts at accelerated pace.",
+"full": "Taiwan's emergence as a world-class whisky producer is one of the most remarkable stories in modern spirits. Kavalan Distillery in Yilan County, founded in 2005 and releasing its first whisky in 2008, has won numerous international awards. The subtropical climate dramatically accelerates maturation — the angel's share reaches 12-15% per year (versus 2% in Scotland), meaning a 5-year Kavalan can show the complexity of a much older Scotch. Omar whisky from the state-owned TTL is another notable producer. The humid, warm conditions create a unique interaction between spirit and wood that defines the Taiwanese style."
+},
+"greece": {
+"short": "Ancient wine culture reborn — Assyrtiko from Santorini leads the modern renaissance.",
+"full": "Greece has 300+ indigenous grape varieties. Santorini's volcanic Assyrtiko, Naoussa's Xinomavro, and Nemea's Agiorgitiko lead the quality revolution."
+},
+"slovenia": {
+"short": "A hidden gem — orange wines, indigenous varieties, and Alpine-Mediterranean diversity.",
+"full": "Slovenia straddles Alpine and Mediterranean climates. The Brda/Collio region produces exceptional orange wines from Ribolla Gialla. Goriska Brda and Vipava Valley lead quality."
+},
+"hungary": {
+"short": "Historic wine nation — Tokaj's sweet Furmint and Bull's Blood from Eger.",
+"full": "Hungary's Tokaj region produces one of the world's great sweet wines from Furmint grapes affected by noble rot. Eger is known for Bikavér (Bull's Blood) reds."
+}
+}
+}

@@ -114,6 +114,62 @@ function loadTaxonomyCoords() {
   return { region, country };
 }
 
+/**
+ * Region/subregion sommelier descriptions. Two sources, merged:
+ *  1. data/taxonomy_descriptions_export.json — exported from taxonomy.db (the
+ *     Sonnet-backfilled descriptions for entities that exist in the taxonomy),
+ *     PLUS the subregion-name → parent-region structure.
+ *  2. SUPPLEMENT_DESCRIPTIONS below — the 6 curated regions that aren't taxonomy
+ *     entities (sake regions, Napa, Speyside, Languedoc, Khao Yai), inlined here
+ *     because the .mjs can't import the TS region-descriptions.ts (kept in sync by
+ *     the same author edit). Name-keyed, lowercase.
+ * Descriptions are optional — a region/subregion with none renders without a blurb.
+ */
+const SUPPLEMENT_DESCRIPTIONS = {
+  'speyside': 'Speyside, centered on the River Spey, houses over 50 distilleries. Soft water, cool climate, and local barley define the style. Signature malts—Glenfiddich, Macallan, Glenlivet—trend fruity, honeyed, and lightly peated.',
+  'languedoc-roussillon': "France's largest AOC region spans Mediterranean coast to Pyrenees foothills. Grenache, Syrah, Mourvèdre dominate reds; Picpoul and Roussanne whites. Schist and limestone soils. Roussillon specializes in fortified Muscat and Grenache-based vins doux naturels.",
+  'napa valley': 'Napa Valley, California, produces Cabernet Sauvignon-dominant wines across 16 sub-AVAs. Volcanic, alluvial, and clay soils vary from valley floor to mountain sites. The 1976 Paris Tasting established its global benchmark status.',
+  'niigata': "Niigata, Japan's top sake prefecture, uses soft low-mineral snowmelt water and Gohyakumangoku rice to produce tanrei karakuchi—a distinctively dry, clean, light-bodied style. Home to over 80 kuras; Kubota and Hakkaisan are benchmark producers.",
+  'nagano': 'Landlocked mountain prefecture at 700–900m elevation. Cold winters and pure snowmelt water produce clean, high-acid sake. Breweries favor junmai ginjo and daiginjo styles using locally grown Miyamanishiki and Hitogokochi rice.',
+  'khao yai': "Khao Yai sits at 400m in central Thailand, 150km northeast of Bangkok. A tropical monsoon climate with defined dry season enables Syrah, Chenin Blanc, and Colombard. GranMonte and Silverlake lead production under Thailand's New Latitude Wine movement.",
+};
+
+function loadDescriptions() {
+  // region/subregion/country name(lower) -> full text; plus parent-region -> [subregion names]
+  const regionDesc = new Map(), subDesc = new Map();
+  const subsByRegion = new Map(); // parent region (lower) -> Set of subregion names (original case)
+  const c = [
+    path.join(process.cwd(), 'data', 'taxonomy_descriptions_export.json'),
+    path.join(catalogRoot, '..', '..', 'data', 'taxonomy_descriptions_export.json'),
+  ].find((p) => p && fs.existsSync(p));
+  if (c) {
+    const t = JSON.parse(fs.readFileSync(c, 'utf8'));
+    for (const [k, v] of Object.entries(t.regions ?? {})) regionDesc.set(k, v.full);
+    for (const [k, v] of Object.entries(t.subregions ?? {})) subDesc.set(k, v.full);
+  }
+  for (const [k, full] of Object.entries(SUPPLEMENT_DESCRIPTIONS)) {
+    if (!regionDesc.has(k)) regionDesc.set(k, full);
+  }
+  // subregion → parent-region structure comes from the taxonomy coords file (it has
+  // the hierarchy via slugs); simpler to read it from explore-taxonomy.json here.
+  const tx = [
+    path.join(process.cwd(), 'data', 'taxonomy', 'explore-taxonomy.json'),
+    path.join(catalogRoot, '..', '..', 'data', 'taxonomy', 'explore-taxonomy.json'),
+  ].find((p) => p && fs.existsSync(p));
+  if (tx) {
+    const t = JSON.parse(fs.readFileSync(tx, 'utf8'));
+    const regionById = new Map((t.regions ?? []).map((r) => [r.id, r.name]));
+    for (const s of t.subregions ?? []) {
+      const parent = regionById.get(s.parentId);
+      if (!parent) continue;
+      const pk = parent.trim().toLowerCase();
+      if (!subsByRegion.has(pk)) subsByRegion.set(pk, new Set());
+      subsByRegion.get(pk).add(s.name);
+    }
+  }
+  return { regionDesc, subDesc, subsByRegion };
+}
+
 // Hand-authored centroid supplement, inlined (the .mjs can't import the TS module).
 // EXPORTED so a parity test can assert it matches lib/explore/region-centroids.ts.
 export const CENTROIDS = {
@@ -149,6 +205,7 @@ function main() {
   const rows = Array.isArray(raw) ? raw : (raw?.products ?? []);
   const { byRegion, byCountry, byRegionCountry } = aggregate(rows);
   const coords = loadTaxonomyCoords();
+  const { regionDesc, subDesc, subsByRegion } = loadDescriptions();
 
   // Pin each region NAME to its DOMINANT country (the country with the most
   // in-stock-beverage rows for that region), deterministic tie-break by country
@@ -194,6 +251,21 @@ function main() {
     });
   }
   const curated = curate(regions);
+
+  // Attach descriptions + subregion lists to the CURATED set only (keeps the file
+  // small — we don't carry copy for the ~250 non-curated regions). Both are optional.
+  for (const r of curated) {
+    const key = r.name.toLowerCase();
+    const desc = regionDesc.get(key);
+    if (desc) r.description = desc;
+    const subNames = subsByRegion.get(key);
+    if (subNames && subNames.size > 0) {
+      r.subregions = [...subNames].sort().map((sn) => {
+        const sd = subDesc.get(sn.trim().toLowerCase());
+        return sd ? { name: sn, description: sd } : { name: sn };
+      });
+    }
+  }
 
   const countries = [];
   for (const [name, agg] of byCountry) {

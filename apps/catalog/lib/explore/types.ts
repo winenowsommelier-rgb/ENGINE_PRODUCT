@@ -26,6 +26,12 @@ export interface MapRegion {
   countsByGroup: Record<string, number>; // catalog category_group -> count
   priceRange: PriceRange;
   peeks: MapPeek[];      // up to ~6 in-stock thumbnails
+  // Sommelier description (from data/taxonomy.db, backfilled by Sonnet). Optional:
+  // omitted cleanly when a region has none. `subregions` lists the names + blurbs
+  // of this region's subregions (taxonomy has no subregion coords, so they are a
+  // text list in the drawer, not map pins).
+  description?: string;
+  subregions?: { name: string; description?: string }[];
 }
 
 export interface MapCountry {
