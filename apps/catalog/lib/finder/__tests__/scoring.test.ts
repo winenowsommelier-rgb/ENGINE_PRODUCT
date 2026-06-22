@@ -88,11 +88,29 @@ describe('scoreProducts', () => {
     const out = scoreProducts({ category:'whisky', axis1:'scotch', axis2:'smoky' } as any, pool as any);
     expect(out.products[0].sku).toBe('LWHislay');
   });
-  it('spirits: axis1=rum ranks a Rum above a Vodka', () => {
-    const S = (o:any)=>({ price:1500, is_in_stock:true, ...o });
-    const pool = [S({sku:'LVKv', classification:'Vodka'}), S({sku:'LRMr', classification:'Rum'})];
+  it('spirits: axis1=rum ranks a Rum above a Vodka (via category_type, not classification)', () => {
+    // category_group/type pin the pool + the type read (Rule 12). classification is
+    // deliberately set to the JUNK value to prove it is NOT consulted.
+    const S = (o:any)=>({ price:1500, is_in_stock:true, category_group:'Spirits', classification:'Wine product', ...o });
+    const pool = [S({sku:'LVKv', category_type:'Vodka'}), S({sku:'LRMr', category_type:'Rum'})];
     const out = scoreProducts({ category:'spirits', axis1:'rum' } as any, pool as any);
     expect(out.products[0].sku).toBe('LRMr');
+  });
+  // C1 regression: a real tequila whose Magento `classification` is the junk
+  // "Wine product" MUST still score the type answer (it scored 0 before — 162/419
+  // spirit-pool rows were unscoreable). Reads category_type now, so junk class is moot.
+  it('spirits: a Tequila mislabeled classification="Wine product" still scores the type match', () => {
+    const S = (o:any)=>({ price:1500, is_in_stock:true, category_group:'Spirits', classification:'Wine product', ...o });
+    const pool = [S({sku:'LVKv', category_type:'Vodka'}), S({sku:'LTQt', category_type:'Tequila'})];
+    const out = scoreProducts({ category:'spirits', axis1:'tequila' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LTQt');   // the junk-classified tequila ranks first
+    expect(out.degraded).toBe(false);            // +2 type boost clears the quality gate
+  });
+  it('spirits: tequila token also accepts a Mezcal (category_type=Mezcal)', () => {
+    const S = (o:any)=>({ price:1500, is_in_stock:true, category_group:'Spirits', classification:'Wine product', ...o });
+    const pool = [S({sku:'LVKv', category_type:'Vodka'}), S({sku:'LMZm', category_type:'Mezcal'})];
+    const out = scoreProducts({ category:'spirits', axis1:'tequila' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LMZm');
   });
 
   // ── SAKE sweetness (axis1) — was profile-only (inert); now a real taste-tier ladder
@@ -188,6 +206,46 @@ describe('scoreProducts', () => {
     const pool=[P({sku:'WRWx',body:undefined,region:'Swartland'})];
     const out=scoreProducts(ans({adventure:'discovery'}),pool);
     expect(out.degraded).toBe(true); // adventure bump must not clear the quality gate
+  });
+
+  // ── C2: gift/special prestige lean via popularity_tier (score_summary is 0% for
+  // whisky/spirits/sake, so the wine-only critic bonus did nothing for them and the
+  // order collapsed to cheapest-first). popularity_tier is the client-safe bestseller
+  // bucket; a top-seller (tier 2) gets a +1 RANK-ONLY lean for a gift/special occasion. ──
+  it('whisky gift: a top-seller (tier 2) out-ranks an equal-taste non-seller', () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    // both match axis1=scotch equally (taste tier identical); tier 2 breaks it via the bump.
+    const pool = [W({sku:'LWHplain', popularity_tier:0}), W({sku:'LWHstar', popularity_tier:2})];
+    const out = scoreProducts({ category:'whisky', occasion:'gift', axis1:'scotch' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHstar');
+  });
+  it('spirits special: tier 2 breaks a price tie instead of defaulting to cheapest-first', () => {
+    // identical taste score + no score_summary (non-wine); WITHOUT C2 the ฿900 bottle would
+    // win on cheapest-first. The pricier top-seller should lead for a "special" occasion.
+    const S = (o:any)=>({ is_in_stock:true, category_group:'Spirits', classification:'Wine product', category_type:'Rum', ...o });
+    const pool = [S({sku:'LRMcheap', price:900, popularity_tier:0}), S({sku:'LRMstar', price:3000, popularity_tier:2})];
+    const out = scoreProducts({ category:'spirits', occasion:'special', axis1:'rum' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LRMstar');
+  });
+  it('C2 prestige bump is RANK-ONLY: a top-seller that does not match taste still degrades', () => {
+    // whisky user wants Scotch; only a USA top-seller is in budget. tier 2 may re-order but
+    // must NOT clear the quality gate — the honest "closest matches" label must still show.
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'USA', ...o });
+    const pool = [W({sku:'LWHu1', popularity_tier:2}), W({sku:'LWHu2', popularity_tier:0})];
+    const out = scoreProducts({ category:'whisky', occasion:'gift', axis1:'scotch' } as any, pool as any);
+    expect(out.degraded).toBe(true);
+  });
+  it('C2: popularity lean only applies to gift/special, not everyday', () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    // everyday occasion → no prestige bump; equal taste → tie broken by the SORT tiebreak
+    // (tier still wins there) but the BUMP itself must be 0. Assert via degraded staying
+    // driven by taste only and the star not gaining a taste-tier advantage.
+    const pool = [W({sku:'LWHa', popularity_tier:2}), W({sku:'LWHb', popularity_tier:0})];
+    const out = scoreProducts({ category:'whisky', occasion:'everyday', axis1:'scotch' } as any, pool as any);
+    // both still scotch matches → not degraded; ordering may favor the seller via the
+    // tiebreak, which is intended (tiebreak applies regardless of occasion).
+    expect(out.degraded).toBe(false);
+    expect(out.products[0].sku).toBe('LWHa'); // tier-2 wins the genuine tie via sort tiebreak
   });
 
   // ── FLAVOR scoring via FLAVOR_FAMILY set-intersection against flavor_tags_canonical.

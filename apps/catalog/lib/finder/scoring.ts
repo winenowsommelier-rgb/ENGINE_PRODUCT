@@ -4,6 +4,7 @@ import { finderPrefilter } from './category-map';
 import { foodChipMatches } from './food-chips';
 import { primaryValue, bucketForValue } from './scales';
 import { normalizeScale } from '@/lib/taste-adapter';
+import { typeForProduct } from '@/lib/category-groups';
 
 const BODY_LADDER = ['light','medium-light','medium','medium-full','full'];
 const norm = (s?: string) => (s ?? '').trim().toLowerCase();
@@ -49,8 +50,6 @@ function sweetnessLadderDistance(target: string, value: string): number | null {
   return Math.abs(ti - vi);
 }
 
-const firstSeg = (s?: string) => norm(s).split('|')[0].trim();
-
 // ── TIER-2 origin/style signal maps (spec §5). Kept as data, not buried magic
 // strings (Rule 3). Each token comes from question-config.ts for that category. ──
 
@@ -66,11 +65,16 @@ const WHISKY_STYLE_TO_REGIONS: Record<string, string[]> = {
   smoky: ['islay'], smooth: ['speyside', 'highland'],
 };
 
-// SPIRITS (other) axis1 (type) → accepted classification first-segments.
-// 'other' is a catch-all with no single classification, so no boost.
-const SPIRITS_TYPE_TO_CLASS: Record<string, string[]> = {
+// SPIRITS (other) axis1 (type) → accepted canonical category_type values
+// (lowercased). MUST read the SKU-derived `category_type` (via typeForProduct),
+// NEVER the raw Magento `classification` — classification is a stale TYPE duplicate
+// that dumps 162/419 spirit-pool rows into the junk bucket "wine product", so they
+// could never score the type answer (audit finding C1; see CLAUDE.md Rule 12 and
+// [[project_classification_means_designation]]). category_type is clean: Rum/Tequila/
+// Vodka/Brandy/Cognac/Mezcal with ZERO junk. 'other' is a catch-all → no boost.
+const SPIRITS_TYPE_TO_TYPE: Record<string, string[]> = {
   vodka: ['vodka'], rum: ['rum'], tequila: ['tequila', 'mezcal'],
-  brandy: ['brandy', 'cognac'],
+  brandy: ['brandy', 'cognac', 'armagnac'],
 };
 
 /**
@@ -100,8 +104,9 @@ function tier2Score(a: Answers, p: PublicProduct): number {
       break;
     }
     case 'spirits': {
-      const wantClasses = a.axis1 ? SPIRITS_TYPE_TO_CLASS[a.axis1] : undefined;
-      if (wantClasses && p.classification && wantClasses.includes(firstSeg(p.classification))) s += 2;
+      const wantTypes = a.axis1 ? SPIRITS_TYPE_TO_TYPE[a.axis1] : undefined;
+      // category_type (SKU taxonomy), not classification — Rule 12.
+      if (wantTypes && wantTypes.includes(norm(typeForProduct(p)))) s += 2;
       break;
     }
     // gin: axis1 is profile-only (see doc above). sake: axis1 (sweetness) IS scored,
@@ -248,6 +253,23 @@ function peatScore(token: string | undefined, region: string | undefined): numbe
   return isIslay ? 0 : 2; // none: reward non-Islay
 }
 
+// Prestige lean for a gift/special occasion (audit finding C2). The existing
+// score_summary +2 bonus (a critic-score quality signal) is WINE-ONLY: score_summary
+// is 0% populated for whisky, spirits and sake, so for those categories "a gift" /
+// "special occasion" added nothing and the final order collapsed to cheapest-first.
+// popularity_tier is the client-SAFE bestseller bucket (0 none / 1 sells / 2 top
+// seller; derived server-side, the raw popularity_score never ships). A top-seller
+// is a defensible gift proxy where no critic score exists.
+//
+// Kept RANK-ONLY (in the deep-dive bump, not the taste-tier `s`) ON PURPOSE: a
+// popular bottle that does NOT match the user's taste answer must not clear the
+// quality gate (`degraded` is computed from `s` alone). +1 only (weaker than the
+// critic-score +2, since popularity is a noisier signal than an expert score).
+function prestigeBump(a: Answers, p: PublicProduct): number {
+  if (a.occasion !== 'gift' && a.occasion !== 'special') return 0;
+  return p.popularity_tier === 2 ? 1 : 0;
+}
+
 /** Sum of all deep-dive terms for one product (each 0 when its answer is absent). */
 function deepDiveBump(a: Answers, p: PublicProduct): number {
   return (
@@ -256,7 +278,8 @@ function deepDiveBump(a: Answers, p: PublicProduct): number {
     grapeScore(a.grape, p.variety) +
     ageScore(a.age, p.vintage) +
     adventureScore(a.adventure, p.region) +
-    peatScore(a.peat, p.region)
+    peatScore(a.peat, p.region) +
+    prestigeBump(a, p)
   );
 }
 
@@ -318,6 +341,10 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
   scored.sort((x, y) =>
     y.rankScore - x.rankScore ||
     Number(!!y.p.score_summary) - Number(!!x.p.score_summary) ||
+    // bestseller bucket breaks ties before price — meaningful for whisky/spirits/sake
+    // where score_summary is always absent (so the key above is inert there). Wine still
+    // sorts by critic-score presence first; popularity only decides genuine ties (C2).
+    (y.p.popularity_tier ?? 0) - (x.p.popularity_tier ?? 0) ||
     (x.p.price ?? 0) - (y.p.price ?? 0),
   );
 
