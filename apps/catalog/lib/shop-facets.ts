@@ -2,7 +2,7 @@ import type { PublicProduct } from './types';
 import type { ShopParams } from './shop-query';
 import { matchesFilters } from './shop-query';
 import {
-  subCategoriesFor, accessorySubCategoriesFor, groupsFor, countriesFor, regionsFor, subRegionsFor, type FacetOption,
+  subCategoriesFor, accessorySubCategoriesFor, groupsFor, countriesFor, regionsFor, subRegionsFor, designationsFor, type FacetOption,
 } from './facets';
 import { type CategoryGroup, CATEGORY_GROUPS } from './category-groups';
 
@@ -25,6 +25,7 @@ export interface ShopFacets {
   subCategories: FacetOption[];
   regions: FacetOption[];
   subRegions: FacetOption[];
+  designations: FacetOption[];
 }
 
 /** Build the drill-down option lists per design §4.1 input-set table. */
@@ -70,7 +71,12 @@ export function shopFacets(all: PublicProduct[], params: ShopParams): ShopFacets
     subRegions = subRegionsFor(region, set);
   }
 
-  return { groups, countries, subCategories, regions, subRegions };
+  // designations: apply everything EXCEPT designation, so each chip's count
+  // reflects the OTHER active filters and selecting one doesn't zero its siblings.
+  const designationSet = all.filter((p) => matchesFilters(p, omit(params, 'designation')));
+  const designations = designationsFor(designationSet);
+
+  return { groups, countries, subCategories, regions, subRegions, designations };
 }
 
 /** Top-N most frequent non-empty grape varietals across the catalog (single source for the typeahead seed). */
