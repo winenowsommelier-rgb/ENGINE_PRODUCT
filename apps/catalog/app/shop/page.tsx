@@ -151,6 +151,7 @@ export default function ShopPage({
             availableSubCategories={facets.subCategories}
             availableRegions={facets.regions}
             availableSubRegions={facets.subRegions}
+            designationOptions={facets.designations}
             grapeOptions={grapeOptions}
             flavorOptions={flavorOptions}
             bodyOptions={BODY_SCALE}

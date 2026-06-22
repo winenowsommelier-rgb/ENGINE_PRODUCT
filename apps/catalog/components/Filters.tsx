@@ -63,6 +63,8 @@ interface FiltersProps {
   availableRegions?: FacetOption[];
   /** Sub-region options for the active region (computed server-side). */
   availableSubRegions?: FacetOption[];
+  /** Designation options WITH counts, ordered most-specific first. */
+  designationOptions?: FacetOption[];
   /** Capped grape typeahead options. */
   grapeOptions?: string[];
   /** Capped flavor typeahead options. */
@@ -442,6 +444,7 @@ export function Filters({
   availableSubCategories = [],
   availableRegions = [],
   availableSubRegions = [],
+  designationOptions = [],
   grapeOptions = [],
   flavorOptions = [],
   bodyOptions = [],
@@ -483,6 +486,7 @@ export function Filters({
   const activeCountry = get('country');
   const activeRegion = get('region');
   const activeSubRegion = get('subregion');
+  const activeDesignation = get('designation');
   const inStockOnly = get('inStock') === '1';
   const activeSort = get('sort');
   const hasScoreOnly = get('hasScore') === '1';
@@ -841,6 +845,24 @@ export function Filters({
           </div>
         ) : null}
       </FilterAccordion>
+
+      {/* Classification — derived product designation (Grand Cru/DOCG/IGT/XO/…),
+          leaf single-select rail; self-hides when no options under active filters.
+          Label is "Classification" per product; field is `designation`. */}
+      {designationOptions.length > 0 ? (
+        <FilterAccordion
+          label="Classification"
+          defaultOpen={Boolean(activeDesignation)}
+          summary={activeDesignation ? <SectionBadge>{activeDesignation}</SectionBadge> : null}
+        >
+          <ChipRail
+            ariaLabel="Classification"
+            options={designationOptions}
+            active={activeDesignation}
+            onSelect={(value) => apply({ designation: value })}
+          />
+        </FilterAccordion>
+      ) : null}
 
       {/* Taste & more — the former "More filters" advanced panel. */}
       <FilterAccordion
