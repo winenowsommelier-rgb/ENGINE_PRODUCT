@@ -248,7 +248,7 @@ export default function Page({ params }: { params: { sku: string } }) {
           ) : null}
 
           {/* Attribute matrix. Omits always-empty fields (alcohol, wine_classification,
-              appellation, wine_color — verified 0/11,436) and any empty row. */}
+              appellation, color — verified 0/11,436) and any empty row. */}
           <section className="flex flex-col gap-3">
             <h2 className="text-base font-semibold text-foreground">Details</h2>
             <dl className="rounded-lg border border-border bg-card px-4 py-1">
