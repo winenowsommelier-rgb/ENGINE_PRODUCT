@@ -22,14 +22,15 @@ def _mkdb(path: str) -> None:
     c.executemany(
         "INSERT INTO products VALUES (?,?,?,?,?,?,?)",
         [
-            # smokiness: NULL → inferred 'heavy' (Islay)
-            ("LWH1", "Ardbeg 10", "Whisky", "Islay", None, None, None),
+            # real SKU prefixes so sku_taxonomy.resolve() scopes smokiness correctly.
+            # LWH* → Whisky group → smokiness inferred. Islay → 'heavy'.
+            ("LWH0051BU", "Ardbeg 10", "Whisky", "Islay", None, None, None),
             # smokiness ALREADY 'light' → must be PRESERVED (never overwritten to 'none')
-            ("LWH2", "Glenfiddich 12", "Whisky", "Speyside", None, None, "light"),
-            # sweetness: NULL → inferred 'dry' (Karakuchi)
-            ("LSK1", "Ozeki Karakuchi Dry", "Sake/Shochu", "", None, None, None),
-            # body ALREADY 'full' → preserved even though name says "light"
-            ("WRW1", "Light easy red", "Red Wine", "", "full", None, None),
+            ("LWH0052BU", "Glenfiddich 12", "Whisky", "Speyside", None, None, "light"),
+            # LSK* → Sake group → sweetness inferred 'dry' (Karakuchi)
+            ("LSK0001AA", "Ozeki Karakuchi Dry", "Sake/Shochu", "", None, None, None),
+            # WRW* → Wine group → body preserved; smokiness must STAY NULL (wine ≠ smoky)
+            ("WRW0001AA", "Light easy red", "Red Wine", "Bordeaux", "full", None, None),
         ],
     )
     c.commit()
@@ -51,10 +52,12 @@ def test_fills_nulls_only(tmp_path):
             "SELECT sku, body, sweetness, smokiness FROM products"
         )
     }
-    assert rows["LWH1"][2] == "heavy"   # filled from NULL
-    assert rows["LWH2"][2] == "light"   # PRESERVED, not overwritten to 'none'
-    assert rows["LSK1"][1] == "dry"     # filled from NULL
-    assert rows["WRW1"][0] == "full"    # PRESERVED, not overwritten to 'light'
+    assert rows["LWH0051BU"][2] == "heavy"   # whisky, filled from NULL
+    assert rows["LWH0052BU"][2] == "light"   # PRESERVED, not overwritten to 'none'
+    assert rows["LSK0001AA"][1] == "dry"     # sake, filled from NULL
+    assert rows["WRW0001AA"][0] == "full"    # body PRESERVED, not overwritten to 'light'
+    # SCOPE GUARD: a WINE must NOT receive a smokiness value (smokiness is whisky/spirits-only).
+    assert rows["WRW0001AA"][2] is None      # wine smokiness stays NULL despite a region
 
 
 def test_dry_run_does_not_write(tmp_path):
@@ -66,5 +69,5 @@ def test_dry_run_does_not_write(tmp_path):
     )
     assert r.returncode == 0, r.stderr
     c = sqlite3.connect(db)
-    smk = c.execute("SELECT smokiness FROM products WHERE sku='LWH1'").fetchone()[0]
+    smk = c.execute("SELECT smokiness FROM products WHERE sku='LWH0051BU'").fetchone()[0]
     assert smk is None  # dry-run must NOT write
