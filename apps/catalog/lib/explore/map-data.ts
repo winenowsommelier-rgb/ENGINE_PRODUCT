@@ -42,16 +42,16 @@ export function lensCount(region: MapRegion, lens: LensKey): number {
 /**
  * Build the /shop handoff URL. Emits the region NAME (never the slug) + parent
  * country so /shop's exact-ci matcher + DrillBreadcrumb work, plus the lens group.
- * bev=1 (beverages only) + inStock=1 (in-stock only) restrict /shop to the SAME
- * in-stock-beverage subset the map counts on BOTH axes, so the resulting grid
- * total == the drawer's "View all N" count exactly. bev is a pure group filter;
- * inStock supplies the freshness axis (reusing /shop's existing opt-in flag).
+ * bev=1 (beverages only) restricts /shop to the SAME all-stock beverage subset the
+ * map counts, so the resulting grid total == the drawer's "View all N" count
+ * exactly. We deliberately DO NOT pass inStock=1: the map counts in-stock AND
+ * out-of-stock beverages, so the grid must show both too (count == grid). Users
+ * see the full catalogue for a region; out-of-stock items render greyed in /shop.
  */
 export function shopHref(region: MapRegion, lens: LensKey): string {
   const group = lensPrimaryGroup(lens);
   const qs = buildQuery({}, {
     bev: '1',
-    inStock: '1',
     country: region.country,
     region: region.name,
     group: group ?? null,

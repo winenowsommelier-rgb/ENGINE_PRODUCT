@@ -52,21 +52,25 @@ describe('lens mapping', () => {
 });
 
 describe('shopHref', () => {
-  it('emits bev=1 + inStock=1 + region NAME + parent country + group (not slug)', () => {
+  // Regression guard: shopHref must NOT emit inStock=1. The map counts all
+  // beverages (in-stock + OOS), so the /shop grid must show all stock too, or the
+  // count != grid. inStock=1 was removed in lockstep with dropping the in-stock
+  // filter in gen-explore-map-data.mjs aggregate(). bev=1 stays (group axis).
+  it('emits bev=1 (NO inStock) + region NAME + parent country + group (not slug)', () => {
     const href = shopHref(bordeaux, 'wine');
     expect(href.startsWith('/shop?')).toBe(true);
     const qs = new URLSearchParams(href.split('?')[1]);
     expect(qs.get('bev')).toBe('1');
-    expect(qs.get('inStock')).toBe('1');
+    expect(qs.get('inStock')).toBeNull();
     expect(qs.get('region')).toBe('Bordeaux');
     expect(qs.get('country')).toBe('France');
     expect(qs.get('group')).toBe('Wine');
   });
-  it('lens=all omits the group param but KEEPS bev=1 AND inStock=1', () => {
+  it('lens=all omits the group param but KEEPS bev=1 (and still no inStock)', () => {
     const qs = new URLSearchParams(shopHref(bordeaux, 'all').split('?')[1]);
     expect(qs.get('group')).toBeNull();
     expect(qs.get('bev')).toBe('1');
-    expect(qs.get('inStock')).toBe('1');
+    expect(qs.get('inStock')).toBeNull();
     expect(qs.get('region')).toBe('Bordeaux');
   });
 });
