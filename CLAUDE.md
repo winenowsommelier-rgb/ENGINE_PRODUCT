@@ -129,6 +129,35 @@ The goal: maximum useful output per minute of the user's attention. Fast,
 practical, reusable. Never burn time recreating what a good skeleton
 already provides.
 
+### Rule 12 — `classification` is NOT category/type; never branch on it
+The Magento export field `classification` is **useless to us** as a category or
+type signal. It holds the product **TYPE** (44 values: Red Wine, Whisky, Gin,
+Champagne, Sake/Shochu…, plus the junk bucket "Wine product" = 1,509 rows).
+Verified 2026-06-22: 0/11,436 rows contain a real designation token. TYPE is
+**already owned canonically by the SKU-derived `category_type`** — so raw
+`classification` is a stale DUPLICATE that can only disagree and re-introduces
+the "Wine product" bug we keep fixing.
+
+**What "classification" means for US:** the product **designation / class** —
+Grand Cru, Premier/1er Cru, Reserva/Riserva/Gran Reserva, DOCG/DOC, XO, VSOP,
+Single Malt, Brut/Extra Brut. This is **not yet in a structured field**
+(`wine_classification`/`appellation` are 0/11,436; designations live in `name`).
+
+**Before writing ANY code (TS/Python/SQL/API/enrichment) that touches
+`classification`, STOP and apply this:**
+- Need **category / group / type**? → use `category_group` / `category_type`
+  (SKU taxonomy: `sku_taxonomy.resolve`, `sku-taxonomy.ts`, `groupForProduct` /
+  `typeForProduct`). **NEVER** `classification == 'Red Wine'`,
+  `firstSeg(classification)`, `CATEGORY_BY_CLASSIFICATION`, or substring-on-
+  classification for routing.
+- Need the **designation/class**? → it does not exist structured yet. Use the
+  planned `designation` field (universal-attributes effort) or regex over `name`.
+
+`apps/catalog/lib/recommender.ts` is the correct migrated pattern (reads
+`category_type`, NOT classification) — copy it. Known offender to fix:
+`finder/scoring.ts` `SPIRITS_TYPE_TO_CLASS`. This rule exists because the decision
+has been made many times and keeps leaking back into new code.
+
 ## Code Review & Generation Standards (applies to all AI working in this project)
 
 You are an Expert Software Architect and Code Reviewer. The user acts as the Orchestrator.
