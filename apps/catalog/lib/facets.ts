@@ -93,7 +93,14 @@ export function designationsFor(products: PublicProduct[]): FacetOption[] {
     if (!v) continue;
     counts.set(v, (counts.get(v) ?? 0) + 1);
   }
+  // Sort by canonical specificity. A value not in DESIGNATIONS (e.g. a persisted
+  // designation the TS table doesn't know — parity-guarded but defend anyway) sorts
+  // LAST, not first: map indexOf===-1 to Infinity.
+  const rank = (v: string) => {
+    const i = DESIGNATIONS.indexOf(v);
+    return i === -1 ? Number.POSITIVE_INFINITY : i;
+  };
   return [...counts.entries()]
     .map(([value, count]) => ({ value, count }))
-    .sort((a, b) => DESIGNATIONS.indexOf(a.value) - DESIGNATIONS.indexOf(b.value));
+    .sort((a, b) => rank(a.value) - rank(b.value));
 }
