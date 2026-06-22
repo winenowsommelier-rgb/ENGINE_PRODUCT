@@ -50,28 +50,32 @@ describe('ProductCard', () => {
     expect(link).toBeTruthy();
   });
 
-  it('shows an out-of-stock label when is_in_stock is false (boolean)', () => {
+  // Regression guard: the OOS indicator copy was changed from "Out of stock" to
+  // "Check availability" in PR #21 (softer wording). These tests assert the
+  // CURRENT label — do not revert them to /out of stock/, that text no longer
+  // renders. See ProductCard.tsx (the `!inStock` overlay).
+  it('shows the out-of-stock indicator when is_in_stock is false (boolean)', () => {
     render(<ProductCard product={{ ...baseProduct, is_in_stock: false }} />);
-    expect(screen.getByText(/out of stock/i)).toBeInTheDocument();
+    expect(screen.getByText(/check availability/i)).toBeInTheDocument();
   });
 
-  it('shows out-of-stock for the real export shape (string "0")', () => {
+  it('shows the out-of-stock indicator for the real export shape (string "0")', () => {
     // The live export stores is_in_stock as the STRING "0"/"1", not a boolean.
     render(
       <ProductCard
         product={{ ...baseProduct, is_in_stock: '0' as unknown as boolean }}
       />,
     );
-    expect(screen.getByText(/out of stock/i)).toBeInTheDocument();
+    expect(screen.getByText(/check availability/i)).toBeInTheDocument();
   });
 
-  it('does NOT show out-of-stock when in stock (string "1")', () => {
+  it('does NOT show the out-of-stock indicator when in stock (string "1")', () => {
     render(
       <ProductCard
         product={{ ...baseProduct, is_in_stock: '1' as unknown as boolean }}
       />,
     );
-    expect(screen.queryByText(/out of stock/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/check availability/i)).not.toBeInTheDocument();
   });
 
   it('exposes a Quick look button', () => {
