@@ -58,3 +58,19 @@ export function shopHref(region: MapRegion, lens: LensKey): string {
   });
   return qs ? `/shop?${qs}` : '/shop';
 }
+
+/**
+ * /shop handoff for a COUNTRY with no curated regions (e.g. Spain, Germany).
+ * Same bev=1 + lens semantics as shopHref(), but country-only (no region), so the
+ * grid shows everything we carry from that country. Used when a region-less
+ * country pin/chip is clicked on the explore map.
+ */
+export function countryShopHref(country: string, lens: LensKey): string {
+  const group = lensPrimaryGroup(lens);
+  const qs = buildQuery({}, {
+    bev: '1',
+    country,
+    group: group ?? null,
+  });
+  return qs ? `/shop?${qs}` : '/shop';
+}

@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState, useLayoutEffect } from 'react';
 import type { LensKey, MapRegion } from '@/lib/explore/types';
-import { lensCount } from '@/lib/explore/map-data';
+import { lensCount, LENS_GROUPS } from '@/lib/explore/map-data';
 
 /**
  * RegionAtlas — a calm, on-brand interactive world map (NOT WebGL) with TWO levels:
@@ -32,6 +32,25 @@ export interface CountryPin {
   lat: number;
   lng: number;
   regions: MapRegion[];
+  /**
+   * Country-level totals from the roll-up, used for countries that have NO curated
+   * regions (e.g. Spain, Germany): they still get a world pin + chip, counted by
+   * lens via these fields, and clicking them hands off straight to /shop?country=X.
+   * Region-bearing countries leave these undefined and are counted from `regions`.
+   */
+  total?: number;
+  countsByGroup?: Record<string, number>;
+}
+
+/** Bottle count for a country under the active lens — from regions if it has any,
+ *  else from the country roll-up's own countsByGroup (region-less countries). */
+export function countryLensCount(c: CountryPin, lens: LensKey): number {
+  if (c.regions.length > 0) {
+    return c.regions.reduce((s, r) => s + lensCount(r, lens), 0);
+  }
+  if (lens === 'all') return c.total ?? 0;
+  const groups = LENS_GROUPS[lens] ?? [];
+  return groups.reduce((n, g) => n + (c.countsByGroup?.[g] ?? 0), 0);
 }
 
 /**
@@ -103,6 +122,10 @@ function frame(
  * are unchanged — only the rendered dot moves a hair so both stay tappable.
  */
 const MIN_SEP = 3.2; // % of the plane's X axis
+// Cluster radius in SCREEN plane-% (Y weighted ×2). Pins closer than this at world
+// scale collapse into one badge; tuned so dense Europe groups but distant continents
+// stay separate.
+const CLUSTER_RADIUS = 9;
 function spread<T extends { dx: number; dy: number }>(pins: T[]): T[] {
   const out = pins.map((p) => ({ ...p }));
   // yPct distances are visually 2x xPct (2:1 box) — weight Y so separation is even.
@@ -129,6 +152,48 @@ function spread<T extends { dx: number; dy: number }>(pins: T[]): T[] {
     if (!moved) break;
   }
   return out;
+}
+
+/**
+ * Greedy spatial clustering for world-view country pins. With 60+ countries the
+ * globe gets crowded (Europe alone has ~20), so pins closer than `radius` (in
+ * SCREEN plane-% — Y already weighted ×2 for the 2:1 plane) merge into one
+ * cluster carrying its members, a count-weighted centre, and the summed bottle
+ * count. Singletons stay singletons. Deterministic (seeded by input order, which
+ * is name-sorted upstream). A clicked cluster zooms to its members' bounds, which
+ * spreads them into individually-tappable pins.
+ */
+interface ClusterMember {
+  key: string; label: string; lat: number; lng: number; n: number; country: CountryPin; dx: number; dy: number;
+}
+interface Cluster {
+  cx: number; cy: number;   // badge centre in plane-%
+  lat: number; lng: number; // centroid lat/lng (for zoom framing)
+  n: number;                // summed bottle count
+  members: ClusterMember[];
+}
+function clusterPins(pins: ClusterMember[], radius: number): Cluster[] {
+  const clusters: Cluster[] = [];
+  for (const p of pins) {
+    let best: Cluster | null = null;
+    let bestD = Infinity;
+    for (const c of clusters) {
+      const d = Math.hypot(p.dx - c.cx, (p.dy - c.cy) * 2);
+      if (d < radius && d < bestD) { best = c; bestD = d; }
+    }
+    if (best) {
+      best.members.push(p);
+      const tot = best.members.reduce((s, m) => s + m.n, 0) || 1;
+      best.cx = best.members.reduce((s, m) => s + m.dx * m.n, 0) / tot;
+      best.cy = best.members.reduce((s, m) => s + m.dy * m.n, 0) / tot;
+      best.lat = best.members.reduce((s, m) => s + m.lat * m.n, 0) / tot;
+      best.lng = best.members.reduce((s, m) => s + m.lng * m.n, 0) / tot;
+      best.n += p.n;
+    } else {
+      clusters.push({ cx: p.dx, cy: p.dy, lat: p.lat, lng: p.lng, n: p.n, members: [p] });
+    }
+  }
+  return clusters;
 }
 
 export function RegionAtlas({
@@ -162,18 +227,28 @@ export function RegionAtlas({
     return () => ro.disconnect();
   }, []);
 
+  // World view only: which cluster (if any) the user expanded by tapping its badge.
+  // Holds the member country pins to FRAME (zoom in on), spreading them apart so
+  // each becomes individually tappable. Reset whenever the focus/lens changes.
+  const [clusterFocus, setClusterFocus] = useState<CountryPin[] | null>(null);
+  useLayoutEffect(() => { setClusterFocus(null); }, [focusCountry, lens]);
+
   // What pins to show: world = countries (filtered to the active lens); country =
   // its regions. dx/dy are the RENDER positions (% of the plane), seeded from the
   // true projection then de-overlapped by spread() so no two pins sit on top of
   // each other (Chile/Argentina). lat/lng stay the source of truth for zoom.
+  // The set of countries to plot as INDIVIDUAL pins in world view: normally all of
+  // them, but when a cluster is expanded, just that cluster's members.
+  const worldCountries = clusterFocus ?? countries;
+
   const pins = useMemo(() => {
     const seed = focusCountry
       ? focusCountry.regions
           .map((r) => ({ kind: 'region' as const, key: r.slug, label: r.name, lat: r.lat, lng: r.lng, n: lensCount(r, lens), region: r }))
           .filter((p) => p.n > 0)
-      : countries
+      : worldCountries
           .map((c) => {
-            const n = c.regions.reduce((s, r) => s + lensCount(r, lens), 0);
+            const n = countryLensCount(c, lens);
             return { kind: 'country' as const, key: c.slug, label: c.name, lat: c.lat, lng: c.lng, n, country: c };
           })
           .filter((p) => p.n > 0);
@@ -183,7 +258,28 @@ export function RegionAtlas({
     });
     const spaced = spread(withPos);
     return spaced.sort((a, b) => a.dy - b.dy); // paint north→south so labels layer sanely
-  }, [countries, focusCountry, lens]);
+  }, [worldCountries, focusCountry, lens]);
+
+  // World-view clustering: group the (unspread) country pins by screen proximity so
+  // the crowded globe shows a handful of count badges instead of 60 overlapping
+  // dots. Only computed at world level AND when not already drilled into a cluster.
+  // Clusters with a single member render as a normal pin; multi-member ones render
+  // as a badge that zooms to its members on click. `worldClusters` is null when
+  // we're showing individual pins (focused country, or an expanded cluster).
+  const worldClusters = useMemo(() => {
+    if (focusCountry || clusterFocus) return null;
+    const members = countries
+      .map((c) => ({
+        key: c.slug, label: c.name, lat: c.lat, lng: c.lng,
+        n: countryLensCount(c, lens), country: c,
+        ...project(c.lat, c.lng),
+      }))
+      .filter((m) => m.n > 0)
+      .map((m) => ({ ...m, dx: m.xPct, dy: m.yPct }));
+    const cl = clusterPins(members, CLUSTER_RADIUS);
+    // If nothing actually clusters (all singletons), fall back to plain pins.
+    return cl.some((c) => c.members.length > 1) ? cl : null;
+  }, [countries, focusCountry, clusterFocus, lens]);
 
   // Zoom: frame the points that actually have data, centering on the user's focus.
   //   • A region is SELECTED   → center on that region (zoomed in tight on it).
@@ -203,11 +299,16 @@ export function RegionAtlas({
       if (sel) return frame([{ lat: sel.lat, lng: sel.lng }], 6, box);
       return frame(focusCountry.regions, 5, box);
     }
-    const worldPts = countries.flatMap((c) =>
-      c.regions.reduce((s, r) => s + lensCount(r, lens), 0) > 0 ? [{ lat: c.lat, lng: c.lng }] : [],
+    // Expanded cluster → frame just its members (spreads them apart, tappable).
+    if (clusterFocus) {
+      return frame(clusterFocus.map((c) => ({ lat: c.lat, lng: c.lng })), 3, box);
+    }
+    // World view → frame ALL countries that have data under the lens.
+    const worldPts = worldCountries.flatMap((c) =>
+      countryLensCount(c, lens) > 0 ? [{ lat: c.lat, lng: c.lng }] : [],
     );
     return frame(worldPts, 1, box);
-  }, [focusCountry, selectedSlug, countries, lens, box]);
+  }, [focusCountry, selectedSlug, clusterFocus, worldCountries, lens, box]);
 
   return (
     <div
@@ -244,7 +345,79 @@ export function RegionAtlas({
           draggable={false}
         />
 
-        {pins.map((p) => {
+        {/* WORLD CLUSTERS: when the globe is crowded, multi-member clusters render
+            as a single count badge (tap → zoom to its members). Single-member
+            clusters render as a normal country pin. When worldClusters is null
+            (focused country, or an expanded cluster) we fall through to the flat
+            pin list below. */}
+        {worldClusters
+          ? worldClusters.map((cl) => {
+              const inv = 1 / zoom.scale;
+              const visH = 2 * zoom.vcy;
+              const sx = zoom.scale * (cl.cx + zoom.tx);
+              const sy = zoom.scale * (cl.cy + zoom.ty);
+              const offFrame = sx < -4 || sx > 104 || sy < -4 || sy > visH + 4;
+              // Single-member cluster → behave exactly like a country pin.
+              if (cl.members.length === 1) {
+                const m = cl.members[0];
+                return (
+                  <button
+                    key={m.key}
+                    type="button"
+                    onClick={() => onSelectCountry(m.country)}
+                    aria-hidden={offFrame}
+                    tabIndex={offFrame ? -1 : 0}
+                    aria-label={`${m.label} — ${m.n.toLocaleString()} bottles`}
+                    title={`${m.label} · ${m.n.toLocaleString()} bottles`}
+                    className={[
+                      'group absolute z-10 flex h-8 w-8 items-center justify-center rounded-full',
+                      'transition-[left,top] duration-500 ease-out motion-reduce:transition-none',
+                      'hover:z-30 focus-visible:z-30',
+                      offFrame ? 'pointer-events-none opacity-0' : '',
+                    ].join(' ')}
+                    style={{ left: `${cl.cx}%`, top: `${cl.cy}%`, transform: `translate(-50%, -50%) scale(${inv})` }}
+                  >
+                    <span aria-hidden="true" className="block h-3 w-3 rounded-full bg-primary/80 ring-2 ring-background transition-[height,width] duration-150 group-hover:h-4 group-hover:w-4 group-hover:bg-primary" />
+                    <span className="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 flex items-center gap-1.5 whitespace-nowrap rounded-full border border-primary bg-primary px-3 py-1 text-sm font-medium text-primary-foreground shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100">
+                      {m.label}
+                      <span className="text-xs tabular-nums opacity-80">{m.n.toLocaleString()}</span>
+                    </span>
+                  </button>
+                );
+              }
+              // Multi-member cluster → a count badge that zooms to its members.
+              return (
+                <button
+                  key={`cluster-${cl.members.map((m) => m.key).join('-')}`}
+                  type="button"
+                  onClick={() => setClusterFocus(cl.members.map((m) => m.country))}
+                  aria-hidden={offFrame}
+                  tabIndex={offFrame ? -1 : 0}
+                  aria-label={`${cl.members.length} countries, ${cl.n.toLocaleString()} bottles. Tap to zoom in.`}
+                  title={`${cl.members.length} countries · ${cl.n.toLocaleString()} bottles`}
+                  className={[
+                    'group absolute z-20 flex items-center justify-center rounded-full',
+                    'transition-[left,top] duration-500 ease-out motion-reduce:transition-none',
+                    'hover:z-30 focus-visible:z-30',
+                    offFrame ? 'pointer-events-none opacity-0' : '',
+                  ].join(' ')}
+                  style={{ left: `${cl.cx}%`, top: `${cl.cy}%`, transform: `translate(-50%, -50%) scale(${inv})` }}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="flex h-7 min-w-7 items-center justify-center gap-0.5 rounded-full border-2 border-background bg-primary px-2 text-xs font-semibold tabular-nums text-primary-foreground shadow-md transition-transform duration-150 group-hover:scale-110"
+                  >
+                    {cl.members.length}
+                  </span>
+                  <span className="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 flex items-center gap-1.5 whitespace-nowrap rounded-full border border-primary bg-primary px-3 py-1 text-sm font-medium text-primary-foreground shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100">
+                    {cl.members.length} countries
+                    <span className="text-xs tabular-nums opacity-80">{cl.n.toLocaleString()}</span>
+                    <span aria-hidden className="opacity-70">›</span>
+                  </span>
+                </button>
+              );
+            })
+          : pins.map((p) => {
           const isSelected = p.kind === 'region' && p.region.slug === selectedSlug;
           // Counter-scale the pin contents by 1/zoom so dots + labels stay a
           // constant on-screen size regardless of how far the plane is zoomed.
@@ -315,9 +488,21 @@ export function RegionAtlas({
         })}
       </div>
 
-      {pins.length === 0 && (
+      {/* Expanded-cluster escape: a clear way back to the full world view, since the
+          parent breadcrumb doesn't know about this map-local cluster state. */}
+      {clusterFocus && !focusCountry && (
+        <button
+          type="button"
+          onClick={() => setClusterFocus(null)}
+          className="absolute right-3 top-3 z-30 inline-flex min-h-9 items-center gap-1 rounded-full border border-border/70 bg-background/85 px-3 py-1 text-sm font-medium text-foreground shadow-sm backdrop-blur-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          ‹ All countries
+        </button>
+      )}
+
+      {pins.length === 0 && !worldClusters && (
         <p className="absolute inset-0 flex items-center justify-center text-base text-muted-foreground">
-          No regions for this category.
+          {focusCountry ? 'No regions for this category.' : 'No countries for this category.'}
         </p>
       )}
     </div>
