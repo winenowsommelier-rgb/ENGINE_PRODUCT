@@ -39,4 +39,12 @@ describe('designationForProduct', () => {
     expect(DESIGNATIONS.indexOf('Extra Brut')).toBeLessThan(DESIGNATIONS.indexOf('Brut'));
     expect(DESIGNATIONS.indexOf('DOCG')).toBeLessThan(DESIGNATIONS.indexOf('DOC'));
   });
+  it('spirit grade XO beats soft modifiers (Limited/Reserve)', () => {
+    expect(designationForProduct(p('Hennessy XO Limited Edition 2024'))).toBe('XO');
+    expect(designationForProduct(p('Pyrat Rum XO Reserve'))).toBe('XO');
+  });
+  it('handles empty / missing name without throwing', () => {
+    expect(designationForProduct(p(''))).toBeUndefined();
+    expect(designationForProduct({ sku: 'X' } as any)).toBeUndefined();
+  });
 });
