@@ -132,9 +132,9 @@ export default function ShopPage({
     <>
       <TrustBar />
 
-      <main className="container flex flex-col gap-8 py-8">
+      <main className="container flex flex-col gap-5 py-6 sm:gap-6 sm:py-8">
         {/* Quiet fallback into the finder quiz for browsers facing too much choice. */}
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-secondary/40 px-5 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-lg border border-border bg-secondary/40 px-4 py-3">
           <p className="text-base text-muted-foreground">
             Too many options? Let us help you choose.
           </p>

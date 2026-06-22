@@ -120,7 +120,7 @@ function FilterAccordion({
     >
       <summary
         className={cn(
-          'flex min-h-[52px] cursor-pointer list-none items-center gap-3 px-4 py-2',
+          'flex min-h-[48px] cursor-pointer list-none items-center gap-3 px-4 py-1.5',
           'rounded-lg select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         )}
       >
@@ -137,7 +137,7 @@ function FilterAccordion({
           aria-hidden="true"
         />
       </summary>
-      <div className="flex flex-col gap-4 border-t border-border/60 px-4 pb-4 pt-4">
+      <div className="flex flex-col gap-3 border-t border-border/60 px-4 pb-3 pt-3">
         {children}
       </div>
     </details>
@@ -442,10 +442,10 @@ export function Filters({
     );
 
   return (
-    <section aria-label="Product filters" className="flex flex-col gap-4">
+    <section aria-label="Product filters" className="flex flex-col gap-2.5">
       {/* ── Toolbar: always-visible controls (result-agnostic). Sort + stock +
           clear live here so they're reachable without opening any section. ── */}
-      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card px-4 py-3">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-lg border border-border bg-card px-4 py-2">
         <span className="mr-1 text-sm font-medium uppercase tracking-wider text-muted-foreground">
           Refine
         </span>

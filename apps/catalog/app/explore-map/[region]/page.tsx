@@ -24,13 +24,13 @@ export default function RegionPage({ params }: { params: { region: string } }) {
   if (!region) notFound();
   const total = data.countries.reduce((n, c) => n + c.total, 0);
   return (
-    <section className="container py-10">
-      <h1 className="text-4xl font-semibold tracking-tight text-foreground">Explore by Region</h1>
+    <section className="container py-6 sm:py-10">
+      <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">Explore by Region</h1>
       {/* key on the slug forces a remount on region→region soft navigation so the
           drawer re-derives `selected` from the new initialRegionSlug (the state is
           only read in the useState initializer, which runs once per mount). */}
-      <div className="mt-8"><ExploreRegionClient key={params.region} data={data} initialRegionSlug={params.region} /></div>
-      <div className="mt-6"><EscapeHatch totalProducts={total} /></div>
+      <div className="mt-5 sm:mt-6"><ExploreRegionClient key={params.region} data={data} initialRegionSlug={params.region} /></div>
+      <div className="mt-5 sm:mt-6"><EscapeHatch totalProducts={total} /></div>
       <RegionList regions={data.regions} lens="all" />
     </section>
   );
