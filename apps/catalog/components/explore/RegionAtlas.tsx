@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef, useState, useLayoutEffect } from 'react';
 import type { LensKey, MapRegion } from '@/lib/explore/types';
 import { lensCount } from '@/lib/explore/map-data';
 
@@ -36,46 +36,57 @@ export interface CountryPin {
 
 /**
  * Frame a set of points (a country's regions) by PANNING their centroid to the
- * middle of the visible box and ZOOMING in. Returns a ready-to-use `transform`
- * string built on `transform-origin: 0 0` (top-left), which makes the math exact:
+ * centre of the VISIBLE WINDOW and ZOOMING in. Built on `transform-origin: 0 0`
+ * (top-left), so the math is exact:
  *
- *   transform = scale(S) translate((50/S − cx)%, (50/S − cy)%)
+ *   transform = scale(S) translate((vcx/S − cx)%, (vcy/S − cy)%)
  *
- * With origin at the top-left, `scale(S)` first magnifies the plane about (0,0),
- * then the translate (in the plane's OWN, post-scale % units) shifts it so the
- * centroid (cx%, cy%) lands at the box centre (50%, 50%). The earlier version
- * scaled about a transform-origin AT the centroid, which keeps that point fixed
- * in PLACE rather than moving it to centre — so the country never actually framed
- * up (it stayed wherever it sat on the world plane, only slightly larger).
+ * Why vcx/vcy and not a flat 50/50 (the old bug): the map PLANE is a 2:1
+ * equirectangular grid (100 plane-x-units × 50 plane-y-units), but the visible
+ * WINDOW is much wider/shorter than 2:1 (16:5 → 16:4, capped by max-h). The plane
+ * is therefore TALLER than the window, and the window only shows a top BAND of it.
+ * `translate` is expressed in the plane's own % units (plane width = container
+ * width = 100% ; plane height = 50% of container width). So:
  *
- * The visible box aspect varies (4:3 → 16:9 → 2:1). The map plane is a 2:1
- * equirectangular grid drawn with object-cover, so 1 unit of yPct ≈ 2× the screen
- * distance of 1 unit of xPct. We size the zoom off the LARGER normalised span and
- * lift the floor so even a single-region country gets a real, clickable zoom.
+ *   • Horizontal centre of the window = 50% of plane width  → vcx = 50.
+ *   • Vertical centre of the window in PLANE-Y units depends on the window's real
+ *     height H and width W:  the window spans (100·H/W) plane-y-units tall, so its
+ *     centre sits at vcy = 50·H/W plane-y-units — NOT 50. The old code used 50,
+ *     which dropped the centroid to the middle of the FULL plane → below the
+ *     visible band → the selected pin landed in the cropped-away area.
+ *
+ * `box` is the live visible window {w,h} in px (from a ResizeObserver). Before it
+ * has measured we fall back to a 16:4 desktop ratio so SSR/first paint is close.
  */
 function frame(
   points: { lat: number; lng: number }[],
-  minScale = 1,
-): { scale: number; tx: number; ty: number } {
-  if (points.length === 0) return { scale: minScale, tx: 0, ty: 0 };
+  minScale: number,
+  box: { w: number; h: number },
+): { scale: number; tx: number; ty: number; vcy: number } {
+  // Visible-window vertical centre, in plane-Y units (see doc above).
+  const ratio = box.w > 0 ? box.h / box.w : 4 / 16;
+  const vcx = 50;
+  const vcy = 50 * (box.w > 0 ? (box.h / (box.w / 2)) / 2 : ratio); // = 50·H/W
+  if (points.length === 0) return { scale: minScale, tx: 0, ty: 0, vcy };
   const xs = points.map((p) => project(p.lat, p.lng).xPct);
   const ys = points.map((p) => project(p.lat, p.lng).yPct);
   const minX = Math.min(...xs), maxX = Math.max(...xs);
   const minY = Math.min(...ys), maxY = Math.max(...ys);
   const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
-  // Normalise the Y span to X-equivalent screen units (2:1 plane) before sizing.
-  // Padding (was +8, then +4) trimmed to +2 and the min-span clamp lowered (3→1.5)
-  // so the fit hugs the pins tighter — a focused country / selected region fills
-  // the frame with little empty sea. Still leaves a small margin for the pin dot.
-  const spanX = Math.max(maxX - minX, 1.5) + 2;    // padding so pins/labels fit
-  const spanY = (Math.max(maxY - minY, 1.5) + 2) * 2;
-  // Fit the span to the box; floor (minScale) keeps a single country zoomed enough
-  // that its pins are big and tappable; cap at 14× so a tightly-clustered country
-  // (or a single-region one) fills the frame instead of leaving slack.
-  const scale = Math.max(minScale, Math.min(100 / Math.max(spanX, spanY), 14));
-  const tx = 50 / scale - cx;
-  const ty = 50 / scale - cy;
-  return { scale, tx, ty };
+  // Spans in plane-units, with a min clamp + padding so a single pin still gets a
+  // comfortable frame and labels/dots aren't clipped at the edge.
+  const spanX = Math.max(maxX - minX, 1.5) + 2;
+  const spanY = Math.max(maxY - minY, 1.5) + 2;
+  // Fit each axis to its OWN visible extent: the window shows 100 plane-x-units
+  // wide but only (2·vcy) plane-y-units tall. Take the tighter of the two fits so
+  // the whole span is visible; floor by minScale (keeps single countries tappable),
+  // cap at 14×.
+  const fitX = 100 / spanX;
+  const fitY = (2 * vcy) / spanY;
+  const scale = Math.max(minScale, Math.min(Math.min(fitX, fitY), 14));
+  const tx = vcx / scale - cx;
+  const ty = vcy / scale - cy;
+  return { scale, tx, ty, vcy };
 }
 
 /**
@@ -130,6 +141,22 @@ export function RegionAtlas({
   onSelectCountry: (c: CountryPin) => void;
   onSelectRegion: (r: MapRegion) => void;
 }) {
+  // Live size of the VISIBLE window — frame() needs the real aspect ratio to
+  // centre the focus pin in the band that's actually on screen (the plane is 2:1
+  // but the window is wider/shorter, so a flat 50% centre drops pins off-frame).
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [box, setBox] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
+  useLayoutEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const update = () =>
+      setBox({ w: el.clientWidth, h: el.clientHeight });
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   // What pins to show: world = countries (filtered to the active lens); country =
   // its regions. dx/dy are the RENDER positions (% of the plane), seeded from the
   // true projection then de-overlapped by spread() so no two pins sit on top of
@@ -167,18 +194,19 @@ export function RegionAtlas({
       // comfortable tight zoom); otherwise frame the whole country. Floors raised
       // (6 / 5) so country views fill the frame instead of leaving slack — the
       // computed fit still wins for wide countries; the floor only bites for
-      // single-/tight-region ones. frame()'s cap (12×) bounds the top end.
-      if (sel) return frame([{ lat: sel.lat, lng: sel.lng }], 6);
-      return frame(focusCountry.regions, 5);
+      // single-/tight-region ones. frame()'s cap (14×) bounds the top end.
+      if (sel) return frame([{ lat: sel.lat, lng: sel.lng }], 6, box);
+      return frame(focusCountry.regions, 5, box);
     }
     const worldPts = countries.flatMap((c) =>
       c.regions.reduce((s, r) => s + lensCount(r, lens), 0) > 0 ? [{ lat: c.lat, lng: c.lng }] : [],
     );
-    return frame(worldPts, 1);
-  }, [focusCountry, selectedSlug, countries, lens]);
+    return frame(worldPts, 1, box);
+  }, [focusCountry, selectedSlug, countries, lens, box]);
 
   return (
     <div
+      ref={boxRef}
       className={[
         'relative w-full overflow-hidden rounded-2xl border border-border bg-[hsl(36_33%_98%)] shadow-sm',
         // SHORT band at every size — the view is zoomed/scoped to just the data
@@ -216,15 +244,16 @@ export function RegionAtlas({
           // Counter-scale the pin contents by 1/zoom so dots + labels stay a
           // constant on-screen size regardless of how far the plane is zoomed.
           const inv = 1 / zoom.scale;
-          // On-screen position of this pin (% of the container) after the plane's
-          // scale()+translate(). Plane width === container width, so screen-x maps
-          // directly; the plane is 2:1 (height = width/2 in container %), so screen-y
-          // is in 0..50 container%. A pin whose dot lands outside [−4, 104]×[−4, 54]
-          // is in the cropped-away area — hide it AND disable its pointer events so it
-          // can't steal a click meant for empty visible map (the phantom-click bug).
+          // On-screen position of this pin in PLANE-% after scale()+translate().
+          // screen-x is 0..100 (plane width === container width). screen-y is in
+          // plane-Y units 0..(2·vcy) — the visible band's height (NOT a fixed 0..50,
+          // which assumed a 2:1 window; the window is wider/shorter and capped by
+          // max-h). A pin outside the visible band (+4 margin) is cropped away — hide
+          // it AND disable pointer events so it can't steal a click on empty map.
+          const visH = 2 * zoom.vcy; // visible band height in plane-Y units
           const sx = zoom.scale * (p.dx + zoom.tx);
-          const sy = (zoom.scale * (p.dy + zoom.ty)) / 2;
-          const offFrame = sx < -4 || sx > 104 || sy < -4 || sy > 54;
+          const sy = zoom.scale * (p.dy + zoom.ty);
+          const offFrame = sx < -4 || sx > 104 || sy < -4 || sy > visH + 4;
           return (
             <button
               key={p.key}
