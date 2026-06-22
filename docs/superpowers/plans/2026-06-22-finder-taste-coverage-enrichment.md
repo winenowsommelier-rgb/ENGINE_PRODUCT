@@ -169,7 +169,29 @@ def test_no_signal_is_none_value():
 def test_non_whisky_returns_None():
     # No region + no keyword on a non-whisky name → None (no claim).
     assert infer_smokiness("Tanqueray London Dry Gin", "") is None
+
+# ── NEGATION GUARD (from live-data validation 2026-06-22; Rule 5 — don't lock in a bug).
+# A naive "name contains 'peat'/distillery" rule mis-flags these REAL in-stock bottles:
+def test_explicit_non_peated_overrides_keyword():
+    # Name literally says "Non-Peated" — must NOT be heavy even though 'peat' substring is present.
+    assert infer_smokiness("Nikka YOICHI Discovery - Non-Peated", "Hokkaido") == "none"
+def test_unpeated_islay_distillery_is_not_heavy():
+    # Bruichladdich's CLASSIC line is UNPEATED despite being an Islay distillery. region=Islay
+    # alone must not force heavy when the name signals the unpeated flagship. (Peated Bruich-
+    # laddich = "Port Charlotte"/"Octomore", which DO carry their own peat cue and score heavy.)
+    assert infer_smokiness("Bruichladdich The Classic Laddie", "Islay") == "none"
+def test_peated_non_islay_IS_caught():
+    # The whole point of W4: a peated whisky OUTSIDE Islay (region proxy misses these) → heavy.
+    assert infer_smokiness("The Glenturret 10 Years old Peat Smoked", "Highland") == "heavy"
+    assert infer_smokiness("Nikka MIYAGIKYO Discovery - Peated", "Miyagikyo") == "heavy"
 ```
+
+> **Validated against the live export (W4 evidence):** the current finder proxies peat on
+> `region=='islay'` (27 bottles). `infer_smokiness` catches **8 genuinely peated whiskies the
+> region proxy MISSES** — Glenturret Peat Smoked (Highland), Lark Peated (Tasmania), Nikka
+> Miyagikyo Peated (Japan), Matsui The Peated, Prakaan (Khao Yai), Kilchoman Sanaig (Islands),
+> Port Charlotte — and (with the negation guard) correctly EXCLUDES Bruichladdich Classic
+> (unpeated Islay) and Nikka Yoichi Non-Peated, which the naive rule false-positives.
 
 - [ ] **Step 2: Run test to verify it fails**
 
@@ -186,17 +208,31 @@ Conservative by design: return None when there is no confident signal (so Phase 
 not a guess, fills it). 'none' (a real ladder value) is distinct from None (unknown)."""
 import re
 
-_PEAT_HEAVY = re.compile(r"\b(peat|peated|smoky|smoke|islay|laphroaig|ardbeg|lagavulin)\b", re.I)
+# Distillery names whose CORE range is heavily peated (so the name alone implies smoke even
+# when region data is wrong/missing — validated against live in-stock stock).
+_PEAT_HEAVY = re.compile(
+    r"\b(peated|smoky|smoke|laphroaig|ardbeg|lagavulin|kilchoman|caol ila|"
+    r"port charlotte|octomore|big peat|peat monster)\b", re.I)
+# bare 'peat' is matched separately so the negation guard can pre-empt 'non-peated'.
+_PEAT_WORD = re.compile(r"\bpeat\b", re.I)
 _PEAT_LIGHT = re.compile(r"lightly peated|a touch of (smoke|peat)|gently peated", re.I)
+# NEGATION GUARD (Rule 5): explicit "non/un-peated", and Islay distilleries whose FLAGSHIP is
+# unpeated (Bruichladdich Classic/Laddie, Bunnahabhain) — region=Islay must NOT force heavy.
+_NOT_PEATED = re.compile(
+    r"non[- ]?peated|un[- ]?peated|bruichladdich\s+(the\s+)?(classic|laddie|\d)|bunnahabhain", re.I)
 _ISLAY = {"islay"}
 
 def infer_smokiness(name: str, region: str = "") -> str | None:
     hay = f"{name} {region}".lower()
+    # 1) Explicit non-peated / unpeated-flagship wins over everything (incl. region=Islay).
+    if _NOT_PEATED.search(hay):
+        return "none"
     if _PEAT_LIGHT.search(hay):
         return "light"
-    if (region or "").strip().lower() in _ISLAY or _PEAT_HEAVY.search(hay):
+    # 2) Heavy if a peat cue OR an Islay region (the proxy) OR a heavy-distillery name.
+    if (region or "").strip().lower() in _ISLAY or _PEAT_HEAVY.search(hay) or _PEAT_WORD.search(hay):
         return "heavy"
-    # A whisky-shaped row with a Scotch region but no peat cue reads as clean.
+    # 3) A whisky-shaped row with a Scotch/whisky region but no peat cue reads as clean.
     if (region or "").strip():
         return "none"
     return None
