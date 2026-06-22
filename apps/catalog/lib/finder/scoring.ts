@@ -149,7 +149,7 @@ function intensityScore(scale: 'acidity' | 'tannin', token: string | undefined, 
   return 0;
 }
 
-// Grape family → tokens that, if present in p.grape_variety, signal that family.
+// Grape family → tokens that, if present in p.variety, signal that family.
 // 'surprise' (and any unmapped token) intentionally has no entry → never constrains.
 const GRAPE_FAMILY: Record<string, string[]> = {
   cabernet:      ['cabernet'],
@@ -251,9 +251,9 @@ function peatScore(token: string | undefined, region: string | undefined): numbe
 /** Sum of all deep-dive terms for one product (each 0 when its answer is absent). */
 function deepDiveBump(a: Answers, p: PublicProduct): number {
   return (
-    intensityScore('acidity', a.acidity, p.wine_acidity) +
-    intensityScore('tannin', a.tannin, p.wine_tannin) +
-    grapeScore(a.grape, p.grape_variety) +
+    intensityScore('acidity', a.acidity, p.acidity) +
+    intensityScore('tannin', a.tannin, p.tannin) +
+    grapeScore(a.grape, p.variety) +
     ageScore(a.age, p.vintage) +
     adventureScore(a.adventure, p.region) +
     peatScore(a.peat, p.region)
@@ -272,8 +272,8 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
 
   const scored = pool.map((p) => {
     let s = 0;
-    if (a.axis1 && BODY_TOKEN[a.axis1] && p.wine_body) {
-      s += ladderScore(bodyLadderDistance(BODY_TOKEN[a.axis1], p.wine_body), 4);
+    if (a.axis1 && BODY_TOKEN[a.axis1] && p.body) {
+      s += ladderScore(bodyLadderDistance(BODY_TOKEN[a.axis1], p.body), 4);
     }
     // SAKE sweetness — the category's primary taste term (axis1), scored on the same
     // ladder shape as wine body so it clears QUALITY_MIN for genuine matches. No-signal

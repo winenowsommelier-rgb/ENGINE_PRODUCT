@@ -92,9 +92,9 @@ describe('applyShopQuery — price filter', () => {
 
 describe('applyShopQuery — country / inStock / attribute filters', () => {
   const data = [
-    p({ sku: 'fr', country: 'France', is_in_stock: true, region: 'Bordeaux', grape_variety: 'Merlot', wine_body: 'Full', wine_acidity: 'High', wine_tannin: 'Medium', flavor_tags: ['Berry', 'Oak'] }),
-    p({ sku: 'it', country: 'Italy', is_in_stock: false, region: 'Tuscany', grape_variety: 'Sangiovese', wine_body: 'Medium', flavor_tags: ['Cherry'] }),
-    p({ sku: 'fr2', country: 'france', is_in_stock: true, region: 'Burgundy', grape_variety: 'Pinot Noir' }),
+    p({ sku: 'fr', country: 'France', is_in_stock: true, region: 'Bordeaux', variety: 'Merlot', body: 'Full', acidity: 'High', tannin: 'Medium', flavor_tags: ['Berry', 'Oak'] }),
+    p({ sku: 'it', country: 'Italy', is_in_stock: false, region: 'Tuscany', variety: 'Sangiovese', body: 'Medium', flavor_tags: ['Cherry'] }),
+    p({ sku: 'fr2', country: 'france', is_in_stock: true, region: 'Burgundy', variety: 'Pinot Noir' }),
   ];
 
   it('country match is case-insensitive exact', () => {
@@ -338,19 +338,19 @@ describe('applyShopQuery still honors everything via matchesFilters', () => {
 
 describe('matchesFilters — body/acidity/tannin normalized to the 4-step scale', () => {
   it('a product stored "Medium-Light" body matches the "Medium" dropdown option', () => {
-    const prod = { sku: 'W1', name: 'x', wine_body: 'Medium-Light' } as any;
+    const prod = { sku: 'W1', name: 'x', body: 'Medium-Light' } as any;
     expect(matchesFilters(prod, { body: 'Medium' })).toBe(true);
   });
   it('a product stored "Medium-Full" acidity matches the "Medium-High" option', () => {
-    const prod = { sku: 'W1', name: 'x', wine_acidity: 'Medium-Full' } as any;
+    const prod = { sku: 'W1', name: 'x', acidity: 'Medium-Full' } as any;
     expect(matchesFilters(prod, { acidity: 'Medium-High' })).toBe(true);
   });
   it('exact in-scale value still matches', () => {
-    const prod = { sku: 'W1', name: 'x', wine_acidity: 'High' } as any;
+    const prod = { sku: 'W1', name: 'x', acidity: 'High' } as any;
     expect(matchesFilters(prod, { acidity: 'High' })).toBe(true);
   });
   it('off-scale/unknown → null normalize → does not match an unrelated option', () => {
-    const prod = { sku: 'W1', name: 'x', wine_tannin: 'unknowable' } as any;
+    const prod = { sku: 'W1', name: 'x', tannin: 'unknowable' } as any;
     expect(matchesFilters(prod, { tannin: 'High' })).toBe(false);
   });
 });

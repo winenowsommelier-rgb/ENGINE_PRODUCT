@@ -81,7 +81,7 @@ export function shopFacets(all: PublicProduct[], params: ShopParams): ShopFacets
 
 /** Top-N most frequent non-empty grape varietals across the catalog (single source for the typeahead seed). */
 export function topGrapes(all: PublicProduct[], n = 40): string[] {
-  return topByFrequency(all.map((p) => p.grape_variety), n);
+  return topByFrequency(all.map((p) => p.variety), n);
 }
 
 /** Top-N most frequent non-empty flavor tags across the catalog. */

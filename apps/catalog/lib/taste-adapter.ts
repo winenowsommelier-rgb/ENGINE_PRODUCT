@@ -111,9 +111,9 @@ export function toTiers(taste_profile: Record<string, unknown> | null | undefine
  */
 export function toStructural(product: PublicProduct): Record<string, string> {
   const out: Record<string, string> = {};
-  const body = normalizeScale('body', product.wine_body);
-  const acidity = normalizeScale('acidity', product.wine_acidity);
-  const tannin = normalizeScale('tannin', product.wine_tannin);
+  const body = normalizeScale('body', product.body);
+  const acidity = normalizeScale('acidity', product.acidity);
+  const tannin = normalizeScale('tannin', product.tannin);
   if (body) out.body = body;
   if (acidity) out.acidity = acidity;
   if (tannin) out.tannin = tannin;

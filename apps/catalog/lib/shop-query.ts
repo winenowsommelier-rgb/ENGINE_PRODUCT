@@ -150,7 +150,7 @@ export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
   if (designation && norm(designationForProduct(p)) !== designation) return false;
 
   const grape = norm(firstParam(params.grape));
-  if (grape && !norm(p.grape_variety).includes(grape)) return false;
+  if (grape && !norm(p.variety).includes(grape)) return false;
 
   const flavor = norm(firstParam(params.flavor));
   if (flavor) {
@@ -159,11 +159,11 @@ export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
   }
 
   const body = norm(firstParam(params.body));
-  if (body && norm(normalizeScale('body', p.wine_body)) !== body) return false;
+  if (body && norm(normalizeScale('body', p.body)) !== body) return false;
   const acidity = norm(firstParam(params.acidity));
-  if (acidity && norm(normalizeScale('acidity', p.wine_acidity)) !== acidity) return false;
+  if (acidity && norm(normalizeScale('acidity', p.acidity)) !== acidity) return false;
   const tannin = norm(firstParam(params.tannin));
-  if (tannin && norm(normalizeScale('tannin', p.wine_tannin)) !== tannin) return false;
+  if (tannin && norm(normalizeScale('tannin', p.tannin)) !== tannin) return false;
 
   if (firstParam(params.inStock) === '1' && !isInStock(p.is_in_stock)) return false;
   if (firstParam(params.hasScore) === '1' &&
