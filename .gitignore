@@ -70,6 +70,10 @@ data/reenrich_results-*.jsonl
 data/*dryrun*.json
 data/reenrich_dryrun-*.json
 data/phase_c_results-*.jsonl
+data/phase_d1_results-*.jsonl
+data/phase_d2_results-*.jsonl
+data/phase_d3_results-*.jsonl
+data/phase_e_results-*.jsonl
 
 # Stray root-level SQLite DB placeholder (real DB lives at data/db/products.db)
 /products.db

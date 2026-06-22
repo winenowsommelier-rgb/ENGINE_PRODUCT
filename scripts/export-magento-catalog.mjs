@@ -79,8 +79,8 @@ const products = db.prepare(`
     updated_at,
     validation_status,
     enrichment_quality_grade,
-    popularity_revenue_90d,
-    popularity_orders_90d,
+    COALESCE(popularity_revenue_window, 0) AS popularity_revenue_90d,
+    COALESCE(popularity_orders_window, 0) AS popularity_orders_90d,
     wn_stock,
     quantity_in_stock,
     has_recent_sales
