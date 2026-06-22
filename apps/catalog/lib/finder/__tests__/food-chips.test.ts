@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { FOOD_CHIPS, foodChipMatches } from '@/lib/finder/food-chips';
+import { FOOD_CHIPS, foodChipMatches, emptyFoodChips } from '@/lib/finder/food-chips';
 
 describe('food chips (15 grouped cuisine+dish, with icon+label+keywords)', () => {
   it('has 15 chips each with label, icon, keywords', () => {
@@ -17,4 +17,22 @@ describe('food chips (15 grouped cuisine+dish, with icon+label+keywords)', () =>
   it('counts one per matching chip', () => expect(foodChipMatches({ food_matching:'Grilled steak, aged cheese' } as any, ['grilled','cheese'])).toBe(2));
   it('no match → 0', () => expect(foodChipMatches({ food_matching:'Sushi' } as any, ['grilled'])).toBe(0));
   it('missing food_matching → 0', () => expect(foodChipMatches({} as any, ['thai'])).toBe(0));
+});
+
+describe('emptyFoodChips — tokens with no in-stock matches (greyed-out guard)', () => {
+  it('flags a chip whose keywords match nothing in the pool', () => {
+    // Pool has a thai dish only → every non-thai chip is "empty".
+    const pool = [{ food_matching: 'Spicy Thai green curry' } as any];
+    const empty = emptyFoodChips(pool);
+    expect(empty.has('thai')).toBe(false);
+    expect(empty.has('sushi')).toBe(true);
+    expect(empty.has('dessert')).toBe(true);
+  });
+  it('empty pool → every chip is empty', () => {
+    expect(emptyFoodChips([]).size).toBe(Object.keys(FOOD_CHIPS).length);
+  });
+  it('a chip with a match is not flagged', () => {
+    const pool = [{ food_matching: 'Aged cheese, charcuterie board' } as any];
+    expect(emptyFoodChips(pool).has('cheese')).toBe(false);
+  });
 });

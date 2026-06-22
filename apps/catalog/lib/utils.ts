@@ -77,3 +77,39 @@ export function parseFoodMatching(food: string | undefined | null): string[] {
   items.push(buf);
   return items.map((s) => s.trim()).filter((s) => s.length > 0);
 }
+
+/**
+ * Pick elegant "signature dish" suggestions from `food_matching_detail`.
+ *
+ * The detail field preserves the original, often elaborate dish names
+ * ("Dry-aged Wagyu ribeye with bone marrow butter") that were collapsed into
+ * broad category chips. We surface a few of the genuinely specific ones as
+ * aspirational supporting text under the chips — but only the real dishes, not
+ * the plain category labels that some products store verbatim in detail too.
+ *
+ * A value counts as a "dish" if it reads like a prepared dish rather than a
+ * category: it contains a preparation phrase ("with", "&", "à la", etc.) AND
+ * is not one of the controlled category labels passed in `categories`.
+ *
+ * @param detail     the food_matching_detail string (pipe-delimited)
+ * @param categories the product's category chips (to exclude verbatim repeats)
+ * @param max        how many dishes to return (default 3)
+ */
+export function signatureDishes(
+  detail: string | undefined | null,
+  categories: string[] = [],
+  max = 3,
+): string[] {
+  if (!detail) return [];
+  const catSet = new Set(categories.map((c) => c.toLowerCase()));
+  const looksLikeDish = (s: string) =>
+    / with | à la | in a | on a |, /i.test(s) || /\bglaze|jus|reduction|purée|puree|sauce|crust|butter\b/i.test(s);
+  const out: string[] = [];
+  for (const raw of parseFoodMatching(detail)) {
+    if (catSet.has(raw.toLowerCase())) continue; // skip plain category repeats
+    if (!looksLikeDish(raw)) continue; // skip short category-like values
+    if (!out.includes(raw)) out.push(raw);
+    if (out.length >= max) break;
+  }
+  return out;
+}

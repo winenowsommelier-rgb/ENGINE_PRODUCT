@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseFoodMatching } from '@/lib/utils';
+import { parseFoodMatching, signatureDishes } from '@/lib/utils';
 
 describe('parseFoodMatching', () => {
   it('splits pipe-delimited values (canonical, post-2026-06-21)', () => {
@@ -66,5 +66,39 @@ describe('parseFoodMatching', () => {
 
   it('single item (no separator) returns that item', () => {
     expect(parseFoodMatching('Sushi & sashimi')).toEqual(['Sushi & sashimi']);
+  });
+});
+
+describe('signatureDishes', () => {
+  const categories = ['Lamb dishes', 'Hard & aged cheese', 'Pork dishes'];
+
+  it('returns elaborate dishes, excluding plain category repeats', () => {
+    const detail =
+      'Dry-aged Wagyu ribeye with bone marrow butter | Lamb dishes | ' +
+      'Roasted rack of lamb with rosemary-anchovy crust | Hard & aged cheese';
+    expect(signatureDishes(detail, categories)).toEqual([
+      'Dry-aged Wagyu ribeye with bone marrow butter',
+      'Roasted rack of lamb with rosemary-anchovy crust',
+    ]);
+  });
+
+  it('caps the number of dishes (default 3)', () => {
+    const detail = [
+      'A loin with jus',
+      'B fillet with reduction',
+      'C cheek with glaze',
+      'D rib with butter',
+    ].join(' | ');
+    expect(signatureDishes(detail).length).toBe(3);
+  });
+
+  it('returns nothing when detail is only plain categories', () => {
+    expect(signatureDishes('Lamb dishes | Pork dishes', categories)).toEqual([]);
+  });
+
+  it('handles empty / nullish detail', () => {
+    expect(signatureDishes(undefined, categories)).toEqual([]);
+    expect(signatureDishes('', categories)).toEqual([]);
+    expect(signatureDishes(null, categories)).toEqual([]);
   });
 });

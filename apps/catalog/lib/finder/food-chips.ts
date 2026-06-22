@@ -4,9 +4,14 @@ export const FOOD_CHIPS: Record<string, { label: string; icon: string; keywords:
   thai:       { label: 'Thai food',            icon: '🌶️', keywords: ['thai'] },
   sushi:      { label: 'Sushi & sashimi',      icon: '🍣', keywords: ['sushi','sashimi'] },
   dimsum:     { label: 'Dim sum & Chinese',    icon: '🥟', keywords: ['dim sum','chinese'] },
-  korean:     { label: 'Korean BBQ',           icon: '🍖', keywords: ['korean'] },
-  vietnamese: { label: 'Vietnamese',           icon: '🍜', keywords: ['vietnamese'] },
-  spicy:      { label: 'Spicy dishes',         icon: '🔥', keywords: ['spicy','curry'] },
+  // korean/vietnamese/spicy: the curated food_matching vocabulary has no literal
+  // 'korean'/'vietnamese'/'spicy'/'curry' phrases, so these chips matched nothing
+  // (dead chips — see chip-coverage.test.ts). Anchor each to the category that
+  // DOES exist in the data: Korean BBQ ⊂ grilled red meat, Vietnamese ⊂ SE-Asian,
+  // spicy ⊂ "indian & spiced dishes". Specific terms kept first for future data.
+  korean:     { label: 'Korean BBQ',           icon: '🍖', keywords: ['korean','grilled'] },
+  vietnamese: { label: 'Vietnamese',           icon: '🍜', keywords: ['vietnamese','southeast asian'] },
+  spicy:      { label: 'Spicy dishes',         icon: '🔥', keywords: ['spicy','curry','spiced'] },
   grilled:    { label: 'Grilled & BBQ meat',   icon: '🥩', keywords: ['grilled','bbq','barbecue','steak'] },
   roast:      { label: 'Roast & duck',         icon: '🍗', keywords: ['roast','duck'] },
   lamb:       { label: 'Lamb & game',          icon: '🐑', keywords: ['lamb','game','venison'] },
@@ -28,4 +33,20 @@ export function foodChipMatches(p: PublicProduct, chips: string[] | undefined): 
     if (kws && kws.some((k) => hay.includes(k))) n += 1;
   }
   return n;
+}
+
+/**
+ * Tokens of food chips that currently match ZERO in-stock products — so the UI can
+ * grey them out and make them unselectable instead of leading users to an empty
+ * result. A chip going empty is a data state (stock sold out / pairing vocabulary
+ * changed), not a code bug; today all chips have matches, but this guards the future.
+ * `inStock` should be the in-stock product pool (the caller filters by isInStock).
+ */
+export function emptyFoodChips(inStock: PublicProduct[]): Set<string> {
+  const empty = new Set<string>();
+  for (const token of Object.keys(FOOD_CHIPS)) {
+    const has = inStock.some((p) => foodChipMatches(p, [token]) > 0);
+    if (!has) empty.add(token);
+  }
+  return empty;
 }

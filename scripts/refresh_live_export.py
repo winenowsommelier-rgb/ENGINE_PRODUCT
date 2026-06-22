@@ -53,7 +53,7 @@ EXPORT_COLS = [
     "grape_variety", "vintage", "alcohol",
     "country", "region", "subregion", "appellation",
     "wine_body", "wine_acidity", "wine_tannin",
-    "food_matching", "flavor_tags",
+    "food_matching", "food_matching_detail", "flavor_tags",
     "bottle_size", "price", "currency",
     "desc_en_short", "full_description",
     "taste_profile",

@@ -40,10 +40,13 @@ describe('accessorySubCategoriesFor', () => {
       P({ sku: 'WRW500' }),                        // not an accessory → ignored
     ];
     const out = accessorySubCategoriesFor(set);
+    // tally() sorts by count DESC, then alphabetical: Wine Coolers (2) leads,
+    // then the two count-1 entries fall back to A→Z. (Was alphabetical-only
+    // before facet chips were re-ordered most-stocked-first.)
     expect(out).toEqual([
+      { value: 'Wine Coolers & Fridges', count: 2 },
       { value: 'Bar Tools & Gifts', count: 1 },
       { value: 'Glassware', count: 1 },
-      { value: 'Wine Coolers & Fridges', count: 2 },
     ]);
     expect(out).not.toContainEqual(expect.objectContaining({ value: 'Cigars' }));
   });

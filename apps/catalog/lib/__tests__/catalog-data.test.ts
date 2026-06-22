@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { toPublicProduct, PUBLIC_FIELDS, getAllProducts } from '@/lib/catalog-data';
+import { compareRecommended } from '@/lib/recommended-rank';
 
 const RAW = {
   sku: 'WRW2106AC', name: 'Test Red', price: 1600, currency: 'THB',
@@ -32,13 +33,73 @@ describe('toPublicProduct', () => {
     expect('region' in pub).toBe(true);
     expect((pub as any).region).toBeNull();
   });
-  it('returns {} when raw has no safe fields', () => {
+  it('emits ONLY the derived popularity_tier when raw has no other safe fields', () => {
+    // Regression guard (updated 2026-06-22): toPublicProduct now ALWAYS attaches the
+    // coarse, client-safe popularity_tier (defaulting to 0), so the projection of a raw
+    // row with no other allowlisted field is { popularity_tier: 0 }, not {}. The internal
+    // popularity_rank/margin_pct/id are still structurally impossible to leak — only the
+    // derived tier is added, never the raw popularity_score. See the dedicated
+    // 'toPublicProduct — popularity_tier' block below.
     const pub = toPublicProduct({ margin_pct: 42, id: 7, popularity_rank: 3 } as any);
-    expect(Object.keys(pub)).toHaveLength(0);
+    expect(Object.keys(pub)).toEqual(['popularity_tier']);
+    expect(pub.popularity_tier).toBe(0);
+    expect((pub as any).margin_pct).toBeUndefined();
+    expect((pub as any).popularity_rank).toBeUndefined();
   });
   it('exposes flavor_tags_canonical on projected products', () => {
     const withCanon = getAllProducts().find(p => (p as any).flavor_tags_canonical?.length);
     expect(withCanon, 'at least one product has canonical flavor tags').toBeTruthy();
     expect(Array.isArray((withCanon as any).flavor_tags_canonical)).toBe(true);
+  });
+});
+
+describe('toPublicProduct — popularity_tier', () => {
+  it('sets popularity_tier from the passed bucket and NEVER leaks popularity_score', () => {
+    const pub = toPublicProduct(
+      { sku: 'A', name: 'A', price: 100, popularity_score: 0.9, is_in_stock: true } as any,
+      2,
+    );
+    expect(pub.popularity_tier).toBe(2);
+    expect((pub as any).popularity_score).toBeUndefined();
+  });
+  it('defaults popularity_tier to 0 when no bucket passed', () => {
+    const pub = toPublicProduct({ sku: 'A', name: 'A', price: 100 } as any);
+    expect(pub.popularity_tier).toBe(0);
+  });
+  it('popularity_tier is in the allowlist (only-allowlisted-keys invariant holds)', () => {
+    expect(PUBLIC_FIELDS).toContain('popularity_tier');
+  });
+});
+
+describe('getAllProducts — Recommended order + no score leak', () => {
+  const all = getAllProducts();
+  it('NO public product carries popularity_score / popularity_rank', () => {
+    for (const p of all) {
+      expect((p as any).popularity_score).toBeUndefined();
+      expect((p as any).popularity_rank).toBeUndefined();
+    }
+  });
+  it('is globally sorted so no in-stock product appears after an out-of-stock one', () => {
+    let seenOutOfStock = false;
+    for (const p of all) {
+      const inStock = p.is_in_stock === true;
+      if (!inStock) seenOutOfStock = true;
+      else expect(seenOutOfStock, `in-stock ${p.sku} appears after an out-of-stock product`).toBe(false);
+    }
+  });
+  it('within the in-stock block, no scored (tier 1|2) product appears after an unscored (tier 0) one', () => {
+    let seenUnscored = false;
+    for (const p of all) {
+      if (p.is_in_stock !== true) break; // only inspect the leading in-stock block
+      if (p.popularity_tier === 0) {
+        seenUnscored = true;
+      } else {
+        // tier 1 or 2 = scored; it must NOT come after any unscored in-stock product
+        expect(
+          seenUnscored,
+          `scored ${p.sku} (tier ${p.popularity_tier}) appears after an unscored in-stock product`,
+        ).toBe(false);
+      }
+    }
   });
 });

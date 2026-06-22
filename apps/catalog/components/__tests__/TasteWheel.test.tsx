@@ -19,7 +19,7 @@ describe('TasteWheel legend', () => {
       secondary: [note('Oak')],
       tertiary: [], // empty → must not render a "Tertiary" header
     };
-    render(<TasteWheel tiers={tiers} />);
+    const { container } = render(<TasteWheel tiers={tiers} />);
 
     expect(screen.getByText('Primary')).toBeInTheDocument();
     expect(screen.getByText('Secondary')).toBeInTheDocument();
@@ -28,6 +28,9 @@ describe('TasteWheel legend', () => {
     // Pills for the present tiers still render.
     expect(screen.getByText('Cherry')).toBeInTheDocument();
     expect(screen.getByText('Oak')).toBeInTheDocument();
+
+    // Empty tertiary still draws its faint placeholder ring (spec §9).
+    expect(container.querySelector('[data-placeholder="tertiary"]')).toBeInTheDocument();
   });
 
   it('renders all three tier headers when all are populated', () => {
@@ -42,5 +45,17 @@ describe('TasteWheel legend', () => {
     expect(screen.getByText('Secondary')).toBeInTheDocument();
     expect(screen.getByText('Tertiary')).toBeInTheDocument();
     expect(screen.getByText('Leather')).toBeInTheDocument();
+  });
+
+  it('each chip has a wedge with a matching data-id (no orphan chip)', () => {
+    const tiers: Tiers = {
+      primary: [note('Blackcurrant', 3), note('Plum', 2)],
+      secondary: [note('Cedar')],
+      tertiary: [],
+    };
+    const { container } = render(<TasteWheel tiers={tiers} varietalLabel="Cab" />);
+    const wedgeIds = [...container.querySelectorAll('path[data-id]')].map(p => p.getAttribute('data-id'));
+    expect(wedgeIds).toEqual(['primary-0', 'primary-1', 'secondary-0']);
+    expect(screen.getByTestId('center-note')).toHaveTextContent('Cab');
   });
 });
