@@ -91,3 +91,9 @@ docs/ai-knowledge-base-notebooklm/
 # Taxonomy pre-fix backups
 data/taxonomy/*.bak-*
 .env*.local
+
+# Local backups, backfill caches, and sync logs (never commit)
+data/*.bak-*
+data/**/*.bak-*
+data/*_cache.json
+data/sync.log

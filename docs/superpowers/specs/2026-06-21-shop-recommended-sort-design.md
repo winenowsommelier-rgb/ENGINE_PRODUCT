@@ -69,11 +69,15 @@ Therefore:
 
 ## 4. The ranking (strict tiers)
 
-Each product gets a comparison tuple, compared left-to-right (earlier = nearer the
-front of the grid):
+**The comparison tuple below is the SINGLE SOURCE OF TRUTH for ordering.** Each
+product gets this tuple, compared left-to-right (earlier = nearer the front):
 
-1. **In stock** — in-stock (`true`) before out-of-stock (`false`).
-2. **Has popularity score** — scored before unscored.
+1. **In stock** — in-stock (`true`) before out-of-stock (`false`). `is_in_stock`
+   is the normalized boolean; `null`/absent → `false` (the 98 null rows sink).
+2. **Is scored** — scored before unscored. **"Scored" is defined precisely as
+   `typeof popularity_score === 'number' && popularity_score > 0`.** A literal
+   `0.0` (the single such row) is treated as UNSCORED, so the boundary is
+   deterministic.
 3. **Popularity score, DESC** — higher sales first. (Only discriminates within the
    scored tier; unscored rows are equal here.)
 4. **Premium, DESC** — `price` descending. Pushes high-value up; also the primary
@@ -81,54 +85,82 @@ front of the grid):
 5. **Name A–Z** — final stable, deterministic tiebreaker (locale-aware,
    case-insensitive). Guarantees identical order across runs.
 
-Resulting macro-order:
+The tuple — **not** the prose below — governs every tier, including out-of-stock.
+Because element 1 is stock, the entire scored→popularity→price→name ordering
+repeats *within* the out-of-stock block too. Resulting macro-order (illustrative,
+not authoritative):
 ```
-in-stock + scored        (by popularity desc, then price desc)
-in-stock + unscored      (by price desc)
-out-of-stock             (same internal order: scored→unscored, popularity, price)
+in-stock + scored        (popularity desc, then price desc, then name)
+in-stock + unscored      (price desc, then name)
+out-of-stock + scored    (same internal order)
+out-of-stock + unscored  (same internal order)
 ```
 This is exactly the user's "below scored, above out-of-stock" choice, with
 out-of-stock as the lowest tier overall.
 
 ### `popularity_tier` derivation
-- `popularity_score` absent / not numeric → tier **0**.
-- `popularity_score > 0` and **>= top-quartile cutoff** of scored products → tier **2**.
-- otherwise (scored, below cutoff) → tier **1**.
+- Not "scored" (absent / non-numeric / `<= 0`) → tier **0**.
+- Scored (`> 0`) and **>= the p75 cutoff** of the scored population → tier **2**.
+- Scored and below p75 → tier **1**.
 
-The top-quartile cutoff is computed once at load over the scored population. (Exact
-percentile to be finalized in the plan; default p75.)
+**The cutoff is FIXED at p75** (top quartile of the scored population), computed
+once at load (see §5.1 two-pass). Per CLAUDE.md Rule 3, p75 is a chosen constant,
+not inherited — it is reviewed here as the "top seller" boundary and is the value
+§6's test asserts against. It only affects the cosmetic `popularity_tier`; it does
+NOT affect sort order (the sort uses the raw score, element 3).
 
 ---
 
 ## 5. Where the code goes
 
 ### 5.1 `lib/catalog-data.ts` (server, build-time)
+
+**No rank key is ever attached to the public object.** The sort operates on the
+RAW rows (where `popularity_score` is in scope); only the already-sorted, projected
+products are retained. This is the fix for the leak risk the spec reviewer flagged:
+the drift guard checks `PUBLIC_FIELDS ⊆ keyof PublicProduct` but does NOT assert
+`out` has no extra keys, so attaching an internal `__rank` to `out` would silently
+ship. We never write any popularity-derived value to `out` except the coarse
+`popularity_tier`.
+
+Changes:
 - Add `'popularity_tier'` to `PUBLIC_FIELDS` and to `PublicProduct` (`types.ts`),
   keeping the compile-time drift guard satisfied.
-- In `toPublicProduct`, after the allowlist copy and `is_in_stock` normalization,
-  read the **raw** `popularity_score` and compute:
-  - `out.popularity_tier` (0/1/2), and
-  - an internal, NON-public sort key carried only for ordering — implemented as a
-    private numeric `__rank` used by the load step and then **not retained on the
-    public object** (or computed in a parallel array). The raw score itself is
-    never written to `out`.
-- In `load()`, after building the array, **sort it once** by the tuple in §4 so
-  `getAllProducts()` returns Recommended order. The top-quartile cutoff is computed
-  here (single pass over scored rows) before the sort.
+- `toPublicProduct` gains an optional second parameter `popularityTier?: 0|1|2`.
+  After the allowlist copy and `is_in_stock` normalization, it sets
+  `out.popularity_tier = popularityTier ?? 0`. It does NOT read `popularity_score`
+  itself and never writes the raw score or any `__rank` to `out`.
+- Rewrite `load()` as an explicit **two-pass** over the raw rows:
+  1. **Pass 1 — cutoff:** collect `popularity_score` of every scored row
+     (`typeof === 'number' && > 0`); compute the **p75** cutoff over that scored
+     population. (If <4 scored rows exist, cutoff = max → only the max is tier 2;
+     edge-case guard so tiny datasets don't crash.)
+  2. **Sort the RAW rows** in place (on a shallow copy) by the §4 tuple, reading
+     raw `popularity_score`, raw normalized stock, and `price` directly off each
+     raw row. No projection yet.
+  3. **Pass 2 — project:** map each sorted raw row → derive its tier from the
+     cutoff → `toPublicProduct(row, tier)`; push in order. Build `_bySku` here too.
+- `getAllProducts()` is unchanged in signature; it now returns Recommended order.
 
 > Rationale for sorting here rather than in `shop-query.ts`: the comparator needs
 > the raw `popularity_score`, which is deliberately absent from `PublicProduct`.
-> Keeping the score-aware sort at the load chokepoint is the only place it is in
-> scope without leaking. The data is process-cached SSG data; popularity syncs
-> daily, so a once-at-load sort is correct and cheap.
+> The load chokepoint is the only place the raw score is in scope without leaking.
+> The data is process-cached SSG data; popularity syncs daily, so a once-at-load
+> sort is correct and cheap.
 
 ### 5.2 `lib/shop-query.ts` (pure, unit-tested)
 - Add `'recommended'` to `SortKey` and the `SORTS` map.
 - Make `'recommended'` the **default**: `SORTS[firstParam(params.sort) ?? ''] ?? 'recommended'`.
 - For `sort === 'recommended'`: **preserve the incoming array order** (products
-  arrive pre-ranked from `getAllProducts()`); do NOT re-sort. Filtering still runs
-  via the shared `matchesFilters` predicate, so facet counts are unaffected.
+  arrive pre-ranked from `getAllProducts()`); do NOT re-sort. Concretely, the
+  branch still builds `sorted` from the filtered `items` (`Array.prototype.filter`
+  preserves input order) and paginates `sorted` — it simply skips the `.sort()`
+  call. Every existing branch in `applyShopQuery` sorts, so the no-op branch must
+  be added explicitly. Filtering still runs via the shared `matchesFilters`
+  predicate, so facet counts are unaffected.
 - For `name` / `price-asc` / `price-desc`: unchanged (explicit user re-sort).
+- `SortKey` (exported) gains `'recommended'`; adding it is additive, but check no
+  consumer exhaustively switches on `SortKey` without a default.
 
 > The pure-comparator unit tests operate on the SAFE fields only
 > (`is_in_stock`, `popularity_tier`, `price`, `name`). The score-aware ordering is
@@ -148,9 +180,14 @@ percentile to be finalized in the plan; default p75.)
   recommended preserves input order; explicit sorts still reorder; filtering +
   pagination unchanged.
 - **`lib/__tests__/catalog-data.test.ts`** (or new): given raw rows with mixed
-  stock/score/price, `getAllProducts()` returns the §4 tier order;
-  `popularity_tier` is 0/1/2 as specified; `popularity_score` is ABSENT from every
-  public object (leak guard); drift guard still compiles.
+  stock/score/price, `getAllProducts()` returns the §4 tier order; `popularity_tier`
+  is 0/1/2 against the **p75** cutoff; `popularity_score` and `__rank` are ABSENT
+  from every public object (leak guard — assert no extra keys, since the drift guard
+  alone does not); a `0.0`-score row is treated as unscored; a `null`-stock row
+  sinks to the bottom tier; drift guard still compiles.
+- **Stale comment to correct (in scope):** `lib/featured.ts:5–6` asserts
+  "popularity_score is 0 for all 11,436 products" — now false (3,294 are nonzero).
+  Fix that comment so a future reader does not trust the wrong premise.
 
 ---
 
