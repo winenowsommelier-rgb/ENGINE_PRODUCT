@@ -52,7 +52,7 @@ def products_db(tmp_path):
           id TEXT PRIMARY KEY, sku TEXT UNIQUE, name TEXT,
           classification TEXT, country TEXT, region TEXT, subregion TEXT,
           is_active INTEGER, has_recent_sales INTEGER,
-          popularity_revenue_90d REAL, popularity_orders_90d INTEGER,
+          popularity_revenue_window REAL, popularity_orders_window INTEGER,
           wn_stock INTEGER, quantity_in_stock INTEGER,
           enrichment_source TEXT, enrichment_note TEXT, updated_at TEXT
         );

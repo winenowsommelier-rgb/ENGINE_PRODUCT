@@ -32,8 +32,8 @@ const AUDIT_COLUMNS = [
   'current_validation_status',
   'enrichment_quality_grade',
   'review_priority',
-  'popularity_revenue_90d',
-  'popularity_orders_90d',
+  'popularity_revenue_window',
+  'popularity_orders_window',
   'wn_stock',
 ];
 
@@ -79,8 +79,8 @@ const products = db.prepare(`
     updated_at,
     validation_status,
     enrichment_quality_grade,
-    popularity_revenue_90d,
-    popularity_orders_90d,
+    popularity_revenue_window,
+    popularity_orders_window,
     wn_stock,
     quantity_in_stock,
     has_recent_sales
@@ -96,8 +96,8 @@ const assessed = products.map((product) => {
     ...row,
     classification: product.classification || '',
     review_priority: computeReviewPriority(product),
-    popularity_revenue_90d: product.popularity_revenue_90d || 0,
-    popularity_orders_90d: product.popularity_orders_90d || 0,
+    popularity_revenue_window: product.popularity_revenue_window || 0,
+    popularity_orders_window: product.popularity_orders_window || 0,
     wn_stock: product.wn_stock ?? product.quantity_in_stock ?? 0,
   };
 });
@@ -110,7 +110,7 @@ const reviewRows = assessed
   .filter((row) => row.magento_readiness === 'REVIEW' || row.magento_readiness === 'HOLD')
   .sort((a, b) => (
     priorityRank[a.review_priority] - priorityRank[b.review_priority]
-    || b.popularity_revenue_90d - a.popularity_revenue_90d
+    || b.popularity_revenue_window - a.popularity_revenue_window
     || b.wn_stock - a.wn_stock
     || a.sku.localeCompare(b.sku)
   ));

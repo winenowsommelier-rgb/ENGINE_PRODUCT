@@ -60,8 +60,8 @@ EXPORT_COLS = [
     "wine_color", "image_url",
     "validation_status", "enrichment_confidence", "enrichment_quality_grade",
     "enrichment_source", "enrichment_note", "enriched_at", "enriched_by",
-    "popularity_score", "popularity_orders_90d", "popularity_revenue_90d",
-    "popularity_qty_90d", "popularity_window_days", "popularity_synced_at",
+    "popularity_score", "popularity_orders_window", "popularity_revenue_window",
+    "popularity_qty_window", "popularity_window_days", "popularity_synced_at",
     "created_at", "updated_at",
     "pairing_rationale",
     # Stock and margin — required by curation hard_filter and scoring engine

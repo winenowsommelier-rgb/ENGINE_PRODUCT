@@ -21,8 +21,8 @@ sync_pop = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(sync_pop)
 
 POP_COLS = [
-    "popularity_score", "popularity_qty_90d", "popularity_orders_90d",
-    "popularity_revenue_90d", "popularity_window_days", "popularity_synced_at",
+    "popularity_score", "popularity_qty_window", "popularity_orders_window",
+    "popularity_revenue_window", "popularity_window_days", "popularity_synced_at",
 ]
 
 
@@ -54,7 +54,7 @@ def test_write_populates_matched_skus(temp_db):
     n = sync_pop.write_sqlite(rows, temp_db, synced_at="2026-06-20T00:00:00Z", window_days=365)
     assert n == 1
     a1 = _row(temp_db, "A1")
-    assert a1["popularity_orders_90d"] == 5
+    assert a1["popularity_orders_window"] == 5
     assert a1["popularity_window_days"] == 365
     assert a1["popularity_synced_at"] == "2026-06-20T00:00:00Z"
 
@@ -63,7 +63,7 @@ def test_unmatched_skus_are_null(temp_db):
     rows = [{"sku": "A1", "score": 0.9, "qty": 10.0, "orders": 5, "revenue": 1000.0}]
     sync_pop.write_sqlite(rows, temp_db, synced_at="x", window_days=365)
     a2 = _row(temp_db, "A2")
-    assert a2["popularity_orders_90d"] is None
+    assert a2["popularity_orders_window"] is None
 
 
 def test_rerun_resets_stale_rank(temp_db):
@@ -72,12 +72,12 @@ def test_rerun_resets_stale_rank(temp_db):
         [{"sku": "A1", "score": 0.9, "qty": 10.0, "orders": 5, "revenue": 1000.0},
          {"sku": "A2", "score": 0.4, "qty": 2.0, "orders": 1, "revenue": 50.0}],
         temp_db, synced_at="run1", window_days=365)
-    assert _row(temp_db, "A2")["popularity_orders_90d"] == 1
+    assert _row(temp_db, "A2")["popularity_orders_window"] == 1
     # Run 2: only A1 scores. A2 must be RESET to NULL, not keep its old rank.
     sync_pop.write_sqlite(
         [{"sku": "A1", "score": 0.9, "qty": 10.0, "orders": 5, "revenue": 1000.0}],
         temp_db, synced_at="run2", window_days=365)
-    assert _row(temp_db, "A2")["popularity_orders_90d"] is None, "stale rank not reset"
+    assert _row(temp_db, "A2")["popularity_orders_window"] is None, "stale rank not reset"
     assert _row(temp_db, "A1")["popularity_synced_at"] == "run2"
 
 

@@ -27,13 +27,13 @@ def stores():
     conn.row_factory = sqlite3.Row
     sqlite_pop = {
         r["sku"] for r in conn.execute(
-            "SELECT sku FROM products WHERE popularity_orders_90d IS NOT NULL")
+            "SELECT sku FROM products WHERE popularity_orders_window IS NOT NULL")
     }
     conn.close()
     exp = json.load(open(EXPORT))
     export_pop = {
         p["sku"] for p in exp
-        if p.get("popularity_orders_90d") not in (None, 0, "0")
+        if p.get("popularity_orders_window") not in (None, 0, "0")
     }
     return sqlite_pop, export_pop
 

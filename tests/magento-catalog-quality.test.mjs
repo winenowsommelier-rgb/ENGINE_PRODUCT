@@ -133,9 +133,9 @@ test('maps taxonomy geography to independent Magento columns', () => {
 });
 
 test('prioritizes review items with recent revenue before stocked and inactive items', () => {
-  assert.equal(computeReviewPriority({ popularity_revenue_90d: 1000, wn_stock: 0 }), 'HIGH');
-  assert.equal(computeReviewPriority({ popularity_revenue_90d: 0, wn_stock: 5 }), 'MEDIUM');
-  assert.equal(computeReviewPriority({ popularity_revenue_90d: 0, wn_stock: 0 }), 'LOW');
+  assert.equal(computeReviewPriority({ popularity_revenue_window: 1000, wn_stock: 0 }), 'HIGH');
+  assert.equal(computeReviewPriority({ popularity_revenue_window: 0, wn_stock: 5 }), 'MEDIUM');
+  assert.equal(computeReviewPriority({ popularity_revenue_window: 0, wn_stock: 0 }), 'LOW');
 });
 
 test('holds products with visible UTF-8 mojibake', () => {
