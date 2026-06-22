@@ -10,13 +10,14 @@ describe('explore-map invariant: panel count == /shop grid total', () => {
   const data = loadExploreMapData();
   const all = getAllProducts();
 
-  it('every curated region: map total === /shop grid total for {bev:1,inStock:1,country,region} (STRICT)', () => {
+  it('every curated region: map total === /shop grid total for {bev:1,country,region} (STRICT)', () => {
     for (const r of data.regions) {
-      // bev:1 (group axis) + inStock:1 (stock axis) make /shop count the SAME
-      // in-stock-beverage subset the generator counted. getAllProducts() returns
-      // in-stock AND OOS, so inStock:1 is REQUIRED — without it grid counts OOS too
-      // (Bordeaux 323 in-stock vs 753 incl. OOS) and this strict test fails.
-      const grid = applyShopQuery(all, { bev: '1', inStock: '1', country: r.country, region: r.name });
+      // bev:1 (group axis) makes /shop count the SAME all-stock beverage subset the
+      // generator counted. We deliberately do NOT pass inStock:1: the map counts
+      // in-stock AND OOS beverages, and shopHref drops inStock:1 too, so the grid
+      // must count both. Adding inStock:1 here would re-introduce the count != grid
+      // gap (the map would show all stock; the grid would show only in-stock).
+      const grid = applyShopQuery(all, { bev: '1', country: r.country, region: r.name });
       expect(grid.total, `count mismatch for ${r.name}`).toBe(r.total);
       expect(r.total).toBeGreaterThan(0);
     }
@@ -24,7 +25,7 @@ describe('explore-map invariant: panel count == /shop grid total', () => {
 
   it('lens handoff group is a real /shop group for a represented lens', () => {
     const r = data.regions.find((x) => (x.countsByGroup['Wine'] ?? 0) > 0)!;
-    const grid = applyShopQuery(all, { bev: '1', inStock: '1', country: r.country, region: r.name, group: lensPrimaryGroup('wine')! });
+    const grid = applyShopQuery(all, { bev: '1', country: r.country, region: r.name, group: lensPrimaryGroup('wine')! });
     expect(grid.total).toBeGreaterThan(0);
   });
 

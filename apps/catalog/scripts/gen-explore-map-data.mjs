@@ -33,9 +33,16 @@ function toPeek(r) {
 }
 
 /**
- * Pure aggregation. Groups IN-STOCK, non-excluded products by region NAME and by
- * country NAME, computing fresh totals, per-category_group counts, price ranges,
- * and candidate peeks. Uses the row's backfilled category_group (authoritative).
+ * Pure aggregation. Groups non-excluded products (IN-STOCK *and* out-of-stock) by
+ * region NAME and by country NAME, computing fresh totals, per-category_group
+ * counts, price ranges, and candidate peeks. Uses the row's backfilled
+ * category_group (authoritative).
+ *
+ * Stock note: the map intentionally counts ALL beverages so its totals reflect the
+ * full catalogue (~10.3k), not just the in-stock half (~5.1k). The /shop hand-off
+ * (shopHref) therefore must NOT pass inStock=1, so the grid total still equals the
+ * map total. The isInStockRaw helper is kept (exported + tested) for the peek
+ * ordering / future use, but is NOT a filter here. [count == grid, all-stock axis]
  */
 export function aggregate(rows, { excludeGroups = EXCLUDE_GROUPS } = {}) {
   const excluded = new Set(excludeGroups);
@@ -69,7 +76,8 @@ export function aggregate(rows, { excludeGroups = EXCLUDE_GROUPS } = {}) {
     if (!r || typeof r.sku !== 'string' || !r.sku) continue;
     const group = r.category_group || 'Unknown';
     if (excluded.has(group)) continue;
-    if (!isInStockRaw(r.is_in_stock)) continue;
+    // NOTE: no in-stock filter — the map counts all beverages (in + out of stock)
+    // by design. See aggregate() docstring; shopHref drops inStock=1 to match.
     const region = (r.region || '').trim();
     const country = (r.country || '').trim();
     if (country) bump(byCountry, country, r, group);

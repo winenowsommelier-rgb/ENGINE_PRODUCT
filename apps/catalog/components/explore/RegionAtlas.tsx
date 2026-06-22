@@ -64,11 +64,15 @@ function frame(
   const minY = Math.min(...ys), maxY = Math.max(...ys);
   const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
   // Normalise the Y span to X-equivalent screen units (2:1 plane) before sizing.
-  const spanX = Math.max(maxX - minX, 3) + 8;      // padding so pins/labels fit
-  const spanY = (Math.max(maxY - minY, 3) + 8) * 2;
+  // Padding (was +8, then +4) trimmed to +2 and the min-span clamp lowered (3→1.5)
+  // so the fit hugs the pins tighter — a focused country / selected region fills
+  // the frame with little empty sea. Still leaves a small margin for the pin dot.
+  const spanX = Math.max(maxX - minX, 1.5) + 2;    // padding so pins/labels fit
+  const spanY = (Math.max(maxY - minY, 1.5) + 2) * 2;
   // Fit the span to the box; floor (minScale) keeps a single country zoomed enough
-  // that its pins are big and tappable; cap at 7× so a tiny country isn't absurd.
-  const scale = Math.max(minScale, Math.min(100 / Math.max(spanX, spanY), 7));
+  // that its pins are big and tappable; cap at 14× so a tightly-clustered country
+  // (or a single-region one) fills the frame instead of leaving slack.
+  const scale = Math.max(minScale, Math.min(100 / Math.max(spanX, spanY), 14));
   const tx = 50 / scale - cx;
   const ty = 50 / scale - cy;
   return { scale, tx, ty };
@@ -160,9 +164,12 @@ export function RegionAtlas({
         ? focusCountry.regions.find((r) => r.slug === selectedSlug)
         : undefined;
       // Center on the selected region (single point → frame()'s span floor gives a
-      // comfortable tight zoom); otherwise frame the whole country.
-      if (sel) return frame([{ lat: sel.lat, lng: sel.lng }], 4.5);
-      return frame(focusCountry.regions, 3.5);
+      // comfortable tight zoom); otherwise frame the whole country. Floors raised
+      // (6 / 5) so country views fill the frame instead of leaving slack — the
+      // computed fit still wins for wide countries; the floor only bites for
+      // single-/tight-region ones. frame()'s cap (12×) bounds the top end.
+      if (sel) return frame([{ lat: sel.lat, lng: sel.lng }], 6);
+      return frame(focusCountry.regions, 5);
     }
     const worldPts = countries.flatMap((c) =>
       c.regions.reduce((s, r) => s + lensCount(r, lens), 0) > 0 ? [{ lat: c.lat, lng: c.lng }] : [],
@@ -176,7 +183,9 @@ export function RegionAtlas({
         'relative w-full overflow-hidden rounded-2xl border border-border bg-[hsl(36_33%_98%)] shadow-sm',
         // SHORT band at every size — the view is zoomed/scoped to just the data
         // points, so it needs little vertical room. Capped tight on desktop.
-        'aspect-[3/2] sm:aspect-[12/5] lg:aspect-[3/1] max-h-[22rem]',
+        // Shortened: wider aspect ratios + lower max-h so the band hugs the pins
+        // with minimal empty sea above/below.
+        'aspect-[2/1] sm:aspect-[16/5] lg:aspect-[16/4] max-h-[15rem]',
       ].join(' ')}
     >
       {/* PROJECTION-LOCKED PLANE: an inner 2:1 layer that exactly matches the SVG's
