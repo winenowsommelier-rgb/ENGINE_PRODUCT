@@ -136,15 +136,16 @@ const DESIGNATION_PATTERNS: { label: string; re: RegExp }[] = [
   { label: 'IGT',            re: /\bIGT\b/ },
   { label: 'DOP/IGP',        re: /\b(?:DOP|IGP)\b/ },
   { label: 'AOC',            re: /\b(?:AOC|AOP)\b/ },
-  { label: 'Gran Reserva',   re: /\bgran\s+reserva\b/i },
-  { label: 'Reserva',        re: /\b(?:reserva|riserva)\b/i },
-  { label: 'Reserve',        re: /\breserve\b/i },
-  { label: 'Extra Brut',     re: /\bextra\s+brut\b/i },
-  { label: 'Brut',           re: /\bbrut\b/i },
+  // Spirit grades + Single Malt are DEFINING classes — must beat soft modifiers.
   { label: 'Single Malt',    re: /\bsingle\s+malt\b/i },
   { label: 'XO',             re: /\bXO\b/ },
   { label: 'VSOP',           re: /\bVSOP\b/ },
   { label: 'VS',             re: /\bVS\b/ },
+  { label: 'Gran Reserva',   re: /\bgran\s+reserva\b/i },
+  { label: 'Extra Brut',     re: /\bextra\s+brut\b/i },
+  { label: 'Brut',           re: /\bbrut\b/i },
+  { label: 'Reserva',        re: /\b(?:reserva|riserva)\b/i },
+  { label: 'Reserve',        re: /\breserve\b/i },
   { label: 'Limited',        re: /\blimited(?:\s+edition)?\b/i },
   { label: 'Vintage',        re: /\bvintage\b/i },
 ];
@@ -462,6 +463,9 @@ CASES = {
     "Tempranillo Reserva": "Reserva",
     "Cognac VSOP": "VSOP",
     "Glenfiddich Single Malt": "Single Malt",
+    # Spirit grade must beat soft modifiers (ordering bug caught in review):
+    "Hennessy XO Limited Edition 2024": "XO",
+    "Pyrat Rum XO Reserve": "XO",
     # Accented end-of-token: JS \b fails after é, Python \b matches — the boundary
     # MUST be (?![a-z]) in BOTH engines or this case diverges. (Caught in review.)
     "Chateau Margaux 4Ème Cru Classé": "Cru Classé",
@@ -508,15 +512,17 @@ DESIGNATION_PATTERNS = [
     ("IGT",         re.compile(r"\bIGT\b")),
     ("DOP/IGP",     re.compile(r"\b(?:DOP|IGP)\b")),
     ("AOC",         re.compile(r"\b(?:AOC|AOP)\b")),
-    ("Gran Reserva",re.compile(r"\bgran\s+reserva\b", re.I)),
-    ("Reserva",     re.compile(r"\b(?:reserva|riserva)\b", re.I)),
-    ("Reserve",     re.compile(r"\breserve\b", re.I)),
-    ("Extra Brut",  re.compile(r"\bextra\s+brut\b", re.I)),
-    ("Brut",        re.compile(r"\bbrut\b", re.I)),
+    # Spirit grades + Single Malt are DEFINING classes — must beat soft modifiers
+    # (Reserva/Reserve/Limited/Vintage). Order below mirrors lib/designation.ts EXACTLY.
     ("Single Malt", re.compile(r"\bsingle\s+malt\b", re.I)),
     ("XO",          re.compile(r"\bXO\b")),
     ("VSOP",        re.compile(r"\bVSOP\b")),
     ("VS",          re.compile(r"\bVS\b")),
+    ("Gran Reserva",re.compile(r"\bgran\s+reserva\b", re.I)),
+    ("Extra Brut",  re.compile(r"\bextra\s+brut\b", re.I)),
+    ("Brut",        re.compile(r"\bbrut\b", re.I)),
+    ("Reserva",     re.compile(r"\b(?:reserva|riserva)\b", re.I)),
+    ("Reserve",     re.compile(r"\breserve\b", re.I)),
     ("Limited",     re.compile(r"\blimited(?:\s+edition)?\b", re.I)),
     ("Vintage",     re.compile(r"\bvintage\b", re.I)),
 ]
