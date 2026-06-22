@@ -79,8 +79,11 @@ def main() -> int:
         print(f"ERROR: DB not found: {args.db}", file=sys.stderr)
         return 1
 
-    if args.apply and args.db == DEFAULT_DB:
-        # Rule 10: back up the canonical DB before any write.
+    if args.apply:
+        # Rule 10: back up the TARGET db (whatever --db points at) before any write.
+        # Previously this only fired when --db == DEFAULT_DB, so passing the canonical
+        # path explicitly (data/db/products.db) silently skipped the backup. Back up the
+        # actual target instead — harmless for the tests' tmp_path DBs (pytest cleans them).
         bak = args.db.with_name(f"{args.db.name}.bak-pre-taste-A-{args.ts}")
         shutil.copy2(args.db, bak)
         print(f"backup → {bak}")
