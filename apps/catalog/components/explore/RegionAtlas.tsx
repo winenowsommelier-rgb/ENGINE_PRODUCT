@@ -42,6 +42,40 @@ export interface CountryPin {
   countsByGroup?: Record<string, number>;
 }
 
+/**
+ * Latitude boundary (degrees) below which a country is treated as "deep south" for
+ * world framing. The origin set is bimodal: ~56 pins cluster in the northern
+ * mid-latitudes (Europe/USA/Japan) while a handful of wine countries sit far south
+ * (Chile/Argentina/S.Africa/Australia/NZ/Uruguay, all near −33° to −41°). Framing
+ * one band around BOTH forced a zoom-out to ~0.36 — the world shown ~2.8× over in
+ * empty ocean. We instead frame the world to the NORTH cluster and badge the south.
+ *
+ * −20° is chosen so it sits below the tropics (keeping Brazil/Peru/Indonesia with
+ * the main band) but above the temperate-south wine belt (capturing the real
+ * outliers). Verified against the live data: the 6 countries below −20 are exactly
+ * the southern-hemisphere wine origins.
+ */
+export const SOUTH_LAT_THRESHOLD = -20;
+
+/**
+ * Split the world's country pins into the northern band (framed in place) and the
+ * deep-south outliers (collapsed into one tappable badge). Pins with no stock under
+ * the active lens are dropped from both buckets so an empty-lens country never adds
+ * a phantom badge or frame point. Pure — drives both the frame and the badge.
+ */
+export function partitionWorldPins(
+  countries: CountryPin[],
+  lens: LensKey,
+): { north: CountryPin[]; south: CountryPin[] } {
+  const north: CountryPin[] = [];
+  const south: CountryPin[] = [];
+  for (const c of countries) {
+    if (countryLensCount(c, lens) <= 0) continue;
+    (c.lat < SOUTH_LAT_THRESHOLD ? south : north).push(c);
+  }
+  return { north, south };
+}
+
 /** Bottle count for a country under the active lens — from regions if it has any,
  *  else from the country roll-up's own countsByGroup (region-less countries). */
 export function countryLensCount(c: CountryPin, lens: LensKey): number {
@@ -259,13 +293,30 @@ export function RegionAtlas({
   const [clusterFocus, setClusterFocus] = useState<CountryPin[] | null>(null);
   useLayoutEffect(() => { setClusterFocus(null); }, [focusCountry, lens]);
 
-  // What pins to show: world = countries (filtered to the active lens); country =
-  // its regions. dx/dy are the RENDER positions (% of the plane), seeded from the
+  // Split the world's pins into the northern band (framed in place) and the deep-
+  // south wine outliers (Chile/Argentina/S.Africa/Australia/NZ/Uruguay). Framing one
+  // band around both forced a zoom-out to ~0.36 — the whole globe shown ~2.8× over
+  // in empty ocean. We frame the NORTH and surface the south as one badge anchored
+  // at the bottom of the band; tapping it reuses the cluster-expand path (zoom to
+  // those members + an "All countries" escape). Recomputed per lens.
+  const { north: northCountries, south: southCountries } = useMemo(
+    () => partitionWorldPins(countries, lens),
+    [countries, lens],
+  );
+
+  // What pins to show: world = NORTH countries (filtered to the active lens); country
+  // = its regions. dx/dy are the RENDER positions (% of the plane), seeded from the
   // true projection then de-overlapped by spread() so no two pins sit on top of
   // each other (Chile/Argentina). lat/lng stay the source of truth for zoom.
-  // The set of countries to plot as INDIVIDUAL pins in world view: normally all of
-  // them, but when a cluster is expanded, just that cluster's members.
-  const worldCountries = clusterFocus ?? countries;
+  // The set of countries to plot as INDIVIDUAL pins in world view: the north band by
+  // default, or — when a cluster (incl. the south badge) is expanded — its members.
+  const worldCountries = clusterFocus ?? northCountries;
+
+  // Summed bottle count behind the southern badge, under the active lens.
+  const southTotal = useMemo(
+    () => southCountries.reduce((s, c) => s + countryLensCount(c, lens), 0),
+    [southCountries, lens],
+  );
 
   const pins = useMemo(() => {
     const seed = focusCountry
@@ -294,7 +345,10 @@ export function RegionAtlas({
   // we're showing individual pins (focused country, or an expanded cluster).
   const worldClusters = useMemo(() => {
     if (focusCountry || clusterFocus) return null;
-    const members = countries
+    // Cluster only the NORTH band — the deep-south outliers are represented by their
+    // own anchored badge, so they must not pull a cluster centre south (which is what
+    // dragged the frame down into empty ocean in the first place).
+    const members = northCountries
       .map((c) => ({
         key: c.slug, label: c.name, lat: c.lat, lng: c.lng,
         n: countryLensCount(c, lens), country: c,
@@ -305,7 +359,7 @@ export function RegionAtlas({
     const cl = clusterPins(members, CLUSTER_RADIUS);
     // If nothing actually clusters (all singletons), fall back to plain pins.
     return cl.some((c) => c.members.length > 1) ? cl : null;
-  }, [countries, focusCountry, clusterFocus, lens]);
+  }, [northCountries, focusCountry, clusterFocus, lens]);
 
   // Zoom: frame the points that actually have data, centering on the user's focus.
   //   • A region is SELECTED   → center on that region (zoomed in tight on it).
@@ -519,6 +573,28 @@ export function RegionAtlas({
           );
         })}
       </div>
+
+      {/* SOUTHERN-HEMISPHERE badge — a fixed overlay (OUTSIDE the zoom transform) at
+          the bottom edge of the band. The deep-south wine countries are too far from
+          the northern mass to share the frame without flooding it with empty ocean,
+          so they live here: one tap zooms to just those countries (spread apart and
+          tappable), with the same "All countries" escape as any cluster. Shown only
+          in the default world view (no focused country, no expanded cluster) and only
+          when the active lens actually has southern stock. */}
+      {!focusCountry && !clusterFocus && southCountries.length > 0 && (
+        <button
+          type="button"
+          onClick={() => setClusterFocus(southCountries)}
+          aria-label={`${southCountries.length} southern-hemisphere countries, ${southTotal.toLocaleString()} bottles. Tap to zoom in.`}
+          title={`Southern hemisphere · ${southCountries.length} countries · ${southTotal.toLocaleString()} bottles`}
+          className="group absolute bottom-3 left-1/2 z-20 inline-flex min-h-9 -translate-x-1/2 items-center gap-2 rounded-full border-2 border-background bg-primary px-3.5 py-1 text-sm font-medium text-primary-foreground shadow-md transition-transform duration-150 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <span aria-hidden className="text-base leading-none">↓</span>
+          Southern hemisphere
+          <span className="text-xs tabular-nums opacity-80">{southTotal.toLocaleString()}</span>
+          <span aria-hidden className="opacity-70">›</span>
+        </button>
+      )}
 
       {/* Expanded-cluster escape: a clear way back to the full world view, since the
           parent breadcrumb doesn't know about this map-local cluster state. */}
