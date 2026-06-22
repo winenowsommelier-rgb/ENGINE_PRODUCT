@@ -27,6 +27,7 @@ data/product_image_research_*.csv
 data/product_image_research_*.json
 data/product_image_upload_template.csv
 data/PROCESS_UPGRADE_REPORT.md
+data/data_review_candidates.csv
 public/spec-preview.html
 public/spec-preview.md
 .DS_Store
