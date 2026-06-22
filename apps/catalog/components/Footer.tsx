@@ -30,8 +30,8 @@ const CONTACT_CHANNELS = [
 export function Footer() {
   return (
     <footer className="mt-24 border-t border-border bg-background">
-      <div className="container py-16">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-4">
+      <div className="container py-12">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
           {/* Brand + tagline */}
           <div className="md:col-span-2">
             <Link
@@ -47,12 +47,12 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Shop column */}
+          {/* Shop column — 2-col grid so 10 categories stay short, not a tall stack */}
           <nav aria-label="Shop categories">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground">
               Shop
             </h2>
-            <ul className="mt-4 flex flex-col">
+            <ul className="mt-4 grid grid-cols-2 gap-x-6">
               {CATEGORY_GROUPS.map((group) => (
                 <li key={group}>
                   <Link
