@@ -30,13 +30,13 @@
  *   subregion → exact (case-insensitive) match on subregion (same rationale as region)
  *   designation → exact (ci) match on the derived designation (lib/designation.ts:
  *               most-specific single tag parsed from name, e.g. "Grand Cru","DOCG").
- *   grape     → case-insensitive substring match on grape_variety
+ *   grape     → case-insensitive substring match on variety
  *   flavor    → keep products whose flavor_tags includes it (case-insensitive)
- *   body      → match the product's wine_body NORMALIZED via normalizeScale('body')
+ *   body      → match the product's body NORMALIZED via normalizeScale('body')
  *               to the 4-step component scale (so the dropdown option matches the
  *               same value the taste gauges render; off-scale tokens → null → drop)
- *   acidity   → same, normalizeScale('acidity', wine_acidity)
- *   tannin    → same, normalizeScale('tannin', wine_tannin)
+ *   acidity   → same, normalizeScale('acidity', acidity)
+ *   tannin    → same, normalizeScale('tannin', tannin)
  *   hasScore=1→ keep only products with a non-empty score_summary
  *
  * Sort (param `sort`):
