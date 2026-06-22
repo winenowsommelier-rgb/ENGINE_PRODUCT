@@ -26,7 +26,7 @@ H = {"apikey": KEY, "Authorization": f"Bearer {KEY}", "Prefer": "count=none"}
 
 FIELDS = (
     "sku,name,classification,country,region,subregion,appellation,"
-    "vintage,brand,grape_variety,wine_body,wine_acidity,wine_tannin,"
+    "vintage,brand,variety,body,acidity,tannin,"
     "flavor_tags,food_matching,style,desc_en_short,desc_en_full"
 )
 
@@ -401,7 +401,7 @@ def generate_wine_short(p):
     clf = s(p.get("classification")) or "wine"
     country = s(p.get("country"))
     region = s(p.get("region"))
-    grape = s(p.get("grape_variety"))
+    grape = s(p.get("variety"))
     tags = parse_tags(p.get("flavor_tags"))
 
     loc_parts = [r for r in [region, country] if r]
@@ -426,11 +426,11 @@ def generate_wine_full(p):
     clf = s(p.get("classification")) or "wine"
     country = s(p.get("country"))
     region = s(p.get("region"))
-    grape = s(p.get("grape_variety"))
+    grape = s(p.get("variety"))
     vintage = s(p.get("vintage"))
     tags = parse_tags(p.get("flavor_tags"))
     food = parse_tags(p.get("food_matching"))
-    body_n = p.get("wine_body")
+    body_n = p.get("body")
     body = BODY_ADJ.get(body_n, "") if body_n else ""
 
     paras = []
