@@ -30,8 +30,8 @@ PRODUCT_SYNC_COLUMNS = [
     "is_in_stock", "quantity_in_stock", "wn_stock",
     # Taxonomy
     "country", "region", "subregion", "appellation",
-    "classification", "wine_classification", "wine_type",
-    "liquor_main_type", "other_type", "color",
+    "classification", "wine_classification",
+    "liquor_main_type", "color",
     # Enrichment — universal attributes (renamed from wine_* 2026-06-22)
     "body", "acidity", "tannin",
     "variety", "blend_type", "production_style",

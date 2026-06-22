@@ -48,14 +48,18 @@ except Exception:  # noqa: BLE001
 # Used for fill-rate. Keyed by category_group; "*" applies to all.
 USER_FIELDS = {
     "*": ["name", "price", "image_url", "country", "desc_en_short"],
-    "Wine": ["region", "grape_variety", "wine_color", "wine_body", "food_matching",
+    "Wine": ["region", "variety", "color", "body", "food_matching",
              "flavor_tags", "taste_profile"],
     "Whisky": ["region", "flavor_tags", "taste_profile"],
     "Spirits": ["flavor_tags"],
     "Sake & Asian": ["flavor_tags"],
 }
-# Hard spirits should NOT carry wine-only attributes.
-WINE_ONLY_ATTRS = ["grape_variety", "wine_color", "wine_body", "wine_acidity", "wine_tannin"]
+# Universal product attributes (renamed from wine_* 2026-06-22). These apply to
+# EVERY category now (a tequila with variety="Blue Agave" is correct enrichment,
+# not an error). The audit reports their per-category COVERAGE, it no longer flags
+# a spirit for carrying them. See docs/superpowers/specs/2026-06-22-universal-product-attributes-design.md
+UNIVERSAL_ATTRS = ["variety", "body", "acidity", "tannin", "color",
+                   "sweetness", "intensity", "smokiness", "finish"]
 JSON_COLS = ["taste_profile", "flavor_tags", "food_matching"]
 
 SEP = "=" * 72
@@ -223,16 +227,23 @@ def check_attributes(rows, rep: Report):
             g = _resolve_cat(r).get("group")
         return g or "Unknown"
 
-    # 4a. Hard spirits carrying wine-only attributes (grape, body, tannin...).
-    spirit_with_wine_attr = []
+    # 4a. Universal-attribute COVERAGE per category (NOT a defect check).
+    # Pre-2026-06-22 this flagged "spirit has a wine attr" as a warning; under the
+    # universal model those attrs apply to every category, so we instead report how
+    # well each category is enriched on each universal axis — a coverage dashboard
+    # that the enrichment plan (Phase A/B) drives toward 100%.
+    by_group = collections.defaultdict(list)
     for r in rows:
-        if group(r) in ("Whisky", "Spirits"):
-            present = [a for a in WINE_ONLY_ATTRS if not _blank(r.get(a))]
-            if present:
-                spirit_with_wine_attr.append(f"{r.get('sku')} {group(r)} has {present}")
-    rep.line("WARNING" if spirit_with_wine_attr else "OK",
-             "spirit/whisky with wine-only attrs", len(spirit_with_wine_attr),
-             spirit_with_wine_attr)
+        by_group[group(r)].append(r)
+    rep.line("INFO", "universal-attribute coverage (by category) ↓", 0)
+    for g in sorted(by_group, key=lambda k: -len(by_group[k])):
+        grp = by_group[g]
+        if g in ("Accessories", "Events", "Non-Alcoholic", "Cigars"):
+            continue  # non-beverage groups don't carry sensory attrs
+        cov = {a: sum(1 for r in grp if not _blank(r.get(a))) for a in UNIVERSAL_ATTRS}
+        filled = {a: c for a, c in cov.items() if c > 0}
+        summary = ", ".join(f"{a}={c}/{len(grp)}" for a, c in filled.items()) or "none populated"
+        print(f"      {g} (n={len(grp)}): {summary}")
 
     # 4b. classification == 'Wine product' (known junk bucket; advisory).
     junk = [r.get("sku") for r in rows if (r.get("classification") or "") == "Wine product"]
