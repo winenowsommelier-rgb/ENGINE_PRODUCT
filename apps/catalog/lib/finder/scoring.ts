@@ -4,6 +4,7 @@ import { finderPrefilter } from './category-map';
 import { foodChipMatches } from './food-chips';
 import { primaryValue, bucketForValue } from './scales';
 import { normalizeScale } from '@/lib/taste-adapter';
+import { typeForProduct } from '@/lib/category-groups';
 
 const BODY_LADDER = ['light','medium-light','medium','medium-full','full'];
 const norm = (s?: string) => (s ?? '').trim().toLowerCase();
@@ -49,8 +50,6 @@ function sweetnessLadderDistance(target: string, value: string): number | null {
   return Math.abs(ti - vi);
 }
 
-const firstSeg = (s?: string) => norm(s).split('|')[0].trim();
-
 // ── TIER-2 origin/style signal maps (spec §5). Kept as data, not buried magic
 // strings (Rule 3). Each token comes from question-config.ts for that category. ──
 
@@ -66,11 +65,16 @@ const WHISKY_STYLE_TO_REGIONS: Record<string, string[]> = {
   smoky: ['islay'], smooth: ['speyside', 'highland'],
 };
 
-// SPIRITS (other) axis1 (type) → accepted classification first-segments.
-// 'other' is a catch-all with no single classification, so no boost.
-const SPIRITS_TYPE_TO_CLASS: Record<string, string[]> = {
+// SPIRITS (other) axis1 (type) → accepted canonical category_type values
+// (lowercased). MUST read the SKU-derived `category_type` (via typeForProduct),
+// NEVER the raw Magento `classification` — classification is a stale TYPE duplicate
+// that dumps 162/419 spirit-pool rows into the junk bucket "wine product", so they
+// could never score the type answer (audit finding C1; see CLAUDE.md Rule 12 and
+// [[project_classification_means_designation]]). category_type is clean: Rum/Tequila/
+// Vodka/Brandy/Cognac/Mezcal with ZERO junk. 'other' is a catch-all → no boost.
+const SPIRITS_TYPE_TO_TYPE: Record<string, string[]> = {
   vodka: ['vodka'], rum: ['rum'], tequila: ['tequila', 'mezcal'],
-  brandy: ['brandy', 'cognac'],
+  brandy: ['brandy', 'cognac', 'armagnac'],
 };
 
 /**
@@ -79,10 +83,14 @@ const SPIRITS_TYPE_TO_CLASS: Record<string, string[]> = {
  * (axis1) is scored separately via the BODY_TOKEN ladder in scoreProducts and is
  * NOT handled here.
  *
- * Profile-only axes (intentionally NOT scored — no reliable structured signal):
- *  - GIN axis1 (classic/contemporary): no field distinguishes these; profile-only.
- *  - WINE axis2 (fruity/earthy/balanced): by design profile-only; it shapes the
- *    archetype copy but does not rank products.
+ * No longer profile-only (audit finding W3 — both used to rank NOTHING):
+ *  - WINE axis2 (fruity/earthy/balanced): now a TASTE-TIER term via
+ *    wineCharacterScore (flavor_tags_canonical set-intersection) in scoreProducts.
+ *    'balanced' stays a deliberate neutral (no constraint).
+ *  - GIN axis1 (classic/contemporary): now a RANK-ONLY keyword lean via
+ *    ginStyleBump in deepDiveBump (no structured field, so kept out of the gate).
+ * Neither is handled HERE — wine character is a taste-tier term, gin style a
+ * rank-only bump, exactly like wine body vs the deep-dive terms.
  *
  * NOTE: SAKE axis1 (dry/sweet) is NO LONGER profile-only — it is scored as a
  * taste-tier term in scoreProducts via the sweetness ladder (taste_profile.axes.
@@ -100,8 +108,9 @@ function tier2Score(a: Answers, p: PublicProduct): number {
       break;
     }
     case 'spirits': {
-      const wantClasses = a.axis1 ? SPIRITS_TYPE_TO_CLASS[a.axis1] : undefined;
-      if (wantClasses && p.classification && wantClasses.includes(firstSeg(p.classification))) s += 2;
+      const wantTypes = a.axis1 ? SPIRITS_TYPE_TO_TYPE[a.axis1] : undefined;
+      // category_type (SKU taxonomy), not classification — Rule 12.
+      if (wantTypes && wantTypes.includes(norm(typeForProduct(p)))) s += 2;
       break;
     }
     // gin: axis1 is profile-only (see doc above). sake: axis1 (sweetness) IS scored,
@@ -151,7 +160,15 @@ function intensityScore(scale: 'acidity' | 'tannin', token: string | undefined, 
 
 // Grape family → tokens that, if present in p.variety, signal that family.
 // 'surprise' (and any unmapped token) intentionally has no entry → never constrains.
+// RED grapes (red deep-dive) + WHITE/SPARKLING grapes (white/sparkling deep-dive, W5).
+// The white/sparkling tokens were derived from the live export's actual `variety`
+// distribution (chardonnay 316 / sauvignon blanc 186 / riesling 55 / … for white;
+// chardonnay+pinot noir+meunier+glera for sparkling) so every grape the UI offers in
+// a given category maps to real in-stock bottles. FIXES the W5 bug where white &
+// sparkling deep-dives showed only RED grapes (Cabernet/Merlot/…), nonsensical to the
+// user and unscoreable against a white wine's variety.
 const GRAPE_FAMILY: Record<string, string[]> = {
+  // — RED —
   cabernet:      ['cabernet'],
   'pinot-noir':  ['pinot noir'],
   'syrah-shiraz':['syrah', 'shiraz'],
@@ -159,6 +176,17 @@ const GRAPE_FAMILY: Record<string, string[]> = {
   tempranillo:   ['tempranillo', 'rioja'],
   merlot:        ['merlot'],
   grenache:      ['grenache', 'garnacha'],
+  // — WHITE — ('sauv-blanc' → 'sauvignon blanc'; 'pinot-grigio' also catches 'pinot gris')
+  chardonnay:    ['chardonnay'],
+  'sauv-blanc':  ['sauvignon blanc'],
+  riesling:      ['riesling'],
+  'pinot-grigio':['pinot grigio', 'pinot gris'],
+  viognier:      ['viognier'],
+  semillon:      ['semillon', 'sémillon'],
+  // — SPARKLING — (reuses chardonnay/pinot-noir above; adds the bubbles-specific grapes.
+  // 'glera' is the Prosecco grape, also labelled 'prosecco' on some rows.)
+  glera:         ['glera', 'prosecco'],
+  meunier:       ['meunier'],
 };
 
 // Flavor family → canonical-note SET that signals that family. Chip tokens are
@@ -193,6 +221,56 @@ function grapeScore(token: string | undefined, grapeVariety: string | undefined)
   if (!family) return 0; // 'surprise' / unknown → no constraint
   const hay = norm(grapeVariety);
   return family.some((t) => hay.includes(t)) ? 2 : 0;
+}
+
+// WINE axis2 (character) → flavor families that signal it (audit finding W3). This
+// axis was previously profile-only (shaped the archetype copy but ranked nothing),
+// so the wine "character" question was decorative. It is now a real taste-tier term:
+// it set-intersects flavor_tags_canonical via the SAME FLAVOR_FAMILY note sets used
+// by the flavor chips, so the mechanism (and its hyphen-vs-space safety) is reused,
+// not reinvented. 'balanced' has no entry → no constraint (a deliberate neutral, like
+// the chips' unmapped tokens). Backed by real data: 3,045 in-stock wines carry a
+// fruity-family note, 1,545 an earthy-family note.
+const WINE_CHARACTER_TO_FAMILIES: Record<string, string[]> = {
+  fruity: ['red-fruit', 'dark-fruit', 'stone-fruit', 'tropical', 'citrus'],
+  earthy: ['earthy', 'oak', 'spice', 'mineral'],
+  // balanced: intentionally absent → imposes no constraint.
+};
+
+/** Points a wine earns from the axis2 character answer (taste-tier; 0 when no signal). */
+function wineCharacterScore(token: string | undefined, canonical: string[] | undefined): number {
+  if (!token) return 0;
+  const families = WINE_CHARACTER_TO_FAMILIES[token];
+  if (!families) return 0; // 'balanced' / unknown → no constraint
+  const notes = new Set((canonical ?? []).map(norm));
+  // Any family in the character group that intersects the product's notes scores it.
+  for (const fam of families) {
+    const noteSet = FLAVOR_FAMILY[fam];
+    if (noteSet && noteSet.some((n) => notes.has(norm(n)))) return 2;
+  }
+  return 0;
+}
+
+// GIN axis1 (style) → keyword signal for a RANK-ONLY lean (audit finding W3). Unlike
+// wine character there is NO structured field for classic vs contemporary gin, so this
+// reads name/description keywords (noisier). It is therefore kept RANK-ONLY (deep-dive
+// bump, never the taste-tier `s`): a keyword hit can re-order but must NOT clear the
+// quality gate. Data: 49 in-stock gins signal "london dry"; 125 signal a contemporary/
+// botanical/floral cue.
+const GIN_CLASSIC_KEYWORDS = ['london dry', 'london'];
+const GIN_CONTEMPORARY_KEYWORDS = ['contemporary', 'botanical', 'floral', 'citrus-forward', 'new western'];
+
+function ginStyleBump(a: Answers, p: PublicProduct): number {
+  if (a.category !== 'gin' || !a.axis1) return 0;
+  const hay = norm(
+    [p.name, p.classification, p.desc_en_short, p.full_description].filter(Boolean).join(' '),
+  );
+  if (!hay) return 0;
+  if (a.axis1 === 'classic') return GIN_CLASSIC_KEYWORDS.some((k) => hay.includes(k)) ? 1 : 0;
+  if (a.axis1 === 'contemporary') {
+    return GIN_CONTEMPORARY_KEYWORDS.some((k) => hay.includes(k)) ? 1 : 0;
+  }
+  return 0;
 }
 
 // Age scoring. vintage is a STRING at runtime ("Current vintage", "2005",
@@ -248,6 +326,23 @@ function peatScore(token: string | undefined, region: string | undefined): numbe
   return isIslay ? 0 : 2; // none: reward non-Islay
 }
 
+// Prestige lean for a gift/special occasion (audit finding C2). The existing
+// score_summary +2 bonus (a critic-score quality signal) is WINE-ONLY: score_summary
+// is 0% populated for whisky, spirits and sake, so for those categories "a gift" /
+// "special occasion" added nothing and the final order collapsed to cheapest-first.
+// popularity_tier is the client-SAFE bestseller bucket (0 none / 1 sells / 2 top
+// seller; derived server-side, the raw popularity_score never ships). A top-seller
+// is a defensible gift proxy where no critic score exists.
+//
+// Kept RANK-ONLY (in the deep-dive bump, not the taste-tier `s`) ON PURPOSE: a
+// popular bottle that does NOT match the user's taste answer must not clear the
+// quality gate (`degraded` is computed from `s` alone). +1 only (weaker than the
+// critic-score +2, since popularity is a noisier signal than an expert score).
+function prestigeBump(a: Answers, p: PublicProduct): number {
+  if (a.occasion !== 'gift' && a.occasion !== 'special') return 0;
+  return p.popularity_tier === 2 ? 1 : 0;
+}
+
 /** Sum of all deep-dive terms for one product (each 0 when its answer is absent). */
 function deepDiveBump(a: Answers, p: PublicProduct): number {
   return (
@@ -256,7 +351,9 @@ function deepDiveBump(a: Answers, p: PublicProduct): number {
     grapeScore(a.grape, p.variety) +
     ageScore(a.age, p.vintage) +
     adventureScore(a.adventure, p.region) +
-    peatScore(a.peat, p.region)
+    peatScore(a.peat, p.region) +
+    prestigeBump(a, p) +
+    ginStyleBump(a, p)
   );
 }
 
@@ -298,6 +395,11 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
         if (fam && fam.some((n) => notes.has(norm(n)))) s += 2;
       }
     }
+    // WINE character (axis2) — now a real taste-tier term (W3). Only for wine categories
+    // (whisky/spirits/sake use axis2 differently or not at all). 'balanced' → no constraint.
+    if ((a.category === 'red' || a.category === 'white' || a.category === 'sparkling') && a.axis2) {
+      s += wineCharacterScore(a.axis2, p.flavor_tags_canonical);
+    }
     // TIER-2 origin/style for non-wine categories (whisky origin→country & style→region,
     // spirits type→classification). Replaces the old axis2-vs-country line, which was
     // inert for whisky/spirits/sake (axis2 there is smoky/smooth, never a country).
@@ -318,6 +420,10 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
   scored.sort((x, y) =>
     y.rankScore - x.rankScore ||
     Number(!!y.p.score_summary) - Number(!!x.p.score_summary) ||
+    // bestseller bucket breaks ties before price — meaningful for whisky/spirits/sake
+    // where score_summary is always absent (so the key above is inert there). Wine still
+    // sorts by critic-score presence first; popularity only decides genuine ties (C2).
+    (y.p.popularity_tier ?? 0) - (x.p.popularity_tier ?? 0) ||
     (x.p.price ?? 0) - (y.p.price ?? 0),
   );
 
@@ -342,7 +448,16 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
   //   • large pool, nothing clears (all far-body) → degraded
   //   • empty pool → not degraded (never label "closest matches" over nothing)
   // (MIN_RESULTS/TOP_N govern how many we SHOW, not whether the label is honest.)
-  const degraded = ranked.length > 0 && wellMatched === 0;
+  //
+  // W3 gin-label fix: GIN has NO taste-tier scoring term — its only taste question
+  // (classic/contemporary) is a rank-only keyword lean (ginStyleBump), deliberately
+  // not in `s` (the keyword signal is too noisy to gate quality on). So `wellMatched`
+  // is ALWAYS 0 for gin and every gin search was wrongly flagged "Closest matches".
+  // That is dishonest in the OTHER direction: the pool genuinely matches (in-stock,
+  // in-budget gin is exactly what the user asked for). A category with no gate-able
+  // taste term cannot be "degraded" — there is no bar to fall short of.
+  const hasGateableTasteTerm = a.category !== 'gin';
+  const degraded = hasGateableTasteTerm && ranked.length > 0 && wellMatched === 0;
 
   return { products: ranked.slice(0, TOP_N).map((r) => r.p), degraded };
 }

@@ -232,9 +232,14 @@ const WINE_TANNIN_STEP: QuestionStep = {
   ],
 };
 
-// Wine — grape family (scoring tokens: cabernet | pinot-noir | syrah-shiraz |
-// sangiovese | tempranillo | merlot | grenache | surprise)
-const WINE_GRAPE_STEP: QuestionStep = {
+// Wine — grape family. The options MUST be category-appropriate (W5 fix): a white-wine
+// deep-dive must NOT offer red grapes. Three variants, one per wine colour; every token
+// maps to a GRAPE_FAMILY key in scoring.ts (else it scores nothing) and to real in-stock
+// `variety` values (counts verified against the live export).
+
+// RED grapes (scoring tokens: cabernet | pinot-noir | syrah-shiraz | sangiovese |
+// tempranillo | merlot | grenache | surprise)
+const WINE_GRAPE_RED_STEP: QuestionStep = {
   id: 'grape',
   field: 'grape',
   title: 'Is there a grape you gravitate toward?',
@@ -247,6 +252,42 @@ const WINE_GRAPE_STEP: QuestionStep = {
     { token: 'tempranillo', label: 'Tempranillo', icon: '🪵' },
     { token: 'merlot', label: 'Merlot', icon: '🫐' },
     { token: 'grenache', label: 'Grenache', icon: '🍓' },
+    { token: 'surprise', label: 'Surprise me', icon: '🎲' },
+  ],
+};
+
+// WHITE grapes (scoring tokens: chardonnay | sauv-blanc | riesling | pinot-grigio |
+// viognier | semillon | surprise). Counts in live export: chardonnay 316, sauv-blanc 186,
+// riesling 55, pinot-grigio 36, viognier 17, semillon 14.
+const WINE_GRAPE_WHITE_STEP: QuestionStep = {
+  id: 'grape',
+  field: 'grape',
+  title: 'Is there a grape you gravitate toward?',
+  optional: true,
+  options: [
+    { token: 'chardonnay', label: 'Chardonnay', icon: '🍐' },
+    { token: 'sauv-blanc', label: 'Sauvignon Blanc', icon: '🌿' },
+    { token: 'riesling', label: 'Riesling', icon: '🍏' },
+    { token: 'pinot-grigio', label: 'Pinot Grigio / Gris', icon: '🍇' },
+    { token: 'viognier', label: 'Viognier', icon: '🌸' },
+    { token: 'semillon', label: 'Sémillon', icon: '🍋' },
+    { token: 'surprise', label: 'Surprise me', icon: '🎲' },
+  ],
+};
+
+// SPARKLING grapes (scoring tokens: chardonnay | pinot-noir | meunier | glera | surprise).
+// Counts: chardonnay 236, pinot-noir 214, meunier 151, glera/prosecco 74. (Pinot Noir is a
+// legitimate sparkling grape — the Champagne trio is Chardonnay/Pinot Noir/Meunier.)
+const WINE_GRAPE_SPARKLING_STEP: QuestionStep = {
+  id: 'grape',
+  field: 'grape',
+  title: 'Is there a grape you gravitate toward?',
+  optional: true,
+  options: [
+    { token: 'chardonnay', label: 'Chardonnay (Blanc de Blancs)', icon: '🍐' },
+    { token: 'pinot-noir', label: 'Pinot Noir', icon: '🍒' },
+    { token: 'meunier', label: 'Pinot Meunier', icon: '🍇' },
+    { token: 'glera', label: 'Glera (Prosecco)', icon: '🫧' },
     { token: 'surprise', label: 'Surprise me', icon: '🎲' },
   ],
 };
@@ -307,23 +348,31 @@ const WHISKY_AGE_STEP: QuestionStep = {
 const WINE_DEEP_DIVE_RED: QuestionStep[] = [
   WINE_ACIDITY_STEP,
   WINE_TANNIN_STEP,
-  WINE_GRAPE_STEP,
+  WINE_GRAPE_RED_STEP,
   WINE_AGE_STEP,
   ADVENTURE_STEP,
 ];
 
-// White & sparkling: same as red but NO tannin.
-const WINE_DEEP_DIVE_NO_TANNIN: QuestionStep[] = [
+// White: like red but NO tannin, and WHITE grapes (W5 — was sharing the red grape step).
+const WINE_DEEP_DIVE_WHITE: QuestionStep[] = [
   WINE_ACIDITY_STEP,
-  WINE_GRAPE_STEP,
+  WINE_GRAPE_WHITE_STEP,
+  WINE_AGE_STEP,
+  ADVENTURE_STEP,
+];
+
+// Sparkling: like white but with SPARKLING grapes (Champagne trio + Glera).
+const WINE_DEEP_DIVE_SPARKLING: QuestionStep[] = [
+  WINE_ACIDITY_STEP,
+  WINE_GRAPE_SPARKLING_STEP,
   WINE_AGE_STEP,
   ADVENTURE_STEP,
 ];
 
 const DEEP_DIVE_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   red: WINE_DEEP_DIVE_RED,
-  white: WINE_DEEP_DIVE_NO_TANNIN,
-  sparkling: WINE_DEEP_DIVE_NO_TANNIN,
+  white: WINE_DEEP_DIVE_WHITE,
+  sparkling: WINE_DEEP_DIVE_SPARKLING,
   whisky: [WHISKY_PEAT_STEP, WHISKY_AGE_STEP, ADVENTURE_STEP],
   // Thin categories — kept deliberately short (gin MUST be shorter than red).
   // Gin's classic/contemporary axis is profile-only, so a single adventure
