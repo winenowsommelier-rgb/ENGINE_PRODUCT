@@ -122,3 +122,30 @@ def test_live_export_matches_db_for_enriched_skus(conn):
         f"{len(stale)} SKUs have desc_en_short in DB but NULL in live export. "
         f"Run scripts/refresh_live_export.py. Sample: {stale[:10]}"
     )
+
+
+def test_name_detected_designation_is_populated_in_export():
+    """INVARIANT (Rule 6): if a product NAME contains a designation token, the
+    UI-facing export has the `designation` field populated for it. Guards the
+    $56 Phase-5 failure mode — derived data that never reaches data/
+    live_products_export.json (what /api/explore + /shop read)."""
+    import importlib.util
+    bd_path = REPO_ROOT / "scripts" / "backfill_designation.py"
+    spec = importlib.util.spec_from_file_location("backfill_designation", bd_path)
+    bd = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(bd)
+
+    export_path = REPO_ROOT / "data" / "live_products_export.json"
+    if not export_path.exists():
+        pytest.skip("live_products_export.json not present")
+    export = json.loads(export_path.read_text())
+
+    missing = [
+        p.get("sku")
+        for p in export
+        if bd.designation_for_name(p.get("name")) and not (p.get("designation") or "").strip()
+    ]
+    assert not missing, (
+        f"{len(missing)} products have a name-detected designation but an empty "
+        f"export `designation` field (first 10): {missing[:10]}"
+    )
