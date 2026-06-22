@@ -14,13 +14,13 @@ import urllib.request
 # Per §14.1 of spec. Order matters — kept stable for downstream Magento import.
 CSV_COLUMNS: list[str] = [
     "sku", "confidence", "confidence_tier",
-    "wine_body", "wine_acidity", "wine_tannin",
-    "grape_variety", "grape_blend_type", "wine_production_style",
+    "body", "acidity", "tannin",
+    "variety", "blend_type", "production_style",
     "flavor_tags", "food_matching",
     "desc_en_short", "full_description",
     "score_max", "score_summary",
     "enrichment_note",
-    "current_wine_body", "current_food_matching", "current_full_description",
+    "current_body", "current_food_matching", "current_full_description",
     "cache_id", "enriched_at", "enriched_by",
 ]
 
@@ -48,12 +48,13 @@ def build_csv_row(
         "sku": sku,
         "confidence": round(final_confidence, 3),
         "confidence_tier": tier,
-        "wine_body": response.get("wine_body", ""),
-        "wine_acidity": response.get("wine_acidity", ""),
-        "wine_tannin": response.get("wine_tannin", ""),
-        "grape_variety": _pipe(response.get("grape_variety", [])),
-        "grape_blend_type": response.get("grape_blend_type", ""),
-        "wine_production_style": _pipe(response.get("wine_production_style", [])),
+        # LHS keys = CSV/DB columns (renamed); RHS response.get() = LLM-response keys (stable).
+        "body": response.get("wine_body", ""),
+        "acidity": response.get("wine_acidity", ""),
+        "tannin": response.get("wine_tannin", ""),
+        "variety": _pipe(response.get("grape_variety", [])),
+        "blend_type": response.get("grape_blend_type", ""),
+        "production_style": _pipe(response.get("wine_production_style", [])),
         "flavor_tags": _pipe(response.get("flavor_tags", [])),
         "food_matching": _pipe(response.get("food_matching", [])),
         "desc_en_short": response.get("desc_en_short", ""),
@@ -61,7 +62,7 @@ def build_csv_row(
         "score_max": score_max if score_max is not None else "",
         "score_summary": score_summary,
         "enrichment_note": enrichment_note,
-        "current_wine_body": current_values.get("wine_body", "") or "",
+        "current_body": current_values.get("body", "") or "",
         "current_food_matching": current_values.get("food_matching", "") or "",
         "current_full_description": (current_values.get("full_description") or "")[:200],
         "cache_id": cache_id,
@@ -99,13 +100,14 @@ class OutputRouter:
         score_max: float | None, score_summary: str,
     ) -> None:
         patch_url = f"{self.url}/rest/v1/products?id=eq.{urllib.parse.quote(products_id)}"
+        # LHS keys = Supabase/products columns (renamed); RHS response.get() = LLM-response keys (stable).
         payload = {
-            "wine_body": response.get("wine_body"),
-            "wine_acidity": response.get("wine_acidity"),
-            "wine_tannin": response.get("wine_tannin"),
-            "grape_variety": ", ".join(response.get("grape_variety", [])) or None,
-            "grape_blend_type": response.get("grape_blend_type"),
-            "wine_production_style": response.get("wine_production_style") or None,
+            "body": response.get("wine_body"),
+            "acidity": response.get("wine_acidity"),
+            "tannin": response.get("wine_tannin"),
+            "variety": ", ".join(response.get("grape_variety", [])) or None,
+            "blend_type": response.get("grape_blend_type"),
+            "production_style": response.get("wine_production_style") or None,
             "flavor_tags": json.dumps(response.get("flavor_tags") or []),
             "food_matching": ", ".join(response.get("food_matching", [])) or None,
             "desc_en_short": response.get("desc_en_short"),

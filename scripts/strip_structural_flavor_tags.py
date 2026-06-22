@@ -8,8 +8,8 @@ Oak, Citrus zest, …) — the kind of data that powers similarity matching.
 
 After Phase 5, ~2,300 flavor_tag occurrences are STRUCTURAL words like
 "Soft tannins", "Crisp finish", "Fine bubbles", "Refreshing", "Smooth
-palate". These duplicate what's already captured in wine_body / wine_acidity
-/ wine_tannin columns and clog the 8-tag budget, eating slots that should
+palate". These duplicate what's already captured in body / acidity
+/ tannin columns and clog the 8-tag budget, eating slots that should
 hold real flavor descriptors. Two distinct wines end up with identical
 flavor_tags because of this noise → similarity matching collapses.
 
@@ -40,10 +40,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DB = REPO_ROOT / "data" / "db" / "products.db"
 
 
-# Tags to remove entirely — they duplicate the wine_body/acidity/tannin
+# Tags to remove entirely — they duplicate the body/acidity/tannin
 # columns or describe mouthfeel/structure rather than flavor.
 PURE_STRUCTURAL_TAGS = {
-    # Tannin descriptors (already in wine_tannin column)
+    # Tannin descriptors (already in tannin column)
     "soft tannins", "smooth tannins", "silky tannins", "structured tannins",
     "ripe tannins", "fine tannins", "grippy tannins", "firm tannins",
     "rounded tannins", "balanced tannins", "integrated tannins",
@@ -58,13 +58,13 @@ PURE_STRUCTURAL_TAGS = {
     "silky tannin structure", "structured tannin structure",
     "tannin structure", "food-friendly tannin structure",
 
-    # Acidity descriptors (already in wine_acidity column)
+    # Acidity descriptors (already in acidity column)
     "bright acidity", "fresh acidity", "crisp acidity", "balanced acidity",
     "refreshing acidity", "lively acidity", "vibrant acidity",
     "zesty acidity", "high acidity", "low acidity", "racy acidity",
     "searing acidity", "firm acidity", "soft acidity",
 
-    # Body descriptors (already in wine_body column)
+    # Body descriptors (already in body column)
     "full-bodied", "medium-bodied", "light-bodied", "light body",
     "full body", "medium body", "rich body", "silky body", "smooth body",
 

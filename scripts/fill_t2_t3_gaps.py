@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fill remaining T2/T3 gaps: region, grape_variety, style — brand→region from web research."""
+"""Fill remaining T2/T3 gaps: region, variety, style — brand→region from web research."""
 import json, re, argparse
 from urllib import request
 
@@ -163,7 +163,7 @@ def main():
 
     wine_types = {"Red Wine","White Wine","Rose Wine","Sparkling Wine","Champagne","Dessert Wine","Orange Wine","Port Wine","Fruit Wine"}
 
-    select = "sku,name,classification,country,region,brand,grape_variety,style,vintage,enrichment_priority"
+    select = "sku,name,classification,country,region,brand,variety,style,vintage,enrichment_priority"
     tiers = "enrichment_priority=in.(2,3)" if args.tier == 0 else f"enrichment_priority=eq.{args.tier}"
     query = f"products?{tiers}&is_primary_variant=eq.true&select={select}&order=sku.asc"
 
@@ -180,7 +180,7 @@ def main():
         brand = safe(p.get("brand"))
         country = safe(p.get("country"))
         region = safe(p.get("region"))
-        grape = safe(p.get("grape_variety"))
+        grape = safe(p.get("variety"))
         vintage = safe(p.get("vintage"))
         name = p.get("name", "")
 
@@ -202,7 +202,7 @@ def main():
         if cls in wine_types and not grape:
             key = (cls, region)
             if key in REGION_GRAPE_DEFAULTS:
-                patch_data["grape_variety"] = REGION_GRAPE_DEFAULTS[key]
+                patch_data["variety"] = REGION_GRAPE_DEFAULTS[key]
                 grape_hits += 1
 
         # 3. Vintage fill (remaining NV + brand defaults)

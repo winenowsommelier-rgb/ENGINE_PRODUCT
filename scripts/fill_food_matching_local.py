@@ -165,10 +165,10 @@ def main():
         result = derive_food_matching(
             p.get("classification", ""),
             p.get("style", ""),
-            p.get("wine_body", ""),
-            p.get("wine_tannin", ""),
-            p.get("wine_acidity", ""),
-            p.get("grape_variety", ""),
+            p.get("body", ""),
+            p.get("tannin", ""),
+            p.get("acidity", ""),
+            p.get("variety", ""),
         )
         if result:
             if args.dry_run:

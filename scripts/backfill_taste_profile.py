@@ -48,10 +48,10 @@ def build_taste_facts(product: dict) -> dict:
     """Minimal, leak-safe facts (no price/margin/internal fields)."""
     return {
         "name": product.get("name") or "",
-        "grape_variety": product.get("grape_variety") or "",
+        "variety": product.get("variety") or "",
         "region": product.get("region") or "",
         "country": product.get("country") or "",
-        "wine_color": product.get("wine_color") or "",
+        "color": product.get("color") or "",
         "flavor_tags": list(product.get("flavor_tags") or []),
     }
 
@@ -72,7 +72,7 @@ def build_system_prompt(vocab: VocabLoader) -> str:
 
 def build_user_prompt(facts: dict) -> str:
     lines = [f"Name: {facts['name']}"]
-    for k, label in (("grape_variety", "Grape"), ("wine_color", "Colour"),
+    for k, label in (("variety", "Grape"), ("color", "Colour"),
                      ("region", "Region"), ("country", "Country")):
         if facts.get(k):
             lines.append(f"{label}: {facts[k]}")
@@ -157,7 +157,7 @@ def select_targets(products: list[dict]) -> list[dict]:
             continue
         if not in_stock(p) or has_taste_profile(p):
             continue
-        if not (p.get("grape_variety") or p.get("region")):
+        if not (p.get("variety") or p.get("region")):
             continue
         out.append(p)
     return out

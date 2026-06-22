@@ -2,7 +2,7 @@
 """
 extract_product_fields.py — Zero-API field extraction from product names.
 
-Extracts: grape_variety, vintage (cleanup), brand, region
+Extracts: variety, vintage (cleanup), brand, region
 Patches back to Supabase.
 
 Usage:
@@ -532,7 +532,7 @@ def main():
     print(flush=True)
 
     # --- Fetch products ---
-    select_fields = "sku,name,classification,grape_variety,vintage,brand,region,country,enrichment_priority"
+    select_fields = "sku,name,classification,variety,vintage,brand,region,country,enrichment_priority"
     query = f"products?select={select_fields}&order=sku"
     if args.tier > 0:
         query += f"&enrichment_priority=eq.{args.tier}"
@@ -568,10 +568,10 @@ def main():
         is_wine = classification in WINE_CLASSIFICATIONS
 
         # 1. Grape variety (wines only, empty field only)
-        if is_wine and not (p.get("grape_variety") or "").strip():
+        if is_wine and not (p.get("variety") or "").strip():
             grape = extract_grapes(name)
             if grape:
-                patch["grape_variety"] = grape
+                patch["variety"] = grape
                 stats["grape"] += 1
 
         # 2. Vintage cleanup

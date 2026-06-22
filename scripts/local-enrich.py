@@ -84,7 +84,7 @@ def confidence_score(has_short: bool, has_long: bool, product: dict) -> float:
     if has_long:
         score += 0.20
     # Bonus for rich taxonomy fields
-    for field in ("country", "region", "style", "grape_variety", "appellation"):
+    for field in ("country", "region", "style", "variety", "appellation"):
         if product.get(field):
             score += 0.02
     return round(min(score, 0.92), 2)  # Cap at 0.92; perfect score reserved for human-verified
@@ -152,9 +152,9 @@ def main() -> None:
     if args.tier > 0:
         filters += f"&enrichment_priority=eq.{args.tier}"
     select = (
-        "id,sku,sku_base,name,classification,wine_color,style,style_detail,"
-        "country,region,subregion,appellation,vintage,brand,grape_variety,"
-        "wine_body,wine_acidity,wine_tannin,flavor_tags,food_matching,"
+        "id,sku,sku_base,name,classification,color,style,style_detail,"
+        "country,region,subregion,appellation,vintage,brand,variety,"
+        "body,acidity,tannin,flavor_tags,food_matching,"
         "overall_confidence,short_description_en,description_en_text"
     )
     print(f"Fetching products (tier={args.tier or 'all'})…", flush=True)

@@ -50,14 +50,16 @@ except Exception:  # noqa: BLE001 — never let an optional import block a refre
 # Columns the explore endpoint reads (see ExploreProduct in lib/explore/types.ts).
 EXPORT_COLS = [
     "id", "sku", "name", "brand", "classification", "wine_classification", "designation",
-    "grape_variety", "vintage", "alcohol",
+    "variety", "vintage", "alcohol",
     "country", "region", "subregion", "appellation",
-    "wine_body", "wine_acidity", "wine_tannin",
+    "body", "acidity", "tannin",
+    "blend_type", "production_style",
+    "sweetness", "intensity", "smokiness", "finish",
     "food_matching", "food_matching_detail", "flavor_tags",
     "bottle_size", "price", "currency",
     "desc_en_short", "full_description",
     "taste_profile",
-    "wine_color", "image_url",
+    "color", "image_url",
     "validation_status", "enrichment_confidence", "enrichment_quality_grade",
     "enrichment_source", "enrichment_note", "enriched_at", "enriched_by",
     "popularity_score", "popularity_orders_90d", "popularity_revenue_90d",
@@ -72,7 +74,7 @@ EXPORT_COLS = [
 ]
 
 # Columns that contain JSON-encoded text and should be decoded for export.
-JSON_COLS = {"flavor_tags", "taste_profile", "wine_production_style"}
+JSON_COLS = {"flavor_tags", "taste_profile", "production_style"}
 
 
 def main(argv: list[str] | None = None) -> int:

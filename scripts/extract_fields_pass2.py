@@ -895,7 +895,7 @@ def main():
 
     # --- Fetch products ---
     select_fields = (
-        "sku,name,classification,grape_variety,vintage,brand,region,country,"
+        "sku,name,classification,variety,vintage,brand,region,country,"
         "style,desc_en_short,desc_en_full,short_description_en,description_en_text,"
         "enrichment_priority"
     )
@@ -911,7 +911,7 @@ def main():
     # --- Before counts ---
     total = len(products)
     before = {
-        "grape_variety": sum(1 for p in products if (p.get("grape_variety") or "").strip()),
+        "variety": sum(1 for p in products if (p.get("variety") or "").strip()),
         "region": sum(1 for p in products if (p.get("region") or "").strip()),
         "brand": sum(1 for p in products if (p.get("brand") or "").strip()),
         "style": sum(1 for p in products if (p.get("style") or "").strip()),
@@ -954,7 +954,7 @@ def main():
         is_spirit = any(s in cl_lower for s in SPIRITS_CLASSIFICATIONS) or _classify_spirit(classification) is not None
 
         # ---- 1. Grape Variety ----
-        if is_wine and not (p.get("grape_variety") or "").strip():
+        if is_wine and not (p.get("variety") or "").strip():
             # Strategy A: classification-based defaults
             grape = _grape_from_classification(classification, region_current, country, name)
 
@@ -965,7 +965,7 @@ def main():
                     grape = extract_grapes_from_text(combined_desc)
 
             if grape:
-                patch["grape_variety"] = grape
+                patch["variety"] = grape
                 stats["grape"] += 1
 
         # ---- 2. Region (wines and spirits only, not accessories/etc) ----
@@ -1044,7 +1044,7 @@ def main():
     after = {}
     for field in before:
         after[field] = before[field] + stats.get({
-            "grape_variety": "grape", "region": "region",
+            "variety": "grape", "region": "region",
             "brand": "brand", "style": "style", "vintage": "vintage"
         }[field], 0)
 

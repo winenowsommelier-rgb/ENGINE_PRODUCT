@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P1 — backfill wine_body / wine_acidity / wine_tannin on in-stock wines.
+"""P1 — backfill body / acidity / tannin on in-stock wines.
 
 PAID (Anthropic). Gated by CLAUDE.md Rule 10: backup → 5-SKU canary → cost
 estimate → user sign-off → verify in the export.
@@ -69,20 +69,20 @@ def build_facts(product: dict) -> dict:
     """Minimal, leak-safe fact dict for the prompt (no price/margin/internal fields)."""
     return {
         "name": product.get("name") or "",
-        "grape_variety": product.get("grape_variety") or "",
+        "variety": product.get("variety") or "",
         "region": product.get("region") or "",
         "country": product.get("country") or "",
         "vintage": product.get("vintage") or "",
-        "wine_color": product.get("wine_color") or "",
+        "color": product.get("color") or "",
     }
 
 
 def build_user_prompt(facts: dict) -> str:
     lines = [f"Name: {facts['name']}"]
-    if facts["grape_variety"]:
-        lines.append(f"Grape variety: {facts['grape_variety']}")
-    if facts["wine_color"]:
-        lines.append(f"Colour: {facts['wine_color']}")
+    if facts["variety"]:
+        lines.append(f"Grape variety: {facts['variety']}")
+    if facts["color"]:
+        lines.append(f"Colour: {facts['color']}")
     if facts["region"]:
         lines.append(f"Region: {facts['region']}")
     if facts["country"]:
@@ -96,7 +96,7 @@ _JSON_RE = re.compile(r"\{.*?\}", re.DOTALL)
 
 
 def parse_structural(text: str) -> dict:
-    """Parse + validate a model response to {wine_body, wine_acidity, wine_tannin}.
+    """Parse + validate a model response to {body, acidity, tannin}.
 
     Raises StructuralError on non-JSON, missing fields, or off-scale values.
     """
@@ -126,10 +126,10 @@ def parse_structural(text: str) -> dict:
     if tannin is None:
         raise StructuralError(f"tannin off-scale: {obj['tannin']!r} (allowed {LOWHIGH_SCALE})")
 
-    return {"wine_body": body, "wine_acidity": acidity, "wine_tannin": tannin}
+    return {"body": body, "acidity": acidity, "tannin": tannin}
 
 
-INFERRED_FIELDS = ("wine_body", "wine_acidity", "wine_tannin")
+INFERRED_FIELDS = ("body", "acidity", "tannin")
 
 
 def merge_into_product(product: dict, inferred: dict) -> bool:
@@ -166,8 +166,8 @@ def in_stock(product: dict) -> bool:
 
 
 def needs_structural(product: dict) -> bool:
-    return not (product.get("wine_body") and product.get("wine_acidity")
-                and product.get("wine_tannin"))
+    return not (product.get("body") and product.get("acidity")
+                and product.get("tannin"))
 
 
 def select_targets(products: list[dict]) -> list[dict]:
@@ -178,7 +178,7 @@ def select_targets(products: list[dict]) -> list[dict]:
             continue
         if not in_stock(p) or not needs_structural(p):
             continue
-        if not (p.get("grape_variety") or p.get("region") or p.get("country")):
+        if not (p.get("variety") or p.get("region") or p.get("country")):
             continue
         out.append(p)
     return out

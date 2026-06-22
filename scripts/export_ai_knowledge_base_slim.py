@@ -8,7 +8,7 @@ Two output sets:
 Slim strategy:
 - Drop: full_description, taste_profile, enrichment_source, validation_status, bottle_size
 - Keep: sku, name, brand, classification, country, region, subregion, appellation,
-        grape_variety, vintage, alcohol, price, wine_body, wine_acidity, wine_tannin,
+        variety, vintage, alcohol, price, body, acidity, tannin,
         flavor_tags, food_matching, pairing_rationale, desc_en_short, score_max, score_summary
 - NotebookLM: plain text per category (no JSON), one product per block
 """
@@ -22,10 +22,10 @@ SLIM  = os.path.join(ROOT, 'docs', 'ai-knowledge-base-slim')
 NLM   = os.path.join(ROOT, 'docs', 'ai-knowledge-base-notebooklm')
 
 KEEP_SLIM = [
-    'sku', 'name', 'brand', 'classification', 'wine_color',
+    'sku', 'name', 'brand', 'classification', 'color',
     'country', 'region', 'subregion', 'appellation',
-    'grape_variety', 'vintage', 'alcohol', 'price',
-    'wine_body', 'wine_acidity', 'wine_tannin',
+    'variety', 'vintage', 'alcohol', 'price',
+    'body', 'acidity', 'tannin',
     'flavor_tags', 'food_matching', 'pairing_rationale',
     'desc_en_short', 'score_max', 'score_summary',
 ]
@@ -112,8 +112,8 @@ def product_to_text(p):
     loc = ', '.join(x for x in loc_parts if x)
     if loc:
         lines.append(f"Origin: {loc}")
-    if p.get('grape_variety'):
-        lines.append(f"Grape/Style: {p['grape_variety']}")
+    if p.get('variety'):
+        lines.append(f"Grape/Style: {p['variety']}")
     if p.get('vintage'):
         lines.append(f"Vintage: {p['vintage']}")
     if p.get('alcohol'):
@@ -121,12 +121,12 @@ def product_to_text(p):
     if p.get('price'):
         lines.append(f"Price: {p['price']} THB")
     body_parts = []
-    if p.get('wine_body'):
-        body_parts.append(f"Body: {p['wine_body']}")
-    if p.get('wine_acidity'):
-        body_parts.append(f"Acidity: {p['wine_acidity']}")
-    if p.get('wine_tannin'):
-        body_parts.append(f"Tannin: {p['wine_tannin']}")
+    if p.get('body'):
+        body_parts.append(f"Body: {p['body']}")
+    if p.get('acidity'):
+        body_parts.append(f"Acidity: {p['acidity']}")
+    if p.get('tannin'):
+        body_parts.append(f"Tannin: {p['tannin']}")
     if body_parts:
         lines.append(' | '.join(body_parts))
     if p.get('flavor_tags'):
@@ -272,8 +272,8 @@ def main():
             p.get('classification', '') or '',
             p.get('country', '') or '',
             p.get('region', '') or '',
-            (p.get('grape_variety', '') or '')[:30],
-            p.get('wine_body', '') or '',
+            (p.get('variety', '') or '')[:30],
+            p.get('body', '') or '',
             str(p.get('vintage', '') or ''),
             str(p.get('price', '') or ''),
         ]))

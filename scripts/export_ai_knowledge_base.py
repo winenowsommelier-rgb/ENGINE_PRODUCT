@@ -13,10 +13,10 @@ SRC  = os.path.join(ROOT, 'data', 'live_products_export.json')
 OUT  = os.path.join(ROOT, 'docs', 'ai-knowledge-base')
 
 KEEP = [
-    'sku', 'name', 'brand', 'classification', 'wine_classification', 'wine_color',
+    'sku', 'name', 'brand', 'classification', 'wine_classification', 'color',
     'country', 'region', 'subregion', 'appellation',
-    'grape_variety', 'vintage', 'alcohol', 'bottle_size', 'price',
-    'wine_body', 'wine_acidity', 'wine_tannin',
+    'variety', 'vintage', 'alcohol', 'bottle_size', 'price',
+    'body', 'acidity', 'tannin',
     'flavor_tags', 'food_matching', 'pairing_rationale',
     'desc_en_short', 'full_description', 'taste_profile',
     'score_max', 'score_summary',
@@ -133,12 +133,12 @@ def main():
         lines.append("|-----|------|---------|--------|-------------|------|---------|-------|")
         for p in sorted(prods, key=lambda x: x.get('name', '')):
             name    = (p.get('name', '') or '').replace('|', '/')[:55]
-            grape   = (p.get('grape_variety', '') or '')[:35]
+            grape   = (p.get('variety', '') or '')[:35]
             price   = p.get('price', '')
             price_s = f"{price:,.0f}" if isinstance(price, (int, float)) else str(price or '')
             lines.append(
                 f"| {p.get('sku','')} | {name} | {p.get('country','')} | "
-                f"{p.get('region','')} | {grape} | {p.get('wine_body','')} | "
+                f"{p.get('region','')} | {grape} | {p.get('body','')} | "
                 f"{p.get('vintage','')} | {price_s} |"
             )
         lines.append("")
@@ -157,8 +157,8 @@ def main():
             p.get('classification', '') or '',
             p.get('country', '') or '',
             p.get('region', '') or '',
-            (p.get('grape_variety', '') or '')[:35],
-            p.get('wine_body', '') or '',
+            (p.get('variety', '') or '')[:35],
+            p.get('body', '') or '',
             p.get('vintage', '') or '',
             str(p.get('price', '') or ''),
         ]))

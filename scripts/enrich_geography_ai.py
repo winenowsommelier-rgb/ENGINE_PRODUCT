@@ -25,7 +25,7 @@ def fetch_missing_geography(tiers):
     print(f"Fetching T{tiers} products from Supabase...", flush=True)
     tier_filter = f"enrichment_priority=in.({tiers})"
     while True:
-        url = f"{BASE}/rest/v1/products?{tier_filter}&select=sku,name,brand,classification,country,region,subregion,appellation,grape_variety,wine_classification,short_description_en,description_en_text&limit=1000&offset={offset}&order=sku.asc"
+        url = f"{BASE}/rest/v1/products?{tier_filter}&select=sku,name,brand,classification,country,region,subregion,appellation,variety,wine_classification,short_description_en,description_en_text&limit=1000&offset={offset}&order=sku.asc"
         req = request.Request(url, headers=H)
         with request.urlopen(req) as resp:
             data = json.loads(resp.read())
@@ -39,7 +39,7 @@ def fetch_missing_geography(tiers):
         cls = str(r.get("classification") or "").lower()
         if "wine" in cls:
             # Target products that are missing at least one of the key geographic or taxonomy levels
-            if not r.get("region") or not r.get("subregion") or not r.get("appellation") or not r.get("grape_variety") or not r.get("wine_classification"):
+            if not r.get("region") or not r.get("subregion") or not r.get("appellation") or not r.get("variety") or not r.get("wine_classification"):
                 missing.append(r)
     return missing
 
@@ -65,7 +65,7 @@ def ask_gemini_for_geography(p):
     region = p.get("region")
     subregion = p.get("subregion")
     appellation = p.get("appellation")
-    grape_variety = p.get("grape_variety")
+    grape_variety = p.get("variety")  # DB column renamed to 'variety'; LLM schema key stays 'grape_variety'
     wine_classification = p.get("wine_classification")
     desc_short = s(p.get("short_description_en"))
     desc_full = s(p.get("description_en_text"))
@@ -152,15 +152,19 @@ def main():
             skipped += 1
             continue
 
-        # Compare and only patch what changed
+        # Compare and only patch what changed.
+        # LLM returns key "grape_variety"; the DB column is now "variety".
+        # Read the old value + write the patch under the DB key; read the LLM result under the LLM key.
+        LLM_TO_DB = {"grape_variety": "variety"}  # all other keys are identity
         patch_data = {}
         for key in ["country", "region", "subregion", "appellation", "grape_variety", "wine_classification"]:
-            old_val = p.get(key)
+            db_key = LLM_TO_DB.get(key, key)
+            old_val = p.get(db_key)
             new_val = ai_data.get(key)
-            
+
             # Only update if the AI found a new value that isn't null and is different
             if new_val and new_val != old_val:
-                patch_data[key] = new_val
+                patch_data[db_key] = new_val
         
         if patch_data:
             updates[sku] = patch_data

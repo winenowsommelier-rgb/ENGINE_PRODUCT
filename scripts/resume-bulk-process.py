@@ -162,7 +162,7 @@ def main():
                         'classification': row['classification'],
                         'origin_source': '',
                         'classification_source': '',
-                        'grape_variety': row['grape_variety'],
+                        'variety': row['grape_variety'],  # products.json/DB column renamed grape_variety -> variety
                         'price': row['price'],
                         'cost': row['cost'],
                         'currency': 'THB',

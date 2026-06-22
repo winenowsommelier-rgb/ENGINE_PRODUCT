@@ -206,7 +206,7 @@ class EvidenceCollector:
         return "C"
 
     def collect_evidence(self, sku: str, products_row: dict) -> Evidence:
-        grape = products_row.get("grape_variety", "") or ""
+        grape = products_row.get("variety", "") or ""
         primary_grape = grape.split(",")[0].strip() if grape else ""
         region = products_row.get("region", "") or ""
         country = products_row.get("country", "") or ""

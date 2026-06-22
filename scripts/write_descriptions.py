@@ -21,7 +21,7 @@ H = {"apikey": KEY, "Authorization": f"Bearer {KEY}", "Prefer": "count=none"}
 
 FIELDS = (
     "sku,name,classification,country,region,subregion,appellation,"
-    "vintage,brand,grape_variety,wine_body,wine_acidity,wine_tannin,"
+    "vintage,brand,variety,body,acidity,tannin,"
     "flavor_tags,food_matching,style,desc_en_short,short_description_en,"
     "enrichment_priority,desc_en_full"
 )
@@ -163,10 +163,10 @@ def generate_short(row, idx):
     region = s(row.get("region"))
     subregion = s(row.get("subregion"))
     appellation = s(row.get("appellation"))
-    grape = s(row.get("grape_variety"))
+    grape = s(row.get("variety"))
     vintage = s(row.get("vintage"))
     tags = parse_tags(row.get("flavor_tags"))
-    body_n = row.get("wine_body")
+    body_n = row.get("body")
     body_adj = BODY_ADJ.get(body_n, "") if body_n else ""
 
     # Build location string
@@ -239,16 +239,16 @@ def generate_full(row):
     region = esc(s(row.get("region")))
     subregion = esc(s(row.get("subregion")))
     appellation = esc(s(row.get("appellation")))
-    grape = esc(s(row.get("grape_variety")))
+    grape = esc(s(row.get("variety")))
     vintage = s(row.get("vintage"))
     style = esc(s(row.get("style")))
     tags = parse_tags(row.get("flavor_tags"))
     food_raw = s(row.get("food_matching"))
     foods = parse_tags(row.get("food_matching"))
 
-    body_n = row.get("wine_body")
-    acid_n = row.get("wine_acidity")
-    tann_n = row.get("wine_tannin")
+    body_n = row.get("body")
+    acid_n = row.get("acidity")
+    tann_n = row.get("tannin")
     body_w = BODY_MAP.get(body_n, "") if body_n else ""
     acid_w = ACIDITY_MAP.get(acid_n, "") if acid_n else ""
     tann_w = TANNIN_MAP.get(tann_n, "") if tann_n else ""
@@ -437,9 +437,9 @@ def main():
             print(f"Name: {row.get('name')}", flush=True)
             print(f"Classification: {row.get('classification')}", flush=True)
             print(f"Region: {row.get('region')}, {row.get('country')}", flush=True)
-            print(f"Grape: {row.get('grape_variety')}", flush=True)
+            print(f"Grape: {row.get('variety')}", flush=True)
             print(f"Vintage: {row.get('vintage')}", flush=True)
-            print(f"Body/Acid/Tannin: {row.get('wine_body')}/{row.get('wine_acidity')}/{row.get('wine_tannin')}", flush=True)
+            print(f"Body/Acid/Tannin: {row.get('body')}/{row.get('acidity')}/{row.get('tannin')}", flush=True)
             print(f"Flavor tags: {row.get('flavor_tags')}", flush=True)
             print(f"Food matching: {row.get('food_matching')}", flush=True)
             print(f"\ndesc_en_short:\n  {payload['desc_en_short']}", flush=True)

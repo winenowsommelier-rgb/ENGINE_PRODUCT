@@ -6,7 +6,7 @@ Targets:
   - bottle_size   (~4,310 missing) — parse from name + classification defaults
   - style         (~4,358 missing) — spirit/beer/sake/wine style inference
   - region        (~3,667 missing) — brand→most_common_region from existing data
-  - grape_variety (~5,219 missing) — region/appellation/country defaults
+  - variety        (~5,219 missing) — region/appellation/country defaults
 
 Usage:
   python3 scripts/fill_remaining_gaps.py --dry-run
@@ -479,8 +479,8 @@ def infer_wine_style(p: dict) -> str | None:
     if cls == "Rose Wine":
         return "Rosé"
 
-    # Red / White — use wine_body if available
-    body = p.get("wine_body")
+    # Red / White — use body if available
+    body = p.get("body")
     color = ""
     if cls == "Red Wine":
         color = "Red"
@@ -734,8 +734,8 @@ def main():
     args = parser.parse_args()
 
     # Fetch ALL products (all tiers)
-    select = ("sku,name,classification,country,region,brand,grape_variety,style,"
-              "bottle_size,wine_body,appellation,enrichment_priority")
+    select = ("sku,name,classification,country,region,brand,variety,style,"
+              "bottle_size,body,appellation,enrichment_priority")
     query = f"products?is_primary_variant=eq.true&select={select}&order=sku.asc"
 
     print("Fetching ALL products...", flush=True)
@@ -747,7 +747,7 @@ def main():
         "bottle_size": sum(1 for p in products if not safe(p.get("bottle_size"))),
         "style": sum(1 for p in products if not safe(p.get("style"))),
         "region": sum(1 for p in products if not safe(p.get("region"))),
-        "grape_variety": sum(1 for p in products if not safe(p.get("grape_variety"))),
+        "variety": sum(1 for p in products if not safe(p.get("variety"))),
     }
     print(f"\nMissing BEFORE:", flush=True)
     for k, v in missing.items():
@@ -770,7 +770,7 @@ def main():
         brand = safe(p.get("brand"))
         country = safe(p.get("country"))
         region = safe(p.get("region"))
-        grape = safe(p.get("grape_variety"))
+        grape = safe(p.get("variety"))
         style = safe(p.get("style"))
         bottle_size = safe(p.get("bottle_size"))
         appellation = safe(p.get("appellation"))
@@ -805,13 +805,13 @@ def main():
             effective_region = region or safe(patch_data.get("region", ""))
             key = (cls, effective_region)
             if key in REGION_GRAPE:
-                patch_data["grape_variety"] = REGION_GRAPE[key]
+                patch_data["variety"] = REGION_GRAPE[key]
                 counters["grape_region"] += 1
             else:
                 # Try country-based
                 ckey = (cls, country)
                 if ckey in COUNTRY_GRAPE:
-                    patch_data["grape_variety"] = COUNTRY_GRAPE[ckey]
+                    patch_data["variety"] = COUNTRY_GRAPE[ckey]
                     counters["grape_country"] += 1
 
         if patch_data:
@@ -828,9 +828,9 @@ def main():
     print(f"  bottle_size TOTAL:        {counters['bottle_size_extracted'] + counters['bottle_size_defaulted']:,}", flush=True)
     print(f"  style:                    {counters['style']:,}", flush=True)
     print(f"  region (brand-based):     {counters['region_brand']:,}", flush=True)
-    print(f"  grape_variety (region):   {counters['grape_region']:,}", flush=True)
-    print(f"  grape_variety (country):  {counters['grape_country']:,}", flush=True)
-    print(f"  grape_variety TOTAL:      {counters['grape_region'] + counters['grape_country']:,}", flush=True)
+    print(f"  variety (region):         {counters['grape_region']:,}", flush=True)
+    print(f"  variety (country):        {counters['grape_country']:,}", flush=True)
+    print(f"  variety TOTAL:            {counters['grape_region'] + counters['grape_country']:,}", flush=True)
 
     if args.dry_run:
         # Show samples for each field
@@ -880,7 +880,7 @@ def main():
     all_after = fetch_all(f"products?is_primary_variant=eq.true&select={select}&order=sku.asc")
     total_count = len(all_after)
 
-    for field in ("bottle_size", "style", "region", "grape_variety"):
+    for field in ("bottle_size", "style", "region", "variety"):
         filled = sum(1 for p in all_after if safe(p.get(field)))
         pct = filled / total_count * 100 if total_count else 0
         still_missing = total_count - filled

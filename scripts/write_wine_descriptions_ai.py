@@ -37,7 +37,7 @@ def fetch_products(tiers, force):
     print(f"Fetching T{tiers} products from Supabase...", flush=True)
     tier_filter = f"enrichment_priority=in.({tiers})"
     while True:
-        url = f"{BASE}/rest/v1/products?{tier_filter}&select=sku,name,brand,classification,style,country,region,subregion,appellation,grape_variety,wine_classification,flavor_tags,food_matching,desc_en_short,desc_en_full,short_description_en,description_en_text&limit=1000&offset={offset}&order=sku.asc"
+        url = f"{BASE}/rest/v1/products?{tier_filter}&select=sku,name,brand,classification,style,country,region,subregion,appellation,variety,wine_classification,flavor_tags,food_matching,desc_en_short,desc_en_full,short_description_en,description_en_text&limit=1000&offset={offset}&order=sku.asc"
         req = request.Request(url, headers=H)
         with request.urlopen(req) as resp:
             data = json.loads(resp.read())
@@ -76,7 +76,7 @@ def ask_gemini_for_description(p):
     region = s(p.get("region"))
     subregion = s(p.get("subregion"))
     appellation = s(p.get("appellation"))
-    grape = s(p.get("grape_variety"))
+    grape = s(p.get("variety"))
     wine_class = s(p.get("wine_classification"))
     flavor_tags = s(p.get("flavor_tags"))
     food_matching = s(p.get("food_matching"))
