@@ -67,6 +67,7 @@ function frame(
   const ratio = box.w > 0 ? box.h / box.w : 4 / 16;
   const vcx = 50;
   const vcy = 50 * (box.w > 0 ? (box.h / (box.w / 2)) / 2 : ratio); // = 50·H/W
+  const visH = 2 * vcy; // visible band height in plane-Y units
   if (points.length === 0) return { scale: minScale, tx: 0, ty: 0, vcy };
   const xs = points.map((p) => project(p.lat, p.lng).xPct);
   const ys = points.map((p) => project(p.lat, p.lng).yPct);
@@ -77,13 +78,17 @@ function frame(
   // comfortable frame and labels/dots aren't clipped at the edge.
   const spanX = Math.max(maxX - minX, 1.5) + 2;
   const spanY = Math.max(maxY - minY, 1.5) + 2;
-  // Fit each axis to its OWN visible extent: the window shows 100 plane-x-units
-  // wide but only (2·vcy) plane-y-units tall. Take the tighter of the two fits so
-  // the whole span is visible; floor by minScale (keeps single countries tappable),
-  // cap at 14×.
   const fitX = 100 / spanX;
-  const fitY = (2 * vcy) / spanY;
-  const scale = Math.max(minScale, Math.min(Math.min(fitX, fitY), 14));
+  const fitY = visH / spanY;
+  // Fit each axis to its OWN visible extent. The floor (minScale) keeps a single
+  // focused country/region zoomed enough to be tappable. CRUCIALLY the floor must
+  // NOT prevent zooming OUT when the span is bigger than the band: the world view
+  // spans ~90° of latitude, which cannot fit the short band at scale 1 — flooring
+  // at 1 there shoved most country pins above the top edge where the cull hid them
+  // (the "all countries disappeared" bug). So the floor only applies when the span
+  // actually fits; otherwise we let scale drop below 1 to fit the whole span.
+  const rawFit = Math.min(fitX, fitY);
+  const scale = Math.min(rawFit >= minScale ? Math.max(minScale, rawFit) : rawFit, 14);
   const tx = vcx / scale - cx;
   const ty = vcy / scale - cy;
   return { scale, tx, ty, vcy };
