@@ -160,7 +160,15 @@ function intensityScore(scale: 'acidity' | 'tannin', token: string | undefined, 
 
 // Grape family → tokens that, if present in p.variety, signal that family.
 // 'surprise' (and any unmapped token) intentionally has no entry → never constrains.
+// RED grapes (red deep-dive) + WHITE/SPARKLING grapes (white/sparkling deep-dive, W5).
+// The white/sparkling tokens were derived from the live export's actual `variety`
+// distribution (chardonnay 316 / sauvignon blanc 186 / riesling 55 / … for white;
+// chardonnay+pinot noir+meunier+glera for sparkling) so every grape the UI offers in
+// a given category maps to real in-stock bottles. FIXES the W5 bug where white &
+// sparkling deep-dives showed only RED grapes (Cabernet/Merlot/…), nonsensical to the
+// user and unscoreable against a white wine's variety.
 const GRAPE_FAMILY: Record<string, string[]> = {
+  // — RED —
   cabernet:      ['cabernet'],
   'pinot-noir':  ['pinot noir'],
   'syrah-shiraz':['syrah', 'shiraz'],
@@ -168,6 +176,17 @@ const GRAPE_FAMILY: Record<string, string[]> = {
   tempranillo:   ['tempranillo', 'rioja'],
   merlot:        ['merlot'],
   grenache:      ['grenache', 'garnacha'],
+  // — WHITE — ('sauv-blanc' → 'sauvignon blanc'; 'pinot-grigio' also catches 'pinot gris')
+  chardonnay:    ['chardonnay'],
+  'sauv-blanc':  ['sauvignon blanc'],
+  riesling:      ['riesling'],
+  'pinot-grigio':['pinot grigio', 'pinot gris'],
+  viognier:      ['viognier'],
+  semillon:      ['semillon', 'sémillon'],
+  // — SPARKLING — (reuses chardonnay/pinot-noir above; adds the bubbles-specific grapes.
+  // 'glera' is the Prosecco grape, also labelled 'prosecco' on some rows.)
+  glera:         ['glera', 'prosecco'],
+  meunier:       ['meunier'],
 };
 
 // Flavor family → canonical-note SET that signals that family. Chip tokens are

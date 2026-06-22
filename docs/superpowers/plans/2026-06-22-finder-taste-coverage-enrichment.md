@@ -58,9 +58,10 @@ Phase A reach (verified feasibility, free): `smokiness` from name keywords (Isla
 >   NOT the flat `sweetness` column.
 > So the backfill must be paired with a **finder rewire (Task 0 below)** that makes the finder
 > READ the flat columns — otherwise this plan fills dead columns and the Rule-7 walkthrough
-> shows no change (a Rule-1 false-success trap). Wine `body` is exempt: the finder already
-> reads `wine_body`, which the rename Stage 3 flips to `body`, so wine body works end-to-end
-> with no rewire. Task 0 covers ONLY sake sweetness + whisky smokiness.
+> shows no change (a Rule-1 false-success trap). Wine `body` is exempt: this branch is based
+> on `feat/universal-attributes`, so the finder ALREADY reads the universal `p.body` / `p.variety`
+> directly — wine body/variety work end-to-end with no rewire. Task 0 covers ONLY sake
+> sweetness + whisky smokiness (still read via taste_profile / region today).
 
 ## File Structure
 

@@ -177,6 +177,26 @@ describe('scoreProducts', () => {
     const pool=[P({sku:'WRWo',variety:'Merlot'}),P({sku:'WRWc',variety:'Cabernet Sauvignon, Merlot'})];
     expect(scoreProducts(ans({grape:'cabernet'}),pool).products[0].sku).toBe('WRWc');
   });
+  // W5: white/sparkling grape tokens must actually SCORE against a wine's variety (proves
+  // the new GRAPE_FAMILY entries are load-bearing, not just UI labels).
+  it('grape chardonnay boosts a Chardonnay white over a Sauvignon Blanc', () => {
+    const W=(o:any)=>({price:1500,is_in_stock:true,classification:'White Wine',category_group:'Wine',category_type:'White Wine',...o});
+    const pool=[W({sku:'WWWsb',variety:'Sauvignon Blanc'}),W({sku:'WWWch',variety:'Chardonnay'})];
+    expect(scoreProducts({category:'white',grape:'chardonnay'} as any,pool as any).products[0].sku).toBe('WWWch');
+  });
+  it('grape sauv-blanc matches the spaced "Sauvignon Blanc" variety', () => {
+    const W=(o:any)=>({price:1500,is_in_stock:true,classification:'White Wine',category_group:'Wine',category_type:'White Wine',...o});
+    const pool=[W({sku:'WWWch',variety:'Chardonnay'}),W({sku:'WWWsb',variety:'Sauvignon Blanc'})];
+    expect(scoreProducts({category:'white',grape:'sauv-blanc'} as any,pool as any).products[0].sku).toBe('WWWsb');
+  });
+  it('grape glera (sparkling) matches a Prosecco; pinot-grigio also catches "Pinot Gris"', () => {
+    const S=(o:any)=>({price:1500,is_in_stock:true,classification:'Sparkling & Champagne',category_group:'Wine',category_type:'Sparkling & Champagne',...o});
+    const pool=[S({sku:'WSPx',variety:'Chardonnay'}),S({sku:'WSPg',variety:'Glera'})];
+    expect(scoreProducts({category:'sparkling',grape:'glera'} as any,pool as any).products[0].sku).toBe('WSPg');
+    const W=(o:any)=>({price:1500,is_in_stock:true,classification:'White Wine',category_group:'Wine',category_type:'White Wine',...o});
+    const wpool=[W({sku:'WWWa',variety:'Chardonnay'}),W({sku:'WWWpg',variety:'Pinot Gris'})];
+    expect(scoreProducts({category:'white',grape:'pinot-grigio'} as any,wpool as any).products[0].sku).toBe('WWWpg');
+  });
   it('age young buckets "Current vintage" as young', () => {
     const pool=[P({sku:'WRWm',vintage:'2005'}),P({sku:'WRWy',vintage:'Current vintage'})];
     expect(scoreProducts(ans({age:'young'}),pool).products[0].sku).toBe('WRWy');
