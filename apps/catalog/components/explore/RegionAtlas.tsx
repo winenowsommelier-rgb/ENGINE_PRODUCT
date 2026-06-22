@@ -109,7 +109,33 @@ function frame(
   const rawFit = Math.min(fitX, fitY);
   const scale = Math.min(rawFit >= minScale ? Math.max(minScale, rawFit) : rawFit, 14);
   const tx = vcx / scale - cx;
-  const ty = vcy / scale - cy;
+  // Vertical pan: centre on the MEDIAN latitude, not the bbox midpoint. Origins
+  // cluster in the northern mid-latitudes with a few far-south outliers
+  // (NZ/Chile/S.Africa). The bbox midpoint sat well south of the mass, so the dense
+  // northern cluster got panned to the top edge while the empty south filled the
+  // band ("pins at the top"). The median tracks the actual cluster, so it sits
+  // mid-band; the southern outliers still render (within the cull margin) below it.
+  // For 1–2 points median == midpoint, so focused/region views are unchanged.
+  const sortedY = [...ys].sort((a, b) => a - b);
+  const medY = sortedY.length % 2
+    ? sortedY[(sortedY.length - 1) / 2]
+    : (sortedY[sortedY.length / 2 - 1] + sortedY[sortedY.length / 2]) / 2;
+  // Vertical pan: centre on the MEDIAN latitude (the mass centre), then CLAMP so no
+  // pin is pushed outside the visible band. Why median, not the bbox midpoint:
+  // origins cluster in the northern mid-latitudes with a few far-south outliers
+  // (NZ/Chile/S.Africa); the midpoint sat south of the mass, panning the dense
+  // cluster to the top edge ("pins at the top"). The median tracks the cluster.
+  // Why clamp: centring the mass could shove the southern outliers below the band
+  // where the cull hides them — instead we pan as far as centring the median wants,
+  // but no further than keeps the [minY,maxY] extent inside [0,visH] (with the same
+  // 4-unit margin the cull uses). Result: the cluster sits as centred as possible
+  // while every pin stays on screen. (1–2 points → median == midpoint, extent fits,
+  // clamp is a no-op → focused/region views unchanged.)
+  let ty = vcy / scale - medY;
+  const M = 4; // cull margin in plane-Y units
+  const bot = scale * (maxY + ty);
+  if (bot > visH + M) ty -= (bot - (visH + M)) / scale;       // pull up so south fits
+  if (scale * (minY + ty) < -M) ty += (-M - scale * (minY + ty)) / scale; // push down so north fits
   return { scale, tx, ty, vcy };
 }
 
@@ -303,12 +329,18 @@ export function RegionAtlas({
     if (clusterFocus) {
       return frame(clusterFocus.map((c) => ({ lat: c.lat, lng: c.lng })), 3, box);
     }
-    // World view → frame ALL countries that have data under the lens.
-    const worldPts = worldCountries.flatMap((c) =>
-      countryLensCount(c, lens) > 0 ? [{ lat: c.lat, lng: c.lng }] : [],
-    );
+    // World view → frame exactly the markers being RENDERED so the centring matches
+    // what the user sees. When clustering is active that's the cluster centres (not
+    // the raw country coords — clusters are count-weighted and skew north, so
+    // framing raw coords left the rendered badges crammed at the top). Otherwise
+    // frame every country with data.
+    const worldPts = worldClusters
+      ? worldClusters.map((cl) => ({ lat: cl.lat, lng: cl.lng }))
+      : worldCountries.flatMap((c) =>
+          countryLensCount(c, lens) > 0 ? [{ lat: c.lat, lng: c.lng }] : [],
+        );
     return frame(worldPts, 1, box);
-  }, [focusCountry, selectedSlug, clusterFocus, worldCountries, lens, box]);
+  }, [focusCountry, selectedSlug, clusterFocus, worldCountries, worldClusters, lens, box]);
 
   return (
     <div
