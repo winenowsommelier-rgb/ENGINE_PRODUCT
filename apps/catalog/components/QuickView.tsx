@@ -105,7 +105,7 @@ export function QuickView({
 
             {!inStock ? (
               <p className="mt-2 text-sm font-medium text-muted-foreground">
-                Out of stock
+                Check availability
               </p>
             ) : null}
 

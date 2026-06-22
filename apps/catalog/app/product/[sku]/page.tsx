@@ -228,7 +228,7 @@ export default function Page({ params }: { params: { sku: string } }) {
                 <span className="text-sm font-medium text-muted-foreground">In stock</span>
               ) : (
                 <span className="rounded-full bg-secondary px-3 py-1 text-sm font-medium text-muted-foreground ring-1 ring-border">
-                  Out of stock
+                  Check availability
                 </span>
               )}
               <CriticScoreStrip

@@ -71,7 +71,7 @@ export function ProductCard({ product, contactLinks }: ProductCardProps) {
 
             {!inStock ? (
               <span className="absolute left-2 top-2 rounded-full bg-background/90 px-2.5 py-1 text-xs font-medium text-muted-foreground shadow-sm ring-1 ring-border">
-                Out of stock
+                Check availability
               </span>
             ) : null}
 
