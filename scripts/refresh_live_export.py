@@ -49,7 +49,7 @@ except Exception:  # noqa: BLE001 — never let an optional import block a refre
 
 # Columns the explore endpoint reads (see ExploreProduct in lib/explore/types.ts).
 EXPORT_COLS = [
-    "id", "sku", "name", "brand", "classification", "wine_classification",
+    "id", "sku", "name", "brand", "classification", "wine_classification", "designation",
     "grape_variety", "vintage", "alcohol",
     "country", "region", "subregion", "appellation",
     "wine_body", "wine_acidity", "wine_tannin",

@@ -14,6 +14,7 @@ import {
   typeForProduct,
   accessoryCategoryForSku,
 } from './category-groups';
+import { designationForProduct, DESIGNATIONS } from './designation';
 
 export interface FacetOption {
   value: string;
@@ -82,4 +83,24 @@ export function regionsFor(_country: string, products: PublicProduct[]): FacetOp
 /** Distinct sub-regions present (caller passes the region-filtered set). */
 export function subRegionsFor(_region: string, products: PublicProduct[]): FacetOption[] {
   return tally(products, (p) => p.subregion);
+}
+
+/** Derived designations present, ordered by canonical specificity (most-specific first). */
+export function designationsFor(products: PublicProduct[]): FacetOption[] {
+  const counts = new Map<string, number>();
+  for (const p of products) {
+    const v = designationForProduct(p);
+    if (!v) continue;
+    counts.set(v, (counts.get(v) ?? 0) + 1);
+  }
+  // Sort by canonical specificity. A value not in DESIGNATIONS (e.g. a persisted
+  // designation the TS table doesn't know — parity-guarded but defend anyway) sorts
+  // LAST, not first: map indexOf===-1 to Infinity.
+  const rank = (v: string) => {
+    const i = DESIGNATIONS.indexOf(v);
+    return i === -1 ? Number.POSITIVE_INFINITY : i;
+  };
+  return [...counts.entries()]
+    .map(([value, count]) => ({ value, count }))
+    .sort((a, b) => rank(a.value) - rank(b.value));
 }

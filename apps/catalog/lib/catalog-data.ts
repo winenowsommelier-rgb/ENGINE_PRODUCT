@@ -12,7 +12,7 @@ import { compareRecommended, popularityCutoffP75, popularityTier } from './recom
  * DO NOT add margin_pct, b2b_margin_pct, id, enrichment_*, or popularity_*.
  */
 export const PUBLIC_FIELDS = [
-  'sku','name','brand','classification','wine_classification','grape_variety',
+  'sku','name','brand','classification','wine_classification','designation','grape_variety',
   'vintage','country','region','subregion','appellation','wine_body','wine_acidity',
   'wine_tannin','food_matching','food_matching_detail','flavor_tags','flavor_tags_canonical','bottle_size','price','currency',
   'desc_en_short','full_description','taste_profile','wine_color','image_url',

@@ -28,6 +28,8 @@
  *               and they always emit exact canonical values; the free-text region input
  *               was removed. Exact match makes the chip count == grid total everywhere.
  *   subregion → exact (case-insensitive) match on subregion (same rationale as region)
+ *   designation → exact (ci) match on the derived designation (lib/designation.ts:
+ *               most-specific single tag parsed from name, e.g. "Grand Cru","DOCG").
  *   grape     → case-insensitive substring match on grape_variety
  *   flavor    → keep products whose flavor_tags includes it (case-insensitive)
  *   body      → match the product's wine_body NORMALIZED via normalizeScale('body')
@@ -54,6 +56,7 @@ import { groupForProduct, typeForProduct, accessoryCategoryForSku, type Category
 import { tierById } from './price-tiers';
 import { isInStock } from './utils';
 import { normalizeScale } from './taste-adapter';
+import { designationForProduct } from './designation';
 
 export const SHOP_PAGE_SIZE = 24;
 
@@ -142,6 +145,9 @@ export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
 
   const subregion = norm(firstParam(params.subregion));
   if (subregion && norm(p.subregion) !== subregion) return false;
+
+  const designation = norm(firstParam(params.designation));
+  if (designation && norm(designationForProduct(p)) !== designation) return false;
 
   const grape = norm(firstParam(params.grape));
   if (grape && !norm(p.grape_variety).includes(grape)) return false;

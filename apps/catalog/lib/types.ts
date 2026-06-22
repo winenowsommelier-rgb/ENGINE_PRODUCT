@@ -36,6 +36,7 @@ export interface PublicProduct {
   brand?: string;
   classification?: string;
   wine_classification?: string;
+  designation?: string;   // derived class/designation (Grand Cru/DOCG/IGT/XO/…); see lib/designation.ts
   grape_variety?: string;
   vintage?: string; // STRING at runtime: "Current vintage", "2005", "2005 [**VINTAGE MAY CHANGE]" — never numeric math, only displayed as text
 
