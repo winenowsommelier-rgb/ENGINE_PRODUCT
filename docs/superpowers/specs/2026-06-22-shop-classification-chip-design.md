@@ -30,12 +30,18 @@ Verified against `data/live_products_export.json` (11,436 rows):
 stale TYPE duplicate. It MUST NOT be read for the designation chip — doing so
 re-introduces the "Wine product" bug. TYPE is owned by `category_type`.
 
-Designations are recoverable from product **`name`** via regex. Measured
-coverage (most-specific counted once): **~2,788 / 11,436 rows (24%)** carry a
-detectable designation; the remaining 76% have none and will simply not appear
-under any designation chip. Per-token name matches: DOC 460, Brut 434,
-Reserva/Riserva 320, DOCG 314, IGT 256, Grand Cru 242, Reserve 202, Single Malt
-157, 1er/Premier Cru 151, AOC 151, Limited 141, Gran Reserva 67, XO 33, VSOP 13.
+Designations are recoverable from product **`name`** via regex. Two different
+counts matter — do not conflate them:
+- **Raw per-token name hits** (a name can hit several): DOC 460, Brut 434,
+  Reserva/Riserva 320, DOCG 314, IGT 256, Grand Cru 242, Reserve 202, Single Malt
+  157, 1er/Premier Cru 151, AOC 151, Limited 141, Gran Reserva 67, XO 33, VSOP 13.
+- **Most-specific-wins resolution** (one tag per product — what the code actually
+  produces and what the chip counts reflect): **~2,710 / 11,436 rows (≈24%)**
+  (measured 2,711 Python / 2,704 JS at plan time; the 7-row delta was an accented
+  `Cru Classé` boundary bug, fixed in the plan's regex). Per-designation AFTER
+  dedup is lower than the raw hits (e.g. DOC ~427, Brut ~288, DOCG ~304) because
+  the more-specific token claims the row. The remaining ~76% have no designation
+  and will not appear under any chip — expected, not a bug.
 
 ## Decisions (locked with user)
 

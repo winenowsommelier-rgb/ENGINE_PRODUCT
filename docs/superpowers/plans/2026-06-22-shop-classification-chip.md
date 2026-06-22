@@ -81,6 +81,9 @@ describe('designationForProduct', () => {
   it('matches IGT', () => {
     expect(designationForProduct(p('Masseto Toscana IGT 2021'))).toBe('IGT');
   });
+  it('matches Cru Classé even with a trailing accented é (boundary parity with Python)', () => {
+    expect(designationForProduct(p('Chateau Margaux 4Ème Cru Classé'))).toBe('Cru Classé');
+  });
   it('returns undefined when no designation token', () => {
     expect(designationForProduct(p('Yellow Tail Shiraz'))).toBeUndefined();
   });
@@ -100,7 +103,7 @@ describe('designationForProduct', () => {
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `cd apps/catalog && npx vitest run lib/designation.test.ts`
-Expected: FAIL — `designation.ts` does not exist / `designationForProduct is not a function`.
+Expected: FAIL — `designation.ts` does not exist (resolve/import error). NOTE: because the resolver references `p.designation` (added in Task 2), if you create `designation.ts` before Task 2 the first error will be a TS compile error on `p.designation`, not a missing function. Do Task 2 immediately after, then re-run to green.
 
 - [ ] **Step 3: Write minimal implementation**
 
@@ -127,7 +130,7 @@ import type { PublicProduct } from './types';
 const DESIGNATION_PATTERNS: { label: string; re: RegExp }[] = [
   { label: 'Grand Cru',      re: /\bgrand\s+cru\b/i },
   { label: 'Premier Cru',    re: /\b(?:premier\s+cru|1er\s+cru)\b/i },
-  { label: 'Cru Classé',     re: /\bcru\s+class[eé]\b/i },
+  { label: 'Cru Classé',     re: /\bcru\s+class[eé](?![a-z])/i },  // NOT \b — JS \b fails after accented é at end-of-token; (?![a-z]) agrees with Python
   { label: 'DOCG',           re: /\bDOCG\b/ },
   { label: 'DOC',            re: /\bDOC\b/ },
   { label: 'IGT',            re: /\bIGT\b/ },
@@ -459,6 +462,9 @@ CASES = {
     "Tempranillo Reserva": "Reserva",
     "Cognac VSOP": "VSOP",
     "Glenfiddich Single Malt": "Single Malt",
+    # Accented end-of-token: JS \b fails after é, Python \b matches — the boundary
+    # MUST be (?![a-z]) in BOTH engines or this case diverges. (Caught in review.)
+    "Chateau Margaux 4Ème Cru Classé": "Cru Classé",
     "Yellow Tail Shiraz": None,
     "Doctorow Estate Red": None,
 }
@@ -496,7 +502,7 @@ DEFAULT_DB = REPO_ROOT / "data" / "db" / "products.db"
 DESIGNATION_PATTERNS = [
     ("Grand Cru",   re.compile(r"\bgrand\s+cru\b", re.I)),
     ("Premier Cru", re.compile(r"\b(?:premier\s+cru|1er\s+cru)\b", re.I)),
-    ("Cru Classé",  re.compile(r"\bcru\s+class[eé]\b", re.I)),
+    ("Cru Classé",  re.compile(r"\bcru\s+class[eé](?![a-z])", re.I)),  # match TS: (?![a-z]) not \b — agree on trailing é
     ("DOCG",        re.compile(r"\bDOCG\b")),
     ("DOC",         re.compile(r"\bDOC\b")),
     ("IGT",         re.compile(r"\bIGT\b")),
@@ -651,12 +657,14 @@ from collections import Counter
 print(Counter((p.get("designation") or "").strip() for p in data if (p.get("designation") or "").strip()).most_common())
 PY
 ```
-Expected: DB count == export count, ~2,700–2,800 rows, distribution roughly matching the planning audit (DOC ~460, Brut ~430, etc.). **This is the Rule-1 verification — the work is NOT done until this prints a populated count from the export, not the DB or logs.**
+Expected: DB count == export count, **~2,710 rows** (most-specific-wins dedup — measured 2,711 Python / 2,704 JS at plan time; the small TS/Py delta should now be 0 after the Cru Classé boundary fix). Per-designation distribution after dedup (NOT raw per-token hits): DOC ~427, DOCG ~304, Grand Cru ~242, Brut ~288, IGT ~256, Reserva-family, etc. **This is the Rule-1 verification — the work is NOT done until this prints a populated count from the export, not the DB or logs.** If the count is materially below ~2,700, the backfill or refresh under-ran — investigate before declaring done.
 
 - [ ] **Step 6: Commit (data export + scripts; do NOT commit the .bak)**
 
 ```bash
-git status   # confirm scope: scripts + data/live_products_export.json only; .bak is gitignored or excluded
+git status   # confirm scope: scripts + data/live_products_export.json only.
+# NOTE: data/db/products.db.bak-pre-designation is NOT in .gitignore — do NOT `git add` it.
+# The path-scoped `git add` below avoids it. (Optionally add `data/db/*.bak-*` to .gitignore.)
 git add scripts/backfill_designation.py scripts/refresh_live_export.py data/live_products_export.json
 git commit -m "feat(data): backfill designation column + export it; ~2.8k rows populated (\$0 API)"
 ```
