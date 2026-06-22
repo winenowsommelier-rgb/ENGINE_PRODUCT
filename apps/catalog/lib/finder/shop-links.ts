@@ -194,11 +194,16 @@ export function signatureChips(answers: Answers): ShopLink[] {
 }
 
 /**
- * The broad "see all N like this" URL: category scope (group + class) plus the
- * taste signature (body / tannin / acidity via primaryValue, + grape) — but NO
- * geography (no country/region/subregion), so it surfaces every match in style.
+ * The /shop filter params for the broad "see all like this" view: category scope
+ * (group + class) plus the taste signature (body / tannin / acidity via
+ * primaryValue, + grape) — but NO geography (no country/region/subregion), so it
+ * surfaces every match in style.
+ *
+ * Returned as a plain param map (the SAME param names matchesFilters reads) so a
+ * caller can both build the URL AND count the matching catalog rows with the
+ * shop's own predicate — guaranteeing the "See all N" count == the /shop grid.
  */
-export function styleShopUrl(answers: Answers): string {
+export function styleShopParams(answers: Answers): Record<string, string> {
   const params: Record<string, string> = {};
 
   const cfg = CATEGORY_SCOPE[answers.category];
@@ -223,5 +228,12 @@ export function styleShopUrl(answers: Answers): string {
     params.grape = answers.grape;
   }
 
-  return buildShopUrl(params);
+  return params;
+}
+
+/**
+ * The broad "see all N like this" URL — built from {@link styleShopParams}.
+ */
+export function styleShopUrl(answers: Answers): string {
+  return buildShopUrl(styleShopParams(answers));
 }
