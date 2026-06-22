@@ -13,6 +13,15 @@ def db_with_product(tmp_path):
     db = tmp_path / "t.db"
     conn = sqlite3.connect(db)
     conn.executescript(SCHEMA_SQL.read_text())
+    conn.commit()
+    conn.close()
+    # The base schema SQL still declares the legacy wine_* column names; the
+    # universal-attribute rename is applied at runtime by migrate_attribute_rename
+    # (the real DB is migrated the same way). Apply it so the fixture's schema
+    # matches what LocalRouter now writes (body/variety/... instead of wine_*).
+    from scripts.migrate_attribute_rename import migrate
+    migrate(db)
+    conn = sqlite3.connect(db)
     conn.execute(
         "INSERT INTO products (id, sku, name, classification) VALUES (?,?,?,?)",
         ("row-1", "WRW1", "Old name", "Red Wine"),
@@ -53,17 +62,17 @@ def test_local_router_updates_high_conf_row(db_with_product):
 
     conn = sqlite3.connect(db_with_product)
     row = conn.execute(
-        "SELECT wine_body, enrichment_confidence, enrichment_source, "
-        "wine_production_style, flavor_tags, grape_variety, food_matching "
+        "SELECT body, enrichment_confidence, enrichment_source, "
+        "production_style, flavor_tags, variety, food_matching "
         "FROM products WHERE id='row-1'"
     ).fetchone()
     assert row[0] == "Full-Bodied"
     assert row[1] == pytest.approx(0.9)
     assert row[2] == "ai_high_conf"
     # Verify list-shaped fields are encoded per the spec
-    assert _json.loads(row[3]) == ["organic"], "wine_production_style must be JSON-encoded list"
+    assert _json.loads(row[3]) == ["organic"], "production_style must be JSON-encoded list"
     assert _json.loads(row[4]) == ["dark fruit", "cedar"], "flavor_tags must be JSON-encoded list"
-    assert row[5] == "Cabernet Sauvignon", "grape_variety must be comma-joined string"
+    assert row[5] == "Cabernet Sauvignon", "variety must be comma-joined string"
     assert row[6] == "red meat, aged cheese", "food_matching must be comma-joined string"
 
 
@@ -106,12 +115,12 @@ def test_local_router_writes_below_threshold_with_low_conf_tier(db_with_product)
 
     conn = sqlite3.connect(db_with_product)
     row = conn.execute(
-        "SELECT wine_body, desc_en_short, full_description, flavor_tags, "
+        "SELECT body, desc_en_short, full_description, flavor_tags, "
         "food_matching, enrichment_source, enrichment_confidence "
         "FROM products WHERE id='row-1'"
     ).fetchone()
     # CRITICAL: every descriptive field must be populated
-    assert row[0] == "Full", "wine_body was dropped (Phase-5 bug regression)"
+    assert row[0] == "Full", "body was dropped (Phase-5 bug regression)"
     assert row[1] == "Sub-threshold but real enrichment.", "desc_en_short was dropped"
     assert "<p>" in (row[2] or ""), "full_description was dropped"
     assert "blackcurrant" in (row[3] or ""), "flavor_tags was dropped"

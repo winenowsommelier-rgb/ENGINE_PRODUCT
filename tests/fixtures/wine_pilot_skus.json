@@ -10,9 +10,9 @@
     "country": "France",
     "region": "Bordeaux",
     "subregion": "Pauillac",
-    "grape_variety": "Cabernet Sauvignon, Merlot, Petit Verdot",
     "price": 8500,
-    "alcohol": "13.5%"
+    "alcohol": "13.5%",
+    "variety": "Cabernet Sauvignon, Merlot, Petit Verdot"
   },
   {
     "id": "fixture-wine-2",
@@ -24,9 +24,9 @@
     "classification": "Red Wine",
     "country": "USA",
     "region": "Napa Valley",
-    "grape_variety": "Cabernet Sauvignon",
     "price": 4500,
-    "alcohol": "14.5%"
+    "alcohol": "14.5%",
+    "variety": "Cabernet Sauvignon"
   },
   {
     "id": "fixture-wine-3",
@@ -38,9 +38,9 @@
     "classification": "Red Wine",
     "country": "Australia",
     "region": "Barossa Valley",
-    "grape_variety": "Shiraz",
     "price": 1200,
-    "alcohol": "14%"
+    "alcohol": "14%",
+    "variety": "Shiraz"
   },
   {
     "id": "fixture-wine-4",
@@ -52,9 +52,9 @@
     "classification": "White Wine",
     "country": "New Zealand",
     "region": "Marlborough",
-    "grape_variety": "Sauvignon Blanc",
     "price": 900,
-    "alcohol": "12.5%"
+    "alcohol": "12.5%",
+    "variety": "Sauvignon Blanc"
   },
   {
     "id": "fixture-wine-5",
@@ -66,8 +66,8 @@
     "classification": "Red Wine",
     "country": "Italy",
     "region": "Sicily",
-    "grape_variety": "Nero d'Avola",
     "price": 750,
-    "alcohol": "13%"
+    "alcohol": "13%",
+    "variety": "Nero d'Avola"
   }
 ]

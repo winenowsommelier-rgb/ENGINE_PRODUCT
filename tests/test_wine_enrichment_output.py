@@ -32,7 +32,8 @@ class TestCsvRow:
             sku="WX-1", response=_good_response(),
             final_confidence=0.91, tier="A",
             cache_id="abc-123",
-            current_values={"wine_body": "Medium", "food_matching": "Old value"},
+            # current_values is existing product data → universal names (body, not wine_body)
+            current_values={"body": "Medium", "food_matching": "Old value"},
             enrichment_note="haiku tier A",
             model="haiku",
             enriched_at="2026-05-12T15:00:00Z",
@@ -40,10 +41,10 @@ class TestCsvRow:
         assert row["sku"] == "WX-1"
         assert row["confidence"] == 0.91
         assert row["confidence_tier"] == "A"
-        assert "Cabernet Sauvignon" in row["grape_variety"]
-        assert row["grape_blend_type"] == "Single Varietal"
-        assert row["wine_body"] == "Full"
-        assert row["current_wine_body"] == "Medium"
+        assert "Cabernet Sauvignon" in row["variety"]
+        assert row["blend_type"] == "Single Varietal"
+        assert row["body"] == "Full"
+        assert row["current_body"] == "Medium"
         assert row["cache_id"] == "abc-123"
 
 

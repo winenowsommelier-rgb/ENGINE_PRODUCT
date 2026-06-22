@@ -24,11 +24,11 @@ from scripts.backfill_structural import (
 
 
 def test_build_facts_extracts_signal():
-    p = {"sku": "WRW1", "name": "Ch. X", "grape_variety": "Merlot",
+    p = {"sku": "WRW1", "name": "Ch. X", "variety": "Merlot",
          "region": "Bordeaux", "country": "France", "vintage": 2018, "price": 5}
     facts = build_facts(p)
     assert facts["name"] == "Ch. X"
-    assert facts["grape_variety"] == "Merlot"
+    assert facts["variety"] == "Merlot"
     assert facts["region"] == "Bordeaux"
     # margin/price must NOT leak into the prompt facts
     assert "price" not in facts and "margin_pct" not in facts
@@ -36,13 +36,13 @@ def test_build_facts_extracts_signal():
 
 def test_parse_valid_json():
     out = parse_structural('{"body":"Full","acidity":"Medium-High","tannin":"High"}')
-    assert out == {"wine_body": "Full", "wine_acidity": "Medium-High", "wine_tannin": "High"}
+    assert out == {"body": "Full", "acidity": "Medium-High", "tannin": "High"}
 
 
 def test_parse_tolerates_surrounding_text():
     # Models sometimes wrap JSON in prose; we extract the object.
     out = parse_structural('Here it is:\n{"body":"Light","acidity":"High","tannin":"Low"}\nDone.')
-    assert out["wine_body"] == "Light"
+    assert out["body"] == "Light"
 
 
 def test_parse_rejects_off_scale_body():
@@ -69,43 +69,43 @@ def test_parse_rejects_non_json():
 
 def test_parse_normalizes_case_and_whitespace():
     out = parse_structural('{"body":" full ","acidity":"medium-high","tannin":"high"}')
-    assert out == {"wine_body": "Full", "wine_acidity": "Medium-High", "wine_tannin": "High"}
+    assert out == {"body": "Full", "acidity": "Medium-High", "tannin": "High"}
 
 
 # --- merge: flat-if-empty + _inferred mirror, never overwrite curated ---
 
-INFERRED = {"wine_body": "Full", "wine_acidity": "High", "wine_tannin": "Medium-High"}
+INFERRED = {"body": "Full", "acidity": "High", "tannin": "Medium-High"}
 
 
 def test_merge_fills_empty_flat_fields():
-    prod = {"sku": "W1", "wine_body": None, "wine_acidity": "", "wine_tannin": None}
+    prod = {"sku": "W1", "body": None, "acidity": "", "tannin": None}
     changed = merge_into_product(prod, INFERRED)
     assert changed is True
-    assert prod["wine_body"] == "Full"
-    assert prod["wine_acidity"] == "High"
-    assert prod["wine_tannin"] == "Medium-High"
+    assert prod["body"] == "Full"
+    assert prod["acidity"] == "High"
+    assert prod["tannin"] == "Medium-High"
 
 
 def test_merge_always_writes_inferred_mirror():
     prod = {"sku": "W1"}
     merge_into_product(prod, INFERRED)
-    assert prod["wine_body_inferred"] == "Full"
-    assert prod["wine_acidity_inferred"] == "High"
-    assert prod["wine_tannin_inferred"] == "Medium-High"
+    assert prod["body_inferred"] == "Full"
+    assert prod["acidity_inferred"] == "High"
+    assert prod["tannin_inferred"] == "Medium-High"
 
 
 def test_merge_never_overwrites_curated_flat_value():
     # Curated tannin already present -> flat stays, but the mirror still records the guess.
-    prod = {"sku": "W1", "wine_body": None, "wine_acidity": None, "wine_tannin": "Low"}
+    prod = {"sku": "W1", "body": None, "acidity": None, "tannin": "Low"}
     merge_into_product(prod, INFERRED)
-    assert prod["wine_tannin"] == "Low"                 # curated preserved
-    assert prod["wine_tannin_inferred"] == "Medium-High"  # guess still recorded
-    assert prod["wine_body"] == "Full"                  # empty one filled
+    assert prod["tannin"] == "Low"                 # curated preserved
+    assert prod["tannin_inferred"] == "Medium-High"  # guess still recorded
+    assert prod["body"] == "Full"                  # empty one filled
 
 
 def test_merge_returns_false_when_no_flat_field_changed():
-    prod = {"sku": "W1", "wine_body": "Light", "wine_acidity": "Low", "wine_tannin": "Low"}
+    prod = {"sku": "W1", "body": "Light", "acidity": "Low", "tannin": "Low"}
     changed = merge_into_product(prod, INFERRED)
     assert changed is False  # all flat fields already curated
     # mirror still written for provenance
-    assert prod["wine_body_inferred"] == "Full"
+    assert prod["body_inferred"] == "Full"
