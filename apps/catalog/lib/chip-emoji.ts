@@ -7,10 +7,16 @@
  * as lib/category-constants.ts — keep this free of `fs` or the webpack build
  * fails ("Module not found: Can't resolve 'fs'").
  *
+ * Country flags are NOT redefined here — they come from the single source of
+ * truth, lib/explore/flags.ts (flagEmoji), which derives flags from ISO codes
+ * rather than hardcoding glyphs and is shared with the explore map.
+ *
  * Lookups are case-insensitive and tolerant of unknown values (return ''), so a
  * new category group or country in the data never crashes a chip — it just
  * renders without an icon.
  */
+
+import { flagEmoji } from '@/lib/explore/flags';
 
 /**
  * Category group → emoji. Keys are the 10 CATEGORY_GROUPS values. Wine maps to
@@ -30,81 +36,6 @@ const CATEGORY_EMOJI: Record<string, string> = {
   'Accessories': '🧰',
 };
 
-/**
- * Country → flag emoji. Covers every distinct `country` value currently in
- * live_products_export.json (68 as of 2026-06). Unknown countries fall through
- * to '' (no flag) rather than a wrong one.
- */
-const COUNTRY_EMOJI: Record<string, string> = {
-  'France': '🇫🇷',
-  'Italy': '🇮🇹',
-  'USA': '🇺🇸',
-  'Australia': '🇦🇺',
-  'Japan': '🇯🇵',
-  'Scotland': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
-  'Chile': '🇨🇱',
-  'Spain': '🇪🇸',
-  'Germany': '🇩🇪',
-  'Mexico': '🇲🇽',
-  'China': '🇨🇳',
-  'Austria': '🇦🇹',
-  'Thailand': '🇹🇭',
-  'Argentina': '🇦🇷',
-  'New Zealand': '🇳🇿',
-  'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-  'Cuba': '🇨🇺',
-  'South Africa': '🇿🇦',
-  'Malaysia': '🇲🇾',
-  'Netherlands': '🇳🇱',
-  'Belgium': '🇧🇪',
-  'Ireland': '🇮🇪',
-  'Sweden': '🇸🇪',
-  'Portugal': '🇵🇹',
-  'Russia': '🇷🇺',
-  'Norway': '🇳🇴',
-  'Poland': '🇵🇱',
-  'Taiwan': '🇹🇼',
-  'Canada': '🇨🇦',
-  'Uruguay': '🇺🇾',
-  'Barbados': '🇧🇧',
-  'South Korea': '🇰🇷',
-  'Jamaica': '🇯🇲',
-  'Nicaragua': '🇳🇮',
-  'Dominican Republic': '🇩🇴',
-  'Brazil': '🇧🇷',
-  'India': '🇮🇳',
-  'Vietnam': '🇻🇳',
-  'Czech Republic': '🇨🇿',
-  'Georgia': '🇬🇪',
-  'Denmark': '🇩🇰',
-  'Peru': '🇵🇪',
-  'Greece': '🇬🇷',
-  'Philippines': '🇵🇭',
-  'Iceland': '🇮🇸',
-  'Singapore': '🇸🇬',
-  'Finland': '🇫🇮',
-  'Venezuela': '🇻🇪',
-  'Colombia': '🇨🇴',
-  'Trinidad & Tobago': '🇹🇹',
-  'Latvia': '🇱🇻',
-  'Panama': '🇵🇦',
-  'Slovenia': '🇸🇮',
-  'Lebanon': '🇱🇧',
-  'Honduras': '🇭🇳',
-  'Martinique': '🇲🇶',
-  'Hungary': '🇭🇺',
-  'Guyana': '🇬🇾',
-  'Anguilla': '🇦🇮',
-  'Slovakia': '🇸🇰',
-  'Fiji': '🇫🇯',
-  'Cambodia': '🇰🇭',
-  'Guatemala': '🇬🇹',
-  'Indonesia': '🇮🇩',
-  'Bermuda': '🇧🇲',
-  'Grenada': '🇬🇩',
-  'Monaco': '🇲🇨',
-};
-
 /** Emoji for a category group, or '' if unmapped. Case-insensitive. */
 export function categoryEmoji(group: string | null | undefined): string {
   if (!group) return '';
@@ -119,16 +50,10 @@ export function categoryEmoji(group: string | null | undefined): string {
   );
 }
 
-/** Flag emoji for a country, or '' if unmapped. Case-insensitive. */
+/**
+ * Flag emoji for a country, or '' if unmapped. Delegates to the shared
+ * flagEmoji() so flags live in exactly one place (lib/explore/flags.ts).
+ */
 export function countryEmoji(country: string | null | undefined): string {
-  if (!country) return '';
-  return (
-    COUNTRY_EMOJI[country] ??
-    COUNTRY_EMOJI[
-      Object.keys(COUNTRY_EMOJI).find(
-        (k) => k.toLowerCase() === country.toLowerCase(),
-      ) ?? ''
-    ] ??
-    ''
-  );
+  return flagEmoji(country);
 }
