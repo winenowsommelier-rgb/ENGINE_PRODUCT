@@ -666,7 +666,7 @@ git status   # confirm scope: scripts + data/live_products_export.json only.
 # NOTE: data/db/products.db.bak-pre-designation is NOT in .gitignore — do NOT `git add` it.
 # The path-scoped `git add` below avoids it. (Optionally add `data/db/*.bak-*` to .gitignore.)
 git add scripts/backfill_designation.py scripts/refresh_live_export.py data/live_products_export.json
-git commit -m "feat(data): backfill designation column + export it; ~2.8k rows populated (\$0 API)"
+git commit -m "feat(data): backfill designation column + export it; ~2,710 rows populated (\$0 API)"
 ```
 
 ---
@@ -740,7 +740,7 @@ Expected: green build + all tests pass.
 
 ## Done criteria (verify, don't infer)
 
-- [ ] `designation` populated in `data/live_products_export.json` (count printed, ~2.8k) — NOT just in the DB.
+- [ ] `designation` populated in `data/live_products_export.json` (count printed, ~2,710) — NOT just in the DB.
 - [ ] Classification chip renders below Origin and filters the grid in the browser at :3100.
 - [ ] Facet count == grid total for a selected designation.
 - [ ] TS↔Python parity test green; DB invariant test green; catalog build green.
