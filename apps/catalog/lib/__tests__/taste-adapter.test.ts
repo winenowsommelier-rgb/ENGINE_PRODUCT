@@ -6,7 +6,7 @@ import type { PublicProduct } from '@/lib/types';
 /**
  * Regression guard for the SILENT-EMPTY-GAUGE failure (CLAUDE.md Rule 2 / Rule 6).
  *
- * The live export's flat structural fields (wine_acidity / wine_body / wine_tannin)
+ * The live export's flat structural fields (acidity / body / tannin)
  * carry values OUTSIDE the component's SCALE_DEFINITIONS — e.g. acidity 'Medium-Full'
  * (260 products), 'Full' (72), 'Light' (44), 'Medium-Light' (138). StructuralGauges
  * computes filledCount = scale.indexOf(value) + 1; an unmapped value → -1 → 0 filled
@@ -99,7 +99,7 @@ describe('toTiers', () => {
 
 describe('toStructural', () => {
   it('builds {body,acidity,tannin} from flat fields, normalised into component scales', () => {
-    const p = mk({ wine_body: 'Medium-Full', wine_acidity: 'Medium-Full', wine_tannin: 'Full' });
+    const p = mk({ body: 'Medium-Full', acidity: 'Medium-Full', tannin: 'Full' });
     const s = toStructural(p);
     expect(s).toEqual({ body: 'Medium-Full', acidity: 'Medium-High', tannin: 'High' });
     // Every produced value lands in the matching component scale → gauges fill.
@@ -109,13 +109,13 @@ describe('toStructural', () => {
   });
 
   it('a Medium-Full acidity product yields a filled gauge (filledCount > 0)', () => {
-    const s = toStructural(mk({ wine_acidity: 'Medium-Full' }));
+    const s = toStructural(mk({ acidity: 'Medium-Full' }));
     const filled = SCALE_DEFINITIONS.acidity.scale.indexOf(s.acidity) + 1;
     expect(filled).toBeGreaterThan(0);
   });
 
   it('drops empty/null axes rather than emitting silent-empty gauges', () => {
-    const s = toStructural(mk({ wine_body: 'Medium', wine_acidity: null as unknown as undefined }));
+    const s = toStructural(mk({ body: 'Medium', acidity: null as unknown as undefined }));
     expect(s).toEqual({ body: 'Medium' });
     expect('acidity' in s).toBe(false);
   });

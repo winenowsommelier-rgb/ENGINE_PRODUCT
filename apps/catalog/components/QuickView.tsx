@@ -52,7 +52,7 @@ function attributeRows(p: PublicProduct): Array<{ label: string; value: string }
   const rows: Array<{ label: string; value: string | undefined | number }> = [
     { label: 'Country', value: p.country },
     { label: 'Region', value: p.region },
-    { label: 'Grape', value: p.grape_variety },
+    { label: 'Grape', value: p.variety },
     { label: 'Vintage', value: p.vintage },
     { label: 'Size', value: p.bottle_size },
   ];

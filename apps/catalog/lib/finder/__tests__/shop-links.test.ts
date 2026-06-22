@@ -57,7 +57,7 @@ describe('styleShopUrl links survive the real /shop filter (matchesFilters)', ()
       category_type: 'Sparkling & Champagne',
       sku: 'WSP1',
       is_in_stock: true,
-      wine_body: 'Full',
+      body: 'Full',
     } as any as PublicProduct;
     const params = parse(styleShopUrl({ category: 'sparkling', axis1: 'bold' } as any));
     expect(matchesFilters(p, params)).toBe(true);
@@ -69,7 +69,7 @@ describe('styleShopUrl links survive the real /shop filter (matchesFilters)', ()
       category_type: 'Red Wine',
       sku: 'WRD1',
       is_in_stock: true,
-      wine_body: 'Full',
+      body: 'Full',
     } as any as PublicProduct;
     const params = parse(styleShopUrl({ category: 'red', axis1: 'bold' } as any));
     expect(matchesFilters(p, params)).toBe(true);
@@ -111,9 +111,9 @@ describe('styleShopParams == styleShopUrl querystring (count contract)', () => {
 
   it('count via matchesFilters(styleShopParams) finds the in-style products', () => {
     const products = [
-      { category_group: 'Wine', category_type: 'Red Wine', sku: 'R1', wine_body: 'Full' },
-      { category_group: 'Wine', category_type: 'Red Wine', sku: 'R2', wine_body: 'Light' },
-      { category_group: 'Wine', category_type: 'White Wine', sku: 'W1', wine_body: 'Full' },
+      { category_group: 'Wine', category_type: 'Red Wine', sku: 'R1', body: 'Full' },
+      { category_group: 'Wine', category_type: 'Red Wine', sku: 'R2', body: 'Light' },
+      { category_group: 'Wine', category_type: 'White Wine', sku: 'W1', body: 'Full' },
     ] as any as PublicProduct[];
     const params = styleShopParams({ category: 'red', axis1: 'bold' } as any); // body=Full
     const count = products.filter((p) => matchesFilters(p, params)).length;

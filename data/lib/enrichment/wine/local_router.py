@@ -30,7 +30,7 @@ class LocalRouter:
         """Write enriched fields to local SQLite.
 
         ALWAYS writes the descriptive payload (desc_en_short, full_description,
-        wine_body, flavor_tags, food_matching, etc.) whenever an enrichment
+        body, flavor_tags, food_matching, etc.) whenever an enrichment
         response is provided. The `enrichment_source` column records confidence
         tier so the UI/downstream can filter to high-conf rows when needed.
 
@@ -58,13 +58,14 @@ class LocalRouter:
         try:
             with conn:
                 if has_descriptive_write:
+                    # LHS keys = products (SQLite) columns (renamed); RHS response.get() = LLM-response keys (stable).
                     payload = {
-                        "wine_body": response.get("wine_body"),
-                        "wine_acidity": response.get("wine_acidity"),
-                        "wine_tannin": response.get("wine_tannin"),
-                        "grape_variety": ", ".join(response.get("grape_variety", [])) or None,
-                        "grape_blend_type": response.get("grape_blend_type"),
-                        "wine_production_style": json.dumps(response.get("wine_production_style") or []),
+                        "body": response.get("wine_body"),
+                        "acidity": response.get("wine_acidity"),
+                        "tannin": response.get("wine_tannin"),
+                        "variety": ", ".join(response.get("grape_variety", [])) or None,
+                        "blend_type": response.get("grape_blend_type"),
+                        "production_style": json.dumps(response.get("wine_production_style") or []),
                         "flavor_tags": json.dumps(response.get("flavor_tags") or []),
                         "food_matching": ", ".join(response.get("food_matching", [])) or None,
                         "desc_en_short": response.get("desc_en_short"),

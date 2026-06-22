@@ -50,7 +50,7 @@ export function scoreCandidate(
   let score = 0;
 
   if (product.region && candidate.region && product.region === candidate.region) score += 3;
-  if (product.grape_variety && candidate.grape_variety && product.grape_variety === candidate.grape_variety) score += 2;
+  if (product.variety && candidate.variety && product.variety === candidate.variety) score += 2;
   if (product.country && candidate.country && product.country === candidate.country) score += 1;
 
   const a = productFoods ?? foodSet(product.food_matching);

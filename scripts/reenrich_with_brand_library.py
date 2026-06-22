@@ -231,7 +231,7 @@ def apply_to_db(conn: sqlite3.Connection, sku: str, result: dict, lock: threadin
                 cols_present: set[str], classification: str | None = None) -> None:
     """Write the new enrichment to products row.
 
-    Wine categories → write to legacy wine_body/wine_acidity/wine_tannin columns.
+    Wine categories → write to body/acidity/tannin columns.
     Non-wine categories → write taste_profile JSON column (axes + tags + style_tag).
     Categories with no matrix (Glassware/Accessories/Cigar) → no axis data written.
 
@@ -265,9 +265,9 @@ def apply_to_db(conn: sqlite3.Connection, sku: str, result: dict, lock: threadin
 
     if schema is not None and schema.category == "wine":
         # Wine uses legacy 3-column shape
-        payload["wine_body"] = taste_axes.get("body")
-        payload["wine_acidity"] = taste_axes.get("acidity")
-        payload["wine_tannin"] = taste_axes.get("tannin")
+        payload["body"] = taste_axes.get("body")
+        payload["acidity"] = taste_axes.get("acidity")
+        payload["tannin"] = taste_axes.get("tannin")
     elif schema is not None:
         # Non-wine → taste_profile JSON; clear legacy wine columns if they were populated
         # before by a prior wrong-category enrichment.
@@ -299,9 +299,9 @@ def apply_to_db(conn: sqlite3.Connection, sku: str, result: dict, lock: threadin
         if style_tag in schema.style_tags:
             profile["style_tag"] = style_tag
         payload["taste_profile"] = json.dumps(profile, ensure_ascii=False)
-        payload["wine_body"] = None
-        payload["wine_acidity"] = None
-        payload["wine_tannin"] = None
+        payload["body"] = None
+        payload["acidity"] = None
+        payload["tannin"] = None
     # else: schema is None (Glassware/Accessories/Cigar/Others) → no axis fields touched
     payload = {k: v for k, v in payload.items() if k in cols_present}
     sets = ", ".join(f"{k}=?" for k in payload.keys())

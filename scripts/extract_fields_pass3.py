@@ -1102,10 +1102,10 @@ def main():
 
     # --- Fetch products ---
     select_fields = ",".join([
-        "sku", "name", "classification", "grape_variety", "vintage", "brand",
+        "sku", "name", "classification", "variety", "vintage", "brand",
         "region", "country", "style", "desc_en_short", "desc_en_full",
         "short_description_en", "description_en_text",
-        "flavor_tags", "food_matching", "wine_body", "wine_acidity", "wine_tannin",
+        "flavor_tags", "food_matching", "body", "acidity", "tannin",
         "enrichment_priority",
     ])
     query = f"products?select={select_fields}&order=sku"
@@ -1153,11 +1153,11 @@ def main():
         classification = (p.get("classification") or "").strip()
         country = (p.get("country") or "").strip()
         region_current = (p.get("region") or "").strip()
-        grape_current = (p.get("grape_variety") or "").strip()
+        grape_current = (p.get("variety") or "").strip()
         style_current = (p.get("style") or "").strip()
-        body = (p.get("wine_body") or "").strip()
-        tannin = (p.get("wine_tannin") or "").strip()
-        acidity = (p.get("wine_acidity") or "").strip()
+        body = (p.get("body") or "").strip()
+        tannin = (p.get("tannin") or "").strip()
+        acidity = (p.get("acidity") or "").strip()
         desc_short = (p.get("desc_en_short") or p.get("short_description_en") or "").strip()
         desc_full = (p.get("desc_en_full") or "").strip()
         desc_text = (p.get("description_en_text") or "").strip()

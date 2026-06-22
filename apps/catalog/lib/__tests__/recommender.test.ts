@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { getRecommendations, precomputeRecommendations } from '@/lib/recommender';
 
-const base = { sku:'A', name:'A', region:'Bordeaux', grape_variety:'Cabernet',
+const base = { sku:'A', name:'A', region:'Bordeaux', variety:'Cabernet',
   country:'France', classification:'Red Wine', food_matching:'Beef, Lamb', price:1600, is_in_stock:true } as any;
 const pool = [
   base,
   { ...base, sku:'B', name:'B', price:1700 },
   { ...base, sku:'C', name:'C', region:'Napa', country:'USA', food_matching:'Beef', price:1800 },
-  { ...base, sku:'D', name:'D', region:'X', grape_variety:'Y', country:'Z', classification:'Gin', food_matching:'Fish', price:50000 },
+  { ...base, sku:'D', name:'D', region:'X', variety:'Y', country:'Z', classification:'Gin', food_matching:'Fish', price:50000 },
   { ...base, sku:'E', name:'E', is_in_stock:false },
 ];
 
@@ -38,8 +38,8 @@ describe('getRecommendations', () => {
     expect(dIdx === -1 || dIdx === recs.length - 1).toBe(true);
   });
   it('food_matching overlap is counted (case-insensitive, comma-split)', () => {
-    const p1 = { ...base, sku:'P1', region:'z', grape_variety:'z', country:'z', classification:'z', price:999999, food_matching:'beef, lamb' };
-    const p2 = { ...base, sku:'P2', region:'z', grape_variety:'z', country:'z', classification:'z', price:999999, food_matching:'Fish' };
+    const p1 = { ...base, sku:'P1', region:'z', variety:'z', country:'z', classification:'z', price:999999, food_matching:'beef, lamb' };
+    const p2 = { ...base, sku:'P2', region:'z', variety:'z', country:'z', classification:'z', price:999999, food_matching:'Fish' };
     const recs = getRecommendations(base, [base, p1, p2]);
     expect(recs[0].sku).toBe('P1');
   });
@@ -60,7 +60,7 @@ describe('precomputeRecommendations', () => {
   // intentionally-or-not; re-decide, don't just update the assertion.
   it('does NOT surface a cross-region high-scorer (region-bucketing approximation)', () => {
     // Subject product P, region "Bordeaux".
-    const P = { ...base, sku:'P', region:'Bordeaux', grape_variety:'Merlot',
+    const P = { ...base, sku:'P', region:'Bordeaux', variety:'Merlot',
       country:'France', classification:'Red Wine', food_matching:'Beef', price:1000 };
 
     // Five MORE in-stock products in P's OWN region bucket (Bordeaux), so the
@@ -68,15 +68,15 @@ describe('precomputeRecommendations', () => {
     // classification/country/global widening chain is NOT triggered. These share
     // ONLY region with P (+3) and nothing else, so each scores exactly 3.
     const inRegion = ['R1','R2','R3','R4','R5'].map((sku) => ({
-      ...base, sku, region:'Bordeaux', grape_variety:'none', country:'none',
+      ...base, sku, region:'Bordeaux', variety:'none', country:'none',
       classification:'none', food_matching:'', price:999999, is_in_stock:true,
     }));
 
     // A cross-region candidate that WOULD outscore the in-region items in a full
-    // scan: shares grape_variety (+2) + country (+1) + classification (+1) +
+    // scan: shares variety (+2) + country (+1) + classification (+1) +
     // food "Beef" (+1) + price band (+1) = score 6 > 3, but it lives in region
     // "Napa", a DIFFERENT bucket, so bucketing must never merge it into P's pool.
-    const crossRegion = { ...base, sku:'X', region:'Napa', grape_variety:'Merlot',
+    const crossRegion = { ...base, sku:'X', region:'Napa', variety:'Merlot',
       country:'France', classification:'Red Wine', food_matching:'Beef', price:1000, is_in_stock:true };
 
     const map = precomputeRecommendations([P, ...inRegion, crossRegion]);
@@ -94,12 +94,12 @@ describe('precomputeRecommendations', () => {
   it('a product with a tiny region bucket still returns <= 4 valid in-stock non-self skus', () => {
     // Subject T is alone in its region "Solo" — region bucket has only T itself,
     // so widening (classification -> country -> global fallback) must kick in.
-    const T = { ...base, sku:'T', region:'Solo', grape_variety:'Syrah',
+    const T = { ...base, sku:'T', region:'Solo', variety:'Syrah',
       country:'France', classification:'Red Wine', food_matching:'Beef', price:1000 };
     // Other in-stock products in different regions but sharing classification/
     // country with T so widening can find eligible neighbours.
     const others = ['N1','N2','N3','N4','N5','N6'].map((sku, i) => ({
-      ...base, sku, region:`Reg${i}`, grape_variety:'Syrah', country:'France',
+      ...base, sku, region:`Reg${i}`, variety:'Syrah', country:'France',
       classification:'Red Wine', food_matching:'Beef', price:1000, is_in_stock:true,
     }));
     const oos = { ...base, sku:'OOS', region:'Reg9', country:'France',
@@ -126,11 +126,11 @@ describe('precomputeRecommendations', () => {
   it('an OUT-OF-STOCK product still gets recs (all in-stock, excludes itself)', () => {
     // OOS subject P shares region "Bordeaux" with several in-stock neighbours, so
     // its own region bucket (built from in-stock candidates) yields recs FOR it.
-    const P = { ...base, sku:'POOS', region:'Bordeaux', grape_variety:'Merlot',
+    const P = { ...base, sku:'POOS', region:'Bordeaux', variety:'Merlot',
       country:'France', classification:'Red Wine', food_matching:'Beef', price:1000,
       is_in_stock:false };
     const neighbours = ['IS1','IS2','IS3','IS4','IS5'].map((sku) => ({
-      ...base, sku, region:'Bordeaux', grape_variety:'Merlot', country:'France',
+      ...base, sku, region:'Bordeaux', variety:'Merlot', country:'France',
       classification:'Red Wine', food_matching:'Beef', price:1000, is_in_stock:true,
     }));
     const inStockSkus = new Set(neighbours.map((n) => n.sku));

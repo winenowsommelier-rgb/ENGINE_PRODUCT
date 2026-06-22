@@ -64,7 +64,7 @@ class TestEvidenceHash:
         assert e1.evidence_hash == e2.evidence_hash
 
     def test_hash_changes_with_critic_scores(self):
-        sku_data = {"sku": "TEST-1", "name": "Test", "brand": "Test", "grape_variety": "Cabernet Sauvignon", "region": "Bordeaux", "country": "France", "classification": "Red Wine", "vintage": "2020", "price": 1000, "bottle_size": "750ml", "alcohol": "13%", "subregion": ""}
+        sku_data = {"sku": "TEST-1", "name": "Test", "brand": "Test", "variety": "Cabernet Sauvignon", "region": "Bordeaux", "country": "France", "classification": "Red Wine", "vintage": "2020", "price": 1000, "bottle_size": "750ml", "alcohol": "13%", "subregion": ""}
         c1 = ev.EvidenceCollector(winesensed_records=[], brand_library=[], critic_scores_by_sku={})
         c2 = ev.EvidenceCollector(winesensed_records=[], brand_library=[], critic_scores_by_sku={
             "TEST-1": [{"critic": "James Suckling", "score": 95.0, "score_max": 100, "vintage": "2020"}]
@@ -76,7 +76,7 @@ class TestEvidenceHash:
 
 class TestCriticScoresTierBoost:
     def test_two_critic_scores_yields_tier_a(self):
-        sku_data = {"sku": "TEST-1", "name": "Test", "brand": "Unknown", "grape_variety": "Unknown", "region": "Unknown", "country": "Unknown", "classification": "Red Wine", "vintage": "2020", "price": 1000, "bottle_size": "750ml", "alcohol": "", "subregion": ""}
+        sku_data = {"sku": "TEST-1", "name": "Test", "brand": "Unknown", "variety": "Unknown", "region": "Unknown", "country": "Unknown", "classification": "Red Wine", "vintage": "2020", "price": 1000, "bottle_size": "750ml", "alcohol": "", "subregion": ""}
         c = ev.EvidenceCollector(winesensed_records=[], brand_library=[], critic_scores_by_sku={
             "TEST-1": [
                 {"critic": "James Suckling", "score": 95.0, "score_max": 100, "vintage": "2020"},

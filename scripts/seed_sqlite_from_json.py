@@ -3,7 +3,7 @@
 
 Idempotent: re-runs UPSERT by sku. Schema columns are introspected from the
 SQLite database; JSON keys not in the schema are silently ignored. List values
-(e.g. wine_production_style) are JSON-encoded.
+(e.g. production_style) are JSON-encoded.
 """
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ def seed_products_db(
 
     The ON CONFLICT(sku) DO UPDATE SET clause only lists columns that are
     present in the source JSON record. Columns absent from the source (e.g.
-    wine_body or full_description written by a downstream enrichment step)
+    body or full_description written by a downstream enrichment step)
     are NOT included in the SET clause and are therefore preserved on re-seed.
 
     Safe to re-run after enrichment has populated enrichment-only columns,

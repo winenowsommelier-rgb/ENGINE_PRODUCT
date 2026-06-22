@@ -30,13 +30,13 @@
  *   subregion → exact (case-insensitive) match on subregion (same rationale as region)
  *   designation → exact (ci) match on the derived designation (lib/designation.ts:
  *               most-specific single tag parsed from name, e.g. "Grand Cru","DOCG").
- *   grape     → case-insensitive substring match on grape_variety
+ *   grape     → case-insensitive substring match on variety
  *   flavor    → keep products whose flavor_tags includes it (case-insensitive)
- *   body      → match the product's wine_body NORMALIZED via normalizeScale('body')
+ *   body      → match the product's body NORMALIZED via normalizeScale('body')
  *               to the 4-step component scale (so the dropdown option matches the
  *               same value the taste gauges render; off-scale tokens → null → drop)
- *   acidity   → same, normalizeScale('acidity', wine_acidity)
- *   tannin    → same, normalizeScale('tannin', wine_tannin)
+ *   acidity   → same, normalizeScale('acidity', acidity)
+ *   tannin    → same, normalizeScale('tannin', tannin)
  *   hasScore=1→ keep only products with a non-empty score_summary
  *
  * Sort (param `sort`):
@@ -150,7 +150,7 @@ export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
   if (designation && norm(designationForProduct(p)) !== designation) return false;
 
   const grape = norm(firstParam(params.grape));
-  if (grape && !norm(p.grape_variety).includes(grape)) return false;
+  if (grape && !norm(p.variety).includes(grape)) return false;
 
   const flavor = norm(firstParam(params.flavor));
   if (flavor) {
@@ -159,11 +159,11 @@ export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
   }
 
   const body = norm(firstParam(params.body));
-  if (body && norm(normalizeScale('body', p.wine_body)) !== body) return false;
+  if (body && norm(normalizeScale('body', p.body)) !== body) return false;
   const acidity = norm(firstParam(params.acidity));
-  if (acidity && norm(normalizeScale('acidity', p.wine_acidity)) !== acidity) return false;
+  if (acidity && norm(normalizeScale('acidity', p.acidity)) !== acidity) return false;
   const tannin = norm(firstParam(params.tannin));
-  if (tannin && norm(normalizeScale('tannin', p.wine_tannin)) !== tannin) return false;
+  if (tannin && norm(normalizeScale('tannin', p.tannin)) !== tannin) return false;
 
   if (firstParam(params.inStock) === '1' && !isInStock(p.is_in_stock)) return false;
   if (firstParam(params.hasScore) === '1' &&

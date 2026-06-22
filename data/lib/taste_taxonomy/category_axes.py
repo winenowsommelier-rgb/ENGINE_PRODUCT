@@ -1,7 +1,7 @@
 """Per-category taste-axis matrices for non-wine SKUs.
 
-Wine continues to use the legacy 3-column schema (wine_body / wine_acidity /
-wine_tannin). All other categories store their taste profile in the
+Wine continues to use the dedicated 3-column schema (body / acidity /
+tannin). All other categories store their taste profile in the
 `taste_profile` JSON column with this shape:
 
     {
@@ -55,7 +55,7 @@ WINE = CategorySchema(
         Axis("acidity", "Acidity", ["Light", "Medium-Light", "Medium", "Medium-Full", "Full"]),
         Axis("tannin",  "Tannin",  ["Light", "Medium-Light", "Medium", "Medium-Full", "Full"]),
     ],
-    notes="Stored in legacy wine_body/wine_acidity/wine_tannin columns, NOT taste_profile.",
+    notes="Stored in body/acidity/tannin columns, NOT taste_profile.",
 )
 
 # ── Whisky / Whiskey / Bourbon / Scotch ─────────────────────────────────────
@@ -212,7 +212,7 @@ def schema_for_classification(classification: str | None) -> CategorySchema | No
     the classification has no matrix (Glassware, Accessories, etc.).
 
     For Wine categories returns the WINE schema — callers should still
-    know to read from wine_body / wine_acidity / wine_tannin columns
+    know to read from body / acidity / tannin columns
     rather than from taste_profile JSON.
     """
     if not classification:

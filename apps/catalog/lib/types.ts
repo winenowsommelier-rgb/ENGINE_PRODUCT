@@ -37,16 +37,23 @@ export interface PublicProduct {
   classification?: string;
   wine_classification?: string;
   designation?: string;   // derived class/designation (Grand Cru/DOCG/IGT/XO/…); see lib/designation.ts
-  grape_variety?: string;
+  // Universal product attributes (renamed from wine_* 2026-06-22; apply to all categories).
+  variety?: string; // grape (wine) / agave (tequila) / barley (whisky) / rice (sake)
+  blend_type?: string;
   vintage?: string; // STRING at runtime: "Current vintage", "2005", "2005 [**VINTAGE MAY CHANGE]" — never numeric math, only displayed as text
 
   country?: string;
   region?: string;
   subregion?: string;
   appellation?: string;
-  wine_body?: string;
-  wine_acidity?: string;
-  wine_tannin?: string;
+  body?: string;
+  acidity?: string;
+  tannin?: string;
+  sweetness?: string;
+  intensity?: string;
+  smokiness?: string;
+  finish?: string;
+  production_style?: string[];
   food_matching?: string; // pipe-separated string; see parseFoodMatching() in lib/utils
   food_matching_detail?: string; // pipe-separated original detailed dishes; see signatureDishes() in lib/utils
   flavor_tags?: string[]; // array of tag strings
@@ -56,7 +63,7 @@ export interface PublicProduct {
   desc_en_short?: string;
   full_description?: string;
   taste_profile?: Record<string, unknown>; // structured object/JSON, shape varies upstream
-  wine_color?: string;
+  color?: string;
   image_url?: string;
   score_summary?: string; // JSON STRING (not a parsed object)
   score_max?: number;

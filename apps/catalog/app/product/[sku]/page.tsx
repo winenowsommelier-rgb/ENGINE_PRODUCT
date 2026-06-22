@@ -248,19 +248,19 @@ export default function Page({ params }: { params: { sku: string } }) {
           ) : null}
 
           {/* Attribute matrix. Omits always-empty fields (alcohol, wine_classification,
-              appellation, wine_color — verified 0/11,436) and any empty row. */}
+              appellation, color — verified 0/11,436) and any empty row. */}
           <section className="flex flex-col gap-3">
             <h2 className="text-base font-semibold text-foreground">Details</h2>
             <dl className="rounded-lg border border-border bg-card px-4 py-1">
               <AttrRow label="Country" value={product.country} />
               <AttrRow label="Region" value={product.region} />
               <AttrRow label="Subregion" value={product.subregion} />
-              <AttrRow label="Grape" value={product.grape_variety} />
+              <AttrRow label="Variety" value={product.variety} />
               <AttrRow label="Vintage" value={product.vintage} />
               <AttrRow label="Bottle size" value={product.bottle_size} />
-              <AttrRow label="Body" value={product.wine_body} />
-              <AttrRow label="Acidity" value={product.wine_acidity} />
-              <AttrRow label="Tannin" value={product.wine_tannin} />
+              <AttrRow label="Body" value={product.body} />
+              <AttrRow label="Acidity" value={product.acidity} />
+              <AttrRow label="Tannin" value={product.tannin} />
             </dl>
           </section>
 
@@ -269,7 +269,7 @@ export default function Page({ params }: { params: { sku: string } }) {
             <section className="flex flex-col gap-8">
               <h2 className="text-base font-semibold text-foreground">Taste profile</h2>
               {hasStructural ? <StructuralGauges structural={structural} /> : null}
-              {tiers ? <TasteWheel tiers={tiers} varietalLabel={product.grape_variety || product.name} /> : null}
+              {tiers ? <TasteWheel tiers={tiers} varietalLabel={product.variety || product.name} /> : null}
             </section>
           ) : null}
 

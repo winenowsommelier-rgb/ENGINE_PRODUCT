@@ -15,19 +15,19 @@ describe('scoreProducts', () => {
   const ans = (o: Partial<Answers>): Answers => ({ category:'red', ...o } as Answers);
 
   it('ranks the exact-body match above a far one', () => {
-    const pool = [P({sku:'WRWfar', wine_body:'Light'}), P({sku:'WRWexact', wine_body:'Full'})];
+    const pool = [P({sku:'WRWfar', body:'Light'}), P({sku:'WRWexact', body:'Full'})];
     const out = scoreProducts(ans({axis1:'bold'}), pool as any); // bold → Full
     expect(out.products[0].sku).toBe('WRWexact');
   });
 
   it('a "No preference" (no axis1) contributes 0 → both present, neither boosted by body', () => {
-    const pool = [P({sku:'WRWa', wine_body:'Full', price:2000}), P({sku:'WRWb', wine_body:'Light', price:1000})];
+    const pool = [P({sku:'WRWa', body:'Full', price:2000}), P({sku:'WRWb', body:'Light', price:1000})];
     const out = scoreProducts(ans({}), pool as any);
     expect(out.products.map(p=>p.sku)).toContain('WRWa');
   });
 
   it('minimum-results guarantee: returns ≥4 even when nothing matches deeply, flagged degraded', () => {
-    const pool = Array.from({length:6},(_,i)=>P({sku:`WRW${i}`, wine_body:undefined}));
+    const pool = Array.from({length:6},(_,i)=>P({sku:`WRW${i}`, body:undefined}));
     const res = scoreProducts(ans({axis1:'bold', flavorChips:['oak']}), pool as any);
     expect(res.products.length).toBeGreaterThanOrEqual(4);
     expect(res.degraded).toBe(true); // nothing cleared the quality threshold → honest-label flag
@@ -39,8 +39,8 @@ describe('scoreProducts', () => {
     // body (Light vs wanted Full) no longer counts as well-matched. The old fixture had
     // only 3 near + 1 Light (=3 well-matched < MIN_RESULTS) which now honestly degrades;
     // WRW2 is Medium-Full so all four are near-body (rungs 4/3/3/4) → 4 well-matched.
-    const pool = [P({sku:'WRW1', wine_body:'Full'}), P({sku:'WRW2', wine_body:'Medium-Full'}),
-                  P({sku:'WRW3', wine_body:'Medium-Full'}), P({sku:'WRW4', wine_body:'Full'})];
+    const pool = [P({sku:'WRW1', body:'Full'}), P({sku:'WRW2', body:'Medium-Full'}),
+                  P({sku:'WRW3', body:'Medium-Full'}), P({sku:'WRW4', body:'Full'})];
     const res = scoreProducts(ans({axis1:'bold'}), pool as any);
     expect(res.degraded).toBe(false);
   });
@@ -60,7 +60,7 @@ describe('scoreProducts', () => {
 
   it('a pool where every match is far from the wanted body IS degraded', () => {
     // want bold (Full); all candidates Light (distance 4 → rung 1 < QUALITY_MIN 2)
-    const pool = Array.from({length:5},(_,i)=>P({sku:`WRWlt${i}`, wine_body:'Light'}));
+    const pool = Array.from({length:5},(_,i)=>P({sku:`WRWlt${i}`, body:'Light'}));
     const res = scoreProducts(ans({ axis1:'bold' }), pool as any);
     expect(res.products.length).toBeGreaterThanOrEqual(4); // still shown
     expect(res.degraded).toBe(true);                        // but honestly flagged
@@ -68,7 +68,7 @@ describe('scoreProducts', () => {
 
   it('everyday + low budget gives a small value lean', () => {
     // price 500 keeps it inside budget tier 0 (under ฿1,000) so the prefilter passes it through.
-    const pool = [P({sku:'WRWv', wine_body:'Full', price:500})];
+    const pool = [P({sku:'WRWv', body:'Full', price:500})];
     const a1 = scoreProducts(ans({ occasion:'everyday', budget:0 }), pool as any);
     expect(a1.products.map(p=>p.sku)).toContain('WRWv'); // present; rule adds +1, no crash
   });
@@ -148,15 +148,15 @@ describe('scoreProducts', () => {
   // ADDITIVE: these affect SORT ORDER only; the honest-label `degraded` flag stays
   // computed from the v1 taste-tier score ONLY. ──
   it('acidity crisp ranks High-acidity above Soft', () => {
-    const pool=[P({sku:'WRWs',wine_acidity:'Medium-Light'}),P({sku:'WRWc',wine_acidity:'High'})];
+    const pool=[P({sku:'WRWs',acidity:'Medium-Light'}),P({sku:'WRWc',acidity:'High'})];
     expect(scoreProducts(ans({acidity:'crisp'}),pool).products[0].sku).toBe('WRWc');
   });
   it('tannin firm ranks High-tannin above silky', () => {
-    const pool=[P({sku:'WRWsi',wine_tannin:'Low'}),P({sku:'WRWf',wine_tannin:'High'})];
+    const pool=[P({sku:'WRWsi',tannin:'Low'}),P({sku:'WRWf',tannin:'High'})];
     expect(scoreProducts(ans({tannin:'firm'}),pool).products[0].sku).toBe('WRWf');
   });
   it('grape cabernet boosts a Cabernet blend; surprise does not constrain', () => {
-    const pool=[P({sku:'WRWo',grape_variety:'Merlot'}),P({sku:'WRWc',grape_variety:'Cabernet Sauvignon, Merlot'})];
+    const pool=[P({sku:'WRWo',variety:'Merlot'}),P({sku:'WRWc',variety:'Cabernet Sauvignon, Merlot'})];
     expect(scoreProducts(ans({grape:'cabernet'}),pool).products[0].sku).toBe('WRWc');
   });
   it('age young buckets "Current vintage" as young', () => {
@@ -180,12 +180,12 @@ describe('scoreProducts', () => {
     expect(out.products[0].sku).toBe('LWHspey');
   });
   it('a core-only Answers scores identically with the new code (additive)', () => {
-    const pool=[P({sku:'WRW1',wine_body:'Full'}),P({sku:'WRW2',wine_body:'Light'})];
+    const pool=[P({sku:'WRW1',body:'Full'}),P({sku:'WRW2',body:'Light'})];
     expect(scoreProducts(ans({axis1:'bold'}),pool).products[0].sku).toBe('WRW1');
   });
   it('deep-dive terms do NOT change the degraded flag (computed from taste tiers only)', () => {
     // a pool where taste tiers give 0 well-matched but a deep-dive term would add points
-    const pool=[P({sku:'WRWx',wine_body:undefined,region:'Swartland'})];
+    const pool=[P({sku:'WRWx',body:undefined,region:'Swartland'})];
     const out=scoreProducts(ans({adventure:'discovery'}),pool);
     expect(out.degraded).toBe(true); // adventure bump must not clear the quality gate
   });
@@ -205,7 +205,7 @@ describe('scoreProducts', () => {
     expect(scoreProducts(ans({flavorChips:['oak']}),pool).products.length).toBe(1);
   });
   it('core-only run (no flavorChips) scores identically (additive)', () => {
-    const pool=[P({sku:'WRW1', wine_body:'Full'}), P({sku:'WRW2', wine_body:'Light'})];
+    const pool=[P({sku:'WRW1', body:'Full'}), P({sku:'WRW2', body:'Light'})];
     expect(scoreProducts(ans({axis1:'bold'}),pool).products[0].sku).toBe('WRW1');
   });
 });

@@ -4,7 +4,7 @@
 Why this exists
 ---------------
 Phase 5 paid Anthropic for ~4,316 enrichments. Every cache row contains the
-full AI response (desc_en_short, full_description, wine_body, flavor_tags,
+full AI response (desc_en_short, full_description, body, flavor_tags,
 food_matching, etc.). LocalRouter.update_product silently SKIPPED the
 descriptive write whenever final_confidence < write_threshold (0.85).
 ~99% of Phase 5 SKUs had final_confidence in 0.55-0.74, so the entire
@@ -77,13 +77,14 @@ def load_cache_rows(conn: sqlite3.Connection, skus: list[str] | None) -> list[di
 
 def build_payload(response: dict, confidence: float, model: str, enriched_at: str) -> dict:
     """Map AI response JSON → products column values."""
+    # LHS keys = products (SQLite) columns (renamed); RHS response.get() = LLM cached-response keys (stable).
     return {
-        "wine_body": response.get("wine_body"),
-        "wine_acidity": response.get("wine_acidity"),
-        "wine_tannin": response.get("wine_tannin"),
-        "grape_variety": ", ".join(response.get("grape_variety") or []) or None,
-        "grape_blend_type": response.get("grape_blend_type"),
-        "wine_production_style": json.dumps(response.get("wine_production_style") or []),
+        "body": response.get("wine_body"),
+        "acidity": response.get("wine_acidity"),
+        "tannin": response.get("wine_tannin"),
+        "variety": ", ".join(response.get("grape_variety") or []) or None,
+        "blend_type": response.get("grape_blend_type"),
+        "production_style": json.dumps(response.get("wine_production_style") or []),
         "flavor_tags": json.dumps(response.get("flavor_tags") or []),
         "food_matching": ", ".join(response.get("food_matching") or []) or None,
         "desc_en_short": response.get("desc_en_short"),
@@ -131,12 +132,12 @@ def main(argv: list[str] | None = None) -> int:
             if args.dry_run:
                 # Show before/after for inspection
                 before = conn.execute(
-                    "SELECT desc_en_short, wine_body, flavor_tags FROM products WHERE id=?",
+                    "SELECT desc_en_short, body, flavor_tags FROM products WHERE id=?",
                     (r["products_id"],),
                 ).fetchone()
                 print(f"\n--- {r['sku']} (id={r['products_id']}, conf={r['confidence']}) ---")
-                print(f"  BEFORE: desc='{(before['desc_en_short'] or '')[:60]}'  body={before['wine_body']!r}  flavors={(before['flavor_tags'] or '')[:40]}")
-                print(f"  AFTER:  desc='{(payload['desc_en_short'] or '')[:60]}'  body={payload['wine_body']!r}  flavors={(payload['flavor_tags'] or '')[:40]}")
+                print(f"  BEFORE: desc='{(before['desc_en_short'] or '')[:60]}'  body={before['body']!r}  flavors={(before['flavor_tags'] or '')[:40]}")
+                print(f"  AFTER:  desc='{(payload['desc_en_short'] or '')[:60]}'  body={payload['body']!r}  flavors={(payload['flavor_tags'] or '')[:40]}")
                 continue
 
             sets = ", ".join(f"{k}=?" for k in payload.keys())

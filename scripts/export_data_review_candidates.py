@@ -2,14 +2,11 @@
 """Export human-review candidates from the validity audit to a CSV.
 
 Read-only. Produces one row per flagged product so the data team can triage
-(keep / fix / ignore) in a spreadsheet. Two flag types, distinguished by the
-`issue` column:
+(keep / fix / ignore) in a spreadsheet.
 
-  spirit_wine_attr  — a Whisky/Spirits product carrying wine-only attributes
-                      (grape_variety / wine_body / wine_acidity / wine_tannin).
-                      Mostly genuine garbage (e.g. tequila with a 'wine_body'),
-                      but grape-based spirits (Cognac, some vodka) legitimately
-                      have a grape — so it is a REVIEW list, not an auto-wipe.
+  (Note: the former `spirit_wine_attr` flag was retired 2026-06-22. Wine_* columns
+  were generalized to universal names — a spirit carrying `variety`/`body` is now
+  correct enrichment, not a defect, so it is no longer a review candidate.)
 
   country_vs_name   — stored `country` disagrees with the country implied by the
                       product NAME (high-confidence name-inference only). KNOWN
@@ -38,8 +35,6 @@ from data.lib.name_inference.rules import infer_from_name as _infer  # noqa: E40
 DEFAULT_DB = REPO_ROOT / "data" / "db" / "products.db"
 DEFAULT_OUT = REPO_ROOT / "data" / "data_review_candidates.csv"
 
-WINE_ONLY = ["grape_variety", "wine_color", "wine_body", "wine_acidity", "wine_tannin"]
-
 
 def _blank(v) -> bool:
     return v is None or (isinstance(v, str) and v.strip() == "")
@@ -62,28 +57,7 @@ def main(argv=None) -> int:
 
     out_rows = []
 
-    # 1) spirit_wine_attr
-    for r in rows:
-        g = group(r)
-        if g not in ("Whisky", "Spirits"):
-            continue
-        present = {a: r.get(a) for a in WINE_ONLY if not _blank(r.get(a))}
-        if not present:
-            continue
-        out_rows.append({
-            "issue": "spirit_wine_attr",
-            "sku": r.get("sku"),
-            "name": r.get("name"),
-            "category_group": g,
-            "stored_country": r.get("country"),
-            "offending_attrs": "; ".join(f"{k}={v}" for k, v in present.items()),
-            "name_signal": "",
-            "inferred_country": "",
-            "confidence": "",
-            "suggested_action": "null wine attrs unless grape-based spirit (Cognac/Ciroc)",
-        })
-
-    # 2) country_vs_name (high-confidence inference only)
+    # country_vs_name (high-confidence inference only)
     for r in rows:
         name = r.get("name") or ""
         cls = r.get("classification") or ""
@@ -117,10 +91,8 @@ def main(argv=None) -> int:
         w.writeheader()
         w.writerows(out_rows)
 
-    n_attr = sum(1 for r in out_rows if r["issue"] == "spirit_wine_attr")
     n_ctry = sum(1 for r in out_rows if r["issue"] == "country_vs_name")
     print(f"Wrote {len(out_rows)} candidates → {args.out}")
-    print(f"  spirit_wine_attr: {n_attr}")
     print(f"  country_vs_name:  {n_ctry}  (review — includes cask/finish false positives)")
     return 0
 

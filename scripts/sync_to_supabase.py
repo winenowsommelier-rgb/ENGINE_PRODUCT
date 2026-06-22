@@ -30,11 +30,12 @@ PRODUCT_SYNC_COLUMNS = [
     "is_in_stock", "quantity_in_stock", "wn_stock",
     # Taxonomy
     "country", "region", "subregion", "appellation",
-    "classification", "wine_classification", "wine_type",
-    "liquor_main_type", "other_type", "wine_color",
-    # Enrichment — wine profile
-    "wine_body", "wine_acidity", "wine_tannin",
-    "grape_variety", "grape_blend_type", "wine_production_style",
+    "classification", "wine_classification",
+    "liquor_main_type", "color",
+    # Enrichment — universal attributes (renamed from wine_* 2026-06-22)
+    "body", "acidity", "tannin",
+    "variety", "blend_type", "production_style",
+    "sweetness", "intensity", "smokiness", "finish",
     "flavor_tags", "food_matching",
     # Enrichment — descriptions
     "desc_en_short", "full_description",
@@ -63,7 +64,7 @@ _SUPABASE_SCHEMA_EXCLUDES = {
 }
 
 _JSON_COLUMNS = {
-    "wine_production_style", "taste_profile", "taste_profile_override",
+    "production_style", "taste_profile", "taste_profile_override",
     # These are stored as JSON-encoded arrays in SQLite but Supabase expects
     # parsed arrays (PostgreSQL array columns).
     "flavor_tags", "food_matching",

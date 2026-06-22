@@ -46,6 +46,15 @@ def db_with_v2_schema(tmp_path):
     db = tmp_path / "t.db"
     conn = sqlite3.connect(db)
     conn.executescript(SCHEMA_SQL.read_text())
+    conn.commit()
+    conn.close()
+    # The base schema SQL still declares the legacy wine_* column names; the
+    # universal-attribute rename is applied at runtime by migrate_attribute_rename
+    # (the real DB is migrated the same way). Apply it so the fixture's schema
+    # matches what LocalRouter now writes (body/variety/... instead of wine_*).
+    from scripts.migrate_attribute_rename import migrate
+    migrate(db)
+    conn = sqlite3.connect(db)
     # Apply taste taxonomy schema (ALTER TABLE + new tables)
     for stmt in TASTE_SCHEMA_SQL.read_text().split(";"):
         stmt = stmt.strip()
@@ -200,9 +209,9 @@ def test_update_product_writes_taste_profile_below_threshold(db_with_v2_schema, 
     assert json.loads(tp_raw)["structure"] == "tiered"
     # And v1 descriptive fields are NOW populated, tagged with the low-conf tier
     row = conn.execute(
-        "SELECT wine_body, desc_en_short, enrichment_source FROM products WHERE id='row-1'"
+        "SELECT body, desc_en_short, enrichment_source FROM products WHERE id='row-1'"
     ).fetchone()
-    assert row[0] is not None, "wine_body must be written even for sub-threshold rows"
+    assert row[0] is not None, "body must be written even for sub-threshold rows"
     assert row[1] is not None, "desc_en_short must be written even for sub-threshold rows"
     assert row[2] == "ai_low_conf"
     # Notes + dirty queue both populated

@@ -61,10 +61,11 @@ def main(argv: list[str] | None = None) -> int:
                 skipped += 1
                 continue
             enriched_at = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+            # LHS keys = products (SQLite) columns (renamed); RHS result.get() = LLM sidecar-response keys (stable).
             payload = {
-                "wine_body": result.get("wine_body"),
-                "wine_acidity": result.get("wine_acidity"),
-                "wine_tannin": result.get("wine_tannin"),
+                "body": result.get("wine_body"),
+                "acidity": result.get("wine_acidity"),
+                "tannin": result.get("wine_tannin"),
                 "flavor_tags": json.dumps(result.get("flavor_tags") or [], ensure_ascii=False),
                 "food_matching": ", ".join(result.get("food_matching") or []),
                 "desc_en_short": result.get("desc_en_short"),
