@@ -248,6 +248,52 @@ describe('scoreProducts', () => {
     expect(out.products[0].sku).toBe('LWHa'); // tier-2 wins the genuine tie via sort tiebreak
   });
 
+  // ── W3: wine character (axis2) is now a real taste-tier term (was profile-only/dead).
+  // earthy → earthy/oak/spice/mineral families; fruity → red/dark/stone/tropical/citrus. ──
+  it('wine character earthy ranks an earthy-noted wine above a fruity one', () => {
+    const pool = [P({sku:'WRWfru', flavor_tags_canonical:['Cherry']}),
+                  P({sku:'WRWear', flavor_tags_canonical:['Tobacco']})];
+    const out = scoreProducts(ans({axis2:'earthy'}), pool as any);
+    expect(out.products[0].sku).toBe('WRWear');
+  });
+  it('wine character fruity ranks a fruity-noted wine above an earthy one', () => {
+    const pool = [P({sku:'WRWear', flavor_tags_canonical:['Leather']}),
+                  P({sku:'WRWfru', flavor_tags_canonical:['Black Cherry']})];
+    const out = scoreProducts(ans({axis2:'fruity'}), pool as any);
+    expect(out.products[0].sku).toBe('WRWfru');
+  });
+  it('wine character is a TASTE-TIER term: an earthy match alone can clear the gate', () => {
+    // 4 earthy-noted wines, axis2=earthy, no other answer → each scores +2 (≥ QUALITY_MIN) → not degraded.
+    const pool = Array.from({length:4},(_,i)=>P({sku:`WRWe${i}`, flavor_tags_canonical:['Tobacco']}));
+    const out = scoreProducts(ans({axis2:'earthy'}), pool as any);
+    expect(out.degraded).toBe(false);
+  });
+  it("wine character 'balanced' imposes no constraint (neutral, no crash)", () => {
+    const pool = [P({sku:'WRWa', flavor_tags_canonical:['Cherry']}), P({sku:'WRWb', flavor_tags_canonical:['Tobacco']})];
+    const out = scoreProducts(ans({axis2:'balanced'}), pool as any);
+    expect(out.products.length).toBe(2); // both kept; balanced adds nothing
+  });
+
+  // ── W3: gin. Style is a RANK-ONLY keyword lean; and gin (no gate-able taste term)
+  // must NOT be falsely flagged "Closest matches" when the pool is genuinely fine. ──
+  const G = ({sku, ...o}:any)=>({ price:1500, is_in_stock:true, category_group:'Spirits', category_type:'Gin', sku:'LGN'+(sku||'x'), ...o });
+  it('gin: a clean in-stock/in-budget pool is NOT degraded (W3 label fix)', () => {
+    const pool = [G({sku:'1'}), G({sku:'2'}), G({sku:'3'}), G({sku:'4'})];
+    const out = scoreProducts({ category:'gin', axis1:'classic' } as any, pool as any);
+    expect(out.products.length).toBeGreaterThanOrEqual(4);
+    expect(out.degraded).toBe(false); // gin has no gate-able taste term → never "closest matches"
+  });
+  it('gin classic: a "London Dry" gin out-ranks a plain one (rank-only keyword lean)', () => {
+    const pool = [G({sku:'plain', name:'Acme Gin'}), G({sku:'ld', name:'Acme London Dry Gin'})];
+    const out = scoreProducts({ category:'gin', axis1:'classic' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LGNld');
+  });
+  it('gin contemporary: a botanical gin out-ranks a plain one', () => {
+    const pool = [G({sku:'plain', name:'Acme Gin'}), G({sku:'bot', name:'Acme Gin', desc_en_short:'A floral contemporary botanical style'})];
+    const out = scoreProducts({ category:'gin', axis1:'contemporary' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LGNbot');
+  });
+
   // ── FLAVOR scoring via FLAVOR_FAMILY set-intersection against flavor_tags_canonical.
   // regression: dark-fruit was DEAD (hyphen vs space). Must now score + out-rank a non-match.
   it('dark-fruit chip scores a "Dark Plum" product and ranks it above a non-match', () => {
