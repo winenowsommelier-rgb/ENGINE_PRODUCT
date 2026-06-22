@@ -80,6 +80,7 @@ interface FiltersProps {
 }
 
 const SORT_OPTIONS: Array<{ id: string; label: string }> = [
+  { id: 'recommended', label: 'Recommended' },
   { id: 'name', label: 'Name A–Z' },
   { id: 'price-asc', label: 'Price: low → high' },
   { id: 'price-desc', label: 'Price: high → low' },
@@ -410,8 +411,11 @@ export function Filters({
   const activeSort = get('sort');
   const hasScoreOnly = get('hasScore') === '1';
 
+  // No sort param → the engine defaults to 'recommended', so the trigger reads
+  // "Recommended" (not a bare "Sort") to reflect the actual default order.
   const sortLabel =
-    SORT_OPTIONS.find((s) => s.id === activeSort)?.label ?? 'Sort';
+    SORT_OPTIONS.find((s) => s.id === (activeSort || 'recommended'))?.label ??
+    'Sort';
 
   const hasAnyFilter = Array.from(current.keys()).length > 0;
 
