@@ -12,6 +12,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 MAP_PATH = REPO_ROOT / "data" / "taxonomy" / "sku_prefix_map.json"
+OVERRIDES_PATH = REPO_ROOT / "data" / "taxonomy" / "sku_overrides.json"
 
 _FORTIFIED = re.compile(r"\b(port|marsala|madeira|sherry|oloroso|amontillado|fino)\b", re.I)
 
@@ -19,6 +20,29 @@ _FORTIFIED = re.compile(r"\b(port|marsala|madeira|sherry|oloroso|amontillado|fin
 @lru_cache(maxsize=1)
 def _load() -> dict:
     return json.loads(MAP_PATH.read_text())
+
+
+@lru_cache(maxsize=1)
+def _overrides() -> dict:
+    """Per-SKU corrections for products carrying the WRONG prefix line in Magento.
+    Keyed by uppercase full SKU. See sku_overrides.json's _README. Missing file is
+    not an error — overrides are optional (an empty dict means prefix map wins)."""
+    try:
+        return json.loads(OVERRIDES_PATH.read_text()).get("overrides", {})
+    except (FileNotFoundError, ValueError):
+        return {}
+
+
+def _override_for(sku: str) -> dict:
+    return _overrides().get(str(sku or "").upper(), {})
+
+
+def region_override(sku: str):
+    """Corrected region for a SKU whose stored region is a data-entry artifact, or
+    None if no override. Returns "" to mean 'clear the region'. The refresh applies
+    this so the correction survives every export rebuild (drift-proof, like group)."""
+    ov = _override_for(sku)
+    return ov["region"] if "region" in ov else None
 
 
 # Invariant: all map prefixes are exactly 3 chars. A hypothetical 2-char entry
@@ -51,10 +75,20 @@ def resolve(product: dict) -> dict:
     p3 = _prefix3(sku)
     entry = data["prefixes"].get(p3)
     if entry is not None:
-        return {"group": entry["group"],
+        base = {"group": entry["group"],
                 "type": refine_type(p3, entry["type"], product.get("name", ""))}
-    grp = data["letter_fallback"].get(sku[:1], "Unknown")
-    return {"group": grp, "type": "Unknown"}
+    else:
+        grp = data["letter_fallback"].get(sku[:1], "Unknown")
+        base = {"group": grp, "type": "Unknown"}
+    # Per-SKU override (Magento mis-prefixed lines). Applies AFTER the prefix
+    # lookup so a wrong-line SKU lands in its real group/type. region is handled
+    # separately by region_override() in the refresh — not part of {group,type}.
+    ov = _override_for(sku)
+    if "group" in ov:
+        base["group"] = ov["group"]
+    if "type" in ov:
+        base["type"] = ov["type"]
+    return base
 
 
 def group_for(sku: str) -> str:

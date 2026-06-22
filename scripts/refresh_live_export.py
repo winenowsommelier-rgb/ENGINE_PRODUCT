@@ -43,9 +43,12 @@ except Exception:  # noqa: BLE001 — never let an optional import block a refre
 # succeed even if the taxonomy module is temporarily unavailable.
 try:
     from data.lib.taxonomy.sku_taxonomy import resolve as _resolve_category
+    from data.lib.taxonomy.sku_taxonomy import region_override as _region_override
     _CATEGORY_AVAILABLE = True
 except Exception:  # noqa: BLE001 — never let an optional import block a refresh
     _CATEGORY_AVAILABLE = False
+    def _region_override(_sku):  # noqa: D401 — no-op fallback if taxonomy unavailable
+        return None
 
 # Columns the explore endpoint reads (see ExploreProduct in lib/explore/types.ts).
 EXPORT_COLS = [
@@ -132,6 +135,12 @@ def main(argv: list[str] | None = None) -> int:
             _cat = _resolve_category(rec)
             rec["category_group"] = _cat["group"]
             rec["category_type"] = _cat["type"]
+            # Per-SKU region correction for data-entry artifacts (cask type or a
+            # sub-appellation collapsed onto the wrong wine region). "" clears it.
+            # Drift-proof: re-applied on every refresh, same as category_group.
+            _reg = _region_override(rec.get("sku"))
+            if _reg is not None:
+                rec["region"] = _reg or None
         records.append(rec)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)

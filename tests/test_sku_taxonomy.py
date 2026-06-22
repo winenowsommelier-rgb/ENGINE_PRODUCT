@@ -1,4 +1,4 @@
-from data.lib.taxonomy.sku_taxonomy import resolve, group_for, type_for, unmapped_prefixes
+from data.lib.taxonomy.sku_taxonomy import resolve, group_for, type_for, unmapped_prefixes, region_override
 
 def _p(sku, name=""): return {"sku": sku, "name": name}
 
@@ -54,8 +54,14 @@ import json as _json
 from pathlib import Path as _Path
 
 EXPORT = _Path(__file__).resolve().parent.parent / "data" / "live_products_export.json"
+# Spec snapshot of group counts. 2026-06-22: Whisky 847->845, Spirits 1177->1179
+# after sku_overrides.json reassigned two Cognacs (LWF0002HC 'Martell Single Cru',
+# LWF0012HC 'Kingdom of Cognac') from their wrong LWF* whisky-line prefix to their
+# real group Spirits/Brandy. They surfaced as "Whisky in Champagne" on the
+# explore-map; the override is the durable fix. Do NOT revert these counts to
+# re-green the test — that would restore the mis-classification (Rule 5).
 EXPECTED_GROUP_COUNTS = {
-    "Wine": 6983, "Spirits": 1177, "Accessories": 893, "Whisky": 847,
+    "Wine": 6983, "Spirits": 1179, "Accessories": 893, "Whisky": 845,
     "Sake & Asian": 663, "Liqueur": 378, "Beer & RTD": 232,
     "Non-Alcoholic": 151, "Cigars": 102, "Events": 10,
 }
@@ -75,3 +81,20 @@ def test_divergent_prefixes_have_explicit_entries():
     data = _json.loads((_Path(__file__).resolve().parent.parent / "data" / "taxonomy" / "sku_prefix_map.json").read_text())
     for pre in DIVERGENT:
         assert pre in data["prefixes"], f"{pre} missing — would misroute via letter-fallback"
+
+
+def test_sku_overrides_reclassify_misprefixed_cognacs():
+    """Guard the per-SKU override path (sku_overrides.json). Two Cognacs given
+    LWF* whisky-line SKUs must resolve to Spirits/Brandy, not Whisky — they were
+    showing up as 'Whisky in Champagne' on the explore-map (2026-06-22)."""
+    for sku in ("LWF0002HC", "LWF0012HC"):
+        r = resolve({"sku": sku, "name": "Cognac"})
+        assert r["group"] == "Spirits", f"{sku} override lost — should be Spirits"
+        assert r["type"] == "Brandy"
+        assert region_override(sku) == "Cognac"
+    # Whiskies with a cask-type / wrong wine region: group stays Whisky, region cleared.
+    for sku in ("LWF0014HC", "LWH0709AB"):
+        assert resolve({"sku": sku, "name": "Whisky"})["group"] == "Whisky"
+        assert region_override(sku) == "", f"{sku} region override should clear to ''"
+    # A non-overridden whisky is untouched (no over-reach).
+    assert region_override("LWH0001AA") is None

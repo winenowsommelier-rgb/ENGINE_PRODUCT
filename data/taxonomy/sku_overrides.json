@@ -1,0 +1,26 @@
+{
+  "_README": "Per-SKU taxonomy overrides. SKU PREFIX is normally the source of truth (sku_prefix_map.json), but a handful of products carry the WRONG prefix line in Magento (e.g. a Cognac given an LWF* 'whisky-line' SKU). Those can't be fixed by the prefix map without mis-classifying every other SKU sharing that prefix. List the offending full SKU here with the correct {group, type}, and optionally a corrected {region} when the stored region is a data-entry artifact (a cask type, or a sub-appellation collapsed onto the wrong region). resolve() in sku_taxonomy.py applies these AFTER the prefix lookup. Keep this list small and evidence-backed — each entry should name why in its 'note'.",
+  "_schema": "uppercase full SKU -> { group?, type?, region?, note }",
+  "overrides": {
+    "LWF0002HC": {
+      "group": "Spirits",
+      "type": "Brandy",
+      "region": "Cognac",
+      "note": "Martell Single Cru — a Cognac, not whisky. LWF* whisky-line SKU is wrong; region was 'Champagne' (confused with Cognac's 'Grande Champagne' cru)."
+    },
+    "LWF0012HC": {
+      "group": "Spirits",
+      "type": "Brandy",
+      "region": "Cognac",
+      "note": "'Kingdom of Cognac' — a Cognac, not whisky. LWF* whisky-line SKU is wrong; region was 'Champagne' (Cognac cru confusion)."
+    },
+    "LWF0014HC": {
+      "region": "",
+      "note": "Michel Couvreur Single Malt — a real whisky (group stays Whisky) but ages in France; 'Burgundy' is not its origin wine region. Region cleared so it stops pinning to Burgundy on the explore-map."
+    },
+    "LWH0709AB": {
+      "region": "",
+      "note": "HYDE No.5 Irish whiskey, country=Ireland. Stored region 'Burgundy' was actually the CASK type ('Burgundy Cask') leaking into the region field. Region cleared."
+    }
+  }
+}
