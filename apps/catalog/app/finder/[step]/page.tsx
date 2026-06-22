@@ -10,7 +10,9 @@ import {
   deepDiveStepsFor,
   type QuestionStep,
 } from '@/lib/finder/question-config';
-import { FOOD_CHIPS } from '@/lib/finder/food-chips';
+import { FOOD_CHIPS, emptyFoodChips } from '@/lib/finder/food-chips';
+import { getAllProducts } from '@/lib/catalog-data';
+import { isInStock } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
 /**
@@ -216,6 +218,12 @@ export default function FinderStepPage({
               options={step.options}
               nextPath={nextPath}
               extraQuery={extraQuery}
+              // Chips with no in-stock matches are greyed + unselectable (computed
+              // against the live export). Today none are empty, but stock/vocabulary
+              // changes can empty one — this avoids a dead-end selection.
+              disabledTokens={[...emptyFoodChips(
+                getAllProducts().filter((p) => isInStock(p.is_in_stock)),
+              )]}
             />
           ) : (
             <ChoiceCards
