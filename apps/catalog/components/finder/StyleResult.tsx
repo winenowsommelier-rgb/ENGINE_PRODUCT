@@ -6,8 +6,10 @@ import type { Answers } from '@/lib/finder/answers';
 import {
   breadcrumbLinks,
   signatureChips,
+  styleShopParams,
   styleShopUrl,
 } from '@/lib/finder/shop-links';
+import { matchesFilters } from '@/lib/shop-query';
 
 /**
  * StyleResult — the finder pay-off, "style-profile first".
@@ -68,7 +70,13 @@ export function StyleResult({
   );
   const chips = signatureChips(answers);
   const shopAllHref = styleShopUrl(answers);
-  const shopAllCount = products.length;
+  // Count with the SHOP's own predicate over the SAME params the link carries, so
+  // "See all N" == the /shop grid the link lands on (not the curated result grid,
+  // which is budget/geo-narrowed and would over- or under-state the destination).
+  const shopAllParams = styleShopParams(answers);
+  const shopAllCount = allProducts.filter((p) =>
+    matchesFilters(p, shopAllParams),
+  ).length;
 
   return (
     <div className="flex flex-col gap-10">

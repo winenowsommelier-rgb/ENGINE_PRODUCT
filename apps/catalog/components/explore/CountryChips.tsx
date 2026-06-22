@@ -90,16 +90,12 @@ export function CountryChips({
   // curated countries (drill into regions) and region-less ones (→ /shop), counted
   // via countryLensCount. Each chip leads with its flag emoji.
   const withData = countries
-    .map((c) => ({
-      c,
-      n: countryLensCount(c, lens),
-      regions: c.regions.filter((r) => lensCount(r, lens) > 0).length,
-    }))
+    .map((c) => ({ c, n: countryLensCount(c, lens) }))
     .filter((x) => x.n > 0)
     .sort((a, b) => b.n - a.n);
   return (
     <div role="group" aria-label="Countries with bottles available" className={rowClass}>
-      {withData.map(({ c, n, regions }) => {
+      {withData.map(({ c, n }) => {
         const flag = flagEmoji(c.name);
         return (
           <button
@@ -110,17 +106,12 @@ export function CountryChips({
           >
             {flag ? <span aria-hidden="true">{flag}</span> : null}
             {c.name}
-            {/* Format: Country (xxxx sku) (x region). SKU count always shown; the
-                region count only for curated countries (blank for region-less ones,
-                which click straight through to /shop). */}
-            <span className="text-xs tabular-nums text-muted-foreground">
-              ({n.toLocaleString()} sku)
+            {/* Clean format: "flag Country 2,251" — just the SKU count, no wrapper
+                text and no region count (it added noise; the map/drill-in still
+                surface regions). Muted + tabular so counts align. */}
+            <span className="tabular-nums text-muted-foreground">
+              {n.toLocaleString()}
             </span>
-            {regions > 0 ? (
-              <span className="text-xs tabular-nums text-muted-foreground">
-                ({regions} {regions === 1 ? 'region' : 'regions'})
-              </span>
-            ) : null}
           </button>
         );
       })}

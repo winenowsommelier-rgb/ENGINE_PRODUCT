@@ -95,6 +95,44 @@ describe('scoreProducts', () => {
     expect(out.products[0].sku).toBe('LRMr');
   });
 
+  // ── SAKE sweetness (axis1) — was profile-only (inert); now a real taste-tier ladder
+  // term reading taste_profile.axes.sweetness (~26% of sake populated). LSK* prefix →
+  // Sake & Asian group so finderPrefilter passes them. ──
+  const SK = (sku: string, sweetness?: string, o: any = {}) => ({
+    sku, price: 4000, is_in_stock: true,
+    taste_profile: sweetness ? { axes: { sweetness: { value: sweetness } } } : undefined,
+    ...o,
+  });
+  it('sake: axis1=sweet ranks a Sweet bottle above a Very Dry one', () => {
+    const pool = [SK('LSKdry', 'Very Dry'), SK('LSKsweet', 'Sweet')];
+    const out = scoreProducts({ category:'sake', axis1:'sweet' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LSKsweet');
+  });
+  it('sake: axis1=dry ranks a Dry bottle above a Sweet one', () => {
+    const pool = [SK('LSKsweet', 'Sweet'), SK('LSKdry', 'Dry')];
+    const out = scoreProducts({ category:'sake', axis1:'dry' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LSKdry');
+  });
+  it('sake: a sweetness match clears the quality gate (not degraded)', () => {
+    // Off-dry is adjacent to the Sweet target (ladder rung 3 ≥ QUALITY_MIN) → well-matched.
+    const pool = [SK('LSK1','Sweet'), SK('LSK2','Off-dry'), SK('LSK3','Sweet'), SK('LSK4','Off-dry')];
+    const out = scoreProducts({ category:'sake', axis1:'sweet' } as any, pool as any);
+    expect(out.degraded).toBe(false);
+  });
+  it('sake: no-sweetness-data products are NEUTRAL (kept, not penalized, not degraded by absence)', () => {
+    // 74% of real sake has no sweetness signal. Such a pool must still return matches and
+    // must NOT crash; absence scores 0 (degraded only because nothing clears the gate).
+    const pool = Array.from({length:5},(_,i)=>SK(`LSKn${i}`)); // no taste_profile
+    const out = scoreProducts({ category:'sake', axis1:'sweet' } as any, pool as any);
+    expect(out.products.length).toBeGreaterThanOrEqual(4);
+    expect(out.products.every(p => p.sku.startsWith('LSKn'))).toBe(true);
+  });
+  it("sake: axis1='any' imposes no sweetness constraint (no crash, all kept)", () => {
+    const pool = [SK('LSKa','Sweet'), SK('LSKb','Dry')];
+    const out = scoreProducts({ category:'sake', axis1:'any' } as any, pool as any);
+    expect(out.products.length).toBe(2);
+  });
+
   // Honest-label guard: a THIN pool where NOTHING matches what the user asked must be
   // degraded (the old `ranked.length >= 4` gate wrongly hid this — showed confident
   // "Your matches" over poor fits). User wants Scotch; only 2 USA whiskies in budget.

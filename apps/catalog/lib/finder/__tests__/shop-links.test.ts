@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { resolveOriginField, breadcrumbLinks, signatureChips, styleShopUrl } from '@/lib/finder/shop-links';
+import { resolveOriginField, breadcrumbLinks, signatureChips, styleShopUrl, styleShopParams } from '@/lib/finder/shop-links';
 import { matchesFilters, type ShopParams } from '@/lib/shop-query';
 import type { PublicProduct } from '@/lib/types';
 
@@ -84,5 +84,39 @@ describe('styleShopUrl links survive the real /shop filter (matchesFilters)', ()
     } as any as PublicProduct;
     const params = parse(styleShopUrl({ category: 'gin' } as any));
     expect(matchesFilters(p, params)).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// styleShopParams is the count contract: the "See all N in your style" count is
+// allProducts.filter(p => matchesFilters(p, styleShopParams(answers))).length.
+// For that count to equal the /shop grid the link lands on, styleShopParams must
+// produce EXACTLY the params styleShopUrl encodes — and matchesFilters must read
+// them. These guard that contract so the count can never silently drift from the
+// link's destination (the original "See all 6" mismatch bug).
+// ---------------------------------------------------------------------------
+describe('styleShopParams == styleShopUrl querystring (count contract)', () => {
+  const fromUrl = (url: string): Record<string, string> =>
+    Object.fromEntries(new URL('http://x' + url).searchParams);
+
+  for (const answers of [
+    { category: 'red', axis1: 'bold', tannin: 'firm' },
+    { category: 'sake', axis1: 'sweet' },
+    { category: 'gin' },
+  ] as any[]) {
+    it(`params match the URL for ${JSON.stringify(answers)}`, () => {
+      expect(styleShopParams(answers)).toEqual(fromUrl(styleShopUrl(answers)));
+    });
+  }
+
+  it('count via matchesFilters(styleShopParams) finds the in-style products', () => {
+    const products = [
+      { category_group: 'Wine', category_type: 'Red Wine', sku: 'R1', wine_body: 'Full' },
+      { category_group: 'Wine', category_type: 'Red Wine', sku: 'R2', wine_body: 'Light' },
+      { category_group: 'Wine', category_type: 'White Wine', sku: 'W1', wine_body: 'Full' },
+    ] as any as PublicProduct[];
+    const params = styleShopParams({ category: 'red', axis1: 'bold' } as any); // body=Full
+    const count = products.filter((p) => matchesFilters(p, params)).length;
+    expect(count).toBe(1); // only the Full-bodied Red Wine
   });
 });

@@ -18,6 +18,37 @@ export function bodyLadderDistance(target: string, value: string): number | null
 
 const BODY_TOKEN: Record<string, string> = { light:'Light', medium:'Medium', bold:'Full' };
 
+// ── SAKE sweetness (axis1 = dry | sweet | any) ──────────────────────────────
+// Sake's PRIMARY taste question is sweetness, the dry↔sweet analogue of wine's
+// body. ~26% of sake carry a structured value at taste_profile.axes.sweetness.value
+// on the 4-level scale below; the rest have no signal (null → neutral 0, never
+// penalized — same "no signal = 0" contract as the body ladder). 'any' imposes no
+// constraint. Reading the sparse-but-real field replaces the old "profile-only,
+// no reliable sweetness field" no-op so the finder answer actually ranks results.
+const SWEETNESS_LADDER = ['very dry', 'dry', 'off-dry', 'sweet'];
+// token → target bucket on the ladder (dry end vs sweet end).
+const SWEETNESS_TARGET: Record<string, string> = { dry: 'dry', sweet: 'sweet' };
+
+/** The product's sake sweetness value (taste_profile.axes.sweetness.value), or undefined. */
+function sakeSweetness(p: PublicProduct): string | undefined {
+  const tp = p.taste_profile;
+  if (!tp || typeof tp !== 'object') return undefined;
+  const axes = (tp as Record<string, unknown>).axes;
+  if (!axes || typeof axes !== 'object') return undefined;
+  const s = (axes as Record<string, unknown>).sweetness;
+  if (!s || typeof s !== 'object') return undefined;
+  const v = (s as Record<string, unknown>).value;
+  return typeof v === 'string' ? v : undefined;
+}
+
+/** Ordinal distance on the 4-level sweetness scale; null if either value is off-ladder. */
+function sweetnessLadderDistance(target: string, value: string): number | null {
+  const ti = SWEETNESS_LADDER.indexOf(norm(target));
+  const vi = SWEETNESS_LADDER.indexOf(norm(value));
+  if (ti < 0 || vi < 0) return null;
+  return Math.abs(ti - vi);
+}
+
 const firstSeg = (s?: string) => norm(s).split('|')[0].trim();
 
 // ── TIER-2 origin/style signal maps (spec §5). Kept as data, not buried magic
@@ -50,9 +81,13 @@ const SPIRITS_TYPE_TO_CLASS: Record<string, string[]> = {
  *
  * Profile-only axes (intentionally NOT scored — no reliable structured signal):
  *  - GIN axis1 (classic/contemporary): no field distinguishes these; profile-only.
- *  - SAKE axis1 (dry/sweet/any): no reliable sweetness field; profile-only.
  *  - WINE axis2 (fruity/earthy/balanced): by design profile-only; it shapes the
  *    archetype copy but does not rank products.
+ *
+ * NOTE: SAKE axis1 (dry/sweet) is NO LONGER profile-only — it is scored as a
+ * taste-tier term in scoreProducts via the sweetness ladder (taste_profile.axes.
+ * sweetness, ~26% populated; no-signal sake is neutral). Not handled here because,
+ * like wine body, it is a ladder term in scoreProducts, not a flat +2 origin boost.
  */
 function tier2Score(a: Answers, p: PublicProduct): number {
   let s = 0;
@@ -69,7 +104,8 @@ function tier2Score(a: Answers, p: PublicProduct): number {
       if (wantClasses && p.classification && wantClasses.includes(firstSeg(p.classification))) s += 2;
       break;
     }
-    // gin / sake: axis1 is profile-only (see doc above) — no scoring rule by design.
+    // gin: axis1 is profile-only (see doc above). sake: axis1 (sweetness) IS scored,
+    // but as a ladder term in scoreProducts (not here) — see the doc above.
   }
   return s;
 }
@@ -238,6 +274,16 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
     let s = 0;
     if (a.axis1 && BODY_TOKEN[a.axis1] && p.wine_body) {
       s += ladderScore(bodyLadderDistance(BODY_TOKEN[a.axis1], p.wine_body), 4);
+    }
+    // SAKE sweetness — the category's primary taste term (axis1), scored on the same
+    // ladder shape as wine body so it clears QUALITY_MIN for genuine matches. No-signal
+    // sake (no taste_profile.axes.sweetness, ~74%) returns null → 0 (neutral, not
+    // penalized). 'any' has no SWEETNESS_TARGET entry → no constraint.
+    if (a.category === 'sake' && a.axis1 && SWEETNESS_TARGET[a.axis1]) {
+      const have = sakeSweetness(p);
+      if (have) {
+        s += ladderScore(sweetnessLadderDistance(SWEETNESS_TARGET[a.axis1], have), 4);
+      }
     }
     if (a.flavorChips?.length) {
       // Set-intersection against flavor_tags_canonical (Title-Case notes). Reading the
