@@ -132,20 +132,7 @@ export default function ShopPage({
     <>
       <TrustBar />
 
-      <main className="container flex flex-col gap-8 py-8">
-        {/* Quiet fallback into the finder quiz for browsers facing too much choice. */}
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-secondary/40 px-5 py-4">
-          <p className="text-base text-muted-foreground">
-            Too many options? Let us help you choose.
-          </p>
-          <Link
-            href="/finder"
-            className="inline-flex min-h-[44px] items-center text-base font-medium text-primary transition-colors hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            Find Your Match →
-          </Link>
-        </div>
-
+      <main className="container flex flex-col gap-5 py-6 sm:gap-6 sm:py-8">
         <header className="flex flex-col gap-1">
           <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             {heading}
@@ -173,6 +160,19 @@ export default function ShopPage({
         </Suspense>
 
         <DrillBreadcrumb params={currentParams} pathname="/shop" />
+
+        {/* Quiet fallback into the finder quiz for browsers facing too much choice. */}
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-lg border border-border bg-secondary/40 px-4 py-3">
+          <p className="text-base text-muted-foreground">
+            Too many options? Let us help you choose.
+          </p>
+          <Link
+            href="/finder"
+            className="inline-flex min-h-[44px] items-center text-base font-medium text-primary transition-colors hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Find Your Match →
+          </Link>
+        </div>
 
         {total > 0 ? (
           <p

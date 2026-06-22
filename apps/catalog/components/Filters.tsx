@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { ChevronDown, Plus, X } from 'lucide-react';
+import { Check, ChevronDown, Plus, SlidersHorizontal, X } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -15,6 +15,7 @@ import {
 // and lib/category-groups → lib/sku-taxonomy imports `fs`, which cannot resolve in the
 // browser bundle. category-constants holds the same canonical CATEGORY_GROUPS.
 import { CATEGORY_GROUPS } from '@/lib/category-constants';
+import { categoryEmoji, countryEmoji } from '@/lib/chip-emoji';
 import { PRICE_TIERS } from '@/lib/price-tiers';
 import { buildQuery } from '@/lib/build-query';
 import { clearDescendants } from '@/lib/drill-query';
@@ -121,7 +122,7 @@ function FilterAccordion({
     >
       <summary
         className={cn(
-          'flex min-h-[52px] cursor-pointer list-none items-center gap-3 px-4 py-2',
+          'flex min-h-[48px] cursor-pointer list-none items-center gap-3 px-4 py-1.5',
           'rounded-lg select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         )}
       >
@@ -138,7 +139,7 @@ function FilterAccordion({
           aria-hidden="true"
         />
       </summary>
-      <div className="flex flex-col gap-4 border-t border-border/60 px-4 pb-4 pt-4">
+      <div className="flex flex-col gap-3 border-t border-border/60 px-4 pb-3 pt-3">
         {children}
       </div>
     </details>
@@ -194,35 +195,49 @@ function ChipRow({
 }
 
 /**
- * ChipRail — a horizontally-scrolling, 2-row rail of single-select chips, each
- * showing its SKU count. Used for the whole geography strand (Country / Region /
- * Sub-region): these lists are too long for one comfortable wrapping row, so we
- * pack them into two rows that slide right (overflow-x-auto + grid-flow-col).
- * Scanning + selecting in place beats a dropdown or an unbounded pill wall, and
- * because options arrive count-DESC the highest-stock entries lead the rail.
+ * ChipRail — a horizontally-scrolling rail of single-select chips, each showing
+ * its SKU count. Used for the whole geography strand (Country / Region /
+ * Sub-region) plus Grape/Flavor. Options arrive count-DESC so the highest-stock
+ * entries lead the rail.
+ *
+ * Responsive height: the rail is ONE row when there are few chips and only packs
+ * into TWO rows once the list is long enough that two rows is the more compact
+ * shape. We don't force two rows on a 3-chip list (that left an empty second
+ * row and looked broken). `ROW2_THRESHOLD` is the count at/above which two rows
+ * start to pay off; below it the single row reads cleaner. Long lists still
+ * slide right (overflow-x-auto) rather than wrapping into a tall wall.
  */
+const ROW2_THRESHOLD = 7;
+
 function ChipRail({
   options,
   active,
   ariaLabel,
   onSelect,
+  iconFor,
 }: {
   /** Either counted facets (geo) or plain string options (grape/flavor). */
   options: FacetOption[] | string[];
   active: string;
   ariaLabel: string;
   onSelect: (value: string | null) => void;
+  /** Optional emoji prefix for each chip (e.g. flag/category icon). '' = none. */
+  iconFor?: (value: string) => string;
 }) {
   const items = options.map((o) =>
     typeof o === 'string' ? { value: o, count: undefined } : o,
   );
+  // Few chips → single row; many → two rows (then scroll). Driven by count so
+  // it's deterministic SSR-safe (no measuring the DOM).
+  const twoRows = items.length >= ROW2_THRESHOLD;
   return (
     <div
       className={cn(
         'flex snap-x gap-2 overflow-x-auto pb-2',
-        // Two rows that fill top-to-bottom, then advance a new column to the
-        // right — turns a long list into a compact swipeable 2-row rail.
-        'grid grid-flow-col grid-rows-2 auto-cols-max',
+        // Grid columns advance to the right; row count adapts to the list size
+        // so short lists stay a single tidy row instead of a half-empty 2-row.
+        'grid grid-flow-col auto-cols-max',
+        twoRows ? 'grid-rows-2' : 'grid-rows-1',
         // Slim, unobtrusive scrollbar; momentum scroll on touch.
         '[scrollbar-width:thin] [-webkit-overflow-scrolling:touch]',
       )}
@@ -231,6 +246,7 @@ function ChipRail({
     >
       {items.map((opt) => {
         const isActive = active === opt.value;
+        const icon = iconFor?.(opt.value) ?? '';
         return (
           <button
             key={opt.value}
@@ -245,6 +261,9 @@ function ChipRail({
                 : 'border-border bg-background text-foreground hover:border-primary hover:text-primary',
             )}
           >
+            {icon ? (
+              <span aria-hidden="true">{icon}</span>
+            ) : null}
             {opt.value}
             {opt.count !== undefined ? (
               <span
@@ -335,12 +354,15 @@ function Chip({
   active,
   onClick,
   count,
+  icon,
   children,
 }: {
   active: boolean;
   onClick: () => void;
   /** Optional facet count rendered as a muted suffix (drill-down chip rows). */
   count?: number;
+  /** Optional emoji prefix (e.g. category icon). '' = none. */
+  icon?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -349,17 +371,66 @@ function Chip({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        'inline-flex min-h-[44px] items-center rounded-full border px-4 text-base transition-colors',
+        'inline-flex min-h-[44px] items-center gap-2 rounded-full border px-4 text-base transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         active
           ? 'border-primary bg-primary text-primary-foreground'
           : 'border-border bg-background text-foreground hover:border-primary hover:text-primary',
       )}
     >
+      {icon ? <span aria-hidden="true">{icon}</span> : null}
       {children}
       {count !== undefined ? (
         <span className="ml-1 text-sm opacity-70">{count}</span>
       ) : null}
+    </button>
+  );
+}
+
+/**
+ * QuickToggle — a compact on/off pill for the Refine toolbar (In-stock,
+ * Critic-scored). Replaces the bare checkbox+label pairs: it speaks the same
+ * chip language as the rest of the filter UI, packs tighter, and reads its
+ * state from fill (active = primary) rather than a tiny tick box. The visual
+ * height is ~36px but the tap target stays ≥44px via vertical padding + a
+ * generous hit area, per touch-target guidance.
+ */
+function QuickToggle({
+  active,
+  onChange,
+  icon,
+  children,
+}: {
+  active: boolean;
+  onChange: (next: boolean) => void;
+  /** Emoji prefix (e.g. 📦 / ⭐) that reads the toggle at a glance. */
+  icon?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={active}
+      onClick={() => onChange(!active)}
+      className={cn(
+        'inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 text-sm font-medium transition-colors',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+        active
+          ? 'border-primary bg-primary/10 text-primary'
+          : 'border-border bg-background text-muted-foreground hover:border-primary/60 hover:text-foreground',
+      )}
+    >
+      {icon ? (
+        <span className="text-base leading-none" aria-hidden="true">
+          {icon}
+        </span>
+      ) : null}
+      {children}
+      <Check
+        className={cn('h-3.5 w-3.5 shrink-0 transition-opacity', active ? 'opacity-100' : 'opacity-0')}
+        aria-hidden="true"
+      />
     </button>
   );
 }
@@ -390,10 +461,15 @@ export function Filters({
 
   const get = (key: string) => current.get(key) ?? '';
 
-  /** Apply a patch to the URL via the pure helper, then navigate. */
+  /**
+   * Apply a patch to the URL via the pure helper, then navigate.
+   * scroll:false keeps the viewport where it is — selecting a chip mid-page
+   * must NOT yank the shopper back to the top (Next.js scrolls to top by
+   * default on router.push). The URL/result still update in place.
+   */
   const apply = (patch: Record<string, string | null>) => {
     const qs = buildQuery(current, patch);
-    router.push(qs ? `${pathname}?${qs}` : pathname);
+    router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
   };
 
   /** Toggle a single-select chip: clicking the active value clears it. */
@@ -445,83 +521,129 @@ export function Filters({
       activeGroup || activeClass || activePrice || originParts.length > 0,
     );
 
+  // Count of active browse filters, for the "Show filters (N)" badge when the
+  // block is collapsed — so a shopper who hides the panel still sees how many
+  // are applied without re-opening it.
+  const activeFilterCount =
+    advancedValues.length +
+    [activeGroup, activeClass, activePrice, activeCountry, activeRegion, activeSubRegion].filter(
+      Boolean,
+    ).length;
+
+  // Whole filter-panel collapse (local UI). Open by default so the panel reads
+  // as available; the toggle lets shoppers reclaim vertical space once they've
+  // dialled in their filters. The Refine toolbar (sort/stock/clear) stays
+  // visible either way — only the Category/Price/Origin/Taste sections fold.
+  const [filtersOpen, setFiltersOpen] = useState(true);
+
   return (
-    <section aria-label="Product filters" className="flex flex-col gap-4">
-      {/* ── Toolbar: always-visible controls (result-agnostic). Sort + stock +
-          clear live here so they're reachable without opening any section. ── */}
-      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card px-4 py-3">
-        <span className="mr-1 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-          Refine
-        </span>
+    <section aria-label="Product filters" className="flex flex-col gap-2.5">
+      {/* ── Refine toolbar: always-visible, result-agnostic controls, stacked
+          as TWO rows so it reads cleanly at any width.
+            Row 1 (primary controls): Refine · Sort · …Clear · Hide/Show filters
+            Row 2 (quick toggles):    📦 In stock · ⭐ Critic-scored
+          Sizing is tightened (text-sm, 36px visual) while tap targets stay
+          comfortable. ── */}
+      <div className="flex flex-col gap-2.5 rounded-xl border border-border bg-card px-3 py-2.5 sm:px-4">
+        {/* Row 1 — Refine label + Sort, with view controls trailing (ml-auto). */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <span className="mr-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/80">
+            Refine
+          </span>
 
-        {/* Sort dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            className={cn(
-              'inline-flex min-h-[44px] items-center gap-2 rounded-md border border-border bg-background px-4 text-base',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-              activeSort ? 'text-primary' : 'text-foreground',
-            )}
-          >
-            {sortLabel}
-            <ChevronDown className="h-4 w-4" aria-hidden="true" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Sort by</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {SORT_OPTIONS.map((opt) => (
-              <DropdownMenuItem
-                key={opt.id}
-                onClick={() => apply({ sort: opt.id })}
-              >
-                {opt.label}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          {/* Sort dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              className={cn(
+                'inline-flex h-9 items-center gap-1.5 rounded-full border bg-background px-3.5 text-sm font-medium transition-colors',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+                activeSort
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-border text-foreground hover:border-primary/60',
+              )}
+            >
+              {sortLabel}
+              <ChevronDown className="h-4 w-4 opacity-70" aria-hidden="true" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {SORT_OPTIONS.map((opt) => (
+                <DropdownMenuItem
+                  key={opt.id}
+                  onClick={() => apply({ sort: opt.id })}
+                >
+                  {opt.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-        {/* In-stock-only toggle */}
-        <label className="inline-flex min-h-[44px] cursor-pointer items-center gap-2 text-base text-foreground">
-          <input
-            type="checkbox"
-            checked={inStockOnly}
-            onChange={(e) => apply({ inStock: e.target.checked ? '1' : null })}
-            className="h-5 w-5 rounded border-border accent-[hsl(var(--primary))]"
-          />
-          In stock only
-        </label>
-
-        {/* Critic-scored-only toggle — sits beside In-stock as a peer quick filter */}
-        <label className="inline-flex min-h-[44px] cursor-pointer items-center gap-2 text-base text-foreground">
-          <input
-            type="checkbox"
-            checked={hasScoreOnly}
-            onChange={(e) => apply({ hasScore: e.target.checked ? '1' : null })}
-            className="h-5 w-5 rounded border-border accent-[hsl(var(--primary))]"
-          />
-          Critic-scored only
-        </label>
-
-        {/* Clear all — pushed to the right; only when something is set */}
-        {hasAnyFilter ? (
+          {/* Hide / show the whole filter-section stack — trailing on wide
+              rows (ml-auto), sits beside Sort. */}
           <button
             type="button"
-            onClick={() => router.push(pathname)}
+            onClick={() => setFiltersOpen((o) => !o)}
+            aria-expanded={filtersOpen}
+            aria-controls="filter-sections"
             className={cn(
-              'ml-auto inline-flex min-h-[44px] items-center gap-1.5 rounded-md px-3 text-base text-muted-foreground',
-              'hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              'ml-auto inline-flex h-9 items-center gap-1.5 rounded-full border bg-background px-3.5 text-sm font-medium transition-colors',
+              'text-foreground hover:border-primary/60 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+              !filtersOpen && activeFilterCount > 0 ? 'border-primary/40' : 'border-border',
             )}
           >
-            <X className="h-4 w-4" aria-hidden="true" />
-            Clear all
+            <SlidersHorizontal className="h-4 w-4 opacity-80" aria-hidden="true" />
+            {filtersOpen ? 'Hide filters' : 'Show filters'}
+            {!filtersOpen && activeFilterCount > 0 ? (
+              <span className="ml-0.5 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold tabular-nums text-primary-foreground">
+                {activeFilterCount}
+              </span>
+            ) : null}
           </button>
-        ) : null}
+        </div>
+
+        {/* Row 2 — quick-filter toggle pills with emoji, plus Clear at the end. */}
+        <div className="flex flex-wrap items-center gap-2 border-t border-border/50 pt-2.5">
+          <QuickToggle
+            active={inStockOnly}
+            onChange={(next) => apply({ inStock: next ? '1' : null })}
+            icon="📦"
+          >
+            In stock
+          </QuickToggle>
+          <QuickToggle
+            active={hasScoreOnly}
+            onChange={(next) => apply({ hasScore: next ? '1' : null })}
+            icon="⭐"
+          >
+            Critic-scored
+          </QuickToggle>
+
+          {/* Clear — quiet text button after the Critic-scored chip, same row;
+              only shown when something is set. */}
+          {hasAnyFilter ? (
+            <button
+              type="button"
+              onClick={() => router.push(pathname, { scroll: false })}
+              className={cn(
+                'inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-sm text-muted-foreground transition-colors',
+                'hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+              )}
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+              Clear
+            </button>
+          ) : null}
+        </div>
       </div>
 
       {/* ── Accordion sections. Each collapses to a 52px header that reads back
           its active selection; "smart auto-open" expands only the sections that
           already hold a value (defaultOpen), so a deep link reveals exactly the
-          relevant controls and keeps the rest folded. ── */}
+          relevant controls and keeps the rest folded. The whole stack hides
+          behind the toolbar's "Hide filters" toggle. ── */}
+      {filtersOpen ? (
+      <div id="filter-sections" className="flex flex-col gap-2.5">
 
       {/* Category (+ Type drill-down nested inside). */}
       <FilterAccordion
@@ -542,6 +664,7 @@ export function Filters({
             options={groupOptions}
             active={activeGroup}
             onSelect={(value) => apply(clearDescendants('group', value))}
+            iconFor={categoryEmoji}
           />
         ) : (
           <ChipRow ariaLabel="Category">
@@ -549,6 +672,7 @@ export function Filters({
               <Chip
                 key={group}
                 active={activeGroup === group}
+                icon={categoryEmoji(group)}
                 onClick={() =>
                   apply(
                     clearDescendants(
@@ -647,6 +771,7 @@ export function Filters({
               options={countryOptions}
               active={activeCountry}
               onSelect={(value) => apply(clearDescendants('country', value))}
+              iconFor={countryEmoji}
             />
           ) : (
             <DropdownMenu>
@@ -787,6 +912,9 @@ export function Filters({
           </div>
         </div>
       </FilterAccordion>
+
+      </div>
+      ) : null}
     </section>
   );
 }

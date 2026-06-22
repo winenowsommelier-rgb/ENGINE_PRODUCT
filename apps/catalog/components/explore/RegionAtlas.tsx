@@ -1,8 +1,8 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef, useState, useLayoutEffect } from 'react';
 import type { LensKey, MapRegion } from '@/lib/explore/types';
-import { lensCount } from '@/lib/explore/map-data';
+import { lensCount, LENS_GROUPS } from '@/lib/explore/map-data';
 
 /**
  * RegionAtlas — a calm, on-brand interactive world map (NOT WebGL) with TWO levels:
@@ -32,46 +32,85 @@ export interface CountryPin {
   lat: number;
   lng: number;
   regions: MapRegion[];
+  /**
+   * Country-level totals from the roll-up, used for countries that have NO curated
+   * regions (e.g. Spain, Germany): they still get a world pin + chip, counted by
+   * lens via these fields, and clicking them hands off straight to /shop?country=X.
+   * Region-bearing countries leave these undefined and are counted from `regions`.
+   */
+  total?: number;
+  countsByGroup?: Record<string, number>;
+}
+
+/** Bottle count for a country under the active lens — from regions if it has any,
+ *  else from the country roll-up's own countsByGroup (region-less countries). */
+export function countryLensCount(c: CountryPin, lens: LensKey): number {
+  if (c.regions.length > 0) {
+    return c.regions.reduce((s, r) => s + lensCount(r, lens), 0);
+  }
+  if (lens === 'all') return c.total ?? 0;
+  const groups = LENS_GROUPS[lens] ?? [];
+  return groups.reduce((n, g) => n + (c.countsByGroup?.[g] ?? 0), 0);
 }
 
 /**
  * Frame a set of points (a country's regions) by PANNING their centroid to the
- * middle of the visible box and ZOOMING in. Returns a ready-to-use `transform`
- * string built on `transform-origin: 0 0` (top-left), which makes the math exact:
+ * centre of the VISIBLE WINDOW and ZOOMING in. Built on `transform-origin: 0 0`
+ * (top-left), so the math is exact:
  *
- *   transform = scale(S) translate((50/S − cx)%, (50/S − cy)%)
+ *   transform = scale(S) translate((vcx/S − cx)%, (vcy/S − cy)%)
  *
- * With origin at the top-left, `scale(S)` first magnifies the plane about (0,0),
- * then the translate (in the plane's OWN, post-scale % units) shifts it so the
- * centroid (cx%, cy%) lands at the box centre (50%, 50%). The earlier version
- * scaled about a transform-origin AT the centroid, which keeps that point fixed
- * in PLACE rather than moving it to centre — so the country never actually framed
- * up (it stayed wherever it sat on the world plane, only slightly larger).
+ * Why vcx/vcy and not a flat 50/50 (the old bug): the map PLANE is a 2:1
+ * equirectangular grid (100 plane-x-units × 50 plane-y-units), but the visible
+ * WINDOW is much wider/shorter than 2:1 (16:5 → 16:4, capped by max-h). The plane
+ * is therefore TALLER than the window, and the window only shows a top BAND of it.
+ * `translate` is expressed in the plane's own % units (plane width = container
+ * width = 100% ; plane height = 50% of container width). So:
  *
- * The visible box aspect varies (4:3 → 16:9 → 2:1). The map plane is a 2:1
- * equirectangular grid drawn with object-cover, so 1 unit of yPct ≈ 2× the screen
- * distance of 1 unit of xPct. We size the zoom off the LARGER normalised span and
- * lift the floor so even a single-region country gets a real, clickable zoom.
+ *   • Horizontal centre of the window = 50% of plane width  → vcx = 50.
+ *   • Vertical centre of the window in PLANE-Y units depends on the window's real
+ *     height H and width W:  the window spans (100·H/W) plane-y-units tall, so its
+ *     centre sits at vcy = 50·H/W plane-y-units — NOT 50. The old code used 50,
+ *     which dropped the centroid to the middle of the FULL plane → below the
+ *     visible band → the selected pin landed in the cropped-away area.
+ *
+ * `box` is the live visible window {w,h} in px (from a ResizeObserver). Before it
+ * has measured we fall back to a 16:4 desktop ratio so SSR/first paint is close.
  */
 function frame(
   points: { lat: number; lng: number }[],
-  minScale = 1,
-): { scale: number; tx: number; ty: number } {
-  if (points.length === 0) return { scale: minScale, tx: 0, ty: 0 };
+  minScale: number,
+  box: { w: number; h: number },
+): { scale: number; tx: number; ty: number; vcy: number } {
+  // Visible-window vertical centre, in plane-Y units (see doc above).
+  const ratio = box.w > 0 ? box.h / box.w : 4 / 16;
+  const vcx = 50;
+  const vcy = 50 * (box.w > 0 ? (box.h / (box.w / 2)) / 2 : ratio); // = 50·H/W
+  const visH = 2 * vcy; // visible band height in plane-Y units
+  if (points.length === 0) return { scale: minScale, tx: 0, ty: 0, vcy };
   const xs = points.map((p) => project(p.lat, p.lng).xPct);
   const ys = points.map((p) => project(p.lat, p.lng).yPct);
   const minX = Math.min(...xs), maxX = Math.max(...xs);
   const minY = Math.min(...ys), maxY = Math.max(...ys);
   const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
-  // Normalise the Y span to X-equivalent screen units (2:1 plane) before sizing.
-  const spanX = Math.max(maxX - minX, 3) + 8;      // padding so pins/labels fit
-  const spanY = (Math.max(maxY - minY, 3) + 8) * 2;
-  // Fit the span to the box; floor (minScale) keeps a single country zoomed enough
-  // that its pins are big and tappable; cap at 7× so a tiny country isn't absurd.
-  const scale = Math.max(minScale, Math.min(100 / Math.max(spanX, spanY), 7));
-  const tx = 50 / scale - cx;
-  const ty = 50 / scale - cy;
-  return { scale, tx, ty };
+  // Spans in plane-units, with a min clamp + padding so a single pin still gets a
+  // comfortable frame and labels/dots aren't clipped at the edge.
+  const spanX = Math.max(maxX - minX, 1.5) + 2;
+  const spanY = Math.max(maxY - minY, 1.5) + 2;
+  const fitX = 100 / spanX;
+  const fitY = visH / spanY;
+  // Fit each axis to its OWN visible extent. The floor (minScale) keeps a single
+  // focused country/region zoomed enough to be tappable. CRUCIALLY the floor must
+  // NOT prevent zooming OUT when the span is bigger than the band: the world view
+  // spans ~90° of latitude, which cannot fit the short band at scale 1 — flooring
+  // at 1 there shoved most country pins above the top edge where the cull hid them
+  // (the "all countries disappeared" bug). So the floor only applies when the span
+  // actually fits; otherwise we let scale drop below 1 to fit the whole span.
+  const rawFit = Math.min(fitX, fitY);
+  const scale = Math.min(rawFit >= minScale ? Math.max(minScale, rawFit) : rawFit, 14);
+  const tx = vcx / scale - cx;
+  const ty = vcy / scale - cy;
+  return { scale, tx, ty, vcy };
 }
 
 /**
@@ -83,6 +122,10 @@ function frame(
  * are unchanged — only the rendered dot moves a hair so both stay tappable.
  */
 const MIN_SEP = 3.2; // % of the plane's X axis
+// Cluster radius in SCREEN plane-% (Y weighted ×2). Pins closer than this at world
+// scale collapse into one badge; tuned so dense Europe groups but distant continents
+// stay separate.
+const CLUSTER_RADIUS = 9;
 function spread<T extends { dx: number; dy: number }>(pins: T[]): T[] {
   const out = pins.map((p) => ({ ...p }));
   // yPct distances are visually 2x xPct (2:1 box) — weight Y so separation is even.
@@ -111,6 +154,48 @@ function spread<T extends { dx: number; dy: number }>(pins: T[]): T[] {
   return out;
 }
 
+/**
+ * Greedy spatial clustering for world-view country pins. With 60+ countries the
+ * globe gets crowded (Europe alone has ~20), so pins closer than `radius` (in
+ * SCREEN plane-% — Y already weighted ×2 for the 2:1 plane) merge into one
+ * cluster carrying its members, a count-weighted centre, and the summed bottle
+ * count. Singletons stay singletons. Deterministic (seeded by input order, which
+ * is name-sorted upstream). A clicked cluster zooms to its members' bounds, which
+ * spreads them into individually-tappable pins.
+ */
+interface ClusterMember {
+  key: string; label: string; lat: number; lng: number; n: number; country: CountryPin; dx: number; dy: number;
+}
+interface Cluster {
+  cx: number; cy: number;   // badge centre in plane-%
+  lat: number; lng: number; // centroid lat/lng (for zoom framing)
+  n: number;                // summed bottle count
+  members: ClusterMember[];
+}
+function clusterPins(pins: ClusterMember[], radius: number): Cluster[] {
+  const clusters: Cluster[] = [];
+  for (const p of pins) {
+    let best: Cluster | null = null;
+    let bestD = Infinity;
+    for (const c of clusters) {
+      const d = Math.hypot(p.dx - c.cx, (p.dy - c.cy) * 2);
+      if (d < radius && d < bestD) { best = c; bestD = d; }
+    }
+    if (best) {
+      best.members.push(p);
+      const tot = best.members.reduce((s, m) => s + m.n, 0) || 1;
+      best.cx = best.members.reduce((s, m) => s + m.dx * m.n, 0) / tot;
+      best.cy = best.members.reduce((s, m) => s + m.dy * m.n, 0) / tot;
+      best.lat = best.members.reduce((s, m) => s + m.lat * m.n, 0) / tot;
+      best.lng = best.members.reduce((s, m) => s + m.lng * m.n, 0) / tot;
+      best.n += p.n;
+    } else {
+      clusters.push({ cx: p.dx, cy: p.dy, lat: p.lat, lng: p.lng, n: p.n, members: [p] });
+    }
+  }
+  return clusters;
+}
+
 export function RegionAtlas({
   countries,
   focusCountry,
@@ -126,18 +211,44 @@ export function RegionAtlas({
   onSelectCountry: (c: CountryPin) => void;
   onSelectRegion: (r: MapRegion) => void;
 }) {
+  // Live size of the VISIBLE window — frame() needs the real aspect ratio to
+  // centre the focus pin in the band that's actually on screen (the plane is 2:1
+  // but the window is wider/shorter, so a flat 50% centre drops pins off-frame).
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [box, setBox] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
+  useLayoutEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const update = () =>
+      setBox({ w: el.clientWidth, h: el.clientHeight });
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // World view only: which cluster (if any) the user expanded by tapping its badge.
+  // Holds the member country pins to FRAME (zoom in on), spreading them apart so
+  // each becomes individually tappable. Reset whenever the focus/lens changes.
+  const [clusterFocus, setClusterFocus] = useState<CountryPin[] | null>(null);
+  useLayoutEffect(() => { setClusterFocus(null); }, [focusCountry, lens]);
+
   // What pins to show: world = countries (filtered to the active lens); country =
   // its regions. dx/dy are the RENDER positions (% of the plane), seeded from the
   // true projection then de-overlapped by spread() so no two pins sit on top of
   // each other (Chile/Argentina). lat/lng stay the source of truth for zoom.
+  // The set of countries to plot as INDIVIDUAL pins in world view: normally all of
+  // them, but when a cluster is expanded, just that cluster's members.
+  const worldCountries = clusterFocus ?? countries;
+
   const pins = useMemo(() => {
     const seed = focusCountry
       ? focusCountry.regions
           .map((r) => ({ kind: 'region' as const, key: r.slug, label: r.name, lat: r.lat, lng: r.lng, n: lensCount(r, lens), region: r }))
           .filter((p) => p.n > 0)
-      : countries
+      : worldCountries
           .map((c) => {
-            const n = c.regions.reduce((s, r) => s + lensCount(r, lens), 0);
+            const n = countryLensCount(c, lens);
             return { kind: 'country' as const, key: c.slug, label: c.name, lat: c.lat, lng: c.lng, n, country: c };
           })
           .filter((p) => p.n > 0);
@@ -147,7 +258,28 @@ export function RegionAtlas({
     });
     const spaced = spread(withPos);
     return spaced.sort((a, b) => a.dy - b.dy); // paint north→south so labels layer sanely
-  }, [countries, focusCountry, lens]);
+  }, [worldCountries, focusCountry, lens]);
+
+  // World-view clustering: group the (unspread) country pins by screen proximity so
+  // the crowded globe shows a handful of count badges instead of 60 overlapping
+  // dots. Only computed at world level AND when not already drilled into a cluster.
+  // Clusters with a single member render as a normal pin; multi-member ones render
+  // as a badge that zooms to its members on click. `worldClusters` is null when
+  // we're showing individual pins (focused country, or an expanded cluster).
+  const worldClusters = useMemo(() => {
+    if (focusCountry || clusterFocus) return null;
+    const members = countries
+      .map((c) => ({
+        key: c.slug, label: c.name, lat: c.lat, lng: c.lng,
+        n: countryLensCount(c, lens), country: c,
+        ...project(c.lat, c.lng),
+      }))
+      .filter((m) => m.n > 0)
+      .map((m) => ({ ...m, dx: m.xPct, dy: m.yPct }));
+    const cl = clusterPins(members, CLUSTER_RADIUS);
+    // If nothing actually clusters (all singletons), fall back to plain pins.
+    return cl.some((c) => c.members.length > 1) ? cl : null;
+  }, [countries, focusCountry, clusterFocus, lens]);
 
   // Zoom: frame the points that actually have data, centering on the user's focus.
   //   • A region is SELECTED   → center on that region (zoomed in tight on it).
@@ -160,23 +292,34 @@ export function RegionAtlas({
         ? focusCountry.regions.find((r) => r.slug === selectedSlug)
         : undefined;
       // Center on the selected region (single point → frame()'s span floor gives a
-      // comfortable tight zoom); otherwise frame the whole country.
-      if (sel) return frame([{ lat: sel.lat, lng: sel.lng }], 4.5);
-      return frame(focusCountry.regions, 3.5);
+      // comfortable tight zoom); otherwise frame the whole country. Floors raised
+      // (6 / 5) so country views fill the frame instead of leaving slack — the
+      // computed fit still wins for wide countries; the floor only bites for
+      // single-/tight-region ones. frame()'s cap (14×) bounds the top end.
+      if (sel) return frame([{ lat: sel.lat, lng: sel.lng }], 6, box);
+      return frame(focusCountry.regions, 5, box);
     }
-    const worldPts = countries.flatMap((c) =>
-      c.regions.reduce((s, r) => s + lensCount(r, lens), 0) > 0 ? [{ lat: c.lat, lng: c.lng }] : [],
+    // Expanded cluster → frame just its members (spreads them apart, tappable).
+    if (clusterFocus) {
+      return frame(clusterFocus.map((c) => ({ lat: c.lat, lng: c.lng })), 3, box);
+    }
+    // World view → frame ALL countries that have data under the lens.
+    const worldPts = worldCountries.flatMap((c) =>
+      countryLensCount(c, lens) > 0 ? [{ lat: c.lat, lng: c.lng }] : [],
     );
-    return frame(worldPts, 1);
-  }, [focusCountry, selectedSlug, countries, lens]);
+    return frame(worldPts, 1, box);
+  }, [focusCountry, selectedSlug, clusterFocus, worldCountries, lens, box]);
 
   return (
     <div
+      ref={boxRef}
       className={[
         'relative w-full overflow-hidden rounded-2xl border border-border bg-[hsl(36_33%_98%)] shadow-sm',
         // SHORT band at every size — the view is zoomed/scoped to just the data
         // points, so it needs little vertical room. Capped tight on desktop.
-        'aspect-[3/2] sm:aspect-[12/5] lg:aspect-[3/1] max-h-[22rem]',
+        // Shortened: wider aspect ratios + lower max-h so the band hugs the pins
+        // with minimal empty sea above/below.
+        'aspect-[2/1] sm:aspect-[16/5] lg:aspect-[16/4] max-h-[15rem]',
       ].join(' ')}
     >
       {/* PROJECTION-LOCKED PLANE: an inner 2:1 layer that exactly matches the SVG's
@@ -202,20 +345,93 @@ export function RegionAtlas({
           draggable={false}
         />
 
-        {pins.map((p) => {
+        {/* WORLD CLUSTERS: when the globe is crowded, multi-member clusters render
+            as a single count badge (tap → zoom to its members). Single-member
+            clusters render as a normal country pin. When worldClusters is null
+            (focused country, or an expanded cluster) we fall through to the flat
+            pin list below. */}
+        {worldClusters
+          ? worldClusters.map((cl) => {
+              const inv = 1 / zoom.scale;
+              const visH = 2 * zoom.vcy;
+              const sx = zoom.scale * (cl.cx + zoom.tx);
+              const sy = zoom.scale * (cl.cy + zoom.ty);
+              const offFrame = sx < -4 || sx > 104 || sy < -4 || sy > visH + 4;
+              // Single-member cluster → behave exactly like a country pin.
+              if (cl.members.length === 1) {
+                const m = cl.members[0];
+                return (
+                  <button
+                    key={m.key}
+                    type="button"
+                    onClick={() => onSelectCountry(m.country)}
+                    aria-hidden={offFrame}
+                    tabIndex={offFrame ? -1 : 0}
+                    aria-label={`${m.label} — ${m.n.toLocaleString()} bottles`}
+                    title={`${m.label} · ${m.n.toLocaleString()} bottles`}
+                    className={[
+                      'group absolute z-10 flex h-8 w-8 items-center justify-center rounded-full',
+                      'transition-[left,top] duration-500 ease-out motion-reduce:transition-none',
+                      'hover:z-30 focus-visible:z-30',
+                      offFrame ? 'pointer-events-none opacity-0' : '',
+                    ].join(' ')}
+                    style={{ left: `${cl.cx}%`, top: `${cl.cy}%`, transform: `translate(-50%, -50%) scale(${inv})` }}
+                  >
+                    <span aria-hidden="true" className="block h-3 w-3 rounded-full bg-primary/80 ring-2 ring-background transition-[height,width] duration-150 group-hover:h-4 group-hover:w-4 group-hover:bg-primary" />
+                    <span className="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 flex items-center gap-1.5 whitespace-nowrap rounded-full border border-primary bg-primary px-3 py-1 text-sm font-medium text-primary-foreground shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100">
+                      {m.label}
+                      <span className="text-xs tabular-nums opacity-80">{m.n.toLocaleString()}</span>
+                    </span>
+                  </button>
+                );
+              }
+              // Multi-member cluster → a count badge that zooms to its members.
+              return (
+                <button
+                  key={`cluster-${cl.members.map((m) => m.key).join('-')}`}
+                  type="button"
+                  onClick={() => setClusterFocus(cl.members.map((m) => m.country))}
+                  aria-hidden={offFrame}
+                  tabIndex={offFrame ? -1 : 0}
+                  aria-label={`${cl.members.length} countries, ${cl.n.toLocaleString()} bottles. Tap to zoom in.`}
+                  title={`${cl.members.length} countries · ${cl.n.toLocaleString()} bottles`}
+                  className={[
+                    'group absolute z-20 flex items-center justify-center rounded-full',
+                    'transition-[left,top] duration-500 ease-out motion-reduce:transition-none',
+                    'hover:z-30 focus-visible:z-30',
+                    offFrame ? 'pointer-events-none opacity-0' : '',
+                  ].join(' ')}
+                  style={{ left: `${cl.cx}%`, top: `${cl.cy}%`, transform: `translate(-50%, -50%) scale(${inv})` }}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="flex h-7 min-w-7 items-center justify-center gap-0.5 rounded-full border-2 border-background bg-primary px-2 text-xs font-semibold tabular-nums text-primary-foreground shadow-md transition-transform duration-150 group-hover:scale-110"
+                  >
+                    {cl.members.length}
+                  </span>
+                  <span className="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 flex items-center gap-1.5 whitespace-nowrap rounded-full border border-primary bg-primary px-3 py-1 text-sm font-medium text-primary-foreground shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100">
+                    {cl.members.length} countries
+                    <span className="text-xs tabular-nums opacity-80">{cl.n.toLocaleString()}</span>
+                    <span aria-hidden className="opacity-70">›</span>
+                  </span>
+                </button>
+              );
+            })
+          : pins.map((p) => {
           const isSelected = p.kind === 'region' && p.region.slug === selectedSlug;
           // Counter-scale the pin contents by 1/zoom so dots + labels stay a
           // constant on-screen size regardless of how far the plane is zoomed.
           const inv = 1 / zoom.scale;
-          // On-screen position of this pin (% of the container) after the plane's
-          // scale()+translate(). Plane width === container width, so screen-x maps
-          // directly; the plane is 2:1 (height = width/2 in container %), so screen-y
-          // is in 0..50 container%. A pin whose dot lands outside [−4, 104]×[−4, 54]
-          // is in the cropped-away area — hide it AND disable its pointer events so it
-          // can't steal a click meant for empty visible map (the phantom-click bug).
+          // On-screen position of this pin in PLANE-% after scale()+translate().
+          // screen-x is 0..100 (plane width === container width). screen-y is in
+          // plane-Y units 0..(2·vcy) — the visible band's height (NOT a fixed 0..50,
+          // which assumed a 2:1 window; the window is wider/shorter and capped by
+          // max-h). A pin outside the visible band (+4 margin) is cropped away — hide
+          // it AND disable pointer events so it can't steal a click on empty map.
+          const visH = 2 * zoom.vcy; // visible band height in plane-Y units
           const sx = zoom.scale * (p.dx + zoom.tx);
-          const sy = (zoom.scale * (p.dy + zoom.ty)) / 2;
-          const offFrame = sx < -4 || sx > 104 || sy < -4 || sy > 54;
+          const sy = zoom.scale * (p.dy + zoom.ty);
+          const offFrame = sx < -4 || sx > 104 || sy < -4 || sy > visH + 4;
           return (
             <button
               key={p.key}
@@ -272,9 +488,21 @@ export function RegionAtlas({
         })}
       </div>
 
-      {pins.length === 0 && (
+      {/* Expanded-cluster escape: a clear way back to the full world view, since the
+          parent breadcrumb doesn't know about this map-local cluster state. */}
+      {clusterFocus && !focusCountry && (
+        <button
+          type="button"
+          onClick={() => setClusterFocus(null)}
+          className="absolute right-3 top-3 z-30 inline-flex min-h-9 items-center gap-1 rounded-full border border-border/70 bg-background/85 px-3 py-1 text-sm font-medium text-foreground shadow-sm backdrop-blur-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          ‹ All countries
+        </button>
+      )}
+
+      {pins.length === 0 && !worldClusters && (
         <p className="absolute inset-0 flex items-center justify-center text-base text-muted-foreground">
-          No regions for this category.
+          {focusCountry ? 'No regions for this category.' : 'No countries for this category.'}
         </p>
       )}
     </div>

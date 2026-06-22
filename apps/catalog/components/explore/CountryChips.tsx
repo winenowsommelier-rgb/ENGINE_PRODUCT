@@ -1,7 +1,8 @@
 'use client';
 import type { LensKey, MapRegion } from '@/lib/explore/types';
 import { lensCount } from '@/lib/explore/map-data';
-import type { CountryPin } from './RegionAtlas';
+import { flagEmoji } from '@/lib/explore/flags';
+import { countryLensCount, type CountryPin } from './RegionAtlas';
 
 /**
  * CountryChips — the discoverable "menu" of what's available, below the map.
@@ -49,10 +50,14 @@ export function CountryChips({
   onSelectCountry: (c: CountryPin) => void;
   onSelectRegion: (r: MapRegion) => void;
 }) {
-  // Single horizontal scroll row (no wrap) keeps the overlay a thin band at the very
-  // top of the map, clear of the country pins below.
+  // TWO-ROW horizontal sliding rail: fills top→bottom then advances a column to
+  // the right, so the long country list (62) stays a compact swipeable band that
+  // shows ~2× the chips per screen-width vs a single row. Momentum scroll on touch;
+  // slim/no scrollbar. Mirrors the shop filter's ChipRail.
   const rowClass =
-    'flex gap-2.5 overflow-x-auto whitespace-nowrap pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden';
+    'grid grid-flow-col grid-rows-2 auto-cols-max gap-2 overflow-x-auto pb-1 ' +
+    'snap-x [scrollbar-width:thin] [-webkit-overflow-scrolling:touch] ' +
+    '[&::-webkit-scrollbar]:h-1.5';
 
   // COUNTRY LEVEL: this country's region chips.
   if (focusCountry) {
@@ -70,7 +75,7 @@ export function CountryChips({
               type="button"
               onClick={() => onSelectRegion(r)}
               aria-pressed={active}
-              className={[chipBase, active ? chipActive : chipIdle].join(' ')}
+              className={[chipBase, active ? chipActive : chipIdle, 'snap-start'].join(' ')}
             >
               {r.name}
               <Count n={n} active={active} />
@@ -81,27 +86,44 @@ export function CountryChips({
     );
   }
 
-  // WORLD LEVEL: a chip per country that has data under the lens.
+  // WORLD LEVEL: a chip per country that has data under the lens. Now covers BOTH
+  // curated countries (drill into regions) and region-less ones (→ /shop), counted
+  // via countryLensCount. Each chip leads with its flag emoji.
   const withData = countries
-    .map((c) => ({ c, n: c.regions.reduce((s, r) => s + lensCount(r, lens), 0), regions: c.regions.filter((r) => lensCount(r, lens) > 0).length }))
+    .map((c) => ({
+      c,
+      n: countryLensCount(c, lens),
+      regions: c.regions.filter((r) => lensCount(r, lens) > 0).length,
+    }))
     .filter((x) => x.n > 0)
     .sort((a, b) => b.n - a.n);
   return (
     <div role="group" aria-label="Countries with bottles available" className={rowClass}>
-      {withData.map(({ c, n, regions }) => (
-        <button
-          key={c.slug}
-          type="button"
-          onClick={() => onSelectCountry(c)}
-          className={[chipBase, chipIdle].join(' ')}
-        >
-          {c.name}
-          <span className="text-xs text-muted-foreground">
-            {regions} {regions === 1 ? 'region' : 'regions'}
-          </span>
-          <Count n={n} />
-        </button>
-      ))}
+      {withData.map(({ c, n, regions }) => {
+        const flag = flagEmoji(c.name);
+        return (
+          <button
+            key={c.slug}
+            type="button"
+            onClick={() => onSelectCountry(c)}
+            className={[chipBase, chipIdle, 'snap-start'].join(' ')}
+          >
+            {flag ? <span aria-hidden="true">{flag}</span> : null}
+            {c.name}
+            {/* Format: Country (xxxx sku) (x region). SKU count always shown; the
+                region count only for curated countries (blank for region-less ones,
+                which click straight through to /shop). */}
+            <span className="text-xs tabular-nums text-muted-foreground">
+              ({n.toLocaleString()} sku)
+            </span>
+            {regions > 0 ? (
+              <span className="text-xs tabular-nums text-muted-foreground">
+                ({regions} {regions === 1 ? 'region' : 'regions'})
+              </span>
+            ) : null}
+          </button>
+        );
+      })}
     </div>
   );
 }
