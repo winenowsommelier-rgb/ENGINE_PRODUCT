@@ -51,7 +51,13 @@ Reserva/Riserva 320, DOCG 314, IGT 256, Grand Cru 242, Reserve 202, Single Malt
 ## Components
 
 ### 1. Designation resolver — `apps/catalog/lib/designation.ts` (new)
-Mirrors the shape of `lib/category-groups.ts`.
+Mirrors the *shape* of `lib/category-groups.ts` but is a **standalone, pure,
+fs-free module**. It MUST NOT import `sku-taxonomy` or anything that transitively
+pulls `fs`/node built-ins — `category-groups.ts` does (`import { resolve } from
+'./sku-taxonomy'`), and that is why `Filters.tsx` (a `'use client'` component)
+cannot import it (Filters.tsx:14-17). `designationForProduct` runs inside the
+pure `shop-query` module (unit-tested without Next), so the resolver is regex-over-
+`p.name` and `p.designation` only — zero I/O, zero node imports.
 
 - An **ordered** priority list `DESIGNATION_PATTERNS: { label: string; re: RegExp }[]`
   where earlier = more specific. Critical orderings:
@@ -73,8 +79,9 @@ Mirrors the shape of `lib/category-groups.ts`.
 
 ### 2. Python backfill — `scripts/backfill_designation.py` (new)
 - Same ordered pattern table as the TS resolver (kept in parity by a fixture test).
-- Reads each product `name`, computes the single most-specific designation,
-  writes a `designation` column on `products.db`.
+- Reads each product `name` ONLY (never the raw `classification` field — RULE 12;
+  no `classification` fallback in the parity fixture either), computes the single
+  most-specific designation, writes a `designation` column on `products.db`.
 - **Rule 10 gated, in order:**
   1. `cp products.db products.db.bak-pre-designation`
   2. 5-SKU canary; print before/after designation for those SKUs
@@ -114,7 +121,11 @@ Document the new param in the file's header comment block (alongside the existin
 - `shop-facets.ts`: add `designations: FacetOption[]` to `ShopFacets`; compute
   with `omit(params, 'designation')` so each chip's count reflects the OTHER
   active filters and selecting one doesn't zero its siblings — identical to the
-  country pattern.
+  country pattern. `omit` is generic over any string key, so no change to it is
+  needed.
+- **Edit ordering:** §4 (predicate reads `params.designation`) must land BEFORE
+  §5's count guarantee holds — the "count reflects other filters" property is only
+  true once `matchesFilters` actually honors the designation param.
 
 ### 6. UI — `apps/catalog/components/Filters.tsx` + `app/shop/page.tsx`
 - `page.tsx`: pass `designationOptions={facets.designations}` into `<Filters>`.
@@ -128,17 +139,39 @@ Document the new param in the file's header comment block (alongside the existin
       ariaLabel="Classification"
       options={designationOptions}
       active={activeDesignation}
-      onSelect={(value) => apply(setParam('designation', value))}
+      onSelect={(value) => apply({ designation: value })}
     />
   ) : null}
   ```
+  - **Handler uses the leaf-rail idiom** `apply({ designation: value })`, NOT a
+    `setParam`/`clearDescendants` helper. `setParam` does not exist; the correct
+    precedent is the descendant-free Grape/Flavor rails (Filters.tsx:868, 883),
+    not the geo rails. `ChipRail` already calls `onSelect(isActive ? null : value)`
+    internally (Filters.tsx:254), so `value` arrives as `string | null`; `buildQuery`
+    deletes the key on `null`/`''` (build-query.ts:32), giving correct toggle-off
+    for free. So `apply` must accept `{ designation: string | null }` — it already
+    does for grape/flavor.
   - `activeDesignation` read from params like the other actives.
   - No `iconFor` (no emoji set for designations); reuse the existing text-chip
     styling unchanged.
-  - Empty options → renders nothing (self-hides), so groups with no designations
-    show no chip without special-casing.
+  - Empty options → the rail renders nothing (self-hides). NOTE: this hides the
+    rail only when the ENTIRE options array is empty. Individual zero-count
+    designations are already dropped by `facets.ts` `tally`, so under an active
+    non-wine group the rail is sparse-but-correct, not absent — verify in the
+    browser step.
   - Accordion `defaultOpen={Boolean(activeDesignation)}` and a `SectionBadge`
     summary showing the active value, matching Origin.
+
+  **Breadcrumb decision (resolved):** `designation` is a **leaf filter**, treated
+  exactly like `grape`/`flavor`/`price`/taste — it is NOT a `DrillStrand` and is
+  intentionally **excluded from `DrillBreadcrumb`** (DrillBreadcrumb.tsx:26-28,
+  closed `DrillStrand` union in drill-query.ts:13). Rationale: it has no
+  descendants and adding it to the strand machinery would be scope creep. The
+  active value is still visible via the accordion `SectionBadge`, and it is
+  cleared by re-clicking the chip (auto-`null`). Consequence to accept: the
+  breadcrumb's "Clear all" clears the drill strands (category + geo) but NOT
+  designation — same as it already does NOT clear grape/flavor/price/taste. This
+  is consistent with existing behavior, not a regression.
 
 ## Testing
 
