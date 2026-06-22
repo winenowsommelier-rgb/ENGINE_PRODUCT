@@ -15,6 +15,7 @@ import {
 // and lib/category-groups → lib/sku-taxonomy imports `fs`, which cannot resolve in the
 // browser bundle. category-constants holds the same canonical CATEGORY_GROUPS.
 import { CATEGORY_GROUPS } from '@/lib/category-constants';
+import { categoryEmoji, countryEmoji } from '@/lib/chip-emoji';
 import { PRICE_TIERS } from '@/lib/price-tiers';
 import { buildQuery } from '@/lib/build-query';
 import { clearDescendants } from '@/lib/drill-query';
@@ -205,12 +206,15 @@ function ChipRail({
   active,
   ariaLabel,
   onSelect,
+  iconFor,
 }: {
   /** Either counted facets (geo) or plain string options (grape/flavor). */
   options: FacetOption[] | string[];
   active: string;
   ariaLabel: string;
   onSelect: (value: string | null) => void;
+  /** Optional emoji prefix for each chip (e.g. flag/category icon). '' = none. */
+  iconFor?: (value: string) => string;
 }) {
   const items = options.map((o) =>
     typeof o === 'string' ? { value: o, count: undefined } : o,
@@ -230,6 +234,7 @@ function ChipRail({
     >
       {items.map((opt) => {
         const isActive = active === opt.value;
+        const icon = iconFor?.(opt.value) ?? '';
         return (
           <button
             key={opt.value}
@@ -244,6 +249,9 @@ function ChipRail({
                 : 'border-border bg-background text-foreground hover:border-primary hover:text-primary',
             )}
           >
+            {icon ? (
+              <span aria-hidden="true">{icon}</span>
+            ) : null}
             {opt.value}
             {opt.count !== undefined ? (
               <span
@@ -334,12 +342,15 @@ function Chip({
   active,
   onClick,
   count,
+  icon,
   children,
 }: {
   active: boolean;
   onClick: () => void;
   /** Optional facet count rendered as a muted suffix (drill-down chip rows). */
   count?: number;
+  /** Optional emoji prefix (e.g. category icon). '' = none. */
+  icon?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -348,13 +359,14 @@ function Chip({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        'inline-flex min-h-[44px] items-center rounded-full border px-4 text-base transition-colors',
+        'inline-flex min-h-[44px] items-center gap-2 rounded-full border px-4 text-base transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         active
           ? 'border-primary bg-primary text-primary-foreground'
           : 'border-border bg-background text-foreground hover:border-primary hover:text-primary',
       )}
     >
+      {icon ? <span aria-hidden="true">{icon}</span> : null}
       {children}
       {count !== undefined ? (
         <span className="ml-1 text-sm opacity-70">{count}</span>
@@ -538,6 +550,7 @@ export function Filters({
             options={groupOptions}
             active={activeGroup}
             onSelect={(value) => apply(clearDescendants('group', value))}
+            iconFor={categoryEmoji}
           />
         ) : (
           <ChipRow ariaLabel="Category">
@@ -545,6 +558,7 @@ export function Filters({
               <Chip
                 key={group}
                 active={activeGroup === group}
+                icon={categoryEmoji(group)}
                 onClick={() =>
                   apply(
                     clearDescendants(
@@ -643,6 +657,7 @@ export function Filters({
               options={countryOptions}
               active={activeCountry}
               onSelect={(value) => apply(clearDescendants('country', value))}
+              iconFor={countryEmoji}
             />
           ) : (
             <DropdownMenu>
