@@ -63,7 +63,11 @@ class _FakeClient:
 
 
 def _row(**over):
-    base = {"group": "Whisky", "sku": "X", "name": "Test"}
+    # Run-2: enrich_one iterates row["need"] (the applicable+empty fields the
+    # selection layer computed). A row WITHOUT "need" now KeyErrors, so every
+    # fixture must declare it. These validation tests probe variety+body drop
+    # behavior, so "need" includes both; fields not in need are forced to None.
+    base = {"group": "Whisky", "sku": "X", "name": "Test", "need": ["variety", "body"]}
     base.update(over)
     return base
 

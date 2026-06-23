@@ -27,6 +27,14 @@ def test_schema_for_group_is_rule12_clean():
     src = inspect.getsource(m)
     assert "classification" not in src.lower()
 
+def test_field_specs_and_applies_baseline():
+    from data.lib.taste_taxonomy.universal_scales import FIELD_SPECS, applies
+    assert set(FIELD_SPECS) >= {"variety", "body", "acidity", "tannin", "sweetness"}
+    ap = applies("Spirits", "Gin")
+    assert "variety" in ap
+    assert "body" not in ap and "acidity" not in ap and "tannin" not in ap and "sweetness" not in ap
+
+
 def test_schema_for_group_works_for_all_phase_b_groups():
     # The vocab is GROUP-keyed; schema_for_group must accept the GROUP string
     # (NOT the divergent type). Regression guard for the group-vs-type bug.
