@@ -92,6 +92,11 @@ _SWEETNESS_WINE_TYPES = {"Sweet/Dessert", "Fortified", "White Wine", "Sparkling 
 
 def applies(group, wine_type=None):
     """Return the set of fields that apply to (group, wine_type) per spec §4.0."""
+    # Wine Set = multi-bottle gift pack (e.g. "Bordeaux Easy Drinking Trio"): a
+    # mixed pack has NO single coherent taste profile, so any body/acidity/grape
+    # value would be misleading. Excluded entirely (user decision 2026-06-23; 8 rows).
+    if group == "Wine" and wine_type == "Wine Set":
+        return set()
     s = {"variety"}
     if group in ("Wine", "Sake & Asian", "Liqueur"):
         s.add("body")

@@ -44,3 +44,12 @@ def test_schema_for_group_works_for_all_phase_b_groups():
         assert s["variety_vocab"], f"{group} has empty vocab"
     # a non-Phase-B group returns None
     assert schema_for_group("Accessories") is None
+
+
+def test_wine_set_excluded_from_enrichment():
+    """Wine Set = multi-bottle pack → no coherent taste profile → no fields requested
+    (user decision 2026-06-23; guards against a misleading single body/acidity value)."""
+    from data.lib.taste_taxonomy.universal_scales import applies
+    assert applies("Wine", "Wine Set") == set()
+    # sanity: a real wine type is unaffected
+    assert "tannin" in applies("Wine", "Red Wine")
