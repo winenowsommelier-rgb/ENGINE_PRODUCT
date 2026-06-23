@@ -210,9 +210,14 @@ spec promises to protect (Rule 5 violation) and lose the cache safety net (Rule 
 3. **`schema_for_type(category_type)`** (§4.3) — Rule-12-clean.
 4. **Cache-first write**: enrichment loop writes ONLY to Supabase `enrichment_cache` + local
    sidecar. No DB write in the enrichment script at all.
-5. **Separate NULL-only merge** (`merge_phase_b_cache.py`, or extend `backfill_from_cache.py`):
+5. **Separate NULL-only merge** — a NEW `merge_phase_b_cache.py`:
    `UPDATE products SET col=? WHERE sku=? AND (col IS NULL OR col='')` — never overwrites.
    Then `refresh_live_export.py`, then verify-shipped.
+   **Do NOT extend `backfill_from_cache.py`** — verified its write loop (lines 143-148) is
+   ALSO an unconditional `UPDATE products SET {sets} WHERE id=?` with **no NULL guard**, i.e.
+   the same clobbering risk as the forbidden phase_d1 block. If you must reuse any of it, the
+   write loop has to be rewritten with the `AND (col IS NULL OR col='')` guard. The §9
+   NULL-only test runs against whichever merge script actually ships.
 
 Items 4+5 each get a unit test (§9). The skeleton's `_write_row`/UPDATE block is explicitly
 forbidden.
@@ -243,7 +248,12 @@ per-SKU token rate, shown to the user for sign-off BEFORE the full run.** Model 
 
 1. Backup `data/db/products.db` (the merge step backs up; canary uses cache only, no DB write).
 2. **Canary:** `enrich_phase_b.py --limit 5 --dry-run` then `--limit 5` (writes cache only).
-   Verify the 5 results are sane (variety in-vocab, body on the Light→Full scale).
+   Verify the 5 results are sane (variety in-vocab, body on the 4-step scale).
+   **`--dry-run` in the NEW script MUST mean "no API call" (free) — show the prompt + selected
+   rows, make zero calls.** (Review note: the skeleton's `--dry-run` still calls the API and
+   only skips the DB write — phase_d1 `enrich_one` spends regardless. Do NOT inherit that;
+   a dry-run that spends money defeats the purpose of a free preview.) The first PAID step is
+   the bare `--limit 5` (~<$0.01), the intended Rule-10 canary spend.
 3. Confirm success/skip ratio on the canary matches expectation.
 4. **Estimate** full-run cost from the canary's measured per-SKU rate; show the user the number.
 5. **Get user sign-off on the number.**
