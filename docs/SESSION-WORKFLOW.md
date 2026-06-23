@@ -8,6 +8,41 @@ created. Observed repeatedly (see project memory `feedback_catalog_worktree_isol
 
 **`origin/main` is the source of truth. The local working tree is not.**
 
+## Root cause: shared worktrees
+
+The repo uses multiple git **worktrees** (one clone, several branches checked out
+at once): `git worktree list` shows e.g. `.worktrees/phase-b-run2`,
+`.claude/worktrees/catalog-work`, etc. Background agents spawn these and switch
+branches — including in the MAIN working directory — which is why files "revert"
+and the branch changes between turns.
+
+**Do MY work in a dedicated worktree** so a parallel process can't disturb the
+main checkout mid-task:
+
+```bash
+git fetch origin
+git worktree add .worktrees/<task-name> -b <task-branch> origin/main
+cd .worktrees/<task-name>
+# (for the catalog, symlink deps:  ln -s ../../apps/catalog/node_modules apps/catalog/node_modules)
+# ...do the work, commit, push, open PR from here...
+git worktree remove .worktrees/<task-name>   # when done & merged
+```
+
+The main checkout stays untouched; the parallel automation keeps running.
+
+### Realigning a drifted local `main`
+
+If local `main` has stale commits not on origin (check:
+`git rev-list --left-right --count main...origin/main` → left>0 means local-only),
+and those commits are already on origin via PRs (verify before discarding):
+
+```bash
+git tag backup-local-main-$(date +%F) main   # recoverable safety net
+git fetch origin
+git checkout main
+git reset --hard origin/main                  # local main == deployed
+```
+
 ## Before trusting anything local
 
 ```bash
