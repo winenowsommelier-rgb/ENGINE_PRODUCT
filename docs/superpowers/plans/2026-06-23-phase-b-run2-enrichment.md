@@ -227,10 +227,19 @@ def test_select_applies_gating(tmp_path):
 
 > Worker note: pick fixture SKUs whose prefixes actually resolve to Red Wine / Spirits in `data/taxonomy/sku_prefix_map.json` — verify with `resolve()` in a REPL before finalizing the fixture.
 
-- [ ] **Step 7: Run the full Python suite, verify green**
+- [ ] **Step 7: Migrate the existing Run-1 tests (LARGER than it looks — read this fully)**
+
+The Run-1 select/validate/parity tests are wired to the OLD contract and will break broadly — this is EXPECTED, not a mistake. Update them deliberately (Rule 5: never keep a test green by preserving old behavior; add a regression-guard comment on each change):
+
+1. **`tests/test_enrich_phase_b_select.py` — fixture schema + assertions.** The fixture `products` table only has `(sku,name,is_in_stock,variety,body,has_recent_sales,sold_orders)`. The new `select_rows` SELECTs `acidity,tannin,sweetness` too → `OperationalError: no such column` on EVERY fixture. **Add the 3 columns to the fixture table builder.** Then:
+   - `test_wine_excluded` → INVERTS: wine is now INCLUDED. Rewrite to assert wine IS selected (with correct `need`), rename, add guard comment.
+   - `test_no_signal_excluded`, `test_critic_signal_selects`, `test_sold_orders_signal_selects` → the buying-signal gate is GONE (spec §2). These no longer apply; replace with `need`-based applicability assertions (Task 0 Step 6 / Task 5).
+   - `test_missing_critic_scores_table_does_not_raise` → becomes meaningless once the critic/signal code is deleted (see Step 5 note); remove it.
+2. **`tests/test_enrich_phase_b_validate.py` + the parity test** — `_row()` and `test_build_prompt_parity_all_nonwine_groups` build rows WITHOUT a `need` key; the new `build_prompt`/`enrich_one` do `row["need"]` → `KeyError`. **Add `need=[...]` to those fixture rows** (e.g. `need=["variety","body"]` for a spirit; `need=["variety","body","acidity","tannin"]` for a red wine).
+3. Also **delete the now-dead signal/critic/`_sold` block** in `select_rows` (see Step 5) so the no-signal-gate change is unambiguous, and **update the module docstring** (lines 1-22) which still says "non-wine … missing variety and/or body" + "has-a-buying-signal" — now stale.
 
 Run: `"/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/.venv/bin/python" -m pytest tests/ -v`
-Expected: PASS (Run-1 tests adapted where they asserted the old signal gate / body-for-spirits; update those to the new §4.0 behavior with a regression-guard comment per CLAUDE.md Rule 5 — do NOT keep a test green by preserving old gating).
+Expected: PASS after the migration above. If you see `no such column` or `KeyError: 'need'`, that's the migration not yet done — not a code bug.
 
 - [ ] **Step 8: Commit**
 
@@ -403,10 +412,23 @@ if __name__ == "__main__":
 
 > Note: a NULL-only merge legitimately leaves a sidecar field unshipped if the DB row already had a value (Rule 5). To avoid false fails, the verify should treat "export already non-empty" as shipped (it does — it only flags empty export values). Edge case for the worker to confirm in a second test: sidecar wrote `body=Medium` but DB already had `body=Full` → export shows `Full` → NOT missing (correct).
 
-- [ ] **Step 4: Add the not-clobbered edge-case test, run both, verify pass**
+- [ ] **Step 4: Write the not-clobbered edge-case test (false-positive guard), run both, verify pass**
+
+Add to `tests/test_verify_phase_b_shipped.py` — a sidecar field that the NULL-only merge legitimately did NOT ship (DB already had a value) must NOT be reported missing, because the export shows the pre-existing value (non-empty):
+
+```python
+def test_verify_shipped_preexisting_value_not_flagged(tmp_path):
+    export = tmp_path / "live_products_export.json"
+    # sidecar wrote body=Medium, but DB already had body=Full -> export shows Full (non-empty)
+    export.write_text(json.dumps([{"sku":"A","body":"Full"}]))
+    sidecar = tmp_path / "side.jsonl"
+    sidecar.write_text(json.dumps(dict(sku="A", body="Medium"))+"\n")
+    from scripts.verify_phase_b_shipped import verify
+    assert verify(export_path=export, sidecar_path=sidecar) == []  # Full is shipped → no miss
+```
 
 Run: `"/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/.venv/bin/python" -m pytest tests/test_verify_phase_b_shipped.py -v`
-Expected: PASS.
+Expected: PASS (both the missing-detection test and this false-positive guard).
 
 - [ ] **Step 5: Commit**
 
@@ -576,9 +598,19 @@ ls -la "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/db/products.db.bak-pre-run2"
 ```
 Expected: ~88 MB backup exists.
 
-- [ ] **Step 3: Assert all selected rows resolve to a drinkable group (no unresolved spend)**
+- [ ] **Step 3: Assert all selected rows resolve to a drinkable group + the gate types are LIVE**
 
-Run the dry-run (Task 1) again and confirm `Selected N` and that no selected SKU has an unknown group (add a one-off assert if needed). Record N for the cost estimate.
+Run the dry-run (Task 1) again and confirm `Selected N` and that no selected SKU has an unknown group. **Also print the distribution of `resolve()["type"]` over selected Wine rows** and confirm the literal gate strings are present (`Red Wine`, `White Wine`, `Sparkling & Champagne`, `Sweet/Dessert`, `Fortified`). If a taxonomy rename has changed them (e.g. `Sparkling` vs `Sparkling & Champagne`), the tannin/sweetness gate would silently zero out — STOP and fix the `_RED_TYPES`/`_SWEETNESS_WINE_TYPES` literals to match. Record N for the cost estimate.
+
+```bash
+"/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/.venv/bin/python" -c "
+import sqlite3,sys; sys.path.insert(0,'data/lib/taxonomy'); import sku_taxonomy as t
+from collections import Counter
+db=sqlite3.connect('/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/db/products.db'); db.row_factory=sqlite3.Row
+c=Counter(t.resolve({'sku':r['sku'],'name':r['name']})['type'] for r in db.execute('SELECT sku,name FROM products') if t.resolve({'sku':r['sku'],'name':r['name']})['group']=='Wine')
+print(dict(c))"
+```
+Expected: keys include the exact gate strings above.
 
 - [ ] **STOP — do not proceed to Task 8 without the canary + user sign-off.**
 
