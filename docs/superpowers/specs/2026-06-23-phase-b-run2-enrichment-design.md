@@ -15,8 +15,30 @@ See memory `project_phase_a_enrichment_promotion`, `project_universal_attributes
 
 Phase A (free deterministic) and Phase B Run 1 (paid, non-wine variety+body) left the
 finder-scoring / shop-filterable taste columns partially filled. Run 2 fills the remaining
-gaps in **`variety`, `body`, `acidity`, `tannin`** for **all in-stock drinkable** products,
-completing the wine fields Run 1 deliberately excluded and widening non-wine coverage.
+gaps in **`variety`, `body`, `acidity`, `tannin`** (finder/shop) plus **`sweetness`** (product-
+page display) for **in-stock drinkable** products, completing the wine fields Run 1 deliberately
+excluded and widening non-wine coverage. **Each field is requested only for categories where it
+is a meaningful sommelier axis** (§4.3 applicability) — body/acidity/tannin are wine-shaped axes
+and are NOT forced onto clear spirits.
+
+**Sommelier review (2026-06-23) reshaped the field/category matrix** — see §4.3. Headlines:
+body is gated (not requested for clear spirits/whisky where wine-body is noise); acidity is
+dropped for sake (sake is expressed by sweetness/dryness — SMV / 日本酒度 nihonshu-do — not
+Low/Med/High acidity, and the finder already reads sake sweetness from `taste_profile`);
+sweetness is ADDED for dessert/fortified wine + sweet liqueur (display-only, see below).
+
+**A small catalog code change ships with this run (sweetness display).** Verified: flat
+`sweetness` is read by NO consumer today — `lib/taste-adapter.ts:112 toStructural()` emits only
+body/acidity/tannin, so enriching sweetness without the fix would be a dead column (Rule 1).
+Run 2 adds ~4 lines to `toStructural()` to emit `sweetness` on the product-page
+`StructuralGauges` (scale `[Dry, Off-Dry, Medium-Sweet, Sweet]`), making sweetness a real
+visible win on Port/Sauternes/Moscato/sweet-liqueur pages. This is a UI change → **Rule 7
+browser verification required** (§7).
+
+**The "deep-dive expert browse" UX is OUT of scope — its own project.** The user's idea to let
+users browse/filter/learn the expert detail (sake SMV, whisky peat/region, wine tannin) is a
+real credibility moat, but it is a separate brainstorm→spec sequenced AFTER Run 2 ships the
+data. See memory `project_taste_deepdive_browse`. Run 2 is the data foundation it needs.
 
 This is **paid work** → governed in full by CLAUDE.md **Rule 10** (canary → estimate →
 sign-off → run → verify-shipped) and **Rule 4** (cost report must include a "what shipped to
@@ -45,13 +67,31 @@ plan, and final cost report must use this framing, not "whole-finder sharpening.
 ## 2. Scope (the binding selection)
 
 **Rows:** `is_in_stock == "1"` AND group ∈ {Wine, Spirits, Whisky, Sake & Asian, Liqueur}
-AND missing **any** of {variety, body, acidity, tannin}. **No buying-signal gate** (unlike
-Run 1) — the shop filter surfaces all in-stock products, so all are worth filling.
+AND **missing at least one APPLICABLE field** — i.e. a field that both (a) `applies` to the
+row's group/sub-type per the §4.0 matrix AND (b) is currently empty. **No buying-signal gate**
+(unlike Run 1) — the shop filter surfaces all in-stock products, so all are worth filling.
 
-**Measured size (root canonical DB, 2026-06-23): 1,972 rows.** Per-category, with the count
-of rows missing each field (one LLM call per row fills every field that row lacks):
+**Sweetness IS an independent selection trigger (resolved):** a dessert wine or sweet liqueur
+that is already fully filled on variety/body/acidity/tannin but missing `sweetness` IS selected
+(for its sweetness gap alone). Verified: ride-along-only would MISS 72 of 241 sweetness
+candidates — exactly the well-enriched dessert wines/liqueurs that most deserve the gauge. So
+the selection predicate is "missing any APPLICABLE field including sweetness," not "missing any
+of the four finder fields." (The ~1,622 count already includes these sweetness-only rows.)
 
-| group | rows | need variety | need body | need acidity | need tannin |
+**Raw in-stock-drinkable gap (2026-06-23): 1,972 rows** missing any of variety/body/acidity/
+tannin. After the §4.0 **applicability gating** (a field is requested only where it is a
+meaningful axis AND empty), the operative surface is smaller:
+
+**APPLICABILITY-GATED selection (the binding numbers, root canonical DB, 2026-06-23):**
+- **Rows we actually call (≥1 applicable+empty field): ~1,622.** (The ~350-row drop from 1,972
+  is rows whose only gaps were non-applicable — e.g. a spirit missing only acidity/tannin/body,
+  none of which we request for clear spirits.)
+- **Per-field request counts (applicable + empty only):** variety **886**, body **949**,
+  acidity **710**, tannin **204**, sweetness **241**.
+
+Raw per-category missingness (pre-gating, for context — NOT the request counts):
+
+| group | rows | miss variety | miss body | miss acidity | miss tannin |
 |---|---|---|---|---|---|
 | Wine | 655 | 72 | 564 | 566 | 611 |
 | Spirits | 455 | 238 | 220 | 404 | 404 |
@@ -59,6 +99,11 @@ of rows missing each field (one LLM call per row fills every field that row lack
 | Whisky | 317 | 158 | 189 | 289 | 289 |
 | Liqueur | 164 | 69 | 57 | 144 | 144 |
 | **Total** | **1,972** | | | | |
+
+**NOTE on the gated counts:** the ~1,622 / per-field figures use a *rough* red-wine and
+dessert/fortified name-regex for estimation. The plan computes the EXACT gated counts using the
+pinned §4.3 tannin and §4.0 sweetness determination, and the binding cost number comes from the
+canary regardless (§6).
 
 **Stock semantics (memory `project_is_in_stock_string_gotcha`):** `is_in_stock` is the STRING
 `"0"`/`"1"`/null — truthiness is backwards. Use the Run-1 `_instock()` helper (only
@@ -97,89 +142,143 @@ worktree; verify `git branch --show-current == feat/phase-b-run2` before every c
 
 ## 4. Fields, scales, validation & category-aware applicability
 
-### 4.1 `body` — 4-step scale (all drinkable categories)
-Write on the **4-step shop-native scale** (Run-1 decision, review CRITICAL #1):
+### 4.0 The field × category applicability matrix (sommelier-reviewed — THE governing table)
+
+A field is sent to the model, validated, and written **only** where it is a meaningful axis.
+`schema_for_group()` (extended) returns the `applies` set per group; tannin & sweetness are
+further refined by wine sub-type. A non-applicable field is never requested → never fabricated.
+
+| group | variety | body | acidity | tannin | sweetness |
+|---|---|---|---|---|---|
+| Wine (red/structured) | ✓ grape | ✓ | ✓ | ✓ | — (unless dessert/fortified) |
+| Wine (white/rosé/sparkling) | ✓ grape | ✓ | ✓ | ✗ | — (unless dessert/fortified) |
+| Wine (dessert/fortified: Port/Sauternes/Moscato) | ✓ grape | ✓ | ✓ | red→✓ | **✓ display** |
+| Spirits (clear: vodka/gin/tequila/rum) | ✓ base | ✗ | ✗ | ✗ | ✗ |
+| Whisky | ✓ style | ✗ | ✗ | ✗ | ✗ |
+| Sake & Asian | ✓ class | ✓ | ✗ (use existing sweetness) | ✗ | ✗ |
+| Liqueur | ✓ family | cream/fortified→✓ | fruit/citrus→✓ | ✗ | sweet→**✓ display** |
+
+Rationale (sommelier): body/acidity/tannin are wine mouthfeel/structure axes; on a 40–60% ABV
+clear spirit "body" is alcohol weight, not a comparable signal — so it is not requested.
+Sake acidity (酸度 sando) is real but sake is consumer-expressed via sweetness/dryness (SMV);
+the finder already reads sake sweetness from `taste_profile`, so flat acidity adds low-confidence
+noise → dropped. Sweetness is requested only where it is high-confidence-from-name and visible.
+
+### 4.1 `body` — 4-step scale (Wine, Sake, cream/fortified Liqueur ONLY)
 ```
 ["Light", "Medium", "Medium-Full", "Full"]      ← Medium-Light NOT used
 ```
-Strict subset of the finder's 5-step ladder, so finder ranks AND shop buckets correctly with
-no silent collapse. Reuse Run-1 `validate_body`.
+Strict subset of the finder's 5-step ladder → finder ranks AND shop buckets correctly, no silent
+collapse. Reuse Run-1 `validate_body`. **NOT requested for Spirits/Whisky** (§4.0).
 
-### 4.2 `variety` — per-category controlled vocabulary (reuse Run-1 vocab)
-Wine adds a grape allowlist (NEW for Run 2; Run 1 was non-wine only). The non-wine vocab is
-unchanged from Run 1 §4.2 (Whisky: Single Malt/Blended/Bourbon/…; Spirits: base material;
-Sake: Junmai/Ginjo/…; Liqueur: Herbal/Fruit/…). Validation **drops** off-vocab → null (never
-coerce; Rule 5 / Rule 1). Wine grape vocab derives from the live `variety` distribution +
-finder `GRAPE_FAMILY` tokens so written values match what the finder's grapeScore reads.
-The plan MUST generate this wine grape allowlist as an explicit frozen artifact (committed,
-not regenerated per run) and eyeball it in the canary: too-narrow silently drops valid grapes
-to NULL (safe per Rule 5 but lowers yield); too-broad pollutes `grapeScore`. Canary acceptance
-includes verifying produced wine varieties land inside `GRAPE_FAMILY` tokens.
+### 4.2 `variety` — per-category controlled vocabulary
+Non-wine vocab unchanged from Run 1 §4.2 (Whisky style class; Spirits base material; Sake
+class; Liqueur family). **Wine grape vocab (NEW):** built from the finder's `GRAPE_FAMILY`
+substring tokens (verified 2026-06-23: cabernet, pinot noir, syrah/shiraz, sangiovese,
+tempranillo/rioja, merlot, grenache/garnacha, chardonnay, sauvignon blanc, riesling, pinot
+grigio/gris, viognier, semillon, glera/prosecco, meunier) so a written value **scores** in
+`grapeScore` (substring match).
 
-### 4.3 `acidity` / `tannin` — 4-step scale, CATEGORY-AWARE applicability (NEW for Run 2)
+**Blends (user decision):** the allowlist includes explicit **blend tokens** (e.g. "Bordeaux
+Blend", "GSM", "Rhône Blend", "Field Blend") for product-page display. Because `grapeScore`
+matches by substring, a blend value that **leads with the dominant grape** still scores
+(e.g. "Cabernet Sauvignon Blend" → matches `cabernet`); the prompt instructs: for a blend,
+return the dominant grape first, optionally with "Blend". Unknown/obscure grape → null (Rule 5).
+The plan freezes the full wine allowlist as a committed artifact and the canary eyeballs that
+produced wine varieties land on a recognized grape token.
+
+### 4.3 `sweetness` — display-only, 4-step GAUGE scale (NEW for Run 2)
+Requested for **dessert/fortified wine (Port, Sauternes, Moscato, late-harvest, Tokaji) and
+sweet liqueurs** — categories where sweetness is high-confidence from the name and is the
+defining axis. Write on the **product-page gauge scale** (verified in `StructuralGauges.tsx:21`):
+```
+["Dry", "Off-Dry", "Medium-Sweet", "Sweet"]
+```
+**Do NOT use the sake `SWEETNESS_LADDER`** (`["very dry","dry","off-dry","sweet"]`, `scoring.ts:29`)
+— it differs, and an off-scale value makes the gauge render ALL-EMPTY silently (the Rule-2
+contract comment in `StructuralGauges.tsx:7-11`). `validate_sweetness` accepts ONLY the 4-step
+gauge scale → else null. **Consumer:** product-page `StructuralGauges` ONLY (NOT finder, NOT
+shop) — and only after the §4.5 `toStructural` change. Honest framing: display win, not a
+finder/shop win.
+
+### 4.4 `acidity` / `tannin` — 4-step scale, gated by the §4.0 matrix
 Scale: `["Low", "Medium", "Medium-High", "High"]` (matches `ACIDITY_SCALE`/`TANNIN_SCALE` in
-`app/shop/page.tsx`). The model is asked for these fields **only where the axis is meaningful**,
-to avoid fabricating values (Rule 1 / Rule 3):
-
-| field | REQUESTED for | NOT requested for (left NULL) |
-|---|---|---|
-| `acidity` | Wine, Sake & Asian, (Liqueur if fruit/citrus) | Spirits, Whisky |
-| `tannin` | **Red/structured Wine only** | White/sparkling Wine, Spirits, Whisky, Sake, Liqueur |
-
-Applicability is decided by `schema_for_group()` (extended) keyed on the SKU-derived group —
-and for tannin, refined by wine sub-type/colour. A field not requested is never sent to the
-model, never validated, never written. The validator drops any returned value outside the
-4-step scale → null.
+`app/shop/page.tsx`). Requested per the §4.0 matrix: acidity for Wine + (fruit/citrus) Liqueur
+(NOT Spirits/Whisky/Sake); tannin for **red/structured Wine only**. The validator drops any
+value outside the 4-step scale → null.
 
 **Tannin red/white determination (highest-ambiguity decision — the plan MUST pin this down,
 do NOT hand-wave):** request tannin ONLY when the wine is determinably red/structured. Source
-of truth, in order: (1) the SKU-derived `category_type` (`sku_taxonomy.resolve(row)["type"]`,
-e.g. "Red Wine" → request; "White Wine"/"Sparkling"/"Rosé" → skip); (2) if type is ambiguous
+of truth, in order: (1) the SKU-derived type (`sku_taxonomy.resolve(row)["type"]`, e.g.
+"Red Wine" → request; "White Wine"/"Sparkling"/"Rosé" → skip); (2) if type is ambiguous
 (generic "Wine"), a name-regex for red varietals/keywords. **Fallback when colour is NOT
-resolvable: do NOT request tannin (leave NULL).** Never request tannin for a wine we can't
-confirm is red — a NULL is correct; a fabricated tannin on a white is a Rule-1 failure.
+resolvable: do NOT request tannin (leave NULL).** A NULL is correct; a fabricated tannin on a
+white is a Rule-1 failure. (The §2 estimate uses a rough version of this regex; the plan pins
+the exact rule.)
 
-**Applicability-gated request counts (these SUPERSEDE the §2 raw-missingness totals for cost
-purposes):** §2's per-field "need" column is raw column-missingness; the model is asked for a
-field only where it `applies`, so the operative paid surface is smaller. Approximate gated
-request counts: tannin ≈ red-wine rows only (far fewer than the 611 Wine rows missing it);
-acidity ≈ Wine + Sake (+fruit Liqueur), excluding Spirits/Whisky. The plan computes the exact
-gated counts; the binding cost number comes from the canary regardless (§6). No fabricated
-tannin is ever written for a vodka or a white wine.
-
-### 4.4 New code — extend `data/lib/taste_taxonomy/universal_scales.py`
+### 4.5 New code — extend `data/lib/taste_taxonomy/universal_scales.py`
 Extend (do NOT rewrite) `schema_for_group()` to return, per group: `variety_vocab`,
-`body_scale` (existing), plus **`acidity_scale`**, **`tannin_scale`**, and an **`applies`** set
-naming which of {variety, body, acidity, tannin} to request for that group (the §4.3 table).
-Add `validate_acidity` / `validate_tannin` (4-step scale, drop-else-null) mirroring
-`validate_body`. The Rule-12-violating `schema_for_classification` (if present) stays untouched
-and unused.
+`body_scale` (existing), plus **`acidity_scale`**, **`tannin_scale`**, **`sweetness_scale`**
+(the §4.3 gauge scale), and an **`applies`** set naming which of {variety, body, acidity, tannin,
+sweetness} to request for that group/sub-type (the §4.0 matrix). Add `validate_acidity` /
+`validate_tannin` (4-step `[Low,Medium,Medium-High,High]`) and `validate_sweetness` (4-step
+`[Dry,Off-Dry,Medium-Sweet,Sweet]`), all drop-else-null, mirroring `validate_body`. Add the
+wine grape `variety_vocab` (§4.2, frozen artifact). The Rule-12-violating
+`schema_for_classification` (if present) stays untouched and unused.
+
+### 4.6 New code — emit `sweetness` on the product-page gauge (`lib/taste-adapter.ts`)
+`toStructural()` (line 112) currently emits only body/acidity/tannin. Without a consumer,
+enriched sweetness renders nowhere = dead column (Rule 1). This is the ONLY catalog code change
+in Run 2 → **Rule 7 browser verification** (§7).
+
+**The fix is NOT just "read product.sweetness" — `normalizeScale` is hard-gated and MUST be
+extended first (verified 2026-06-23):**
+- `normalizeScale` (line 80) early-returns `null` for any axis not in its `SCALE` map
+  (`if (!(a in SCALE)) return null`, line 83). `type Axis = 'body' | 'acidity' | 'tannin'`
+  (line 40) and the `SCALE` (line 67) / `REMAP` (line 45) objects have **no `sweetness` key**.
+  So `normalizeScale('sweetness', …)` returns null for EVERY value today — calling it without
+  the extension produces a silent dead column.
+
+**Required changes (definite, in order):**
+1. Extend `type Axis` to include `'sweetness'`.
+2. Add a `sweetness` entry to `SCALE`: `{'Dry','Off-Dry','Medium-Sweet','Sweet'}` (the gauge
+   scale — matches `SCALE_DEFINITIONS.sweetness` in `StructuralGauges.tsx:21`, so the COMPONENT
+   needs no change).
+3. Add a `sweetness` entry to `REMAP` (may be empty `{}` if no aliases needed).
+4. In `toStructural()`, add `const sweetness = normalizeScale('sweetness', product.sweetness);
+   if (sweetness) out.sweetness = sweetness;` and fix the stale "no flat source" comment.
+
+`PublicProduct.sweetness?: string` already exists (`types.ts:58`) — no type plumbing needed.
+The §8 unit test (toStructural emits sweetness) + §7 step 9 browser check guard against the
+dead-column failure.
 
 ---
 
 ## 5. Architecture & data flow (reuses Run-1 skeleton — Rule 11)
 
 ```
-select 1,972 rows (§2) from ROOT products.db   (absolute --db path, §3)
-   │ per row: group = sku_taxonomy.resolve(row)["group"]      ← NOT classification (Rule 12)
-   │ schema_for_group(group) → which of {variety,body,acidity,tannin} to ASK (§4.3 applies set)
+select ~1,622 rows (§2) from ROOT products.db   (absolute --db path, §3)
+   │ per row: group/type = sku_taxonomy.resolve(row)         ← NOT classification (Rule 12)
+   │ schema_for_group → which of {variety,body,acidity,tannin,sweetness} APPLY (§4.0 matrix) AND empty
    │ context: name (+ existing flavor_tags)
    ▼
 scripts/enrich_phase_b.py  (EXTENDED, not forked: add Wine to selection, add acidity/tannin
    │                         to prompt+validation, --run2 mode/flag; harness reused verbatim)
    • Haiku 4.5, constrained JSON out → only the requested fields
-   • validate: variety∈vocab else null; body/acidity/tannin∈4-step scale else null
+   • validate: variety∈vocab else null; body/acidity/tannin/sweetness∈their 4-step scale else null
    ▼ writes ONLY to (no DB write in this script):
 enrichment_cache (Supabase) + local sidecar    sku → {fields, source, model, ts}
    │   source tag: "phase_b_run2_haiku_taste"
    ▼
-scripts/merge_phase_b_cache.py  (EXTENDED for the 4 fields; NULL-only, backs up DB first)
+scripts/merge_phase_b_cache.py  (EXTENDED for the 5 fields; NULL-only, backs up DB first)
    • UPDATE products SET col=? WHERE sku=? AND (col IS NULL OR col='')   ← never clobbers (Rule 5)
-   ▼  refresh_live_export.py  ─►  live_products_export.json   (4 cols already in EXPORT_COLS ✓)
+   ▼  refresh_live_export.py  ─►  live_products_export.json   (all 5 cols ∈ EXPORT_COLS ✓ verified)
+   │  + ONE catalog code change: lib/taste-adapter.ts toStructural() emits sweetness (§4.6)
    ▼
 VERIFY-SHIPPED (Rule 1): for the EXACT merged-SKU set, confirm fields populated in the JSON;
    spot-check a previously-empty whisky now shows body in the shop "Taste & more" filter,
-   and a previously-empty red wine now ranks on tannin in the wine finder deep-dive.
+   a previously-empty red wine ranks on tannin in the wine finder deep-dive,
+   AND a Port/Sauternes product page now shows a Sweetness gauge (Rule 7 browser check, §7).
 ```
 
 **Two non-negotiable safety controls (carried from Run-1 review):**
@@ -196,14 +295,14 @@ VERIFY-SHIPPED (Rule 1): for the EXACT merged-SKU set, confirm fields populated 
 
 ## 6. Cost (Rule 10 / Rule 4)
 
-**Pre-canary envelope** (1,972 rows, Haiku 4.5 @ $0.80/$4.00 per Mtok, ~900-tok system prompt
-cached after first call, Run-1 measured ~$0.00024/row; Run-2 prompt slightly larger due to
-acidity/tannin scales):
+**Pre-canary envelope** (~1,622 applicability-gated rows, Haiku 4.5 @ $0.80/$4.00 per Mtok,
+~900-tok system prompt cached after first call, Run-1 measured ~$0.00024/row; Run-2 prompt
+slightly larger — more fields/scales):
 
 | Scenario | Estimate |
 |---|---|
-| Haiku, prompt-cached (expected) | **~$0.47** |
-| High (1.5× buffer, retries/verbose) | ~$0.70 |
+| Haiku, prompt-cached (expected) | **~$0.40** |
+| High (1.5× buffer, retries/verbose) | ~$0.60 |
 | Canary (5 SKUs) | <$0.01 |
 
 **This is a PRE-CANARY estimate. The BINDING number comes from the 5-SKU canary's measured
@@ -211,8 +310,8 @@ per-SKU token rate, shown to the user for sign-off BEFORE the full run.** Canary
 model (Haiku vs Sonnet escalation if accuracy is poor on hard rows).
 
 **Cost report at end (Rule 4) must include:** total spend, # API calls, **# rows where each of
-variety/body/acidity/tannin is populated IN `live_products_export.json`** (not the cache, not
-the DB gross count), and per-successful-row cost.
+variety/body/acidity/tannin/sweetness is populated IN `live_products_export.json`** (not the
+cache, not the DB gross count), and per-successful-row cost.
 
 ---
 
@@ -221,31 +320,42 @@ the DB gross count), and per-successful-row cost.
 1. Pre-flight: assert root DB non-empty; assert all selected rows resolve to a drinkable group;
    back up the root DB (`cp products.db products.db.bak-pre-run2`).
 2. **Canary:** `--limit 5 --dry-run` (FREE — show prompt + rows, zero API calls), then
-   `--limit 5` (paid, <$0.01, cache only). Eyeball: variety in-vocab, body/acidity/tannin on
-   the 4-step scale, tannin absent for non-applicable rows.
+   `--limit 5` (paid, <$0.01, cache only). Use a MIXED canary set: ≥1 red wine, 1 white/sparkling,
+   1 dessert/fortified wine, 1 spirit, 1 sake. Eyeball: variety in-vocab + on a recognized grape
+   token for wine; body/acidity/tannin/sweetness on their correct 4-step scales; **tannin only on
+   the red; body absent for the spirit; acidity absent for the sake; sweetness on the dessert wine.**
 3. Confirm success/skip ratio matches expectation.
 4. **Estimate** full-run cost from the canary's measured per-SKU rate; show the user the number.
 5. **Get user sign-off on the number.** ← no full-run spend before this.
 6. Full run → cache.
-7. Merge cache → ROOT DB (NULL-only) → `refresh_live_export.py`.
-8. **Verify-shipped:** for the EXACT merged-SKU set, confirm each field populated in
-   `live_products_export.json` (compare the merged-SKU set, NOT gross column totals —
-   pre-existing values inflate the gross and read as false mismatch). Spot-check finder + shop.
+7. Merge cache → ROOT DB (NULL-only) → `refresh_live_export.py`. Ship the §4.6 `toStructural`
+   code change with the merge (so sweetness has a consumer before it lands).
+8. **Verify-shipped (Rule 1):** for the EXACT merged-SKU set, confirm each field populated in
+   `live_products_export.json` (compare the merged-SKU set, NOT gross column totals — pre-existing
+   values inflate the gross and read as false mismatch). Spot-check finder + shop.
+9. **Rule 7 (UI):** start the catalog dev server (port :3100 — memory `project_catalog_dev_port`),
+   open a Port/Sauternes product page, confirm the **Sweetness gauge renders populated** (not
+   all-empty — the scale-mismatch failure mode), and the page doesn't crash. A working gauge is
+   the only proof the §4.6 change works.
 
 ---
 
 ## 8. Testing
 
-- Unit: extended `schema_for_group` returns correct fields/scales/`applies` per group (Rule-12
-  clean — never reads `classification`); `validate_acidity`/`validate_tannin` accept ONLY the
-  4-step scale and drop anything else → null; **tannin is NOT in `applies` for non-red groups**
-  (the §4.3 applicability guard).
+- Unit: extended `schema_for_group` returns correct fields/scales/`applies` per group + wine
+  sub-type (Rule-12 clean — never reads `classification`); `validate_acidity`/`validate_tannin`
+  accept ONLY `[Low,Medium,Medium-High,High]`; `validate_sweetness` accepts ONLY the GAUGE scale
+  `[Dry,Off-Dry,Medium-Sweet,Sweet]` and **rejects the sake ladder values** (`very dry`/`sweet`
+  lowercase) — the silent-empty-gauge trap; **body NOT in `applies` for Spirits/Whisky**;
+  **tannin NOT in `applies` for non-red**; **acidity NOT in `applies` for Sake** (the §4.0 guards).
 - Unit (NULL-only merge, Rule-5 guard): a row with `acidity='High'` is NOT overwritten; a NULL
-  `tannin` on a red wine IS filled.
+  `tannin` on a red wine IS filled; a NULL `sweetness` on a Port IS filled.
+- Unit (§4.6): `toStructural()` emits `sweetness` when the flat column has a gauge-scale value,
+  and omits it when null/off-scale (no all-empty gauge).
 - Integration (Rule 6 invariant): for a cached row X with fields, after merge the products
   table AND the export JSON have the corresponding columns populated for X.
-- Canary acceptance: 5 real SKUs (mixed wine + spirit) produce in-vocab variety + 4-step
-  body/acidity/tannin, tannin only on the red wine, plausible on eyeball.
+- Canary acceptance: the mixed 5-SKU set (§7 step 2) produces in-vocab variety + correct-scale
+  values with the applicability guards visibly honored, plausible on eyeball.
 
 ---
 
@@ -257,23 +367,31 @@ cost constants, `ThreadPoolExecutor`, `--skip-done` resume, factual-discipline s
 `refresh_live_export.py`; the Run-1 test patterns.
 
 **Net-new (budget these — highest-leverage):**
-1. Add Wine to the selection set + a wine grape vocab (§4.2).
-2. Extend `schema_for_group` with acidity/tannin scales + `applies` applicability (§4.4).
-3. `validate_acidity` / `validate_tannin` (§4.4).
-4. Extend the prompt to request only applicable fields + parse them (§4.3/§5).
-5. Extend `merge_phase_b_cache.py` to merge all four fields NULL-only.
-6. The §8 tests.
+1. Add Wine to the selection set + a frozen wine grape+blend vocab (§4.2).
+2. Extend `schema_for_group` with acidity/tannin/sweetness scales + the §4.0 `applies`
+   matrix (incl. wine sub-type refinement for tannin/sweetness) (§4.5).
+3. `validate_acidity` / `validate_tannin` / `validate_sweetness` (§4.5).
+4. Extend the prompt to request ONLY applicable fields per the matrix + parse them (§4.0/§5).
+5. Extend `merge_phase_b_cache.py` to merge all five fields NULL-only.
+6. **`toStructural()` emits sweetness** (§4.6) — the one catalog code change; needs Rule-7.
+7. The §8 tests.
 
 ---
 
 ## 10. Explicitly OUT of scope (Run 2)
 
 - `finish`, `intensity`, `color`, `smokiness`, `blend_type`, `production_style` — NO code reads
-  them for scoring; display-only and deferred (would be dead-column spend without UI work).
+  them; display-only and deferred (would be dead-column spend without UI work). NOTE: `sweetness`
+  was in this bucket but is now IN scope because Run 2 ships the §4.6 `toStructural` consumer for it.
+- `body`/`acidity`/`tannin` for clear spirits & whisky — not meaningful axes there (§4.0); not requested.
+- `acidity` for sake — sake uses sweetness/dryness (SMV), not Low/Med/High acidity (§4.0).
 - Out-of-stock rows — not surfaced in finder/shop; defer until restocked.
 - Beer & RTD — low signal for these axes (§2).
+- The **deep-dive expert-browse UX** (sake SMV explainer, whisky peat/region, wine tannin
+  browsing + learn cards) — its own brainstorm→spec→plan AFTER Run 2 ships the data. See memory
+  `project_taste_deepdive_browse`. Run 2 is the data foundation; do NOT bundle the UX here.
 - Teaching the non-wine FINDER to score on body/acidity/tannin — a scoring-code change, not a
-  data run (§11). Run 2 is data-only.
+  data run (§11). Run 2 is data-only apart from the single §4.6 display fix.
 
 ---
 
