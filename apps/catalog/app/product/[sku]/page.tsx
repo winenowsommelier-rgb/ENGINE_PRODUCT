@@ -201,19 +201,19 @@ export default function Page({ params }: { params: { sku: string } }) {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
         {/* Image — top on mobile, left on desktop. We OVERRIDE the shared
-            aspect-[3/4] box to a shorter !aspect-[4/5] here: bottle photos are
+            aspect-[3/4] box to a square !aspect-square here: bottle photos are
             tall+narrow on white, so the default box left big dead whitespace
             above/below the bottle and pushed the info below the fold. The
-            shorter box trims that vertical margin without shrinking the bottle —
+            square box trims that vertical margin without shrinking the bottle —
             better on mobile AND desktop. The `!` is required: twMerge does NOT
-            dedupe two arbitrary aspect-[…] values, so we win at the CSS layer. */}
+            dedupe conflicting aspect-* utilities, so we win at the CSS layer. */}
         <div className="lg:sticky lg:top-8 lg:self-start">
           <StorefrontImage
             src={product.image_url}
             alt={product.name}
             priority
             sizes="(max-width: 1024px) 100vw, 50vw"
-            className="!aspect-[4/5] rounded-lg"
+            className="!aspect-square rounded-lg"
           />
         </div>
 
@@ -228,8 +228,13 @@ export default function Page({ params }: { params: { sku: string } }) {
             <h1 className="text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl">
               {product.name}
             </h1>
+            {/* Price on its own row — the primary commercial fact, given room. */}
+            <PriceBlock price={product.price} specialPrice={product.special_price} />
+
+            {/* Meta row BELOW the price: SKU + stock + critic score together.
+                Separating these from the price reads cleaner and groups the
+                "reference" facts (order code, availability, ratings). */}
             <div className="flex flex-wrap items-center gap-3">
-              <PriceBlock price={product.price} specialPrice={product.special_price} />
               {/* SKU pill — labelled "SKU:" so customers screenshotting the page
                   to order with our team know it's the order code. Styled like the
                   other pills in this row (rounded-full, secondary, border ring);
