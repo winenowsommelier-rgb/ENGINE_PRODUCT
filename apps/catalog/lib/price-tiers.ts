@@ -32,6 +32,35 @@ export function formatPrice(price: number | null | undefined): string {
 }
 
 /**
+ * Resolves the active sale, if any, for a product.
+ *
+ * A sale is only valid when there is a real special_price that is strictly LESS
+ * than the regular price (guards against bad/equal/higher source data — we never
+ * render a "discount" that isn't one). Returns null when there is no genuine sale,
+ * so callers can branch on a single truthy check.
+ *
+ * @param price        regular price (baht)
+ * @param specialPrice discounted price from source (may be null/undefined/equal)
+ * @returns `{ special, percentOff, saveAmount }` when on sale, else `null`
+ */
+export function resolveSale(
+  price: number | null | undefined,
+  specialPrice: number | null | undefined,
+): { special: number; percentOff: number; saveAmount: number } | null {
+  if (
+    price === null || price === undefined || Number.isNaN(price) ||
+    specialPrice === null || specialPrice === undefined || Number.isNaN(specialPrice)
+  ) {
+    return null;
+  }
+  if (specialPrice <= 0 || specialPrice >= price) return null; // not a genuine discount
+  const saveAmount = price - specialPrice;
+  const percentOff = Math.round((saveAmount / price) * 100);
+  if (percentOff < 1) return null; // sub-1% rounds to nothing worth a badge
+  return { special: specialPrice, percentOff, saveAmount };
+}
+
+/**
  * The 5 price brackets. Upper bound is EXCLUSIVE ([min, max)); the last tier is
  * open-ended (max = Infinity). Range labels use an en-dash (U+2013).
  */

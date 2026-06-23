@@ -31,6 +31,12 @@ export interface PublicProduct {
   sku: string;
   name: string;
   price: number;
+  // Customer-facing SALE price. special_price is the discounted amount (only set
+  // when there is a real promotion, always < price); sp_discount_pct is the % off
+  // as a string. Public storefront prices — NOT margin/wholesale. Absent for SKUs
+  // with no active special_price (the majority).
+  special_price?: number;
+  sp_discount_pct?: string;
 
   // Optional descriptive / classification fields.
   brand?: string;
