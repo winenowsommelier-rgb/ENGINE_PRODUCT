@@ -28,23 +28,24 @@ def _make_db(tmp_path):
     """Build a tmp products.db with products + critic_scores tables."""
     db = tmp_path / "t.db"
     conn = sqlite3.connect(db)
+    # has_recent_sales is INTEGER in prod — keep the fixture faithful (Rule 3).
     conn.execute(
         "CREATE TABLE products (sku TEXT, name TEXT, is_in_stock TEXT, "
-        "variety TEXT, body TEXT, has_recent_sales TEXT, sold_orders INTEGER)"
+        "variety TEXT, body TEXT, has_recent_sales INTEGER, sold_orders INTEGER)"
     )
     conn.execute("CREATE TABLE critic_scores (sku TEXT)")
     rows = [
         # (sku, name, is_in_stock, variety, body, has_recent_sales, sold_orders)
-        # 1. in-stock whisky, sales signal, empty body -> SELECTED
-        ("LWH001", "Test Whisky A", "1", None, None, "1", 0),
+        # 1. in-stock whisky, integer-1 sales signal, empty body -> SELECTED
+        ("LWH001", "Test Whisky A", "1", None, None, 1, 0),
         # 2. out-of-stock whisky with signal -> NOT selected (stock string "0")
-        ("LWH002", "Test Whisky B", "0", None, None, "1", 0),
+        ("LWH002", "Test Whisky B", "0", None, None, 1, 0),
         # 3. in-stock whisky, NO signal (no sales, not in critic) -> NOT selected
-        ("LWH003", "Test Whisky C", "1", None, None, "0", 0),
+        ("LWH003", "Test Whisky C", "1", None, None, 0, 0),
         # 4. in-stock WINE (group Wine) with signal -> NOT selected (wine excluded)
-        ("WRW001", "Test Wine D", "1", None, None, "1", 5),
+        ("WRW001", "Test Wine D", "1", None, None, 1, 5),
         # 5. in-stock spirit, signal, BOTH variety+body set -> NOT selected (nothing to fill)
-        ("LRM001", "Test Rum E", "1", "Cane/Molasses", "Full", "1", 3),
+        ("LRM001", "Test Rum E", "1", "Cane/Molasses", "Full", 1, 3),
     ]
     conn.executemany("INSERT INTO products VALUES (?,?,?,?,?,?,?)", rows)
     conn.commit()
@@ -111,6 +112,46 @@ def test_sold_orders_signal_selects(tmp_path):
     )
     conn.commit()
     assert "LRM009" in {r["sku"] for r in select_rows(conn)}
+
+
+def test_non_numeric_sold_orders_does_not_crash_selection(tmp_path):
+    """Rule 3: a single non-numeric sold_orders ('N/A') must NOT crash the whole
+    selection. The row still has a critic-score signal, so it must be SELECTED."""
+    db = tmp_path / "na.db"
+    conn = sqlite3.connect(db)
+    conn.execute(
+        "CREATE TABLE products (sku TEXT, name TEXT, is_in_stock TEXT, "
+        "variety TEXT, body TEXT, has_recent_sales INTEGER, sold_orders TEXT)"
+    )
+    conn.execute("CREATE TABLE critic_scores (sku TEXT)")
+    # sold_orders='N/A' (non-numeric); has no sales flag; but IS in critic_scores.
+    conn.execute(
+        "INSERT INTO products VALUES "
+        "('LRM050','Rum NA orders','1',NULL,NULL,0,'N/A')"
+    )
+    conn.execute("INSERT INTO critic_scores VALUES ('LRM050')")
+    conn.commit()
+    selected = {r["sku"] for r in select_rows(conn)}  # must not raise
+    assert "LRM050" in selected
+
+
+def test_missing_critic_scores_table_does_not_raise(tmp_path):
+    """Rule 3: a stale/backup DB may lack the critic_scores table entirely.
+    select_rows must degrade to sales-signal-only, not raise OperationalError."""
+    db = tmp_path / "nocritic.db"
+    conn = sqlite3.connect(db)
+    conn.execute(
+        "CREATE TABLE products (sku TEXT, name TEXT, is_in_stock TEXT, "
+        "variety TEXT, body TEXT, has_recent_sales INTEGER, sold_orders INTEGER)"
+    )
+    # NO critic_scores table created on purpose.
+    conn.execute(
+        "INSERT INTO products VALUES "
+        "('LWH060','Whisky sales only','1',NULL,NULL,1,0)"
+    )
+    conn.commit()
+    selected = {r["sku"] for r in select_rows(conn)}  # must not raise
+    assert "LWH060" in selected  # selected on the sales signal alone
 
 
 @pytest.mark.parametrize("group", sorted(NONWINE))

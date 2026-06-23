@@ -58,16 +58,34 @@ def _empty(v) -> bool:
     return v is None or str(v).strip() == ""
 
 
+def _sold(v) -> int:
+    """Coerce sold_orders to int. Prod data is dirty (Rule 3): 'N/A', '1,234',
+    '3.0', None all appear. A bad value must NOT crash the whole selection —
+    treat anything non-numeric as 0 (no sales signal)."""
+    try:
+        return int(float(v))
+    except (TypeError, ValueError):
+        return 0
+
+
 def group_for(row) -> str | None:
     """Return the SKU-derived GROUP (Rule 12). NEVER the type — schema_for_group
     is group-keyed and the two diverge for non-wine categories."""
-    return (resolve({"sku": row["sku"], "name": row["name"]}) or {}).get("group")
+    return resolve({"sku": row["sku"], "name": row["name"]}).get("group")
 
 
 def select_rows(conn: sqlite3.Connection) -> list[dict]:
     """Pick in-stock, non-wine, has-signal rows still missing variety or body."""
     conn.row_factory = sqlite3.Row
-    critic = {r[0] for r in conn.execute("SELECT DISTINCT sku FROM critic_scores")}
+    try:
+        critic = {r[0] for r in conn.execute("SELECT DISTINCT sku FROM critic_scores")}
+    except sqlite3.OperationalError:
+        # Stale/backup DB may lack the table; degrade to sales-signal-only (Rule 3).
+        print(
+            "WARN: critic_scores table absent — proceeding with sales-signal only",
+            file=sys.stderr,
+        )
+        critic = set()
     out: list[dict] = []
     for r in conn.execute(
         "SELECT sku,name,is_in_stock,variety,body,"
@@ -80,7 +98,7 @@ def select_rows(conn: sqlite3.Connection) -> list[dict]:
             continue
         signal = (
             str(r["has_recent_sales"]) in ("1", "True", "true")
-            or int(r["sold_orders"] or 0) > 0
+            or _sold(r["sold_orders"]) > 0
             or r["sku"] in critic
         )
         if not signal:
