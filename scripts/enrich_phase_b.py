@@ -128,6 +128,38 @@ SYSTEM = ("You are a precise beverage attribute extractor. "
           "Output ONLY the requested JSON, values from the allowlist or null.")
 
 
+def load_done_skus(path) -> set:
+    """Read a JSONL sidecar and return the set of skus already present (ANY
+    status, incl. api_error). Resume cost-safety (Rule 4/10): a re-run must not
+    re-PAY for a sku already in the sidecar.
+
+    A non-existent path -> empty set (fresh run). Blank / truncated / malformed
+    lines (a crash mid-write leaves a partial last line) are skipped, not fatal —
+    a corrupt tail must never abort the resume scan."""
+    path = Path(path)
+    if not path.exists():
+        return set()
+    done: set = set()
+    with path.open() as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except Exception:  # noqa: BLE001 — partial/garbage line -> skip, don't crash resume
+                continue
+            sku = rec.get("sku")
+            if sku is not None:
+                done.add(sku)
+    return done
+
+
+def filter_undone(rows: list[dict], done_skus: set) -> list[dict]:
+    """Drop rows whose sku is already in done_skus (resume without re-paying)."""
+    return [r for r in rows if r["sku"] not in done_skus]
+
+
 def enrich_one(client, row: dict) -> dict:
     """ONE paid Haiku call: extract variety+body, parse JSON-in-text, then
     VALIDATE against the group's allowlist + the 4-step body scale. Off-vocab
@@ -138,7 +170,7 @@ def enrich_one(client, row: dict) -> dict:
     with status 'api_error' so one bad SKU can't abort a paid bulk run."""
     try:
         resp = client.messages.create(
-            model=MODEL, max_tokens=200, temperature=0.2,
+            model=MODEL, max_tokens=200, temperature=0,  # temp=0 for determinism
             system=[{"type": "text", "text": SYSTEM}],
             messages=[{"role": "user", "content": build_prompt(row)}])
     except Exception as e:  # noqa: BLE001 — any SDK/network error -> recorded, not raised
@@ -171,6 +203,11 @@ def main(argv=None) -> int:
         help="NO API CALL — print prompts + selection only (free)",
     )
     p.add_argument("--ts", default="run", help="sidecar suffix (e.g. canary/full)")
+    p.add_argument(
+        "--skip-done",
+        action="store_true",
+        help="skip SKUs already in the sidecar (resume without re-paying)",
+    )
     a = p.parse_args(argv)
 
     conn = sqlite3.connect(a.db)
@@ -194,16 +231,50 @@ def main(argv=None) -> int:
     # script (Task 2) reads this sidecar to fill DB gaps; this script writes NO
     # products.db rows. Each sidecar record carries the validated (or None)
     # values only, so the downstream gap-fill never clobbers existing data.
+    sidecar = REPO / f"data/phase_b_results-{a.ts}.jsonl"
+
+    # ----- RESUME / ANTI-CLOBBER cost-safety (Rule 4/10) — BEFORE any SDK/spend -
+    # The sidecar is the source of truth + the ONLY record of what we already
+    # paid for. This guard runs before the SDK import/client so it can refuse
+    # safely without needing an API key or making any call:
+    #   --skip-done  -> read existing skus, drop them from `rows`, APPEND-mode
+    #                   (prior results preserved, no re-pay).
+    #   no flag, but a non-empty sidecar already exists -> REFUSE to run rather
+    #                   than truncate it (truncate = destroy completed work AND
+    #                   re-pay for everything). Operator must --skip-done or --ts.
+    done_skus = load_done_skus(sidecar)
+    if a.skip_done:
+        before = len(rows)
+        rows = filter_undone(rows, done_skus)
+        print(f"Resume: {len(done_skus)} already in sidecar; "
+              f"skipped {before - len(rows)}, {len(rows)} remaining to call.")
+        open_mode = "a"  # APPEND — never truncate prior paid results
+    else:
+        if done_skus:
+            print(
+                f"ERROR: sidecar {sidecar} already has {len(done_skus)} result(s).\n"
+                "Refusing to truncate it (that would DESTROY completed work and "
+                "RE-PAY for every SKU).\n"
+                "Use --skip-done to resume (append), or a fresh --ts for a new run.",
+                file=sys.stderr,
+            )
+            return 1
+        open_mode = "w"
+
+    if not rows:
+        print("Nothing to do — all selected SKUs already in sidecar. No API calls.")
+        return 0
+
     import anthropic  # imported here so dry-run/tests never need the SDK installed
 
     client = anthropic.Anthropic()
-    sidecar = REPO / f"data/phase_b_results-{a.ts}.jsonl"
+
     lock = threading.Lock()
     total_cost = 0.0
     total_in = total_out = 0
-    n_calls = n_variety = n_body = 0
+    n_calls = n_ok = n_api_error = n_variety = n_body = 0
 
-    with sidecar.open("w") as fh, ThreadPoolExecutor(max_workers=6) as ex:
+    with sidecar.open(open_mode) as fh, ThreadPoolExecutor(max_workers=6) as ex:
         futures = {ex.submit(enrich_one, client, r): r for r in rows}
         for fut in as_completed(futures):
             res = fut.result()
@@ -214,17 +285,28 @@ def main(argv=None) -> int:
                 total_cost += res["cost_usd"]
                 total_in += res["tokens_in"]
                 total_out += res["tokens_out"]
+                if res["status"] == "ok":
+                    n_ok += 1
+                elif str(res["status"]).startswith("api_error"):
+                    n_api_error += 1
                 if res["variety"] is not None:
                     n_variety += 1
                 if res["body"] is not None:
                     n_body += 1
 
-    per_row = (total_cost / n_calls) if n_calls else 0.0
+    # Rule 4: per-SUCCESSFUL-row cost (NOT per-attempt — api_errors paid nothing
+    # but must not deflate the cost-per-good-row the operator reasons about).
+    per_ok = total_cost / max(n_ok, 1)
     print(f"Sidecar: {sidecar}")
-    print(f"Calls: {n_calls}  cost: ${total_cost:.4f}  "
-          f"in: {total_in}  out: {total_out}")
+    print(f"Calls: {n_calls}  ok: {n_ok}  api_error: {n_api_error}")
+    print(f"Total cost: ${total_cost:.4f}  in: {total_in}  out: {total_out}")
     print(f"variety filled: {n_variety}  body filled: {n_body}")
-    print(f"Per-row cost: ${per_row:.6f}")
+    print(f"Per-SUCCESSFUL-row cost: ${per_ok:.6f}")
+    print(
+        "NOTE: these are cache/sidecar counts, NOT user-facing 'shipped' counts. "
+        "The shipped verification (Rule 1/4) happens at the merge+export step "
+        "(Task 6): merge sidecar -> products.db -> refresh_live_export -> count.",
+    )
     return 0
 
 
