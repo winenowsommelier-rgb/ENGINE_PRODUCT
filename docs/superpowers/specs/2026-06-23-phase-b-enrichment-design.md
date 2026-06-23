@@ -259,8 +259,11 @@ per-SKU token rate, shown to the user for sign-off BEFORE the full run.** Model 
 5. **Get user sign-off on the number.**
 6. Full run → cache.
 7. Merge cache → DB (NULL-only) → `refresh_live_export.py`.
-8. **Verify-shipped:** count `variety`/`body` populated in `live_products_export.json` ==
-   DB counts; spot-check that the finder/shop now surface a previously-empty whisky's body.
+8. **Verify-shipped:** for the **exact set of SKUs merged from cache this run**, confirm each
+   has `variety`/`body` populated in `live_products_export.json` (compare the merged-SKU set,
+   NOT gross column totals — pre-existing rows, e.g. the 122 legacy `Medium-Light` body rows,
+   inflate the gross DB count and would read as a false mismatch). Then spot-check that the
+   finder/shop now surface a previously-empty whisky's body.
 
 ---
 
