@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3100",
-    "prebuild": "node scripts/gen-search-index.mjs && node scripts/gen-explore-map-data.mjs",
+    "prebuild": "node scripts/check-export-invariants.mjs && node scripts/gen-search-index.mjs && node scripts/gen-explore-map-data.mjs",
     "build": "NODE_OPTIONS='--max-old-space-size=4096' next build",
     "start": "next start --port 3100",
     "typecheck": "tsc --noEmit",
