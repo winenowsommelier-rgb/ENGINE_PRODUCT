@@ -111,3 +111,62 @@ def build_summary(winners: list[dict]) -> tuple[float | None, str | None]:
         "computed_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
     }
     return score_max, json.dumps(summary, ensure_ascii=False)
+
+
+_SELECT_ALL = """
+SELECT sku, critic, score, source, score_native, score_scale,
+       signal_class, signal_tier, confidence, fetched_at, added_by
+FROM critic_scores
+WHERE sku IS NOT NULL AND sku != ''
+"""
+
+
+def refresh_all(conn: sqlite3.Connection) -> int:
+    """Full re-derive: for every SKU with >=1 bound critic_scores row, recompute
+    score_max/score_summary via §16 precedence; reset SKUs with no rows to NULL.
+    Self-healing. Returns the number of SKUs written with a non-NULL summary."""
+    rows_by_sku: dict[str, list[dict]] = {}
+    for r in conn.execute(_SELECT_ALL):
+        d = {"sku": r[0], "critic": r[1], "score": r[2], "source": r[3],
+             "score_native": r[4], "score_scale": r[5], "signal_class": r[6],
+             "signal_tier": r[7], "confidence": r[8], "fetched_at": r[9],
+             "added_by": r[10]}
+        rows_by_sku.setdefault(r[0], []).append(d)
+
+    # 1) reset every product that currently has a summary but no rows (self-heal)
+    conn.execute(
+        "UPDATE products SET score_max = NULL, score_summary = NULL "
+        "WHERE (score_summary IS NOT NULL OR score_max IS NOT NULL) "
+        "AND sku NOT IN (SELECT DISTINCT sku FROM critic_scores WHERE sku IS NOT NULL AND sku != '')"
+    )
+    # 2) recompute for every SKU that has rows
+    written = 0
+    for sku, rows in rows_by_sku.items():
+        winners = merge_for_sku(rows)
+        score_max, summary = build_summary(winners)
+        conn.execute(
+            "UPDATE products SET score_max = ?, score_summary = ? WHERE sku = ?",
+            (score_max, summary, sku),
+        )
+        if summary is not None:
+            written += 1
+    conn.commit()
+    return written
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(description="Re-derive products.score_max/score_summary from all critic_scores sources (§16).")
+    ap.add_argument("--db", type=Path, default=DEFAULT_DB)
+    args = ap.parse_args(argv)
+    if not args.db.exists():
+        print(f"ERROR: db not found: {args.db}", file=sys.stderr)
+        return 1
+    conn = sqlite3.connect(args.db)
+    n = refresh_all(conn)
+    print(f"Re-derived score_max/score_summary for {n} products with badge-eligible critic scores.")
+    print("Rule 9: now run  .venv/bin/python scripts/refresh_live_export.py")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
