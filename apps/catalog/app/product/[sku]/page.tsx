@@ -199,26 +199,40 @@ export default function Page({ params }: { params: { sku: string } }) {
         <span className="text-foreground">{product.name}</span>
       </nav>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
-        {/* Image — top on mobile, left on desktop. */}
+      <div className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-2 lg:gap-12">
+        {/* Image — top on mobile, left on desktop. On mobile we constrain the
+            width (the aspect-[3/4] box derives height from width, so a narrower
+            box is also shorter) and center it, so the identity/price/details
+            below sit closer to the fold. On desktop it fills its sticky column. */}
         <div className="lg:sticky lg:top-8 lg:self-start">
-          <StorefrontImage
-            src={product.image_url}
-            alt={product.name}
-            priority
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="rounded-lg"
-          />
+          <div className="mx-auto max-w-[14rem] sm:max-w-xs lg:max-w-none">
+            <StorefrontImage
+              src={product.image_url}
+              alt={product.name}
+              priority
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="rounded-lg"
+            />
+          </div>
         </div>
 
         {/* Right column: identity, commercials, attributes, taste, contact. */}
         <div className="flex flex-col gap-8">
           <header className="flex flex-col gap-3">
-            {product.brand ? (
-              <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-                {product.brand}
+            {/* Brand (left) + SKU code (right). Customers screenshot this page to
+                order with our team, so the SKU MUST be visible — right-aligned,
+                same size/weight as the brand. Always render the SKU even when
+                brand is empty, keeping it right-aligned via ml-auto. */}
+            <div className="flex items-start justify-between gap-3">
+              {product.brand ? (
+                <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+                  {product.brand}
+                </p>
+              ) : null}
+              <p className="ml-auto shrink-0 text-right text-sm font-medium uppercase tracking-wide text-muted-foreground">
+                {product.sku}
               </p>
-            ) : null}
+            </div>
             <h1 className="text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl">
               {product.name}
             </h1>
