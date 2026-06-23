@@ -39,7 +39,6 @@ export function PriceBlock({
       <span className="inline-flex items-center rounded-full bg-destructive px-2.5 py-0.5 text-xs font-semibold text-destructive-foreground">
         −{sale.percentOff}%
       </span>
-      <span className="text-sm font-medium text-muted-foreground">Save {formatPrice(sale.saveAmount)}</span>
     </div>
   );
 }
