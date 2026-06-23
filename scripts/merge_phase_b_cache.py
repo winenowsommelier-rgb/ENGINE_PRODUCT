@@ -10,7 +10,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 DEFAULT_DB = REPO / "data" / "db" / "products.db"
-FIELDS = ("variety", "body")
+FIELDS = ("variety", "body", "acidity", "tannin", "sweetness")
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
@@ -93,8 +93,8 @@ def main(argv=None):
 
     # FIX B: post-write verification (Rule 1) — real SELECT against the committed DB.
     after = {f: populated(f) for f in FIELDS}
-    print(f"verify: variety populated {before['variety']} -> {after['variety']}; "
-          f"body {before['body']} -> {after['body']}")
+    print("verify (gross DB totals — NOT Rule-1; see verify_phase_b_shipped.py): " +
+          "; ".join(f"{f} populated {before[f]} -> {after[f]}" for f in FIELDS))
 
     conn.close()
 
