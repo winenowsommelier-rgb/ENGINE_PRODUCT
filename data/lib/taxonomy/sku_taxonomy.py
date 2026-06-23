@@ -15,6 +15,16 @@ MAP_PATH = REPO_ROOT / "data" / "taxonomy" / "sku_prefix_map.json"
 
 _FORTIFIED = re.compile(r"\b(port|marsala|madeira|sherry|oloroso|amontillado|fino)\b", re.I)
 
+# Per-SKU taxonomy overrides for individual SKUs the prefix map gets wrong.
+# Keep this TINY and exception-only; the prefix map is the rule. MUST stay in
+# lock-step with SKU_OVERRIDES in apps/catalog/lib/sku-taxonomy.ts (parity test).
+# LSJ0024DG: "Kai Lemongrass Ginger" is a New Zealand Kai-brand flavoured vodka
+#   (siblings LVK0118-0121DG = Kai vodkas), NOT a Japanese shochu. The LSJ
+#   (Sake & Asian/Shochu) prefix is wrong for this one SKU. (2026-06-23)
+SKU_OVERRIDES: dict[str, dict] = {
+    "LSJ0024DG": {"group": "Spirits", "type": "Vodka"},
+}
+
 
 @lru_cache(maxsize=1)
 def _load() -> dict:
@@ -48,6 +58,9 @@ def resolve(product: dict) -> dict:
     sku = str(product.get("sku") or "").upper()
     if not sku.strip():
         return {"group": "Unknown", "type": "Unknown"}
+    ovr = SKU_OVERRIDES.get(sku)
+    if ovr is not None:
+        return {"group": ovr["group"], "type": ovr["type"]}
     p3 = _prefix3(sku)
     entry = data["prefixes"].get(p3)
     if entry is not None:

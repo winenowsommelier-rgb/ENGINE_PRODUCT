@@ -34,6 +34,15 @@ const MAP: SkuMap = JSON.parse(readFileSync(mapPath(), 'utf8'));
 
 const FORTIFIED = /\b(port|marsala|madeira|sherry|oloroso|amontillado|fino)\b/i;
 
+// Per-SKU taxonomy overrides — exception-only; the prefix map is the rule. MUST
+// stay in lock-step with SKU_OVERRIDES in data/lib/taxonomy/sku_taxonomy.py
+// (verified by the shared parity fixture). LSJ0024DG: "Kai Lemongrass Ginger" is
+// a New Zealand Kai-brand flavoured vodka (siblings LVK0118-0121DG = Kai vodkas),
+// not a Japanese shochu, so the LSJ (Sake & Asian/Shochu) prefix is wrong here.
+const SKU_OVERRIDES: Record<string, { group: CategoryGroup; type: string }> = {
+  LSJ0024DG: { group: 'Spirits', type: 'Vodka' },
+};
+
 function refineType(prefix: string, base: string, name: string): string {
   const n = name || '';
   if (prefix === 'WDW') return FORTIFIED.test(n) ? 'Fortified' : 'Sweet/Dessert';
@@ -49,6 +58,8 @@ function refineType(prefix: string, base: string, name: string): string {
 export function resolve(product: { sku?: string | null; name?: string | null }): { group: CategoryGroup; type: string } {
   const sku = String(product.sku ?? '').toUpperCase();
   if (!sku.trim()) return { group: 'Unknown', type: 'Unknown' };
+  const ovr = SKU_OVERRIDES[sku];
+  if (ovr) return { group: ovr.group, type: ovr.type };
   const p3 = sku.slice(0, 3);
   const entry = MAP.prefixes[p3];
   if (entry) return { group: entry.group as CategoryGroup, type: refineType(p3, entry.type, product.name || '') };

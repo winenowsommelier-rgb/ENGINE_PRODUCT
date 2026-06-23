@@ -375,6 +375,14 @@
     "group": "Spirits",
     "type": "Thai Rice Spirit"
    }
+  },
+  {
+   "sku": "LSJ0024DG",
+   "name": "Kai  Lemongrass Ginger (750 ml)",
+   "expected": {
+    "group": "Spirits",
+    "type": "Vodka"
+   }
   }
  ]
 }
