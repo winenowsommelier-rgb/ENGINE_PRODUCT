@@ -130,7 +130,10 @@ def build_prompt(row: dict) -> str:
     return (
         f"Product: {row['name']}\nCategory: {group}\n\n"
         f"Return STRICT JSON {body}.\n"
-        "Use ONLY the listed values. If unsure, use null. Never invent a value."
+        "Use ONLY the listed values. If unsure, use null. Never invent a value.\n"
+        "Only assign a value the product name CLEARLY supports. For a spirit whose "
+        "base material is not obvious from the name, prefer \"Other\" (or null) over a "
+        "plausible guess — a wrong base material is worse than none."
     )
 
 
