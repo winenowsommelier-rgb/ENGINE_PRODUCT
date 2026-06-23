@@ -82,12 +82,14 @@ of the four finder fields." (The ~1,622 count already includes these sweetness-o
 tannin. After the §4.0 **applicability gating** (a field is requested only where it is a
 meaningful axis AND empty), the operative surface is smaller:
 
-**APPLICABILITY-GATED selection (the binding numbers, root canonical DB, 2026-06-23):**
-- **Rows we actually call (≥1 applicable+empty field): ~1,622.** (The ~350-row drop from 1,972
+**APPLICABILITY-GATED selection (EXACT, type-based gating, root canonical DB, 2026-06-23):**
+- **Rows we actually call (≥1 applicable+empty field): 1,606.** (The ~366-row drop from 1,972
   is rows whose only gaps were non-applicable — e.g. a spirit missing only acidity/tannin/body,
   none of which we request for clear spirits.)
 - **Per-field request counts (applicable + empty only):** variety **886**, body **949**,
-  acidity **710**, tannin **204**, sweetness **241**.
+  acidity **710**, tannin **324**, sweetness **216**. (Computed with the clean SKU-taxonomy
+  wine sub-types — `Red Wine`/`Orange Wine` → tannin; `Sweet/Dessert`/`Fortified` → sweetness —
+  NOT a name-regex. See §4.3/§4.4.)
 
 Raw per-category missingness (pre-gating, for context — NOT the request counts):
 
@@ -100,9 +102,7 @@ Raw per-category missingness (pre-gating, for context — NOT the request counts
 | Liqueur | 164 | 69 | 57 | 144 | 144 |
 | **Total** | **1,972** | | | | |
 
-**NOTE on the gated counts:** the ~1,622 / per-field figures use a *rough* red-wine and
-dessert/fortified name-regex for estimation. The plan computes the EXACT gated counts using the
-pinned §4.3 tannin and §4.0 sweetness determination, and the binding cost number comes from the
+These counts are exact (type-based, not regex). The binding cost number still comes from the
 canary regardless (§6).
 
 **Stock semantics (memory `project_is_in_stock_string_gotcha`):** `is_in_stock` is the STRING
@@ -148,11 +148,13 @@ A field is sent to the model, validated, and written **only** where it is a mean
 `schema_for_group()` (extended) returns the `applies` set per group; tannin & sweetness are
 further refined by wine sub-type. A non-applicable field is never requested → never fabricated.
 
-| group | variety | body | acidity | tannin | sweetness |
+Gating keys on the SKU-taxonomy `type` (`resolve(row)["type"]`, Rule-12-clean), NOT name-regex:
+
+| wine type / group | variety | body | acidity | tannin | sweetness |
 |---|---|---|---|---|---|
-| Wine (red/structured) | ✓ grape | ✓ | ✓ | ✓ | — (unless dessert/fortified) |
-| Wine (white/rosé/sparkling) | ✓ grape | ✓ | ✓ | ✗ | — (unless dessert/fortified) |
-| Wine (dessert/fortified: Port/Sauternes/Moscato) | ✓ grape | ✓ | ✓ | red→✓ | **✓ display** |
+| type `Red Wine` / `Orange Wine` | ✓ grape | ✓ | ✓ | ✓ | ✗ |
+| type `White Wine` / `Sparkling & Champagne` / `Rosé Wine` | ✓ grape | ✓ | ✓ | ✗ | ✗ |
+| type `Sweet/Dessert` / `Fortified` | ✓ grape | ✓ | ✓ | red→✓ | **✓ display** |
 | Spirits (clear: vodka/gin/tequila/rum) | ✓ base | ✗ | ✗ | ✗ | ✗ |
 | Whisky | ✓ style | ✗ | ✗ | ✗ | ✗ |
 | Sake & Asian | ✓ class | ✓ | ✗ (use existing sweetness) | ✗ | ✗ |
@@ -188,8 +190,9 @@ The plan freezes the full wine allowlist as a committed artifact and the canary 
 produced wine varieties land on a recognized grape token.
 
 ### 4.3 `sweetness` — display-only, 4-step GAUGE scale (NEW for Run 2)
-Requested for **dessert/fortified wine (Port, Sauternes, Moscato, late-harvest, Tokaji) and
-sweet liqueurs** — categories where sweetness is high-confidence from the name and is the
+Requested for **wine `type ∈ {'Sweet/Dessert', 'Fortified'}`** (clean SKU-taxonomy types — 53+32
+rows; no name-regex needed) **and sweet Liqueurs** (liqueur uses family/name since liqueur has no
+sweet/dry sub-type). Categories where sweetness is high-confidence from the name and is the
 defining axis. Write on the **product-page gauge scale** (verified in `StructuralGauges.tsx:21`):
 ```
 ["Dry", "Off-Dry", "Medium-Sweet", "Sweet"]
@@ -207,14 +210,15 @@ Scale: `["Low", "Medium", "Medium-High", "High"]` (matches `ACIDITY_SCALE`/`TANN
 (NOT Spirits/Whisky/Sake); tannin for **red/structured Wine only**. The validator drops any
 value outside the 4-step scale → null.
 
-**Tannin red/white determination (highest-ambiguity decision — the plan MUST pin this down,
-do NOT hand-wave):** request tannin ONLY when the wine is determinably red/structured. Source
-of truth, in order: (1) the SKU-derived type (`sku_taxonomy.resolve(row)["type"]`, e.g.
-"Red Wine" → request; "White Wine"/"Sparkling"/"Rosé" → skip); (2) if type is ambiguous
-(generic "Wine"), a name-regex for red varietals/keywords. **Fallback when colour is NOT
-resolvable: do NOT request tannin (leave NULL).** A NULL is correct; a fabricated tannin on a
-white is a Rule-1 failure. (The §2 estimate uses a rough version of this regex; the plan pins
-the exact rule.)
+**Tannin red/white determination — RESOLVED cleanly via SKU taxonomy (no name-regex needed):**
+Verified 2026-06-23 — `sku_taxonomy.resolve(row)["type"]` returns clean wine sub-types:
+`Red Wine` (4,185), `White Wine` (1,614), `Sparkling & Champagne` (896), `Rosé Wine` (182),
+`Sweet/Dessert` (53), `Fortified` (32), `Orange Wine` (13), `Wine Set` (8). So tannin is
+requested **iff `type ∈ {'Red Wine', 'Orange Wine'}`** (orange wines are skin-contact → tannic).
+White/Sparkling/Rosé/Wine-Set → tannin NOT requested. **No name-regex fallback is required** —
+the type is authoritative and Rule-12-clean. (This supersedes the earlier regex approach; the
+~16-row residual ambiguity, e.g. a mistyped SKU, defaults to NO tannin = safe.) A fabricated
+tannin on a white is a Rule-1 failure; the type gate prevents it by construction.
 
 ### 4.5 New code — extend `data/lib/taste_taxonomy/universal_scales.py`
 Extend (do NOT rewrite) `schema_for_group()` to return, per group: `variety_vocab`,
@@ -262,9 +266,9 @@ select ~1,622 rows (§2) from ROOT products.db   (absolute --db path, §3)
    │ schema_for_group → which of {variety,body,acidity,tannin,sweetness} APPLY (§4.0 matrix) AND empty
    │ context: name (+ existing flavor_tags)
    ▼
-scripts/enrich_phase_b.py  (EXTENDED, not forked: add Wine to selection, add acidity/tannin
-   │                         to prompt+validation, --run2 mode/flag; harness reused verbatim)
-   • Haiku 4.5, constrained JSON out → only the requested fields
+scripts/enrich_phase_b.py  (EXTENDED — but PARAMETERIZE the field set FIRST, see §9)
+   │                         add Wine to selection, drive 5 fields off a FIELDS config
+   • Haiku 4.5, constrained JSON out → only the requested (applicable) fields
    • validate: variety∈vocab else null; body/acidity/tannin/sweetness∈their 4-step scale else null
    ▼ writes ONLY to (no DB write in this script):
 enrichment_cache (Supabase) + local sidecar    sku → {fields, source, model, ts}
@@ -347,7 +351,11 @@ cache, not the DB gross count), and per-successful-row cost.
   accept ONLY `[Low,Medium,Medium-High,High]`; `validate_sweetness` accepts ONLY the GAUGE scale
   `[Dry,Off-Dry,Medium-Sweet,Sweet]` and **rejects the sake ladder values** (`very dry`/`sweet`
   lowercase) — the silent-empty-gauge trap; **body NOT in `applies` for Spirits/Whisky**;
-  **tannin NOT in `applies` for non-red**; **acidity NOT in `applies` for Sake** (the §4.0 guards).
+  **acidity NOT in `applies` for Sake** (the §4.0 guards).
+- Unit (type-gate, §4.3/§4.4): `applies` includes tannin for `type='Red Wine'`/`'Orange Wine'`
+  and EXCLUDES it for `'White Wine'`/`'Sparkling & Champagne'`/`'Rosé Wine'`; includes sweetness
+  for `'Sweet/Dessert'`/`'Fortified'` and excludes it for dry wine types — keyed on the literal
+  type strings `resolve()` returns (pin them so a taxonomy rename can't silently break the gate).
 - Unit (NULL-only merge, Rule-5 guard): a row with `acidity='High'` is NOT overwritten; a NULL
   `tannin` on a red wine IS filled; a NULL `sweetness` on a Port IS filled.
 - Unit (§4.6): `toStructural()` emits `sweetness` when the flat column has a gauge-scale value,
@@ -361,20 +369,32 @@ cache, not the DB gross count), and per-successful-row cost.
 
 ## 9. Reused vs net-new (Rule 11)
 
-**Reused verbatim:** `enrich_phase_b.py` harness (`--limit`/`--dry-run` canary, Haiku client,
+**Reused:** `enrich_phase_b.py` harness MECHANICS (`--limit`/`--dry-run` canary, Haiku client,
 cost constants, `ThreadPoolExecutor`, `--skip-done` resume, factual-discipline system prompt,
-`_instock`/`_empty`/`group_for`/`select_rows` shape); `merge_phase_b_cache.py` NULL-only merge;
+`_instock`/`_empty`/`group_for` helpers); `merge_phase_b_cache.py` NULL-only merge pattern;
 `refresh_live_export.py`; the Run-1 test patterns.
 
-**Net-new (budget these — highest-leverage):**
-1. Add Wine to the selection set + a frozen wine grape+blend vocab (§4.2).
-2. Extend `schema_for_group` with acidity/tannin/sweetness scales + the §4.0 `applies`
-   matrix (incl. wine sub-type refinement for tannin/sweetness) (§4.5).
+**⚠️ PARAMETERIZE FIRST (Rule 11 — memory `project_phase_a_enrichment_promotion` reuse note,
+verified 2026-06-23):** the Run-1 script HARDCODES `variety`/`body` at ~8 sites — the SELECT
+(line 94), empty-check (109), prompt JSON shape (121-122), parse/validate (185-186), result
+dict (191), and counters (300, 317-320) — and `validate_body` is a fixed-scale function that
+won't generalize. Copy-pasting 5 fields × ~8 sites would be a duplicated, applicability-tangled
+mess. **Task 0: refactor to drive everything off a single `FIELDS` config** (per-field: name,
+scale, validator, `applies(group,type)` predicate) that the SELECT, prompt builder, validator,
+result dict, counters, and merge all iterate over. The 5-field per-applicability behavior then
+falls out cleanly. Do this BEFORE adding the new fields.
+
+**Net-new (in order):**
+0. **Parameterize the field set** (above) — the enabling refactor; no behavior change vs Run 1
+   when run with just variety/body (a regression test pins this).
+1. Add Wine to the selection set + a frozen wine grape+blend `variety_vocab` (§4.2).
+2. Extend `schema_for_group` with acidity/tannin/sweetness scales + the §4.0 `applies` matrix
+   (keyed on group AND wine `type` for tannin/sweetness) (§4.5).
 3. `validate_acidity` / `validate_tannin` / `validate_sweetness` (§4.5).
-4. Extend the prompt to request ONLY applicable fields per the matrix + parse them (§4.0/§5).
-5. Extend `merge_phase_b_cache.py` to merge all five fields NULL-only.
-6. **`toStructural()` emits sweetness** (§4.6) — the one catalog code change; needs Rule-7.
-7. The §8 tests.
+4. Prompt requests ONLY applicable fields per the matrix + parses them (§4.0/§5).
+5. Merge all five fields NULL-only (§4.5 merge).
+6. **`toStructural()` + `normalizeScale` emit sweetness** (§4.6) — the one catalog code change; Rule-7.
+7. The §8 tests (incl. the Task-0 no-regression test).
 
 ---
 
