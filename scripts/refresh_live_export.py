@@ -67,8 +67,14 @@ EXPORT_COLS = [
     "color", "image_url",
     "validation_status", "enrichment_confidence", "enrichment_quality_grade",
     "enrichment_source", "enrichment_note", "enriched_at", "enriched_by",
-    "popularity_score", "popularity_orders_90d", "popularity_revenue_90d",
-    "popularity_qty_90d", "popularity_window_days", "popularity_synced_at",
+    # NOTE: the granular popularity columns were renamed *_90d -> *_window (the
+    # window is configurable, not fixed at 90d). The old names silently dropped
+    # out of the export ("WARN: skipping columns not in products table"), so these
+    # were 0 in the export until fixed. The catalog only consumes popularity_score
+    # (see lib/recommended-rank.ts); the granular fields are exported for parity
+    # with the DB and guarded by tests/test_popularity_export_invariant.py.
+    "popularity_score", "popularity_orders_window", "popularity_revenue_window",
+    "popularity_qty_window", "popularity_window_days", "popularity_synced_at",
     "created_at", "updated_at",
     "pairing_rationale",
     # Stock and margin — required by curation hard_filter and scoring engine

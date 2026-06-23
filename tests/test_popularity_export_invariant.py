@@ -25,15 +25,18 @@ def stores():
         pytest.skip("live DB or export not present")
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
+    # Column was renamed popularity_orders_90d -> popularity_orders_window (the
+    # popularity window is configurable, not fixed at 90 days). The old name no
+    # longer exists; querying it raised OperationalError and made this test ERROR.
     sqlite_pop = {
         r["sku"] for r in conn.execute(
-            "SELECT sku FROM products WHERE popularity_orders_90d IS NOT NULL")
+            "SELECT sku FROM products WHERE popularity_orders_window IS NOT NULL")
     }
     conn.close()
     exp = json.load(open(EXPORT))
     export_pop = {
         p["sku"] for p in exp
-        if p.get("popularity_orders_90d") not in (None, 0, "0")
+        if p.get("popularity_orders_window") not in (None, 0, "0")
     }
     return sqlite_pop, export_pop
 
