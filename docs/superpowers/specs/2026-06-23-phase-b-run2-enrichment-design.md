@@ -111,6 +111,10 @@ unchanged from Run 1 §4.2 (Whisky: Single Malt/Blended/Bourbon/…; Spirits: ba
 Sake: Junmai/Ginjo/…; Liqueur: Herbal/Fruit/…). Validation **drops** off-vocab → null (never
 coerce; Rule 5 / Rule 1). Wine grape vocab derives from the live `variety` distribution +
 finder `GRAPE_FAMILY` tokens so written values match what the finder's grapeScore reads.
+The plan MUST generate this wine grape allowlist as an explicit frozen artifact (committed,
+not regenerated per run) and eyeball it in the canary: too-narrow silently drops valid grapes
+to NULL (safe per Rule 5 but lowers yield); too-broad pollutes `grapeScore`. Canary acceptance
+includes verifying produced wine varieties land inside `GRAPE_FAMILY` tokens.
 
 ### 4.3 `acidity` / `tannin` — 4-step scale, CATEGORY-AWARE applicability (NEW for Run 2)
 Scale: `["Low", "Medium", "Medium-High", "High"]` (matches `ACIDITY_SCALE`/`TANNIN_SCALE` in
@@ -123,11 +127,25 @@ to avoid fabricating values (Rule 1 / Rule 3):
 | `tannin` | **Red/structured Wine only** | White/sparkling Wine, Spirits, Whisky, Sake, Liqueur |
 
 Applicability is decided by `schema_for_group()` (extended) keyed on the SKU-derived group —
-and for tannin, refined by wine sub-type/colour where resolvable. A field not requested is
-never sent to the model, never validated, never written. The validator drops any returned
-value outside the 4-step scale → null. **Consequence:** the effective paid field-surface is
-smaller than 4×1,972 — tannin is requested for ~600 rows, acidity for ~1,000 — and no
-fabricated tannin is ever written for a vodka.
+and for tannin, refined by wine sub-type/colour. A field not requested is never sent to the
+model, never validated, never written. The validator drops any returned value outside the
+4-step scale → null.
+
+**Tannin red/white determination (highest-ambiguity decision — the plan MUST pin this down,
+do NOT hand-wave):** request tannin ONLY when the wine is determinably red/structured. Source
+of truth, in order: (1) the SKU-derived `category_type` (`sku_taxonomy.resolve(row)["type"]`,
+e.g. "Red Wine" → request; "White Wine"/"Sparkling"/"Rosé" → skip); (2) if type is ambiguous
+(generic "Wine"), a name-regex for red varietals/keywords. **Fallback when colour is NOT
+resolvable: do NOT request tannin (leave NULL).** Never request tannin for a wine we can't
+confirm is red — a NULL is correct; a fabricated tannin on a white is a Rule-1 failure.
+
+**Applicability-gated request counts (these SUPERSEDE the §2 raw-missingness totals for cost
+purposes):** §2's per-field "need" column is raw column-missingness; the model is asked for a
+field only where it `applies`, so the operative paid surface is smaller. Approximate gated
+request counts: tannin ≈ red-wine rows only (far fewer than the 611 Wine rows missing it);
+acidity ≈ Wine + Sake (+fruit Liqueur), excluding Spirits/Whisky. The plan computes the exact
+gated counts; the binding cost number comes from the canary regardless (§6). No fabricated
+tannin is ever written for a vodka or a white wine.
 
 ### 4.4 New code — extend `data/lib/taste_taxonomy/universal_scales.py`
 Extend (do NOT rewrite) `schema_for_group()` to return, per group: `variety_vocab`,
