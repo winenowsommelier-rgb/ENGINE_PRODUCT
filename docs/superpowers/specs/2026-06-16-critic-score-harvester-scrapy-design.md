@@ -601,6 +601,36 @@ score_max from tier≤2 numeric, confidence<0.5 excluded) are unchanged.
 
 ## 17. Supplier-provided scores (feed-expansion track)
 
+> **⛔ DEFERRED 2026-06-23 after 3-lens adversarial review (do NOT build as written).**
+> The premise below — "suppliers provide WE/WA/WS/JS scores" — is FALSE on the ground:
+> 0 of 19 suppliers have a named critic column. The only score-ish signals are a generic
+> **"Rating"** column in Italasia/AA (xlsx) and IWS/AD (PDF) — unknown scale, unknown
+> issuing entity, and IWS's own profiler already classifies its RATING as *notes, not a
+> score*. Building Track 3 now ships **0 user-visible rows** (Rule 11 over-build; can't
+> satisfy Rule 1/4). Three independent blockers if built as specced:
+> 1. **Trust:** a supplier is the SELLER. Writing its self-rating at `signal_tier=1,
+>    confidence=1.0` (this section's design) grants it WE/WS-grade authority, badges it in
+>    editorial chrome (`apps/catalog/components/CriticScoreStrip.tsx` has no `source`/
+>    provenance field), AND lifts catalog rank (`scoring_engine._web_freshness`, weight 0.2).
+>    Vendor grades its own products. → if ever built, use tier 3 / confidence ≤0.5, exclude
+>    from ranking, distinct "Supplier rating" chrome.
+> 2. **Scale:** hard-coding `score_scale='100pt'` for an unknown scale silently corrupts
+>    rank (Rule 3). → refuse ingest until scale + issuing entity are documented per supplier.
+> 3. **Precedence:** §16 "newest curated wins" lets a monthly vendor file perpetually
+>    override the real Magento critic by recency. → recency tiebreak must be within-source-
+>    family; editorial must outrank supplier on conflict.
+> Also: per-SKU DELETE idempotency orphans stale rows on re-match (use DELETE-by-source like
+> the CSV loader); `products.db` is a manually-reseeded snapshot of `products.json` so a
+> matched SKU can be an orphan in critic_scores (160 such orphans exist today); no trigger
+> auto-runs the writer after a TS commit (Rule 1 "did it ship" gap).
+>
+> **Cheapest unblock (do this instead of building):** ask Italasia (AA) and IWS (AD)
+> *"what scale is your Rating column, and whose rating is it?"* If confirmed a real scaled
+> critic score, build SMALLER: stage `supplier_rating_raw` + scale as a passthrough, promote
+> to critic_scores only after scale is known, NEVER at tier 1/conf 1.0 unless it's a named
+> recognized critic. **Build Track 4a (spirits scraper) first — independent, net-new, no
+> gates.** See [[project_critic_scraper_handoff]].
+
 Suppliers will provide critic scores alongside the product data they already
 submit through the **supplier-intake** subsystem (`lib/supplier-intake/`). That
 subsystem is a **pricing/matching pipeline** (register → normalize → match →
