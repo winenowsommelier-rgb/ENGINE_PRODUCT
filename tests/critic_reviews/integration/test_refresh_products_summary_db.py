@@ -78,3 +78,7 @@ def test_orphan_critic_sku_not_counted():
          signal_tier=1, confidence=1.0, fetched_at="2026-01-01T00:00:00Z")
     n = refresh_all(c)
     assert n == 1  # only REAL1 shipped; ORPHAN9 has no product row
+
+def test_loader_delegates_no_embedded_build_summary():
+    import scripts.load_critic_scores_from_csv as loader
+    assert not hasattr(loader, "build_summary"), "loader must delegate the merge to refresh_products_summary"
