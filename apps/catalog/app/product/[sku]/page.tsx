@@ -7,11 +7,11 @@ import { ProductCard } from '@/components/ProductCard';
 import { TasteWheel } from '@/components/product/TasteWheel';
 import { StructuralGauges } from '@/components/product/StructuralGauges';
 import { CriticScoreStrip } from '@/components/CriticScoreStrip';
+import { PriceBlock } from '@/components/product/PriceBlock';
 import { getAllProducts, getProductBySku } from '@/lib/catalog-data';
 import { groupForProduct } from '@/lib/category-groups';
 import { precomputeRecommendations } from '@/lib/recommender';
 import { FEATURED_SKUS } from '@/lib/featured';
-import { formatPrice } from '@/lib/price-tiers';
 import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
 import { toTiers, toStructural } from '@/lib/taste-adapter';
@@ -223,7 +223,7 @@ export default function Page({ params }: { params: { sku: string } }) {
               {product.name}
             </h1>
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-2xl font-semibold text-primary">{formatPrice(product.price)}</p>
+              <PriceBlock price={product.price} specialPrice={product.special_price} />
               {inStock ? (
                 <span className="text-sm font-medium text-muted-foreground">In stock</span>
               ) : (

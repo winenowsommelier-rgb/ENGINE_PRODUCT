@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatPrice, tierForPrice, tierById, PRICE_TIERS } from '@/lib/price-tiers';
+import { formatPrice, resolveSale, tierForPrice, tierById, PRICE_TIERS } from '@/lib/price-tiers';
 
 describe('formatPrice', () => {
   it('formats THB with ฿ and thousands separators', () => expect(formatPrice(1600)).toBe('฿1,600'));
@@ -30,4 +30,42 @@ describe('price tiers', () => {
 describe('tierById', () => {
   it('resolves a known id', () => expect(tierById('3000-7000')?.label).toContain('3,000'));
   it('returns undefined for an unknown id', () => expect(tierById('nope')).toBeUndefined());
+});
+
+// resolveSale is PAYMENT-PATH logic: it decides whether the storefront shows a
+// "discount". A false positive renders a fake/misleading deal. These tests lock
+// in that a sale is ONLY surfaced for a genuine special_price < price, and that
+// the percent is computed from the prices (never trusted from source data).
+describe('resolveSale', () => {
+  it('returns a sale when special_price is a genuine discount', () => {
+    // WRW2107AC canary: ฿700 -> ฿648 = 7% off, save ฿52
+    expect(resolveSale(700, 648)).toEqual({ special: 648, percentOff: 7, saveAmount: 52 });
+  });
+  it('rounds percent to nearest whole', () => {
+    // 1899 -> 1838 = 3.21% -> 3
+    expect(resolveSale(1899, 1838)?.percentOff).toBe(3);
+  });
+  it('returns null when there is no special_price (the common case, e.g. WSP1096AD)', () => {
+    expect(resolveSale(2339, null)).toBeNull();
+    expect(resolveSale(2339, undefined)).toBeNull();
+  });
+  it('returns null when special_price equals price (not a discount)', () => {
+    expect(resolveSale(700, 700)).toBeNull();
+  });
+  it('returns null when special_price is HIGHER than price (bad source data, never a markup)', () => {
+    expect(resolveSale(700, 900)).toBeNull();
+  });
+  it('returns null for zero/negative special_price', () => {
+    expect(resolveSale(700, 0)).toBeNull();
+    expect(resolveSale(700, -50)).toBeNull();
+  });
+  it('returns null for a sub-1% discount (rounds to no badge-worthy deal)', () => {
+    // 0.4% off rounds to 0 — don't show a "0% off" badge
+    expect(resolveSale(10000, 9970)).toBeNull();
+  });
+  it('returns null when the regular price itself is missing/NaN', () => {
+    expect(resolveSale(null, 648)).toBeNull();
+    expect(resolveSale(undefined, 648)).toBeNull();
+    expect(resolveSale(NaN, 648)).toBeNull();
+  });
 });
