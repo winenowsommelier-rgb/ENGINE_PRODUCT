@@ -265,6 +265,23 @@ def main(argv=None) -> int:
         print("Nothing to do — all selected SKUs already in sidecar. No API calls.")
         return 0
 
+    import os
+
+    # Load ANTHROPIC_API_KEY from .env.local (mirrors phase_d1's loader). The key is
+    # never in the shell env; .env.local lives at the repo root (symlinked into the
+    # worktree). setdefault so a real env var still wins.
+    env_path = REPO / ".env.local"
+    if env_path.exists():
+        for line in env_path.read_text().splitlines():
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, _, v = line.partition("=")
+                os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        print("ERROR: ANTHROPIC_API_KEY missing (.env.local not found or no key)",
+              file=sys.stderr)
+        return 1
+
     import anthropic  # imported here so dry-run/tests never need the SDK installed
 
     client = anthropic.Anthropic()
