@@ -92,7 +92,7 @@ def select_rows(conn: sqlite3.Connection) -> list[dict]:
     out: list[dict] = []
     for r in conn.execute(
         "SELECT sku,name,is_in_stock,variety,body,"
-        "has_recent_sales,sold_orders FROM products"
+        "has_recent_sales,sold_orders FROM products ORDER BY sku"
     ):
         if not _instock(r["is_in_stock"]):
             continue
@@ -212,12 +212,13 @@ def main(argv=None) -> int:
 
     conn = sqlite3.connect(a.db)
     rows = select_rows(conn)
-    if a.limit:
-        rows = rows[: a.limit]
     print(f"Selected {len(rows)} rows (need variety or body).")
 
     if a.dry_run:
-        for r in rows[:5]:
+        # Apply --limit to the preview so `--limit N --dry-run` previews the same
+        # window the paid run would take. (Resume filtering is paid-path only.)
+        preview = rows[: a.limit] if a.limit else rows
+        for r in preview[:5]:
             print(f"\n--- {r['sku']} {r['name']} [{r['group']}] ---")
             print(build_prompt(r))
         print("\n(dry-run — ZERO API calls made)")
@@ -260,6 +261,13 @@ def main(argv=None) -> int:
             )
             return 1
         open_mode = "w"
+
+    # Apply --limit AFTER resume-filtering so a capped resume processes the NEXT N
+    # *undone* rows (not the first N selected, which on a resume may already be done
+    # -> the run would stall / re-evaluate the same window). select_rows ORDER BY sku
+    # makes "next N" deterministic across DB rewrites.
+    if a.limit:
+        rows = rows[: a.limit]
 
     if not rows:
         print("Nothing to do — all selected SKUs already in sidecar. No API calls.")

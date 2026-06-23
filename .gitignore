@@ -69,6 +69,7 @@ data/brand_description_library.csv.bak-*
 data/reenrich_results-*.jsonl
 data/*dryrun*.json
 data/reenrich_dryrun-*.json
+data/phase_b_results-*.jsonl
 data/phase_c_results-*.jsonl
 data/phase_d1_results-*.jsonl
 data/phase_d2_results-*.jsonl

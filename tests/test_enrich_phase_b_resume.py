@@ -76,3 +76,25 @@ def test_filter_undone_empty_done_keeps_all():
     """No done skus -> every selected row survives (fresh run)."""
     rows = [{"sku": "A"}, {"sku": "B"}]
     assert filter_undone(rows, set()) == rows
+
+
+def test_resume_then_limit_takes_next_undone_window():
+    """Regression: --limit must apply AFTER the resume filter, else a capped
+    resume slices the first N *selected* rows (which on a resume are already
+    done) and stalls. Correct order = filter_undone THEN slice => the next N
+    UNDONE rows. select_rows ORDER BY sku makes this window deterministic.
+
+    Selected (sku-ordered): A B C D E ; already done: {A, B}. With --limit 2 the
+    paid run must take [C, D] (next 2 undone), NOT [] (first 2 selected, both done).
+    """
+    selected = [{"sku": s} for s in ["A", "B", "C", "D", "E"]]
+    done = {"A", "B"}
+    limit = 2
+
+    # WRONG order (slice before filter) — the bug this fixes:
+    wrong = filter_undone(selected[:limit], done)
+    assert [r["sku"] for r in wrong] == []  # stalls — nothing to do
+
+    # CORRECT order (filter THEN slice) — what main() now does:
+    right = filter_undone(selected, done)[:limit]
+    assert [r["sku"] for r in right] == ["C", "D"]
