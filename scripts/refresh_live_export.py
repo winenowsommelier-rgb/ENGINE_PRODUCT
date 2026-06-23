@@ -57,6 +57,11 @@ EXPORT_COLS = [
     "sweetness", "intensity", "smokiness", "finish",
     "food_matching", "food_matching_detail", "flavor_tags",
     "bottle_size", "price", "currency",
+    # Customer-facing SALE price. special_price is the discounted amount (populated
+    # for ~1,028 SKUs, always < price); sp_discount_pct is the % off. These are
+    # public storefront prices — NOT margin/wholesale — so they are safe to export
+    # (unlike b2b_price / margin_pct, which must never leave the server).
+    "special_price", "sp_discount_pct",
     "desc_en_short", "full_description",
     "taste_profile",
     "color", "image_url",

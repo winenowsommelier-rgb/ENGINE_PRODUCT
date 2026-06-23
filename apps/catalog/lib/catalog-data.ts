@@ -16,6 +16,10 @@ export const PUBLIC_FIELDS = [
   'vintage','country','region','subregion','appellation','body','acidity',
   'tannin','sweetness','intensity','smokiness','finish','production_style',
   'food_matching','food_matching_detail','flavor_tags','flavor_tags_canonical','bottle_size','price','currency',
+  // Customer-facing SALE price (discounted amount + % off). Public storefront
+  // prices, NOT margin/wholesale — safe to expose. Only set when a real
+  // promotion exists; absent otherwise.
+  'special_price','sp_discount_pct',
   'desc_en_short','full_description','taste_profile','color','image_url',
   'score_summary','score_max','is_in_stock',
   // SKU-derived canonical taxonomy (backfilled on every row). Safe to expose:
