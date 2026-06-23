@@ -83,13 +83,13 @@ tannin. After the §4.0 **applicability gating** (a field is requested only wher
 meaningful axis AND empty), the operative surface is smaller:
 
 **APPLICABILITY-GATED selection (EXACT, type-based gating, root canonical DB, 2026-06-23):**
-- **Rows we actually call (≥1 applicable+empty field): 1,606.** (The ~366-row drop from 1,972
-  is rows whose only gaps were non-applicable — e.g. a spirit missing only acidity/tannin/body,
-  none of which we request for clear spirits.)
+- **Rows we actually call (≥1 applicable+empty field): 2,564.** (Up from a 1,606 base because
+  the widened sweetness pulls in ~958 dry White/Sparkling rows — see §6 cost. Clear spirits
+  missing only non-applicable fields are still excluded.)
 - **Per-field request counts (applicable + empty only):** variety **886**, body **949**,
-  acidity **710**, tannin **324**, sweetness **216**. (Computed with the clean SKU-taxonomy
-  wine sub-types — `Red Wine`/`Orange Wine` → tannin; `Sweet/Dessert`/`Fortified` → sweetness —
-  NOT a name-regex. See §4.3/§4.4.)
+  acidity **710**, tannin **324**, **sweetness 1,336** (of which ~958 are dry whites/sparkling
+  that return "Dry"). Computed with clean SKU-taxonomy types — `Red Wine`/`Orange Wine` → tannin;
+  `White/Sparkling/Sweet-Dessert/Fortified` → sweetness — NOT a name-regex. See §4.3/§4.4.
 
 Raw per-category missingness (pre-gating, for context — NOT the request counts):
 
@@ -153,12 +153,18 @@ Gating keys on the SKU-taxonomy `type` (`resolve(row)["type"]`, Rule-12-clean), 
 | wine type / group | variety | body | acidity | tannin | sweetness |
 |---|---|---|---|---|---|
 | type `Red Wine` / `Orange Wine` | ✓ grape | ✓ | ✓ | ✓ | ✗ |
-| type `White Wine` / `Sparkling & Champagne` / `Rosé Wine` | ✓ grape | ✓ | ✓ | ✗ | ✗ |
+| type `White Wine` / `Sparkling & Champagne` | ✓ grape | ✓ | ✓ | ✗ | **✓ display** |
+| type `Rosé Wine` | ✓ grape | ✓ | ✓ | ✗ | ✗ |
 | type `Sweet/Dessert` / `Fortified` | ✓ grape | ✓ | ✓ | red→✓ | **✓ display** |
 | Spirits (clear: vodka/gin/tequila/rum) | ✓ base | ✗ | ✗ | ✗ | ✗ |
 | Whisky | ✓ style | ✗ | ✗ | ✗ | ✗ |
 | Sake & Asian | ✓ class | ✓ | ✗ (use existing sweetness) | ✗ | ✗ |
 | Liqueur | ✓ family | cream/fortified→✓ | fruit/citrus→✓ | ✗ | sweet→**✓ display** |
+
+**Sweetness widened (user decision 2026-06-23):** requested for ALL White Wine + Sparkling &
+Champagne (not just dessert/fortified) — the dry majority returns "Dry" (correct), and the
+off-dry minority (Riesling/demi-sec/Moscato) gets the gauge where it most matters. This adds
+~958 dry-white rows (cost in §6). Rosé excluded (low sweetness-signal value).
 
 Rationale (sommelier): body/acidity/tannin are wine mouthfeel/structure axes; on a 40–60% ABV
 clear spirit "body" is alcohol weight, not a comparable signal — so it is not requested.
@@ -175,11 +181,20 @@ collapse. Reuse Run-1 `validate_body`. **NOT requested for Spirits/Whisky** (§4
 
 ### 4.2 `variety` — per-category controlled vocabulary
 Non-wine vocab unchanged from Run 1 §4.2 (Whisky style class; Spirits base material; Sake
-class; Liqueur family). **Wine grape vocab (NEW):** built from the finder's `GRAPE_FAMILY`
-substring tokens (verified 2026-06-23: cabernet, pinot noir, syrah/shiraz, sangiovese,
-tempranillo/rioja, merlot, grenache/garnacha, chardonnay, sauvignon blanc, riesling, pinot
-grigio/gris, viognier, semillon, glera/prosecco, meunier) so a written value **scores** in
-`grapeScore` (substring match).
+class; Liqueur family). **Wine grape vocab (NEW, BROADENED per sommelier review):** a ~40–50
+grape allowlist of the actual dominant grape — DECOUPLED from the finder's 15-token
+`GRAPE_FAMILY`. Rationale (verified): `grapeScore` returns **0 (no constraint, not a penalty)**
+for any grape not in its 15-token map (`scoring.ts:170`), so writing a broader grape does NOT
+hurt finder ranking — and it gives the **shop + product page correct grape data instead of
+NULL**. The earlier "must be one of the 15 finder tokens or NULL" rule threw away correct,
+displayable data for a finder constraint that doesn't require it.
+
+The allowlist MUST include the 15 finder tokens (so those still score) PLUS the high-volume
+grapes a Thai-market catalog carries: **Malbec, Zinfandel/Primitivo, Nebbiolo, Barbera, Nero
+d'Avola, Montepulciano, Carménère, Cabernet Franc, Petit Verdot, Chenin Blanc, Gewürztraminer,
+Grüner Veltliner, Albariño, Verdejo, Torrontés, Moscato/Muscat, Malvasia, Garganega, Vermentino,
+Tempranillo, Gamay** (plus the 15). Frozen as a committed artifact; canary eyeballs that wine
+varieties land on a real grape (and that finder-token grapes still match `grapeScore`).
 
 **Blends (user decision):** the allowlist includes explicit **blend tokens** (e.g. "Bordeaux
 Blend", "GSM", "Rhône Blend", "Field Blend") for product-page display. Because `grapeScore`
@@ -190,10 +205,13 @@ The plan freezes the full wine allowlist as a committed artifact and the canary 
 produced wine varieties land on a recognized grape token.
 
 ### 4.3 `sweetness` — display-only, 4-step GAUGE scale (NEW for Run 2)
-Requested for **wine `type ∈ {'Sweet/Dessert', 'Fortified'}`** (clean SKU-taxonomy types — 53+32
-rows; no name-regex needed) **and sweet Liqueurs** (liqueur uses family/name since liqueur has no
-sweet/dry sub-type). Categories where sweetness is high-confidence from the name and is the
-defining axis. Write on the **product-page gauge scale** (verified in `StructuralGauges.tsx:21`):
+Requested for **wine `type ∈ {'Sweet/Dessert', 'Fortified', 'White Wine', 'Sparkling & Champagne'}`**
+(clean SKU-taxonomy types; widened per sommelier review — the dry majority returns "Dry"
+correctly, the off-dry minority gets the decision-relevant gauge) **and sweet Liqueurs**
+(liqueur uses family/name since liqueur has no sweet/dry sub-type — gate as "all liqueurs except
+explicitly dry/bitter families," not opt-in on the word "sweet," so crème-de-X and cream liqueurs
+aren't missed). Rosé excluded. Write on the **product-page gauge scale**
+(verified in `StructuralGauges.tsx:21`):
 ```
 ["Dry", "Off-Dry", "Medium-Sweet", "Sweet"]
 ```
@@ -261,7 +279,7 @@ dead-column failure.
 ## 5. Architecture & data flow (reuses Run-1 skeleton — Rule 11)
 
 ```
-select ~1,622 rows (§2) from ROOT products.db   (absolute --db path, §3)
+select ~2,564 rows (§2) from ROOT products.db   (absolute --db path, §3) — re-count at runtime
    │ per row: group/type = sku_taxonomy.resolve(row)         ← NOT classification (Rule 12)
    │ schema_for_group → which of {variety,body,acidity,tannin,sweetness} APPLY (§4.0 matrix) AND empty
    │ context: name (+ existing flavor_tags)
@@ -274,15 +292,16 @@ scripts/enrich_phase_b.py  (EXTENDED — but PARAMETERIZE the field set FIRST, s
 enrichment_cache (Supabase) + local sidecar    sku → {fields, source, model, ts}
    │   source tag: "phase_b_run2_haiku_taste"
    ▼
-scripts/merge_phase_b_cache.py  (EXTENDED for the 5 fields; NULL-only, backs up DB first)
+scripts/merge_phase_b_cache.py  (⚠️ MUST extend FIELDS ("variety","body")→5 + its verify print;
+   │   today it would SILENTLY DROP acidity/tannin/sweetness from the sidecar — §9 fix B)
    • UPDATE products SET col=? WHERE sku=? AND (col IS NULL OR col='')   ← never clobbers (Rule 5)
    ▼  refresh_live_export.py  ─►  live_products_export.json   (all 5 cols ∈ EXPORT_COLS ✓ verified)
-   │  + ONE catalog code change: lib/taste-adapter.ts toStructural() emits sweetness (§4.6)
+   │  + ONE catalog code change: lib/taste-adapter.ts toStructural()+normalizeScale emit sweetness (§4.6)
    ▼
-VERIFY-SHIPPED (Rule 1): for the EXACT merged-SKU set, confirm fields populated in the JSON;
-   spot-check a previously-empty whisky now shows body in the shop "Taste & more" filter,
-   a previously-empty red wine ranks on tannin in the wine finder deep-dive,
-   AND a Port/Sauternes product page now shows a Sweetness gauge (Rule 7 browser check, §7).
+VERIFY-SHIPPED (Rule 1) — a NEW step, NOT in any script today (§7.8): load
+   live_products_export.json, assert for the EXACT merged-SKU set each field is non-empty.
+   The merge's existing print is GROSS DB column totals — NOT Rule-1 (reads DB not JSON, can pass
+   falsely). Then spot-check: whisky body in shop filter; red-wine tannin in finder; Port sweetness gauge.
 ```
 
 **Two non-negotiable safety controls (carried from Run-1 review):**
@@ -299,19 +318,26 @@ VERIFY-SHIPPED (Rule 1): for the EXACT merged-SKU set, confirm fields populated 
 
 ## 6. Cost (Rule 10 / Rule 4)
 
-**Pre-canary envelope** (~1,622 applicability-gated rows, Haiku 4.5 @ $0.80/$4.00 per Mtok,
-~900-tok system prompt cached after first call, Run-1 measured ~$0.00024/row; Run-2 prompt
-slightly larger — more fields/scales):
+**Pre-canary envelope** (2,564 applicability-gated rows, Haiku 4.5 @ $0.80/$4.00 per Mtok,
+extrapolated from Run-1's measured **~$0.00024/row**; Run-2 prompt slightly larger — 5 fields vs 2):
 
 | Scenario | Estimate |
 |---|---|
-| Haiku, prompt-cached (expected) | **~$0.40** |
-| High (1.5× buffer, retries/verbose) | ~$0.60 |
+| Haiku, Run-1-rate extrapolation (expected) | **~$0.64** |
+| High (1.5× buffer, retries/verbose) | ~$0.95 |
 | Canary (5 SKUs) | <$0.01 |
+
+**NO prompt-caching assumption (corrected):** verified the Run-1 script sets NO `cache_control`
+block and has no cache-read cost tier — the per-row user prompt is uncacheable regardless. The
+~$0.00024/row already reflects the uncached reality, so the extrapolation is sound; do NOT model
+phantom cache savings. The per-applicability prompt (different field subset per row) carries
+**zero cache penalty** (there's no cache to miss) — the only cost lever is output tokens
+(5 constrained-JSON fields vs 2 ≈ +30–60 out-tok/row, already in the buffer).
 
 **This is a PRE-CANARY estimate. The BINDING number comes from the 5-SKU canary's measured
 per-SKU token rate, shown to the user for sign-off BEFORE the full run.** Canary also decides
-model (Haiku vs Sonnet escalation if accuracy is poor on hard rows).
+model (Haiku vs Sonnet escalation if accuracy is poor on hard rows). Also bump `max_tokens`
+200→~300 (5 fields; truncated JSON on a paid row = lost spend).
 
 **Cost report at end (Rule 4) must include:** total spend, # API calls, **# rows where each of
 variety/body/acidity/tannin/sweetness is populated IN `live_products_export.json`** (not the
@@ -321,8 +347,11 @@ cache, not the DB gross count), and per-successful-row cost.
 
 ## 7. Rule-10 execution gate (the run procedure)
 
-1. Pre-flight: assert root DB non-empty; assert all selected rows resolve to a drinkable group;
-   back up the root DB (`cp products.db products.db.bak-pre-run2`).
+1. Pre-flight: assert root DB non-empty (`SELECT COUNT(*)>0`); assert all selected rows resolve
+   to a drinkable group; **back up the ROOT DB by ABSOLUTE path** (`cp "/Users/admin/WNLQ9 PIE/
+   ENGINE_PRODUCT/data/db/products.db" …products.db.bak-pre-run2` — NOT a relative path, which
+   would back up the empty worktree DB, §3); set `PRAGMA busy_timeout=30000` on the merge
+   connection (the shared DB may be locked by a parallel process, §3).
 2. **Canary:** `--limit 5 --dry-run` (FREE — show prompt + rows, zero API calls), then
    `--limit 5` (paid, <$0.01, cache only). Use a MIXED canary set: ≥1 red wine, 1 white/sparkling,
    1 dessert/fortified wine, 1 spirit, 1 sake. Eyeball: variety in-vocab + on a recognized grape
@@ -334,9 +363,13 @@ cache, not the DB gross count), and per-successful-row cost.
 6. Full run → cache.
 7. Merge cache → ROOT DB (NULL-only) → `refresh_live_export.py`. Ship the §4.6 `toStructural`
    code change with the merge (so sweetness has a consumer before it lands).
-8. **Verify-shipped (Rule 1):** for the EXACT merged-SKU set, confirm each field populated in
-   `live_products_export.json` (compare the merged-SKU set, NOT gross column totals — pre-existing
-   values inflate the gross and read as false mismatch). Spot-check finder + shop.
+8. **Verify-shipped (Rule 1) — a NEW script step, build it (does not exist today):** after
+   `refresh_live_export.py`, load `live_products_export.json` and assert that for the EXACT set
+   of SKUs merged this run, each field written is non-empty in the JSON. The merge's built-in
+   print is GROSS DB column totals (`COUNT WHERE field!=''`) — that is a sanity tally, NOT Rule-1:
+   it reads the DB not the JSON, and gross counts can rise from unrelated rows → **false pass**.
+   The merged-SKU-set JSON assertion is the actual gate. (Also re-assert the run-start row count
+   here — the shared DB drifts between turns; don't trust the 2,564 baked into this spec.)
 9. **Rule 7 (UI):** start the catalog dev server (port :3100 — memory `project_catalog_dev_port`),
    open a Port/Sauternes product page, confirm the **Sweetness gauge renders populated** (not
    all-empty — the scale-mismatch failure mode), and the page doesn't crash. A working gauge is
@@ -392,9 +425,20 @@ falls out cleanly. Do this BEFORE adding the new fields.
    (keyed on group AND wine `type` for tannin/sweetness) (§4.5).
 3. `validate_acidity` / `validate_tannin` / `validate_sweetness` (§4.5).
 4. Prompt requests ONLY applicable fields per the matrix + parses them (§4.0/§5).
-5. Merge all five fields NULL-only (§4.5 merge).
-6. **`toStructural()` + `normalizeScale` emit sweetness** (§4.6) — the one catalog code change; Rule-7.
-7. The §8 tests (incl. the Task-0 no-regression test).
+5. **FIX B (CRITICAL — $56-class):** extend `merge_phase_b_cache.py` `FIELDS=("variety","body")`
+   → all 5 AND its before/after verify print. Today it SILENTLY DROPS acidity/tannin/sweetness
+   from the sidecar (paid → cache → never written to DB). Verified line 13 + 96-97 hardcoded.
+6. **FIX C (CRITICAL — Rule 1 gate):** build the post-export merged-SKU-set JSON assertion
+   (§7.8) — it exists in PROSE only; no script does it. The merge's gross-total print is not it.
+7. **`toStructural()` + `normalizeScale` emit sweetness** (§4.6) — the one catalog code change; Rule-7.
+8. The §8 tests (incl. the Task-0 no-regression test covering enrich AND merge AND the Rule-4 counters).
+
+**Resume caveat (must document, not fix):** `--skip-done` keys on **SKU only** (no field
+dimension). Safe for ONE clean full run. NOT safe to resume against a CHANGED selection — a SKU
+already in the sidecar is skipped even if it now has a newly-applicable field. State this in the
+runbook; do not silently rely on resume across selection changes. Also: `enrich_one` writes
+`api_error` rows (null values) to the sidecar → `--skip-done` won't retry them; the Rule-4 report
+must count `api_error` SKUs separately and name them as abandoned-unless-rerun-with-fresh-`--ts`.
 
 ---
 
@@ -421,5 +465,14 @@ falls out cleanly. Do this BEFORE adding the new fields.
   the universal fields. A future code change could make the non-wine finder score on `body`
   (and a non-wine-aware variety match) so Run-2's non-wine data sharpens the finder, not only
   the shop. Track separately; do not bundle into Run 2.
+- **Bitterness axis (sommelier, deferred):** amaro/aperitivo/Campari/Fernet/sweet-vermouth are
+  defined by bitterness, which Run 2 captures nowhere (no consumer today). High-value + cheap
+  (name-inferable) when the deep-dive UX lands — add a `bitter` Low/Med/High then.
+- **Whisky peat/smokiness (sommelier, deferred):** the highest-value cheap whisky axis; no
+  consumer today (§10). Add with the deep-dive.
+- **Sake structural choice (sommelier note):** the §4.0 rationale "acidity isn't meaningful for
+  sake" is overstated — sando IS real (yamahai/kimoto). The DROP is still right (no consumer for
+  flat sake acidity). Note: sake `body` from-name is itself low-confidence; treat sake body
+  output skeptically in the canary.
 - Reconcile with the parked `project_finder_data_enhancements` plan rather than duplicating.
 - `apps/catalog/lib/taste-adapter.ts` stale sweetness comment (noted in Run-1 spec §11).
