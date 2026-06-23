@@ -2238,17 +2238,6 @@
    "evidence": ""
   },
   {
-   "sku": "LVK0191ER",
-   "name": "Casa Maestri  Flask Vodka (750 ml)",
-   "brand": "Casa Maestri",
-   "db_country": "France",
-   "db_region": "",
-   "db_sub": "",
-   "mf_country": "Mexico",
-   "mf_region": "",
-   "evidence": ""
-  },
-  {
    "sku": "LWH1092ER",
    "name": "Wolfburn  Cask Strength  Sherry & Bourbon Cask (700 ml)",
    "brand": "Wolfburn",
@@ -2257,17 +2246,6 @@
    "db_sub": "",
    "mf_country": "USA",
    "mf_region": "Demerara",
-   "evidence": ""
-  },
-  {
-   "sku": "LWH0519ER",
-   "name": "Casa Maestri  Flask Whiskey (750 ml)",
-   "brand": "Casa Maestri",
-   "db_country": "Canada",
-   "db_region": "",
-   "db_sub": "",
-   "mf_country": "Mexico",
-   "mf_region": "",
    "evidence": ""
   },
   {
@@ -2311,28 +2289,6 @@
    "db_region": "Lombardy",
    "db_sub": "",
    "mf_country": "England",
-   "mf_region": "",
-   "evidence": ""
-  },
-  {
-   "sku": "LWH0518ER",
-   "name": "Casa Maestri  Flask Whiskey (200 ml)",
-   "brand": "Casa Maestri",
-   "db_country": "Canada",
-   "db_region": "",
-   "db_sub": "",
-   "mf_country": "Mexico",
-   "mf_region": "",
-   "evidence": ""
-  },
-  {
-   "sku": "LVK0190ER",
-   "name": "Casa Maestri  Flask Vodka (200 ml)",
-   "brand": "Casa Maestri",
-   "db_country": "France",
-   "db_region": "",
-   "db_sub": "",
-   "mf_country": "Mexico",
    "mf_region": "",
    "evidence": ""
   },
@@ -2590,17 +2546,6 @@
    "evidence": ""
   },
   {
-   "sku": "AWC0142DY",
-   "name": "Temptech  Premium Fridge (Black)",
-   "brand": "Temptech",
-   "db_country": "China",
-   "db_region": "",
-   "db_sub": "",
-   "mf_country": "USA",
-   "mf_region": "",
-   "evidence": "Norway (producer:'temptech') — disagrees with BOTH sources!"
-  },
-  {
    "sku": "LGN0172EQ",
    "name": "Gibson’s  Gin (700 ml)",
    "brand": "Gibson’s",
@@ -2677,5 +2622,6 @@
    "mf_region": "",
    "evidence": ""
   }
- ]
+ ],
+ "_review_note": "90-case review 2026-06-23: 5 applied to DB (Casa Maestri x4 -> Mexico, Temptech fridge -> Norway). Remaining human cases reviewed: 66 confirmed DB-already-correct (mostly accessories: mfr country is right, ignore appellation-in-name), Rivo gin kept Italy (DB region Lombardy consistent; subagent 'England' rejected), Tequila Rose kept USA (McCormick US-made), Vacu Vin kept Poland (mfr country). 10 unresolved: 5 Silverlake (AU vs Thai-bottled bulk) + 4-5 Plantation rums (multi-island blends, need origin policy)."
 }
