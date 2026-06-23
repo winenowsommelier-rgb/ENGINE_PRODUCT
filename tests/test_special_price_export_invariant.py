@@ -38,10 +38,35 @@ def _is_genuine_sale(price, special) -> bool:
     return special > 0 and special < price
 
 
+# Floor for the CI export-only check below. The committed export currently carries
+# 1,028 sale rows; we require well above zero (but tolerant of normal promo churn)
+# so a refresh that DROPS the column entirely is caught even where the 84 MB DB is
+# absent (it is gitignored, so CI cannot run the DB⇔export checks above). Tune up
+# only if real promotions ever fall near this number.
+MIN_EXPORT_SALE_ROWS = 100
+
+
+def test_committed_export_has_sale_prices():
+    """CI-effective guard (DB-independent): the committed live export must still
+    contain sale prices. This is the check that actually runs in GitHub Actions,
+    where data/db/products.db is gitignored and absent — so the DB⇔export tests
+    below SKIP. A PR that regenerates the export without special_price (the exact
+    silent-drop that happened in dev) drops this count to ~0 and FAILS here."""
+    if not EXPORT.exists():
+        pytest.skip("export not present")
+    exp = json.load(open(EXPORT))
+    n = sum(1 for p in exp if _is_genuine_sale(p.get("price"), p.get("special_price")))
+    assert n >= MIN_EXPORT_SALE_ROWS, (
+        f"Committed export has only {n} genuine sale prices (expected >= "
+        f"{MIN_EXPORT_SALE_ROWS}). A refresh likely dropped special_price — sale "
+        f"prices would vanish from the storefront. Re-run scripts/refresh_live_export.py "
+        f"against data/db/products.db and re-commit the export.")
+
+
 @pytest.fixture(scope="module")
 def stores():
     if not DB.exists() or not EXPORT.exists():
-        pytest.skip("live DB or export not present")
+        pytest.skip("live DB or export not present (DB is gitignored — expected in CI)")
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
     sqlite_sale = {

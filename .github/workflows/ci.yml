@@ -1,0 +1,72 @@
+name: CI
+
+# Runs on every PR to main and on pushes to main. Gates merges on the data
+# invariants (esp. the special_price export guard) and the catalog's typecheck +
+# unit tests. The full Next.js production build already runs on Vercel for every
+# PR, so CI does NOT duplicate it — it covers what Vercel does not: pytest data
+# invariants and the catalog vitest suite.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Cancel superseded runs on the same ref to save minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  data-invariants:
+    name: Data invariants (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          cache: pip
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest            # pytest is not pinned in requirements.txt
+
+      # The 84 MB products.db is gitignored and absent in CI, so the DB⇔export
+      # tests SKIP here. The committed-export self-check (DB-independent) is the
+      # one that actually gates: it FAILS if a refresh dropped special_price.
+      # `-ra` surfaces the skip reasons in the log so the skips are never silent.
+      #
+      # NOTE: deliberately scoped to the special_price invariant only.
+      # tests/test_popularity_export_invariant.py is currently BROKEN against the
+      # live schema (queries popularity_orders_90d, a column since removed) and
+      # would make CI red for an unrelated reason — a perpetually-red gate trains
+      # everyone to ignore it. Re-add that file here once it is fixed.
+      - name: Run data-invariant tests
+        run: pytest tests/test_special_price_export_invariant.py -v -ra
+
+  catalog:
+    name: Catalog typecheck + tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/catalog
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/catalog/package-lock.json
+
+      - name: Install catalog deps
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests (vitest)
+        run: npm run test
