@@ -65,3 +65,16 @@ def test_nullable_sku_rows_ignored_for_product_update():
          fetched_at="2026-06-01T00:00:00Z")
     n = refresh_all(c)  # must not raise; SKU1 has no rows -> NULL
     assert c.execute("SELECT score_summary FROM products WHERE sku='SKU1'").fetchone()[0] is None
+
+def test_orphan_critic_sku_not_counted():
+    # a critic_scores row whose sku has no products row must not inflate the count
+    c = _conn()
+    c.execute("INSERT INTO products(sku) VALUES ('REAL1')")
+    _ins(c, sku="REAL1", critic="James Suckling", score=91.0, source="magento_csv",
+         added_by="magento_csv_2026-06-15", score_native="91", score_scale="100pt",
+         signal_tier=1, confidence=1.0, fetched_at="2026-01-01T00:00:00Z")
+    _ins(c, sku="ORPHAN9", critic="Wine Spectator", score=90.0, source="magento_csv",
+         added_by="magento_csv_2026-06-15", score_native="90", score_scale="100pt",
+         signal_tier=1, confidence=1.0, fetched_at="2026-01-01T00:00:00Z")
+    n = refresh_all(c)
+    assert n == 1  # only REAL1 shipped; ORPHAN9 has no product row

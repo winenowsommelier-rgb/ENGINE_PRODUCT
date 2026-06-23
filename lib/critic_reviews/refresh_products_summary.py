@@ -144,11 +144,14 @@ def refresh_all(conn: sqlite3.Connection) -> int:
     for sku, rows in rows_by_sku.items():
         winners = merge_for_sku(rows)
         score_max, summary = build_summary(winners)
-        conn.execute(
+        cur = conn.execute(
             "UPDATE products SET score_max = ?, score_summary = ? WHERE sku = ?",
             (score_max, summary, sku),
         )
-        if summary is not None:
+        # Rule 4: only count rows that actually updated a product row. ~81 critic
+        # SKUs bind to SKUs not present in products (rowcount==0); they must not
+        # inflate the "shipped" count (would print 1631 instead of the true 1550).
+        if summary is not None and cur.rowcount > 0:
             written += 1
     conn.commit()
     return written
