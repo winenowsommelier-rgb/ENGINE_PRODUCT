@@ -547,7 +547,9 @@ Expected: variety/body counts match the merge's reported fill counts for the mer
 previously-empty whisky's /product page + the /shop body filter; confirm the value renders.
 
 - [ ] **Step 7: Cost report (Rule 4)** — total spend, # calls, # rows where variety/body are
-populated IN the export, per-successful-row cost. Then commit the regenerated export + sidecar.
+populated IN the export, per-successful-row cost. **Exclude `status: "api_error"` sidecar rows
+from the "successful" count** (they cost ~0 and filled nothing) so per-successful-row cost is
+honest. Then commit the regenerated export + sidecar.
 
 ```bash
 git add data/live_products_export.json data/phase_b_results-full.jsonl
