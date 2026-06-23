@@ -238,6 +238,11 @@ def main(argv=None):
     p.add_argument("--skip-done", action="store_true")
     p.add_argument("--workers", type=int, default=8)
     p.add_argument("--no-backup", action="store_true")
+    p.add_argument("--skus", type=Path, default=None,
+                   help="JSON array of SKUs to re-enrich EXACTLY (bypasses the "
+                        "default no-signal/missing-description filter). Used to "
+                        "regenerate factually-wrong descriptions, e.g. after a "
+                        "country correction.")
     args = p.parse_args(argv)
 
     env = load_env()
@@ -256,20 +261,38 @@ def main(argv=None):
     conn.execute("PRAGMA synchronous=NORMAL")
     conn.execute("PRAGMA busy_timeout=10000")
 
-    targets = [dict(r) for r in conn.execute("""
-        SELECT sku, name, brand, classification, country, region, subregion, price
-        FROM products
-        WHERE COALESCE(is_active,1)=1
-          AND (full_description IS NULL OR LENGTH(full_description) < 100)
-          AND COALESCE(popularity_revenue_window,0) = 0
-          AND COALESCE(has_recent_sales,0) = 0
-          AND COALESCE(score_max,0) < 90
-          AND classification NOT IN ('Accessories','Events','Glassware','Non-Alcoholic','Mineral Water','Cigar')
-          AND sku NOT LIKE 'ABA%' AND sku NOT LIKE 'AWC%' AND sku NOT LIKE 'CIG%'
-          AND sku NOT LIKE 'GBE%' AND sku NOT LIKE 'GDC%' AND sku NOT LIKE 'GLQ%'
-          AND sku NOT LIKE 'GWN%' AND sku NOT LIKE 'WEV%' AND sku NOT LIKE 'NNA%'
-        ORDER BY COALESCE(price,0) DESC, sku
-    """)]
+    if args.skus:
+        # Targeted re-enrich: exactly the SKUs listed, ignore the default filter.
+        # These rows ALREADY have descriptions, but the descriptions are wrong
+        # (e.g. name the pre-correction country), so we deliberately overwrite.
+        sku_list = json.loads(Path(args.skus).read_text())
+        if not isinstance(sku_list, list) or not sku_list:
+            print(f"ERROR: --skus file must be a non-empty JSON array", file=sys.stderr)
+            return 1
+        ph = ",".join("?" * len(sku_list))
+        targets = [dict(r) for r in conn.execute(f"""
+            SELECT sku, name, brand, classification, country, region, subregion, price
+            FROM products WHERE sku IN ({ph}) ORDER BY sku
+        """, sku_list)]
+        found = {t["sku"] for t in targets}
+        missing = [s for s in sku_list if s not in found]
+        if missing:
+            print(f"WARNING: {len(missing)} SKUs not found in DB: {missing}", file=sys.stderr)
+    else:
+        targets = [dict(r) for r in conn.execute("""
+            SELECT sku, name, brand, classification, country, region, subregion, price
+            FROM products
+            WHERE COALESCE(is_active,1)=1
+              AND (full_description IS NULL OR LENGTH(full_description) < 100)
+              AND COALESCE(popularity_revenue_window,0) = 0
+              AND COALESCE(has_recent_sales,0) = 0
+              AND COALESCE(score_max,0) < 90
+              AND classification NOT IN ('Accessories','Events','Glassware','Non-Alcoholic','Mineral Water','Cigar')
+              AND sku NOT LIKE 'ABA%' AND sku NOT LIKE 'AWC%' AND sku NOT LIKE 'CIG%'
+              AND sku NOT LIKE 'GBE%' AND sku NOT LIKE 'GDC%' AND sku NOT LIKE 'GLQ%'
+              AND sku NOT LIKE 'GWN%' AND sku NOT LIKE 'WEV%' AND sku NOT LIKE 'NNA%'
+            ORDER BY COALESCE(price,0) DESC, sku
+        """)]
 
     if args.skip_done:
         targets = [r for r in targets if r.get("enrichment_source") != ENRICHMENT_SOURCE]
