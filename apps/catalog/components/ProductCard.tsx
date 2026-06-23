@@ -6,7 +6,7 @@ import { Eye } from 'lucide-react';
 import { StorefrontImage } from '@/components/StorefrontImage';
 import { CriticScoreStrip } from '@/components/CriticScoreStrip';
 import { QuickView } from '@/components/QuickView';
-import { formatPrice } from '@/lib/price-tiers';
+import { formatPrice, resolveSale } from '@/lib/price-tiers';
 import { cn, isInStock } from '@/lib/utils';
 import type { PublicProduct } from '@/lib/types';
 import type { ContactLinks } from '@/lib/contact';
@@ -42,6 +42,9 @@ export function ProductCard({ product, contactLinks }: ProductCardProps) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const subtitle = product.brand || product.region;
   const inStock = isInStock(product.is_in_stock);
+  // Sale price (only when a genuine special_price < price); recomputed from the
+  // prices so a stale source percent can never render a fake discount.
+  const sale = resolveSale(product.price, product.special_price);
 
   const openQuickView = (e: React.MouseEvent) => {
     // Inside the card <Link>; don't navigate when opening the modal.
@@ -111,9 +114,26 @@ export function ProductCard({ product, contactLinks }: ProductCardProps) {
                 {subtitle}
               </p>
             ) : null}
-            <p className="mt-2 text-lg font-semibold text-primary">
-              {formatPrice(product.price)}
-            </p>
+            {sale ? (
+              <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                <span className="text-lg font-semibold text-primary tabular-nums">
+                  {formatPrice(sale.special)}
+                </span>
+                <span
+                  className="text-sm text-muted-foreground line-through tabular-nums"
+                  aria-label={`Regular price ${formatPrice(product.price)}`}
+                >
+                  {formatPrice(product.price)}
+                </span>
+                <span className="inline-flex items-center rounded-full bg-destructive px-2 py-0.5 text-xs font-semibold text-destructive-foreground">
+                  −{sale.percentOff}%
+                </span>
+              </div>
+            ) : (
+              <p className="mt-2 text-lg font-semibold text-primary tabular-nums">
+                {formatPrice(product.price)}
+              </p>
+            )}
           </div>
         </Link>
       </div>

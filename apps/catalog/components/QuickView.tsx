@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { StorefrontImage } from '@/components/StorefrontImage';
 import { ContactButtons } from '@/components/ContactButtons';
-import { formatPrice } from '@/lib/price-tiers';
+import { PriceBlock } from '@/components/product/PriceBlock';
 import { stripToText } from '@/lib/sanitize-html';
 import { isInStock } from '@/lib/utils';
 import type { PublicProduct } from '@/lib/types';
@@ -99,9 +99,9 @@ export function QuickView({
               {product.name}
             </DialogTitle>
 
-            <p className="mt-3 text-2xl font-semibold text-primary">
-              {formatPrice(product.price)}
-            </p>
+            <div className="mt-3">
+              <PriceBlock price={product.price} specialPrice={product.special_price} />
+            </div>
 
             {!inStock ? (
               <p className="mt-2 text-sm font-medium text-muted-foreground">
