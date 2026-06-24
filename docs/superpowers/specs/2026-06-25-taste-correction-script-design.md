@@ -89,11 +89,21 @@ verify). Pure-helper extraction into the script (small enough not to need a lib)
 2. **WAL-safe timestamped backup** before any write:
    `sqlite3 <db> ".backup <db>.bak-pre-taste-correct-<ts>"` (NOT bare `cp` —
    the DB is WAL-mode and concurrently mutating; `cp` can miss the `-wal`).
-3. **Staleness-guarded writes in ONE transaction.** For each row:
-   `UPDATE products SET <col> = <literal> WHERE sku = ? AND <col> IS <findings.current_value>`
-   (use `IS` so NULL compares correctly; for the value, parameterize). Assert
-   `cursor.rowcount == 1`; if 0, the live value drifted from the audit snapshot —
-   **skip and record it in a drift report, do not blind-write.**
+3. **Staleness-guarded writes in ONE transaction.** For each row, guard on the
+   live value still matching the audit snapshot's `current_value`:
+   - If `current_value` is a non-null string (all 77 Tier-A rows today):
+     `UPDATE products SET <col> = ? WHERE sku = ? AND <col> = ?`
+     params `(literal, sku, current_value)`.
+   - If `current_value` is None (defensive — not in today's set):
+     `... WHERE sku = ? AND <col> IS NULL` (a literal `IS NULL`, NOT `IS ?` — a
+     bound NULL param does equality, not an IS-NULL test, so it would never
+     match). Build the WHERE clause conditionally on whether `current_value` is
+     None.
+   Assert `cursor.rowcount == 1`; if 0, the live value drifted from the audit
+   snapshot — **skip and record it in a drift report, do not blind-write.**
+   **Tripwire:** assert `len(write_set) == 77` (print prominently) before writing —
+   if a regenerated findings.json yields a different count, STOP and re-review
+   (a silent count drift is exactly the Rule-1 failure mode).
 4. **Commit only if** `applied_count == len(write_set) - drift_count` AND
    `total_rows_changed == applied_count` (no collateral). Else **rollback**.
 5. **Post-write assertions** (exit non-zero on any miss):
