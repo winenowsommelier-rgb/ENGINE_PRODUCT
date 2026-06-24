@@ -22,25 +22,19 @@ describe('question config', () => {
         .forEach(s => expect(s.optional).toBe(true));
     }
   });
-  // Regression (Layer-1 plain-language redesign): red (and white, see TASK 6) no
-  // longer ask the body(axis1)/character(axis2) sommelier questions — they ask a
-  // single plain `tasteFeel` step instead. Only sparkling still uses the body/
-  // character axes. Asserting axis1/axis2 on red here would lock in the now-replaced
-  // jargon flow (Rule 5). All three colours still carry a flavor step.
-  it('sparkling still has a body axis1 + character axis2; all wine colours have a flavor step', () => {
-    const sparkFields = stepsFor('sparkling').map(s => s.field);
-    expect(sparkFields).toContain('axis1');
-    expect(sparkFields).toContain('axis2');
+  // Rule 5 (Phase-2 plain-language redesign): sparkling NO LONGER asks the body(axis1)/
+  // character(axis2) sommelier questions — like red & white it now asks a single plain
+  // `tasteFeel` step (festive/fine, TASK A). The old assertion ("sparkling still has a
+  // body axis1 + character axis2") locked in the now-replaced jargon flow, so it was
+  // rewritten to assert the new plain-language flow. All three colours still carry a
+  // flavor step.
+  it('all wine colours (red/white/sparkling) use a plain tasteFeel step instead of body/character axes', () => {
     for (const c of ['red','white','sparkling'] as const) {
-      expect(stepsFor(c).map(s => s.field)).toContain('flavorChips');
-    }
-  });
-  it('red & white use a plain tasteFeel step instead of body/character axes', () => {
-    for (const c of ['red','white'] as const) {
       const fields = stepsFor(c).map(s => s.field);
       expect(fields).toContain('tasteFeel');
       expect(fields).not.toContain('axis1');
       expect(fields).not.toContain('axis2');
+      expect(fields).toContain('flavorChips');
     }
   });
   it('gin has axis1 but no axis2', () => {
@@ -68,16 +62,17 @@ describe('question config', () => {
     expect(tokens).toEqual(['citrus','dark-fruit','earthy','floral','mineral','nutty','oak','red-fruit','smoky','spice','stone-fruit','tropical']);
     expect(flavor.options.every(o=>o.icon)).toBe(true);
   });
-  // Regression (Layer-1 redesign): red no longer has an axis1 body step — its taste
-  // question is the plain `tasteFeel` step. Assert icons on budget + tasteFeel for red
-  // (and keep a body-axis icon check on sparkling, which still uses axis1).
-  it('budget + tasteFeel (red) and body axis1 (sparkling) options carry icons', () => {
+  // Rule 5 (Phase-2 redesign): sparkling no longer has an axis1 body step — like red it
+  // uses the plain `tasteFeel` step. The old check ("body axis1 (sparkling) options carry
+  // icons") referenced the removed axis1 step, so it was rewritten to assert icons on the
+  // tasteFeel step for both red and sparkling.
+  it('budget + tasteFeel (red & sparkling) options carry icons', () => {
     for (const f of ['budget','tasteFeel'] as const) {
       const step = stepsFor('red').find(s=>s.field===f)!;
       expect(step.options.every(o=>o.icon)).toBe(true);
     }
-    const sparkBody = stepsFor('sparkling').find(s=>s.field==='axis1')!;
-    expect(sparkBody.options.every(o=>o.icon)).toBe(true);
+    const sparkFeel = stepsFor('sparkling').find(s=>s.field==='tasteFeel')!;
+    expect(sparkFeel.options.every(o=>o.icon)).toBe(true);
   });
   it('retired flavor tokens earth/vanilla are gone', () => {
     const tokens = stepsFor('red').find(s=>s.field==='flavorChips')!.options.map(o=>o.token);

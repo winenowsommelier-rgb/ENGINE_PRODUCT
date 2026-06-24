@@ -22,3 +22,15 @@ test('white Layer-1 has a taste-feel step with crisp/rounded/aromatic + unsure',
   const tokens = feel!.options.map(o => o.token);
   expect(tokens).toEqual(expect.arrayContaining(['crisp','rounded','aromatic','unsure']));
 });
+
+// TASK A — sparkling Layer-1 is also jargon-free with a plain taste-feel step (festive/fine).
+test('sparkling Layer-1 labels contain no jargon', () => {
+  const labels = stepsFor('sparkling').flatMap(s => [s.title, ...s.options.map(o => o.label)]).join(' ').toLowerCase();
+  for (const w of BANNED) expect(labels).not.toContain(w);
+});
+test('sparkling Layer-1 has a taste-feel step with festive/fine + unsure', () => {
+  const feel = stepsFor('sparkling').find(s => s.field === 'tasteFeel');
+  expect(feel).toBeTruthy();
+  const tokens = feel!.options.map(o => o.token);
+  expect(tokens).toEqual(expect.arrayContaining(['festive','fine','unsure']));
+});

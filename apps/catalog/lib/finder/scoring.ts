@@ -397,11 +397,14 @@ function deepDiveBump(a: Answers, p: PublicProduct): number {
 // NEVER an AND-filter. Only ~10 low-tannin reds exist, so requiring BOTH a Light body AND
 // Low tannin would starve the pool. A product that matches body but misses tannin (or vice
 // versa) still earns the half it matches. No-signal (missing/off-ladder) values score 0.
-const TASTE_FEEL_CATEGORIES = new Set(['red', 'white']);
-// Secondary nudge axis per category: red leans on tannin, white on acidity (acidity-led).
+const TASTE_FEEL_CATEGORIES = new Set(['red', 'white', 'sparkling']);
+// Secondary nudge axis per category: red leans on tannin, white & sparkling on acidity.
+// Sparkling archetypes have no structured tannin (definingAttributes carry body+acidity),
+// so BODY is the discriminator (festive=Light vs fine=Full) and acidity the soft nudge.
 const FEEL_SECONDARY_AXIS: Record<string, 'tannin' | 'acidity'> = {
   red: 'tannin',
   white: 'acidity',
+  sparkling: 'acidity',
 };
 
 // WHISKY Layer-1 tasteFeel='smoky' (spec §11.8). Positive-only smoky boost from REAL

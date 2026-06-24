@@ -25,3 +25,14 @@ test('white unsure / unknown feel returns null (→ crowd-pleaser via resolver)'
   expect(feelToArchetype('white', 'unsure')).toBeNull();
   expect(resolveArchetypeId('white', undefined)).toBe(CROWD_PLEASER.white);
 });
+
+// TASK A — sparkling taste-feel maps to the correct sparkling archetypes (style-led:
+// festive = light/fruity Prosecco-style, fine = traditional-method Champagne-style).
+test('sparkling taste-feel maps to the CORRECT archetype', () => {
+  expect(feelToArchetype('sparkling', 'festive')).toBe('fresh-festive-sparkling');
+  expect(feelToArchetype('sparkling', 'fine')).toBe('fine-traditional-sparkling');
+});
+test('sparkling unsure / unknown feel returns null (→ crowd-pleaser via resolver)', () => {
+  expect(feelToArchetype('sparkling', 'unsure')).toBeNull();
+  expect(resolveArchetypeId('sparkling', undefined)).toBe(CROWD_PLEASER.sparkling);
+});

@@ -60,31 +60,6 @@ const BUDGET_STEP: QuestionStep = {
   ],
 };
 
-// ── Wine taste steps (red, white, sparkling) ──
-const WINE_BODY_STEP: QuestionStep = {
-  id: 'body',
-  field: 'axis1',
-  title: 'How full-bodied do you like it?',
-  optional: true,
-  options: [
-    { token: 'light', label: 'Light & easy', icon: '🪶' },
-    { token: 'medium', label: 'Medium-bodied', icon: '⚖️' },
-    { token: 'bold', label: 'Bold & full', icon: '🍷' },
-  ],
-};
-
-const WINE_CHARACTER_STEP: QuestionStep = {
-  id: 'character',
-  field: 'axis2',
-  title: 'What character do you prefer?',
-  optional: true,
-  options: [
-    { token: 'fruity', label: 'Fruit-forward', icon: '🍓' },
-    { token: 'earthy', label: 'Earthy & savory', icon: '🍂' },
-    { token: 'balanced', label: 'Balanced', icon: '⚖️' },
-  ],
-};
-
 // ── Plain-language taste-feel steps (Layer-1, no jargon). One per wine colour. ──
 // These REPLACE the body/character axis1/axis2 questions for red & white: a single
 // approachable question whose token resolves to an archetype (taste-feel.ts), rather
@@ -113,6 +88,22 @@ const WHITE_FEEL_STEP: QuestionStep = {
     { token: 'crisp', label: 'Crisp & refreshing', icon: '⚡' },
     { token: 'rounded', label: 'Smooth & rounded', icon: '🫧' },
     { token: 'aromatic', label: 'Aromatic & floral', icon: '🌸' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
+  ],
+};
+
+// Sparkling plain-language taste-feel step (Layer-1, no jargon). Style-led framing
+// (festive vs fine), NOT body/dosage. festive → fresh-festive-sparkling (light, fruity,
+// Prosecco-style); fine → fine-traditional-sparkling (full, toasty, Champagne-style).
+// REPLACES the old body(axis1)/character(axis2) wine steps for sparkling.
+const SPARKLING_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: "What's the vibe?",
+  optional: true,
+  options: [
+    { token: 'festive', label: 'Light & fun', icon: '🎉' },
+    { token: 'fine', label: 'Fine & classic', icon: '✨' },
     { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
   ],
 };
@@ -215,14 +206,6 @@ const SAKE_SWEETNESS_STEP: QuestionStep = {
   ],
 };
 
-const WINE_STEPS: QuestionStep[] = [
-  OCCASION_STEP,
-  BUDGET_STEP,
-  WINE_BODY_STEP,
-  WINE_CHARACTER_STEP,
-  FLAVOR_STEP,
-];
-
 export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   // Red Layer-1 is plain-language: occasion → budget → taste-feel → flavor. No body/
   // character jargon. (Food is an inline FoodChoice sub-step, not a config step.)
@@ -230,7 +213,9 @@ export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   // White Layer-1 is plain-language too: occasion → budget → taste-feel (acidity-led) →
   // flavor. (sparkling still uses the body/character axes.)
   white: [OCCASION_STEP, BUDGET_STEP, WHITE_FEEL_STEP, FLAVOR_STEP],
-  sparkling: WINE_STEPS,
+  // Sparkling Layer-1 is plain-language too: occasion → budget → taste-feel (style-led,
+  // festive/fine) → flavor. Replaces the old body/character axis1/axis2 wine steps.
+  sparkling: [OCCASION_STEP, BUDGET_STEP, SPARKLING_FEEL_STEP, FLAVOR_STEP],
   // Whisky Layer-1: occasion → budget → origin → plain taste-feel → flavor. The feel step
   // REPLACES the old smoky/smooth axis2 style step but KEEPS origin (axis1 → country boost).
   whisky: [OCCASION_STEP, BUDGET_STEP, WHISKY_ORIGIN_STEP, WHISKY_FEEL_STEP, FLAVOR_STEP],
