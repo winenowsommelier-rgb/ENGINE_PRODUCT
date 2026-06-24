@@ -84,12 +84,16 @@ export function withAnswer(
       next.food = (value as string[]).length ? (value as string[]) : undefined;
       break;
     // ── Sommelier deep-dive single-value string fields. Same shape as axis1.
+    // `tasteFeel` is the Layer-1 plain-language taste step (red/white) — also a
+    // single-value string field, so it shares this handler (required by the
+    // exhaustiveness guard below once it joined the StepField union).
     case 'acidity':
     case 'tannin':
     case 'grape':
     case 'age':
     case 'adventure':
     case 'peat':
+    case 'tasteFeel':
       next[field] = value as string;
       break;
     default: {

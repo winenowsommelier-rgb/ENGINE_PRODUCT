@@ -22,13 +22,24 @@ describe('question config', () => {
         .forEach(s => expect(s.optional).toBe(true));
     }
   });
-  it('wine categories have a body axis1, a character axis2, and a flavor step', () => {
+  // Regression (Layer-1 plain-language redesign): red (and white, see TASK 6) no
+  // longer ask the body(axis1)/character(axis2) sommelier questions — they ask a
+  // single plain `tasteFeel` step instead. Only sparkling still uses the body/
+  // character axes. Asserting axis1/axis2 on red here would lock in the now-replaced
+  // jargon flow (Rule 5). All three colours still carry a flavor step.
+  it('sparkling still has a body axis1 + character axis2; all wine colours have a flavor step', () => {
+    const sparkFields = stepsFor('sparkling').map(s => s.field);
+    expect(sparkFields).toContain('axis1');
+    expect(sparkFields).toContain('axis2');
     for (const c of ['red','white','sparkling'] as const) {
-      const fields = stepsFor(c).map(s => s.field);
-      expect(fields).toContain('axis1');
-      expect(fields).toContain('axis2');
-      expect(fields).toContain('flavorChips');
+      expect(stepsFor(c).map(s => s.field)).toContain('flavorChips');
     }
+  });
+  it('red uses a plain tasteFeel step instead of body/character axes', () => {
+    const fields = stepsFor('red').map(s => s.field);
+    expect(fields).toContain('tasteFeel');
+    expect(fields).not.toContain('axis1');
+    expect(fields).not.toContain('axis2');
   });
   it('gin has axis1 but no axis2', () => {
     const fields = stepsFor('gin').map(s => s.field);
@@ -55,11 +66,16 @@ describe('question config', () => {
     expect(tokens).toEqual(['citrus','dark-fruit','earthy','floral','mineral','nutty','oak','red-fruit','smoky','spice','stone-fruit','tropical']);
     expect(flavor.options.every(o=>o.icon)).toBe(true);
   });
-  it('budget + body options carry icons', () => {
-    for (const f of ['budget','axis1'] as const) {
+  // Regression (Layer-1 redesign): red no longer has an axis1 body step — its taste
+  // question is the plain `tasteFeel` step. Assert icons on budget + tasteFeel for red
+  // (and keep a body-axis icon check on sparkling, which still uses axis1).
+  it('budget + tasteFeel (red) and body axis1 (sparkling) options carry icons', () => {
+    for (const f of ['budget','tasteFeel'] as const) {
       const step = stepsFor('red').find(s=>s.field===f)!;
       expect(step.options.every(o=>o.icon)).toBe(true);
     }
+    const sparkBody = stepsFor('sparkling').find(s=>s.field==='axis1')!;
+    expect(sparkBody.options.every(o=>o.icon)).toBe(true);
   });
   it('retired flavor tokens earth/vanilla are gone', () => {
     const tokens = stepsFor('red').find(s=>s.field==='flavorChips')!.options.map(o=>o.token);
@@ -126,7 +142,9 @@ describe('deepDiveStepsFor (opt-in sommelier branch)', () => {
     expect(deepDiveStepsFor('gin').length).toBeLessThan(deepDiveStepsFor('red').length);
   });
   it('core stepsFor is unchanged (no deep-dive fields leak into core)', () => {
+    // tasteFeel is a CORE Layer-1 field (red/white plain-language step), not a deep-dive
+    // field — added to the allowlist when red/white moved off body/character axes.
     for (const c of ALL) for (const s of stepsFor(c))
-      expect(['occasion','budget','axis1','axis2','flavorChips','food']).toContain(s.field);
+      expect(['occasion','budget','axis1','axis2','flavorChips','food','tasteFeel']).toContain(s.field);
   });
 });

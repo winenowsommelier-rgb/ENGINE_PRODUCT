@@ -7,6 +7,9 @@ export type StepField =
   | 'axis2'
   | 'flavorChips'
   | 'food'
+  // Plain-language taste-feel step (Layer-1, no jargon). Resolves to an archetype
+  // via taste-feel.ts; replaces the body/character axis1/axis2 questions for red & white.
+  | 'tasteFeel'
   // ── Opt-in sommelier deep-dive fields (separate from the core flow) ──
   | 'acidity'
   | 'tannin'
@@ -79,6 +82,23 @@ const WINE_CHARACTER_STEP: QuestionStep = {
     { token: 'fruity', label: 'Fruit-forward', icon: '🍓' },
     { token: 'earthy', label: 'Earthy & savory', icon: '🍂' },
     { token: 'balanced', label: 'Balanced', icon: '⚖️' },
+  ],
+};
+
+// ── Plain-language taste-feel steps (Layer-1, no jargon). One per wine colour. ──
+// These REPLACE the body/character axis1/axis2 questions for red & white: a single
+// approachable question whose token resolves to an archetype (taste-feel.ts), rather
+// than asking the shopper about "body" and "character" in sommelier terms.
+const RED_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'How do you like your reds?',
+  optional: true,
+  options: [
+    { token: 'light', label: 'Light & delicate', icon: '🪶' },
+    { token: 'smooth', label: 'Smooth & easygoing', icon: '🍷' },
+    { token: 'bold', label: 'Bold & rich', icon: '🔥' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
   ],
 };
 
@@ -183,7 +203,9 @@ const WINE_STEPS: QuestionStep[] = [
 ];
 
 export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
-  red: WINE_STEPS,
+  // Red Layer-1 is plain-language: occasion → budget → taste-feel → flavor. No body/
+  // character jargon. (Food is an inline FoodChoice sub-step, not a config step.)
+  red: [OCCASION_STEP, BUDGET_STEP, RED_FEEL_STEP, FLAVOR_STEP],
   white: WINE_STEPS,
   sparkling: WINE_STEPS,
   whisky: [OCCASION_STEP, BUDGET_STEP, WHISKY_ORIGIN_STEP, WHISKY_STYLE_STEP, FLAVOR_STEP],
