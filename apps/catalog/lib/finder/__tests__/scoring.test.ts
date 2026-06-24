@@ -205,17 +205,53 @@ describe('scoreProducts', () => {
     const pool=[P({sku:'WRWf',region:'Bordeaux'}),P({sku:'WRWd',region:'Swartland'})];
     expect(scoreProducts(ans({adventure:'discovery'}),pool).products[0].sku).toBe('WRWd');
   });
-  it('whisky: peat heavy ranks an Islay bottle above a Speyside bottle', () => {
+  // Rule 5: the two old peat tests asserted REGION-BASED guessing (peat:'heavy' → reward
+  // region=Islay; peat:'none' → reward non-Islay). Spec §11.8 verified that is WRONG — the
+  // export false-negatives genuinely-smoky non-Islay malts (Talisker=Skye, Ledaig=Mull) and
+  // mislabels clean Islay bottles. peatScore is now POSITIVE-ONLY on real smokiness/allow-list
+  // and NEVER reads region. Rewritten below to assert the correct behavior.
+  it('whisky: peat heavy boosts a real-smoky bottle (smokiness=heavy), region ignored', () => {
     const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
-    const pool = [W({sku:'LWHspey', region:'Speyside'}), W({sku:'LWHislay', region:'Islay'})];
+    // smoky bottle is in Speyside (NOT Islay) — region must not decide; smokiness does.
+    const pool = [W({sku:'LWHclean', region:'Islay', smokiness:'none', name:'Clean Malt'}),
+                  W({sku:'LWHsmoky', region:'Speyside', smokiness:'heavy', name:'Smoky Malt'})];
     const out = scoreProducts({ category:'whisky', peat:'heavy' } as any, pool as any);
-    expect(out.products[0].sku).toBe('LWHislay');
+    expect(out.products[0].sku).toBe('LWHsmoky');
   });
-  it('whisky: peat none ranks a non-Islay bottle above an Islay bottle', () => {
+  it('whisky: peat heavy boosts a peated allow-list name even when smokiness=none (Talisker false-neg)', () => {
     const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
-    const pool = [W({sku:'LWHislay', region:'Islay'}), W({sku:'LWHspey', region:'Speyside'})];
+    const pool = [W({sku:'LWHplain', smokiness:'none', name:'Glenfiddich 12'}),
+                  W({sku:'LWHtali', smokiness:'none', name:'Talisker 10 Years'})];
+    const out = scoreProducts({ category:'whisky', peat:'heavy' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHtali');
+  });
+  it('whisky: peat none NEVER penalizes/rewards on smokiness=none (no region, no smooth-assertion)', () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    // peat='none' gives NO boost to anyone (positive-only design); order falls to price tie.
+    const pool = [W({sku:'LWHa', region:'Islay', smokiness:'none', price:1000}),
+                  W({sku:'LWHb', region:'Speyside', smokiness:'none', price:2000})];
     const out = scoreProducts({ category:'whisky', peat:'none' } as any, pool as any);
-    expect(out.products[0].sku).toBe('LWHspey');
+    // Neither gets a peat boost → tie broken by cheapest-first (price), region irrelevant.
+    expect(out.products[0].sku).toBe('LWHa');
+  });
+
+  // ── TASK 7: whisky Layer-1 tasteFeel='smoky'. Positive-only smoky boost from real
+  // smokiness='heavy' OR the peated-distillery name allow-list. NEVER excludes/penalizes
+  // smokiness='none', NEVER reads region (spec §11.8 — fixes Talisker/Ledaig false-negatives).
+  it("whisky tasteFeel='smoky' boosts a Talisker tagged smokiness=none (false-neg fix)", () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    const pool = [W({sku:'LWHglen', smokiness:'none', name:'Glenfiddich 12'}),
+                  W({sku:'LWHtali', smokiness:'none', name:'Talisker 10'})];
+    const out = scoreProducts({ category:'whisky', tasteFeel:'smoky' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHtali'); // peated allow-list wins despite smokiness=none
+  });
+  it("whisky tasteFeel='smoky' does NOT boost a non-peated Glenfiddich (smokiness=none)", () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    // a real-smoky bottle must out-rank the non-peated Glenfiddich; Glenfiddich gets no smoky boost.
+    const pool = [W({sku:'LWHglen', smokiness:'none', name:'Glenfiddich 12', price:1000}),
+                  W({sku:'LWHsmoky', smokiness:'heavy', name:'Smoky Malt', price:2000})];
+    const out = scoreProducts({ category:'whisky', tasteFeel:'smoky' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHsmoky');
   });
   it('a core-only Answers scores identically with the new code (additive)', () => {
     const pool=[P({sku:'WRW1',body:'Full'}),P({sku:'WRW2',body:'Light'})];

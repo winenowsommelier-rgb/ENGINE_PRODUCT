@@ -8,7 +8,12 @@ const FEEL_TO_ARCHETYPE: Record<FinderCategory, Record<string, string>> = {
   // fuller, lower-acid; aromatic = the fragrant balanced middle. 'unsure'/missing → null →
   // resolver uses CROWD_PLEASER.white (aromatic-balanced-white).
   white: { crisp: 'crisp-zesty-white', rounded: 'rich-textured-white', aromatic: 'aromatic-balanced-white' },
-  whisky: {}, sparkling: {}, gin: {}, spirits: {}, sake: {},
+  // Whisky Layer-1 plain-feel → archetype (taste-feel.ts is COPY only; smoky is also a
+  // rank boost in scoring.ts). smooth=mellow/Irish, rich=warming/bourbon, smoky=peated/
+  // coastal. Japanese refined is reachable via the ORIGIN question (axis1=japanese), so it
+  // is intentionally NOT a feel token here. 'unsure'/missing → null → CROWD_PLEASER.whisky.
+  whisky: { smooth: 'smooth-irish-whiskey', rich: 'sweet-bold-bourbon', smoky: 'peated-coastal-whisky' },
+  sparkling: {}, gin: {}, spirits: {}, sake: {},
 };
 export function feelToArchetype(cat: FinderCategory, feel: string | undefined): string | null {
   if (!feel) return null;

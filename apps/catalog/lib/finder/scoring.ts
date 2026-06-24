@@ -7,6 +7,7 @@ import { normalizeScale } from '@/lib/taste-adapter';
 import { typeForProduct } from '@/lib/category-groups';
 import { resolveArchetypeId } from './taste-feel';
 import { STYLE_PROFILES } from './style-profiles';
+import { isLikelyPeated } from './peated-distilleries';
 
 const BODY_LADDER = ['light','medium-light','medium','medium-full','full'];
 // 4-level intensity ladder shared by acidity & tannin (matches FILTER_SCALE in scales.ts).
@@ -327,17 +328,21 @@ function adventureScore(token: string | undefined, region: string | undefined): 
   return famous ? 0 : 2; // discovery: reward NON-famous regions
 }
 
-// Whisky peat. The peat answer (none | light | heavy) has structured backing via
-// region: peated single malts come from Islay, so region=Islay is the peat signal.
-//   heavy → +2 for an Islay bottle (the user wants smoke; Islay delivers it)
-//   none  → +2 for a NON-Islay bottle (the user wants it clean; reward away-from-Islay)
-//   light / absent / unknown → 0 (no confident signal either way)
+// Whisky peat. The peat answer (none | light | heavy) is now scored as a POSITIVE-ONLY
+// boost on REAL smoke evidence — never on region (spec §11.8).
+//
+// HISTORY (Rule 5): the old version guessed from region=Islay (heavy→+2 Islay, none→+2
+// non-Islay). That was WRONG: the export false-negatives genuinely-smoky NON-Islay malts
+// (Talisker=Skye, Ledaig=Mull tagged smokiness='none') and mislabels clean Islay bottles.
+// Region is not the peat signal.
+//   heavy → +2 ONLY when smokiness='heavy' OR the name is on the peated allow-list.
+//   none / light / any → 0. We do NOT penalize or reward smokiness='none': a 'none' tag is
+//     unreliable (false-negatives), so we never assert "this is smooth" from it, and we
+//     never exclude on it.
 // Like every deep-dive term this is ADDITIVE (rank-only) and never touches `degraded`.
-function peatScore(token: string | undefined, region: string | undefined): number {
-  if (token !== 'none' && token !== 'heavy') return 0; // 'light' / any → no rule
-  const isIslay = norm(region) === 'islay';
-  if (token === 'heavy') return isIslay ? 2 : 0;
-  return isIslay ? 0 : 2; // none: reward non-Islay
+function peatScore(token: string | undefined, smokiness: string | undefined, name: string | undefined): number {
+  if (token !== 'heavy') return 0; // 'none' / 'light' / any → no positive signal asserted
+  return norm(smokiness) === 'heavy' || isLikelyPeated(name) ? 2 : 0;
 }
 
 // Prestige lean for a gift/special occasion (audit finding C2). The existing
@@ -365,7 +370,8 @@ function deepDiveBump(a: Answers, p: PublicProduct): number {
     grapeScore(a.grape, p.variety) +
     ageScore(a.age, p.vintage) +
     adventureScore(a.adventure, p.region) +
-    peatScore(a.peat, p.region) +
+    peatScore(a.peat, p.smokiness, p.name) +
+    whiskyFeelSmokyBump(a, p) +
     prestigeBump(a, p) +
     ginStyleBump(a, p)
   );
@@ -388,6 +394,18 @@ const FEEL_SECONDARY_AXIS: Record<string, 'tannin' | 'acidity'> = {
   red: 'tannin',
   white: 'acidity',
 };
+
+// WHISKY Layer-1 tasteFeel='smoky' (spec §11.8). Positive-only smoky boost from REAL
+// evidence: smokiness='heavy' OR the peated-distillery name allow-list. NEVER excludes or
+// penalizes smokiness='none' (the export false-negatives Talisker/Ledaig), NEVER reads
+// region, NEVER asserts 'smooth' from 'none'. Kept in the deep-dive bump (rank-only): a
+// keyword/tag smoky lean re-orders but the whisky core taste-tier stays origin-driven.
+// 'smooth' and 'rich' tasteFeel tokens resolve to archetypes for COPY (taste-feel.ts) but
+// have no structured smoke field to score, so only 'smoky' earns a rank boost here.
+function whiskyFeelSmokyBump(a: Answers, p: PublicProduct): number {
+  if (a.category !== 'whisky' || a.tasteFeel !== 'smoky') return 0;
+  return norm(p.smokiness) === 'heavy' || isLikelyPeated(p.name) ? 2 : 0;
+}
 
 /** Points a wine earns from its tasteFeel answer vs the resolved archetype (0 = no signal). */
 function tasteFeelScore(a: Answers, p: PublicProduct): number {

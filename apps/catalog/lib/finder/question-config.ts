@@ -158,14 +158,20 @@ const WHISKY_ORIGIN_STEP: QuestionStep = {
   ],
 };
 
-const WHISKY_STYLE_STEP: QuestionStep = {
-  id: 'style',
-  field: 'axis2',
-  title: 'What style do you prefer?',
+// ── Whisky plain-language taste-feel step (Layer-1, no jargon). Resolves to an archetype
+// via taste-feel.ts; 'smoky' also drives a positive rank boost in scoring.ts (spec §11.8).
+// REPLACES the old smoky/smooth axis2 style step in the whisky flow, but KEEPS the origin
+// step. (Japanese 'refined' is reachable via the origin question, so it's not a feel token.)
+const WHISKY_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'What’s your style?',
   optional: true,
   options: [
-    { token: 'smoky', label: 'Smoky & peaty', icon: '💨' },
     { token: 'smooth', label: 'Smooth & mellow', icon: '🥃' },
+    { token: 'rich', label: 'Rich & warming', icon: '🔥' },
+    { token: 'smoky', label: 'Smoky', icon: '💨' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
   ],
 };
 
@@ -225,7 +231,9 @@ export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   // flavor. (sparkling still uses the body/character axes.)
   white: [OCCASION_STEP, BUDGET_STEP, WHITE_FEEL_STEP, FLAVOR_STEP],
   sparkling: WINE_STEPS,
-  whisky: [OCCASION_STEP, BUDGET_STEP, WHISKY_ORIGIN_STEP, WHISKY_STYLE_STEP, FLAVOR_STEP],
+  // Whisky Layer-1: occasion → budget → origin → plain taste-feel → flavor. The feel step
+  // REPLACES the old smoky/smooth axis2 style step but KEEPS origin (axis1 → country boost).
+  whisky: [OCCASION_STEP, BUDGET_STEP, WHISKY_ORIGIN_STEP, WHISKY_FEEL_STEP, FLAVOR_STEP],
   gin: [OCCASION_STEP, BUDGET_STEP, GIN_STYLE_STEP],
   spirits: [OCCASION_STEP, BUDGET_STEP, SPIRITS_TYPE_STEP],
   sake: [OCCASION_STEP, BUDGET_STEP, SAKE_SWEETNESS_STEP],
