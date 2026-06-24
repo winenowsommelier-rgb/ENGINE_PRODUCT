@@ -1,22 +1,49 @@
 # Taste-Data Quality Audit — Design Spec
 
 **Date:** 2026-06-24
-**Status:** Design approved; spec under review
-**Prerequisite for:** Phase B Run 2 (taste display), currently PAUSED
+**Status:** Design approved; re-baselined against post-#49/#51 `main`
+**Relation to Phase B Run 2:** Run 2 has SHIPPED (PR #49) — see §0.
 **Parked display design:** branch `docs/phase-b-run2-spec`, `docs/superpowers/specs/2026-06-23-phase-b-run2-taste-display-design.md`
 
 ---
 
+## 0. Cross-session reconciliation (2026-06-24)
+
+While this audit spec was being written, two parallel sessions merged to `main`:
+
+- **PR #49 — Phase B Run 2 SHIPPED** ($0.64, ~2,564 rows). It did NOT just
+  display taste; it ran a category-gated paid enrichment: type-based gating via
+  `resolve()` sub-types (tannin = type∈{Red,Orange}; sweetness =
+  type∈{Sweet/Dessert,Fortified} + White/Sparkling), a frozen grape vocab, and a
+  catalog **display sweetness gauge** (`taste-adapter.ts`, `normalizeScale`).
+  Verified-shipped with a Rule-1 merged-SKU export assertion.
+- **PR #51 — lowercase sweetness normalized** (194 `dry`→`Dry`, 85 `sweet`→
+  `Sweet`), export refreshed, build-failing invariant test added.
+
+**Why this audit is STILL needed (what #49/#51 did NOT do):** they *added/gated/
+normalized* values; they did **not audit pre-existing legacy values for
+correctness**. Verified live in the committed export (`live_products_export.json`,
+the user-facing source per Rule 9) on 2026-06-24:
+- **Sparkling "Extra Dry" → `Dry` inversion: 56 rows still wrong, live to users.**
+- **`body` lowercase case-dupes: `light`×6 still present** (#51 only fixed
+  *sweetness*, not body).
+- smokiness untouched by #49 → the **peated false-negatives** (`none` on
+  Talisker/Ledaig) and `heavy` false-positives are still unaudited.
+- Non-beverage taste leaks (grape blends on ~22 Accessories/Events) unaddressed.
+
+So the audit's scope **drops** the #51-resolved lowercase-*sweetness* item and
+**reframes** from "unblock a paused Run 2" to a **post-Run-2 legacy-correctness
+audit** of the four columns as they ship today.
+
 ## 1. Problem
 
-Phase B Run 2 (a product-page taste display) is paused because the four taste
-columns — `smokiness`, `sweetness`, `body`, `variety` — are systemically
-unreliable. They were populated by many enrichment passes (the row-level
-`enrichment_source` column shows ~14 distinct values, and it is *last-touch*,
-not per-column provenance). Three spec-review iterations each surfaced a new
-data bug. The pattern is the finding: **patching the display layer keeps
-surfacing wrong facts on premium pages.** So we audit the DATA first, build
-display later.
+The four taste columns — `smokiness`, `sweetness`, `body`, `variety` — carry
+legacy values from many enrichment passes (the row-level `enrichment_source`
+column shows ~14 distinct values; it is *last-touch*, not per-column provenance).
+Run 2 (#49) gated and topped them up but did not vet the legacy values for
+correctness. Three earlier spec-review iterations each surfaced a new data bug;
+the pattern is the finding: **patching the display layer keeps surfacing wrong
+facts on premium pages.** So we audit the DATA, then correct.
 
 The bad values were NOT written by Phase A's free rules (only a handful of rows
 carry `enrichment_source = rules`), so re-running the rules backfill corrects
@@ -36,21 +63,24 @@ correction script can consume as a blocklist.
   each Rule-10 / plan-gated.
 - No display work. The parked v3 display design stays parked.
 
-## 3. Ground truth (verified against `data/db/products.db`, 2026-06-24)
+## 3. Ground truth (verified against the committed export + DB, 2026-06-24, post-#49/#51)
 
-> The canonical DB is `data/db/products.db` (NOT root `products.db`). Counts here
-> were re-queried this session because the shared DB drifts between sessions —
-> the memory snapshot's numbers were stale, and one of its headline findings
-> (a `Dry` 965 / `dry` 194 sweetness case-duplication) **does not exist in this
-> DB** and was removed from scope. Re-derive counts at implementation time; do
-> not trust these as frozen.
+> Verified against `data/live_products_export.json` (the user-facing source — the
+> UI reads the export, not the DB, per Rule 9) AND the canonical DB
+> `data/db/products.db` (NOT root `products.db`); the two agree on these counts.
+> Counts were re-queried this session because the shared DB drifts between
+> sessions — the memory snapshot's numbers were stale, and one of its headline
+> findings (a `Dry` 965 / `dry` 194 sweetness case-duplication) **does not exist**
+> and was removed from scope (PR #51 separately normalized the only real lowercase
+> *sweetness* dupes). Re-derive counts at implementation time; do not trust these
+> as frozen.
 
 | column    | populated (`TRIM(col)<>''`) | distinct values / notes |
 |-----------|------|-------------------------|
-| smokiness | 1,970 | `none` 1,901 · `heavy` 69. Binary today; lives only on Whisky+Spirits (L-prefix). |
-| sweetness | 1,547 | `Dry` 1,159 · `Sweet` 273 · `Medium-Sweet` 59 · `Off-Dry` 56. **No lowercase case-dupes.** |
-| body      | 5,527 | case-dupes persist: `full`/`light` lowercase (~8 rows). Leaks onto Accessories/Non-Alcoholic. |
-| variety   | 8,296 | **comma-delimited multi-value** (e.g. `Cabernet Sauvignon, Merlot`); **2,988 empty-string `''` + 152 NULL** rows. Holds non-grape tokens for spirits/sake. |
+| smokiness | 1,970 | `none` 1,901 · `heavy` 69. Binary today; lives only on Whisky+Spirits (L-prefix). Untouched by #49. |
+| sweetness | 1,547 | `Dry` 1,159 · `Sweet` 273 · `Medium-Sweet` 59 · `Off-Dry` 56. Lowercase dupes fixed by #51; **but Extra-Dry→`Dry` inversion (56 rows) still live in the export.** |
+| body      | 5,527 | `Medium-Full` 2,213 · `Medium` 1,328 · `Light` 928 · `Full` 924 … **lowercase `light`×6 still in the export** (#51 fixed sweetness only). Leaks onto Accessories/Non-Alcoholic. |
+| variety   | 8,296 | **comma-delimited multi-value** (e.g. `Cabernet Sauvignon, Merlot`); **2,988 empty-string `''` + 152 NULL** rows. Holds non-grape tokens (base material/class) for spirits/sake. |
 
 Rows with ≥1 taste value: **9,429**.
 
