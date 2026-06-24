@@ -1,5 +1,5 @@
 export type FinderCategory =
-  | 'red' | 'white' | 'sparkling' | 'whisky' | 'gin' | 'spirits' | 'sake';
+  | 'red' | 'white' | 'rose' | 'sparkling' | 'whisky' | 'gin' | 'spirits' | 'sake';
 export type Budget = 0 | 1 | 2 | 3 | 4;
 export type Occasion = 'everyday' | 'food' | 'gift' | 'special' | 'exploring';
 
@@ -18,9 +18,13 @@ export interface Answers {
   adventure?: string;
   peat?: string;
   tasteFeel?: string;
+  serve?: string;            // sake serve preference: chilled | warm | either (TASK B)
 }
 
-const CATEGORIES: FinderCategory[] = ['red','white','sparkling','whisky','gin','spirits','sake'];
+// RUNTIME guard for decodeAnswers — MUST include every FinderCategory member or that
+// category's cat= param silently decodes to undefined (result page redirects). tsc does NOT
+// cross-check this array against the union, so 'rose' must be added here by hand.
+const CATEGORIES: FinderCategory[] = ['red','white','rose','sparkling','whisky','gin','spirits','sake'];
 const OCCASIONS: Occasion[] = ['everyday','food','gift','special','exploring'];
 
 // URL params: cat, occ, food (csv), b (0..4), a1, a2, fl (csv). All optional except cat.
@@ -40,6 +44,7 @@ export function encodeAnswers(a: Answers): string {
   if (a.adventure) p.set('adv', a.adventure);
   if (a.peat) p.set('pt', a.peat);
   if (a.tasteFeel) p.set('tf', a.tasteFeel);
+  if (a.serve) p.set('sv', a.serve);
   return p.toString();
 }
 
@@ -66,5 +71,6 @@ export function decodeAnswers(sp: URLSearchParams): Answers {
     grape: sp.get('gr') ?? undefined, age: sp.get('ag') ?? undefined,
     adventure: sp.get('adv') ?? undefined, peat: sp.get('pt') ?? undefined,
     tasteFeel: sp.get('tf') ?? undefined,
+    serve: sp.get('sv') ?? undefined,
   };
 }

@@ -4,24 +4,33 @@ import { scoreProducts } from '../scoring';
 import type { Answers, FinderCategory } from '../answers';
 
 /**
- * No-dead-ends coverage (spec §9 / §11.11). Every plain Layer-1 taste-feel answer for the
- * Phase-1 categories must resolve to ≥3 real IN-STOCK bottles when run through the actual
- * scorer against the live export. A precise-looking finder that returns 0-2 bottles for a
- * plausible answer is a silent conversion leak, so we assert against real inventory — not a
+ * No-dead-ends coverage (spec §9 / §11.11). Every plain Layer-1 taste-feel answer for ALL
+ * 8 categories must resolve to ≥3 real IN-STOCK bottles when run through the actual scorer
+ * against the live export. A precise-looking finder that returns 0-2 bottles for a plausible
+ * answer is a silent conversion leak, so we assert against real inventory — not a
  * hand-counted snapshot that drifts. Re-baselined to in-stock per §11.11.
  */
 const FEELS: Record<FinderCategory, string[]> = {
   red: ['light', 'smooth', 'bold', 'unsure'],
   white: ['crisp', 'rounded', 'aromatic', 'unsure'],
   whisky: ['smooth', 'rich', 'smoky', 'unsure'],
-  // Phase 2 (not asserted here):
-  sparkling: [], gin: [], spirits: [], sake: [],
+  rose: ['crisp', 'fruity', 'unsure'],
+  sparkling: ['festive', 'fine', 'unsure'],
+  gin: ['classic', 'modern', 'unsure'],
+  spirits: ['light', 'smooth', 'rich', 'unsure'],
+  sake: ['fragrant', 'clean', 'unsure'],
 };
 
-describe('finder coverage — no dead ends (Phase 1)', () => {
+// Spirits Layer-1 asks TYPE first (axis1); without a type the pool is every spirit, which
+// is fine for a coverage floor. We pass no axis1 so the feel alone must still clear ≥3.
+const ALL_CATEGORIES = [
+  'red', 'white', 'whisky', 'rose', 'sparkling', 'gin', 'spirits', 'sake',
+] as FinderCategory[];
+
+describe('finder coverage — no dead ends (all 8 categories)', () => {
   const all = getAllProducts();
 
-  for (const cat of ['red', 'white', 'whisky'] as FinderCategory[]) {
+  for (const cat of ALL_CATEGORIES) {
     for (const feel of FEELS[cat]) {
       it(`${cat} / "${feel}" returns ≥3 bottles`, () => {
         const a: Answers = { category: cat, tasteFeel: feel };

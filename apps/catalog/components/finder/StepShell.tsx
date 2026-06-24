@@ -23,6 +23,8 @@ interface StepShellProps {
   totalSteps: number;
   /** Question shown above the cards. */
   title: string;
+  /** Optional one-line "what's this?" explainer (Layer-2 deep-dive steps). */
+  hint?: string;
   /** Href to the previous step (or intro). */
   backHref: string;
   /** When set, render a "No preference / Skip" link to this href. */
@@ -34,6 +36,7 @@ export function StepShell({
   stepNumber,
   totalSteps,
   title,
+  hint,
   backHref,
   skipHref,
   children,
@@ -75,9 +78,15 @@ export function StepShell({
       </div>
 
       {/* Question */}
-      <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-        {title}
-      </h1>
+      <div className="flex flex-col gap-2">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          {title}
+        </h1>
+        {/* Layer-2 "what's this?" explainer — plain-language gloss of the sommelier term. */}
+        {hint ? (
+          <p className="text-base text-muted-foreground">{hint}</p>
+        ) : null}
+      </div>
 
       {/* Option cards */}
       {children}

@@ -22,31 +22,47 @@ describe('question config', () => {
         .forEach(s => expect(s.optional).toBe(true));
     }
   });
-  // Regression (Layer-1 plain-language redesign): red (and white, see TASK 6) no
-  // longer ask the body(axis1)/character(axis2) sommelier questions — they ask a
-  // single plain `tasteFeel` step instead. Only sparkling still uses the body/
-  // character axes. Asserting axis1/axis2 on red here would lock in the now-replaced
-  // jargon flow (Rule 5). All three colours still carry a flavor step.
-  it('sparkling still has a body axis1 + character axis2; all wine colours have a flavor step', () => {
-    const sparkFields = stepsFor('sparkling').map(s => s.field);
-    expect(sparkFields).toContain('axis1');
-    expect(sparkFields).toContain('axis2');
+  // Rule 5 (Phase-2 plain-language redesign): sparkling NO LONGER asks the body(axis1)/
+  // character(axis2) sommelier questions — like red & white it now asks a single plain
+  // `tasteFeel` step (festive/fine, TASK A). The old assertion ("sparkling still has a
+  // body axis1 + character axis2") locked in the now-replaced jargon flow, so it was
+  // rewritten to assert the new plain-language flow. All three colours still carry a
+  // flavor step.
+  it('all wine colours (red/white/sparkling) use a plain tasteFeel step instead of body/character axes', () => {
     for (const c of ['red','white','sparkling'] as const) {
-      expect(stepsFor(c).map(s => s.field)).toContain('flavorChips');
-    }
-  });
-  it('red & white use a plain tasteFeel step instead of body/character axes', () => {
-    for (const c of ['red','white'] as const) {
       const fields = stepsFor(c).map(s => s.field);
       expect(fields).toContain('tasteFeel');
       expect(fields).not.toContain('axis1');
       expect(fields).not.toContain('axis2');
+      expect(fields).toContain('flavorChips');
     }
   });
-  it('gin has axis1 but no axis2', () => {
+  // Rule 5 (Phase-2 TASK B): gin moved off the axis1 classic/contemporary step to a plain
+  // `tasteFeel` step (classic/modern). The old check ("gin has axis1 but no axis2") locked
+  // in the replaced field, so it was rewritten to assert the plain-language flow.
+  it('gin uses a plain tasteFeel step (no axis1/axis2)', () => {
     const fields = stepsFor('gin').map(s => s.field);
-    expect(fields).toContain('axis1');
+    expect(fields).toContain('tasteFeel');
+    expect(fields).not.toContain('axis1');
     expect(fields).not.toContain('axis2');
+  });
+  // TASK A (Phase-2 spirits): spirits keeps the TYPE question (axis1) as step 1 of the
+  // taste part and adds ONE generic plain feel step (tasteFeel) after it.
+  it('spirits Layer-1 = occasion, budget, type(axis1), feel(tasteFeel), flavor', () => {
+    const fields = stepsFor('spirits').map(s => s.field);
+    expect(fields).toEqual(['occasion','budget','axis1','tasteFeel','flavorChips']);
+  });
+  // TASK B (Phase-2 sake): sake Layer-1 = occasion, budget, sub-type(axis1), aroma(tasteFeel),
+  // serve(serve), flavor. Replaces the old single sweetness(axis1) step.
+  it('sake Layer-1 = occasion, budget, type(axis1), aroma(tasteFeel), serve(serve), flavor', () => {
+    const fields = stepsFor('sake').map(s => s.field);
+    expect(fields).toEqual(['occasion','budget','axis1','tasteFeel','serve','flavorChips']);
+  });
+  it('sake has a serve step with chilled/warm/either', () => {
+    const serve = stepsFor('sake').find(s => s.field === 'serve');
+    expect(serve).toBeTruthy();
+    const tokens = serve!.options.map(o => o.token);
+    expect(tokens).toEqual(expect.arrayContaining(['chilled','warm','either']));
   });
   it('flavor step is multi-select with ≥4 chips', () => {
     const flavor = stepsFor('red').find(s => s.field === 'flavorChips')!;
@@ -68,16 +84,17 @@ describe('question config', () => {
     expect(tokens).toEqual(['citrus','dark-fruit','earthy','floral','mineral','nutty','oak','red-fruit','smoky','spice','stone-fruit','tropical']);
     expect(flavor.options.every(o=>o.icon)).toBe(true);
   });
-  // Regression (Layer-1 redesign): red no longer has an axis1 body step — its taste
-  // question is the plain `tasteFeel` step. Assert icons on budget + tasteFeel for red
-  // (and keep a body-axis icon check on sparkling, which still uses axis1).
-  it('budget + tasteFeel (red) and body axis1 (sparkling) options carry icons', () => {
+  // Rule 5 (Phase-2 redesign): sparkling no longer has an axis1 body step — like red it
+  // uses the plain `tasteFeel` step. The old check ("body axis1 (sparkling) options carry
+  // icons") referenced the removed axis1 step, so it was rewritten to assert icons on the
+  // tasteFeel step for both red and sparkling.
+  it('budget + tasteFeel (red & sparkling) options carry icons', () => {
     for (const f of ['budget','tasteFeel'] as const) {
       const step = stepsFor('red').find(s=>s.field===f)!;
       expect(step.options.every(o=>o.icon)).toBe(true);
     }
-    const sparkBody = stepsFor('sparkling').find(s=>s.field==='axis1')!;
-    expect(sparkBody.options.every(o=>o.icon)).toBe(true);
+    const sparkFeel = stepsFor('sparkling').find(s=>s.field==='tasteFeel')!;
+    expect(sparkFeel.options.every(o=>o.icon)).toBe(true);
   });
   it('retired flavor tokens earth/vanilla are gone', () => {
     const tokens = stepsFor('red').find(s=>s.field==='flavorChips')!.options.map(o=>o.token);
@@ -143,10 +160,25 @@ describe('deepDiveStepsFor (opt-in sommelier branch)', () => {
   it('thin categories (gin/sake) have a shorter deep-dive than wine', () => {
     expect(deepDiveStepsFor('gin').length).toBeLessThan(deepDiveStepsFor('red').length);
   });
+  // Layer-2 "what's this?" explainers (P2): every opt-in deep-dive step carries a
+  // plain-language `hint` so a shopper who opted in still gets the sommelier term
+  // explained inline. Deep-dive steps are all `optional`, so this also guards that
+  // each optional deep-dive step has a non-empty one-line explainer.
+  it('every deep-dive step carries a non-empty plain-language hint', () => {
+    for (const c of ALL) {
+      for (const s of deepDiveStepsFor(c)) {
+        expect(typeof s.hint).toBe('string');
+        expect((s.hint ?? '').trim().length).toBeGreaterThan(0);
+      }
+    }
+  });
+
   it('core stepsFor is unchanged (no deep-dive fields leak into core)', () => {
     // tasteFeel is a CORE Layer-1 field (red/white plain-language step), not a deep-dive
     // field — added to the allowlist when red/white moved off body/character axes.
+    // 'serve' is a CORE Layer-1 sake field (chilled/warm, Phase-2 TASK B) — added here when
+    // sake replaced its single sweetness step with sub-type/aroma/serve.
     for (const c of ALL) for (const s of stepsFor(c))
-      expect(['occasion','budget','axis1','axis2','flavorChips','food','tasteFeel']).toContain(s.field);
+      expect(['occasion','budget','axis1','axis2','flavorChips','food','tasteFeel','serve']).toContain(s.field);
   });
 });

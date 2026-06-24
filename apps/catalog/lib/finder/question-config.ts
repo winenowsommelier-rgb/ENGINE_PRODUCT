@@ -10,6 +10,9 @@ export type StepField =
   // Plain-language taste-feel step (Layer-1, no jargon). Resolves to an archetype
   // via taste-feel.ts; replaces the body/character axis1/axis2 questions for red & white.
   | 'tasteFeel'
+  // Sake serve preference (Layer-1, chilled/warm/either — TASK B). Core field, written by
+  // ChoiceCards; needs a case in withAnswer's switch or the step writes nothing.
+  | 'serve'
   // ── Opt-in sommelier deep-dive fields (separate from the core flow) ──
   | 'acidity'
   | 'tannin'
@@ -31,6 +34,7 @@ export interface QuestionStep {
   options: StepOption[]; // selectable options
   multi?: boolean; // true for flavor chips (writes string[])
   optional?: boolean; // true for taste steps → UI shows "No preference / Skip"
+  hint?: string; // optional one-line explainer shown on Layer-2 deep-dive steps
 }
 
 // ── Shared steps (every category, in this order after category is chosen) ──
@@ -57,31 +61,6 @@ const BUDGET_STEP: QuestionStep = {
     { token: '2', label: '฿3,000–7,000', icon: '💳' },
     { token: '3', label: '฿7,000–15,000', icon: '💎' },
     { token: '4', label: '฿15,000+', icon: '👑' },
-  ],
-};
-
-// ── Wine taste steps (red, white, sparkling) ──
-const WINE_BODY_STEP: QuestionStep = {
-  id: 'body',
-  field: 'axis1',
-  title: 'How full-bodied do you like it?',
-  optional: true,
-  options: [
-    { token: 'light', label: 'Light & easy', icon: '🪶' },
-    { token: 'medium', label: 'Medium-bodied', icon: '⚖️' },
-    { token: 'bold', label: 'Bold & full', icon: '🍷' },
-  ],
-};
-
-const WINE_CHARACTER_STEP: QuestionStep = {
-  id: 'character',
-  field: 'axis2',
-  title: 'What character do you prefer?',
-  optional: true,
-  options: [
-    { token: 'fruity', label: 'Fruit-forward', icon: '🍓' },
-    { token: 'earthy', label: 'Earthy & savory', icon: '🍂' },
-    { token: 'balanced', label: 'Balanced', icon: '⚖️' },
   ],
 };
 
@@ -113,6 +92,38 @@ const WHITE_FEEL_STEP: QuestionStep = {
     { token: 'crisp', label: 'Crisp & refreshing', icon: '⚡' },
     { token: 'rounded', label: 'Smooth & rounded', icon: '🫧' },
     { token: 'aromatic', label: 'Aromatic & floral', icon: '🌸' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
+  ],
+};
+
+// Rosé plain-language taste-feel step (Layer-1, no jargon). Body/acidity-led framing
+// (crisp & dry vs fruity & soft), NOT sweetness — rosé's sweetness is 0/95 in stock (a DEAD
+// field). crisp → crisp-dry-rose (lean Provence-style, Light/High); fruity → fruity-easy-rose
+// (riper New-World, Medium/Medium). 'unsure' → null → CROWD_PLEASER.rose.
+const ROSE_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'Crisp & dry, or fruity & soft?',
+  optional: true,
+  options: [
+    { token: 'crisp', label: 'Crisp & dry', icon: '🌸' },
+    { token: 'fruity', label: 'Fruity & soft', icon: '🍓' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
+  ],
+};
+
+// Sparkling plain-language taste-feel step (Layer-1, no jargon). Style-led framing
+// (festive vs fine), NOT body/dosage. festive → fresh-festive-sparkling (light, fruity,
+// Prosecco-style); fine → fine-traditional-sparkling (full, toasty, Champagne-style).
+// REPLACES the old body(axis1)/character(axis2) wine steps for sparkling.
+const SPARKLING_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: "What's the vibe?",
+  optional: true,
+  options: [
+    { token: 'festive', label: 'Light & fun', icon: '🎉' },
+    { token: 'fine', label: 'Fine & classic', icon: '✨' },
     { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
   ],
 };
@@ -175,15 +186,19 @@ const WHISKY_FEEL_STEP: QuestionStep = {
   ],
 };
 
-// ── Gin taste step (axis1 only) ──
-const GIN_STYLE_STEP: QuestionStep = {
-  id: 'style',
-  field: 'axis1',
-  title: 'Classic or contemporary?',
+// ── Gin plain-language taste-feel step (Layer-1, no jargon). Style-led framing
+// (classic vs modern), writing `tasteFeel` (not axis1). classic → classic-juniper-gin
+// (London Dry); modern → contemporary-botanical-gin. Drives a rank-only keyword lean in
+// scoring.ts (ginStyleBump reads tasteFeel). REPLACES the old axis1 classic/contemporary step.
+const GIN_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'Classic or modern?',
   optional: true,
   options: [
-    { token: 'classic', label: 'Classic / London Dry', icon: '🍸' },
-    { token: 'contemporary', label: 'Contemporary / botanical', icon: '🌿' },
+    { token: 'classic', label: 'Classic & junipery', icon: '🍸' },
+    { token: 'modern', label: 'Modern & aromatic', icon: '🌿' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
   ],
 };
 
@@ -202,26 +217,71 @@ const SPIRITS_TYPE_STEP: QuestionStep = {
   ],
 };
 
-// ── Sake & Asian taste step (axis1 = sweetness) ──
-const SAKE_SWEETNESS_STEP: QuestionStep = {
-  id: 'sweetness',
-  field: 'axis1',
-  title: 'Dry or sweet?',
+// ── Spirits (other) plain feel step (TASK A). ONE generic feel after the TYPE question,
+// writing `tasteFeel` (light/smooth/rich/aged). light/smooth → clean-versatile-vodka;
+// rich/aged → warm-aged-spirit (taste-feel.ts). 'rich'/'aged' also earn a positive-only
+// age/grade rank lean in scoring.ts (spiritsFeelScore). 'unsure' → crowd-pleaser.
+const SPIRITS_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'How do you want it?',
   optional: true,
   options: [
-    { token: 'dry', label: 'Dry', icon: '🍶' },
-    { token: 'sweet', label: 'Sweet / fruity', icon: '🍯' },
-    { token: 'any', label: 'No preference', icon: '🤷' },
+    { token: 'light', label: 'Light & clean', icon: '💧' },
+    { token: 'smooth', label: 'Smooth', icon: '🥃' },
+    { token: 'rich', label: 'Rich & aged', icon: '🔥' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
   ],
 };
 
-const WINE_STEPS: QuestionStep[] = [
-  OCCASION_STEP,
-  BUDGET_STEP,
-  WINE_BODY_STEP,
-  WINE_CHARACTER_STEP,
-  FLAVOR_STEP,
-];
+// ── Sake & Asian Layer-1 (TASK B). Replaces the single sweetness step with sub-type →
+// aroma → serve. axis1 sub-type is display/filter only (category_type already filters the
+// pool); aroma writes `tasteFeel`; serve writes the new `serve` field. The dry/sweet
+// sweetness signal moves to the opt-in Layer-2 path (sakeSweetness in scoring.ts).
+// ──
+
+// Sake sub-type (axis1). Rice sake / Shochu / Plum (umeshu). No scoring needed — the pool
+// is already category-filtered; this just lets the shopper narrow within Sake & Asian.
+const SAKE_TYPE_STEP: QuestionStep = {
+  id: 'type',
+  field: 'axis1',
+  title: 'What kind?',
+  optional: true,
+  options: [
+    { token: 'sake', label: 'Rice sake', icon: '🍶' },
+    { token: 'shochu', label: 'Shochu', icon: '🍶' },
+    { token: 'umeshu', label: 'Plum (umeshu)', icon: '🍑' },
+  ],
+};
+
+// Sake aroma feel (tasteFeel). Plain words, NO junmai/ginjo jargon: fragrant & fruity →
+// fragrant-sweet-sake; clean & dry → crisp-dry-sake (taste-feel.ts). The structured
+// `variety` drives a rank lean (sakeAromaScore). 'unsure' → crowd-pleaser.
+const SAKE_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'Fragrant or clean?',
+  optional: true,
+  options: [
+    { token: 'fragrant', label: 'Fragrant & fruity', icon: '🌸' },
+    { token: 'clean', label: 'Clean & dry', icon: '💧' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
+  ],
+};
+
+// Sake serve preference (serve). Chilled / warm / either. Optional preference; writes the
+// new `serve` field (URL param 'sv', see answers.ts).
+const SAKE_SERVE_STEP: QuestionStep = {
+  id: 'serve',
+  field: 'serve',
+  title: 'Chilled or warm?',
+  optional: true,
+  options: [
+    { token: 'chilled', label: 'Chilled', icon: '❄️' },
+    { token: 'warm', label: 'Warm', icon: '♨️' },
+    { token: 'either', label: 'Either', icon: '🤷' },
+  ],
+};
 
 export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   // Red Layer-1 is plain-language: occasion → budget → taste-feel → flavor. No body/
@@ -230,13 +290,24 @@ export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   // White Layer-1 is plain-language too: occasion → budget → taste-feel (acidity-led) →
   // flavor. (sparkling still uses the body/character axes.)
   white: [OCCASION_STEP, BUDGET_STEP, WHITE_FEEL_STEP, FLAVOR_STEP],
-  sparkling: WINE_STEPS,
+  // Rosé Layer-1 (Phase-2): occasion → budget → taste-feel (body/acidity-led, crisp/fruity) →
+  // flavor. Mirrors the white flow; sweetness is NOT asked (0/95 in stock — dead field).
+  rose: [OCCASION_STEP, BUDGET_STEP, ROSE_FEEL_STEP, FLAVOR_STEP],
+  // Sparkling Layer-1 is plain-language too: occasion → budget → taste-feel (style-led,
+  // festive/fine) → flavor. Replaces the old body/character axis1/axis2 wine steps.
+  sparkling: [OCCASION_STEP, BUDGET_STEP, SPARKLING_FEEL_STEP, FLAVOR_STEP],
   // Whisky Layer-1: occasion → budget → origin → plain taste-feel → flavor. The feel step
   // REPLACES the old smoky/smooth axis2 style step but KEEPS origin (axis1 → country boost).
   whisky: [OCCASION_STEP, BUDGET_STEP, WHISKY_ORIGIN_STEP, WHISKY_FEEL_STEP, FLAVOR_STEP],
-  gin: [OCCASION_STEP, BUDGET_STEP, GIN_STYLE_STEP],
-  spirits: [OCCASION_STEP, BUDGET_STEP, SPIRITS_TYPE_STEP],
-  sake: [OCCASION_STEP, BUDGET_STEP, SAKE_SWEETNESS_STEP],
+  // Gin Layer-1 is plain-language: occasion → budget → taste-feel (classic/modern) → flavor.
+  gin: [OCCASION_STEP, BUDGET_STEP, GIN_FEEL_STEP, FLAVOR_STEP],
+  // Spirits Layer-1 (TASK A): occasion → budget → TYPE (axis1) → plain feel (tasteFeel) →
+  // flavor. Keeps the TYPE question, adds ONE generic feel step after it.
+  spirits: [OCCASION_STEP, BUDGET_STEP, SPIRITS_TYPE_STEP, SPIRITS_FEEL_STEP, FLAVOR_STEP],
+  // Sake Layer-1 (TASK B): occasion → budget → sub-type (axis1) → aroma (tasteFeel) →
+  // serve (serve) → flavor. Replaces the old single sweetness(axis1) step. Sweetness is now
+  // an opt-in Layer-2 path (sakeSweetness in scoring.ts), still keyed off axis1 in deep-dive.
+  sake: [OCCASION_STEP, BUDGET_STEP, SAKE_TYPE_STEP, SAKE_FEEL_STEP, SAKE_SERVE_STEP, FLAVOR_STEP],
 };
 
 /** Ordered steps for a category (after Step 1 category selection). */
@@ -258,6 +329,7 @@ const WINE_ACIDITY_STEP: QuestionStep = {
   id: 'acidity',
   field: 'acidity',
   title: 'How should it feel in your mouth?',
+  hint: 'Acidity is the fresh, mouth-watering zing — high feels crisp, low feels soft and round.',
   optional: true,
   options: [
     { token: 'crisp', label: 'Crisp & refreshing', icon: '⚡' },
@@ -271,6 +343,7 @@ const WINE_TANNIN_STEP: QuestionStep = {
   id: 'tannin',
   field: 'tannin',
   title: 'How much grip and structure do you like?',
+  hint: 'Tannin is the grippy, drying feel in bigger reds — firmer means more structure.',
   optional: true,
   options: [
     { token: 'firm', label: 'Firm & gripping', icon: '🧱' },
@@ -290,6 +363,7 @@ const WINE_GRAPE_RED_STEP: QuestionStep = {
   id: 'grape',
   field: 'grape',
   title: 'Is there a grape you gravitate toward?',
+  hint: 'The grape behind the wine — pick one you enjoy, or let us surprise you.',
   optional: true,
   options: [
     { token: 'cabernet', label: 'Cabernet Sauvignon', icon: '🍇' },
@@ -310,6 +384,7 @@ const WINE_GRAPE_WHITE_STEP: QuestionStep = {
   id: 'grape',
   field: 'grape',
   title: 'Is there a grape you gravitate toward?',
+  hint: 'The grape behind the wine — pick one you enjoy, or let us surprise you.',
   optional: true,
   options: [
     { token: 'chardonnay', label: 'Chardonnay', icon: '🍐' },
@@ -329,6 +404,7 @@ const WINE_GRAPE_SPARKLING_STEP: QuestionStep = {
   id: 'grape',
   field: 'grape',
   title: 'Is there a grape you gravitate toward?',
+  hint: 'The grape behind the wine — pick one you enjoy, or let us surprise you.',
   optional: true,
   options: [
     { token: 'chardonnay', label: 'Chardonnay (Blanc de Blancs)', icon: '🍐' },
@@ -344,6 +420,7 @@ const WINE_AGE_STEP: QuestionStep = {
   id: 'age',
   field: 'age',
   title: 'Drinking now, or something with some age?',
+  hint: 'Younger wines are bright and fruity; older ones are mellower and more developed.',
   optional: true,
   options: [
     { token: 'young', label: 'Young & vibrant', icon: '🌱' },
@@ -357,6 +434,7 @@ const ADVENTURE_STEP: QuestionStep = {
   id: 'adventure',
   field: 'adventure',
   title: 'How adventurous are you feeling?',
+  hint: 'How far from the classics you want to roam.',
   optional: true,
   options: [
     { token: 'classic', label: 'Stick to a classic', icon: '🏛️' },
@@ -371,6 +449,7 @@ const WHISKY_PEAT_STEP: QuestionStep = {
   id: 'peat',
   field: 'peat',
   title: 'How much smoke and peat do you want?',
+  hint: 'Peat is the campfire-smoke character in some whiskies — from none to big and smoky.',
   optional: true,
   options: [
     { token: 'none', label: 'None — clean & unpeated', icon: '🧼' },
@@ -384,6 +463,7 @@ const WHISKY_AGE_STEP: QuestionStep = {
   id: 'age',
   field: 'age',
   title: 'Younger and lively, or older and mellow?',
+  hint: 'Younger whiskies are brighter and livelier; older ones are mellower and more developed.',
   optional: true,
   options: [
     { token: 'young', label: 'Younger & lively', icon: '🌱' },
@@ -419,6 +499,9 @@ const WINE_DEEP_DIVE_SPARKLING: QuestionStep[] = [
 const DEEP_DIVE_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   red: WINE_DEEP_DIVE_RED,
   white: WINE_DEEP_DIVE_WHITE,
+  // Rosé deep-dive: SHORT (acidity is the discriminator rosé leads on, plus adventure). No
+  // grape step — rosé variety is a blend signal, not a single-grape pick like red/white.
+  rose: [WINE_ACIDITY_STEP, ADVENTURE_STEP],
   sparkling: WINE_DEEP_DIVE_SPARKLING,
   whisky: [WHISKY_PEAT_STEP, WHISKY_AGE_STEP, ADVENTURE_STEP],
   // Thin categories — kept deliberately short (gin MUST be shorter than red).

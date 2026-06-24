@@ -330,23 +330,26 @@ describe('scoreProducts', () => {
     expect(out.products.length).toBe(2); // both kept; balanced adds nothing
   });
 
-  // ── W3: gin. Style is a RANK-ONLY keyword lean; and gin (no gate-able taste term)
-  // must NOT be falsely flagged "Closest matches" when the pool is genuinely fine. ──
+  // ── W3 + TASK B: gin. Style is a RANK-ONLY keyword lean; and gin (no gate-able taste
+  // term) must NOT be falsely flagged "Closest matches" when the pool is genuinely fine.
+  // Rule 5 (Phase-2 rewire): these tests moved from axis1 (classic/contemporary) to the
+  // plain `tasteFeel` step (classic/modern). ginStyleBump now reads a.tasteFeel; asserting
+  // axis1 here would lock in the now-replaced field. Keyword logic is unchanged. ──
   const G = ({sku, ...o}:any)=>({ price:1500, is_in_stock:true, category_group:'Spirits', category_type:'Gin', sku:'LGN'+(sku||'x'), ...o });
   it('gin: a clean in-stock/in-budget pool is NOT degraded (W3 label fix)', () => {
     const pool = [G({sku:'1'}), G({sku:'2'}), G({sku:'3'}), G({sku:'4'})];
-    const out = scoreProducts({ category:'gin', axis1:'classic' } as any, pool as any);
+    const out = scoreProducts({ category:'gin', tasteFeel:'classic' } as any, pool as any);
     expect(out.products.length).toBeGreaterThanOrEqual(4);
     expect(out.degraded).toBe(false); // gin has no gate-able taste term → never "closest matches"
   });
   it('gin classic: a "London Dry" gin out-ranks a plain one (rank-only keyword lean)', () => {
     const pool = [G({sku:'plain', name:'Acme Gin'}), G({sku:'ld', name:'Acme London Dry Gin'})];
-    const out = scoreProducts({ category:'gin', axis1:'classic' } as any, pool as any);
+    const out = scoreProducts({ category:'gin', tasteFeel:'classic' } as any, pool as any);
     expect(out.products[0].sku).toBe('LGNld');
   });
-  it('gin contemporary: a botanical gin out-ranks a plain one', () => {
+  it('gin modern: a botanical gin out-ranks a plain one', () => {
     const pool = [G({sku:'plain', name:'Acme Gin'}), G({sku:'bot', name:'Acme Gin', desc_en_short:'A floral contemporary botanical style'})];
-    const out = scoreProducts({ category:'gin', axis1:'contemporary' } as any, pool as any);
+    const out = scoreProducts({ category:'gin', tasteFeel:'modern' } as any, pool as any);
     expect(out.products[0].sku).toBe('LGNbot');
   });
 
@@ -470,14 +473,79 @@ describe('scoreProducts', () => {
 
   // ── TASK 8: ginStyleBump must NOT read `classification` (Rule 12 — classification is a
   // stale TYPE duplicate). A 'classic' lean must score on name/desc keywords only; a junk
-  // or grape-like `classification` must contribute nothing. ──
+  // or grape-like `classification` must contribute nothing. (Rule 5 / TASK B: reads
+  // tasteFeel='classic' now, not axis1 — the Phase-2 rewired field.) ──
+  // ── TASK A (Phase-2 spirits): spiritsFeelScore. POSITIVE-ONLY age/grade lean. For
+  // tasteFeel 'rich'/'aged', an aged/reposado/VSOP/XO-marked bottle (name or desc keyword)
+  // scores +2; a plain bottle scores 0. 'light'/'smooth' impose no text requirement (small/
+  // neutral). Rank-only (additive), like ginStyleBump. ──
+  const SP = (o:any)=>({ price:2500, is_in_stock:true, category_group:'Spirits', category_type:'Rum', ...o });
+  it("spirits tasteFeel='rich' boosts an aged/reposado bottle above a plain one", () => {
+    const pool = [SP({ sku:'LRMplain', name:'Acme Rum' }),
+                  SP({ sku:'LRMaged', name:'Acme Añejo Reserva Rum' })];
+    const out = scoreProducts({ category:'spirits', tasteFeel:'rich' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LRMaged');
+  });
+  it("spirits tasteFeel='aged' boosts a VSOP/XO brandy via its description keyword", () => {
+    const B = (o:any)=>({ price:5000, is_in_stock:true, category_group:'Spirits', category_type:'Cognac', ...o });
+    const pool = [B({ sku:'LBRplain', name:'Acme Brandy', desc_en_short:'A young house style' }),
+                  B({ sku:'LBRvsop', name:'Acme Brandy', desc_en_short:'A rich VSOP blend' })];
+    const out = scoreProducts({ category:'spirits', tasteFeel:'aged' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LBRvsop');
+  });
+  it("spirits tasteFeel='rich' gives NO boost to a plain bottle (positive-only, no false uplift)", () => {
+    // neither bottle carries an age/grade keyword → spiritsFeelScore=0 for both → cheapest wins.
+    const pool = [SP({ sku:'LRMa', name:'Acme Rum', price:900 }),
+                  SP({ sku:'LRMb', name:'Acme Rum', price:2000 })];
+    const out = scoreProducts({ category:'spirits', tasteFeel:'rich' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LRMa'); // no age boost → tie broken cheapest-first
+  });
+  it("spirits tasteFeel='light' imposes no age-text requirement (plain bottle not penalized)", () => {
+    const pool = [SP({ sku:'LVKlight', category_type:'Vodka', name:'Acme Vodka' })];
+    const out = scoreProducts({ category:'spirits', tasteFeel:'light' } as any, pool as any);
+    expect(out.products.length).toBe(1); // kept, no crash, no age requirement
+  });
+
+  // ── TASK B (Phase-2 sake): sakeAromaScore. Reads the STRUCTURED `variety`: ginjo/daiginjo
+  // → fragrant class; junmai(without ginjo)/honjozo → clean class. +2 when the class matches
+  // a.tasteFeel ('fragrant'/'clean'). Missing variety → 0. ──
+  const SKv = (sku:string, variety?:string, o:any={})=>({
+    sku, price:4000, is_in_stock:true, variety, ...o,
+  });
+  it("sake tasteFeel='fragrant' boosts a 'Junmai Ginjo' above a 'Honjozo'", () => {
+    const pool = [SKv('LSKhonjo','Honjozo'), SKv('LSKginjo','Junmai Ginjo')];
+    const out = scoreProducts({ category:'sake', tasteFeel:'fragrant' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LSKginjo');
+  });
+  it("sake tasteFeel='clean' boosts a 'Honjozo' above a 'Daiginjo'", () => {
+    const pool = [SKv('LSKdai','Daiginjo'), SKv('LSKhonjo','Honjozo')];
+    const out = scoreProducts({ category:'sake', tasteFeel:'clean' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LSKhonjo');
+  });
+  it("sake tasteFeel='clean' boosts a plain 'Junmai' (no ginjo) as the clean class", () => {
+    const pool = [SKv('LSKginjo','Junmai Ginjo'), SKv('LSKjun','Junmai')];
+    const out = scoreProducts({ category:'sake', tasteFeel:'clean' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LSKjun');
+  });
+  it('sake: a product with no variety is NEUTRAL for the aroma feel (kept, not penalized)', () => {
+    const pool = [SKv('LSKa'), SKv('LSKb')]; // no variety on either
+    const out = scoreProducts({ category:'sake', tasteFeel:'fragrant' } as any, pool as any);
+    expect(out.products.length).toBe(2);
+  });
+  it('sake: existing sweetness (axis1) Layer-2 path is untouched by the aroma feel', () => {
+    // Regression guard: axis1=sweet still ranks a Sweet bottle first (sakeSweetness path).
+    const pool = [SK('LSKdry2', 'Very Dry'), SK('LSKsweet2', 'Sweet')];
+    const out = scoreProducts({ category:'sake', axis1:'sweet' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LSKsweet2');
+  });
+
   it('gin: ginStyleBump ignores classification (Rule 12) — keyword in classification scores 0', () => {
     // 'classic' keyword 'london' lives ONLY in classification on LGNcls. If ginStyleBump still
     // read classification it would win; since it must NOT, LGNname (keyword in name) leads.
     const Gx = (o:any)=>({ price:1500, is_in_stock:true, category_group:'Spirits', category_type:'Gin', ...o });
     const pool = [Gx({ sku:'LGNcls', name:'Acme Gin', classification:'London Dry Gin' }),
                   Gx({ sku:'LGNname', name:'Acme London Dry Gin', classification:'Wine product' })];
-    const out = scoreProducts({ category:'gin', axis1:'classic' } as any, pool as any);
+    const out = scoreProducts({ category:'gin', tasteFeel:'classic' } as any, pool as any);
     expect(out.products[0].sku).toBe('LGNname'); // classification 'London Dry' must NOT score
   });
 });

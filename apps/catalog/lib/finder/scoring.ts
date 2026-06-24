@@ -270,28 +270,75 @@ function wineCharacterScore(token: string | undefined, canonical: string[] | und
   return 0;
 }
 
-// GIN axis1 (style) → keyword signal for a RANK-ONLY lean (audit finding W3). Unlike
-// wine character there is NO structured field for classic vs contemporary gin, so this
-// reads name/description keywords (noisier). It is therefore kept RANK-ONLY (deep-dive
-// bump, never the taste-tier `s`): a keyword hit can re-order but must NOT clear the
-// quality gate. Data: 49 in-stock gins signal "london dry"; 125 signal a contemporary/
-// botanical/floral cue.
+// GIN tasteFeel (style) → keyword signal for a RANK-ONLY lean (audit finding W3). Unlike
+// wine character there is NO structured field for classic vs modern gin, so this reads
+// name/description keywords (noisier). It is therefore kept RANK-ONLY (deep-dive bump,
+// never the taste-tier `s`): a keyword hit can re-order but must NOT clear the quality
+// gate. Data: 49 in-stock gins signal "london dry"; 125 signal a contemporary/botanical/
+// floral cue.
+//
+// Phase-2 rewire (TASK B): gin Layer-1 moved from the axis1 classic/contemporary step to a
+// plain `tasteFeel` step (classic/modern). This reads a.tasteFeel now, mapping the 'modern'
+// token onto the same contemporary keyword branch (and 'classic' onto the london-dry branch)
+// — the keyword logic is unchanged, only the answer field + token name changed.
 const GIN_CLASSIC_KEYWORDS = ['london dry', 'london'];
 const GIN_CONTEMPORARY_KEYWORDS = ['contemporary', 'botanical', 'floral', 'citrus-forward', 'new western'];
 
 function ginStyleBump(a: Answers, p: PublicProduct): number {
-  if (a.category !== 'gin' || !a.axis1) return 0;
+  if (a.category !== 'gin' || !a.tasteFeel) return 0;
   // Rule 12: do NOT read p.classification — it is a stale TYPE duplicate (junk "Wine product"
   // for ~72 in-stock gins), never a real style signal. Name + descriptions only.
   const hay = norm(
     [p.name, p.desc_en_short, p.full_description].filter(Boolean).join(' '),
   );
   if (!hay) return 0;
-  if (a.axis1 === 'classic') return GIN_CLASSIC_KEYWORDS.some((k) => hay.includes(k)) ? 1 : 0;
-  if (a.axis1 === 'contemporary') {
+  if (a.tasteFeel === 'classic') return GIN_CLASSIC_KEYWORDS.some((k) => hay.includes(k)) ? 1 : 0;
+  if (a.tasteFeel === 'modern') {
     return GIN_CONTEMPORARY_KEYWORDS.some((k) => hay.includes(k)) ? 1 : 0;
   }
   return 0;
+}
+
+// SPIRITS (other) Layer-1 tasteFeel → POSITIVE-ONLY age/grade rank lean (TASK A). Spirits
+// have no structured body/acidity worth ranking on (unlike wine), so the 'rich'/'aged'
+// feel reads age/grade keywords from name + desc (reposado/añejo/VSOP/XO/aged/gran reserva/
+// 'year') — the same noisy-text approach as ginStyleBump, kept RANK-ONLY (deep-dive bump,
+// never the taste-tier `s`): a keyword hit re-orders but cannot clear the quality gate.
+// 'light'/'smooth' impose NO text requirement (they describe a clean unaged style, which is
+// the absence of these markers, not a positive keyword) → 0 here, so a plain bottle is
+// never penalized. Rule 12: name/desc only, NEVER classification.
+const SPIRITS_AGE_KEYWORDS = [
+  'reposado', 'añejo', 'anejo', 'vsop', 'xo', 'x.o', 'aged', 'gran reserva', 'year',
+];
+function spiritsFeelScore(a: Answers, p: PublicProduct): number {
+  if (a.category !== 'spirits') return 0;
+  if (a.tasteFeel !== 'rich' && a.tasteFeel !== 'aged') return 0;
+  const hay = norm([p.name, p.desc_en_short].filter(Boolean).join(' '));
+  if (!hay) return 0;
+  return SPIRITS_AGE_KEYWORDS.some((k) => hay.includes(k)) ? 2 : 0;
+}
+
+// SAKE Layer-1 tasteFeel → aroma class from the STRUCTURED `variety` (TASK B). Unlike the
+// spirits keyword lean this reads a structured field, so it is reliable: ginjo/daiginjo
+// signal the fragrant (aromatic/fruity) class; junmai (without ginjo) / honjozo signal the
+// clean (dry/crisp) class. +2 when the bottle's class matches the shopper's aroma feel
+// ('fragrant'/'clean'). Missing/unrecognised variety → 0 (neutral, never penalized).
+// Kept in the deep-dive bump (rank-only) so it re-orders but doesn't gate; the sweetness
+// (axis1) Layer-2 path in scoreProducts is untouched.
+function sakeVarietyClass(variety: string | undefined): 'fragrant' | 'clean' | null {
+  const v = norm(variety);
+  if (!v) return null;
+  // ginjo/daiginjo → fragrant. Check ginjo first so 'Junmai Ginjo' is fragrant, not clean.
+  if (v.includes('ginjo')) return 'fragrant'; // also matches 'daiginjo'
+  if (v.includes('junmai') || v.includes('honjozo')) return 'clean';
+  return null;
+}
+function sakeAromaScore(a: Answers, p: PublicProduct): number {
+  if (a.category !== 'sake') return 0;
+  if (a.tasteFeel !== 'fragrant' && a.tasteFeel !== 'clean') return 0;
+  const cls = sakeVarietyClass(p.variety);
+  if (!cls) return 0;
+  return cls === a.tasteFeel ? 2 : 0;
 }
 
 // Age scoring. vintage is a STRING at runtime ("Current vintage", "2005",
@@ -382,7 +429,10 @@ function deepDiveBump(a: Answers, p: PublicProduct): number {
     peatScore(a.peat, p.smokiness, p.name) +
     whiskyFeelSmokyBump(a, p) +
     prestigeBump(a, p) +
-    ginStyleBump(a, p)
+    ginStyleBump(a, p) +
+    // Phase-2 Layer-1 rank leans (additive, rank-only — never the taste-tier gate):
+    spiritsFeelScore(a, p) + // spirits 'rich'/'aged' → positive-only age/grade keyword lean
+    sakeAromaScore(a, p)     // sake 'fragrant'/'clean' → aroma class from structured variety
   );
 }
 
@@ -397,11 +447,18 @@ function deepDiveBump(a: Answers, p: PublicProduct): number {
 // NEVER an AND-filter. Only ~10 low-tannin reds exist, so requiring BOTH a Light body AND
 // Low tannin would starve the pool. A product that matches body but misses tannin (or vice
 // versa) still earns the half it matches. No-signal (missing/off-ladder) values score 0.
-const TASTE_FEEL_CATEGORIES = new Set(['red', 'white']);
-// Secondary nudge axis per category: red leans on tannin, white on acidity (acidity-led).
+// Rosé joins the body/acidity-led path legitimately: its archetypes carry body+acidity (no
+// tannin), so BODY is the discriminator (crisp=Light vs fruity=Medium) and acidity the nudge —
+// the SAME mechanism as white/sparkling. Rosé sweetness is 0/95 in stock so it is never scored.
+const TASTE_FEEL_CATEGORIES = new Set(['red', 'white', 'rose', 'sparkling']);
+// Secondary nudge axis per category: red leans on tannin, white & sparkling on acidity.
+// Sparkling archetypes have no structured tannin (definingAttributes carry body+acidity),
+// so BODY is the discriminator (festive=Light vs fine=Full) and acidity the soft nudge.
 const FEEL_SECONDARY_AXIS: Record<string, 'tannin' | 'acidity'> = {
   red: 'tannin',
   white: 'acidity',
+  rose: 'acidity', // rosé archetypes carry body+acidity (no tannin) → acidity is the nudge
+  sparkling: 'acidity',
 };
 
 // WHISKY Layer-1 tasteFeel='smoky' (spec §11.8). Positive-only smoky boost from REAL

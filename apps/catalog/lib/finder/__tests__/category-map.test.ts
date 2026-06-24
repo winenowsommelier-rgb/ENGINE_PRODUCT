@@ -9,6 +9,7 @@ const POOL = [
   P({ sku:'WRW001', classification:'Red Wine' }),
   P({ sku:'WWW001', classification:'White Wine' }),
   P({ sku:'WSP001', classification:'Champagne' }),
+  P({ sku:'WRS001', classification:'Rosé Wine' }), // WRS* → category_type 'Rosé Wine'
   P({ sku:'LGN001', classification:'Gin' }),
   P({ sku:'LRM001', classification:'Rum' }),
   P({ sku:'LWH001', classification:'Whisky' }),
@@ -23,8 +24,16 @@ describe('finderPrefilter', () => {
     expect(finderPrefilter(POOL as any, ans({category:'spirits'})).map(p=>p.sku)).toEqual(['LRM001']));
   it('sparkling returns Champagne, excludes still wine', () =>
     expect(finderPrefilter(POOL as any, ans({category:'sparkling'})).map(p=>p.sku)).toEqual(['WSP001']));
-  it('red excludes white/sparkling', () =>
+  it('red excludes white/sparkling/rosé', () =>
     expect(finderPrefilter(POOL as any, ans({category:'red'})).map(p=>p.sku)).toEqual(['WRW001']));
+  // ROSÉ (Phase-2): CATEGORY_MAP.rose matches category_type 'Rosé Wine' (WRS* prefix), and
+  // red/white must NOT pick it up.
+  it('rose returns Rosé Wine only (WRS*), excludes red/white/sparkling', () =>
+    expect(finderPrefilter(POOL as any, ans({category:'rose'})).map(p=>p.sku)).toEqual(['WRS001']));
+  it('rose product is NOT matched by red or white categories', () => {
+    expect(finderPrefilter(POOL as any, ans({category:'red'})).some(p=>p.sku==='WRS001')).toBe(false);
+    expect(finderPrefilter(POOL as any, ans({category:'white'})).some(p=>p.sku==='WRS001')).toBe(false);
+  });
   it('always excludes out-of-stock', () =>
     expect(finderPrefilter(POOL as any, ans({category:'red'})).some(p=>p.sku==='WRW999')).toBe(false));
   it('budget index 0 (Under ฿1,000) excludes a ฿1,500 wine; budget 1 includes it', () => {

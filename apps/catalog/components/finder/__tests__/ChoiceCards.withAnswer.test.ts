@@ -17,6 +17,14 @@ describe('withAnswer — single-value deep-dive fields', () => {
   }
 });
 
+// TASK B (Phase-2 sake): the new core `serve` field is a single-value string written by
+// ChoiceCards, same shape as tasteFeel. Without a case here the sake serve step writes nothing.
+describe('withAnswer — core sake serve field', () => {
+  it('writes serve', () => {
+    expect(withAnswer(base(), 'serve', 'warm').serve).toBe('warm');
+  });
+});
+
 describe('withAnswer — v1 fields still work', () => {
   it('writes axis1', () => {
     expect(withAnswer(base(), 'axis1', 'bold').axis1).toBe('bold');

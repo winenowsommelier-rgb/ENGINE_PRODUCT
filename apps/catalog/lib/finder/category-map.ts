@@ -20,6 +20,7 @@ const isGin = (p: PublicProduct) =>
 export const CATEGORY_MAP: Record<FinderCategory, CatRule> = {
   red:       { group: 'Wine', match: (p) => ctype(p) === 'red wine' },
   white:     { group: 'Wine', match: (p) => ctype(p) === 'white wine' },
+  rose:      { group: 'Wine', match: (p) => ctype(p) === 'rosé wine' },
   sparkling: { group: 'Wine', match: (p) => ctype(p) === 'sparkling & champagne' },
   whisky:    { group: 'Whisky' },
   gin:       { group: 'Spirits', match: (p) => isGin(p) },

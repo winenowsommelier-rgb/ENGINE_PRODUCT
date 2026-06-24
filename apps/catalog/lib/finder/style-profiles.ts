@@ -1,4 +1,5 @@
 import type { Answers, FinderCategory } from './answers';
+import { resolveArchetypeId } from './taste-feel';
 
 /**
  * Curated "style-profile first" archetype library. A finder run resolves to ONE
@@ -152,6 +153,47 @@ export const STYLE_PROFILES: StyleProfile[] = [
       a.category === 'white'
         ? (a.axis1 === 'bold' ? 3 : 0) + (a.axis2 === 'earthy' ? 1 : 0)
         : 0,
+  },
+
+  // ─── ROSÉ (tasteFeel: crisp | fruity) — BODY/ACIDITY-led, NEVER sweetness ───
+  // Rosé's structured sweetness is 0/95 in stock (a DEAD field), so these archetypes lead on
+  // body + acidity exactly like the white archetypes. crisp → the lean, high-acid Provence
+  // style; fruity → the riper, rounder New-World style.
+  {
+    id: 'crisp-dry-rose',
+    category: 'rose',
+    name: 'The Crisp Dry Rosé',
+    tagline: 'Pale, bone-dry, and bracingly fresh.',
+    expertNote:
+      'The Provençal benchmark: pale-salmon in the glass, bone-dry on the palate, and built on high acidity rather than fruit sweetness. Expect delicate red-berry, citrus, and a saline, almost mineral finish. Serve it well chilled — it is the definitive apéritif rosé and a natural at the summer table.',
+    definingAttributes: {
+      body: 'Light',
+      acidity: 'High',
+      typicalGrapes: ['Grenache', 'Cinsault', 'Syrah'],
+      typicalRegions: ['Provence', 'Loire Valley'],
+    },
+    foodGuidance: 'Salade niçoise, grilled prawns, goat cheese, Mediterranean mezze',
+    occasionFit: ['everyday', 'food'],
+    match: (a) =>
+      a.category === 'rose' ? (a.tasteFeel === 'crisp' ? 3 : 0) : 0,
+  },
+  {
+    id: 'fruity-easy-rose',
+    category: 'rose',
+    name: 'The Fruity Easy Rosé',
+    tagline: 'Riper, rounder, and easy to love.',
+    expertNote:
+      'A riper, New-World-leaning style with more flesh and a softer line of acidity — think strawberry, watermelon, and ripe peach over a gently rounded body. It is dry but generous, the crowd-pleasing rosé that flatters a barbecue or a sunny afternoon without asking much of you. Serve chilled.',
+    definingAttributes: {
+      body: 'Medium',
+      acidity: 'Medium',
+      typicalGrapes: ['Grenache', 'Pinot Noir', 'Syrah'],
+      typicalRegions: ['Mendoza', 'Marlborough'],
+    },
+    foodGuidance: 'Grilled chicken, charcuterie, spicy noodles, fresh fruit',
+    occasionFit: ['everyday', 'gift'],
+    match: (a) =>
+      a.category === 'rose' ? (a.tasteFeel === 'fruity' ? 3 : 0) : 0,
   },
 
   // ─── SPARKLING (axis1: light | medium | bold) ───
@@ -398,4 +440,18 @@ export function resolveProfile(a: Answers): StyleProfile | null {
   }
   // If nothing produced a positive signal, fall back to the first archetype.
   return best;
+}
+
+/**
+ * Resolve the archetype to DISPLAY as the result hero — the SAME id the scorer/grid
+ * ranks by (taste-feel.ts → resolveArchetypeId), so the headline can never contradict
+ * the bottles. The legacy resolveProfile() above scores match() over a.axis1/a.axis2,
+ * but the redesigned Layer-1 writes a.tasteFeel; using it for the hero produced a
+ * stale first-archetype fallback for every non-first pick (gin 'modern' → "Classic
+ * London Dry Gin", red 'bold' → "Bright & Elegant Red"). resolveArchetypeId falls back
+ * through CROWD_PLEASER for the all-neutral / whisky-origin-only path.
+ */
+export function resolveHeroProfile(a: Answers): StyleProfile | null {
+  const id = resolveArchetypeId(a.category, a.tasteFeel);
+  return STYLE_PROFILES.find((p) => p.id === id) ?? null;
 }

@@ -39,4 +39,21 @@ describe('answers URL codec', () => {
     const dec = decodeAnswers(new URLSearchParams(enc));
     expect(dec.tasteFeel).toBe('bold');
   });
+  // TASK B (Phase-2 sake): the new `serve` field (chilled/warm/either) must round-trip via 'sv'.
+  test('serve round-trips via URL params (sake chilled/warm)', () => {
+    const enc = encodeAnswers({ category: 'sake', serve: 'warm' });
+    const dec = decodeAnswers(new URLSearchParams(enc));
+    expect(dec.serve).toBe('warm');
+  });
+  test('serve omitted when unset (minimal round-trip clean)', () => {
+    const dec = decodeAnswers(new URLSearchParams(encodeAnswers({ category: 'sake' })));
+    expect(dec.serve).toBeUndefined();
+  });
+  // ROSÉ (Phase-2) — THE TRAP. decodeAnswers validates `cat` against a RUNTIME
+  // `CATEGORIES` array that tsc does NOT cross-check against the FinderCategory union.
+  // If 'rose' is added to the union but NOT to that array, cat=rose silently decodes to
+  // undefined → the result page redirects → the whole rosé journey dies with no error.
+  test('cat=rose decodes to the rose category (runtime CATEGORIES array guard)', () => {
+    expect(decodeAnswers(new URLSearchParams('cat=rose')).category).toBe('rose');
+  });
 });

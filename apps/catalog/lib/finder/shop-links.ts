@@ -52,6 +52,7 @@ export interface OriginField {
 const CATEGORY_SCOPE: Record<FinderCategory, { group: string; classValue?: string }> = {
   red:       { group: 'Wine',        classValue: 'Red Wine' },
   white:     { group: 'Wine',        classValue: 'White Wine' },
+  rose:      { group: 'Wine',        classValue: 'Rosé Wine' },
   sparkling: { group: 'Wine',        classValue: 'Sparkling & Champagne' },
   whisky:    { group: 'Whisky' },
   gin:       { group: 'Spirits',     classValue: 'Gin' },
@@ -63,6 +64,7 @@ const CATEGORY_SCOPE: Record<FinderCategory, { group: string; classValue?: strin
 const CATEGORY_LABEL: Record<FinderCategory, string> = {
   red: 'Red Wine',
   white: 'White Wine',
+  rose: 'Rosé',
   sparkling: 'Sparkling',
   whisky: 'Whisky',
   gin: 'Gin',
