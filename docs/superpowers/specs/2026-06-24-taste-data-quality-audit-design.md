@@ -154,11 +154,21 @@ column, the current value. System prompt rules:
 - **Auto-escalation:** a control cell with **n≥20** whose error rate exceeds
   **15% by Wilson lower-bound** (not raw point estimate) escalates to a full
   judge of that cell. Bounded and data-driven.
+- **Granularity note:** a "cell" is a (column × value × group × type) bucket; a
+  "type" is the coarser stratification unit for drawing the control sample. A
+  type can clear ≥20 populated rows while all its individual cells are <20.
+  The Wilson lower-bound and the n≥20 escalation gate are computed **per cell**;
+  control rows are *drawn* per type but *evaluated* per cell. The plan must state
+  this explicitly so the implementer does not compute rates over the tiny cells
+  §6 excludes.
 
 ## 7. Judge-calibration gate
 
-The 57 Extra-Dry + 22 hardware rows have a known-correct expected verdict written
-into the findings file. After the judge runs, compare its verdicts on these rows
+The deterministic-bug rows (Extra-Dry→Off-Dry and the non-beverage leak) have a
+known-correct expected verdict written into the findings file. The calibration
+set is **whatever Stage 2 actually flags at run time** — NOT the literal 57/22
+counts in §3, which may drift. (Re-derive; the spec's frozen numbers are
+illustrative.) After the judge runs, compare its verdicts on these rows
 to expectation. If the judge returns `confirm_correct` on a row known to be wrong
 (or vice-versa) above a small tolerance, the judge is **miscalibrated → the run
 is flagged and its verdicts are NOT trusted** until the prompt is fixed. This
