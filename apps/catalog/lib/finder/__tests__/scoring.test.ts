@@ -446,4 +446,38 @@ describe('scoreProducts', () => {
     const out = scoreProducts({ category:'white', tasteFeel:'crisp' } as any, pool as any);
     expect(out.products[0].sku).toBe('WWWlightLowAc');
   });
+
+  // ── TASK 8: grape scoring is WINE-ONLY (a spirit's `variety` is its base material, not a
+  // wine grape — e.g. a Cognac/Vodka may carry 'Ugni Blanc'/grape-like text). Gating on
+  // groupForProduct(p)==='Wine' so a spirit variety is NEVER read as a grape match. ──
+  it('grape: a SPIRIT whose variety looks grape-like is NOT boosted (grape applies to wine only)', () => {
+    // Both Vodkas; LVKgr carries a grape-family variety. Without the wine-gate it would get a
+    // +2 grape boost and win; WITH the gate it gets 0, so the cheaper bottle leads on price tie.
+    const V = (o:any)=>({ is_in_stock:true, category_group:'Spirits', category_type:'Vodka', ...o });
+    const pool = [V({ sku:'LVKgr', price:2000, variety:'Cabernet Sauvignon' }),
+                  V({ sku:'LVKplain', price:1000, variety:'Grain' })];
+    const out = scoreProducts({ category:'spirits', grape:'cabernet' } as any, pool as any);
+    // grape gives 0 to the spirit → no reorder → cheapest-first tiebreak wins.
+    expect(out.products[0].sku).toBe('LVKplain');
+  });
+  it('grape: a WINE with the same variety IS still boosted (gate does not break wine grape scoring)', () => {
+    // Regression guard for the gate: wine grape scoring must keep working.
+    const W = (o:any)=>({ price:1500, is_in_stock:true, category_group:'Wine', category_type:'Red Wine', ...o });
+    const pool = [W({ sku:'WRWplain', variety:'Merlot' }), W({ sku:'WRWcab', variety:'Cabernet Sauvignon' })];
+    const out = scoreProducts({ category:'red', grape:'cabernet' } as any, pool as any);
+    expect(out.products[0].sku).toBe('WRWcab');
+  });
+
+  // ── TASK 8: ginStyleBump must NOT read `classification` (Rule 12 — classification is a
+  // stale TYPE duplicate). A 'classic' lean must score on name/desc keywords only; a junk
+  // or grape-like `classification` must contribute nothing. ──
+  it('gin: ginStyleBump ignores classification (Rule 12) — keyword in classification scores 0', () => {
+    // 'classic' keyword 'london' lives ONLY in classification on LGNcls. If ginStyleBump still
+    // read classification it would win; since it must NOT, LGNname (keyword in name) leads.
+    const Gx = (o:any)=>({ price:1500, is_in_stock:true, category_group:'Spirits', category_type:'Gin', ...o });
+    const pool = [Gx({ sku:'LGNcls', name:'Acme Gin', classification:'London Dry Gin' }),
+                  Gx({ sku:'LGNname', name:'Acme London Dry Gin', classification:'Wine product' })];
+    const out = scoreProducts({ category:'gin', axis1:'classic' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LGNname'); // classification 'London Dry' must NOT score
+  });
 });

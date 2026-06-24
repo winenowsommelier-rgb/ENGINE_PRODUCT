@@ -4,7 +4,7 @@ import { finderPrefilter } from './category-map';
 import { foodChipMatches } from './food-chips';
 import { primaryValue, bucketForValue } from './scales';
 import { normalizeScale } from '@/lib/taste-adapter';
-import { typeForProduct } from '@/lib/category-groups';
+import { typeForProduct, groupForProduct } from '@/lib/category-groups';
 import { resolveArchetypeId } from './taste-feel';
 import { STYLE_PROFILES } from './style-profiles';
 import { isLikelyPeated } from './peated-distilleries';
@@ -277,8 +277,10 @@ const GIN_CONTEMPORARY_KEYWORDS = ['contemporary', 'botanical', 'floral', 'citru
 
 function ginStyleBump(a: Answers, p: PublicProduct): number {
   if (a.category !== 'gin' || !a.axis1) return 0;
+  // Rule 12: do NOT read p.classification — it is a stale TYPE duplicate (junk "Wine product"
+  // for ~72 in-stock gins), never a real style signal. Name + descriptions only.
   const hay = norm(
-    [p.name, p.classification, p.desc_en_short, p.full_description].filter(Boolean).join(' '),
+    [p.name, p.desc_en_short, p.full_description].filter(Boolean).join(' '),
   );
   if (!hay) return 0;
   if (a.axis1 === 'classic') return GIN_CLASSIC_KEYWORDS.some((k) => hay.includes(k)) ? 1 : 0;
@@ -367,7 +369,10 @@ function deepDiveBump(a: Answers, p: PublicProduct): number {
   return (
     intensityScore('acidity', a.acidity, p.acidity) +
     intensityScore('tannin', a.tannin, p.tannin) +
-    grapeScore(a.grape, p.variety) +
+    // Grape scoring is WINE-ONLY (Rule 12 / spec): a spirit's `variety` is its base material
+    // (grain, agave, sometimes a grape name like Ugni Blanc for Cognac) — NOT a wine grape.
+    // Gate on the canonical SKU-derived group so a spirit variety is never read as a grape.
+    (groupForProduct(p) === 'Wine' ? grapeScore(a.grape, p.variety) : 0) +
     ageScore(a.age, p.vintage) +
     adventureScore(a.adventure, p.region) +
     peatScore(a.peat, p.smokiness, p.name) +
