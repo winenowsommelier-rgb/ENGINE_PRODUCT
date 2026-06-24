@@ -55,3 +55,24 @@ def test_extract_designation_substring_landmine():
     assert extract_designation("Chablis 1er Cru, Vaillons", "White Wine") == "1er Cru"
     # longest-token-wins: 'Grand Cru' beats a bare 'Cru'
     assert extract_designation("Corton Grand Cru", "Red Wine") == "Grand Cru"
+
+
+def test_gap_report_is_readonly_and_complete(tmp_path):
+    import subprocess, sqlite3, json, sys
+    from pathlib import Path
+    db = Path("data/db/products.db")
+    if not db.exists():
+        import pytest; pytest.skip("live db absent")
+    before = db.stat().st_mtime
+    out = tmp_path / "rep.json"
+    r = subprocess.run([sys.executable, "scripts/masterfile_gap_report.py",
+                        "--db", str(db), "--out", str(out)],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    assert db.stat().st_mtime == before, "gap report MUST NOT touch the DB"
+    rep = json.loads(out.read_text())
+    for sect in ("sku_reconciliation", "field_fill", "field_conflicts",
+                 "item_type_buckets", "score_preview", "designation_gap"):
+        assert sect in rep, f"missing section: {sect}"
+    rec = rep["sku_reconciliation"]
+    assert rec["matched"] + rec["mf_only_unique"] + rec["dup_artifacts"] == rec["mf_distinct"]
