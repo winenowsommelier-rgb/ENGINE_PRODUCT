@@ -402,6 +402,15 @@ def test_smokiness_not_killed_by_inapplicable(tmp_path):
     tal = [f for f in result["suspects"] if f["sku"] == "LWH0155BU"]
     assert tal and tal[0]["rule"] == "peated_false_negative"
 
+def test_census_suspects_carry_group_type_for_judge(tmp_path):
+    # REGRESSION: census-built suspects MUST carry group/type/name so the live
+    # judge prompt builds without KeyError on the first paid row (incl. canary).
+    p = str(tmp_path / "t.db"); _mk_db(p)
+    result = A.run_census(p)
+    s = result["suspects"][0]
+    assert "group" in s and "type" in s and "name" in s
+    A.build_judge_prompt(s)   # must not raise KeyError
+
 def test_db_opened_readonly_cannot_write(tmp_path):
     p = str(tmp_path / "t.db"); _mk_db(p)
     conn = A.open_ro(p)
@@ -470,9 +479,19 @@ def run_census(db_path) -> dict:
                 continue
             populated[col] += 1
             f = _triage_cell(r, col)
-            (suspects if f else clean).append(f or {
-                "sku": r["sku"], "column": col, "current_value": r[col],
-                "group": r["group"], "type": r["type"], "rule": None})
+            if f:
+                # CRITICAL: enrich the finding so suspect dicts carry the SAME
+                # keys as clean dicts (group/type/name). Without this the live
+                # judge (and the canary) KeyError on build_judge_prompt -> the
+                # very first paid row crashes and the Rule-10 gate never runs.
+                f.update({"group": r["group"], "type": r["type"],
+                          "name": r.get("name", "")})
+                suspects.append(f)
+            else:
+                clean.append({"sku": r["sku"], "column": col,
+                              "current_value": r[col], "group": r["group"],
+                              "type": r["type"], "name": r.get("name", ""),
+                              "rule": None})
     return {"populated": populated, "suspects": suspects, "clean": clean,
             "total_rows": len(rows)}
 
@@ -539,7 +558,8 @@ def test_write_outputs_schema(tmp_path):
                             "group": "Wine", "type": "Sparkling & Champagne"}],
               "clean": []}
     report, findings = A.build_outputs(census, judged=None)
-    assert "sweetness" in report and "Extra Dry" in report or "inversion" in report
+    assert "sweetness" in report
+    assert "inversion" in report          # the rule name appears in the per-column breakdown
     assert findings["suspects"][0]["sku"] == "WSP0009AA"
     assert findings["meta"]["total_rows"] == 4
 ```
