@@ -197,6 +197,23 @@ const SPIRITS_TYPE_STEP: QuestionStep = {
   ],
 };
 
+// ── Spirits (other) plain feel step (TASK A). ONE generic feel after the TYPE question,
+// writing `tasteFeel` (light/smooth/rich/aged). light/smooth → clean-versatile-vodka;
+// rich/aged → warm-aged-spirit (taste-feel.ts). 'rich'/'aged' also earn a positive-only
+// age/grade rank lean in scoring.ts (spiritsFeelScore). 'unsure' → crowd-pleaser.
+const SPIRITS_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'How do you want it?',
+  optional: true,
+  options: [
+    { token: 'light', label: 'Light & clean', icon: '💧' },
+    { token: 'smooth', label: 'Smooth', icon: '🥃' },
+    { token: 'rich', label: 'Rich & aged', icon: '🔥' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
+  ],
+};
+
 // ── Sake & Asian taste step (axis1 = sweetness) ──
 const SAKE_SWEETNESS_STEP: QuestionStep = {
   id: 'sweetness',
@@ -225,7 +242,9 @@ export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   whisky: [OCCASION_STEP, BUDGET_STEP, WHISKY_ORIGIN_STEP, WHISKY_FEEL_STEP, FLAVOR_STEP],
   // Gin Layer-1 is plain-language: occasion → budget → taste-feel (classic/modern) → flavor.
   gin: [OCCASION_STEP, BUDGET_STEP, GIN_FEEL_STEP, FLAVOR_STEP],
-  spirits: [OCCASION_STEP, BUDGET_STEP, SPIRITS_TYPE_STEP],
+  // Spirits Layer-1 (TASK A): occasion → budget → TYPE (axis1) → plain feel (tasteFeel) →
+  // flavor. Keeps the TYPE question, adds ONE generic feel step after it.
+  spirits: [OCCASION_STEP, BUDGET_STEP, SPIRITS_TYPE_STEP, SPIRITS_FEEL_STEP, FLAVOR_STEP],
   sake: [OCCASION_STEP, BUDGET_STEP, SAKE_SWEETNESS_STEP],
 };
 

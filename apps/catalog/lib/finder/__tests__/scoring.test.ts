@@ -475,6 +475,37 @@ describe('scoreProducts', () => {
   // stale TYPE duplicate). A 'classic' lean must score on name/desc keywords only; a junk
   // or grape-like `classification` must contribute nothing. (Rule 5 / TASK B: reads
   // tasteFeel='classic' now, not axis1 — the Phase-2 rewired field.) ──
+  // ── TASK A (Phase-2 spirits): spiritsFeelScore. POSITIVE-ONLY age/grade lean. For
+  // tasteFeel 'rich'/'aged', an aged/reposado/VSOP/XO-marked bottle (name or desc keyword)
+  // scores +2; a plain bottle scores 0. 'light'/'smooth' impose no text requirement (small/
+  // neutral). Rank-only (additive), like ginStyleBump. ──
+  const SP = (o:any)=>({ price:2500, is_in_stock:true, category_group:'Spirits', category_type:'Rum', ...o });
+  it("spirits tasteFeel='rich' boosts an aged/reposado bottle above a plain one", () => {
+    const pool = [SP({ sku:'LRMplain', name:'Acme Rum' }),
+                  SP({ sku:'LRMaged', name:'Acme Añejo Reserva Rum' })];
+    const out = scoreProducts({ category:'spirits', tasteFeel:'rich' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LRMaged');
+  });
+  it("spirits tasteFeel='aged' boosts a VSOP/XO brandy via its description keyword", () => {
+    const B = (o:any)=>({ price:5000, is_in_stock:true, category_group:'Spirits', category_type:'Cognac', ...o });
+    const pool = [B({ sku:'LBRplain', name:'Acme Brandy', desc_en_short:'A young house style' }),
+                  B({ sku:'LBRvsop', name:'Acme Brandy', desc_en_short:'A rich VSOP blend' })];
+    const out = scoreProducts({ category:'spirits', tasteFeel:'aged' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LBRvsop');
+  });
+  it("spirits tasteFeel='rich' gives NO boost to a plain bottle (positive-only, no false uplift)", () => {
+    // neither bottle carries an age/grade keyword → spiritsFeelScore=0 for both → cheapest wins.
+    const pool = [SP({ sku:'LRMa', name:'Acme Rum', price:900 }),
+                  SP({ sku:'LRMb', name:'Acme Rum', price:2000 })];
+    const out = scoreProducts({ category:'spirits', tasteFeel:'rich' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LRMa'); // no age boost → tie broken cheapest-first
+  });
+  it("spirits tasteFeel='light' imposes no age-text requirement (plain bottle not penalized)", () => {
+    const pool = [SP({ sku:'LVKlight', category_type:'Vodka', name:'Acme Vodka' })];
+    const out = scoreProducts({ category:'spirits', tasteFeel:'light' } as any, pool as any);
+    expect(out.products.length).toBe(1); // kept, no crash, no age requirement
+  });
+
   it('gin: ginStyleBump ignores classification (Rule 12) — keyword in classification scores 0', () => {
     // 'classic' keyword 'london' lives ONLY in classification on LGNcls. If ginStyleBump still
     // read classification it would win; since it must NOT, LGNname (keyword in name) leads.

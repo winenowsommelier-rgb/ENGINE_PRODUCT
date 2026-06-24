@@ -47,3 +47,16 @@ test('gin unsure / unknown feel returns null (→ crowd-pleaser via resolver)', 
   expect(feelToArchetype('gin', 'unsure')).toBeNull();
   expect(resolveArchetypeId('gin', undefined)).toBe(CROWD_PLEASER.gin);
 });
+
+// TASK A (Phase-2 spirits) — generic feel after the TYPE question. light/smooth → the
+// clean versatile vodka archetype; rich/aged → the warm aged spirit archetype.
+test('spirits taste-feel maps to the CORRECT archetype', () => {
+  expect(feelToArchetype('spirits', 'rich')).toBe('warm-aged-spirit');
+  expect(feelToArchetype('spirits', 'aged')).toBe('warm-aged-spirit');
+  expect(feelToArchetype('spirits', 'light')).toBe('clean-versatile-vodka');
+  expect(feelToArchetype('spirits', 'smooth')).toBe('clean-versatile-vodka');
+});
+test('spirits unsure / unknown feel returns null (→ crowd-pleaser via resolver)', () => {
+  expect(feelToArchetype('spirits', 'unsure')).toBeNull();
+  expect(resolveArchetypeId('spirits', undefined)).toBe(CROWD_PLEASER.spirits);
+});

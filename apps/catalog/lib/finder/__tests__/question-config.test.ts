@@ -46,6 +46,12 @@ describe('question config', () => {
     expect(fields).not.toContain('axis1');
     expect(fields).not.toContain('axis2');
   });
+  // TASK A (Phase-2 spirits): spirits keeps the TYPE question (axis1) as step 1 of the
+  // taste part and adds ONE generic plain feel step (tasteFeel) after it.
+  it('spirits Layer-1 = occasion, budget, type(axis1), feel(tasteFeel), flavor', () => {
+    const fields = stepsFor('spirits').map(s => s.field);
+    expect(fields).toEqual(['occasion','budget','axis1','tasteFeel','flavorChips']);
+  });
   it('flavor step is multi-select with ≥4 chips', () => {
     const flavor = stepsFor('red').find(s => s.field === 'flavorChips')!;
     expect(flavor.multi).toBe(true);

@@ -299,6 +299,25 @@ function ginStyleBump(a: Answers, p: PublicProduct): number {
   return 0;
 }
 
+// SPIRITS (other) Layer-1 tasteFeel → POSITIVE-ONLY age/grade rank lean (TASK A). Spirits
+// have no structured body/acidity worth ranking on (unlike wine), so the 'rich'/'aged'
+// feel reads age/grade keywords from name + desc (reposado/añejo/VSOP/XO/aged/gran reserva/
+// 'year') — the same noisy-text approach as ginStyleBump, kept RANK-ONLY (deep-dive bump,
+// never the taste-tier `s`): a keyword hit re-orders but cannot clear the quality gate.
+// 'light'/'smooth' impose NO text requirement (they describe a clean unaged style, which is
+// the absence of these markers, not a positive keyword) → 0 here, so a plain bottle is
+// never penalized. Rule 12: name/desc only, NEVER classification.
+const SPIRITS_AGE_KEYWORDS = [
+  'reposado', 'añejo', 'anejo', 'vsop', 'xo', 'x.o', 'aged', 'gran reserva', 'year',
+];
+function spiritsFeelScore(a: Answers, p: PublicProduct): number {
+  if (a.category !== 'spirits') return 0;
+  if (a.tasteFeel !== 'rich' && a.tasteFeel !== 'aged') return 0;
+  const hay = norm([p.name, p.desc_en_short].filter(Boolean).join(' '));
+  if (!hay) return 0;
+  return SPIRITS_AGE_KEYWORDS.some((k) => hay.includes(k)) ? 2 : 0;
+}
+
 // Age scoring. vintage is a STRING at runtime ("Current vintage", "2005",
 // "2005 [**VINTAGE MAY CHANGE]"). CURRENT_YEAR is a hardcoded const (not
 // `new Date()`) so age scoring is deterministic and test-stable across the
@@ -387,7 +406,9 @@ function deepDiveBump(a: Answers, p: PublicProduct): number {
     peatScore(a.peat, p.smokiness, p.name) +
     whiskyFeelSmokyBump(a, p) +
     prestigeBump(a, p) +
-    ginStyleBump(a, p)
+    ginStyleBump(a, p) +
+    // Phase-2 Layer-1 rank lean (additive, rank-only — never the taste-tier gate):
+    spiritsFeelScore(a, p) // spirits 'rich'/'aged' → positive-only age/grade keyword lean
   );
 }
 

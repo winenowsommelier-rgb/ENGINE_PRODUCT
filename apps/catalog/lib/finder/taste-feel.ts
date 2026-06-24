@@ -22,7 +22,13 @@ const FEEL_TO_ARCHETYPE: Record<FinderCategory, Record<string, string>> = {
   // scoring.ts ginStyleBump). classic = juniper-forward London Dry; modern = contemporary
   // botanical. 'unsure'/missing → null → CROWD_PLEASER.gin (classic-juniper-gin).
   gin: { classic: 'classic-juniper-gin', modern: 'contemporary-botanical-gin' },
-  spirits: {}, sake: {},
+  // Spirits (other) Layer-1 plain-feel → archetype (TASK A). One generic feel after the
+  // TYPE question (axis1). light/smooth → clean-versatile-vodka (clean, mixable);
+  // rich/aged → warm-aged-spirit (an aged/grade-marked sipper). A POSITIVE-ONLY age/grade
+  // rank lean (spiritsFeelScore) also boosts rich/aged. 'unsure'/missing → null →
+  // CROWD_PLEASER.spirits (clean-versatile-vodka).
+  spirits: { light: 'clean-versatile-vodka', smooth: 'clean-versatile-vodka', rich: 'warm-aged-spirit', aged: 'warm-aged-spirit' },
+  sake: {},
 };
 export function feelToArchetype(cat: FinderCategory, feel: string | undefined): string | null {
   if (!feel) return null;

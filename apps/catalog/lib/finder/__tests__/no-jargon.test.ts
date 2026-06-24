@@ -46,3 +46,15 @@ test('gin Layer-1 has a taste-feel step with classic/modern + unsure', () => {
   const tokens = feel!.options.map(o => o.token);
   expect(tokens).toEqual(expect.arrayContaining(['classic','modern','unsure']));
 });
+
+// TASK A — spirits Layer-1 is jargon-free with a plain taste-feel step (light/smooth/rich/aged).
+test('spirits Layer-1 labels contain no jargon', () => {
+  const labels = stepsFor('spirits').flatMap(s => [s.title, ...s.options.map(o => o.label)]).join(' ').toLowerCase();
+  for (const w of BANNED) expect(labels).not.toContain(w);
+});
+test('spirits Layer-1 has a taste-feel step with light/smooth/rich + unsure', () => {
+  const feel = stepsFor('spirits').find(s => s.field === 'tasteFeel');
+  expect(feel).toBeTruthy();
+  const tokens = feel!.options.map(o => o.token);
+  expect(tokens).toEqual(expect.arrayContaining(['light','smooth','rich','unsure']));
+});
