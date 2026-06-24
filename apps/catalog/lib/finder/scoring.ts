@@ -5,9 +5,23 @@ import { foodChipMatches } from './food-chips';
 import { primaryValue, bucketForValue } from './scales';
 import { normalizeScale } from '@/lib/taste-adapter';
 import { typeForProduct } from '@/lib/category-groups';
+import { resolveArchetypeId } from './taste-feel';
+import { STYLE_PROFILES } from './style-profiles';
 
 const BODY_LADDER = ['light','medium-light','medium','medium-full','full'];
+// 4-level intensity ladder shared by acidity & tannin (matches FILTER_SCALE in scales.ts).
+// Used by the taste-feel scorer to nudge on tannin (red) / acidity (white) toward the
+// resolved archetype's definingAttributes. Off-ladder / missing values yield null → 0.
+const INTENSITY_LADDER = ['low','medium','medium-high','high'];
 const norm = (s?: string) => (s ?? '').trim().toLowerCase();
+
+/** Ordinal distance on the 4-level acidity/tannin ladder; null if either is off-ladder. */
+function intensityLadderDistance(target: string, value: string): number | null {
+  const ti = INTENSITY_LADDER.indexOf(norm(target));
+  const vi = INTENSITY_LADDER.indexOf(norm(value));
+  if (ti < 0 || vi < 0) return null;
+  return Math.abs(ti - vi);
+}
 
 /** Ordinal distance on the 5-level body scale; null if either value is off-ladder. */
 export function bodyLadderDistance(target: string, value: string): number | null {
@@ -357,6 +371,47 @@ function deepDiveBump(a: Answers, p: PublicProduct): number {
   );
 }
 
+// ── TASTE-FEEL → archetype scoring (Layer-1 plain-language flow, red & white).
+// The shopper's plain `tasteFeel` token resolves to a curated archetype (taste-feel.ts);
+// that archetype's definingAttributes drive the score against the product's structured
+// body / tannin / acidity. BODY is primary (weight 4, same ladder/weight as the old axis1
+// body term so genuine matches still clear QUALITY_MIN); the secondary axis (tannin for
+// red, acidity for white) is a SMALLER nudge (weight 2).
+//
+// CRITICAL (spec §11.1): body and the secondary axis are INDEPENDENT, ADDITIVE nudges —
+// NEVER an AND-filter. Only ~10 low-tannin reds exist, so requiring BOTH a Light body AND
+// Low tannin would starve the pool. A product that matches body but misses tannin (or vice
+// versa) still earns the half it matches. No-signal (missing/off-ladder) values score 0.
+const TASTE_FEEL_CATEGORIES = new Set(['red', 'white']);
+// Secondary nudge axis per category: red leans on tannin, white on acidity (acidity-led).
+const FEEL_SECONDARY_AXIS: Record<string, 'tannin' | 'acidity'> = {
+  red: 'tannin',
+  white: 'acidity',
+};
+
+/** Points a wine earns from its tasteFeel answer vs the resolved archetype (0 = no signal). */
+function tasteFeelScore(a: Answers, p: PublicProduct): number {
+  if (!a.tasteFeel || !TASTE_FEEL_CATEGORIES.has(a.category)) return 0;
+  const archetypeId = resolveArchetypeId(a.category, a.tasteFeel);
+  const archetype = STYLE_PROFILES.find((sp) => sp.id === archetypeId);
+  if (!archetype) return 0;
+  const da = archetype.definingAttributes;
+  let s = 0;
+  // BODY — primary term, full weight (4), reusing the 5-level body ladder.
+  if (da.body && p.body) {
+    s += ladderScore(bodyLadderDistance(da.body, p.body), 4);
+  }
+  // SECONDARY — tannin (red) or acidity (white), a SMALLER nudge (weight 2). Independent
+  // of the body term (additive, never gated on body matching) — spec §11.1.
+  const axis = FEEL_SECONDARY_AXIS[a.category];
+  const targetSecondary = axis === 'tannin' ? da.tannin : da.acidity;
+  const haveSecondary = axis === 'tannin' ? p.tannin : p.acidity;
+  if (targetSecondary && haveSecondary) {
+    s += ladderScore(intensityLadderDistance(targetSecondary, haveSecondary), 2);
+  }
+  return s;
+}
+
 export interface ScoreResult {
   products: PublicProduct[];  // top N, ranked
   /** true when fewer than MIN_RESULTS cleared QUALITY_MIN → UI shows the honest
@@ -372,6 +427,10 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
     if (a.axis1 && BODY_TOKEN[a.axis1] && p.body) {
       s += ladderScore(bodyLadderDistance(BODY_TOKEN[a.axis1], p.body), 4);
     }
+    // TASTE-FEEL (Layer-1 plain-language flow, red & white) — body primary + tannin/acidity
+    // nudge vs the resolved archetype. Taste-tier term (counts toward `s` / the quality gate)
+    // exactly like the old axis1 body term it replaces for those categories.
+    s += tasteFeelScore(a, p);
     // SAKE sweetness — the category's primary taste term (axis1), scored on the same
     // ladder shape as wine body so it clears QUALITY_MIN for genuine matches. No-signal
     // sake (no taste_profile.axes.sweetness, ~74%) returns null → 0 (neutral, not

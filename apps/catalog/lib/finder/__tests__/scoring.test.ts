@@ -332,4 +332,53 @@ describe('scoreProducts', () => {
     const pool=[P({sku:'WRW1', body:'Full'}), P({sku:'WRW2', body:'Light'})];
     expect(scoreProducts(ans({axis1:'bold'}),pool).products[0].sku).toBe('WRW1');
   });
+
+  // ── TASK 5: red taste-feel → archetype scoring (body primary, tannin a soft nudge).
+  // tasteFeel resolves to an archetype (taste-feel.ts) whose definingAttributes.body
+  // (+ .tannin) drive the score. CRITICAL: body and tannin are INDEPENDENT additive
+  // nudges — never an AND-filter (only ~10 low-tannin reds exist; requiring BOTH would
+  // starve the pool, spec §11.1). The three fixtures span the archetype range:
+  //   Light/Low-tannin  → bright-elegant-red  (body Light, tannin Low)
+  //   Medium-Full/soft  → supple-everyday-red (body Medium, tannin Medium)
+  //   Full/Medium-High  → bold-structured-red (body Full, tannin Medium-High)
+  // Pin the Wine group + Red Wine type explicitly so finderPrefilter keeps them regardless
+  // of SKU-prefix resolution (same belt-and-braces the W5 grape tests use).
+  const RW = (o: any) => P({ category_group:'Wine', category_type:'Red Wine', ...o });
+  const RF_LIGHT  = (o: any = {}) => RW({ sku:'WRWflight',  body:'Light',       tannin:'Low',         ...o });
+  const RF_SUPPLE = (o: any = {}) => RW({ sku:'WRWfsupple', body:'Medium-Full', tannin:'Medium',      ...o });
+  const RF_BOLD   = (o: any = {}) => RW({ sku:'WRWfbold',   body:'Full',        tannin:'Medium-High', ...o });
+
+  it("tasteFeel='bold' ranks the Full/Medium-High red ABOVE the Light/Low-tannin one", () => {
+    const pool = [RF_LIGHT(), RF_BOLD()];
+    const out = scoreProducts(ans({ tasteFeel:'bold' }), pool as any);
+    expect(out.products[0].sku).toBe('WRWfbold');
+  });
+
+  it("tasteFeel='smooth' ranks the Medium-Full/soft (supple) red at/above the gripping one", () => {
+    // supple target = body Medium, tannin Medium. The Medium-Full/Medium bottle is nearer
+    // than the bold Full/Medium-High one on BOTH body and tannin, so it must not rank below.
+    const pool = [RF_BOLD(), RF_SUPPLE()];
+    const out = scoreProducts(ans({ tasteFeel:'smooth' }), pool as any);
+    const idxSupple = out.products.findIndex(p => p.sku === 'WRWfsupple');
+    const idxBold   = out.products.findIndex(p => p.sku === 'WRWfbold');
+    expect(idxSupple).toBeLessThanOrEqual(idxBold);
+  });
+
+  it("tasteFeel body & tannin are INDEPENDENT nudges, not an AND-filter (spec §11.1)", () => {
+    // A Light-bodied red with HIGH (not low) tannin must still score on body alone — it is
+    // NOT excluded for failing the tannin half. tasteFeel='light' wants body Light + tannin Low;
+    // this bottle matches body exactly but misses tannin, yet must out-rank a Full/High mismatch.
+    const lightHiTannin = RW({ sku:'WRWflhT', body:'Light', tannin:'High' });
+    const fullHiTannin  = RW({ sku:'WRWffhT', body:'Full',  tannin:'High' });
+    const out = scoreProducts(ans({ tasteFeel:'light' }), [lightHiTannin, fullHiTannin] as any);
+    expect(out.products[0].sku).toBe('WRWflhT');
+  });
+
+  it("tasteFeel='unsure' resolves to the crowd-pleaser (supple) — no crash, ranks supple body up", () => {
+    // 'unsure' has no archetype mapping → resolver falls back to CROWD_PLEASER.red (supple).
+    const pool = [RF_BOLD(), RF_SUPPLE()];
+    const out = scoreProducts(ans({ tasteFeel:'unsure' }), pool as any);
+    expect(out.products.map(p=>p.sku)).toContain('WRWfsupple');
+    expect(out.products[0].sku).toBe('WRWfsupple');
+  });
 });
