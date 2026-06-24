@@ -17,6 +17,7 @@ export interface Answers {
   age?: string;
   adventure?: string;
   peat?: string;
+  tasteFeel?: string;
 }
 
 const CATEGORIES: FinderCategory[] = ['red','white','sparkling','whisky','gin','spirits','sake'];
@@ -38,6 +39,7 @@ export function encodeAnswers(a: Answers): string {
   if (a.age) p.set('ag', a.age);
   if (a.adventure) p.set('adv', a.adventure);
   if (a.peat) p.set('pt', a.peat);
+  if (a.tasteFeel) p.set('tf', a.tasteFeel);
   return p.toString();
 }
 
@@ -63,5 +65,6 @@ export function decodeAnswers(sp: URLSearchParams): Answers {
     acidity: sp.get('ac') ?? undefined, tannin: sp.get('tn') ?? undefined,
     grape: sp.get('gr') ?? undefined, age: sp.get('ag') ?? undefined,
     adventure: sp.get('adv') ?? undefined, peat: sp.get('pt') ?? undefined,
+    tasteFeel: sp.get('tf') ?? undefined,
   };
 }
