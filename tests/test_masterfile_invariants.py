@@ -172,6 +172,19 @@ def test_export_roundtrip_quoteall(tmp_path):
     assert len(rows) >= db_n, "export dropped rows (174 DB-only must be carried)"
 
 
+def test_critic_scores_no_duplicate_keys_in_live_db():
+    """Rule 6 invariant: critic_scores must have no (sku,critic,vintage) dupes.
+    There is no DB UNIQUE index; this test is the guard."""
+    db = Path("data/db/products.db")
+    if not db.exists():
+        pytest.skip("live db absent")
+    rows = sqlite3.connect(db).execute(
+        "SELECT sku, critic, COALESCE(vintage,''), COUNT(*) c "
+        "FROM critic_scores GROUP BY sku, critic, COALESCE(vintage,'') HAVING c > 1"
+    ).fetchall()
+    assert rows == [], f"duplicate critic_scores keys found: {rows[:10]}"
+
+
 def test_newly_filled_skus_reach_live_export():
     import json
     filled = json.load(open("data/masterfile_filled_skus.json"))

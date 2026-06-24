@@ -22,6 +22,12 @@ def test_is_empty_cell():
         assert is_empty_cell(v) is True
     assert is_empty_cell("92") is False
 
+def test_is_empty_cell_handles_non_string():
+    assert is_empty_cell(92) is False
+    assert is_empty_cell(92.0) is False
+    assert is_empty_cell(0) is False          # 0 is a real value, not empty
+    # floats/ints never crash
+
 def test_extract_designation_gated_by_type():
     # Brut on a wine → designation; Brut on a beer → None (Kriek beer landmine)
     assert extract_designation("Pol Roger Brut Reserve", "Champagne") == "Brut"

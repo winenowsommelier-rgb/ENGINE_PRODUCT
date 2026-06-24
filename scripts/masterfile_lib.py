@@ -6,7 +6,9 @@ from pathlib import Path
 
 EMPTY = {"", "-", "–", "—", "n/a", "na"}
 def is_empty_cell(v) -> bool:
-    return (v or "").strip().lower() in EMPTY
+    if v is None:
+        return True
+    return str(v).strip().lower() in EMPTY
 
 _PCT = re.compile(r"\s*\(?100\s*%\)?\s*")
 def normalize_variety(v: str | None) -> str | None:
