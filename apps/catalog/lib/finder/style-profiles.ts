@@ -55,7 +55,9 @@ export const STYLE_PROFILES: StyleProfile[] = [
     expertNote:
       'A versatile middle-weight: ripe fruit, moderate tannin, and enough structure to stand up to a meal without dominating it. This is the reliable house red — generous on the nose and smooth through the finish. It flatters more dishes than almost any other style.',
     definingAttributes: {
-      body: 'Medium',
+      // §11.1: 'smooth & easygoing' is soft-tannin / medium-FULL (Merlot-style), the
+      // decoupled-from-body target the brain scores the 'smooth' feel against.
+      body: 'Medium-Full',
       acidity: 'Medium',
       tannin: 'Medium',
       typicalGrapes: ['Merlot', 'Sangiovese', 'Grenache'],
