@@ -102,6 +102,21 @@ const RED_FEEL_STEP: QuestionStep = {
   ],
 };
 
+// White plain-language taste-feel step. Acidity-led framing (crisp/rounded/aromatic),
+// NOT sweetness — matches the acidity-primary scoring in scoring.ts.
+const WHITE_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'What sounds good?',
+  optional: true,
+  options: [
+    { token: 'crisp', label: 'Crisp & refreshing', icon: '⚡' },
+    { token: 'rounded', label: 'Smooth & rounded', icon: '🫧' },
+    { token: 'aromatic', label: 'Aromatic & floral', icon: '🌸' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
+  ],
+};
+
 // ── Flavor step (red, white, sparkling, whisky) ──
 const FLAVOR_STEP: QuestionStep = {
   id: 'flavor',
@@ -206,7 +221,9 @@ export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   // Red Layer-1 is plain-language: occasion → budget → taste-feel → flavor. No body/
   // character jargon. (Food is an inline FoodChoice sub-step, not a config step.)
   red: [OCCASION_STEP, BUDGET_STEP, RED_FEEL_STEP, FLAVOR_STEP],
-  white: WINE_STEPS,
+  // White Layer-1 is plain-language too: occasion → budget → taste-feel (acidity-led) →
+  // flavor. (sparkling still uses the body/character axes.)
+  white: [OCCASION_STEP, BUDGET_STEP, WHITE_FEEL_STEP, FLAVOR_STEP],
   sparkling: WINE_STEPS,
   whisky: [OCCASION_STEP, BUDGET_STEP, WHISKY_ORIGIN_STEP, WHISKY_STYLE_STEP, FLAVOR_STEP],
   gin: [OCCASION_STEP, BUDGET_STEP, GIN_STYLE_STEP],

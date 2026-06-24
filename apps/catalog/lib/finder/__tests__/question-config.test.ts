@@ -35,11 +35,13 @@ describe('question config', () => {
       expect(stepsFor(c).map(s => s.field)).toContain('flavorChips');
     }
   });
-  it('red uses a plain tasteFeel step instead of body/character axes', () => {
-    const fields = stepsFor('red').map(s => s.field);
-    expect(fields).toContain('tasteFeel');
-    expect(fields).not.toContain('axis1');
-    expect(fields).not.toContain('axis2');
+  it('red & white use a plain tasteFeel step instead of body/character axes', () => {
+    for (const c of ['red','white'] as const) {
+      const fields = stepsFor(c).map(s => s.field);
+      expect(fields).toContain('tasteFeel');
+      expect(fields).not.toContain('axis1');
+      expect(fields).not.toContain('axis2');
+    }
   });
   it('gin has axis1 but no axis2', () => {
     const fields = stepsFor('gin').map(s => s.field);

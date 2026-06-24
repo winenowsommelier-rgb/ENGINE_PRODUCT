@@ -381,4 +381,33 @@ describe('scoreProducts', () => {
     expect(out.products.map(p=>p.sku)).toContain('WRWfsupple');
     expect(out.products[0].sku).toBe('WRWfsupple');
   });
+
+  // ── TASK 6: WHITE taste-feel → archetype scoring. Acidity-LED (+ body), not sweetness.
+  //   crisp    → crisp-zesty-white      (body Light, acidity High)
+  //   rounded  → rich-textured-white    (body Full,  acidity Medium)
+  //   aromatic → aromatic-balanced-white(body Medium,acidity Medium)
+  const WW = (o: any) => ({ price:1500, is_in_stock:true, classification:'White Wine',
+    category_group:'Wine', category_type:'White Wine', ...o });
+  it("white tasteFeel='crisp' ranks a Light/High-acidity white ABOVE a Full/Medium one", () => {
+    const pool = [WW({ sku:'WWWrich', body:'Full', acidity:'Medium' }),
+                  WW({ sku:'WWWcrisp', body:'Light', acidity:'High' })];
+    const out = scoreProducts({ category:'white', tasteFeel:'crisp' } as any, pool as any);
+    expect(out.products[0].sku).toBe('WWWcrisp');
+  });
+  it("white tasteFeel='rounded' ranks a Full/round white at/above a Light/crisp one", () => {
+    const pool = [WW({ sku:'WWWcrisp', body:'Light', acidity:'High' }),
+                  WW({ sku:'WWWrich', body:'Full', acidity:'Medium' })];
+    const out = scoreProducts({ category:'white', tasteFeel:'rounded' } as any, pool as any);
+    const idxRich  = out.products.findIndex(p => p.sku === 'WWWrich');
+    const idxCrisp = out.products.findIndex(p => p.sku === 'WWWcrisp');
+    expect(idxRich).toBeLessThanOrEqual(idxCrisp);
+  });
+  it("white tasteFeel acidity is the secondary nudge (independent of body, spec §11.1)", () => {
+    // crisp wants Light body + High acidity. A Light-body white with LOW acidity still
+    // scores its body half and out-ranks a Full/High mismatch — not gated on the acidity half.
+    const pool = [WW({ sku:'WWWlightLowAc', body:'Light', acidity:'Low' }),
+                  WW({ sku:'WWWfullHiAc',   body:'Full',  acidity:'High' })];
+    const out = scoreProducts({ category:'white', tasteFeel:'crisp' } as any, pool as any);
+    expect(out.products[0].sku).toBe('WWWlightLowAc');
+  });
 });

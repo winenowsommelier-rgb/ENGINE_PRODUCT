@@ -4,7 +4,11 @@ import type { FinderCategory } from './answers';
 // is intentionally absent -> resolver returns null -> caller uses the crowd-pleaser.
 const FEEL_TO_ARCHETYPE: Record<FinderCategory, Record<string, string>> = {
   red:   { light: 'bright-elegant-red', smooth: 'supple-everyday-red', bold: 'bold-structured-red' },
-  white: {}, whisky: {}, sparkling: {}, gin: {}, spirits: {}, sake: {},
+  // White is ACIDITY-led (not sweetness): crisp = high-acid lean white; rounded = rich,
+  // fuller, lower-acid; aromatic = the fragrant balanced middle. 'unsure'/missing → null →
+  // resolver uses CROWD_PLEASER.white (aromatic-balanced-white).
+  white: { crisp: 'crisp-zesty-white', rounded: 'rich-textured-white', aromatic: 'aromatic-balanced-white' },
+  whisky: {}, sparkling: {}, gin: {}, spirits: {}, sake: {},
 };
 export function feelToArchetype(cat: FinderCategory, feel: string | undefined): string | null {
   if (!feel) return null;
