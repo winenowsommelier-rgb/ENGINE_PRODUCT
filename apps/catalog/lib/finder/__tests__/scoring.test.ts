@@ -82,12 +82,12 @@ describe('scoreProducts', () => {
     expect(out.products[0].sku).toBe('LWHsco');
     expect(out.degraded).toBe(false); // +2 origin clears QUALITY_MIN
   });
-  it('whisky: axis2=smoky ranks an Islay bottle above a Speyside bottle', () => {
-    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
-    const pool = [W({sku:'LWHspey', region:'Speyside'}), W({sku:'LWHislay', region:'Islay'})];
-    const out = scoreProducts({ category:'whisky', axis1:'scotch', axis2:'smoky' } as any, pool as any);
-    expect(out.products[0].sku).toBe('LWHislay');
-  });
+  // Rule 5: the old `whisky: axis2=smoky ranks an Islay bottle above a Speyside bottle`
+  // test asserted the removed region-guessing heuristic (axis2='smoky' → reward region=Islay).
+  // Spec §11.8 verified that is WRONG and the whisky question-config no longer emits axis2.
+  // Whisky smoke is now covered by the tasteFeel='smoky' smokiness/peated-allow-list tests
+  // below ("whisky tasteFeel='smoky' …") and the positive-only peatScore tests — region is
+  // never the peat signal. The dead axis2→region map + test were removed.
   it('spirits: axis1=rum ranks a Rum above a Vodka (via category_type, not classification)', () => {
     // category_group/type pin the pool + the type read (Rule 12). classification is
     // deliberately set to the JUNK value to prove it is NOT consulted.

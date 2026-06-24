@@ -71,14 +71,16 @@ function sweetnessLadderDistance(target: string, value: string): number | null {
 
 // WHISKY axis1 (origin) → expected p.country. 'world' has no reliable single
 // country, so no boost.
+//
+// NOTE (spec §11.8): whisky has NO axis2→region "style" term. The old
+// WHISKY_STYLE_TO_REGIONS map guessed peat from region (smoky→Islay) — verified
+// WRONG (the export false-negatives non-Islay smoky malts like Talisker/Ledaig and
+// mislabels clean Islay bottles), and the whisky question-config no longer even emits
+// axis2 (it uses WHISKY_FEEL_STEP). Removed. Whisky smoke is now scored from REAL
+// evidence (smokiness='heavy' / peated allow-list) via whiskyFeelSmokyBump + peatScore,
+// never from region.
 const WHISKY_ORIGIN_TO_COUNTRY: Record<string, string> = {
   scotch: 'scotland', japanese: 'japan', bourbon: 'usa', irish: 'ireland',
-};
-
-// WHISKY axis2 (style) → set of regions that signal that style.
-// smoky → Islay (peated); smooth → Speyside/Highland. No region data → no boost.
-const WHISKY_STYLE_TO_REGIONS: Record<string, string[]> = {
-  smoky: ['islay'], smooth: ['speyside', 'highland'],
 };
 
 // SPIRITS (other) axis1 (type) → accepted canonical category_type values
@@ -117,10 +119,11 @@ function tier2Score(a: Answers, p: PublicProduct): number {
   let s = 0;
   switch (a.category) {
     case 'whisky': {
+      // ORIGIN only (axis1 → country). Whisky smoke is scored from real evidence
+      // (smokiness/peated allow-list) in whiskyFeelSmokyBump/peatScore, NOT a region-
+      // guessing axis2→region map (removed, spec §11.8 — see WHISKY_ORIGIN_TO_COUNTRY note).
       const wantCountry = a.axis1 ? WHISKY_ORIGIN_TO_COUNTRY[a.axis1] : undefined;
       if (wantCountry && p.country && norm(p.country) === wantCountry) s += 2;
-      const wantRegions = a.axis2 ? WHISKY_STYLE_TO_REGIONS[a.axis2] : undefined;
-      if (wantRegions && p.region && wantRegions.includes(norm(p.region))) s += 2;
       break;
     }
     case 'spirits': {
@@ -518,9 +521,9 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
     if ((a.category === 'red' || a.category === 'white' || a.category === 'sparkling') && a.axis2) {
       s += wineCharacterScore(a.axis2, p.flavor_tags_canonical);
     }
-    // TIER-2 origin/style for non-wine categories (whisky origin→country & style→region,
-    // spirits type→classification). Replaces the old axis2-vs-country line, which was
-    // inert for whisky/spirits/sake (axis2 there is smoky/smooth, never a country).
+    // TIER-2 origin/type for non-wine categories (whisky origin→country, spirits
+    // type→category_type). Replaces the old axis2-vs-country line, which was inert for
+    // whisky/spirits/sake (axis2 there was never a country).
     s += tier2Score(a, p);
     if ((a.occasion === 'gift' || a.occasion === 'special') &&
         typeof p.score_summary === 'string' && p.score_summary.trim() !== '') s += 2;
