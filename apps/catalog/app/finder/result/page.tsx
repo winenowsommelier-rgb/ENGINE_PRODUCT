@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import { TrustBar } from '@/components/TrustBar';
 import { StyleResult } from '@/components/finder/StyleResult';
 import { getAllProducts } from '@/lib/catalog-data';
+import { buildContactLinks, type ContactLinks } from '@/lib/contact';
+import { getContactEnv } from '@/lib/contact-env';
 import { decodeAnswers, encodeAnswers } from '@/lib/finder/answers';
 import { scoreProducts } from '@/lib/finder/scoring';
 import { resolveProfile } from '@/lib/finder/style-profiles';
@@ -46,9 +48,18 @@ export default function FinderResultPage({
   if (!answers.category) redirect('/finder');
 
   const allProducts = getAllProducts();
-  const { products, degraded } = scoreProducts(answers, allProducts);
+  const { products, degraded, bandBySku } = scoreProducts(answers, allProducts);
   const profile = resolveProfile(answers);
   const query = encodeAnswers(answers);
+
+  // Per-bottle contact deep-links (Buy/Enquire path — no cart in this catalog).
+  // Built SERVER-side via the same getContactEnv → buildContactLinks pattern the
+  // shop/product pages use; the resulting STRINGS are passed to the client cards.
+  const env = getContactEnv();
+  const contactLinksBySku: Record<string, ContactLinks> = {};
+  for (const p of products) {
+    contactLinksBySku[p.sku] = buildContactLinks(env, { name: p.name, sku: p.sku });
+  }
 
   return (
     <>
@@ -80,6 +91,8 @@ export default function FinderResultPage({
               degraded={degraded}
               answers={answers}
               allProducts={allProducts}
+              contactLinksBySku={contactLinksBySku}
+              bandBySku={bandBySku}
             />
 
             <div className="flex flex-wrap gap-3 border-t border-border pt-6">

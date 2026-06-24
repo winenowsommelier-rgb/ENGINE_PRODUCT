@@ -8,6 +8,7 @@ import { typeForProduct, groupForProduct } from '@/lib/category-groups';
 import { resolveArchetypeId } from './taste-feel';
 import { STYLE_PROFILES } from './style-profiles';
 import { isLikelyPeated } from './peated-distilleries';
+import { matchBand, type MatchBandLabel } from './match-band';
 
 const BODY_LADDER = ['light','medium-light','medium','medium-full','full'];
 // 4-level intensity ladder shared by acidity & tannin (matches FILTER_SCALE in scales.ts).
@@ -435,11 +436,46 @@ function tasteFeelScore(a: Answers, p: PublicProduct): number {
   return s;
 }
 
+/**
+ * Did the user give at least one REAL taste/preference signal (not the all-neutral
+ * "not sure — guide me" path)? Drives the match-band honesty floor (match-band.ts):
+ * with no taste signal we cap every band at "Good match" so the page never claims a
+ * strong personalised fit the answers didn't actually produce.
+ *
+ * "Taste signal" = any of the structured taste questions carrying a real, constraining
+ * value: a taste-feel that isn't 'unsure'; an axis1/axis2 token; flavour chips; food
+ * chips; or any deep-dive answer. Occasion/budget alone are NOT taste signal (they shape
+ * value/prestige, not the flavour profile), matching the band's intent.
+ */
+export function hadTasteSignal(a: Answers): boolean {
+  const feel = a.tasteFeel && a.tasteFeel !== 'unsure' ? a.tasteFeel : undefined;
+  return Boolean(
+    feel ||
+      a.axis1 ||
+      a.axis2 ||
+      (a.flavorChips?.length ?? 0) > 0 ||
+      (a.food?.length ?? 0) > 0 ||
+      a.acidity ||
+      a.tannin ||
+      a.grape ||
+      a.age ||
+      a.adventure ||
+      a.peat,
+  );
+}
+
 export interface ScoreResult {
   products: PublicProduct[];  // top N, ranked
   /** true when fewer than MIN_RESULTS cleared QUALITY_MIN → UI shows the honest
    *  "Closest matches in your budget" label (spec §5 relax step). */
   degraded: boolean;
+  /**
+   * Honest per-bottle match band, keyed by sku (spec §11.9). Computed from each
+   * shown bottle's TASTE-TIER score (`s`) relative to the best taste score in the
+   * result, then floored by `hadTasteSignal` (no signal → every band "Good match").
+   * A banded label — never a fabricated precise %. Only covers the shown products.
+   */
+  bandBySku: Record<string, MatchBandLabel>;
 }
 
 export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResult {
@@ -541,5 +577,23 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
   const hasGateableTasteTerm = a.category !== 'gin';
   const degraded = hasGateableTasteTerm && ranked.length > 0 && wellMatched === 0;
 
-  return { products: ranked.slice(0, TOP_N).map((r) => r.p), degraded };
+  const shown = ranked.slice(0, TOP_N);
+
+  // Per-bottle honest match band (spec §11.9). Reference = the best taste-tier score
+  // among the SHOWN bottles (the strongest match we actually found). Each bottle's `s`
+  // is banded against that reference, so the best reads "Great/Strong" and weaker ones
+  // step down — no fabricated %. hadTasteSignal floors every band to "Good match" on the
+  // all-neutral path. maxScore 0 (e.g. gin: no gate-able taste term) → ratio 0 → "Good".
+  const signal = hadTasteSignal(a);
+  const topTasteScore = shown.reduce((m, r) => Math.max(m, r.s), 0);
+  const bandBySku: Record<string, MatchBandLabel> = {};
+  for (const r of shown) {
+    bandBySku[r.p.sku] = matchBand({
+      score: r.s,
+      maxScore: topTasteScore,
+      hadTasteSignal: signal,
+    });
+  }
+
+  return { products: shown.map((r) => r.p), degraded, bandBySku };
 }

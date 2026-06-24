@@ -10,6 +10,8 @@ import {
   styleShopUrl,
 } from '@/lib/finder/shop-links';
 import { matchesFilters } from '@/lib/shop-query';
+import type { ContactLinks } from '@/lib/contact';
+import type { MatchBandLabel } from '@/lib/finder/match-band';
 
 /**
  * StyleResult — the finder pay-off, "style-profile first".
@@ -32,6 +34,18 @@ interface StyleResultProps {
   answers: Answers;
   /** Full catalog — used to resolve breadcrumb geo levels to real /shop filters. */
   allProducts: PublicProduct[];
+  /**
+   * Per-bottle contact deep-links keyed by sku (built server-side via
+   * buildContactLinks). Threaded into each ProductCard so the Quick-look modal
+   * exposes the Buy/Enquire path (LINE / WhatsApp / Messenger). There is NO cart
+   * in this catalog — conversion is via these contact deep-links.
+   */
+  contactLinksBySku?: Record<string, ContactLinks>;
+  /**
+   * Honest per-bottle match band keyed by sku (spec §11.9). A banded label
+   * ("Great / Strong / Good match") shown on each card — never a fabricated %.
+   */
+  bandBySku?: Record<string, MatchBandLabel>;
 }
 
 /** A labelled attribute row, only rendered when the value is present. */
@@ -53,6 +67,8 @@ export function StyleResult({
   degraded,
   answers,
   allProducts,
+  contactLinksBySku,
+  bandBySku,
 }: StyleResultProps) {
   const attrs = profile?.definingAttributes;
   const grapes = attrs?.typicalGrapes?.join(', ');
@@ -215,9 +231,22 @@ export function StyleResult({
           {degraded ? 'Closest matches in your budget' : 'Your matches'}
         </h2>
         <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
-          {products.map((product) => (
-            <ProductCard key={product.sku} product={product} />
-          ))}
+          {products.map((product) => {
+            const band = bandBySku?.[product.sku];
+            return (
+              <div key={product.sku} className="flex flex-col gap-2">
+                {band ? (
+                  <span className="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                    {band}
+                  </span>
+                ) : null}
+                <ProductCard
+                  product={product}
+                  contactLinks={contactLinksBySku?.[product.sku]}
+                />
+              </div>
+            );
+          })}
         </div>
       </section>
     </div>
