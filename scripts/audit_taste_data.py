@@ -256,9 +256,14 @@ def run_judge(census: dict, canary: int = 0) -> dict:
 
     if canary:
         n_full = len(suspects) + len(control)
-        est = n_full * (60 * 1e-6 * 1.0 + 30 * 1e-6 * 5.0)  # Haiku ~$1/M in, $5/M out
+        # IMPORTANT: the ~303-token JUDGE_SYSTEM prompt is resent on EVERY call and
+        # dominates input. Estimate ~336 in + ~84 out tok/row (measured), NOT 60/30
+        # — the original constant under-counted ~3.6x. Prompt-caching would cut this.
+        in_tok, out_tok = len(JUDGE_SYSTEM) / 4 + 32, 84
+        est = n_full * (in_tok * 1e-6 * 1.0 + out_tok * 1e-6 * 5.0)
         print(f"[CANARY] judged {len(targets)} rows; full set = {n_full} rows "
-              f"(pre-escalation); est ${est:.3f}. Calibration: {calibration}. "
+              f"(pre-escalation); est ${est:.3f} (system prompt resent each call). "
+              f"Calibration: {calibration}. "
               f"Re-run WITHOUT --canary and WITH sign-off to judge the full set.")
     return {"verdicts": verdicts, "calibration": calibration,
             "cell_report": cell_report, "escalated": len(escalated),
