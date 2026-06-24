@@ -70,6 +70,15 @@ def main() -> None:
 
     # Backup BEFORE opening for write (Rule 10). Skip on dry-run / --no-backup.
     if not args.no_backup and not args.dry_run:
+        # Checkpoint the WAL first so the main DB file is consistent — a plain
+        # shutil.copy of a DB with uncommitted -wal frames can be torn/unrestorable
+        # (prior WAL-torn-copy scars). Non-fatal if it fails.
+        try:
+            ckpt = sqlite3.connect(db_path)
+            ckpt.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            ckpt.close()
+        except Exception as e:
+            print(f"warning: wal_checkpoint before backup failed ({e}); copying anyway")
         ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         bak = db_path.with_name(db_path.name + f".bak-pre-masterfile-freefill-{ts}")
         shutil.copy(db_path, bak)
@@ -156,7 +165,11 @@ def main() -> None:
                 existing = json.loads(FILLED_SKUS_PATH.read_text())
             except Exception:
                 existing = {}
-        existing.update(filled)  # merge: our keys overwrite, others preserved
+        # UNION per key — never overwrite a prior run's SKU list with [] on an
+        # idempotent re-run (free-fill fills 0 the second time). Unrelated
+        # top-level keys (e.g. the score script's "score_max") are preserved.
+        for col in ALL_DB_COLS:
+            existing[col] = sorted(set(existing.get(col, [])) | set(filled[col]))
         FILLED_SKUS_PATH.parent.mkdir(parents=True, exist_ok=True)
         FILLED_SKUS_PATH.write_text(json.dumps(existing, indent=2))
         print(f"wrote {FILLED_SKUS_PATH} (keys: {sorted(existing)})")
