@@ -18,12 +18,10 @@ _FORTIFIED = re.compile(r"\b(port|marsala|madeira|sherry|oloroso|amontillado|fin
 # Per-SKU taxonomy overrides for individual SKUs the prefix map gets wrong.
 # Keep this TINY and exception-only; the prefix map is the rule. MUST stay in
 # lock-step with SKU_OVERRIDES in apps/catalog/lib/sku-taxonomy.ts (parity test).
-# LSJ0024DG: "Kai Lemongrass Ginger" is a New Zealand Kai-brand flavoured vodka
-#   (siblings LVK0118-0121DG = Kai vodkas), NOT a Japanese shochu. The LSJ
-#   (Sake & Asian/Shochu) prefix is wrong for this one SKU. (2026-06-23)
-SKU_OVERRIDES: dict[str, dict] = {
-    "LSJ0024DG": {"group": "Spirits", "type": "Vodka"},
-}
+# (Currently empty. NOTE: LSJ0024DG "Kai Lemongrass Ginger" was briefly
+#  overridden to Spirits/Vodka in error — the bottle reads "SHOCHU/SOJU, RICE
+#  ALCOHOL", so the natural LSJ → Sake & Asian/Shochu mapping is CORRECT. 2026-06-24)
+SKU_OVERRIDES: dict[str, dict] = {}
 
 
 @lru_cache(maxsize=1)
