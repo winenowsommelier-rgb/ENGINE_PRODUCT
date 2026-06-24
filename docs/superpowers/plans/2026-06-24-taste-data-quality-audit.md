@@ -153,6 +153,13 @@ def test_body_lowercase_casedup_flagged():
     f = L.triage_body_case(sku="X", name="n", value="light", group="Wine", type_="Red Wine")
     assert f and f["expected_value"] == "Light" and f["rule"] == "body_case_dup"
 
+def test_body_case_only_emits_canonical_scale_tokens():
+    # Every expected_value MUST be in BODY_SCALE (no off-scale 'Medium-Light').
+    from data.lib.taste_taxonomy.universal_scales import BODY_SCALE
+    for low in ["full", "light", "medium", "medium-full"]:
+        f = L.triage_body_case("X", "n", low, "Wine", "Red Wine")
+        assert f and f["expected_value"] in BODY_SCALE
+
 def test_inapplicable_column_leak():
     # body on a Gin: applies(Spirits, Gin) has no "body" -> leak.
     f = L.triage_inapplicable(sku="LGN0001AA", name="Some Gin", column="body",
@@ -225,10 +232,17 @@ def triage_smokiness(sku, name, value, group, type_):
 
 
 def triage_body_case(sku, name, value, group, type_):
-    """Lowercase body case-dupes (full/light) -> Title-case scale token."""
-    if value in ("full", "light", "medium", "medium-full", "medium-light"):
-        return _finding(sku, "body", value, value.title().replace("-", "-"),
-                        "body_case_dup", "lowercase off-scale body token")
+    """Lowercase body case-dupes -> canonical BODY_SCALE token.
+
+    Only the four canonical lowercase tokens are mapped; 'medium-light' is NOT a
+    BODY_SCALE value (it silently collapses to Medium per universal_scales) so it
+    is deliberately excluded here to avoid emitting an off-scale expected_value.
+    """
+    canon = {"light": "Light", "medium": "Medium",
+             "medium-full": "Medium-Full", "full": "Full"}
+    if value in canon:
+        return _finding(sku, "body", value, canon[value],
+                        "body_case_dup", "lowercase body token -> canonical BODY_SCALE")
     return None
 
 
@@ -379,6 +393,15 @@ def test_census_and_suspects(tmp_path):
     assert result["populated"]["sweetness"] == 2
     assert result["populated"]["variety"] == 2
 
+def test_smokiness_not_killed_by_inapplicable(tmp_path):
+    # REGRESSION: smokiness is in no applies() set; it must reach triage_smokiness,
+    # NOT be swallowed as 'inapplicable_column'. The Talisker 'none' must be a
+    # peated_false_negative, not an inapplicable leak.
+    p = str(tmp_path / "t.db"); _mk_db(p)
+    result = A.run_census(p)
+    tal = [f for f in result["suspects"] if f["sku"] == "LWH0155BU"]
+    assert tal and tal[0]["rule"] == "peated_false_negative"
+
 def test_db_opened_readonly_cannot_write(tmp_path):
     p = str(tmp_path / "t.db"); _mk_db(p)
     conn = A.open_ro(p)
@@ -455,16 +478,24 @@ def run_census(db_path) -> dict:
 
 
 def _triage_cell(r, col):
-    """Run the applicable deterministic rules for one (row, column); first hit wins."""
+    """Run the applicable deterministic rules for one (row, column); first hit wins.
+
+    CRITICAL: smokiness is NOT in any universal_scales.applies() set (the matrix
+    has no smokiness axis), so it must NEVER be routed through triage_inapplicable
+    — doing so would flag all ~1,970 smokiness rows as 'inapplicable' and the
+    peated-false-negative / brand-false-positive rules would never run. The
+    inapplicable-column check applies ONLY to the matrix-modelled columns.
+    """
     name, g, t, v = r.get("name", ""), r["group"], r["type"], r[col]
-    # inapplicable-column leak is checked for every column first
+    if col == "smokiness":
+        # whisky/spirits-native; matrix doesn't model it -> skip triage_inapplicable
+        return L.triage_smokiness(r["sku"], name, v, g, t)
+    # inapplicable-column leak is checked first for the matrix columns only
     f = L.triage_inapplicable(r["sku"], name, col, v, g, t)
     if f:
         return f
     if col == "sweetness":
         return L.triage_sweetness(r["sku"], name, v, g, t)
-    if col == "smokiness":
-        return L.triage_smokiness(r["sku"], name, v, g, t)
     if col == "body":
         return (L.triage_nonbeverage(r["sku"], name, "body", v, g, t)
                 or L.triage_body_case(r["sku"], name, v, g, t))
@@ -716,6 +747,31 @@ def test_judge_uses_stub_and_cache(tmp_path, monkeypatch):
     A.run_judge(census, canary=0)            # rerun
     assert calls["n"] == 1                    # served from cache, no new call
     assert j1["calibration"]["checked"] >= 1  # the extra-dry row is a known-bug check
+
+def test_per_cell_escalation_fires_on_dirty_large_cell(tmp_path, monkeypatch):
+    monkeypatch.setattr(A, "JUDGE_CACHE", tmp_path / "jc2.jsonl")
+    monkeypatch.setattr(A, "CONTROL_PER_TYPE", 25)   # let n>=20 in one cell
+    # Everything the judge sees is "wrong" -> a large clean cell must escalate.
+    monkeypatch.setattr(A, "_call_haiku",
+                        lambda p: {"verdict": "wrong_value", "value": "X", "reason": "r"})
+    clean = [{"sku": f"C{i}", "column": "body", "current_value": "Full",
+              "group": "Wine", "type": "Red Wine", "name": "n"} for i in range(40)]
+    census = {"populated": {c: 0 for c in A.TASTE_COLS}, "total_rows": 40,
+              "suspects": [], "clean": clean}
+    res = A.run_judge(census, canary=0)
+    fired = [c for c in res["cell_report"] if c["escalated"]]
+    assert fired and res["escalated"] > 0      # the dirty Full/Red-Wine cell escalated
+
+def test_tiny_cell_not_gated(tmp_path, monkeypatch):
+    monkeypatch.setattr(A, "JUDGE_CACHE", tmp_path / "jc3.jsonl")
+    monkeypatch.setattr(A, "_call_haiku",
+                        lambda p: {"verdict": "wrong_value", "value": "X", "reason": "r"})
+    clean = [{"sku": f"D{i}", "column": "body", "current_value": "Full",
+              "group": "Wine", "type": "Red Wine", "name": "n"} for i in range(3)]
+    census = {"populated": {c: 0 for c in A.TASTE_COLS}, "total_rows": 3,
+              "suspects": [], "clean": clean}
+    res = A.run_judge(census, canary=0)
+    assert all(not c["escalated"] for c in res["cell_report"])  # n<20 never gated
 ```
 
 - [ ] **Step 2: Run to verify fail** → FAIL.
@@ -761,40 +817,80 @@ def _judge_one(row):
     return verdict
 
 
+def _judge_rows(rows):
+    """Judge a list of rows (cache-backed), returning verdict dicts."""
+    out = []
+    for row in rows:
+        v = _judge_one(row)
+        out.append({**{k: row.get(k) for k in
+                       ("sku", "column", "current_value", "rule",
+                        "expected_value", "group", "type", "name")}, **v})
+    return out
+
+
+def _cell_key(v):
+    """A cell = (column, current_value, group, type) per spec §6."""
+    return (v["column"], v["current_value"], v.get("group"), v.get("type"))
+
+
+def _escalate_dirty_cells(control_verdicts, census, min_n=20, lb=ESCALATE_LB):
+    """Per-CELL Wilson-LB escalation (spec §6). For each control cell with n>=min_n
+    whose wrong-rate lower bound > lb, judge ALL remaining clean rows in that cell.
+    Cells with n<min_n are reported but NOT gated (tiny-cell rule)."""
+    cells = {}
+    for v in control_verdicts:
+        cells.setdefault(_cell_key(v), []).append(v)
+    escalated, cell_report = [], []
+    for key, vs in cells.items():
+        n = len(vs)
+        wrong = sum(1 for v in vs if v["verdict"] in
+                    ("wrong_value", "not_applicable_null_it"))
+        lower = L.wilson_lower_bound(wrong, n)
+        gated = n >= min_n
+        cell_report.append({"cell": list(key), "n": n, "wrong": wrong,
+                            "wilson_lb": round(lower, 3), "gated": gated,
+                            "escalated": gated and lower > lb})
+        if gated and lower > lb:
+            col, val, grp, typ = key
+            already = {v["sku"] for v in vs}
+            extra = [r for r in census["clean"]
+                     if r["column"] == col and r["current_value"] == val
+                     and r.get("group") == grp and r.get("type") == typ
+                     and r["sku"] not in already]
+            escalated.extend(_judge_rows(extra))
+    return escalated, cell_report
+
+
 def run_judge(census: dict, canary: int = 0) -> dict:
     suspects = census["suspects"]
-    # control: stratified by type over the CLEAN rows
     control = L.stratified_control(census["clean"], key="type",
                                    per_type=CONTROL_PER_TYPE, seed=42)
-    targets = suspects + control
     if canary:
-        targets = targets[:canary]
+        targets = (suspects + control)[:canary]
+        verdicts = _judge_rows(targets)
+        control_verdicts, escalated, cell_report = [], [], []
+    else:
+        suspect_verdicts = _judge_rows(suspects)
+        control_verdicts = _judge_rows(control)
+        escalated, cell_report = _escalate_dirty_cells(control_verdicts, census)
+        verdicts = suspect_verdicts + control_verdicts + escalated
 
-    verdicts = []
-    for row in targets:
-        v = _judge_one(row)
-        verdicts.append({**{k: row.get(k) for k in
-                            ("sku", "column", "current_value", "rule",
-                             "expected_value", "group", "type")}, **v})
-
-    # Calibration: on rows with a known expected_value, did the judge agree?
-    checked = [v for v in verdicts if v.get("expected_value") is not None
-               or v.get("rule") in ("sparkling_extra_dry_inversion",
-                                     "nonbeverage_taste_leak")]
+    # Calibration (spec §7): on known-bug rows, did the judge agree they're wrong?
+    checked = [v for v in verdicts if v.get("rule") in
+               ("sparkling_extra_dry_inversion", "nonbeverage_taste_leak")]
     agreed = sum(1 for v in checked
                  if v["verdict"] in ("wrong_value", "not_applicable_null_it"))
     calibration = {"checked": len(checked), "agreed": agreed,
                    "miscalibrated": bool(checked) and agreed < len(checked) * 0.8}
 
     if canary:
-        # Rule-10: estimate full cost from the canary and STOP.
         n_full = len(suspects) + len(control)
-        per_row = 90 / 1_000_000  # ~60 in + 30 out tokens; priced below
-        est = n_full * (60 * 1e-6 * 1.0 + 30 * 1e-6 * 5.0)
-        print(f"[CANARY] judged {len(targets)} rows; full set = {n_full} rows; "
-              f"est ${est:.3f}. Calibration: {calibration}. "
+        est = n_full * (60 * 1e-6 * 1.0 + 30 * 1e-6 * 5.0)  # Haiku ~$1/M in, $5/M out
+        print(f"[CANARY] judged {len(targets)} rows; full set = {n_full} rows "
+              f"(pre-escalation); est ${est:.3f}. Calibration: {calibration}. "
               f"Re-run WITHOUT --canary and WITH sign-off to judge the full set.")
     return {"verdicts": verdicts, "calibration": calibration,
+            "cell_report": cell_report, "escalated": len(escalated),
             "control_size": len(control), "suspect_size": len(suspects)}
 ```
 
@@ -857,3 +953,6 @@ git commit -m "audit(taste): full report + per-SKU findings (judge verdicts + pe
 - The deterministic counts in spec §3 (56 extra-dry, ~22 nonbeverage, ~6 body-case) are *expected ranges*, not asserts — the DB drifts. If the free run is wildly off, investigate (Rule 2), don't paper over it.
 - Keep `audit_taste_lib.py` pure (no sqlite/anthropic imports at module top except the lazy `universal_scales` import inside `triage_inapplicable`). This keeps the unit tests fast and network-free.
 - Pricing for the estimate: Haiku 4.5 ≈ $1/M input, $5/M output. Adjust the constant in `run_judge` if pricing changed — check the `claude-api` skill if unsure.
+- `data/` is a namespace package (no `data/__init__.py`). The imports work because the script does `sys.path.insert(0, REPO)`. Do NOT "fix" the missing `__init__.py` by adding one — that can break sibling tooling relying on namespace-package behavior.
+- `resolve()` returns coarse `type` for spirits/whisky (Talisker → `type="Whisky"`, not "Single Malt"). Triage rules key on the `name` lexicon, not `type`, so they're correct — but control-sampler strata are coarse (all whiskies share one `Whisky` type). Acceptable; don't assume finer granularity.
+- Non-beverage group strings: `triage_nonbeverage` hard-codes `{Accessories, Events, Non-Alcoholic}`. Before relying on it, `SELECT DISTINCT` resolved groups over taste-bearing rows and confirm those exact strings exist (`applies('Accessories',...)` returns `{'variety'}`, so the matrix won't catch the leak). A differently-spelled group would be silently missed.
