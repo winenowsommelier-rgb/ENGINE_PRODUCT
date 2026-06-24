@@ -1,4 +1,5 @@
 import type { Answers, FinderCategory } from './answers';
+import { resolveArchetypeId } from './taste-feel';
 
 /**
  * Curated "style-profile first" archetype library. A finder run resolves to ONE
@@ -439,4 +440,18 @@ export function resolveProfile(a: Answers): StyleProfile | null {
   }
   // If nothing produced a positive signal, fall back to the first archetype.
   return best;
+}
+
+/**
+ * Resolve the archetype to DISPLAY as the result hero — the SAME id the scorer/grid
+ * ranks by (taste-feel.ts → resolveArchetypeId), so the headline can never contradict
+ * the bottles. The legacy resolveProfile() above scores match() over a.axis1/a.axis2,
+ * but the redesigned Layer-1 writes a.tasteFeel; using it for the hero produced a
+ * stale first-archetype fallback for every non-first pick (gin 'modern' → "Classic
+ * London Dry Gin", red 'bold' → "Bright & Elegant Red"). resolveArchetypeId falls back
+ * through CROWD_PLEASER for the all-neutral / whisky-origin-only path.
+ */
+export function resolveHeroProfile(a: Answers): StyleProfile | null {
+  const id = resolveArchetypeId(a.category, a.tasteFeel);
+  return STYLE_PROFILES.find((p) => p.id === id) ?? null;
 }

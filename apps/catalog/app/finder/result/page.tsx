@@ -7,7 +7,7 @@ import { buildContactLinks, type ContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
 import { decodeAnswers, encodeAnswers } from '@/lib/finder/answers';
 import { scoreProducts } from '@/lib/finder/scoring';
-import { resolveProfile } from '@/lib/finder/style-profiles';
+import { resolveHeroProfile } from '@/lib/finder/style-profiles';
 import { cn } from '@/lib/utils';
 
 /**
@@ -49,7 +49,9 @@ export default function FinderResultPage({
 
   const allProducts = getAllProducts();
   const { products, degraded, bandBySku } = scoreProducts(answers, allProducts);
-  const profile = resolveProfile(answers);
+  // Hero archetype resolved through the SAME path the grid/scoring uses (tasteFeel →
+  // resolveArchetypeId), so the headline can never drift from the bottles shown.
+  const profile = resolveHeroProfile(answers);
   const query = encodeAnswers(answers);
 
   // Per-bottle contact deep-links (Buy/Enquire path — no cart in this catalog).
