@@ -36,12 +36,11 @@ const FORTIFIED = /\b(port|marsala|madeira|sherry|oloroso|amontillado|fino)\b/i;
 
 // Per-SKU taxonomy overrides — exception-only; the prefix map is the rule. MUST
 // stay in lock-step with SKU_OVERRIDES in data/lib/taxonomy/sku_taxonomy.py
-// (verified by the shared parity fixture). LSJ0024DG: "Kai Lemongrass Ginger" is
-// a New Zealand Kai-brand flavoured vodka (siblings LVK0118-0121DG = Kai vodkas),
-// not a Japanese shochu, so the LSJ (Sake & Asian/Shochu) prefix is wrong here.
-const SKU_OVERRIDES: Record<string, { group: CategoryGroup; type: string }> = {
-  LSJ0024DG: { group: 'Spirits', type: 'Vodka' },
-};
+// (verified by the shared parity fixture). Currently empty. NOTE: LSJ0024DG
+// "Kai Lemongrass Ginger" was briefly overridden to Spirits/Vodka in error — the
+// bottle reads "SHOCHU/SOJU, RICE ALCOHOL", so the natural LSJ → Sake & Asian/
+// Shochu mapping is CORRECT.
+const SKU_OVERRIDES: Record<string, { group: CategoryGroup; type: string }> = {};
 
 function refineType(prefix: string, base: string, name: string): string {
   const n = name || '';
