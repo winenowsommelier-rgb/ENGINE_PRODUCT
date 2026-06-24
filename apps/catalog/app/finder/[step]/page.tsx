@@ -209,6 +209,7 @@ export default function FinderStepPage({
           stepNumber={index + 1}
           totalSteps={steps.length}
           title={step.title}
+          hint={step.hint}
           backHref={backHref}
           skipHref={skipHref}
         >

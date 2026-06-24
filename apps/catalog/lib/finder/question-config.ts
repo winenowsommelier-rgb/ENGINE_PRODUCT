@@ -34,6 +34,7 @@ export interface QuestionStep {
   options: StepOption[]; // selectable options
   multi?: boolean; // true for flavor chips (writes string[])
   optional?: boolean; // true for taste steps → UI shows "No preference / Skip"
+  hint?: string; // optional one-line explainer shown on Layer-2 deep-dive steps
 }
 
 // ── Shared steps (every category, in this order after category is chosen) ──
@@ -328,6 +329,7 @@ const WINE_ACIDITY_STEP: QuestionStep = {
   id: 'acidity',
   field: 'acidity',
   title: 'How should it feel in your mouth?',
+  hint: 'Acidity is the fresh, mouth-watering zing — high feels crisp, low feels soft and round.',
   optional: true,
   options: [
     { token: 'crisp', label: 'Crisp & refreshing', icon: '⚡' },
@@ -341,6 +343,7 @@ const WINE_TANNIN_STEP: QuestionStep = {
   id: 'tannin',
   field: 'tannin',
   title: 'How much grip and structure do you like?',
+  hint: 'Tannin is the grippy, drying feel in bigger reds — firmer means more structure.',
   optional: true,
   options: [
     { token: 'firm', label: 'Firm & gripping', icon: '🧱' },
@@ -360,6 +363,7 @@ const WINE_GRAPE_RED_STEP: QuestionStep = {
   id: 'grape',
   field: 'grape',
   title: 'Is there a grape you gravitate toward?',
+  hint: 'The grape behind the wine — pick one you enjoy, or let us surprise you.',
   optional: true,
   options: [
     { token: 'cabernet', label: 'Cabernet Sauvignon', icon: '🍇' },
@@ -380,6 +384,7 @@ const WINE_GRAPE_WHITE_STEP: QuestionStep = {
   id: 'grape',
   field: 'grape',
   title: 'Is there a grape you gravitate toward?',
+  hint: 'The grape behind the wine — pick one you enjoy, or let us surprise you.',
   optional: true,
   options: [
     { token: 'chardonnay', label: 'Chardonnay', icon: '🍐' },
@@ -399,6 +404,7 @@ const WINE_GRAPE_SPARKLING_STEP: QuestionStep = {
   id: 'grape',
   field: 'grape',
   title: 'Is there a grape you gravitate toward?',
+  hint: 'The grape behind the wine — pick one you enjoy, or let us surprise you.',
   optional: true,
   options: [
     { token: 'chardonnay', label: 'Chardonnay (Blanc de Blancs)', icon: '🍐' },
@@ -414,6 +420,7 @@ const WINE_AGE_STEP: QuestionStep = {
   id: 'age',
   field: 'age',
   title: 'Drinking now, or something with some age?',
+  hint: 'Younger wines are bright and fruity; older ones are mellower and more developed.',
   optional: true,
   options: [
     { token: 'young', label: 'Young & vibrant', icon: '🌱' },
@@ -427,6 +434,7 @@ const ADVENTURE_STEP: QuestionStep = {
   id: 'adventure',
   field: 'adventure',
   title: 'How adventurous are you feeling?',
+  hint: 'How far from the classics you want to roam.',
   optional: true,
   options: [
     { token: 'classic', label: 'Stick to a classic', icon: '🏛️' },
@@ -441,6 +449,7 @@ const WHISKY_PEAT_STEP: QuestionStep = {
   id: 'peat',
   field: 'peat',
   title: 'How much smoke and peat do you want?',
+  hint: 'Peat is the campfire-smoke character in some whiskies — from none to big and smoky.',
   optional: true,
   options: [
     { token: 'none', label: 'None — clean & unpeated', icon: '🧼' },
@@ -454,6 +463,7 @@ const WHISKY_AGE_STEP: QuestionStep = {
   id: 'age',
   field: 'age',
   title: 'Younger and lively, or older and mellow?',
+  hint: 'Younger whiskies are brighter and livelier; older ones are mellower and more developed.',
   optional: true,
   options: [
     { token: 'young', label: 'Younger & lively', icon: '🌱' },

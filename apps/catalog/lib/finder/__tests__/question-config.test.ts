@@ -160,6 +160,19 @@ describe('deepDiveStepsFor (opt-in sommelier branch)', () => {
   it('thin categories (gin/sake) have a shorter deep-dive than wine', () => {
     expect(deepDiveStepsFor('gin').length).toBeLessThan(deepDiveStepsFor('red').length);
   });
+  // Layer-2 "what's this?" explainers (P2): every opt-in deep-dive step carries a
+  // plain-language `hint` so a shopper who opted in still gets the sommelier term
+  // explained inline. Deep-dive steps are all `optional`, so this also guards that
+  // each optional deep-dive step has a non-empty one-line explainer.
+  it('every deep-dive step carries a non-empty plain-language hint', () => {
+    for (const c of ALL) {
+      for (const s of deepDiveStepsFor(c)) {
+        expect(typeof s.hint).toBe('string');
+        expect((s.hint ?? '').trim().length).toBeGreaterThan(0);
+      }
+    }
+  });
+
   it('core stepsFor is unchanged (no deep-dive fields leak into core)', () => {
     // tasteFeel is a CORE Layer-1 field (red/white plain-language step), not a deep-dive
     // field — added to the allowlist when red/white moved off body/character axes.
