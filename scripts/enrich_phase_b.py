@@ -1,18 +1,25 @@
-"""Phase B enrichment — ROW SELECTION + FREE dry-run (Task 3).
+"""Phase B Run 2 enrichment — ROW SELECTION + FREE dry-run.
 
-This module selects the non-wine, in-stock, has-a-buying-signal products that
-are still missing `variety` and/or `body`, and builds the constrained LLM
-prompt for each. The PAID LLM call lands in a LATER task (Task 4); this file
-makes ZERO network/API calls and never writes to the DB (read-only SELECT).
+This module selects ALL drinkable, in-stock products that are still missing any
+of the 5 taste fields THAT APPLY to their category, and builds the constrained
+LLM prompt for each. The field set is parameterized (FIELDS) and gated by the
+§4.0 applicability matrix (universal_scales.applies(group, type)). There is NO
+buying-signal gate in Run 2 — Run 1's critic/sales gate is gone; every drinkable
+in-stock row with an applicable gap is eligible. The PAID LLM call lands in
+main()'s paid branch; this selection path makes ZERO network/API calls and never
+writes to the DB (read-only SELECT).
 
-Critical contracts (load-bearing — see CLAUDE.md Rules 1, 12 + Task-1 fix):
-  * Category comes from sku_taxonomy.resolve()["group"], NEVER the magento
-    `classification` field (Rule 12).
-  * schema_for_group() is keyed by GROUP. resolve() returns BOTH group and
-    type and they DIVERGE for non-wine (group "Spirits" -> type "Rum",
-    group "Sake & Asian" -> type "Umeshu"). We ALWAYS pass the GROUP. Passing
-    the type returns None and silently skips most non-wine products after the
-    LLM has already been paid. The parity test guards this at the call site.
+Fields (universal_scales.FIELD_SPECS): variety, body, acidity, tannin, sweetness.
+applies() decides which apply per (group, wine_type) — e.g. Gin -> {variety};
+a Red Wine -> {variety, body, acidity, tannin}; a Liqueur -> all but tannin.
+Only the APPLICABLE-and-empty fields go in a row's `need`; the prompt, parse,
+validate, and counters all iterate `need` / FIELDS — nothing is hardcoded.
+
+Critical contracts (load-bearing — see CLAUDE.md Rules 1, 12):
+  * Category comes from sku_taxonomy.resolve()["group"]/["type"], NEVER the
+    magento `classification` field (Rule 12). applies()/variety_vocab_for()
+    are GROUP-keyed (type only refines wine sub-gating); group and type
+    DIVERGE for non-wine (group "Spirits" -> type "Rum").
   * is_in_stock is a STRING "0"/"1"/null — truthiness is backwards; only
     treat str(v) in ("1","True","true") as in-stock.
 
@@ -35,9 +42,9 @@ sys.path.insert(0, str(REPO))
 
 from data.lib.taxonomy.sku_taxonomy import resolve  # noqa: E402
 from data.lib.taste_taxonomy.universal_scales import (  # noqa: E402
-    schema_for_group,
-    validate_body,
-    validate_variety,
+    FIELD_SPECS,
+    applies,
+    variety_vocab_for,
 )
 
 # Canonical DB lives at repo-root data/db/products.db. This resolves inside the
@@ -47,9 +54,14 @@ DEFAULT_DB = REPO / "data" / "db" / "products.db"
 MODEL = "claude-haiku-4-5-20251001"
 COST_IN, COST_OUT = 0.80 / 1_000_000, 4.00 / 1_000_000
 
-# These are SKU-taxonomy GROUP names (Rule 12), and each has a Phase-B schema.
-NONWINE = {"Spirits", "Whisky", "Sake & Asian", "Liqueur", "Beer & RTD"}
-ENRICHMENT_SOURCE = "phase_b_haiku_variety_body"
+# The full Run-2 field set the SELECT/prompt/parse/validate/counters iterate over.
+# Per-row `applies()` decides which of these actually apply to that category.
+FIELDS = ("variety", "body", "acidity", "tannin", "sweetness")
+
+# Drinkable SKU-taxonomy GROUP names (Rule 12). Run 2 INCLUDES Wine; Beer & RTD
+# is dropped from Run 2 scope.
+DRINKABLE = {"Wine", "Spirits", "Whisky", "Sake & Asian", "Liqueur"}
+ENRICHMENT_SOURCE = "phase_b_run2_haiku_taste"
 
 
 def _instock(v) -> bool:
@@ -61,66 +73,67 @@ def _empty(v) -> bool:
     return v is None or str(v).strip() == ""
 
 
-def _sold(v) -> int:
-    """Coerce sold_orders to int. Prod data is dirty (Rule 3): 'N/A', '1,234',
-    '3.0', None all appear. A bad value must NOT crash the whole selection —
-    treat anything non-numeric as 0 (no sales signal)."""
-    try:
-        return int(float(v))
-    except (TypeError, ValueError):
-        return 0
-
-
-def group_for(row) -> str | None:
-    """Return the SKU-derived GROUP (Rule 12). NEVER the type — schema_for_group
-    is group-keyed and the two diverge for non-wine categories."""
-    return resolve({"sku": row["sku"], "name": row["name"]}).get("group")
+def resolve_group_type(row) -> tuple[str | None, str | None]:
+    """Return the SKU-derived (GROUP, TYPE) (Rule 12) — NEVER the magento
+    classification. applies()/variety_vocab_for() are group-keyed; the type only
+    refines wine sub-gating (Red->tannin, White/dessert->sweetness)."""
+    r = resolve({"sku": row["sku"], "name": row["name"]})
+    return r.get("group"), r.get("type")
 
 
 def select_rows(conn: sqlite3.Connection) -> list[dict]:
-    """Pick in-stock, non-wine, has-signal rows still missing variety or body."""
+    """Pick in-stock, drinkable rows still missing any APPLICABLE taste field.
+
+    Run 2 has NO buying-signal gate (Run 1's critic/sales gate is removed):
+    every in-stock drinkable row with an applicable gap is eligible. For each row
+    we compute the §4.0 applicable field set via applies(group, type), then the
+    subset that is still empty (`need`). A row with a non-empty `need` is selected,
+    carrying group, wine_type, and the sorted `need` list for the prompt/parse."""
     conn.row_factory = sqlite3.Row
-    try:
-        critic = {r[0] for r in conn.execute("SELECT DISTINCT sku FROM critic_scores")}
-    except sqlite3.OperationalError:
-        # Stale/backup DB may lack the table; degrade to sales-signal-only (Rule 3).
-        print(
-            "WARN: critic_scores table absent — proceeding with sales-signal only",
-            file=sys.stderr,
-        )
-        critic = set()
     out: list[dict] = []
     for r in conn.execute(
-        "SELECT sku,name,is_in_stock,variety,body,"
-        "has_recent_sales,sold_orders FROM products ORDER BY sku"
+        "SELECT sku,name,is_in_stock,variety,body,acidity,tannin,sweetness "
+        "FROM products ORDER BY sku"
     ):
         if not _instock(r["is_in_stock"]):
             continue
-        group = group_for(r)
-        if group not in NONWINE:
+        group, wine_type = resolve_group_type(r)
+        if group not in DRINKABLE:
             continue
-        signal = (
-            str(r["has_recent_sales"]) in ("1", "True", "true")
-            or _sold(r["sold_orders"]) > 0
-            or r["sku"] in critic
-        )
-        if not signal:
-            continue
-        if _empty(r["variety"]) or _empty(r["body"]):
-            out.append({**dict(r), "group": group})
+        ap = applies(group, wine_type)
+        need = {f for f in ap if _empty(r[f])}
+        if need:
+            out.append({**dict(r), "group": group, "wine_type": wine_type,
+                        "need": sorted(need)})
     return out
 
 
+def _field_options(field: str, group: str) -> str:
+    """The comma-joined allowlist for a field (variety is group-keyed; the gauge
+    fields read their scale from FIELD_SPECS)."""
+    if field == "variety":
+        return ", ".join(variety_vocab_for(group))
+    return ", ".join(FIELD_SPECS[field]["scale"])
+
+
 def build_prompt(row: dict) -> str:
-    """Build the constrained variety+body prompt. Keyed on the GROUP (Task-1)."""
-    schema = schema_for_group(row["group"])  # GROUP-keyed (Task-1 critical fix)
-    vocab = ", ".join(schema["variety_vocab"])
-    body = ", ".join(schema["body_scale"])
+    """Build the constrained prompt for ONLY the fields in row['need'] (§4.0
+    gating). variety options come from the group vocab; the gauge fields from
+    FIELD_SPECS scales. Nothing is hardcoded — adding a field to FIELD_SPECS +
+    applies() flows through here automatically."""
+    group = row["group"]
+    lines = [
+        f"\"{f}\": <one of [{_field_options(f, group)}] or null>"
+        for f in row["need"]
+    ]
+    body = "{" + ", ".join(lines) + "}"
     return (
-        f"Product: {row['name']}\nCategory: {row['group']}\n\n"
-        f"Return STRICT JSON {{\"variety\": <one of [{vocab}] or null>, "
-        f"\"body\": <one of [{body}] or null>}}.\n"
-        "Use ONLY the listed values. If unsure, use null. Never invent a value."
+        f"Product: {row['name']}\nCategory: {group}\n\n"
+        f"Return STRICT JSON {body}.\n"
+        "Use ONLY the listed values. If unsure, use null. Never invent a value.\n"
+        "Only assign a value the product name CLEARLY supports. For a spirit whose "
+        "base material is not obvious from the name, prefer \"Other\" (or null) over a "
+        "plausible guess — a wrong base material is worse than none."
     )
 
 
@@ -161,36 +174,47 @@ def filter_undone(rows: list[dict], done_skus: set) -> list[dict]:
 
 
 def enrich_one(client, row: dict) -> dict:
-    """ONE paid Haiku call: extract variety+body, parse JSON-in-text, then
-    VALIDATE against the group's allowlist + the 4-step body scale. Off-vocab
-    variety and off-scale body are DROPPED to None (Rule 1/12 + spec §4.1) — the
-    LLM is constrained but NOT trusted; a coerced wrong value would silently ship
-    bad data, whereas None just leaves the gap for the NULL-only merge to fill
-    later. SDK usage mirrors phase_d1. Never raises — API errors become a row
-    with status 'api_error' so one bad SKU can't abort a paid bulk run."""
+    """ONE paid Haiku call: extract the row's NEEDED taste fields, parse the
+    JSON-in-text, then VALIDATE each against its allowlist/scale. A value the LLM
+    returns that is off-vocab/off-scale — or for a field NOT in row['need'] — is
+    DROPPED to None (Rule 1/12 + spec §4.0/§4.1): the LLM is constrained but NOT
+    trusted, and we never widen beyond the applicable+empty fields. None leaves
+    the gap for the NULL-only merge; a coerced wrong value would ship bad data.
+    Always emits all 5 FIELDS (None where N/A) so the sidecar schema is uniform.
+    Never raises — API errors become status 'api_error' (all fields None) so one
+    bad SKU can't abort a paid bulk run."""
+    need = set(row["need"])
     try:
         resp = client.messages.create(
-            model=MODEL, max_tokens=200, temperature=0,  # temp=0 for determinism
+            model=MODEL, max_tokens=300, temperature=0,  # temp=0 for determinism
             system=[{"type": "text", "text": SYSTEM}],
             messages=[{"role": "user", "content": build_prompt(row)}])
     except Exception as e:  # noqa: BLE001 — any SDK/network error -> recorded, not raised
-        return {"sku": row["sku"], "group": row["group"],
-                "status": f"api_error: {e}", "variety": None, "body": None,
-                "tokens_in": 0, "tokens_out": 0, "cost_usd": 0.0}
+        out = {"sku": row["sku"], "group": row["group"],
+               "status": f"api_error: {e}",
+               "tokens_in": 0, "tokens_out": 0, "cost_usd": 0.0}
+        out.update({f: None for f in FIELDS})
+        return out
     text = "".join(getattr(b, "text", "") for b in resp.content)
     try:
         raw = json.loads(text[text.find("{"):text.rfind("}") + 1])
-    except Exception:  # noqa: BLE001 — malformed/non-JSON -> empty dict (graceful None/None)
+    except Exception:  # noqa: BLE001 — malformed/non-JSON -> empty dict (graceful all-None)
         raw = {}
-    variety = validate_variety(row["group"], raw.get("variety"))  # off-vocab -> None
-    body = validate_body(raw.get("body"))                         # off-scale -> None
+    out = {"sku": row["sku"], "group": row["group"], "status": "ok"}
+    for f in FIELDS:
+        if f not in need:
+            out[f] = None  # not applicable/needed -> never write it (no scope creep)
+        elif f == "variety":
+            out[f] = FIELD_SPECS["variety"]["validate"](row["group"], raw.get("variety"))
+        else:
+            out[f] = FIELD_SPECS[f]["validate"](raw.get(f))  # off-scale -> None
     u = resp.usage
     tin = u.input_tokens or 0
     tout = u.output_tokens or 0
-    return {"sku": row["sku"], "group": row["group"], "status": "ok",
-            "variety": variety, "body": body,
-            "tokens_in": tin, "tokens_out": tout,
-            "cost_usd": tin * COST_IN + tout * COST_OUT}
+    out["tokens_in"] = tin
+    out["tokens_out"] = tout
+    out["cost_usd"] = tin * COST_IN + tout * COST_OUT
+    return out
 
 
 def main(argv=None) -> int:
@@ -212,7 +236,7 @@ def main(argv=None) -> int:
 
     conn = sqlite3.connect(a.db)
     rows = select_rows(conn)
-    print(f"Selected {len(rows)} rows (need variety or body).")
+    print(f"Selected {len(rows)} rows (missing an applicable taste field).")
 
     if a.dry_run:
         # Apply --limit to the preview so `--limit N --dry-run` previews the same
@@ -297,7 +321,8 @@ def main(argv=None) -> int:
     lock = threading.Lock()
     total_cost = 0.0
     total_in = total_out = 0
-    n_calls = n_ok = n_api_error = n_variety = n_body = 0
+    n_calls = n_ok = n_api_error = 0
+    n_field = {f: 0 for f in FIELDS}  # per-field "filled" tally (Rule 4 truthful count)
 
     with sidecar.open(open_mode) as fh, ThreadPoolExecutor(max_workers=6) as ex:
         futures = {ex.submit(enrich_one, client, r): r for r in rows}
@@ -314,10 +339,9 @@ def main(argv=None) -> int:
                     n_ok += 1
                 elif str(res["status"]).startswith("api_error"):
                     n_api_error += 1
-                if res["variety"] is not None:
-                    n_variety += 1
-                if res["body"] is not None:
-                    n_body += 1
+                for f in FIELDS:
+                    if res.get(f) is not None:
+                        n_field[f] += 1
 
     # Rule 4: per-SUCCESSFUL-row cost (NOT per-attempt — api_errors paid nothing
     # but must not deflate the cost-per-good-row the operator reasons about).
@@ -325,7 +349,7 @@ def main(argv=None) -> int:
     print(f"Sidecar: {sidecar}")
     print(f"Calls: {n_calls}  ok: {n_ok}  api_error: {n_api_error}")
     print(f"Total cost: ${total_cost:.4f}  in: {total_in}  out: {total_out}")
-    print(f"variety filled: {n_variety}  body filled: {n_body}")
+    print("Filled: " + "  ".join(f"{f}={n_field[f]}" for f in FIELDS))
     print(f"Per-SUCCESSFUL-row cost: ${per_ok:.6f}")
     print(
         "NOTE: these are cache/sidecar counts, NOT user-facing 'shipped' counts. "

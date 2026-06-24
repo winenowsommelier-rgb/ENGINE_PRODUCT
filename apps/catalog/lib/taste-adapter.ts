@@ -37,7 +37,7 @@ import type { Tiers } from '@/components/product/TasteWheel';
  *   - body uses a Light → Full scale (Medium-Full and Full are IN-scale here).
  * So the same raw token (e.g. 'Full') normalises differently per axis.
  */
-type Axis = 'body' | 'acidity' | 'tannin';
+type Axis = 'body' | 'acidity' | 'tannin' | 'sweetness';
 
 // Per-axis value remap: raw export token → component-scale token. Tokens already
 // in the component scale are passed through (handled below); only OUT-of-scale
@@ -61,6 +61,9 @@ const REMAP: Record<Axis, Record<string, string>> = {
   body: {
     'Medium-Light': 'Medium',
   },
+  // sweetness scale: [Dry, Off-Dry, Medium-Sweet, Sweet] — no aliases; the model
+  // emits exact gauge values and the validator guards upstream.
+  sweetness: {},
 };
 
 // The in-scale value sets, used to pass through values that are already valid.
@@ -68,6 +71,7 @@ const SCALE: Record<Axis, ReadonlySet<string>> = {
   body: new Set(['Light', 'Medium', 'Medium-Full', 'Full']),
   acidity: new Set(['Low', 'Medium', 'Medium-High', 'High']),
   tannin: new Set(['Low', 'Medium', 'Medium-High', 'High']),
+  sweetness: new Set(['Dry', 'Off-Dry', 'Medium-Sweet', 'Sweet']),
 };
 
 /**
@@ -105,9 +109,10 @@ export function toTiers(taste_profile: Record<string, unknown> | null | undefine
  * normalising each value into the component scale and DROPPING empties.
  * Returns {} when the product has no usable structural data.
  *
- * Only body / acidity / tannin are populated in the live export; the component
- * also supports sweetness/bitterness/carbonation/intensity but those have no
- * flat source here, so we don't emit them.
+ * body / acidity / tannin / sweetness are emitted from their flat fields
+ * (sweetness is Phase-B-Run-2 enriched on the [Dry, Off-Dry, Medium-Sweet, Sweet]
+ * gauge scale). The component also supports bitterness/carbonation/intensity but
+ * those have no flat source here, so we don't emit them.
  */
 export function toStructural(product: PublicProduct): Record<string, string> {
   const out: Record<string, string> = {};
@@ -117,5 +122,7 @@ export function toStructural(product: PublicProduct): Record<string, string> {
   if (body) out.body = body;
   if (acidity) out.acidity = acidity;
   if (tannin) out.tannin = tannin;
+  const sweetness = normalizeScale('sweetness', product.sweetness);
+  if (sweetness) out.sweetness = sweetness;
   return out;
 }

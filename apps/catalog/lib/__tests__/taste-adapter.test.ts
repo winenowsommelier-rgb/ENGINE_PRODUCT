@@ -123,4 +123,12 @@ describe('toStructural', () => {
   it('a no-taste product returns an empty object', () => {
     expect(toStructural(mk({}))).toEqual({});
   });
+
+  it('emits sweetness on the gauge scale and drops off-scale', () => {
+    expect(toStructural({ sweetness: 'Sweet' } as any).sweetness).toBe('Sweet');
+    expect(toStructural({ sweetness: 'Off-Dry' } as any).sweetness).toBe('Off-Dry');
+    // sake-ladder lowercase value is off the gauge scale -> dropped (no all-empty gauge)
+    expect(toStructural({ sweetness: 'very dry' } as any).sweetness).toBeUndefined();
+    expect(toStructural({} as any).sweetness).toBeUndefined();
+  });
 });
