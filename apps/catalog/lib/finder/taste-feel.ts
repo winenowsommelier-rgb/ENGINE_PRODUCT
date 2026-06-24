@@ -8,6 +8,10 @@ const FEEL_TO_ARCHETYPE: Record<FinderCategory, Record<string, string>> = {
   // fuller, lower-acid; aromatic = the fragrant balanced middle. 'unsure'/missing → null →
   // resolver uses CROWD_PLEASER.white (aromatic-balanced-white).
   white: { crisp: 'crisp-zesty-white', rounded: 'rich-textured-white', aromatic: 'aromatic-balanced-white' },
+  // Rosé is BODY/ACIDITY-led (its sweetness is 0/95 in stock — a DEAD field). crisp = the
+  // lean, high-acid Provence-style (Light/High) → crisp-dry-rose; fruity = the riper New-World
+  // style (Medium/Medium) → fruity-easy-rose. 'unsure'/missing → null → CROWD_PLEASER.rose.
+  rose: { crisp: 'crisp-dry-rose', fruity: 'fruity-easy-rose' },
   // Whisky Layer-1 plain-feel → archetype (taste-feel.ts is COPY only; smoky is also a
   // rank boost in scoring.ts). smooth=mellow/Irish, rich=warming/bourbon, smoky=peated/
   // coastal. Japanese refined is reachable via the ORIGIN question (axis1=japanese), so it
@@ -43,7 +47,7 @@ export function feelToArchetype(cat: FinderCategory, feel: string | undefined): 
 export const CROWD_PLEASER: Record<FinderCategory, string> = {
   red: 'supple-everyday-red', white: 'aromatic-balanced-white', whisky: 'smooth-irish-whiskey',
   sparkling: 'fresh-festive-sparkling', gin: 'classic-juniper-gin',
-  spirits: 'clean-versatile-vodka', sake: 'crisp-dry-sake',
+  spirits: 'clean-versatile-vodka', sake: 'crisp-dry-sake', rose: 'fruity-easy-rose',
 };
 export function resolveArchetypeId(cat: FinderCategory, feel: string | undefined): string {
   return feelToArchetype(cat, feel) ?? CROWD_PLEASER[cat];

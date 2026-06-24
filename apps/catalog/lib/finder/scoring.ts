@@ -447,13 +447,17 @@ function deepDiveBump(a: Answers, p: PublicProduct): number {
 // NEVER an AND-filter. Only ~10 low-tannin reds exist, so requiring BOTH a Light body AND
 // Low tannin would starve the pool. A product that matches body but misses tannin (or vice
 // versa) still earns the half it matches. No-signal (missing/off-ladder) values score 0.
-const TASTE_FEEL_CATEGORIES = new Set(['red', 'white', 'sparkling']);
+// Rosé joins the body/acidity-led path legitimately: its archetypes carry body+acidity (no
+// tannin), so BODY is the discriminator (crisp=Light vs fruity=Medium) and acidity the nudge —
+// the SAME mechanism as white/sparkling. Rosé sweetness is 0/95 in stock so it is never scored.
+const TASTE_FEEL_CATEGORIES = new Set(['red', 'white', 'rose', 'sparkling']);
 // Secondary nudge axis per category: red leans on tannin, white & sparkling on acidity.
 // Sparkling archetypes have no structured tannin (definingAttributes carry body+acidity),
 // so BODY is the discriminator (festive=Light vs fine=Full) and acidity the soft nudge.
 const FEEL_SECONDARY_AXIS: Record<string, 'tannin' | 'acidity'> = {
   red: 'tannin',
   white: 'acidity',
+  rose: 'acidity', // rosé archetypes carry body+acidity (no tannin) → acidity is the nudge
   sparkling: 'acidity',
 };
 

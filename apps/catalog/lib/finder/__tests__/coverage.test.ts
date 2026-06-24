@@ -15,7 +15,7 @@ const FEELS: Record<FinderCategory, string[]> = {
   white: ['crisp', 'rounded', 'aromatic', 'unsure'],
   whisky: ['smooth', 'rich', 'smoky', 'unsure'],
   // Phase 2 (not asserted here):
-  sparkling: [], gin: [], spirits: [], sake: [],
+  rose: [], sparkling: [], gin: [], spirits: [], sake: [],
 };
 
 describe('finder coverage — no dead ends (Phase 1)', () => {

@@ -70,3 +70,15 @@ test('sake Layer-1 has an aroma taste-feel step with fragrant/clean + unsure', (
   const tokens = feel!.options.map(o => o.token);
   expect(tokens).toEqual(expect.arrayContaining(['fragrant','clean','unsure']));
 });
+
+// ROSÉ (Phase-2) — body/acidity-led, jargon-free plain taste-feel step (crisp/fruity).
+test('rose Layer-1 labels contain no jargon', () => {
+  const labels = stepsFor('rose').flatMap(s => [s.title, ...s.options.map(o => o.label)]).join(' ').toLowerCase();
+  for (const w of BANNED) expect(labels).not.toContain(w);
+});
+test('rose Layer-1 has a taste-feel step with crisp/fruity + unsure', () => {
+  const feel = stepsFor('rose').find(s => s.field === 'tasteFeel');
+  expect(feel).toBeTruthy();
+  const tokens = feel!.options.map(o => o.token);
+  expect(tokens).toEqual(expect.arrayContaining(['crisp','fruity','unsure']));
+});

@@ -95,6 +95,22 @@ const WHITE_FEEL_STEP: QuestionStep = {
   ],
 };
 
+// Rosé plain-language taste-feel step (Layer-1, no jargon). Body/acidity-led framing
+// (crisp & dry vs fruity & soft), NOT sweetness — rosé's sweetness is 0/95 in stock (a DEAD
+// field). crisp → crisp-dry-rose (lean Provence-style, Light/High); fruity → fruity-easy-rose
+// (riper New-World, Medium/Medium). 'unsure' → null → CROWD_PLEASER.rose.
+const ROSE_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'Crisp & dry, or fruity & soft?',
+  optional: true,
+  options: [
+    { token: 'crisp', label: 'Crisp & dry', icon: '🌸' },
+    { token: 'fruity', label: 'Fruity & soft', icon: '🍓' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
+  ],
+};
+
 // Sparkling plain-language taste-feel step (Layer-1, no jargon). Style-led framing
 // (festive vs fine), NOT body/dosage. festive → fresh-festive-sparkling (light, fruity,
 // Prosecco-style); fine → fine-traditional-sparkling (full, toasty, Champagne-style).
@@ -273,6 +289,9 @@ export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   // White Layer-1 is plain-language too: occasion → budget → taste-feel (acidity-led) →
   // flavor. (sparkling still uses the body/character axes.)
   white: [OCCASION_STEP, BUDGET_STEP, WHITE_FEEL_STEP, FLAVOR_STEP],
+  // Rosé Layer-1 (Phase-2): occasion → budget → taste-feel (body/acidity-led, crisp/fruity) →
+  // flavor. Mirrors the white flow; sweetness is NOT asked (0/95 in stock — dead field).
+  rose: [OCCASION_STEP, BUDGET_STEP, ROSE_FEEL_STEP, FLAVOR_STEP],
   // Sparkling Layer-1 is plain-language too: occasion → budget → taste-feel (style-led,
   // festive/fine) → flavor. Replaces the old body/character axis1/axis2 wine steps.
   sparkling: [OCCASION_STEP, BUDGET_STEP, SPARKLING_FEEL_STEP, FLAVOR_STEP],
@@ -470,6 +489,9 @@ const WINE_DEEP_DIVE_SPARKLING: QuestionStep[] = [
 const DEEP_DIVE_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   red: WINE_DEEP_DIVE_RED,
   white: WINE_DEEP_DIVE_WHITE,
+  // Rosé deep-dive: SHORT (acidity is the discriminator rosé leads on, plus adventure). No
+  // grape step — rosé variety is a blend signal, not a single-grape pick like red/white.
+  rose: [WINE_ACIDITY_STEP, ADVENTURE_STEP],
   sparkling: WINE_DEEP_DIVE_SPARKLING,
   whisky: [WHISKY_PEAT_STEP, WHISKY_AGE_STEP, ADVENTURE_STEP],
   // Thin categories — kept deliberately short (gin MUST be shorter than red).

@@ -30,6 +30,7 @@ const CATEGORIES: Array<{
 }> = [
   { id: 'red', label: 'Red Wine', icon: '🍷', blurb: 'From bright & elegant to bold & structured' },
   { id: 'white', label: 'White Wine', icon: '🥂', blurb: 'Crisp and zesty through rich and textured' },
+  { id: 'rose', label: 'Rosé', icon: '🌸', blurb: 'Crisp & dry Provence to fruity & soft' },
   { id: 'sparkling', label: 'Sparkling & Champagne', icon: '🍾', blurb: 'Festive fizz to fine traditional method' },
   { id: 'whisky', label: 'Whisky', icon: '🥃', blurb: 'Scotch, Japanese, bourbon, Irish & world' },
   { id: 'gin', label: 'Gin', icon: '🍸', blurb: 'Classic London Dry to contemporary botanical' },

@@ -70,3 +70,15 @@ test('sake unsure / unknown feel returns null (→ crowd-pleaser via resolver)',
   expect(feelToArchetype('sake', 'unsure')).toBeNull();
   expect(resolveArchetypeId('sake', undefined)).toBe(CROWD_PLEASER.sake);
 });
+
+// ROSÉ (Phase-2) — body/acidity-led feel. crisp → crisp-dry-rose (Provence, Light/High);
+// fruity → fruity-easy-rose (riper New-World, Medium/Medium). Sweetness is a DEAD field for
+// rosé (0/95 in stock) and is intentionally NOT used.
+test('rose taste-feel maps to the CORRECT archetype', () => {
+  expect(feelToArchetype('rose', 'crisp')).toBe('crisp-dry-rose');
+  expect(feelToArchetype('rose', 'fruity')).toBe('fruity-easy-rose');
+});
+test('rose unsure / unknown feel returns null (→ crowd-pleaser via resolver)', () => {
+  expect(feelToArchetype('rose', 'unsure')).toBeNull();
+  expect(resolveArchetypeId('rose', undefined)).toBe(CROWD_PLEASER.rose);
+});
