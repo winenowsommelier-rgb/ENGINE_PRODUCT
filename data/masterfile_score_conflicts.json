@@ -1,0 +1,230 @@
+[
+  {
+    "sku": "WRW2150AC",
+    "critic": "Wine Advocate",
+    "bare": 92,
+    "html": 94
+  },
+  {
+    "sku": "WRW2355BN",
+    "critic": "Wine Advocate",
+    "bare": 93,
+    "html": 94
+  },
+  {
+    "sku": "WRW2051AC",
+    "critic": "Wine Advocate",
+    "bare": 92,
+    "html": 91
+  },
+  {
+    "sku": "WRW2451BN",
+    "critic": "Wine Spectator",
+    "bare": 90,
+    "html": 92
+  },
+  {
+    "sku": "WRW2458BN",
+    "critic": "Wine Enthusiast",
+    "bare": 97,
+    "html": 95
+  },
+  {
+    "sku": "WRW2458BN",
+    "critic": "Wine Spectator",
+    "bare": 95,
+    "html": 97
+  },
+  {
+    "sku": "WRW2362BN",
+    "critic": "Wine Advocate",
+    "bare": 95,
+    "html": 94
+  },
+  {
+    "sku": "WRW2898BN",
+    "critic": "Wine Advocate",
+    "bare": 97,
+    "html": 95
+  },
+  {
+    "sku": "WRW3587DH",
+    "critic": "James Suckling",
+    "bare": 96,
+    "html": 97
+  },
+  {
+    "sku": "WRW2332BN",
+    "critic": "James Suckling",
+    "bare": 92,
+    "html": 93
+  },
+  {
+    "sku": "WRW4017AJ",
+    "critic": "James Suckling",
+    "bare": 94,
+    "html": 91
+  },
+  {
+    "sku": "WRW4257AF",
+    "critic": "Wine Enthusiast",
+    "bare": 96,
+    "html": 98
+  },
+  {
+    "sku": "WRW4504AF",
+    "critic": "Wine Spectator",
+    "bare": 90,
+    "html": 92
+  },
+  {
+    "sku": "WWW2421DJ",
+    "critic": "Wine Advocate",
+    "bare": 91,
+    "html": 93
+  },
+  {
+    "sku": "WRW2297BN",
+    "critic": "Wine Spectator",
+    "bare": 92,
+    "html": 93
+  },
+  {
+    "sku": "WWW4812EH",
+    "critic": "Wine Advocate",
+    "bare": 94,
+    "html": 93
+  },
+  {
+    "sku": "WRW5031AD",
+    "critic": "James Suckling",
+    "bare": 95,
+    "html": 98
+  },
+  {
+    "sku": "WRW5085AF",
+    "critic": "Wine Enthusiast",
+    "bare": 96,
+    "html": 97
+  },
+  {
+    "sku": "WRW3064BN",
+    "critic": "Wine Spectator",
+    "bare": 93,
+    "html": 94
+  },
+  {
+    "sku": "WRW2504BN",
+    "critic": "Wine Advocate",
+    "bare": 91,
+    "html": 95
+  },
+  {
+    "sku": "WSP2527AD",
+    "critic": "James Suckling",
+    "bare": 90,
+    "html": 91
+  },
+  {
+    "sku": "WRW5399BN",
+    "critic": "Wine Enthusiast",
+    "bare": 94,
+    "html": 95
+  },
+  {
+    "sku": "WRW5412BN",
+    "critic": "Wine Advocate",
+    "bare": 93,
+    "html": 95
+  },
+  {
+    "sku": "WRW5416BN",
+    "critic": "Wine Advocate",
+    "bare": 91,
+    "html": 92
+  },
+  {
+    "sku": "WSP2585AD",
+    "critic": "Wine Advocate",
+    "bare": 95,
+    "html": 97
+  },
+  {
+    "sku": "WRW5538FO",
+    "critic": "Wine Spectator",
+    "bare": 92,
+    "html": 94
+  },
+  {
+    "sku": "WWW5131FO",
+    "critic": "Wine Advocate",
+    "bare": 91,
+    "html": 92
+  },
+  {
+    "sku": "WRW5954GC",
+    "critic": "Wine Advocate",
+    "bare": 96,
+    "html": 94
+  },
+  {
+    "sku": "WRW6068BN",
+    "critic": "James Suckling",
+    "bare": 90,
+    "html": 91
+  },
+  {
+    "sku": "WRW6115AC",
+    "critic": "James Suckling",
+    "bare": 91,
+    "html": 92
+  },
+  {
+    "sku": "WRW6120AA",
+    "critic": "James Suckling",
+    "bare": 96,
+    "html": 98
+  },
+  {
+    "sku": "WSP5707AD",
+    "critic": "Wine Spectator",
+    "bare": 95,
+    "html": 94
+  },
+  {
+    "sku": "WRS0245BN",
+    "critic": "James Suckling",
+    "bare": 94,
+    "html": 91
+  },
+  {
+    "sku": "WSP5786BN",
+    "critic": "Wine Spectator",
+    "bare": 93,
+    "html": 92
+  },
+  {
+    "sku": "WRW6750FO",
+    "critic": "James Suckling",
+    "bare": 99,
+    "html": 97
+  },
+  {
+    "sku": "WRW7552AU",
+    "critic": "Wine Enthusiast",
+    "bare": 97,
+    "html": 93
+  },
+  {
+    "sku": "WRW7579AU",
+    "critic": "James Suckling",
+    "bare": 93,
+    "html": 92
+  },
+  {
+    "sku": "WRW7615FS",
+    "critic": "Wine Advocate",
+    "bare": 94,
+    "html": 95
+  }
+]
