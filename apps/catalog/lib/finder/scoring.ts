@@ -4,10 +4,26 @@ import { finderPrefilter } from './category-map';
 import { foodChipMatches } from './food-chips';
 import { primaryValue, bucketForValue } from './scales';
 import { normalizeScale } from '@/lib/taste-adapter';
-import { typeForProduct } from '@/lib/category-groups';
+import { typeForProduct, groupForProduct } from '@/lib/category-groups';
+import { resolveArchetypeId } from './taste-feel';
+import { STYLE_PROFILES } from './style-profiles';
+import { isLikelyPeated } from './peated-distilleries';
+import { matchBand, type MatchBandLabel } from './match-band';
 
 const BODY_LADDER = ['light','medium-light','medium','medium-full','full'];
+// 4-level intensity ladder shared by acidity & tannin (matches FILTER_SCALE in scales.ts).
+// Used by the taste-feel scorer to nudge on tannin (red) / acidity (white) toward the
+// resolved archetype's definingAttributes. Off-ladder / missing values yield null → 0.
+const INTENSITY_LADDER = ['low','medium','medium-high','high'];
 const norm = (s?: string) => (s ?? '').trim().toLowerCase();
+
+/** Ordinal distance on the 4-level acidity/tannin ladder; null if either is off-ladder. */
+function intensityLadderDistance(target: string, value: string): number | null {
+  const ti = INTENSITY_LADDER.indexOf(norm(target));
+  const vi = INTENSITY_LADDER.indexOf(norm(value));
+  if (ti < 0 || vi < 0) return null;
+  return Math.abs(ti - vi);
+}
 
 /** Ordinal distance on the 5-level body scale; null if either value is off-ladder. */
 export function bodyLadderDistance(target: string, value: string): number | null {
@@ -55,14 +71,16 @@ function sweetnessLadderDistance(target: string, value: string): number | null {
 
 // WHISKY axis1 (origin) → expected p.country. 'world' has no reliable single
 // country, so no boost.
+//
+// NOTE (spec §11.8): whisky has NO axis2→region "style" term. The old
+// WHISKY_STYLE_TO_REGIONS map guessed peat from region (smoky→Islay) — verified
+// WRONG (the export false-negatives non-Islay smoky malts like Talisker/Ledaig and
+// mislabels clean Islay bottles), and the whisky question-config no longer even emits
+// axis2 (it uses WHISKY_FEEL_STEP). Removed. Whisky smoke is now scored from REAL
+// evidence (smokiness='heavy' / peated allow-list) via whiskyFeelSmokyBump + peatScore,
+// never from region.
 const WHISKY_ORIGIN_TO_COUNTRY: Record<string, string> = {
   scotch: 'scotland', japanese: 'japan', bourbon: 'usa', irish: 'ireland',
-};
-
-// WHISKY axis2 (style) → set of regions that signal that style.
-// smoky → Islay (peated); smooth → Speyside/Highland. No region data → no boost.
-const WHISKY_STYLE_TO_REGIONS: Record<string, string[]> = {
-  smoky: ['islay'], smooth: ['speyside', 'highland'],
 };
 
 // SPIRITS (other) axis1 (type) → accepted canonical category_type values
@@ -101,10 +119,11 @@ function tier2Score(a: Answers, p: PublicProduct): number {
   let s = 0;
   switch (a.category) {
     case 'whisky': {
+      // ORIGIN only (axis1 → country). Whisky smoke is scored from real evidence
+      // (smokiness/peated allow-list) in whiskyFeelSmokyBump/peatScore, NOT a region-
+      // guessing axis2→region map (removed, spec §11.8 — see WHISKY_ORIGIN_TO_COUNTRY note).
       const wantCountry = a.axis1 ? WHISKY_ORIGIN_TO_COUNTRY[a.axis1] : undefined;
       if (wantCountry && p.country && norm(p.country) === wantCountry) s += 2;
-      const wantRegions = a.axis2 ? WHISKY_STYLE_TO_REGIONS[a.axis2] : undefined;
-      if (wantRegions && p.region && wantRegions.includes(norm(p.region))) s += 2;
       break;
     }
     case 'spirits': {
@@ -262,8 +281,10 @@ const GIN_CONTEMPORARY_KEYWORDS = ['contemporary', 'botanical', 'floral', 'citru
 
 function ginStyleBump(a: Answers, p: PublicProduct): number {
   if (a.category !== 'gin' || !a.axis1) return 0;
+  // Rule 12: do NOT read p.classification — it is a stale TYPE duplicate (junk "Wine product"
+  // for ~72 in-stock gins), never a real style signal. Name + descriptions only.
   const hay = norm(
-    [p.name, p.classification, p.desc_en_short, p.full_description].filter(Boolean).join(' '),
+    [p.name, p.desc_en_short, p.full_description].filter(Boolean).join(' '),
   );
   if (!hay) return 0;
   if (a.axis1 === 'classic') return GIN_CLASSIC_KEYWORDS.some((k) => hay.includes(k)) ? 1 : 0;
@@ -313,17 +334,21 @@ function adventureScore(token: string | undefined, region: string | undefined): 
   return famous ? 0 : 2; // discovery: reward NON-famous regions
 }
 
-// Whisky peat. The peat answer (none | light | heavy) has structured backing via
-// region: peated single malts come from Islay, so region=Islay is the peat signal.
-//   heavy → +2 for an Islay bottle (the user wants smoke; Islay delivers it)
-//   none  → +2 for a NON-Islay bottle (the user wants it clean; reward away-from-Islay)
-//   light / absent / unknown → 0 (no confident signal either way)
+// Whisky peat. The peat answer (none | light | heavy) is now scored as a POSITIVE-ONLY
+// boost on REAL smoke evidence — never on region (spec §11.8).
+//
+// HISTORY (Rule 5): the old version guessed from region=Islay (heavy→+2 Islay, none→+2
+// non-Islay). That was WRONG: the export false-negatives genuinely-smoky NON-Islay malts
+// (Talisker=Skye, Ledaig=Mull tagged smokiness='none') and mislabels clean Islay bottles.
+// Region is not the peat signal.
+//   heavy → +2 ONLY when smokiness='heavy' OR the name is on the peated allow-list.
+//   none / light / any → 0. We do NOT penalize or reward smokiness='none': a 'none' tag is
+//     unreliable (false-negatives), so we never assert "this is smooth" from it, and we
+//     never exclude on it.
 // Like every deep-dive term this is ADDITIVE (rank-only) and never touches `degraded`.
-function peatScore(token: string | undefined, region: string | undefined): number {
-  if (token !== 'none' && token !== 'heavy') return 0; // 'light' / any → no rule
-  const isIslay = norm(region) === 'islay';
-  if (token === 'heavy') return isIslay ? 2 : 0;
-  return isIslay ? 0 : 2; // none: reward non-Islay
+function peatScore(token: string | undefined, smokiness: string | undefined, name: string | undefined): number {
+  if (token !== 'heavy') return 0; // 'none' / 'light' / any → no positive signal asserted
+  return norm(smokiness) === 'heavy' || isLikelyPeated(name) ? 2 : 0;
 }
 
 // Prestige lean for a gift/special occasion (audit finding C2). The existing
@@ -348,12 +373,97 @@ function deepDiveBump(a: Answers, p: PublicProduct): number {
   return (
     intensityScore('acidity', a.acidity, p.acidity) +
     intensityScore('tannin', a.tannin, p.tannin) +
-    grapeScore(a.grape, p.variety) +
+    // Grape scoring is WINE-ONLY (Rule 12 / spec): a spirit's `variety` is its base material
+    // (grain, agave, sometimes a grape name like Ugni Blanc for Cognac) — NOT a wine grape.
+    // Gate on the canonical SKU-derived group so a spirit variety is never read as a grape.
+    (groupForProduct(p) === 'Wine' ? grapeScore(a.grape, p.variety) : 0) +
     ageScore(a.age, p.vintage) +
     adventureScore(a.adventure, p.region) +
-    peatScore(a.peat, p.region) +
+    peatScore(a.peat, p.smokiness, p.name) +
+    whiskyFeelSmokyBump(a, p) +
     prestigeBump(a, p) +
     ginStyleBump(a, p)
+  );
+}
+
+// ── TASTE-FEEL → archetype scoring (Layer-1 plain-language flow, red & white).
+// The shopper's plain `tasteFeel` token resolves to a curated archetype (taste-feel.ts);
+// that archetype's definingAttributes drive the score against the product's structured
+// body / tannin / acidity. BODY is primary (weight 4, same ladder/weight as the old axis1
+// body term so genuine matches still clear QUALITY_MIN); the secondary axis (tannin for
+// red, acidity for white) is a SMALLER nudge (weight 2).
+//
+// CRITICAL (spec §11.1): body and the secondary axis are INDEPENDENT, ADDITIVE nudges —
+// NEVER an AND-filter. Only ~10 low-tannin reds exist, so requiring BOTH a Light body AND
+// Low tannin would starve the pool. A product that matches body but misses tannin (or vice
+// versa) still earns the half it matches. No-signal (missing/off-ladder) values score 0.
+const TASTE_FEEL_CATEGORIES = new Set(['red', 'white']);
+// Secondary nudge axis per category: red leans on tannin, white on acidity (acidity-led).
+const FEEL_SECONDARY_AXIS: Record<string, 'tannin' | 'acidity'> = {
+  red: 'tannin',
+  white: 'acidity',
+};
+
+// WHISKY Layer-1 tasteFeel='smoky' (spec §11.8). Positive-only smoky boost from REAL
+// evidence: smokiness='heavy' OR the peated-distillery name allow-list. NEVER excludes or
+// penalizes smokiness='none' (the export false-negatives Talisker/Ledaig), NEVER reads
+// region, NEVER asserts 'smooth' from 'none'. Kept in the deep-dive bump (rank-only): a
+// keyword/tag smoky lean re-orders but the whisky core taste-tier stays origin-driven.
+// 'smooth' and 'rich' tasteFeel tokens resolve to archetypes for COPY (taste-feel.ts) but
+// have no structured smoke field to score, so only 'smoky' earns a rank boost here.
+function whiskyFeelSmokyBump(a: Answers, p: PublicProduct): number {
+  if (a.category !== 'whisky' || a.tasteFeel !== 'smoky') return 0;
+  return norm(p.smokiness) === 'heavy' || isLikelyPeated(p.name) ? 2 : 0;
+}
+
+/** Points a wine earns from its tasteFeel answer vs the resolved archetype (0 = no signal). */
+function tasteFeelScore(a: Answers, p: PublicProduct): number {
+  if (!a.tasteFeel || !TASTE_FEEL_CATEGORIES.has(a.category)) return 0;
+  const archetypeId = resolveArchetypeId(a.category, a.tasteFeel);
+  const archetype = STYLE_PROFILES.find((sp) => sp.id === archetypeId);
+  if (!archetype) return 0;
+  const da = archetype.definingAttributes;
+  let s = 0;
+  // BODY — primary term, full weight (4), reusing the 5-level body ladder.
+  if (da.body && p.body) {
+    s += ladderScore(bodyLadderDistance(da.body, p.body), 4);
+  }
+  // SECONDARY — tannin (red) or acidity (white), a SMALLER nudge (weight 2). Independent
+  // of the body term (additive, never gated on body matching) — spec §11.1.
+  const axis = FEEL_SECONDARY_AXIS[a.category];
+  const targetSecondary = axis === 'tannin' ? da.tannin : da.acidity;
+  const haveSecondary = axis === 'tannin' ? p.tannin : p.acidity;
+  if (targetSecondary && haveSecondary) {
+    s += ladderScore(intensityLadderDistance(targetSecondary, haveSecondary), 2);
+  }
+  return s;
+}
+
+/**
+ * Did the user give at least one REAL taste/preference signal (not the all-neutral
+ * "not sure — guide me" path)? Drives the match-band honesty floor (match-band.ts):
+ * with no taste signal we cap every band at "Good match" so the page never claims a
+ * strong personalised fit the answers didn't actually produce.
+ *
+ * "Taste signal" = any of the structured taste questions carrying a real, constraining
+ * value: a taste-feel that isn't 'unsure'; an axis1/axis2 token; flavour chips; food
+ * chips; or any deep-dive answer. Occasion/budget alone are NOT taste signal (they shape
+ * value/prestige, not the flavour profile), matching the band's intent.
+ */
+export function hadTasteSignal(a: Answers): boolean {
+  const feel = a.tasteFeel && a.tasteFeel !== 'unsure' ? a.tasteFeel : undefined;
+  return Boolean(
+    feel ||
+      a.axis1 ||
+      a.axis2 ||
+      (a.flavorChips?.length ?? 0) > 0 ||
+      (a.food?.length ?? 0) > 0 ||
+      a.acidity ||
+      a.tannin ||
+      a.grape ||
+      a.age ||
+      a.adventure ||
+      a.peat,
   );
 }
 
@@ -362,6 +472,13 @@ export interface ScoreResult {
   /** true when fewer than MIN_RESULTS cleared QUALITY_MIN → UI shows the honest
    *  "Closest matches in your budget" label (spec §5 relax step). */
   degraded: boolean;
+  /**
+   * Honest per-bottle match band, keyed by sku (spec §11.9). Computed from each
+   * shown bottle's TASTE-TIER score (`s`) relative to the best taste score in the
+   * result, then floored by `hadTasteSignal` (no signal → every band "Good match").
+   * A banded label — never a fabricated precise %. Only covers the shown products.
+   */
+  bandBySku: Record<string, MatchBandLabel>;
 }
 
 export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResult {
@@ -372,6 +489,10 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
     if (a.axis1 && BODY_TOKEN[a.axis1] && p.body) {
       s += ladderScore(bodyLadderDistance(BODY_TOKEN[a.axis1], p.body), 4);
     }
+    // TASTE-FEEL (Layer-1 plain-language flow, red & white) — body primary + tannin/acidity
+    // nudge vs the resolved archetype. Taste-tier term (counts toward `s` / the quality gate)
+    // exactly like the old axis1 body term it replaces for those categories.
+    s += tasteFeelScore(a, p);
     // SAKE sweetness — the category's primary taste term (axis1), scored on the same
     // ladder shape as wine body so it clears QUALITY_MIN for genuine matches. No-signal
     // sake (no taste_profile.axes.sweetness, ~74%) returns null → 0 (neutral, not
@@ -400,9 +521,9 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
     if ((a.category === 'red' || a.category === 'white' || a.category === 'sparkling') && a.axis2) {
       s += wineCharacterScore(a.axis2, p.flavor_tags_canonical);
     }
-    // TIER-2 origin/style for non-wine categories (whisky origin→country & style→region,
-    // spirits type→classification). Replaces the old axis2-vs-country line, which was
-    // inert for whisky/spirits/sake (axis2 there is smoky/smooth, never a country).
+    // TIER-2 origin/type for non-wine categories (whisky origin→country, spirits
+    // type→category_type). Replaces the old axis2-vs-country line, which was inert for
+    // whisky/spirits/sake (axis2 there was never a country).
     s += tier2Score(a, p);
     if ((a.occasion === 'gift' || a.occasion === 'special') &&
         typeof p.score_summary === 'string' && p.score_summary.trim() !== '') s += 2;
@@ -459,5 +580,23 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
   const hasGateableTasteTerm = a.category !== 'gin';
   const degraded = hasGateableTasteTerm && ranked.length > 0 && wellMatched === 0;
 
-  return { products: ranked.slice(0, TOP_N).map((r) => r.p), degraded };
+  const shown = ranked.slice(0, TOP_N);
+
+  // Per-bottle honest match band (spec §11.9). Reference = the best taste-tier score
+  // among the SHOWN bottles (the strongest match we actually found). Each bottle's `s`
+  // is banded against that reference, so the best reads "Great/Strong" and weaker ones
+  // step down — no fabricated %. hadTasteSignal floors every band to "Good match" on the
+  // all-neutral path. maxScore 0 (e.g. gin: no gate-able taste term) → ratio 0 → "Good".
+  const signal = hadTasteSignal(a);
+  const topTasteScore = shown.reduce((m, r) => Math.max(m, r.s), 0);
+  const bandBySku: Record<string, MatchBandLabel> = {};
+  for (const r of shown) {
+    bandBySku[r.p.sku] = matchBand({
+      score: r.s,
+      maxScore: topTasteScore,
+      hadTasteSignal: signal,
+    });
+  }
+
+  return { products: shown.map((r) => r.p), degraded, bandBySku };
 }

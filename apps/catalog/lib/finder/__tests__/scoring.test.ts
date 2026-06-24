@@ -82,12 +82,12 @@ describe('scoreProducts', () => {
     expect(out.products[0].sku).toBe('LWHsco');
     expect(out.degraded).toBe(false); // +2 origin clears QUALITY_MIN
   });
-  it('whisky: axis2=smoky ranks an Islay bottle above a Speyside bottle', () => {
-    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
-    const pool = [W({sku:'LWHspey', region:'Speyside'}), W({sku:'LWHislay', region:'Islay'})];
-    const out = scoreProducts({ category:'whisky', axis1:'scotch', axis2:'smoky' } as any, pool as any);
-    expect(out.products[0].sku).toBe('LWHislay');
-  });
+  // Rule 5: the old `whisky: axis2=smoky ranks an Islay bottle above a Speyside bottle`
+  // test asserted the removed region-guessing heuristic (axis2='smoky' → reward region=Islay).
+  // Spec §11.8 verified that is WRONG and the whisky question-config no longer emits axis2.
+  // Whisky smoke is now covered by the tasteFeel='smoky' smokiness/peated-allow-list tests
+  // below ("whisky tasteFeel='smoky' …") and the positive-only peatScore tests — region is
+  // never the peat signal. The dead axis2→region map + test were removed.
   it('spirits: axis1=rum ranks a Rum above a Vodka (via category_type, not classification)', () => {
     // category_group/type pin the pool + the type read (Rule 12). classification is
     // deliberately set to the JUNK value to prove it is NOT consulted.
@@ -205,17 +205,53 @@ describe('scoreProducts', () => {
     const pool=[P({sku:'WRWf',region:'Bordeaux'}),P({sku:'WRWd',region:'Swartland'})];
     expect(scoreProducts(ans({adventure:'discovery'}),pool).products[0].sku).toBe('WRWd');
   });
-  it('whisky: peat heavy ranks an Islay bottle above a Speyside bottle', () => {
+  // Rule 5: the two old peat tests asserted REGION-BASED guessing (peat:'heavy' → reward
+  // region=Islay; peat:'none' → reward non-Islay). Spec §11.8 verified that is WRONG — the
+  // export false-negatives genuinely-smoky non-Islay malts (Talisker=Skye, Ledaig=Mull) and
+  // mislabels clean Islay bottles. peatScore is now POSITIVE-ONLY on real smokiness/allow-list
+  // and NEVER reads region. Rewritten below to assert the correct behavior.
+  it('whisky: peat heavy boosts a real-smoky bottle (smokiness=heavy), region ignored', () => {
     const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
-    const pool = [W({sku:'LWHspey', region:'Speyside'}), W({sku:'LWHislay', region:'Islay'})];
+    // smoky bottle is in Speyside (NOT Islay) — region must not decide; smokiness does.
+    const pool = [W({sku:'LWHclean', region:'Islay', smokiness:'none', name:'Clean Malt'}),
+                  W({sku:'LWHsmoky', region:'Speyside', smokiness:'heavy', name:'Smoky Malt'})];
     const out = scoreProducts({ category:'whisky', peat:'heavy' } as any, pool as any);
-    expect(out.products[0].sku).toBe('LWHislay');
+    expect(out.products[0].sku).toBe('LWHsmoky');
   });
-  it('whisky: peat none ranks a non-Islay bottle above an Islay bottle', () => {
+  it('whisky: peat heavy boosts a peated allow-list name even when smokiness=none (Talisker false-neg)', () => {
     const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
-    const pool = [W({sku:'LWHislay', region:'Islay'}), W({sku:'LWHspey', region:'Speyside'})];
+    const pool = [W({sku:'LWHplain', smokiness:'none', name:'Glenfiddich 12'}),
+                  W({sku:'LWHtali', smokiness:'none', name:'Talisker 10 Years'})];
+    const out = scoreProducts({ category:'whisky', peat:'heavy' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHtali');
+  });
+  it('whisky: peat none NEVER penalizes/rewards on smokiness=none (no region, no smooth-assertion)', () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    // peat='none' gives NO boost to anyone (positive-only design); order falls to price tie.
+    const pool = [W({sku:'LWHa', region:'Islay', smokiness:'none', price:1000}),
+                  W({sku:'LWHb', region:'Speyside', smokiness:'none', price:2000})];
     const out = scoreProducts({ category:'whisky', peat:'none' } as any, pool as any);
-    expect(out.products[0].sku).toBe('LWHspey');
+    // Neither gets a peat boost → tie broken by cheapest-first (price), region irrelevant.
+    expect(out.products[0].sku).toBe('LWHa');
+  });
+
+  // ── TASK 7: whisky Layer-1 tasteFeel='smoky'. Positive-only smoky boost from real
+  // smokiness='heavy' OR the peated-distillery name allow-list. NEVER excludes/penalizes
+  // smokiness='none', NEVER reads region (spec §11.8 — fixes Talisker/Ledaig false-negatives).
+  it("whisky tasteFeel='smoky' boosts a Talisker tagged smokiness=none (false-neg fix)", () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    const pool = [W({sku:'LWHglen', smokiness:'none', name:'Glenfiddich 12'}),
+                  W({sku:'LWHtali', smokiness:'none', name:'Talisker 10'})];
+    const out = scoreProducts({ category:'whisky', tasteFeel:'smoky' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHtali'); // peated allow-list wins despite smokiness=none
+  });
+  it("whisky tasteFeel='smoky' does NOT boost a non-peated Glenfiddich (smokiness=none)", () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    // a real-smoky bottle must out-rank the non-peated Glenfiddich; Glenfiddich gets no smoky boost.
+    const pool = [W({sku:'LWHglen', smokiness:'none', name:'Glenfiddich 12', price:1000}),
+                  W({sku:'LWHsmoky', smokiness:'heavy', name:'Smoky Malt', price:2000})];
+    const out = scoreProducts({ category:'whisky', tasteFeel:'smoky' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHsmoky');
   });
   it('a core-only Answers scores identically with the new code (additive)', () => {
     const pool=[P({sku:'WRW1',body:'Full'}),P({sku:'WRW2',body:'Light'})];
@@ -331,5 +367,117 @@ describe('scoreProducts', () => {
   it('core-only run (no flavorChips) scores identically (additive)', () => {
     const pool=[P({sku:'WRW1', body:'Full'}), P({sku:'WRW2', body:'Light'})];
     expect(scoreProducts(ans({axis1:'bold'}),pool).products[0].sku).toBe('WRW1');
+  });
+
+  // ── TASK 5: red taste-feel → archetype scoring (body primary, tannin a soft nudge).
+  // tasteFeel resolves to an archetype (taste-feel.ts) whose definingAttributes.body
+  // (+ .tannin) drive the score. CRITICAL: body and tannin are INDEPENDENT additive
+  // nudges — never an AND-filter (only ~10 low-tannin reds exist; requiring BOTH would
+  // starve the pool, spec §11.1). The three fixtures span the archetype range:
+  //   Light/Low-tannin  → bright-elegant-red  (body Light, tannin Low)
+  //   Medium-Full/soft  → supple-everyday-red (body Medium, tannin Medium)
+  //   Full/Medium-High  → bold-structured-red (body Full, tannin Medium-High)
+  // Pin the Wine group + Red Wine type explicitly so finderPrefilter keeps them regardless
+  // of SKU-prefix resolution (same belt-and-braces the W5 grape tests use).
+  const RW = (o: any) => P({ category_group:'Wine', category_type:'Red Wine', ...o });
+  const RF_LIGHT  = (o: any = {}) => RW({ sku:'WRWflight',  body:'Light',       tannin:'Low',         ...o });
+  const RF_SUPPLE = (o: any = {}) => RW({ sku:'WRWfsupple', body:'Medium-Full', tannin:'Medium',      ...o });
+  const RF_BOLD   = (o: any = {}) => RW({ sku:'WRWfbold',   body:'Full',        tannin:'Medium-High', ...o });
+
+  it("tasteFeel='bold' ranks the Full/Medium-High red ABOVE the Light/Low-tannin one", () => {
+    const pool = [RF_LIGHT(), RF_BOLD()];
+    const out = scoreProducts(ans({ tasteFeel:'bold' }), pool as any);
+    expect(out.products[0].sku).toBe('WRWfbold');
+  });
+
+  it("tasteFeel='smooth' ranks the Medium-Full/soft (supple) red at/above the gripping one", () => {
+    // supple target = body Medium, tannin Medium. The Medium-Full/Medium bottle is nearer
+    // than the bold Full/Medium-High one on BOTH body and tannin, so it must not rank below.
+    const pool = [RF_BOLD(), RF_SUPPLE()];
+    const out = scoreProducts(ans({ tasteFeel:'smooth' }), pool as any);
+    const idxSupple = out.products.findIndex(p => p.sku === 'WRWfsupple');
+    const idxBold   = out.products.findIndex(p => p.sku === 'WRWfbold');
+    expect(idxSupple).toBeLessThanOrEqual(idxBold);
+  });
+
+  it("tasteFeel body & tannin are INDEPENDENT nudges, not an AND-filter (spec §11.1)", () => {
+    // A Light-bodied red with HIGH (not low) tannin must still score on body alone — it is
+    // NOT excluded for failing the tannin half. tasteFeel='light' wants body Light + tannin Low;
+    // this bottle matches body exactly but misses tannin, yet must out-rank a Full/High mismatch.
+    const lightHiTannin = RW({ sku:'WRWflhT', body:'Light', tannin:'High' });
+    const fullHiTannin  = RW({ sku:'WRWffhT', body:'Full',  tannin:'High' });
+    const out = scoreProducts(ans({ tasteFeel:'light' }), [lightHiTannin, fullHiTannin] as any);
+    expect(out.products[0].sku).toBe('WRWflhT');
+  });
+
+  it("tasteFeel='unsure' resolves to the crowd-pleaser (supple) — no crash, ranks supple body up", () => {
+    // 'unsure' has no archetype mapping → resolver falls back to CROWD_PLEASER.red (supple).
+    const pool = [RF_BOLD(), RF_SUPPLE()];
+    const out = scoreProducts(ans({ tasteFeel:'unsure' }), pool as any);
+    expect(out.products.map(p=>p.sku)).toContain('WRWfsupple');
+    expect(out.products[0].sku).toBe('WRWfsupple');
+  });
+
+  // ── TASK 6: WHITE taste-feel → archetype scoring. Acidity-LED (+ body), not sweetness.
+  //   crisp    → crisp-zesty-white      (body Light, acidity High)
+  //   rounded  → rich-textured-white    (body Full,  acidity Medium)
+  //   aromatic → aromatic-balanced-white(body Medium,acidity Medium)
+  const WW = (o: any) => ({ price:1500, is_in_stock:true, classification:'White Wine',
+    category_group:'Wine', category_type:'White Wine', ...o });
+  it("white tasteFeel='crisp' ranks a Light/High-acidity white ABOVE a Full/Medium one", () => {
+    const pool = [WW({ sku:'WWWrich', body:'Full', acidity:'Medium' }),
+                  WW({ sku:'WWWcrisp', body:'Light', acidity:'High' })];
+    const out = scoreProducts({ category:'white', tasteFeel:'crisp' } as any, pool as any);
+    expect(out.products[0].sku).toBe('WWWcrisp');
+  });
+  it("white tasteFeel='rounded' ranks a Full/round white at/above a Light/crisp one", () => {
+    const pool = [WW({ sku:'WWWcrisp', body:'Light', acidity:'High' }),
+                  WW({ sku:'WWWrich', body:'Full', acidity:'Medium' })];
+    const out = scoreProducts({ category:'white', tasteFeel:'rounded' } as any, pool as any);
+    const idxRich  = out.products.findIndex(p => p.sku === 'WWWrich');
+    const idxCrisp = out.products.findIndex(p => p.sku === 'WWWcrisp');
+    expect(idxRich).toBeLessThanOrEqual(idxCrisp);
+  });
+  it("white tasteFeel acidity is the secondary nudge (independent of body, spec §11.1)", () => {
+    // crisp wants Light body + High acidity. A Light-body white with LOW acidity still
+    // scores its body half and out-ranks a Full/High mismatch — not gated on the acidity half.
+    const pool = [WW({ sku:'WWWlightLowAc', body:'Light', acidity:'Low' }),
+                  WW({ sku:'WWWfullHiAc',   body:'Full',  acidity:'High' })];
+    const out = scoreProducts({ category:'white', tasteFeel:'crisp' } as any, pool as any);
+    expect(out.products[0].sku).toBe('WWWlightLowAc');
+  });
+
+  // ── TASK 8: grape scoring is WINE-ONLY (a spirit's `variety` is its base material, not a
+  // wine grape — e.g. a Cognac/Vodka may carry 'Ugni Blanc'/grape-like text). Gating on
+  // groupForProduct(p)==='Wine' so a spirit variety is NEVER read as a grape match. ──
+  it('grape: a SPIRIT whose variety looks grape-like is NOT boosted (grape applies to wine only)', () => {
+    // Both Vodkas; LVKgr carries a grape-family variety. Without the wine-gate it would get a
+    // +2 grape boost and win; WITH the gate it gets 0, so the cheaper bottle leads on price tie.
+    const V = (o:any)=>({ is_in_stock:true, category_group:'Spirits', category_type:'Vodka', ...o });
+    const pool = [V({ sku:'LVKgr', price:2000, variety:'Cabernet Sauvignon' }),
+                  V({ sku:'LVKplain', price:1000, variety:'Grain' })];
+    const out = scoreProducts({ category:'spirits', grape:'cabernet' } as any, pool as any);
+    // grape gives 0 to the spirit → no reorder → cheapest-first tiebreak wins.
+    expect(out.products[0].sku).toBe('LVKplain');
+  });
+  it('grape: a WINE with the same variety IS still boosted (gate does not break wine grape scoring)', () => {
+    // Regression guard for the gate: wine grape scoring must keep working.
+    const W = (o:any)=>({ price:1500, is_in_stock:true, category_group:'Wine', category_type:'Red Wine', ...o });
+    const pool = [W({ sku:'WRWplain', variety:'Merlot' }), W({ sku:'WRWcab', variety:'Cabernet Sauvignon' })];
+    const out = scoreProducts({ category:'red', grape:'cabernet' } as any, pool as any);
+    expect(out.products[0].sku).toBe('WRWcab');
+  });
+
+  // ── TASK 8: ginStyleBump must NOT read `classification` (Rule 12 — classification is a
+  // stale TYPE duplicate). A 'classic' lean must score on name/desc keywords only; a junk
+  // or grape-like `classification` must contribute nothing. ──
+  it('gin: ginStyleBump ignores classification (Rule 12) — keyword in classification scores 0', () => {
+    // 'classic' keyword 'london' lives ONLY in classification on LGNcls. If ginStyleBump still
+    // read classification it would win; since it must NOT, LGNname (keyword in name) leads.
+    const Gx = (o:any)=>({ price:1500, is_in_stock:true, category_group:'Spirits', category_type:'Gin', ...o });
+    const pool = [Gx({ sku:'LGNcls', name:'Acme Gin', classification:'London Dry Gin' }),
+                  Gx({ sku:'LGNname', name:'Acme London Dry Gin', classification:'Wine product' })];
+    const out = scoreProducts({ category:'gin', axis1:'classic' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LGNname'); // classification 'London Dry' must NOT score
   });
 });

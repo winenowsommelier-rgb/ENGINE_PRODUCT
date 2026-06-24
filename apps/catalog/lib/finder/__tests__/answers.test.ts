@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, test, expect } from 'vitest';
 import { encodeAnswers, decodeAnswers, type Answers } from '@/lib/finder/answers';
 
 describe('answers URL codec', () => {
@@ -33,5 +33,10 @@ describe('answers URL codec', () => {
   it('omits deep-dive params when unset (minimal core round-trips clean)', () => {
     const a = { category:'whisky' } as any;
     expect(decodeAnswers(new URLSearchParams(encodeAnswers(a)))).toEqual(a);
+  });
+  test('tasteFeel round-trips via URL params', () => {
+    const enc = encodeAnswers({ category: 'red', tasteFeel: 'bold' });
+    const dec = decodeAnswers(new URLSearchParams(enc));
+    expect(dec.tasteFeel).toBe('bold');
   });
 });

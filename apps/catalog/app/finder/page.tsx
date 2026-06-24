@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { TrustBar } from '@/components/TrustBar';
 import { cn } from '@/lib/utils';
 import type { FinderCategory } from '@/lib/finder/answers';
+import { NOVICE_MOMENTS, suggestCategory } from '@/lib/finder/suggest-category';
 
 /**
  * Product Finder — intro + Step 1 (category).
@@ -80,6 +81,63 @@ export default function FinderIntroPage() {
               </Link>
             ))}
           </div>
+        </section>
+
+        {/* Cross-category novice entry (Task 11). For the first-timer who doesn't
+            know which category they want: pick a plain MOMENT and we route into a
+            sensible category journey via suggestCategory (pure helper). A native
+            <details> disclosure keeps it tiny — no extra client JS, no cart. */}
+        <section aria-label="Not sure what you want">
+          <details className="group rounded-lg border border-border bg-muted/20 p-5">
+            <summary
+              className={cn(
+                'flex min-h-[44px] cursor-pointer list-none items-center justify-between gap-2',
+                'text-lg font-medium text-foreground marker:content-none',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              )}
+            >
+              <span>Not sure what you want? Help me choose</span>
+              <span
+                aria-hidden="true"
+                className="text-muted-foreground transition-transform group-open:rotate-180"
+              >
+                ⌄
+              </span>
+            </summary>
+
+            <div className="mt-4 flex flex-col gap-3">
+              <p className="text-sm text-muted-foreground">
+                Tell us the moment — we&rsquo;ll point you at a good place to
+                start.
+              </p>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {NOVICE_MOMENTS.map((moment) => {
+                  const cat = suggestCategory(moment.token);
+                  // Defensive: only render a moment that resolves to a real
+                  // category (it always should — the test asserts it).
+                  if (!cat) return null;
+                  return (
+                    <Link
+                      key={moment.token}
+                      href={`/finder/1?cat=${cat}`}
+                      className={cn(
+                        'flex min-h-[72px] items-center gap-3 rounded-lg border border-border bg-background px-5 py-4 transition-all',
+                        'hover:-translate-y-0.5 hover:border-primary hover:shadow-sm',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                      )}
+                    >
+                      <span aria-hidden="true" className="text-2xl">
+                        {moment.icon}
+                      </span>
+                      <span className="text-base font-medium text-foreground">
+                        {moment.label}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </details>
         </section>
       </main>
     </>

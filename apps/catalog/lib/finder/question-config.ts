@@ -7,6 +7,9 @@ export type StepField =
   | 'axis2'
   | 'flavorChips'
   | 'food'
+  // Plain-language taste-feel step (Layer-1, no jargon). Resolves to an archetype
+  // via taste-feel.ts; replaces the body/character axis1/axis2 questions for red & white.
+  | 'tasteFeel'
   // ── Opt-in sommelier deep-dive fields (separate from the core flow) ──
   | 'acidity'
   | 'tannin'
@@ -82,6 +85,38 @@ const WINE_CHARACTER_STEP: QuestionStep = {
   ],
 };
 
+// ── Plain-language taste-feel steps (Layer-1, no jargon). One per wine colour. ──
+// These REPLACE the body/character axis1/axis2 questions for red & white: a single
+// approachable question whose token resolves to an archetype (taste-feel.ts), rather
+// than asking the shopper about "body" and "character" in sommelier terms.
+const RED_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'How do you like your reds?',
+  optional: true,
+  options: [
+    { token: 'light', label: 'Light & delicate', icon: '🪶' },
+    { token: 'smooth', label: 'Smooth & easygoing', icon: '🍷' },
+    { token: 'bold', label: 'Bold & rich', icon: '🔥' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
+  ],
+};
+
+// White plain-language taste-feel step. Acidity-led framing (crisp/rounded/aromatic),
+// NOT sweetness — matches the acidity-primary scoring in scoring.ts.
+const WHITE_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'What sounds good?',
+  optional: true,
+  options: [
+    { token: 'crisp', label: 'Crisp & refreshing', icon: '⚡' },
+    { token: 'rounded', label: 'Smooth & rounded', icon: '🫧' },
+    { token: 'aromatic', label: 'Aromatic & floral', icon: '🌸' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
+  ],
+};
+
 // ── Flavor step (red, white, sparkling, whisky) ──
 const FLAVOR_STEP: QuestionStep = {
   id: 'flavor',
@@ -123,14 +158,20 @@ const WHISKY_ORIGIN_STEP: QuestionStep = {
   ],
 };
 
-const WHISKY_STYLE_STEP: QuestionStep = {
-  id: 'style',
-  field: 'axis2',
-  title: 'What style do you prefer?',
+// ── Whisky plain-language taste-feel step (Layer-1, no jargon). Resolves to an archetype
+// via taste-feel.ts; 'smoky' also drives a positive rank boost in scoring.ts (spec §11.8).
+// REPLACES the old smoky/smooth axis2 style step in the whisky flow, but KEEPS the origin
+// step. (Japanese 'refined' is reachable via the origin question, so it's not a feel token.)
+const WHISKY_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'What’s your style?',
   optional: true,
   options: [
-    { token: 'smoky', label: 'Smoky & peaty', icon: '💨' },
     { token: 'smooth', label: 'Smooth & mellow', icon: '🥃' },
+    { token: 'rich', label: 'Rich & warming', icon: '🔥' },
+    { token: 'smoky', label: 'Smoky', icon: '💨' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
   ],
 };
 
@@ -183,10 +224,16 @@ const WINE_STEPS: QuestionStep[] = [
 ];
 
 export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
-  red: WINE_STEPS,
-  white: WINE_STEPS,
+  // Red Layer-1 is plain-language: occasion → budget → taste-feel → flavor. No body/
+  // character jargon. (Food is an inline FoodChoice sub-step, not a config step.)
+  red: [OCCASION_STEP, BUDGET_STEP, RED_FEEL_STEP, FLAVOR_STEP],
+  // White Layer-1 is plain-language too: occasion → budget → taste-feel (acidity-led) →
+  // flavor. (sparkling still uses the body/character axes.)
+  white: [OCCASION_STEP, BUDGET_STEP, WHITE_FEEL_STEP, FLAVOR_STEP],
   sparkling: WINE_STEPS,
-  whisky: [OCCASION_STEP, BUDGET_STEP, WHISKY_ORIGIN_STEP, WHISKY_STYLE_STEP, FLAVOR_STEP],
+  // Whisky Layer-1: occasion → budget → origin → plain taste-feel → flavor. The feel step
+  // REPLACES the old smoky/smooth axis2 style step but KEEPS origin (axis1 → country boost).
+  whisky: [OCCASION_STEP, BUDGET_STEP, WHISKY_ORIGIN_STEP, WHISKY_FEEL_STEP, FLAVOR_STEP],
   gin: [OCCASION_STEP, BUDGET_STEP, GIN_STYLE_STEP],
   spirits: [OCCASION_STEP, BUDGET_STEP, SPIRITS_TYPE_STEP],
   sake: [OCCASION_STEP, BUDGET_STEP, SAKE_SWEETNESS_STEP],
@@ -318,8 +365,8 @@ const ADVENTURE_STEP: QuestionStep = {
   ],
 };
 
-// Whisky — peat (scored via peatScore in scoring.ts using region=Islay;
-// tokens: none | light | heavy). Writes field:'peat' — NOT axis2.
+// Whisky — peat (scored via peatScore in scoring.ts using the REAL `smokiness` field +
+// peated-distillery allow-list, positive-only — NOT region; spec §11.8). Writes field:'peat'.
 const WHISKY_PEAT_STEP: QuestionStep = {
   id: 'peat',
   field: 'peat',
