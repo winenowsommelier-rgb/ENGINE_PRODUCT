@@ -562,6 +562,21 @@ def test_write_outputs_schema(tmp_path):
     assert "inversion" in report          # the rule name appears in the per-column breakdown
     assert findings["suspects"][0]["sku"] == "WSP0009AA"
     assert findings["meta"]["total_rows"] == 4
+
+def test_per_column_judged_measures_error_rate():
+    judged = {"verdicts": [
+        {"column": "sweetness", "verdict": "wrong_value"},
+        {"column": "sweetness", "verdict": "confirm_correct"},
+        {"column": "body", "verdict": "confirm_correct"},
+    ], "calibration": {"checked": 1, "agreed": 1, "miscalibrated": False}}
+    census = {"populated": {c: 0 for c in A.TASTE_COLS}, "total_rows": 3,
+              "suspects": [], "clean": []}
+    report, findings = A.build_outputs(census, judged)
+    pc = findings["per_column"]
+    assert pc["sweetness"]["judged"] == 2 and pc["sweetness"]["wrong"] == 1
+    assert pc["sweetness"]["error_rate"] == 0.5
+    assert pc["body"]["error_rate"] == 0.0 and pc["body"]["suggest"] == "trust"
+    assert "measured error rate" in report and "ADVISORY leaning" in report
 ```
 
 - [ ] **Step 2: Run to verify fail**
@@ -577,13 +592,51 @@ AUDIT_DIR = REPO / "data" / "audits"
 REPORT_PATH = REPO / "docs" / "superpowers" / "audits" / "2026-06-24-taste-audit-report.md"
 
 
+def _per_column_judged(judged):
+    """Aggregate judge verdicts into a per-column measured error rate (spec §10,
+    Rule 4). Returns {col: {judged, wrong, error_rate, error_lb, suggest}}."""
+    out = {}
+    for v in (judged or {}).get("verdicts", []):
+        col = v["column"]
+        d = out.setdefault(col, {"judged": 0, "wrong": 0})
+        d["judged"] += 1
+        if v.get("verdict") in ("wrong_value", "not_applicable_null_it"):
+            d["wrong"] += 1
+    for col, d in out.items():
+        n, w = d["judged"], d["wrong"]
+        d["error_rate"] = round(w / n, 3) if n else 0.0
+        d["error_lb"] = round(L.wilson_lower_bound(w, n), 3)
+        # advisory leaning; the human confirms the word in Task 8.
+        d["suggest"] = ("trust" if d["error_lb"] < 0.02
+                        else "correct" if d["error_lb"] < 0.30 else "re-enrich")
+    return out
+
+
 def build_outputs(census: dict, judged):
-    """Return (report_markdown, findings_dict). judged=None for the free run."""
+    """Return (report_markdown, findings_dict). judged=None for the free run.
+
+    When `judged` is present this emits the spec §10 per-column section: the
+    judge-MEASURED error rate (point + Wilson lower bound) and an advisory
+    trust/correct/re-enrich leaning. The decision WORD is still confirmed by a
+    human in Task 8, but the measured rate is computed here, not by hand.
+    """
     by_col = {}
     for f in census["suspects"]:
         by_col.setdefault(f["column"], []).append(f)
+    pcj = _per_column_judged(judged)
     lines = ["# Taste-Data Quality Audit — Report", "",
-             f"Total rows: {census['total_rows']}", ""]
+             f"Total rows: {census['total_rows']}",
+             f"Judge: {'yes' if judged else 'no (free deterministic run)'}", ""]
+    if judged:
+        cal = judged.get("calibration", {})
+        lines += [f"Judge calibration: checked={cal.get('checked')} "
+                  f"agreed={cal.get('agreed')} "
+                  f"miscalibrated={cal.get('miscalibrated')}",
+                  f"Escalated cells -> extra rows judged: {judged.get('escalated', 0)}",
+                  ""]
+        if cal.get("miscalibrated"):
+            lines += ["> ⚠️ JUDGE MISCALIBRATED — verdicts NOT trustworthy; "
+                      "fix the judge prompt before acting on this report.", ""]
     for col in TASTE_COLS:
         sus = by_col.get(col, [])
         lines += [f"## {col}",
@@ -594,10 +647,18 @@ def build_outputs(census: dict, judged):
             rules[f["rule"]] = rules.get(f["rule"], 0) + 1
         for rule, n in sorted(rules.items(), key=lambda kv: -kv[1]):
             lines.append(f"    - {rule}: {n}")
+        if col in pcj:
+            d = pcj[col]
+            lines += [f"- judged: {d['judged']} | wrong: {d['wrong']} | "
+                      f"measured error rate: {d['error_rate']} "
+                      f"(Wilson LB {d['error_lb']})",
+                      f"- ADVISORY leaning: **{d['suggest']}** "
+                      f"(human confirms in Task 8)"]
         lines.append("")
     findings = {"meta": {"total_rows": census["total_rows"],
                          "populated": census["populated"],
                          "judged": bool(judged)},
+                "per_column": pcj,
                 "suspects": census["suspects"],
                 "judge": judged or {}}
     return "\n".join(lines), findings
@@ -960,7 +1021,7 @@ git commit -m "audit(taste): full report + per-SKU findings (judge verdicts + pe
 
 ## Task 8: Per-column decision + memory update
 
-- [ ] **Step 1:** From the full report, write the per-column **trust / correct / re-enrich** decision into the report's conclusion (spec §10).
+- [ ] **Step 1:** `build_outputs` already computes the per-column **measured error rate** (point + Wilson LB) and an **advisory** trust/correct/re-enrich leaning. Confirm or override each column's leaning into a final decision in the report's conclusion (spec §10) — this is a judgement step on top of the code-computed rate, NOT hand-computation of the rate.
 - [ ] **Step 2:** Update memory `project_taste_data_quality_audit` with the measured error rates and the decisions, so the follow-on correction effort starts from facts.
 - [ ] **Step 3:** Use `superpowers:requesting-code-review` for a final review of the audit script before any correction work is planned.
 - [ ] **Step 4:** Use `superpowers:finishing-a-development-branch` to decide PR/merge for the audit script + spec + plan.
