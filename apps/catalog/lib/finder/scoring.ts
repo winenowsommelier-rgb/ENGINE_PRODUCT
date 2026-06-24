@@ -270,25 +270,30 @@ function wineCharacterScore(token: string | undefined, canonical: string[] | und
   return 0;
 }
 
-// GIN axis1 (style) → keyword signal for a RANK-ONLY lean (audit finding W3). Unlike
-// wine character there is NO structured field for classic vs contemporary gin, so this
-// reads name/description keywords (noisier). It is therefore kept RANK-ONLY (deep-dive
-// bump, never the taste-tier `s`): a keyword hit can re-order but must NOT clear the
-// quality gate. Data: 49 in-stock gins signal "london dry"; 125 signal a contemporary/
-// botanical/floral cue.
+// GIN tasteFeel (style) → keyword signal for a RANK-ONLY lean (audit finding W3). Unlike
+// wine character there is NO structured field for classic vs modern gin, so this reads
+// name/description keywords (noisier). It is therefore kept RANK-ONLY (deep-dive bump,
+// never the taste-tier `s`): a keyword hit can re-order but must NOT clear the quality
+// gate. Data: 49 in-stock gins signal "london dry"; 125 signal a contemporary/botanical/
+// floral cue.
+//
+// Phase-2 rewire (TASK B): gin Layer-1 moved from the axis1 classic/contemporary step to a
+// plain `tasteFeel` step (classic/modern). This reads a.tasteFeel now, mapping the 'modern'
+// token onto the same contemporary keyword branch (and 'classic' onto the london-dry branch)
+// — the keyword logic is unchanged, only the answer field + token name changed.
 const GIN_CLASSIC_KEYWORDS = ['london dry', 'london'];
 const GIN_CONTEMPORARY_KEYWORDS = ['contemporary', 'botanical', 'floral', 'citrus-forward', 'new western'];
 
 function ginStyleBump(a: Answers, p: PublicProduct): number {
-  if (a.category !== 'gin' || !a.axis1) return 0;
+  if (a.category !== 'gin' || !a.tasteFeel) return 0;
   // Rule 12: do NOT read p.classification — it is a stale TYPE duplicate (junk "Wine product"
   // for ~72 in-stock gins), never a real style signal. Name + descriptions only.
   const hay = norm(
     [p.name, p.desc_en_short, p.full_description].filter(Boolean).join(' '),
   );
   if (!hay) return 0;
-  if (a.axis1 === 'classic') return GIN_CLASSIC_KEYWORDS.some((k) => hay.includes(k)) ? 1 : 0;
-  if (a.axis1 === 'contemporary') {
+  if (a.tasteFeel === 'classic') return GIN_CLASSIC_KEYWORDS.some((k) => hay.includes(k)) ? 1 : 0;
+  if (a.tasteFeel === 'modern') {
     return GIN_CONTEMPORARY_KEYWORDS.some((k) => hay.includes(k)) ? 1 : 0;
   }
   return 0;

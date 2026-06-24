@@ -36,3 +36,14 @@ test('sparkling unsure / unknown feel returns null (→ crowd-pleaser via resolv
   expect(feelToArchetype('sparkling', 'unsure')).toBeNull();
   expect(resolveArchetypeId('sparkling', undefined)).toBe(CROWD_PLEASER.sparkling);
 });
+
+// TASK B — gin taste-feel maps to the correct gin archetypes (classic = juniper-forward
+// London Dry; modern = contemporary botanical).
+test('gin taste-feel maps to the CORRECT archetype', () => {
+  expect(feelToArchetype('gin', 'classic')).toBe('classic-juniper-gin');
+  expect(feelToArchetype('gin', 'modern')).toBe('contemporary-botanical-gin');
+});
+test('gin unsure / unknown feel returns null (→ crowd-pleaser via resolver)', () => {
+  expect(feelToArchetype('gin', 'unsure')).toBeNull();
+  expect(resolveArchetypeId('gin', undefined)).toBe(CROWD_PLEASER.gin);
+});

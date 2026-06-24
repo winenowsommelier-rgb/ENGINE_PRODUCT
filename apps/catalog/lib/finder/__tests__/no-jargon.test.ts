@@ -34,3 +34,15 @@ test('sparkling Layer-1 has a taste-feel step with festive/fine + unsure', () =>
   const tokens = feel!.options.map(o => o.token);
   expect(tokens).toEqual(expect.arrayContaining(['festive','fine','unsure']));
 });
+
+// TASK B — gin Layer-1 is also jargon-free with a plain taste-feel step (classic/modern).
+test('gin Layer-1 labels contain no jargon', () => {
+  const labels = stepsFor('gin').flatMap(s => [s.title, ...s.options.map(o => o.label)]).join(' ').toLowerCase();
+  for (const w of BANNED) expect(labels).not.toContain(w);
+});
+test('gin Layer-1 has a taste-feel step with classic/modern + unsure', () => {
+  const feel = stepsFor('gin').find(s => s.field === 'tasteFeel');
+  expect(feel).toBeTruthy();
+  const tokens = feel!.options.map(o => o.token);
+  expect(tokens).toEqual(expect.arrayContaining(['classic','modern','unsure']));
+});

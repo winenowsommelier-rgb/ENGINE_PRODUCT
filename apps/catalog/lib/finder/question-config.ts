@@ -166,15 +166,19 @@ const WHISKY_FEEL_STEP: QuestionStep = {
   ],
 };
 
-// ── Gin taste step (axis1 only) ──
-const GIN_STYLE_STEP: QuestionStep = {
-  id: 'style',
-  field: 'axis1',
-  title: 'Classic or contemporary?',
+// ── Gin plain-language taste-feel step (Layer-1, no jargon). Style-led framing
+// (classic vs modern), writing `tasteFeel` (not axis1). classic → classic-juniper-gin
+// (London Dry); modern → contemporary-botanical-gin. Drives a rank-only keyword lean in
+// scoring.ts (ginStyleBump reads tasteFeel). REPLACES the old axis1 classic/contemporary step.
+const GIN_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'Classic or modern?',
   optional: true,
   options: [
-    { token: 'classic', label: 'Classic / London Dry', icon: '🍸' },
-    { token: 'contemporary', label: 'Contemporary / botanical', icon: '🌿' },
+    { token: 'classic', label: 'Classic & junipery', icon: '🍸' },
+    { token: 'modern', label: 'Modern & aromatic', icon: '🌿' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
   ],
 };
 
@@ -219,7 +223,8 @@ export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   // Whisky Layer-1: occasion → budget → origin → plain taste-feel → flavor. The feel step
   // REPLACES the old smoky/smooth axis2 style step but KEEPS origin (axis1 → country boost).
   whisky: [OCCASION_STEP, BUDGET_STEP, WHISKY_ORIGIN_STEP, WHISKY_FEEL_STEP, FLAVOR_STEP],
-  gin: [OCCASION_STEP, BUDGET_STEP, GIN_STYLE_STEP],
+  // Gin Layer-1 is plain-language: occasion → budget → taste-feel (classic/modern) → flavor.
+  gin: [OCCASION_STEP, BUDGET_STEP, GIN_FEEL_STEP, FLAVOR_STEP],
   spirits: [OCCASION_STEP, BUDGET_STEP, SPIRITS_TYPE_STEP],
   sake: [OCCASION_STEP, BUDGET_STEP, SAKE_SWEETNESS_STEP],
 };

@@ -18,7 +18,11 @@ const FEEL_TO_ARCHETYPE: Record<FinderCategory, Record<string, string>> = {
   // toasty, traditional-method (Champagne-style fine-traditional). 'unsure'/missing →
   // null → CROWD_PLEASER.sparkling (fresh-festive-sparkling).
   sparkling: { festive: 'fresh-festive-sparkling', fine: 'fine-traditional-sparkling' },
-  gin: {}, spirits: {}, sake: {},
+  // Gin Layer-1 plain-feel → archetype (style-led, COPY + a rank-only keyword lean in
+  // scoring.ts ginStyleBump). classic = juniper-forward London Dry; modern = contemporary
+  // botanical. 'unsure'/missing → null → CROWD_PLEASER.gin (classic-juniper-gin).
+  gin: { classic: 'classic-juniper-gin', modern: 'contemporary-botanical-gin' },
+  spirits: {}, sake: {},
 };
 export function feelToArchetype(cat: FinderCategory, feel: string | undefined): string | null {
   if (!feel) return null;

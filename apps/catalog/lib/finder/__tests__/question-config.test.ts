@@ -37,9 +37,13 @@ describe('question config', () => {
       expect(fields).toContain('flavorChips');
     }
   });
-  it('gin has axis1 but no axis2', () => {
+  // Rule 5 (Phase-2 TASK B): gin moved off the axis1 classic/contemporary step to a plain
+  // `tasteFeel` step (classic/modern). The old check ("gin has axis1 but no axis2") locked
+  // in the replaced field, so it was rewritten to assert the plain-language flow.
+  it('gin uses a plain tasteFeel step (no axis1/axis2)', () => {
     const fields = stepsFor('gin').map(s => s.field);
-    expect(fields).toContain('axis1');
+    expect(fields).toContain('tasteFeel');
+    expect(fields).not.toContain('axis1');
     expect(fields).not.toContain('axis2');
   });
   it('flavor step is multi-select with ≥4 chips', () => {
