@@ -152,3 +152,32 @@ def test_score_summary_null_only(tmp_path):
     val = sqlite3.connect(db).execute(
         "SELECT score_max FROM products WHERE sku=?", (sku,)).fetchone()[0]
     assert val == 99.0, f"NULL-only violated: score_max {sku} = {val}, expected 99.0"
+
+
+# ---------------------------------------------------------------------------
+# Task 6 — enriched 43-col masterfile-shape export (scripts/masterfile_export.py)
+# ---------------------------------------------------------------------------
+
+EXPECTED_HEADER = ["ID","Type","sku","is_in_stock","custom_stock_status","manufacturer","supplier_code","brand","name","bottle_size","vintage","cost","price","special_price","Margin THB","Margin %","SP discount %","B2B","B2B Margin THB","B2B Margin %","B2B Discount %","WN Stock","Consign Stock","country","region","sub_region","item_type","grape_class","grape_variety","wine_body","wine_acidity","wine_tanin","food_matching","wine_score_range","wine_score_1","wine_score_2","wine_score_3","wine_score_4","wine_score_wineenthusiast","wine_score_wineadvocate","wine_score_winespectator","wine_score_jamessuckling","short_description","description"]
+
+
+def test_export_roundtrip_quoteall(tmp_path):
+    import csv
+    out = tmp_path / "enriched.csv"
+    subprocess.run([sys.executable,"scripts/masterfile_export.py","--db","data/db/products.db","--out",str(out),"--no-refresh"], check=True)
+    with out.open(newline="") as f:
+        reader = csv.DictReader(f); rows=list(reader)
+        assert list(reader.fieldnames) == EXPECTED_HEADER, "header drifted from 43-col shape"
+    db_n = sqlite3.connect("data/db/products.db").execute("SELECT COUNT(*) FROM products").fetchone()[0]
+    assert len(rows) >= db_n, "export dropped rows (174 DB-only must be carried)"
+
+
+def test_newly_filled_skus_reach_live_export():
+    import json
+    filled = json.load(open("data/masterfile_filled_skus.json"))
+    exp = {r["sku"]: r for r in json.load(open("data/live_products_export.json"))}
+    db = sqlite3.connect("data/db/products.db")
+    for field in ("score_max","designation","full_description","region","variety","country"):
+        for sku in filled.get(field, [])[:50]:
+            db_val = db.execute(f"SELECT {field} FROM products WHERE sku=?", (sku,)).fetchone()[0]
+            assert exp.get(sku, {}).get(field) == db_val, f"{field} for {sku} not in export ({db_val!r})"
