@@ -20,7 +20,7 @@ def normalize_variety(v: str | None) -> str | None:
     return out or v
 
 _PTS = re.compile(
-    r"(\d{2,3})\s*(?:points?|pts|Point|"
+    r"(\d{2,3})\s*(?:points?|pts|"
     r"(?=(?:&nbsp;|\s)*(?:by\s*)?(?:Wine|James|Robert|Jeb|Decanter|Vinous)))",
     re.I,
 )
@@ -29,7 +29,13 @@ def parse_points(raw: str | None) -> int | None:
         return None
     txt = html.unescape(re.sub(r"<[^>]+>", " ", raw or ""))
     m = _PTS.search(txt)
-    return int(m.group(1)) if m else None
+    if not m:
+        return None
+    # A critic score is 50–100. Reject typos ("914 points"→91 typo, ship None)
+    # and vintage/junk noise ("2016 points"→16, "208 points") that the
+    # unbounded \d{2,3} would otherwise capture as a garbage score_max.
+    n = int(m.group(1))
+    return n if 50 <= n <= 100 else None
 
 # Designation tokens. Sort by length descending so 'Grand Cru' beats 'Cru'
 # and 'Gran Reserva' beats 'Reserva' at the same scan position. Word-boundaried.
@@ -60,7 +66,7 @@ def extract_designation(name: str | None, item_type: str | None) -> str | None:
 
 def load_masterfile(path: str | Path) -> tuple[list[dict], list[str]]:
     """Return (deduped rows, list of duplicate SKUs). Last row wins on dup."""
-    with open(path, newline="") as f:
+    with open(path, newline="", encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
     seen, dups = {}, []
     for r in rows:

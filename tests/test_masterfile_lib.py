@@ -29,6 +29,24 @@ def test_extract_designation_gated_by_type():
     assert extract_designation("Barolo DOCG 2016", "Red Wine") == "DOCG"
     assert extract_designation("Hennessy XO", "Brandy") == "XO"
 
+def test_parse_points_rejects_out_of_range():
+    assert parse_points("914 points Wine Spectator") is None   # typo, not 914
+    assert parse_points("2016 points") is None                 # 4-digit vintage noise
+    assert parse_points("208 points") is None
+    # valid range still works, incl the "Point by" form
+    assert parse_points("95 Point by James Suckling") == 95
+    assert parse_points("100 points Wine Advocate") == 100
+    assert parse_points("50 points") == 50
+
+def test_load_masterfile_utf8(tmp_path):
+    import csv
+    from scripts.masterfile_lib import load_masterfile
+    p = tmp_path / "m.csv"
+    with open(p, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f); w.writerow(["sku","name"]); w.writerow(["X1","St-Rémy Grosses Gewächs"])
+    rows, dups = load_masterfile(str(p))
+    assert rows[0]["name"] == "St-Rémy Grosses Gewächs"
+
 def test_extract_designation_substring_landmine():
     # 'doc' inside "Doctor's" must NOT match (word boundary); whole name has no token → None
     assert extract_designation("The Doctor's Cuvee", "Red Wine") is None
