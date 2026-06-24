@@ -29,6 +29,10 @@ def test_filled_skus_json_survives_rerun(tmp_path, monkeypatch):
         pytest.skip("live db absent")
     db = tmp_path / "t.db"; shutil.copy(src, db)
     import json
+    # The production DB is already enriched (free-fill ran for real), so a fresh
+    # copy would fill 0. Clear `designation` on the copy so run-1 has work to do —
+    # this keeps the test self-contained and independent of live DB enrichment state.
+    cx = sqlite3.connect(db); cx.execute("UPDATE products SET designation=NULL"); cx.commit(); cx.close()
     j = Path("data/masterfile_filled_skus.json")
     saved = j.read_text() if j.exists() else None
     try:
