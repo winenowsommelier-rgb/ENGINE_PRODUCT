@@ -506,6 +506,39 @@ describe('scoreProducts', () => {
     expect(out.products.length).toBe(1); // kept, no crash, no age requirement
   });
 
+  // ── TASK B (Phase-2 sake): sakeAromaScore. Reads the STRUCTURED `variety`: ginjo/daiginjo
+  // → fragrant class; junmai(without ginjo)/honjozo → clean class. +2 when the class matches
+  // a.tasteFeel ('fragrant'/'clean'). Missing variety → 0. ──
+  const SKv = (sku:string, variety?:string, o:any={})=>({
+    sku, price:4000, is_in_stock:true, variety, ...o,
+  });
+  it("sake tasteFeel='fragrant' boosts a 'Junmai Ginjo' above a 'Honjozo'", () => {
+    const pool = [SKv('LSKhonjo','Honjozo'), SKv('LSKginjo','Junmai Ginjo')];
+    const out = scoreProducts({ category:'sake', tasteFeel:'fragrant' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LSKginjo');
+  });
+  it("sake tasteFeel='clean' boosts a 'Honjozo' above a 'Daiginjo'", () => {
+    const pool = [SKv('LSKdai','Daiginjo'), SKv('LSKhonjo','Honjozo')];
+    const out = scoreProducts({ category:'sake', tasteFeel:'clean' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LSKhonjo');
+  });
+  it("sake tasteFeel='clean' boosts a plain 'Junmai' (no ginjo) as the clean class", () => {
+    const pool = [SKv('LSKginjo','Junmai Ginjo'), SKv('LSKjun','Junmai')];
+    const out = scoreProducts({ category:'sake', tasteFeel:'clean' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LSKjun');
+  });
+  it('sake: a product with no variety is NEUTRAL for the aroma feel (kept, not penalized)', () => {
+    const pool = [SKv('LSKa'), SKv('LSKb')]; // no variety on either
+    const out = scoreProducts({ category:'sake', tasteFeel:'fragrant' } as any, pool as any);
+    expect(out.products.length).toBe(2);
+  });
+  it('sake: existing sweetness (axis1) Layer-2 path is untouched by the aroma feel', () => {
+    // Regression guard: axis1=sweet still ranks a Sweet bottle first (sakeSweetness path).
+    const pool = [SK('LSKdry2', 'Very Dry'), SK('LSKsweet2', 'Sweet')];
+    const out = scoreProducts({ category:'sake', axis1:'sweet' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LSKsweet2');
+  });
+
   it('gin: ginStyleBump ignores classification (Rule 12) — keyword in classification scores 0', () => {
     // 'classic' keyword 'london' lives ONLY in classification on LGNcls. If ginStyleBump still
     // read classification it would win; since it must NOT, LGNname (keyword in name) leads.

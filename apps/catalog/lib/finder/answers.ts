@@ -18,6 +18,7 @@ export interface Answers {
   adventure?: string;
   peat?: string;
   tasteFeel?: string;
+  serve?: string;            // sake serve preference: chilled | warm | either (TASK B)
 }
 
 const CATEGORIES: FinderCategory[] = ['red','white','sparkling','whisky','gin','spirits','sake'];
@@ -40,6 +41,7 @@ export function encodeAnswers(a: Answers): string {
   if (a.adventure) p.set('adv', a.adventure);
   if (a.peat) p.set('pt', a.peat);
   if (a.tasteFeel) p.set('tf', a.tasteFeel);
+  if (a.serve) p.set('sv', a.serve);
   return p.toString();
 }
 
@@ -66,5 +68,6 @@ export function decodeAnswers(sp: URLSearchParams): Answers {
     grape: sp.get('gr') ?? undefined, age: sp.get('ag') ?? undefined,
     adventure: sp.get('adv') ?? undefined, peat: sp.get('pt') ?? undefined,
     tasteFeel: sp.get('tf') ?? undefined,
+    serve: sp.get('sv') ?? undefined,
   };
 }

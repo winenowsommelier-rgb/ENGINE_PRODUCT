@@ -28,7 +28,11 @@ const FEEL_TO_ARCHETYPE: Record<FinderCategory, Record<string, string>> = {
   // rank lean (spiritsFeelScore) also boosts rich/aged. 'unsure'/missing → null →
   // CROWD_PLEASER.spirits (clean-versatile-vodka).
   spirits: { light: 'clean-versatile-vodka', smooth: 'clean-versatile-vodka', rich: 'warm-aged-spirit', aged: 'warm-aged-spirit' },
-  sake: {},
+  // Sake Layer-1 plain-feel → archetype (TASK B). Aroma-led, no junmai/ginjo jargon in the
+  // UI labels: fragrant = fruity/aromatic (Ginjo-style) → fragrant-sweet-sake; clean = dry,
+  // crisp (Honjozo/Junmai-style) → crisp-dry-sake. The structured `variety` drives a rank
+  // lean (sakeAromaScore). 'unsure'/missing → null → CROWD_PLEASER.sake (crisp-dry-sake).
+  sake: { fragrant: 'fragrant-sweet-sake', clean: 'crisp-dry-sake' },
 };
 export function feelToArchetype(cat: FinderCategory, feel: string | undefined): string | null {
   if (!feel) return null;

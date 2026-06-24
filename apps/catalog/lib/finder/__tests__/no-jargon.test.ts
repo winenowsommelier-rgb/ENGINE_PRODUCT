@@ -58,3 +58,15 @@ test('spirits Layer-1 has a taste-feel step with light/smooth/rich + unsure', ()
   const tokens = feel!.options.map(o => o.token);
   expect(tokens).toEqual(expect.arrayContaining(['light','smooth','rich','unsure']));
 });
+
+// TASK B — sake Layer-1 is jargon-free: aroma in plain words (fragrant/clean), NO junmai/ginjo.
+test('sake Layer-1 labels contain no jargon (no junmai/ginjo)', () => {
+  const labels = stepsFor('sake').flatMap(s => [s.title, ...s.options.map(o => o.label)]).join(' ').toLowerCase();
+  for (const w of BANNED) expect(labels).not.toContain(w);
+});
+test('sake Layer-1 has an aroma taste-feel step with fragrant/clean + unsure', () => {
+  const feel = stepsFor('sake').find(s => s.field === 'tasteFeel');
+  expect(feel).toBeTruthy();
+  const tokens = feel!.options.map(o => o.token);
+  expect(tokens).toEqual(expect.arrayContaining(['fragrant','clean','unsure']));
+});

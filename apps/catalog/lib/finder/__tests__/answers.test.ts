@@ -39,4 +39,14 @@ describe('answers URL codec', () => {
     const dec = decodeAnswers(new URLSearchParams(enc));
     expect(dec.tasteFeel).toBe('bold');
   });
+  // TASK B (Phase-2 sake): the new `serve` field (chilled/warm/either) must round-trip via 'sv'.
+  test('serve round-trips via URL params (sake chilled/warm)', () => {
+    const enc = encodeAnswers({ category: 'sake', serve: 'warm' });
+    const dec = decodeAnswers(new URLSearchParams(enc));
+    expect(dec.serve).toBe('warm');
+  });
+  test('serve omitted when unset (minimal round-trip clean)', () => {
+    const dec = decodeAnswers(new URLSearchParams(encodeAnswers({ category: 'sake' })));
+    expect(dec.serve).toBeUndefined();
+  });
 });

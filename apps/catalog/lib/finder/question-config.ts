@@ -10,6 +10,9 @@ export type StepField =
   // Plain-language taste-feel step (Layer-1, no jargon). Resolves to an archetype
   // via taste-feel.ts; replaces the body/character axis1/axis2 questions for red & white.
   | 'tasteFeel'
+  // Sake serve preference (Layer-1, chilled/warm/either — TASK B). Core field, written by
+  // ChoiceCards; needs a case in withAnswer's switch or the step writes nothing.
+  | 'serve'
   // ── Opt-in sommelier deep-dive fields (separate from the core flow) ──
   | 'acidity'
   | 'tannin'
@@ -214,16 +217,52 @@ const SPIRITS_FEEL_STEP: QuestionStep = {
   ],
 };
 
-// ── Sake & Asian taste step (axis1 = sweetness) ──
-const SAKE_SWEETNESS_STEP: QuestionStep = {
-  id: 'sweetness',
+// ── Sake & Asian Layer-1 (TASK B). Replaces the single sweetness step with sub-type →
+// aroma → serve. axis1 sub-type is display/filter only (category_type already filters the
+// pool); aroma writes `tasteFeel`; serve writes the new `serve` field. The dry/sweet
+// sweetness signal moves to the opt-in Layer-2 path (sakeSweetness in scoring.ts).
+// ──
+
+// Sake sub-type (axis1). Rice sake / Shochu / Plum (umeshu). No scoring needed — the pool
+// is already category-filtered; this just lets the shopper narrow within Sake & Asian.
+const SAKE_TYPE_STEP: QuestionStep = {
+  id: 'type',
   field: 'axis1',
-  title: 'Dry or sweet?',
+  title: 'What kind?',
   optional: true,
   options: [
-    { token: 'dry', label: 'Dry', icon: '🍶' },
-    { token: 'sweet', label: 'Sweet / fruity', icon: '🍯' },
-    { token: 'any', label: 'No preference', icon: '🤷' },
+    { token: 'sake', label: 'Rice sake', icon: '🍶' },
+    { token: 'shochu', label: 'Shochu', icon: '🍶' },
+    { token: 'umeshu', label: 'Plum (umeshu)', icon: '🍑' },
+  ],
+};
+
+// Sake aroma feel (tasteFeel). Plain words, NO junmai/ginjo jargon: fragrant & fruity →
+// fragrant-sweet-sake; clean & dry → crisp-dry-sake (taste-feel.ts). The structured
+// `variety` drives a rank lean (sakeAromaScore). 'unsure' → crowd-pleaser.
+const SAKE_FEEL_STEP: QuestionStep = {
+  id: 'taste-feel',
+  field: 'tasteFeel',
+  title: 'Fragrant or clean?',
+  optional: true,
+  options: [
+    { token: 'fragrant', label: 'Fragrant & fruity', icon: '🌸' },
+    { token: 'clean', label: 'Clean & dry', icon: '💧' },
+    { token: 'unsure', label: 'Not sure — guide me', icon: '🤷' },
+  ],
+};
+
+// Sake serve preference (serve). Chilled / warm / either. Optional preference; writes the
+// new `serve` field (URL param 'sv', see answers.ts).
+const SAKE_SERVE_STEP: QuestionStep = {
+  id: 'serve',
+  field: 'serve',
+  title: 'Chilled or warm?',
+  optional: true,
+  options: [
+    { token: 'chilled', label: 'Chilled', icon: '❄️' },
+    { token: 'warm', label: 'Warm', icon: '♨️' },
+    { token: 'either', label: 'Either', icon: '🤷' },
   ],
 };
 
@@ -245,7 +284,10 @@ export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   // Spirits Layer-1 (TASK A): occasion → budget → TYPE (axis1) → plain feel (tasteFeel) →
   // flavor. Keeps the TYPE question, adds ONE generic feel step after it.
   spirits: [OCCASION_STEP, BUDGET_STEP, SPIRITS_TYPE_STEP, SPIRITS_FEEL_STEP, FLAVOR_STEP],
-  sake: [OCCASION_STEP, BUDGET_STEP, SAKE_SWEETNESS_STEP],
+  // Sake Layer-1 (TASK B): occasion → budget → sub-type (axis1) → aroma (tasteFeel) →
+  // serve (serve) → flavor. Replaces the old single sweetness(axis1) step. Sweetness is now
+  // an opt-in Layer-2 path (sakeSweetness in scoring.ts), still keyed off axis1 in deep-dive.
+  sake: [OCCASION_STEP, BUDGET_STEP, SAKE_TYPE_STEP, SAKE_FEEL_STEP, SAKE_SERVE_STEP, FLAVOR_STEP],
 };
 
 /** Ordered steps for a category (after Step 1 category selection). */

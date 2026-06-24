@@ -60,3 +60,13 @@ test('spirits unsure / unknown feel returns null (→ crowd-pleaser via resolver
   expect(feelToArchetype('spirits', 'unsure')).toBeNull();
   expect(resolveArchetypeId('spirits', undefined)).toBe(CROWD_PLEASER.spirits);
 });
+
+// TASK B (Phase-2 sake) — aroma feel. fragrant → fragrant-sweet-sake; clean → crisp-dry-sake.
+test('sake taste-feel maps to the CORRECT archetype', () => {
+  expect(feelToArchetype('sake', 'fragrant')).toBe('fragrant-sweet-sake');
+  expect(feelToArchetype('sake', 'clean')).toBe('crisp-dry-sake');
+});
+test('sake unsure / unknown feel returns null (→ crowd-pleaser via resolver)', () => {
+  expect(feelToArchetype('sake', 'unsure')).toBeNull();
+  expect(resolveArchetypeId('sake', undefined)).toBe(CROWD_PLEASER.sake);
+});

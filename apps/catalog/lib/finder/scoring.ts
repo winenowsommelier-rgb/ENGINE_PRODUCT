@@ -318,6 +318,29 @@ function spiritsFeelScore(a: Answers, p: PublicProduct): number {
   return SPIRITS_AGE_KEYWORDS.some((k) => hay.includes(k)) ? 2 : 0;
 }
 
+// SAKE Layer-1 tasteFeel → aroma class from the STRUCTURED `variety` (TASK B). Unlike the
+// spirits keyword lean this reads a structured field, so it is reliable: ginjo/daiginjo
+// signal the fragrant (aromatic/fruity) class; junmai (without ginjo) / honjozo signal the
+// clean (dry/crisp) class. +2 when the bottle's class matches the shopper's aroma feel
+// ('fragrant'/'clean'). Missing/unrecognised variety → 0 (neutral, never penalized).
+// Kept in the deep-dive bump (rank-only) so it re-orders but doesn't gate; the sweetness
+// (axis1) Layer-2 path in scoreProducts is untouched.
+function sakeVarietyClass(variety: string | undefined): 'fragrant' | 'clean' | null {
+  const v = norm(variety);
+  if (!v) return null;
+  // ginjo/daiginjo → fragrant. Check ginjo first so 'Junmai Ginjo' is fragrant, not clean.
+  if (v.includes('ginjo')) return 'fragrant'; // also matches 'daiginjo'
+  if (v.includes('junmai') || v.includes('honjozo')) return 'clean';
+  return null;
+}
+function sakeAromaScore(a: Answers, p: PublicProduct): number {
+  if (a.category !== 'sake') return 0;
+  if (a.tasteFeel !== 'fragrant' && a.tasteFeel !== 'clean') return 0;
+  const cls = sakeVarietyClass(p.variety);
+  if (!cls) return 0;
+  return cls === a.tasteFeel ? 2 : 0;
+}
+
 // Age scoring. vintage is a STRING at runtime ("Current vintage", "2005",
 // "2005 [**VINTAGE MAY CHANGE]"). CURRENT_YEAR is a hardcoded const (not
 // `new Date()`) so age scoring is deterministic and test-stable across the
@@ -407,8 +430,9 @@ function deepDiveBump(a: Answers, p: PublicProduct): number {
     whiskyFeelSmokyBump(a, p) +
     prestigeBump(a, p) +
     ginStyleBump(a, p) +
-    // Phase-2 Layer-1 rank lean (additive, rank-only — never the taste-tier gate):
-    spiritsFeelScore(a, p) // spirits 'rich'/'aged' → positive-only age/grade keyword lean
+    // Phase-2 Layer-1 rank leans (additive, rank-only — never the taste-tier gate):
+    spiritsFeelScore(a, p) + // spirits 'rich'/'aged' → positive-only age/grade keyword lean
+    sakeAromaScore(a, p)     // sake 'fragrant'/'clean' → aroma class from structured variety
   );
 }
 
