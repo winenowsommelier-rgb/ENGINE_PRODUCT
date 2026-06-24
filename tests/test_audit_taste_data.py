@@ -95,6 +95,16 @@ def test_per_column_judged_measures_error_rate():
     assert "measured error rate" in report and "ADVISORY leaning" in report
 
 
+def test_parse_env_line_strips_quotes():
+    # REGRESSION: .env.local value is quoted; quotes MUST be stripped or the SDK
+    # gets a key with literal quotes -> 401 invalid x-api-key.
+    assert A.parse_env_line('ANTHROPIC_API_KEY="sk-abc123"') == ("ANTHROPIC_API_KEY", "sk-abc123")
+    assert A.parse_env_line("FOO='bar'") == ("FOO", "bar")
+    assert A.parse_env_line("BARE=value") == ("BARE", "value")
+    assert A.parse_env_line("# comment") is None
+    assert A.parse_env_line("") is None
+
+
 def test_judge_prompt_carries_category_and_rule():
     row = {"sku": "WSP0009AA", "name": "Prosecco Extra Dry", "column": "sweetness",
            "current_value": "Dry", "group": "Wine", "type": "Sparkling & Champagne"}

@@ -142,6 +142,20 @@ def cache_put(path, key, value):
         fh.write(json.dumps({"key": key, "value": value}) + "\n")
 
 
+def parse_env_line(line: str):
+    """Parse a KEY=VALUE .env line, stripping surrounding quotes. Returns (k,v) or None.
+
+    The .env.local value is quoted (ANTHROPIC_API_KEY="sk-..."); the quotes MUST be
+    stripped or the SDK sends them as part of the key -> 401 invalid x-api-key.
+    Mirrors enrich_phase_b.py's loader exactly.
+    """
+    line = line.strip()
+    if not line or line.startswith("#") or "=" not in line:
+        return None
+    k, v = line.split("=", 1)
+    return k.strip(), v.strip().strip('"').strip("'")
+
+
 def _load_env_local():
     """Mirror enrich_phase_b: load ANTHROPIC_API_KEY from .env.local if unset."""
     import os
@@ -150,8 +164,9 @@ def _load_env_local():
     envp = REPO / ".env.local"
     if envp.exists():
         for line in envp.read_text().splitlines():
-            if line.startswith("ANTHROPIC_API_KEY="):
-                os.environ["ANTHROPIC_API_KEY"] = line.split("=", 1)[1].strip()
+            kv = parse_env_line(line)
+            if kv and kv[0] == "ANTHROPIC_API_KEY":
+                os.environ["ANTHROPIC_API_KEY"] = kv[1]
 
 
 def _call_haiku(prompt: str) -> dict:
