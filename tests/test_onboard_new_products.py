@@ -92,14 +92,24 @@ def test_b2b_discount_is_one_decimal():
     assert m["b2b_margin_pct"] == "99.84"
 
 
-def test_select_new_beverages():
+def test_select_new_beverages(tmp_path):
     from scripts.onboard_new_products import select_candidates
-    import pytest
+    import pytest, shutil, sqlite3
     from pathlib import Path
-    if not Path("data/db/products.db").exists():
+    src = Path("data/db/products.db")
+    if not src.exists():
         pytest.skip("live db absent")
+    # Restore the PRE-INSERT precondition on a writable COPY so the ~498
+    # masterfile-only beverages reappear as candidates regardless of whether
+    # onboarding has already run against the live DB (idempotency-aware test;
+    # do NOT touch the live DB). CLAUDE.md Rule 5: restore the precondition,
+    # don't weaken the assertion.
+    db = tmp_path / "t.db"; shutil.copy(src, db)
+    sqlite3.connect(db).execute(
+        "DELETE FROM products WHERE enrichment_source='masterfile_onboard_2026-06-25'"
+    ).connection.commit()
     cands, report = select_candidates(
-        db_path="data/db/products.db",
+        db_path=str(db),
         csv_path="/Users/admin/Desktop/OPERATE FOLDER/WNLQ9 Master file/Masterfile Data WNLQ9 - MReport Masterfile.csv")
     assert 450 <= len(cands) <= 540, f"unexpected candidate count {len(cands)}"
     for c in cands:
@@ -134,13 +144,20 @@ def test_dry_run_writes_nothing(tmp_path):
     assert after_n == before_n and db.stat().st_mtime == before_mtime, "dry-run touched the DB"
 
 
-def test_image_split_399_99():
+def test_image_split_399_99(tmp_path):
     from scripts.onboard_new_products import select_candidates
-    import pytest
+    import pytest, shutil, sqlite3
     from pathlib import Path
-    if not Path("data/db/products.db").exists():
+    src = Path("data/db/products.db")
+    if not src.exists():
         pytest.skip("live db absent")
-    cands, report = select_candidates("data/db/products.db",
+    # Same idempotency-aware precondition restore as test_select_new_beverages:
+    # delete onboarded rows on a writable COPY so candidates reappear.
+    db = tmp_path / "t.db"; shutil.copy(src, db)
+    sqlite3.connect(db).execute(
+        "DELETE FROM products WHERE enrichment_source='masterfile_onboard_2026-06-25'"
+    ).connection.commit()
+    cands, report = select_candidates(str(db),
         "/Users/admin/Desktop/OPERATE FOLDER/WNLQ9 Master file/Masterfile Data WNLQ9 - MReport Masterfile.csv")
     set_ = [c for c in cands if c.get("image_url")]
     held = [c for c in cands if not c.get("image_url")]
@@ -158,6 +175,14 @@ def test_insert_count_idempotent_and_complete(tmp_path):
     src = Path("data/db/products.db")
     if not src.exists(): import pytest; pytest.skip("live db absent")
     db = tmp_path / "t.db"; shutil.copy(src, db)
+    # Restore the PRE-INSERT precondition on the COPY: delete any onboarded rows
+    # so `before` is the pre-insert count and the first run inserts ~498 again.
+    # Makes the test deterministic whether or not onboarding already ran on the
+    # live DB (idempotency-aware). CLAUDE.md Rule 5: restore precondition, keep
+    # the strong assertions (after1 > before AND second-run idempotency).
+    sqlite3.connect(db).execute(
+        "DELETE FROM products WHERE enrichment_source='masterfile_onboard_2026-06-25'"
+    ).connection.commit()
     before = sqlite3.connect(db).execute("SELECT COUNT(*) FROM products").fetchone()[0]
     run = lambda: subprocess.run([sys.executable,"scripts/onboard_new_products.py","--db",str(db),"--no-backup"], check=True)
     run(); after1 = sqlite3.connect(db).execute("SELECT COUNT(*) FROM products").fetchone()[0]
