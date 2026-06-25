@@ -90,9 +90,11 @@ def recompute_margins(cost, price, special_price, b2b_price) -> dict:
 
 
 def _existing_skus(db_path: str) -> set[str]:
-    """Read-only fetch of the SKUs already present in products. URI ro mode so
-    a candidate-selection run can NEVER mutate the canonical DB (Rule 1/9)."""
-    con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    """Read-only fetch of the SKUs already present in products. Plain connection
+    that only SELECTs (never writes) — mode=ro URI cannot open a WAL DB whose
+    -wal/-shm sidecars are absent (plain cp/.backup copies), so we rely on the
+    SELECT-only access pattern for write-safety, not connection flags (Rule 1/9)."""
+    con = sqlite3.connect(db_path)
     try:
         return {r[0] for r in con.execute("SELECT sku FROM products")}
     finally:
@@ -382,7 +384,7 @@ def _insert_candidates(db_path: str, candidates: list[dict]) -> int:
 def _verify_insert(db_path: str, before_count: int, inserted: int) -> None:
     """In-process post-commit verification (Rule 1/4): COUNT rose by `inserted`,
     and a 10-row sample of onboarded rows has margin_thb == round(price-cost,2)."""
-    con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    con = sqlite3.connect(db_path)  # plain conn, SELECT-only (mode=ro fails on WAL DB w/o sidecars)
     try:
         after = con.execute("SELECT COUNT(*) FROM products").fetchone()[0]
         if after - before_count != inserted:
@@ -426,7 +428,7 @@ def main(argv=None) -> int:
 
     candidates, report = select_candidates(db_path=args.db, csv_path=args.csv)
 
-    before = sqlite3.connect(f"file:{args.db}?mode=ro", uri=True).execute(
+    before = sqlite3.connect(args.db).execute(  # plain conn, SELECT-only (mode=ro fails on WAL DB w/o sidecars)
         "SELECT COUNT(*) FROM products").fetchone()[0]
     try:
         inserted = _insert_candidates(args.db, candidates)
