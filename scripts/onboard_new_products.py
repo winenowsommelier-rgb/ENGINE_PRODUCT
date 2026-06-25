@@ -3,7 +3,9 @@
 from __future__ import annotations
 import re
 import sys
+import csv
 import json
+import shutil
 import datetime
 import sqlite3
 import argparse
@@ -18,6 +20,8 @@ if str(_REPO_ROOT) not in sys.path:
 DEFAULT_DB = "data/db/products.db"
 DEFAULT_CSV = ("/Users/admin/Desktop/OPERATE FOLDER/WNLQ9 Master file/"
                "Masterfile Data WNLQ9 - MReport Masterfile.csv")
+IMAGE_CSV = ("/Users/admin/Desktop/OPERATE FOLDER/WNLQ9 Master file/"
+             "export_path_images_all_media_no_null_base_images.csv")
 PREFLIGHT_JSON = "data/onboard_preflight_report.json"
 PREFLIGHT_MD = "data/onboard_preflight_report.md"
 ENRICHMENT_SOURCE = "masterfile_onboard_2026-06-25"
@@ -95,6 +99,35 @@ def _existing_skus(db_path: str) -> set[str]:
         con.close()
 
 
+def _load_image_map(image_csv: str = IMAGE_CSV) -> dict[str, str]:
+    """sku (UPPER as in CSV) -> base_image_url. Read-only. Missing file = {}."""
+    path = Path(image_csv)
+    if not path.exists():
+        return {}
+    out: dict[str, str] = {}
+    with path.open(encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            sku = (row.get("sku") or "").strip()
+            url = (row.get("base_image_url") or "").strip()
+            if sku and url:
+                out[sku] = url
+    return out
+
+
+def _image_for_sku(sku: str, image_map: dict[str, str]) -> str | None:
+    """Return the image URL ONLY IF its filename references THIS sku.
+
+    HTTP 200 != right bottle: a filename pointing at a DIFFERENT sku is the
+    cross-sku 'wrong bottle' bug we keep fixing. We hold (return None) unless
+    the filename (segment after the last '/') contains the own sku lowercased.
+    """
+    url = image_map.get(sku)
+    if not url:
+        return None
+    fname = url.rsplit("/", 1)[-1].lower()
+    return url if sku.lower() in fname else None
+
+
 def select_candidates(db_path: str = DEFAULT_DB, csv_path: str = DEFAULT_CSV):
     """Select in-stock, mf-only, sellable beverages. Reads ONLY (DB ro + CSV).
 
@@ -108,6 +141,7 @@ def select_candidates(db_path: str = DEFAULT_DB, csv_path: str = DEFAULT_CSV):
 
     existing = _existing_skus(db_path)
     rows, dup_skus = load_masterfile(csv_path)
+    image_map = _load_image_map()
 
     candidates: list[dict] = []
     report = {
@@ -116,6 +150,8 @@ def select_candidates(db_path: str = DEFAULT_DB, csv_path: str = DEFAULT_CSV):
         "negative_margin": [],
         "missing_cost_or_price": [],
         "dup_skus": dup_skus,
+        "image_cross_sku_held": [],
+        "image_set": 0,
     }
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
@@ -154,6 +190,13 @@ def select_candidates(db_path: str = DEFAULT_DB, csv_path: str = DEFAULT_CSV):
         b2b = parse_money(r.get("B2B"))
         margins = recompute_margins(cost, price, sp, b2b)
 
+        image_url = _image_for_sku(sku, image_map)
+        if image_url:
+            report["image_set"] += 1
+        elif image_map.get(sku):
+            # URL existed but referenced a different sku — held, not set.
+            report["image_cross_sku_held"].append(sku)
+
         cand = {
             "id": f"onboard-{sku}",
             "sku": sku,
@@ -170,6 +213,7 @@ def select_candidates(db_path: str = DEFAULT_DB, csv_path: str = DEFAULT_CSV):
             "special_price": sp,
             "b2b_price": b2b,
             **margins,
+            "image_url": image_url,
             "currency": "THB",
             "is_in_stock": "1",
             "is_active": 1,
@@ -277,6 +321,87 @@ _Next step (Task 4): on your sign-off, the insert path writes these
     Path(PREFLIGHT_MD).write_text(md, encoding="utf-8")
 
 
+# Real products columns the insert writes. Built from the candidate dict MINUS
+# any internal underscore-prefixed key (e.g. '_resolver_type'). Kept explicit so
+# a candidate-dict change can never silently widen/narrow the INSERT (payment-path).
+INSERT_COLS = [
+    "id", "sku", "name", "brand", "country", "manufacturer", "bottle_size",
+    "vintage", "desc_en_short", "full_description", "cost", "price",
+    "special_price", "b2b_price", "margin_thb", "margin_pct", "sp_discount_pct",
+    "b2b_margin_thb", "b2b_margin_pct", "b2b_discount_pct", "image_url",
+    "currency", "is_in_stock", "is_active", "classification", "enrichment_source",
+    "created_at", "updated_at",
+]
+
+
+def _backup_db(db_path: str) -> str:
+    """Checkpoint the WAL into the main file, then copy it to a timestamped .bak
+    NEXT TO the db (Rule 10). Returns the backup path."""
+    con = sqlite3.connect(db_path)
+    try:
+        con.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+    finally:
+        con.close()
+    ts = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    bak = f"{db_path}.bak-pre-onboard-{ts}"
+    shutil.copy(db_path, bak)
+    return bak
+
+
+def _insert_candidates(db_path: str, candidates: list[dict]) -> int:
+    """Single all-or-nothing transaction. INSERT every candidate whose sku is
+    not already in products (idempotent). Strips internal underscore keys.
+    On ANY exception: rollback and re-raise (caller exits non-zero). Returns the
+    number of rows inserted.
+    """
+    placeholders = ",".join("?" * len(INSERT_COLS))
+    collist = ",".join(INSERT_COLS)
+    sql = f"INSERT INTO products ({collist}) VALUES ({placeholders})"
+
+    con = sqlite3.connect(db_path)
+    try:
+        existing = {r[0] for r in con.execute("SELECT sku FROM products")}
+        con.execute("BEGIN")
+        inserted = 0
+        for cand in candidates:
+            if cand["sku"] in existing:
+                continue                      # idempotent — already onboarded
+            # Build the row strictly from INSERT_COLS; any '_'-prefixed internal
+            # key (e.g. '_resolver_type') is never referenced, so it cannot leak.
+            con.execute(sql, [cand.get(col) for col in INSERT_COLS])
+            inserted += 1
+        con.commit()
+        return inserted
+    except Exception:
+        con.rollback()
+        raise
+    finally:
+        con.close()
+
+
+def _verify_insert(db_path: str, before_count: int, inserted: int) -> None:
+    """In-process post-commit verification (Rule 1/4): COUNT rose by `inserted`,
+    and a 10-row sample of onboarded rows has margin_thb == round(price-cost,2)."""
+    con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    try:
+        after = con.execute("SELECT COUNT(*) FROM products").fetchone()[0]
+        if after - before_count != inserted:
+            raise RuntimeError(
+                f"VERIFY FAILED: count delta {after - before_count} != inserted {inserted}")
+        sample = con.execute(
+            "SELECT sku, price, cost, margin_thb FROM products "
+            "WHERE enrichment_source=? LIMIT 10", (ENRICHMENT_SOURCE,)).fetchall()
+        for sku, price, cost, mthb in sample:
+            if round(price - cost, 2) != mthb:
+                raise RuntimeError(
+                    f"VERIFY FAILED: {sku} margin_thb {mthb} != round(price-cost,2) "
+                    f"{round(price - cost, 2)}")
+    finally:
+        con.close()
+    print(f"verified: row count rose by {inserted}; "
+          f"{len(sample)} sampled onboarded rows pass margin invariant")
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--db", default=DEFAULT_DB)
@@ -284,25 +409,48 @@ def main(argv=None) -> int:
     ap.add_argument("--dry-run", action="store_true",
                     help="select candidates + write read-only pre-flight report; "
                          "writes NOTHING to the DB")
+    ap.add_argument("--no-backup", action="store_true",
+                    help="skip the pre-insert DB backup (tests use a throwaway db copy)")
     args = ap.parse_args(argv)
 
-    if not args.dry_run:
-        print("insert not yet implemented — run with --dry-run for the "
-              "read-only pre-flight report (Task 4 = insert path).")
+    if args.dry_run:
+        candidates, report = select_candidates(db_path=args.db, csv_path=args.csv)
+        _write_preflight(candidates, report)
+        _print_dry_run(args.db, report)
         return 0
 
-    candidates, report = select_candidates(db_path=args.db, csv_path=args.csv)
-    _write_preflight(candidates, report)
+    # --- Real insert path (all-or-nothing single transaction) ---
+    if not args.no_backup:
+        bak = _backup_db(args.db)
+        print(f"backup created: {bak}")
 
-    print(f"[dry-run] DB NOT modified ({args.db} opened read-only)")
+    candidates, report = select_candidates(db_path=args.db, csv_path=args.csv)
+
+    before = sqlite3.connect(f"file:{args.db}?mode=ro", uri=True).execute(
+        "SELECT COUNT(*) FROM products").fetchone()[0]
+    try:
+        inserted = _insert_candidates(args.db, candidates)
+    except Exception as exc:                       # noqa: BLE001 — top-level guard
+        print(f"INSERT FAILED, rolled back (DB unchanged): {exc}", file=sys.stderr)
+        return 1
+
+    held = len(report["image_cross_sku_held"])
+    print(f"inserted {inserted} (images set {report['image_set']}, held {held})")
+    _verify_insert(args.db, before, inserted)
+    return 0
+
+
+def _print_dry_run(db_path: str, report: dict) -> None:
+    print(f"[dry-run] DB NOT modified ({db_path} opened read-only)")
     print(f"candidates (n)        : {report['n']}")
     print(f"unknown_prefix        : {len(report['unknown_prefix'])}")
     print(f"price_parse_failures  : {len(report['price_parse_failures'])}")
     print(f"missing_cost_or_price : {len(report['missing_cost_or_price'])}")
     print(f"negative_margin (kept): {len(report['negative_margin'])}")
     print(f"dup_skus              : {len(report['dup_skus'])}")
+    print(f"image_set             : {report['image_set']}")
+    print(f"image_cross_sku_held  : {len(report['image_cross_sku_held'])}")
     print(f"wrote {PREFLIGHT_JSON} and {PREFLIGHT_MD}")
-    return 0
 
 
 if __name__ == "__main__":

@@ -132,3 +132,69 @@ def test_dry_run_writes_nothing(tmp_path):
     assert r.returncode == 0, r.stderr
     after_n = sqlite3.connect(db).execute("SELECT COUNT(*) FROM products").fetchone()[0]
     assert after_n == before_n and db.stat().st_mtime == before_mtime, "dry-run touched the DB"
+
+
+def test_image_split_399_99():
+    from scripts.onboard_new_products import select_candidates
+    import pytest
+    from pathlib import Path
+    if not Path("data/db/products.db").exists():
+        pytest.skip("live db absent")
+    cands, report = select_candidates("data/db/products.db",
+        "/Users/admin/Desktop/OPERATE FOLDER/WNLQ9 Master file/Masterfile Data WNLQ9 - MReport Masterfile.csv")
+    set_ = [c for c in cands if c.get("image_url")]
+    held = [c for c in cands if not c.get("image_url")]
+    assert 380 <= len(set_) <= 420, f"image_set {len(set_)}"
+    assert 80 <= len(held) <= 120, f"held {len(held)}"
+    assert len(report["image_cross_sku_held"]) == len(held)
+    # every set image_url filename contains the own sku
+    for c in set_:
+        fname = c["image_url"].rsplit("/",1)[-1].lower()
+        assert c["sku"].lower() in fname
+
+def test_insert_count_idempotent_and_complete(tmp_path):
+    import subprocess, sys, shutil, sqlite3
+    from pathlib import Path
+    src = Path("data/db/products.db")
+    if not src.exists(): import pytest; pytest.skip("live db absent")
+    db = tmp_path / "t.db"; shutil.copy(src, db)
+    before = sqlite3.connect(db).execute("SELECT COUNT(*) FROM products").fetchone()[0]
+    run = lambda: subprocess.run([sys.executable,"scripts/onboard_new_products.py","--db",str(db),"--no-backup"], check=True)
+    run(); after1 = sqlite3.connect(db).execute("SELECT COUNT(*) FROM products").fetchone()[0]
+    assert after1 > before
+    rows = sqlite3.connect(db).execute(
+        "SELECT id,price,cost,currency,is_in_stock,margin_thb,classification FROM products "
+        "WHERE enrichment_source='masterfile_onboard_2026-06-25'").fetchall()
+    assert len(rows) == after1 - before
+    for id_,price,cost,cur,stock,mthb,classif in rows:
+        assert id_ and id_.startswith("onboard-")
+        assert price>0 and cost>0 and cur=="THB" and stock=="1"
+        assert round(price-cost,2)==mthb and classif is None
+    ids=[r[0] for r in sqlite3.connect(db).execute("SELECT id FROM products")]
+    assert None not in ids and len(ids)==len(set(ids))
+    run(); after2 = sqlite3.connect(db).execute("SELECT COUNT(*) FROM products").fetchone()[0]
+    assert after2==after1, "re-run double-inserted"
+
+def test_insert_does_not_touch_existing(tmp_path):
+    import subprocess, sys, shutil, sqlite3, hashlib
+    from pathlib import Path
+    src = Path("data/db/products.db")
+    if not src.exists(): import pytest; pytest.skip("live db absent")
+    db = tmp_path / "t.db"; shutil.copy(src, db)
+    conn=sqlite3.connect(db)
+    pre=tuple(r[0] for r in conn.execute("SELECT sku FROM products ORDER BY sku"))
+    def dig(skus):
+        c=sqlite3.connect(db); ph=",".join("?"*len(skus))
+        return hashlib.sha256(repr(c.execute(f"SELECT * FROM products WHERE sku IN ({ph}) ORDER BY sku",skus).fetchall()).encode()).hexdigest()
+    b=dig(pre)
+    subprocess.run([sys.executable,"scripts/onboard_new_products.py","--db",str(db),"--no-backup"], check=True)
+    assert dig(pre)==b, "onboarding modified a pre-existing row"
+
+def test_default_mode_makes_backup(tmp_path):
+    import subprocess, sys, shutil
+    from pathlib import Path
+    src=Path("data/db/products.db")
+    if not src.exists(): import pytest; pytest.skip("live db absent")
+    db=tmp_path/"t.db"; shutil.copy(src,db)
+    subprocess.run([sys.executable,"scripts/onboard_new_products.py","--db",str(db)], check=True)
+    assert list(tmp_path.glob("t.db.bak-pre-onboard-*")), "no backup created"
