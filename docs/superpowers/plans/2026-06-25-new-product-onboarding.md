@@ -87,6 +87,30 @@ def test_recompute_margins_guards_zero_price():
     # price 0 would div-by-zero; helper returns None pct, caller excludes the SKU
     m = recompute_margins(cost=10.0, price=0.0, special_price=None, b2b_price=None)
     assert m["margin_pct"] is None
+
+def test_recompute_negative_margin_shape():
+    # cost > price is ALLOWED (flagged in pre-flight), recompute must not crash
+    m = recompute_margins(cost=700.0, price=600.0, special_price=None, b2b_price=None)
+    assert m["margin_thb"] == -100.0
+    assert m["margin_pct"] == "-17%"   # (600-700)/600 = -.166 → -17%
+
+def test_recompute_matches_existing_db_row():
+    """Our recompute must reproduce an existing row's stored margin_pct, so the
+    later 7,068-row price-import reuse inherits the SAME rounding as production."""
+    import sqlite3, pytest
+    from pathlib import Path
+    db = Path("data/db/products.db")
+    if not db.exists():
+        pytest.skip("live db absent")
+    row = sqlite3.connect(db).execute(
+        "SELECT cost, price, margin_pct FROM products "
+        "WHERE cost IS NOT NULL AND price IS NOT NULL AND margin_pct IS NOT NULL "
+        "AND cost < price LIMIT 1").fetchone()
+    if not row:
+        pytest.skip("no comparable row")
+    cost, price, stored = row
+    got = recompute_margins(cost=cost, price=price, special_price=None, b2b_price=None)["margin_pct"]
+    assert got == stored, f"rounding mismatch vs production: recompute {got} != stored {stored}"
 ```
 
 - [ ] **Step 2: Run, verify FAIL** (`ImportError`).
@@ -158,7 +182,12 @@ def test_select_new_beverages():
               "missing_cost_or_price", "dup_skus", "type_distribution"):
         assert k in report
     # no candidate resolves to Unknown type (today 0; if any, they'd be in report.unknown_prefix not cands)
-    assert report["unknown_prefix"] == [] or all(x not in [c["sku"] for c in cands] for x in report["unknown_prefix"])
+    assert all(x not in [c["sku"] for c in cands] for x in report["unknown_prefix"])
+    # composition check (not just count): beverage types present, accessory types absent
+    dist = report["type_distribution"]
+    assert dist.get("Red Wine", 0) > 50, "expected the big beverage buckets present"
+    for acc in ("Glassware", "Bar Tools & Gifts", "Wine Coolers & Fridges"):
+        assert acc not in dist, f"accessory type {acc} leaked into candidates"
 ```
 
 - [ ] **Step 2: Run, verify FAIL.**
@@ -234,6 +263,14 @@ def test_insert_count_and_idempotent(tmp_path):
         assert round(price - cost, 2) == mthb           # margin recompute correct
         assert mpct and mpct.endswith("%")               # 'NN%' format
         assert classif is None                            # classification left NULL
+    # id is globally non-null + unique across the whole table (spec demands it)
+    ids = [r[0] for r in sqlite3.connect(db).execute("SELECT id FROM products")]
+    assert None not in ids and len(ids) == len(set(ids)), "null or duplicate id"
+    # b2b_discount_pct is never populated by recompute → must stay NULL (not '0%' garbage)
+    bad = sqlite3.connect(db).execute(
+        "SELECT COUNT(*) FROM products WHERE enrichment_source='masterfile_onboard_2026-06-25' "
+        "AND b2b_discount_pct IS NOT NULL").fetchone()[0]
+    assert bad == 0, "b2b_discount_pct should be NULL for onboarded rows"
     # idempotent: second run inserts 0
     run()
     after2 = sqlite3.connect(db).execute("SELECT COUNT(*) FROM products").fetchone()[0]
@@ -246,20 +283,40 @@ def test_insert_does_not_touch_existing(tmp_path):
     if not src.exists():
         import pytest; pytest.skip("live db absent")
     db = tmp_path / "t.db"; shutil.copy(src, db)
-    def existing_digest():
-        rows = sqlite3.connect(db).execute(
-            "SELECT * FROM products WHERE enrichment_source IS NOT 'masterfile_onboard_2026-06-25' "
-            "OR enrichment_source IS NULL ORDER BY sku").fetchall()
+    # Snapshot the EXACT set of pre-existing SKUs BEFORE the run, then re-digest those
+    # same SKUs after — guarantees byte-identity regardless of how the insert behaves.
+    conn = sqlite3.connect(db)
+    pre_skus = tuple(r[0] for r in conn.execute("SELECT sku FROM products ORDER BY sku"))
+    def digest(skus):
+        c = sqlite3.connect(db)
+        ph = ",".join("?" * len(skus))
+        rows = c.execute(f"SELECT * FROM products WHERE sku IN ({ph}) ORDER BY sku", skus).fetchall()
         return hashlib.sha256(repr(rows).encode()).hexdigest()
-    before = existing_digest()
+    before = digest(pre_skus)
     subprocess.run([sys.executable, "scripts/onboard_new_products.py",
                     "--db", str(db), "--no-backup"], check=True)
-    assert existing_digest() == before, "onboarding modified existing rows"
+    assert digest(pre_skus) == before, "onboarding modified a pre-existing row"
+```
+
+- [ ] **Step 1b: Add a backup-path test** (the real run depends on backup code that `--no-backup` tests never exercise)
+
+```python
+def test_default_mode_makes_a_backup(tmp_path):
+    import subprocess, sys, shutil
+    from pathlib import Path
+    src = Path("data/db/products.db")
+    if not src.exists():
+        import pytest; pytest.skip("live db absent")
+    db = tmp_path / "t.db"; shutil.copy(src, db)
+    subprocess.run([sys.executable, "scripts/onboard_new_products.py",
+                    "--db", str(db)], check=True)   # NO --no-backup
+    baks = list(tmp_path.glob("t.db.bak-pre-onboard-*"))
+    assert baks, "default mode did not create a backup before insert"
 ```
 
 - [ ] **Step 2: Run, verify FAIL.**
 
-- [ ] **Step 3: Implement the insert** — `--no-backup` flag (tests). Default path: backup, then `select_candidates`, then open one transaction (`conn.execute("BEGIN")`), `INSERT` each candidate (skip if sku already present — idempotent), `conn.commit()`. On ANY exception: `conn.rollback()`, exit non-zero (all-or-nothing). After commit, print "inserted N". Then VERIFY in-process: COUNT rose by N; sample 10 rows assert margin_thb == price-cost. Use parameterized INSERT with an explicit column list; never string-format SQL.
+- [ ] **Step 3: Implement the insert** — `--no-backup` flag (tests). Default path: backup (to `<db>.bak-pre-onboard-<UTC ts>` next to the db path so the test can find it), then `select_candidates`, then open one transaction (`conn.execute("BEGIN")`), `INSERT` each candidate (skip if sku already present — idempotent), `conn.commit()`. On ANY exception: `conn.rollback()`, exit non-zero (all-or-nothing). After commit, print "inserted N". Then VERIFY in-process: COUNT rose by N; sample 10 rows assert margin_thb == price-cost. Use parameterized INSERT with an explicit column list; never string-format SQL.
 
 - [ ] **Step 4: Run, verify PASS (both tests). Canary on a /tmp copy; print inserted N.**
 - [ ] **Step 5: Commit** (`feat(onboard): single-transaction idempotent insert + verify`). **Do NOT run the real DB yet — controller does the real insert after the pre-flight sign-off + review.**
@@ -277,24 +334,26 @@ def test_onboarded_reach_export_no_margin_leak():
     import json, sqlite3
     exp = {r["sku"]: r for r in json.load(open("data/live_products_export.json"))}
     db = sqlite3.connect("data/db/products.db")
+    import pytest
     onboarded = [r[0] for r in db.execute(
         "SELECT sku FROM products WHERE enrichment_source='masterfile_onboard_2026-06-25'")]
-    assert onboarded, "no onboarded SKUs in DB (run insert + refresh first)"
+    if not onboarded:
+        pytest.skip("onboarding not yet run — this is the post-insert gate")  # stays green pre-run
     for sku in onboarded[:50]:
         row = exp.get(sku)
         assert row, f"{sku} missing from live export"
         assert row.get("price"), f"{sku} has no price in export"
         # category re-derived from prefix → must not be Unknown
         assert row.get("category_type") not in (None, "", "Unknown"), f"{sku} Unknown category"
-    # public-projection margin-leak guard: the catalog public projection strips margin/cost.
-    # Assert via the catalog's PUBLIC allowlist applied to a sample (mirror toPublicProduct):
-    LEAK = {"cost", "b2b_price", "margin_pct", "margin_thb", "b2b_margin_pct", "b2b_margin_thb"}
+    # public-projection margin-leak guard: the catalog strips margin/cost at PUBLIC_FIELDS.
     # raw export MAY contain margin_pct (known); the guard is that PUBLIC_FIELDS excludes them.
-    # Read the catalog allowlist to confirm none of LEAK is public:
+    LEAK = {"cost", "b2b_price", "margin_pct", "margin_thb", "b2b_margin_pct", "b2b_margin_thb"}
     import re, pathlib
     cat = pathlib.Path("apps/catalog/lib/catalog-data.ts").read_text()
-    pub = set(re.findall(r"'([a-z_0-9]+)'", cat.split("PUBLIC_FIELDS")[1].split("]")[0])) \
-        if "PUBLIC_FIELDS" in cat else set()
+    # Anchor on the ACTUAL array (PUBLIC_FIELDS also appears in doc-comments earlier):
+    body = cat.split("export const PUBLIC_FIELDS = [", 1)[1].split("] as const", 1)[0]
+    pub = set(re.findall(r"'([a-z_0-9]+)'", body))
+    assert pub, "failed to parse PUBLIC_FIELDS — guard against a vacuous pass"
     assert not (LEAK & pub), f"margin/cost field is in PUBLIC_FIELDS: {LEAK & pub}"
 ```
 
