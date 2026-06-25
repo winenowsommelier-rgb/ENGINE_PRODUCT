@@ -78,7 +78,9 @@ EXPORT_COLS = [
     "created_at", "updated_at",
     "pairing_rationale",
     # Stock and margin — required by curation hard_filter and scoring engine
-    "is_in_stock", "wn_stock", "quantity_in_stock",
+    # custom_stock_status='CATALOG' = archived/discontinued (front-end shows 'Archive');
+    # excluded from all finder/recommender results. consign is internal-only, NOT exported.
+    "is_in_stock", "wn_stock", "quantity_in_stock", "custom_stock_status",
     "margin_pct", "b2b_margin_pct",
     # Critic scores — required by score_threshold filter in curation
     "score_max", "score_summary",

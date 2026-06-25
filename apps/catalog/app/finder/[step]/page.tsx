@@ -223,7 +223,7 @@ export default function FinderStepPage({
               // against the live export). Today none are empty, but stock/vocabulary
               // changes can empty one — this avoids a dead-end selection.
               disabledTokens={[...emptyFoodChips(
-                getAllProducts().filter((p) => isInStock(p.is_in_stock)),
+                getAllProducts().filter((p) => isInStock(p.is_in_stock) && p.custom_stock_status !== 'CATALOG'),
               )]}
             />
           ) : (

@@ -35,6 +35,7 @@ export function finderPrefilter(products: PublicProduct[], a: Answers): PublicPr
   const tier = a.budget != null ? PRICE_TIERS[a.budget] : undefined;
   return products.filter((p) => {
     if (!isInStock(p.is_in_stock)) return false;
+    if (p.custom_stock_status === 'CATALOG') return false; // archived — never appear in finder
     if (groupForProduct(p) !== rule.group) return false;
     if (rule.match && !rule.match(p)) return false;
     if (tier) {

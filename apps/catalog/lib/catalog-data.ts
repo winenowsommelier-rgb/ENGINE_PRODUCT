@@ -22,6 +22,10 @@ export const PUBLIC_FIELDS = [
   'special_price','sp_discount_pct',
   'desc_en_short','full_description','taste_profile','color','image_url',
   'score_summary','score_max','is_in_stock',
+  // Stock status fields: custom_stock_status='CATALOG' → show 'Archive' badge and exclude
+  // from recommender/finder. wn_stock > 0 → show 'Express Delivery' badge. The raw
+  // wn_stock quantity is NOT shown to customers (only badge presence/absence).
+  'custom_stock_status','wn_stock',
   // SKU-derived canonical taxonomy (backfilled on every row). Safe to expose:
   // shopper-facing category labels, no margin/pricing/internal signal.
   'category_group','category_type',

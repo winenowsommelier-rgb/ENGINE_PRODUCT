@@ -99,6 +99,7 @@ export function scoreCandidate(
 function isEligible(product: PublicProduct, candidate: PublicProduct): boolean {
   if (candidate.sku === product.sku) return false; // not self
   if (!isInStock(candidate.is_in_stock)) return false; // out-of-stock excluded (handles raw "0" too)
+  if (candidate.custom_stock_status === 'CATALOG') return false; // archived/discontinued — never recommend
   return true;
 }
 
@@ -207,7 +208,7 @@ export function precomputeRecommendations(
   // them — just never recommended themselves. is_in_stock is a normalized boolean
   // post-load; isInStock() also handles a raw "0"/"1"/null product defensively
   // (see isEligible docblock).
-  const inStock = all.filter((p) => isInStock(p.is_in_stock));
+  const inStock = all.filter((p) => isInStock(p.is_in_stock) && p.custom_stock_status !== 'CATALOG');
 
   const byRegion = new Map<string, PublicProduct[]>();
   const byType = new Map<string, PublicProduct[]>();
