@@ -62,3 +62,45 @@ def test_recompute_matches_existing_db_row():
     cost, price, stored = row
     got = recompute_margins(cost=cost, price=price, special_price=None, b2b_price=None)["margin_pct"]
     assert got == stored, f"rounding mismatch vs production: recompute {got} != stored {stored}"
+
+
+def test_select_new_beverages():
+    from scripts.onboard_new_products import select_candidates
+    import pytest
+    from pathlib import Path
+    if not Path("data/db/products.db").exists():
+        pytest.skip("live db absent")
+    cands, report = select_candidates(
+        db_path="data/db/products.db",
+        csv_path="/Users/admin/Desktop/OPERATE FOLDER/WNLQ9 Master file/Masterfile Data WNLQ9 - MReport Masterfile.csv")
+    assert 450 <= len(cands) <= 540, f"unexpected candidate count {len(cands)}"
+    for c in cands:
+        assert c["sku"] and c["price"] and c["cost"]
+        assert c["id"] == f"onboard-{c['sku']}"
+        assert c["currency"] == "THB" and c["is_in_stock"] == "1"
+        assert c["classification"] is None
+    for k in ("n","unknown_prefix","price_parse_failures","negative_margin",
+              "missing_cost_or_price","dup_skus","type_distribution"):
+        assert k in report
+    # any Unknown-type sku is reported, NOT in candidates
+    assert all(x not in [c["sku"] for c in cands] for x in report["unknown_prefix"])
+    # composition: beverage types present, accessory types absent
+    dist = report["type_distribution"]
+    assert dist.get("Red Wine", 0) > 50
+    for acc in ("Glassware","Bar Tools & Gifts","Wine Coolers & Fridges"):
+        assert acc not in dist
+
+def test_dry_run_writes_nothing(tmp_path):
+    import subprocess, sys, shutil, sqlite3
+    from pathlib import Path
+    src = Path("data/db/products.db")
+    if not src.exists():
+        import pytest; pytest.skip("live db absent")
+    db = tmp_path / "t.db"; shutil.copy(src, db)
+    before_n = sqlite3.connect(db).execute("SELECT COUNT(*) FROM products").fetchone()[0]
+    before_mtime = db.stat().st_mtime
+    r = subprocess.run([sys.executable, "scripts/onboard_new_products.py",
+                        "--db", str(db), "--dry-run"], capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    after_n = sqlite3.connect(db).execute("SELECT COUNT(*) FROM products").fetchone()[0]
+    assert after_n == before_n and db.stat().st_mtime == before_mtime, "dry-run touched the DB"
