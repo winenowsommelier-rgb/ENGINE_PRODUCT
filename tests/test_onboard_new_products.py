@@ -198,3 +198,44 @@ def test_default_mode_makes_backup(tmp_path):
     db=tmp_path/"t.db"; shutil.copy(src,db)
     subprocess.run([sys.executable,"scripts/onboard_new_products.py","--db",str(db)], check=True)
     assert list(tmp_path.glob("t.db.bak-pre-onboard-*")), "no backup created"
+
+
+def test_onboarded_reach_export_no_margin_leak():
+    """POST-RUN gate (CLAUDE.md Rule 1): verify the onboarded SKUs actually
+    REACHED the user-facing live export with a price + a real category, AND that
+    no cost/margin field leaks into the catalog's PUBLIC projection.
+
+    SKIPS cleanly until the insert has run (no onboarded rows) so the branch
+    stays green during development; only enforces once data exists.
+    """
+    import json, sqlite3, re, pathlib, pytest
+    from pathlib import Path
+    db = Path("data/db/products.db")
+    exp_path = Path("data/live_products_export.json")
+    if not db.exists() or not exp_path.exists():
+        pytest.skip("db or export absent")
+    onboarded = [r[0] for r in sqlite3.connect(db).execute(
+        "SELECT sku FROM products WHERE enrichment_source='masterfile_onboard_2026-06-25'")]
+    if not onboarded:
+        pytest.skip("onboarding not yet run — post-insert gate")
+    exp = {r["sku"]: r for r in json.load(exp_path.open())}
+    for sku in onboarded[:50]:
+        row = exp.get(sku)
+        assert row, f"{sku} missing from live export"
+        assert row.get("price"), f"{sku} no price in export"
+        assert row.get("category_type") not in (None, "", "Unknown"), f"{sku} Unknown category"
+    # margin-leak guard: parse the catalog PUBLIC_FIELDS allowlist (anchor on the real array)
+    cat = pathlib.Path("apps/catalog/lib/catalog-data.ts").read_text()
+    body = cat.split("export const PUBLIC_FIELDS = [", 1)[1].split("] as const", 1)[0]
+    pub = set(re.findall(r"'([a-z_0-9]+)'", body))
+    assert pub, "failed to parse PUBLIC_FIELDS — guard against vacuous pass"
+    # LEAK = fields that MUST stay private (internal cost/margin/wholesale).
+    # Verified 2026-06-25 against catalog-data.ts: these are NOT in PUBLIC_FIELDS.
+    # NOTE: sp_discount_pct + special_price ARE intentionally in PUBLIC_FIELDS
+    # (line 19-22: customer-facing SALE price/% off that drives the sale badge) —
+    # they are storefront prices, not margin, so they are NOT leaks and are
+    # deliberately excluded from this set. b2b_discount_pct stays in LEAK: it is
+    # the WHOLESALE B2B discount (distinct from the retail sp_discount_pct) and is
+    # internal-only.
+    LEAK = {"cost","b2b_price","margin_pct","margin_thb","b2b_margin_pct","b2b_margin_thb","b2b_discount_pct"}
+    assert not (LEAK & pub), f"margin/cost field in PUBLIC_FIELDS: {LEAK & pub}"
