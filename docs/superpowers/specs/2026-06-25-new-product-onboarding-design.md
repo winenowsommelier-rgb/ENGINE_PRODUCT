@@ -43,7 +43,7 @@ is a **separate later run** that reuses the margin-recompute logic established h
 | `classification` | **DO NOT WRITE** (leave NULL) | Rule 12: catalog IGNORES `classification` and re-derives category from the SKU prefix on every export refresh (`refresh_live_export.py` `category_type`). Writing resolver-type here is wrong-vocab (resolver says "Sparkling & Champagne"; classification vocab is "Champagne"/"Sparkling Wine") AND dead. If an internal DB value is ever wanted, write it with `classification_source='resolver_onboard_2026-06-25'` — but default is leave NULL. |
 | cost, price, special_price, b2b_price | masterfile (INPUT); REAL cols | parse string→float (strip commas/currency); exclude+report on parse failure |
 | margin_thb, b2b_margin_thb | **RECOMPUTED**; REAL cols | rounded to 2 dp |
-| margin_pct, sp_discount_pct, b2b_margin_pct, b2b_discount_pct | **RECOMPUTED**; **TEXT cols** (verified) | write as a plain decimal STRING matching existing rows' format (inspect a populated row first; do NOT write a float into the TEXT col without matching the format the catalog parser expects). NULL when the input (special_price/b2b_price) is absent — never 0/"". |
+| margin_pct, sp_discount_pct, b2b_margin_pct, b2b_discount_pct | **RECOMPUTED**; **TEXT cols** (verified) | write as the integer-percent string **`f"{round(ratio*100)}%"`** — existing rows are `'27%'`, `'7%'`, `'11%'` (verified; NOT `'0.27'`, NOT a float). The catalog strips the `%` to parse. NULL when the input (special_price/b2b_price) is absent — never 0/"". |
 | currency | `'THB'` | |
 | is_in_stock | `'1'` (string, not int — `isInStock()` normalizes) | |
 | is_active | `1` | NOT used by catalog (BI/internal); harmless |
@@ -59,7 +59,7 @@ Excluded entirely (out of scope): 41 accessories (Riedel/Vinobox — different h
 
 ```
 margin_thb      = price − cost
-margin_pct      = (price − cost) / price            # guard price > 0
+margin_pct      = (price − cost) / price            # guard price > 0; written as f"{round(ratio*100)}%" string
 sp_discount_pct = (price − special_price) / price   # only if special_price present & > 0
 b2b_margin_thb  = b2b_price − cost                  # only if b2b_price present
 b2b_margin_pct  = (b2b_price − cost) / b2b_price    # guard b2b_price > 0
@@ -126,8 +126,9 @@ Reuses `scripts/masterfile_lib.py` (load_masterfile, is_empty_cell) and
 ## Testing (Rule 1/6/7)
 
 - **Insert count**: after run, `COUNT(*)` == before + pre-flight N.
-- **Completeness**: every onboarded SKU has price>0, cost>0, classification≠null,
-  currency='THB', is_active=1, is_in_stock='1'.
+- **Completeness**: every onboarded SKU has price>0, cost>0, a non-NULL non-dup `id`,
+  currency='THB', is_active=1, is_in_stock='1'. (`classification` is intentionally NULL —
+  do NOT assert it; category comes from the resolver at export time.)
 - **Margin correctness**: for all onboarded rows, `margin_thb == round(price − cost, 2)`
   and `margin_pct` matches the formula (payment-path — catches a recompute bug).
 - **No-overwrite**: the 11,436 pre-existing rows are unchanged (row checksum).
