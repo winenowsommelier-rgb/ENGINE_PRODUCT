@@ -139,6 +139,11 @@ def pct_str(ratio: float | None) -> str | None:
     if ratio is None:
         return None
     return f"{round(ratio * 100)}%"
+# NOTE: round() is banker's rounding (half-to-even). If
+# test_recompute_matches_existing_db_row FAILS on first run, production used a
+# different mode (likely PHP/Magento half-up) — switch to:
+#   from decimal import Decimal, ROUND_HALF_UP
+#   int(Decimal(ratio*100).quantize(0, ROUND_HALF_UP))
 
 def recompute_margins(cost, price, special_price, b2b_price) -> dict:
     """All derived from INPUT cost/price/b2b. File's own margin cells are ignored."""
