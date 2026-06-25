@@ -9,10 +9,12 @@
 
 Insert the 498 in-stock beverage SKUs the masterfile carries but the PIM is missing,
 as **complete, sellable** catalog products with prices set inline, so a revenue-facing
-gap (in-stock items absent from the catalog) closes now. Images don't exist yet
-(verified 404) — products launch with a placeholder and are flagged for a later
-image-upload batch. The broad price-import for the ~7,068 existing cost-gap products
-is a **separate later run** that reuses the margin-recompute logic established here.
+gap (in-stock items absent from the catalog) closes now. **Images (updated 2026-06-25):**
+all 498 now have a URL in the `export_path_images` CSV (uploaded after the original
+404 finding). The 399 whose filename contains their own SKU are set on insert; the 99
+whose filename references a DIFFERENT SKU are left blank + flagged (cross-SKU
+"right-bottle" risk — HTTP 200 ≠ right bottle; see [[project_cross_sku_image_bug]]).
+The broad price-import for existing SKUs is **already done by PR #57** — out of scope.
 
 ## Verified facts (queried, not assumed)
 
@@ -20,7 +22,7 @@ is a **separate later run** that reuses the margin-recompute logic established h
 |---|---|
 | In-stock mf-only beverages | **498** (excludes 41 accessories, 49 OOS) |
 | Their data completeness | name/brand/country/price/cost/item_type/short_description/manufacturer/bottle_size = 498/498; full_description 465/498; vintage 342/498 |
-| Images on Magento server | **0/498 — all HTTP 404** (verified via `/media/catalog/product/{a}/{b}/{sku}.jpg`); masterfile has NO image column |
+| Images (updated 2026-06-25) | All 498 have a URL in `export_path_images` CSV (resolve 200). 399 filename-matches-own-SKU (safe → set); 99 filename-is-different-SKU (cross-SKU risk → blank+flag). The Magento path-by-SKU was 404 because filenames differ from the SKU. |
 | Catalog tolerates blank image_url | YES — 66 in-stock products already live imageless; `StorefrontImage.tsx` renders a Maison placeholder |
 | `featured.ts:45` requires | `is_in_stock && image_url` → the 498 are sellable/browsable but NOT homepage-featured until images land (acceptable) |
 | Catalog visibility gate | `is_in_stock` (+ `image_url` for featured only) — NOT `is_active` |
@@ -47,7 +49,7 @@ is a **separate later run** that reuses the margin-recompute logic established h
 | currency | `'THB'` | |
 | is_in_stock | `'1'` (string, not int — `isInStock()` normalizes) | |
 | is_active | `1` | NOT used by catalog (BI/internal); harmless |
-| image_url | **blank/NULL** (404 on server; placeholder renders) | |
+| image_url | from `export_path_images` CSV (`base_image_url`) IF the filename contains the row's own SKU (399); else **blank/NULL** + flagged (99 cross-SKU, placeholder renders) | Image CSV: `/Users/admin/Desktop/OPERATE FOLDER/WNLQ9 Master file/export_path_images_all_media_no_null_base_images.csv` |
 | enrichment_source | `'masterfile_onboard_2026-06-25'` | queryable set for later image batch |
 | created_at / updated_at | now (UTC) | ⚠️ see "no newest-sort" risk below |
 
@@ -165,6 +167,8 @@ Reuses `scripts/masterfile_lib.py` (load_masterfile, is_empty_cell) and
 
 - Sequence: onboard new products FIRST (revenue — missing in-stock items), price-import later.
 - New-product prices: set inline during insert → immediately sellable.
-- Images: launch imageless with placeholder; flag for later upload (all 404 verified).
+- Images (REVISED 2026-06-25): set image_url for 399 own-SKU-filename matches from the
+  export_path_images CSV; leave 99 cross-SKU-filename ones blank + flagged for manual
+  review (right-bottle risk). Not all-imageless anymore.
 - Visibility: is_active=1, fully sellable, tagged `masterfile_onboard_2026-06-25`.
 - Margins: always recomputed from cost+price, never trust the file's cells.

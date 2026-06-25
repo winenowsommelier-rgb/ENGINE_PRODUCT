@@ -4,7 +4,7 @@
 masterfile-only beverages that would be inserted, and is the Rule-10 sign-off
 gate. No insert happens until you approve these numbers.
 
-- Generated (UTC): 2026-06-25T07:44:53.616327+00:00
+- Generated (UTC): 2026-06-25T07:51:36.165004+00:00
 - Source CSV: `/Users/admin/Desktop/OPERATE FOLDER/WNLQ9 Master file/Masterfile Data WNLQ9 - MReport Masterfile.csv`
 - Target DB: `data/db/products.db` (opened read-only, mode=ro)
 - enrichment_source stamp: `masterfile_onboard_2026-06-25`
