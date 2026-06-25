@@ -424,6 +424,7 @@ SWEETNESS_OK = {"Dry", "Off-Dry", "Medium-Sweet", "Sweet"}
 def assert_targets(db_path, write_set):
     """Post-write: each target SKU has its literal; off-scale sweep SCOPED to targets."""
     conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA busy_timeout=10000")   # shared WAL DB — cheap insurance
     for r in write_set:
         live = conn.execute(f"SELECT {r['column']} FROM products WHERE sku=?",
                             (r["sku"],)).fetchone()[0]
@@ -533,16 +534,28 @@ Expected: `backup: …bak-pre-taste-correct-…`; `RESULT: {applied: 74, externa
 - [ ] **Step 2:** Refresh the export with EXPLICIT paths (the worktree-default gotcha).
 
 Run: `./.venv/bin/python scripts/refresh_live_export.py --db data/db/products.db`
-Then verify in the JSON the catalog reads:
+Then verify ALL 74 in the JSON the catalog reads (iterate the write set — Rule-1
+full verification, not a one-SKU spot check):
 
 ```bash
 ./.venv/bin/python - <<'PY'
-import json
-d = json.load(open("data/live_products_export.json"))
-by = {p["sku"]: p for p in d}
-assert by["LWH0155BU"]["smokiness"] == "heavy"      # Talisker now peated
-assert by["WSP_one_of_the_49"]["sweetness"] == "Off-Dry"  # replace with a real SKU
-print("export reflects the corrections")
+import json, sys
+sys.path.insert(0, ".")
+from scripts import correct_taste_data as C
+findings = json.load(open("data/audits/taste_audit_findings.json"))
+ws = C.build_write_set(findings)
+by = {p["sku"]: p for p in json.load(open("data/live_products_export.json"))}
+bad = []
+for r in ws:
+    live = by.get(r["sku"], {}).get(r["column"])
+    want = r["new_value"]
+    # export encodes NULL as None or "" ; both are "unpopulated" for variety
+    ok = (live in (None, "")) if want is None else (live == want)
+    if not ok:
+        bad.append((r["sku"], r["column"], live, want))
+print(f"{len(ws)-len(bad)}/{len(ws)} corrections present in export")
+assert not bad, f"MISSING IN EXPORT: {bad[:10]}"
+print("export reflects all 74 corrections")
 PY
 ```
 
