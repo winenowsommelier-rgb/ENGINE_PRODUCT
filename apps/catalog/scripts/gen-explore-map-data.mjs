@@ -259,10 +259,12 @@ function main() {
     });
   }
   const curated = curate(regions);
+  const curatedNames = new Set(curated.map((r) => r.name));
 
-  // Attach descriptions + subregion lists to the CURATED set only (keeps the file
-  // small — we don't carry copy for the ~250 non-curated regions). Both are optional.
-  for (const r of curated) {
+  // Attach descriptions + subregion lists to ALL coord-mapped regions (not just
+  // curated). The country drill-down shows every coord-mapped region for that
+  // country — limiting to curated left USA with only 2 regions when it has 9+.
+  for (const r of regions) {
     const key = r.name.toLowerCase();
     const desc = regionDesc.get(key);
     if (desc) r.description = desc;
@@ -273,6 +275,8 @@ function main() {
         return sd ? { name: sn, description: sd } : { name: sn };
       });
     }
+    // Mark curated regions so the world-view hotspot logic can filter.
+    if (curatedNames.has(r.name)) r.curated = true;
   }
 
   const countries = [];
@@ -288,13 +292,13 @@ function main() {
       totalMapped: [...byRegion.values()].reduce((n, a) => n + a.total, 0),
       rolledUpRegions: rolledUp, curatedCount: curated.length,
     },
-    regions: curated, countries,
+    regions, countries,
   };
   const dir = path.join(catalogRoot, 'data');
   fs.mkdirSync(dir, { recursive: true });
   const file = path.join(dir, 'explore-map-data.json');
   fs.writeFileSync(file, JSON.stringify(out), 'utf8');
-  console.log(`gen-explore-map-data: ${curated.length} curated regions, ${countries.length} countries, ${rolledUp} regions rolled up to country (no coord) -> ${file}`);
+  console.log(`gen-explore-map-data: ${regions.length} regions (${curated.length} curated), ${countries.length} countries, ${rolledUp} regions rolled up to country (no coord) -> ${file}`);
 }
 
 // Run main() only when invoked directly (not when imported by vitest).
