@@ -25,7 +25,7 @@
 
 - `id` is `TEXT PRIMARY KEY`, not autoincrement → script assigns `id = f"onboard-{sku}"`.
 - Only `sku` is NOT NULL; no CHECK constraints. `idx_products_sku` is UNIQUE (blocks dup-insert).
-- pct cols (`margin_pct`/`sp_discount_pct`/`b2b_margin_pct`/`b2b_discount_pct`) are **TEXT**, format `'NN%'` (e.g. `'27%'`). margin_thb/b2b_margin_thb are REAL.
+- pct cols (`margin_pct`/`sp_discount_pct`/`b2b_margin_pct`/`b2b_discount_pct`) are **TEXT**, bare 2-decimal string e.g. '31.43' (NOT '31%'). margin_thb/b2b_margin_thb are REAL.
 - `classification` → leave NULL (catalog re-derives category from SKU prefix; Rule 12).
 - Accessory resolver types to EXCLUDE: `Bar Tools & Gifts, Glassware, Cigar, Wine Coolers & Fridges, Event, Wine Set, Mixer / Soft, Tonic / Mineral Water`.
 - `margin_pct`/`b2b_margin_pct` ARE in the raw export JSON; stripped only at catalog `PUBLIC_FIELDS`.
@@ -266,7 +266,7 @@ def test_insert_count_and_idempotent(tmp_path):
         assert price and price > 0 and cost and cost > 0
         assert cur == "THB" and stock == "1"
         assert round(price - cost, 2) == mthb           # margin recompute correct
-        assert mpct and mpct.endswith("%")               # 'NN%' format
+        assert mpct and float(mpct)                       # bare 2-decimal string e.g. '31.43'
         assert classif is None                            # classification left NULL
     # id is globally non-null + unique across the whole table (spec demands it)
     ids = [r[0] for r in sqlite3.connect(db).execute("SELECT id FROM products")]

@@ -43,7 +43,7 @@ is a **separate later run** that reuses the margin-recompute logic established h
 | `classification` | **DO NOT WRITE** (leave NULL) | Rule 12: catalog IGNORES `classification` and re-derives category from the SKU prefix on every export refresh (`refresh_live_export.py` `category_type`). Writing resolver-type here is wrong-vocab (resolver says "Sparkling & Champagne"; classification vocab is "Champagne"/"Sparkling Wine") AND dead. If an internal DB value is ever wanted, write it with `classification_source='resolver_onboard_2026-06-25'` — but default is leave NULL. |
 | cost, price, special_price, b2b_price | masterfile (INPUT); REAL cols | parse string→float (strip commas/currency); exclude+report on parse failure |
 | margin_thb, b2b_margin_thb | **RECOMPUTED**; REAL cols | rounded to 2 dp |
-| margin_pct, sp_discount_pct, b2b_margin_pct, b2b_discount_pct | **RECOMPUTED**; **TEXT cols** (verified) | write as the integer-percent string **`f"{round(ratio*100)}%"`** — existing rows are `'27%'`, `'7%'`, `'11%'` (verified; NOT `'0.27'`, NOT a float). The catalog strips the `%` to parse. NULL when the input (special_price/b2b_price) is absent — never 0/"". |
+| margin_pct, sp_discount_pct, b2b_margin_pct, b2b_discount_pct | **RECOMPUTED**; **TEXT cols** (verified) | write as a **bare 2-decimal string** `str(round(ratio*100, 2))` — production stores `'31.43'`, `'30.0'` (verified 11,262/11,298 rows; the 36 `'27%'`-style rows are legacy junk). NOT `'NN%'`, NOT `'0.27'`. Banker's rounding matches production exactly. NULL when input (special_price/b2b_price) absent — never 0/"". |
 | currency | `'THB'` | |
 | is_in_stock | `'1'` (string, not int — `isInStock()` normalizes) | |
 | is_active | `1` | NOT used by catalog (BI/internal); harmless |
