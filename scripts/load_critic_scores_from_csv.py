@@ -24,6 +24,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))  # repo root, so `lib` imports when run as a script
+from lib.critic_reviews import refresh_products_summary  # noqa: E402
+
 DEFAULT_DB = ROOT / "data" / "db" / "products.db"
 SOURCE_TAG = "magento_csv_2026-06-15"
 
@@ -49,32 +52,6 @@ def parse_score(raw: str) -> float | None:
         return float(raw)
     except ValueError:
         return None
-
-
-def build_summary(critic_rows: list[dict]) -> tuple[float | None, str]:
-    """Return (score_max, score_summary_json) for one SKU's critic rows."""
-    critics = sorted(
-        (
-            {
-                "abbr": r["abbr"],
-                "critic": r["critic"],
-                "score_native": r["score_native"],
-                "score_value": r["score"],
-            }
-            for r in critic_rows
-        ),
-        key=lambda c: -c["score_value"],
-    )[:5]
-    score_max = max((c["score_value"] for c in critics), default=None)
-    summary = {
-        "critics": critics,
-        "community": [],
-        "medals": [],
-        "primary_source": SOURCE_TAG,
-        "rows_total": len(critic_rows),
-        "computed_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
-    }
-    return score_max, json.dumps(summary, ensure_ascii=False)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -162,18 +139,10 @@ def main(argv: list[str] | None = None) -> int:
         score_rows,
     )
 
-    # recompute denormalized fields for binding SKUs only
-    updated = 0
-    for sku in binding_skus:
-        score_max, summary = build_summary(by_sku[sku])
-        cur.execute(
-            "UPDATE products SET score_max = ?, score_summary = ? WHERE sku = ?",
-            (score_max, summary, sku),
-        )
-        updated += cur.rowcount
-    conn.commit()
+    conn.commit()  # make inserted critic_scores rows visible to the all-sources merge
+    updated = refresh_products_summary.refresh_all(conn)
     print(f"Inserted {len(score_rows)} critic_scores rows; "
-          f"updated score_max/score_summary on {updated} products.")
+          f"re-derived score_max/score_summary across all sources on {updated} products.")
     return 0
 
 
