@@ -78,12 +78,14 @@ patched.)
 
 **NEVER write `judge.value`.** The judge invented off-scale/wrong replacements on
 exactly the rows that matter:
-- 8 peated rows: `judge.value = "smoky"` — but the DB scale is strictly
-  `none`/`heavy`, and the finder branches on `norm(smokiness)==='heavy'`
+- the peated rows (8 the rule fired on; **5 ship** after the §2 drop-list):
+  `judge.value = "smoky"` — but the DB scale is strictly `none`/`heavy`, and the
+  finder branches on `norm(smokiness)==='heavy'`
   (`apps/catalog/lib/finder/scoring.ts`). Writing "smoky" = a third never-seen
   token the UI IGNORES → the paid fix is invisible (the $56 Rule-1 trap).
-- 17 nonbeverage rows: `judge.value = "None"` (the STRING) — writing it injects
-  literal text "None" as a variety that RENDERS.
+- 17 nonbeverage rows: `judge.value` is null/"None" depending on the findings
+  generation — writing it raw risks injecting a literal/empty variety. Never
+  trust it; write SQL NULL via the map.
 
 Instead, use a **per-rule literal map** to the real column scale:
 
@@ -122,10 +124,15 @@ can even replace the whole file). The procedure is hardened accordingly.
    (consolidates the `-wal`; NOT bare `cp`). The backup is the LAST-RESORT
    same-session rollback only (see §7.4).
 4. **Acquire the write lock up front:** `BEGIN IMMEDIATE`, wrapped in a Python
-   retry-on-`OperationalError: database is locked` loop with backoff. Re-assert
-   `PRAGMA data_version` == the snapshot from step 2; if it changed, another
-   writer touched the DB — **abort and retry the whole flow** (don't write into a
-   shifted DB).
+   retry-on-`OperationalError: database is locked` loop with backoff (bounded,
+   e.g. 5 attempts then exit non-zero). Re-assert `PRAGMA data_version` == the
+   snapshot from step 2; if it changed, another writer touched the DB — **abort
+   and retry the whole flow, BOUNDED to N=5 attempts**, then exit non-zero (don't
+   write into a shifted DB; don't spin forever on a busy shared DB).
+   *Implementation caveat:* Python `sqlite3` won't honor a manual `BEGIN
+   IMMEDIATE` under its default transaction handling — set
+   `conn.isolation_level = None` (autocommit) and issue `BEGIN IMMEDIATE` as raw
+   SQL, else it silently no-ops and the lock isn't held.
 5. **Staleness-guarded writes** inside that transaction. For each row:
    - `current_value` non-null (all 74 today):
      `UPDATE products SET <col> = ? WHERE sku = ? AND <col> = ?`
