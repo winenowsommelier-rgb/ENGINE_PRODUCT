@@ -78,7 +78,10 @@ def recompute_margins(cost, price, special_price, b2b_price) -> dict:
         out["b2b_margin_thb"] = round(b2b_price - cost, 2)
         out["b2b_margin_pct"] = pct_str((b2b_price - cost) / b2b_price) if b2b_price > 0 else None
         if price and price > 0:
-            out["b2b_discount_pct"] = pct_str((price - b2b_price) / price)
+            # b2b_discount_pct is the ONE pct field production stores at 1 decimal
+            # (verified 3965/4000 rows 1dp, 0 are 2dp). pct_str() is 2dp and
+            # would mismatch ~3365/4000 rows. The other 4 pct fields stay 2dp.
+            out["b2b_discount_pct"] = f"{round((price - b2b_price) / price * 100, 1)}"
     return out
 
 

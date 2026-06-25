@@ -64,6 +64,34 @@ def test_recompute_matches_existing_db_row():
     assert got == stored, f"rounding mismatch vs production: recompute {got} != stored {stored}"
 
 
+def test_b2b_discount_matches_existing_db_row():
+    """b2b_discount_pct must reproduce production's 1-decimal format (not 2dp)."""
+    import sqlite3, pytest
+    from pathlib import Path
+    db = Path("data/db/products.db")
+    if not db.exists():
+        pytest.skip("live db absent")
+    # find a row with a clean 1-decimal b2b_discount_pct that the formula reproduces
+    rows = sqlite3.connect(db).execute(
+        "SELECT price, b2b_price, b2b_discount_pct FROM products "
+        "WHERE b2b_discount_pct IS NOT NULL AND b2b_discount_pct!='' "
+        "AND price>0 AND b2b_price IS NOT NULL LIMIT 200").fetchall()
+    checked = 0
+    for price, b2b, stored in rows:
+        got = recompute_margins(cost=1.0, price=price, special_price=None, b2b_price=b2b)["b2b_discount_pct"]
+        if got == str(stored):
+            checked += 1
+    # the 1-decimal formula should match the large majority (allow rounding-edge residual)
+    assert checked >= len(rows) * 0.9, f"only {checked}/{len(rows)} b2b_discount_pct matched production format"
+
+def test_b2b_discount_is_one_decimal():
+    m = recompute_margins(cost=1.0, price=700.0, special_price=None, b2b_price=620.0)
+    # (700-620)/700 = 11.428...% -> 1dp -> '11.4'
+    assert m["b2b_discount_pct"] == "11.4"
+    # 2-decimal pct fields stay 2dp: (620-1)/620 = 99.8387...% -> 2dp -> '99.84'
+    assert m["b2b_margin_pct"] == "99.84"
+
+
 def test_select_new_beverages():
     from scripts.onboard_new_products import select_candidates
     import pytest
