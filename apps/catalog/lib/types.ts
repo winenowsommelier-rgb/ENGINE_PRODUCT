@@ -82,6 +82,13 @@ export interface PublicProduct {
   // toPublicProduct() in catalog-data.ts coerces it to a REAL boolean via isInStock() so this
   // type is honest and plain-truthiness consumers are correct ("0" no longer reads as in-stock).
   is_in_stock?: boolean;
+  // 'CATALOG' = archived/discontinued; kept for reference but excluded from all
+  // finder/recommender results. Front-end displays "Archive" badge. null = normal.
+  custom_stock_status?: string;
+  // WN express stock — real units at WN warehouse, ready for immediate dispatch.
+  // When > 0, show "Express Delivery" badge. Internal quantity; do NOT expose the
+  // raw number to customers (just the badge signal).
+  wn_stock?: number;
   // Coarse, client-SAFE popularity bucket derived server-side from popularity_score
   // (which is itself FORBIDDEN from the public shape). 0 = no sales data, 1 = sells,
   // 2 = top seller (>= p75 of scored population). Drives Recommended ordering upstream

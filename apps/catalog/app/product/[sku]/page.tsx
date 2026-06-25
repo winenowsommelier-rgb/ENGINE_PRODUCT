@@ -162,6 +162,8 @@ export default function Page({ params }: { params: { sku: string } }) {
   if (!product) notFound();
 
   const inStock = isInStock(product.is_in_stock);
+  const isArchived = product.custom_stock_status === 'CATALOG';
+  const hasExpressDelivery = (product.wn_stock ?? 0) > 0;
   // Descriptions are Magento HTML (<p>/<strong>/<em>/<br>). RENDER the formatting,
   // but SANITIZE first (allowlist, no attributes) — the field is attacker-shaped
   // text, so this is the XSS boundary before dangerouslySetInnerHTML. Only render
@@ -245,7 +247,15 @@ export default function Page({ params }: { params: { sku: string } }) {
                   {product.sku}
                 </span>
               </span>
-              {inStock ? (
+              {isArchived ? (
+                <span className="rounded-full bg-muted px-3 py-1 text-sm font-medium text-muted-foreground ring-1 ring-border">
+                  Archive
+                </span>
+              ) : hasExpressDelivery ? (
+                <span className="rounded-full bg-emerald-600 px-3 py-1 text-sm font-semibold text-white">
+                  Express Delivery
+                </span>
+              ) : inStock ? (
                 <span className="text-sm font-medium text-muted-foreground">In stock</span>
               ) : (
                 <span className="rounded-full bg-secondary px-3 py-1 text-sm font-medium text-muted-foreground ring-1 ring-border">

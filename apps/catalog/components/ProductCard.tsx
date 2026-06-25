@@ -42,6 +42,8 @@ export function ProductCard({ product, contactLinks }: ProductCardProps) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const subtitle = product.brand || product.region;
   const inStock = isInStock(product.is_in_stock);
+  const isArchived = product.custom_stock_status === 'CATALOG';
+  const hasExpressDelivery = (product.wn_stock ?? 0) > 0;
   // Sale price (only when a genuine special_price < price); recomputed from the
   // prices so a stale source percent can never render a fake discount.
   const sale = resolveSale(product.price, product.special_price);
@@ -72,9 +74,18 @@ export function ProductCard({ product, contactLinks }: ProductCardProps) {
               className="rounded-lg"
             />
 
-            {!inStock ? (
+            {/* Stock status badges — top-left. Priority: Archive > Check availability > Express. */}
+            {isArchived ? (
+              <span className="absolute left-2 top-2 rounded-full bg-muted/90 px-2.5 py-1 text-xs font-medium text-muted-foreground shadow-sm ring-1 ring-border">
+                Archive
+              </span>
+            ) : !inStock ? (
               <span className="absolute left-2 top-2 rounded-full bg-background/90 px-2.5 py-1 text-xs font-medium text-muted-foreground shadow-sm ring-1 ring-border">
                 Check availability
+              </span>
+            ) : hasExpressDelivery ? (
+              <span className="absolute left-2 top-2 rounded-full bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
+                Express Delivery
               </span>
             ) : null}
 
