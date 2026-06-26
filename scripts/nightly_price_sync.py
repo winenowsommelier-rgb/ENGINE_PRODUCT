@@ -183,7 +183,6 @@ SUPABASE_DB_URL = os.environ["SUPABASE_DB_URL"]
 
 def bulk_update(payloads: list[dict]) -> tuple[int, list[str]]:
     import psycopg2
-    import psycopg2.extras
 
     rows = [
         (
@@ -196,37 +195,45 @@ def bulk_update(payloads: list[dict]) -> tuple[int, list[str]]:
         for p in payloads
     ]
 
-    # Build a single UPDATE ... FROM (VALUES ...) — one round-trip for all rows
-    sql = """
-        UPDATE products AS p SET
-            price        = v.price::numeric,
-            cost         = v.cost::numeric,
-            special_price= v.special_price::numeric,
-            sp_discount_pct = v.sp_discount_pct,
-            b2b_price    = v.b2b_price::numeric,
-            b2b_margin_thb = v.b2b_margin_thb::numeric,
-            b2b_margin_pct = v.b2b_margin_pct,
-            b2b_discount_pct = v.b2b_discount_pct,
-            margin_thb   = v.margin_thb::numeric,
-            margin_pct   = v.margin_pct,
-            is_in_stock  = v.is_in_stock,
-            custom_stock_status = v.custom_stock_status,
-            wn_stock     = v.wn_stock::integer,
-            consign      = v.consign,
-            updated_at   = NOW()
-        FROM (VALUES %s) AS v(
-            sku, price, cost, special_price, sp_discount_pct,
-            b2b_price, b2b_margin_thb, b2b_margin_pct, b2b_discount_pct,
-            margin_thb, margin_pct,
-            is_in_stock, custom_stock_status, wn_stock, consign
-        )
-        WHERE p.sku = v.sku
-    """
-
     try:
         conn = psycopg2.connect(SUPABASE_DB_URL, connect_timeout=30)
         cur = conn.cursor()
-        psycopg2.extras.execute_values(cur, sql, rows, page_size=len(rows))
+        # Build one VALUES literal and execute a single UPDATE statement.
+        # execute_values page_size controls chunking — set > row count for 1 trip.
+        values_sql = b",".join(
+            cur.mogrify("(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", r)
+            for r in rows
+        )
+        full_sql = (
+            b"""
+            UPDATE products AS p SET
+                price            = v.price::numeric,
+                cost             = v.cost::numeric,
+                special_price    = v.special_price::numeric,
+                sp_discount_pct  = v.sp_discount_pct,
+                b2b_price        = v.b2b_price::numeric,
+                b2b_margin_thb   = v.b2b_margin_thb::numeric,
+                b2b_margin_pct   = v.b2b_margin_pct,
+                b2b_discount_pct = v.b2b_discount_pct,
+                margin_thb       = v.margin_thb::numeric,
+                margin_pct       = v.margin_pct,
+                is_in_stock      = v.is_in_stock,
+                custom_stock_status = v.custom_stock_status,
+                wn_stock         = v.wn_stock::integer,
+                consign          = v.consign,
+                updated_at       = NOW()
+            FROM (VALUES """
+            + values_sql
+            + b""") AS v(
+                sku, price, cost, special_price, sp_discount_pct,
+                b2b_price, b2b_margin_thb, b2b_margin_pct, b2b_discount_pct,
+                margin_thb, margin_pct,
+                is_in_stock, custom_stock_status, wn_stock, consign
+            )
+            WHERE p.sku = v.sku
+            """
+        )
+        cur.execute(full_sql)
         updated = cur.rowcount if cur.rowcount >= 0 else len(rows)
         conn.commit()
         conn.close()
