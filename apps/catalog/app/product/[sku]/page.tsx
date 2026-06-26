@@ -18,6 +18,8 @@ import { toTiers, toStructural } from '@/lib/taste-adapter';
 import { isInStock, parseFoodMatching, signatureDishes } from '@/lib/utils';
 import { sanitizeDescription } from '@/lib/sanitize-html';
 import type { PublicProduct } from '@/lib/types';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { buildProductSchema, buildBreadcrumbList, GROUP_SLUG } from '@/lib/seo/jsonld';
 
 /**
  * Product detail — SERVER component, statically generated for every SKU.
@@ -144,15 +146,34 @@ function FoodPairing({ food, detail }: { food?: string; detail?: string }) {
 export function generateMetadata({ params }: { params: { sku: string } }): Metadata {
   const product = getProductBySku(params.sku);
   if (!product) return { title: 'Not found — WNLQ9' };
-  const description =
-    product.desc_en_short || product.full_description || `${product.name} — available at WNLQ9.`;
+
+  const descText = product.desc_en_short
+    ? product.desc_en_short.replace(/<[^>]+>/g, ' ').trim()
+    : product.full_description
+    ? product.full_description.replace(/<[^>]+>/g, ' ').trim()
+    : `${product.name} — available at WNLQ9, Bangkok.`;
+
+  const vintageStr = /^\d{4}$/.test(product.vintage?.trim() ?? '') ? ` ${product.vintage}` : '';
+  const rawTitle = `${product.name}${vintageStr} — Buy in Bangkok | WNLQ9`;
+  const title = rawTitle.length > 60 ? `${product.name} | WNLQ9 Bangkok` : rawTitle;
+  const canonical = `https://wnlq9.shop/product/${product.sku}`;
+
   return {
-    title: `${product.name} — WNLQ9`,
-    description: description.slice(0, 160),
+    title,
+    description: `${descText.slice(0, 155)}. Available at WNLQ9, Bangkok.`,
+    alternates: { canonical },
     openGraph: {
-      title: `${product.name} — WNLQ9`,
-      description: description.slice(0, 160),
+      title,
+      description: descText.slice(0, 155),
+      type: 'website',
+      locale: 'en_TH',
+      siteName: 'WNLQ9',
       images: product.image_url ? [{ url: product.image_url }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: descText.slice(0, 155),
     },
   };
 }
@@ -331,6 +352,8 @@ export default function Page({ params }: { params: { sku: string } }) {
           </div>
         </section>
       ) : null}
+      <JsonLd data={buildProductSchema(product)} />
+      <JsonLd data={buildBreadcrumbList(product.name, groupForProduct(product), GROUP_SLUG[groupForProduct(product)] ?? groupForProduct(product).toLowerCase())} />
     </main>
   );
 }

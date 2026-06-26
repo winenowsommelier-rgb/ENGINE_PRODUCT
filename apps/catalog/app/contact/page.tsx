@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { ContactButtons } from '@/components/ContactButtons';
 import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { buildLocalBusiness } from '@/lib/seo/jsonld';
 
 /**
  * Contact — a clean, static Maison contact page (server component, SSG).
@@ -15,9 +17,14 @@ import { getContactEnv } from '@/lib/contact-env';
  */
 
 export const metadata: Metadata = {
-  title: 'Contact — WNLQ9',
-  description:
-    'Reach the WNLQ9 team on LINE, WhatsApp or Facebook — we’ll help you order.',
+  title: 'Order Wine & Spirits — Contact WNLQ9, Bangkok',
+  description: 'Reach the WNLQ9 team on LINE, WhatsApp or Facebook to order wine, whisky and spirits in Bangkok, Thailand.',
+  alternates: { canonical: 'https://wnlq9.shop/contact' },
+  openGraph: {
+    title: 'Contact WNLQ9 — Wine & Spirits, Bangkok',
+    locale: 'en_TH',
+    siteName: 'WNLQ9',
+  },
 };
 
 export default function ContactPage() {
@@ -37,6 +44,7 @@ export default function ContactPage() {
       <div className="mt-10">
         <ContactButtons links={links} variant="stacked" />
       </div>
+      <JsonLd data={buildLocalBusiness()} />
     </section>
   );
 }
