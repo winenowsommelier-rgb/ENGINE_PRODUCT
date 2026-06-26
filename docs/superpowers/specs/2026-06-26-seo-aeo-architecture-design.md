@@ -72,12 +72,12 @@ File: `apps/catalog/app/sitemap.ts` (Next.js 14 MetadataRoute.Sitemap)
     /about                     changeFreq monthly
     /contact                   changeFreq monthly
     /shop/[group] × 10         changeFreq daily
-    /product/[sku]  (in-stock only, custom_stock_status ≠ CATALOG)
+    /product/[sku]  (ALL products — in-stock and archived alike)
                                changeFreq weekly   lastmod: see note below
     /explore-map/[region] × 430  changeFreq weekly
 ```
 
-**Archived products are excluded from the sitemap.** SKUs with `custom_stock_status === 'CATALOG'` have no purchase intent and will dilute crawl budget. The product page itself will carry `noindex` (see §1.5).
+**All products are included in the sitemap**, including archived (`custom_stock_status === 'CATALOG'`) SKUs. 100% of archived products have description, image, or critic score — real informational value. Their `Offer.availability` in Product schema is set to `schema:Discontinued`, which correctly signals non-purchasable to Google without hiding the page. A collector Googling a discontinued Yamazaki 18 or a Pétrus vintage is exactly the user WNLQ9 wants to reach.
 
 **`lastmod` implementation note:** `updated_at` is NOT in `PUBLIC_FIELDS` and is not available via `getAllProducts()`. The sitemap must read `data/live_products_export.json` directly (raw file import, not via the catalog-data module). Do NOT add `updated_at` to PUBLIC_FIELDS. Separately: since bulk enrichment runs stamp identical `updated_at` values across thousands of products simultaneously, use the build date as `lastmod` for all product URLs rather than the DB timestamp — this avoids signalling a mass-change event to Googlebot on every enrichment run.
 
@@ -122,7 +122,7 @@ Note: Next.js 14's `metadata.alternates` in `layout.tsx` is silently overridden 
 - `/finder/[step]/page.tsx`: add `export const metadata: Metadata = { robots: { index: false } }`
 - `/finder/result/page.tsx`: same
 - `/shop` with thin filter results (< 5 products): inject `<meta name="robots" content="noindex">` conditionally in the server component when the filtered product count is below threshold
-- `/product/[sku]` where `custom_stock_status === 'CATALOG'` (archived): add `robots: { index: false }` in `generateMetadata()` — these pages are excluded from the sitemap AND get noindex so they are dropped from the index even if discovered via links
+- **Archived products (`custom_stock_status === 'CATALOG'`) are indexed and included in the sitemap.** 100% of them have description, image, or critic score — real informational value for users researching bottles. The `Offer.availability` in their Product schema is set to `schema:Discontinued` to signal to Google they are not purchasable. The Archive badge on the page makes this clear to users. Noindexing them would remove legitimate discovery paths (e.g. a collector Googling a discontinued Yamazaki 18 or a Pétrus vintage).
 
 ---
 
@@ -500,7 +500,7 @@ Phase 4 — AEO
 - **No Core Web Vitals regression** — all JSON-LD server-rendered; no client hydration of schema
 - **Canonical in every generateMetadata()** — cannot delegate to layout; Next.js 14 does not deep-merge `alternates`
 - **`classification` field never used** — category routing uses `category_group`/`category_type` per Rule 12
-- **Archived products** — excluded from sitemap AND get `robots: { index: false }` in generateMetadata()
+- **Archived products** — included in sitemap and indexed; `Offer.availability` set to `schema:Discontinued`; 100% have desc/image/score so noindex would only remove discovery
 - **Thin filter pages** — `/shop` with < 5 results gets `noindex` injected dynamically in the server component
 - **AggregateRating** — `ratingValue` is always the mean of all critics, never the max; `bestRating: "100"` always required
 - **FAQPage** — content must be visible HTML on the page; JSON-LD must mirror it exactly; top 50 regions only
