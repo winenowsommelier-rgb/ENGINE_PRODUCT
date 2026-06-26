@@ -28,6 +28,32 @@ export const CATEGORY_MAP: Record<FinderCategory, CatRule> = {
   sake:      { group: 'Sake & Asian' },
 };
 
+/**
+ * Returns the set of budget token strings ('0'–'4') that have zero in-stock
+ * products for the given category. Used to grey-out unavailable budget options
+ * in the finder wizard before the user picks a budget.
+ */
+export function emptyBudgetTiers(
+  products: PublicProduct[],
+  category: FinderCategory,
+): string[] {
+  const rule = CATEGORY_MAP[category];
+  const pool = products.filter((p) => {
+    if (!isInStock(p.is_in_stock)) return false;
+    if (p.custom_stock_status === 'CATALOG') return false;
+    if (groupForProduct(p) !== rule.group) return false;
+    if (rule.match && !rule.match(p)) return false;
+    return typeof p.price === 'number' && !Number.isNaN(p.price);
+  });
+
+  return PRICE_TIERS.map((tier, i) => {
+    const hasMatch = pool.some(
+      (p) => (p.price as number) >= tier.min && (p.price as number) < tier.max,
+    );
+    return hasMatch ? null : String(i);
+  }).filter((t): t is string => t !== null);
+}
+
 /** Hard, safe pre-filter (spec §5): category membership + in-stock + budget tier. */
 export function finderPrefilter(products: PublicProduct[], a: Answers): PublicProduct[] {
   const rule = CATEGORY_MAP[a.category];

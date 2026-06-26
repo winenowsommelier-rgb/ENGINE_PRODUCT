@@ -12,6 +12,7 @@ import {
 } from '@/lib/finder/question-config';
 import { FOOD_CHIPS, emptyFoodChips } from '@/lib/finder/food-chips';
 import { getAllProducts } from '@/lib/catalog-data';
+import { emptyBudgetTiers } from '@/lib/finder/category-map';
 import { isInStock } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
@@ -234,6 +235,13 @@ export default function FinderStepPage({
               multi={step.multi}
               nextPath={nextPath}
               extraQuery={extraQuery}
+              // Grey out budget tiers with zero in-stock products for this category,
+              // so users can't select a price range that will always return nothing.
+              disabledTokens={
+                step.field === 'budget'
+                  ? emptyBudgetTiers(getAllProducts(), answers.category)
+                  : undefined
+              }
             />
           )}
         </StepShell>

@@ -38,6 +38,11 @@ interface ChoiceCardsProps {
    * e.g. 'deep=1' to keep the sommelier deep-dive flag in the URL across steps.
    */
   extraQuery?: string;
+  /**
+   * Tokens that have no matching in-stock products for the current category.
+   * These cards are rendered greyed-out and non-interactive.
+   */
+  disabledTokens?: string[];
 }
 
 /**
@@ -118,7 +123,9 @@ export function ChoiceCards({
   multi,
   nextPath,
   extraQuery,
+  disabledTokens,
 }: ChoiceCardsProps) {
+  const disabled = new Set(disabledTokens ?? []);
   const router = useRouter();
 
   // Seed a multi-select from whatever is already in answers for this field.
@@ -192,25 +199,31 @@ export function ChoiceCards({
   // Single-select: each card navigates immediately.
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-      {options.map((opt) => (
-        <button
-          key={opt.token}
-          type="button"
-          onClick={() => go(withAnswer(answers, field, opt.token))}
-          className={cn(
-            'flex min-h-[64px] items-center rounded-lg border border-border bg-background px-5 text-left text-lg text-foreground transition-all',
-            'hover:-translate-y-0.5 hover:border-primary hover:text-primary hover:shadow-sm',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-          )}
-        >
-          {opt.icon ? (
-            <span aria-hidden="true" className="mr-2">
-              {opt.icon}
-            </span>
-          ) : null}
-          {opt.label}
-        </button>
-      ))}
+      {options.map((opt) => {
+        const isDisabled = disabled.has(opt.token);
+        return (
+          <button
+            key={opt.token}
+            type="button"
+            disabled={isDisabled}
+            onClick={isDisabled ? undefined : () => go(withAnswer(answers, field, opt.token))}
+            title={isDisabled ? 'No products available at this price' : undefined}
+            className={cn(
+              'flex min-h-[64px] items-center rounded-lg border px-5 text-left text-lg transition-all',
+              isDisabled
+                ? 'cursor-not-allowed border-border bg-background text-muted-foreground opacity-40'
+                : 'border-border bg-background text-foreground hover:-translate-y-0.5 hover:border-primary hover:text-primary hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            )}
+          >
+            {opt.icon ? (
+              <span aria-hidden="true" className="mr-2">
+                {opt.icon}
+              </span>
+            ) : null}
+            {opt.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
