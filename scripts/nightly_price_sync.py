@@ -196,45 +196,55 @@ def bulk_update(payloads: list[dict]) -> tuple[int, list[str]]:
     ]
 
     try:
+        import io
         conn = psycopg2.connect(SUPABASE_DB_URL, connect_timeout=30)
         cur = conn.cursor()
-        # Build one VALUES literal and execute a single UPDATE statement.
-        # execute_values page_size controls chunking — set > row count for 1 trip.
-        values_sql = b",".join(
-            cur.mogrify("(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", r)
-            for r in rows
-        )
-        full_sql = (
-            b"""
+
+        # 1. Create a temp table matching the columns we'll update
+        cur.execute("""
+            CREATE TEMP TABLE _price_sync (
+                sku TEXT,
+                price NUMERIC, cost NUMERIC, special_price NUMERIC,
+                sp_discount_pct TEXT, b2b_price NUMERIC, b2b_margin_thb NUMERIC,
+                b2b_margin_pct TEXT, b2b_discount_pct TEXT,
+                margin_thb NUMERIC, margin_pct TEXT,
+                is_in_stock TEXT, custom_stock_status TEXT,
+                wn_stock INTEGER, consign TEXT
+            ) ON COMMIT DROP
+        """)
+
+        # 2. COPY all rows into temp table in one shot (tab-delimited CSV)
+        def _val(v) -> str:
+            return r"\N" if v is None else str(v).replace("\t", " ").replace("\n", " ")
+
+        buf = io.StringIO()
+        for r in rows:
+            buf.write("\t".join(_val(x) for x in r) + "\n")
+        buf.seek(0)
+        cur.copy_from(buf, "_price_sync", sep="\t", null=r"\N")
+
+        # 3. Single UPDATE from temp table
+        cur.execute("""
             UPDATE products AS p SET
-                price            = v.price::numeric,
-                cost             = v.cost::numeric,
-                special_price    = v.special_price::numeric,
-                sp_discount_pct  = v.sp_discount_pct,
-                b2b_price        = v.b2b_price::numeric,
-                b2b_margin_thb   = v.b2b_margin_thb::numeric,
-                b2b_margin_pct   = v.b2b_margin_pct,
-                b2b_discount_pct = v.b2b_discount_pct,
-                margin_thb       = v.margin_thb::numeric,
-                margin_pct       = v.margin_pct,
-                is_in_stock      = v.is_in_stock,
-                custom_stock_status = v.custom_stock_status,
-                wn_stock         = v.wn_stock::integer,
-                consign          = v.consign,
+                price            = s.price,
+                cost             = s.cost,
+                special_price    = s.special_price,
+                sp_discount_pct  = s.sp_discount_pct,
+                b2b_price        = s.b2b_price,
+                b2b_margin_thb   = s.b2b_margin_thb,
+                b2b_margin_pct   = s.b2b_margin_pct,
+                b2b_discount_pct = s.b2b_discount_pct,
+                margin_thb       = s.margin_thb,
+                margin_pct       = s.margin_pct,
+                is_in_stock      = s.is_in_stock,
+                custom_stock_status = s.custom_stock_status,
+                wn_stock         = s.wn_stock,
+                consign          = s.consign,
                 updated_at       = NOW()
-            FROM (VALUES """
-            + values_sql
-            + b""") AS v(
-                sku, price, cost, special_price, sp_discount_pct,
-                b2b_price, b2b_margin_thb, b2b_margin_pct, b2b_discount_pct,
-                margin_thb, margin_pct,
-                is_in_stock, custom_stock_status, wn_stock, consign
-            )
-            WHERE p.sku = v.sku
-            """
-        )
-        cur.execute(full_sql)
-        updated = cur.rowcount if cur.rowcount >= 0 else len(rows)
+            FROM _price_sync s
+            WHERE p.sku = s.sku
+        """)
+        updated = cur.rowcount
         conn.commit()
         conn.close()
         return updated, []
