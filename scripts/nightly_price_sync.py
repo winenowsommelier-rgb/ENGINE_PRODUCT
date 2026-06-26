@@ -177,8 +177,10 @@ def row_to_payload(row: dict) -> Optional[dict]:
 # ---------------------------------------------------------------------------
 def upsert_batch(payloads: list[dict]) -> list[str]:
     import urllib.request
+    import urllib.error
 
-    url = f"{SUPABASE_URL}/rest/v1/products"
+    # ?on_conflict=sku tells PostgREST which column to use for merge-on-conflict
+    url = f"{SUPABASE_URL}/rest/v1/products?on_conflict=sku"
     headers = {
         "apikey": SUPABASE_KEY,
         "Authorization": f"Bearer {SUPABASE_KEY}",
@@ -192,6 +194,9 @@ def upsert_batch(payloads: list[dict]) -> list[str]:
             if resp.status not in (200, 201, 204):
                 return [f"HTTP {resp.status}: {resp.read()[:200]}"]
             return []
+    except urllib.error.HTTPError as e:
+        detail = e.read()[:300].decode("utf-8", errors="replace")
+        return [f"HTTP {e.code}: {detail}"]
     except Exception as e:
         return [str(e)]
 
