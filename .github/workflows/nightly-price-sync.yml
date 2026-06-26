@@ -11,6 +11,8 @@ jobs:
     name: Sync prices from Google Sheets → Supabase
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: write  # needed to push the regenerated live_products_export.json
 
     steps:
       - name: Checkout repo
