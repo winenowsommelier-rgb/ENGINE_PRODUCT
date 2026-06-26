@@ -1,13 +1,13 @@
 # WNLQ9 Full-Stack SEO/AEO Architecture
 **Date:** 2026-06-26
-**Status:** Approved
+**Status:** Approved — v2 (post adversarial review)
 **Scope:** `apps/catalog` — Next.js 14 storefront at wnlq9-catalog.vercel.app
 
 ---
 
 ## Context
 
-WNLQ9 is a Bangkok-based curated wine, whisky and spirits retailer. The catalog is a Next.js 14 SSG/ISR storefront with 11,436 products across 430 wine regions and 10 category groups. Audience: English-speaking expats and Thai nationals searching for imported wine/spirits (retail-focused, English-language).
+WNLQ9 is a Bangkok-based curated wine, whisky and spirits retailer. The catalog is a Next.js 14 SSG/ISR storefront with ~11,500+ products (count grows with onboarding) across 430 wine regions and 10 category groups. All product counts in this spec are derived at build time from `live_products_export.json` and are never hardcoded. Audience: English-speaking expats and Thai nationals searching for imported wine/spirits (retail-focused, English-language).
 
 ### Current SEO State (audited 2026-06-26)
 
@@ -62,27 +62,26 @@ Layer 4: AEO Content Signals
 
 File: `apps/catalog/app/sitemap.ts` (Next.js 14 MetadataRoute.Sitemap)
 
-Segmented sitemap index with three child sitemaps:
+**Single sitemap file** — all in-stock and region URLs fit comfortably within Google's 50,000-URL / 50 MB limit. Segmentation adds complexity with no current benefit. Revisit only if the catalog exceeds 40,000 indexable URLs.
 
 ```
-/sitemap.xml  (index pointing to all three)
-  /sitemap/core.xml
-      /                     priority 1.0  daily
-      /shop                 priority 0.9  daily
-      /explore-map          priority 0.8  weekly
-      /about                priority 0.5  monthly
-      /contact              priority 0.5  monthly
-
-  /sitemap/products.xml     (11,436 URLs)
-      /product/[sku]        priority 0.8  in-stock (is_in_stock=1, custom_stock_status≠CATALOG)
-                            priority 0.3  archived (custom_stock_status=CATALOG)
-                            lastmod: product.updated_at
-
-  /sitemap/regions.xml      (430 URLs)
-      /explore-map/[region] priority 0.7  weekly
+/sitemap.xml
+    /                          changeFreq daily    (no priority — Google ignores it)
+    /shop                      changeFreq daily
+    /explore-map               changeFreq weekly
+    /about                     changeFreq monthly
+    /contact                   changeFreq monthly
+    /shop/[group] × 10         changeFreq daily
+    /product/[sku]  (in-stock only, custom_stock_status ≠ CATALOG)
+                               changeFreq weekly   lastmod: see note below
+    /explore-map/[region] × 430  changeFreq weekly
 ```
 
-Implementation note: Next.js 14 supports `generateSitemaps()` for segmented output. All three sitemaps are generated at build time from `live_products_export.json` and the explore map data.
+**Archived products are excluded from the sitemap.** SKUs with `custom_stock_status === 'CATALOG'` have no purchase intent and will dilute crawl budget. The product page itself will carry `noindex` (see §1.5).
+
+**`lastmod` implementation note:** `updated_at` is NOT in `PUBLIC_FIELDS` and is not available via `getAllProducts()`. The sitemap must read `data/live_products_export.json` directly (raw file import, not via the catalog-data module). Do NOT add `updated_at` to PUBLIC_FIELDS. Separately: since bulk enrichment runs stamp identical `updated_at` values across thousands of products simultaneously, use the build date as `lastmod` for all product URLs rather than the DB timestamp — this avoids signalling a mass-change event to Googlebot on every enrichment run.
+
+**`priority` values are omitted** — Google has stated publicly it ignores the `priority` field in sitemaps.
 
 ### 1.2 robots.ts
 
@@ -100,19 +99,30 @@ Rationale: `/finder/*` contains dynamic quiz state pages with zero unique conten
 
 ### 1.3 Canonical Tags
 
-Added via `metadata.alternates.canonical` in every `generateMetadata()` call. Canonical is the clean URL without query parameters for all filter-driven pages (`/shop?group=Wine` → canonical `/shop`).
+Added via `metadata.alternates.canonical` in every `generateMetadata()` call — including all pages with dynamic metadata. **Cannot be delegated to `layout.tsx`** because Next.js 14 does not deep-merge `alternates` from layout into page metadata; a page with its own `generateMetadata()` that omits `alternates` will emit no canonical at all.
 
-Exception: the 10 category group pages if made into static routes (see Layer 2 §2.5) each get their own canonical pointing to themselves.
+Canonical rules:
+- `/shop?group=Wine` → canonical `/shop/wine` (the static group route, not `/shop`)
+- `/shop?group=Wine&page=2` → canonical `/shop/wine`
+- `/shop` (unfiltered) → canonical `/shop`
+- `/product/[sku]` → canonical `/product/[sku]` (absolute URL)
+- `/explore-map/[region]` → canonical `/explore-map/[region]` (absolute URL)
+- All other pages → canonical = own absolute URL
+
+**Critical conflict resolved:** The original spec said `/shop?group=Wine` should canonical to `/shop`. This was wrong — it would signal that all category views are duplicates of the general shop, competing with the static `/shop/[group]` pages being built. Canonicals now point to the static group route.
 
 ### 1.4 hreflang
 
-Every page gets `<link rel="alternate" hreflang="en" href="[canonical]">` and `<link rel="alternate" hreflang="x-default" href="[canonical]">`. Applied once in `layout.tsx` via `metadata.alternates`. Signals English-language intent to Google and prevents confusion if Thai content is added later.
+**Not implemented in this phase.** hreflang is designed for multi-language or multi-regional sites with separate language versions. This site is English-only (`<html lang="en">`). Emitting `hreflang="en"` + `x-default` with identical URLs provides zero ranking signal and adds implementation complexity. The `<html lang="en">` tag already signals language to Google. Implement hreflang only when Thai-language pages (`/th/...`) exist with real alternate URLs.
+
+Note: Next.js 14's `metadata.alternates` in `layout.tsx` is silently overridden by any page that exports its own `generateMetadata()` (alternates are not deep-merged). Canonical tags must therefore be set explicitly inside each page's own `generateMetadata()` call — not delegated to the layout.
 
 ### 1.5 noindex Guards
 
 - `/finder/[step]/page.tsx`: add `export const metadata: Metadata = { robots: { index: false } }`
 - `/finder/result/page.tsx`: same
 - `/shop` with thin filter results (< 5 products): inject `<meta name="robots" content="noindex">` conditionally in the server component when the filtered product count is below threshold
+- `/product/[sku]` where `custom_stock_status === 'CATALOG'` (archived): add `robots: { index: false }` in `generateMetadata()` — these pages are excluded from the sitemap AND get noindex so they are dropped from the index even if discovered via links
 
 ---
 
@@ -138,6 +148,8 @@ Never client-rendered. All builder functions live in `apps/catalog/lib/seo/jsonl
 
 ### 2.1 WebSite + Organization (layout.tsx — every page)
 
+`SearchAction` / Sitelinks Searchbox requires a server-rendered search results URL (`/shop?q={term}`). The current search is a client-side overlay with no stable results URL — do NOT include `potentialAction` until a `/search` server route exists. Including it now with a URL that returns the full catalog (not filtered results) will cause Google to reject the Sitelinks Searchbox.
+
 ```json
 {
   "@context": "https://schema.org",
@@ -146,15 +158,7 @@ Never client-rendered. All builder functions live in `apps/catalog/lib/seo/jsonl
       "@type": "WebSite",
       "@id": "https://wnlq9-catalog.vercel.app/#website",
       "name": "WNLQ9",
-      "url": "https://wnlq9-catalog.vercel.app/",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://wnlq9-catalog.vercel.app/shop?q={search_term_string}"
-        },
-        "query-input": "required name=search_term_string"
-      }
+      "url": "https://wnlq9-catalog.vercel.app/"
     },
     {
       "@type": "Organization",
@@ -168,6 +172,8 @@ Never client-rendered. All builder functions live in `apps/catalog/lib/seo/jsonl
   ]
 }
 ```
+
+The `@id` values (`#website`, `#organization`) are used by other schema blocks to reference these entities without duplicating their properties.
 
 ### 2.2 Product + BreadcrumbList (/product/[sku])
 
@@ -191,46 +197,55 @@ Never client-rendered. All builder functions live in `apps/catalog/lib/seo/jsonl
 
 **§2.2a — AggregateRating from score_summary**
 
-`score_summary` contains multiple critics (JS, WS, WA). Strategy: use the **highest** critic score as `ratingValue`, name that critic in a `description` field, and set `ratingCount` to the number of critics who scored it. This is technically `AggregateRating` (averaged across reviewers) — but since wine critics are independent authorities, using the highest with disclosure is the accepted pattern used by Wine-Searcher and Vivino.
+`score_summary` contains multiple critics (JS, WS, WA). Strategy: compute `ratingValue` as the **mean** of all `score_value` entries in `critics[]`, rounded to one decimal place. `ratingCount` = number of critics. List all critics with scores in the `description` field. `bestRating` is required by Google — always `"100"` for wine critics. `worstRating` is `"50"` (conventional wine critic floor).
+
+Do NOT use the highest score as `ratingValue` — that misrepresents the aggregate and violates schema.org `AggregateRating` semantics. `score_max` (the highest individual score) is used separately for the display badge in the UI, not for schema.
 
 ```json
 {
   "@type": "AggregateRating",
-  "ratingValue": "98",
+  "ratingValue": "97.0",
   "bestRating": "100",
-  "worstRating": "85",
+  "worstRating": "50",
   "ratingCount": 2,
   "description": "James Suckling 98, Wine Advocate 96"
 }
 ```
 
-Only emit this block when `score_summary` is non-null and has at least one critic score.
+Only emit this block when `score_summary` is non-null and has at least one `score_value` in `critics[]`.
 
-**BreadcrumbList** on every product page:
+**BreadcrumbList** on every product page. `item` must be a full absolute URL (Google ignores relative paths in BreadcrumbList). The last item (current page) has no `item` property — only `name`.
 
 ```json
 {
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Shop", "item": "/shop" },
-    { "@type": "ListItem", "position": 2, "name": "Wine", "item": "/shop?group=Wine" },
+    { "@type": "ListItem", "position": 1, "name": "Shop",
+      "item": "https://wnlq9-catalog.vercel.app/shop" },
+    { "@type": "ListItem", "position": 2, "name": "Wine",
+      "item": "https://wnlq9-catalog.vercel.app/shop/wine" },
     { "@type": "ListItem", "position": 3, "name": "Coastal Ridge Cabernet Sauvignon" }
   ]
 }
 ```
 
+The second breadcrumb item points to the static `/shop/[group]` route (not the query-param form `/shop?group=Wine`), because that is the canonical URL for the category page.
+
 ### 2.3 LocalBusiness (/contact)
+
+Use `@id: "#organization"` to link this to the same entity as the Organization schema in layout — they describe the same business and must share an `@id` so Google merges them into one knowledge panel entry rather than treating them as two separate entities.
 
 ```json
 {
   "@type": "LocalBusiness",
-  "@id": "https://wnlq9-catalog.vercel.app/#localbusiness",
+  "@id": "https://wnlq9-catalog.vercel.app/#organization",
   "name": "WNLQ9",
   "description": "Curated wine, whisky and spirits. Browse online, order via LINE or WhatsApp.",
   "url": "https://wnlq9-catalog.vercel.app/",
   "areaServed": {
-    "@type": "Country",
-    "name": "Thailand"
+    "@type": "City",
+    "name": "Bangkok",
+    "containedInPlace": { "@type": "Country", "name": "Thailand" }
   },
   "serviceType": "Wine and spirits retail",
   "hasOfferCatalog": {
@@ -241,9 +256,11 @@ Only emit this block when `score_summary` is non-null and has at least one criti
 }
 ```
 
-Note: No physical address is injected unless one is explicitly provided in env config. `areaServed: Thailand` is sufficient for local search intent.
+Note: No physical `address` is injected unless explicitly provided in env config (`WNLQ9_ADDRESS`). Without a physical address, WNLQ9 will not appear in Google Maps local pack results — but `areaServed: Bangkok` is still sufficient for local knowledge panel and service-area business signals. If an address becomes available, add it as a `PostalAddress` object.
 
 ### 2.4 CollectionPage + BreadcrumbList (/explore-map/[region])
+
+`CollectionPage` must include `hasPart` to be semantically meaningful — without it the type annotation provides no structured data benefit beyond a generic `WebPage`. Include the top 5 products for the region (by critic score, then price) as `hasPart` items to connect the collection to its member products in the knowledge graph.
 
 ```json
 {
@@ -256,7 +273,15 @@ Note: No physical address is injected unless one is explicitly provided in env c
     "name": "Bordeaux",
     "containedInPlace": { "@type": "Country", "name": "France" }
   },
-  "numberOfItems": 752
+  "numberOfItems": 752,
+  "hasPart": [
+    {
+      "@type": "Product",
+      "name": "Château Pétrus 2018",
+      "url": "https://wnlq9-catalog.vercel.app/product/WCH0001",
+      "offers": { "@type": "Offer", "price": "185000", "priceCurrency": "THB" }
+    }
+  ]
 }
 ```
 
@@ -288,26 +313,29 @@ Proposal: create `apps/catalog/app/shop/[group]/page.tsx` as static routes for t
 
 ### 2.6 FAQPage (/explore-map/[region])
 
-Auto-generated from catalog data at build time. Each region page gets 4 Q&As:
+Auto-generated from catalog data at build time. **FAQPage JSON-LD content must be visible as rendered HTML on the page** — Google's FAQ rich result guidelines require the Q&A content to exist as expandable or visible text, not just in the schema. Implement as a visible `<details>`/`<summary>` accordion section on the region page below the product list. The JSON-LD must mirror the visible content exactly.
+
+**Scope:** Top 50 regions by product count only (not all 430). This avoids the "scaled programmatic content" risk from Google's helpful content guidance while covering all commercially significant regions.
+
+3 Q&As per region (not 4 — Q2 food pairing dropped; see below):
 
 ```
 Q1: What [region] [category] does WNLQ9 carry?
     A: WNLQ9 stocks [N] bottles from [region], [country], including [top 3 varieties].
        Prices range from ฿[min] to ฿[max]. Browse: [URL]
 
-Q2: What food pairs well with [region] [category]?
-    A: [Top 3 food_matching values from products in that region, deduplicated]
+Q2: What are the top-rated [region] [category] at WNLQ9?
+    A: [Up to 3 products with critic scores in that region: "Name (Score pts, Critic)"]
+       Only emit this Q&A when ≥1 scored product exists in the region.
 
-Q3: What are the top-rated [region] [category] at WNLQ9?
-    A: [Up to 3 products with critic scores in that region, name + score]
-       (Only emit if ≥1 scored product in region)
-
-Q4: How do I order [region] wine from WNLQ9 in Thailand?
+Q3: How do I order [region] wine from WNLQ9 in Thailand?
     A: WNLQ9 is a Bangkok-based retailer. Contact us via LINE or WhatsApp
        to place an order. [contact URL]
 ```
 
-Builder function: `apps/catalog/lib/seo/faq-builder.ts` — pure function, takes region slug + all products for that region, returns FAQ schema object. Generated at build time, zero runtime cost.
+**Q2 food pairing is dropped.** Aggregating `food_matching` across all products in a region (e.g. 783 Bordeaux products) produces an answer listing every food category — true for every wine region worldwide, zero information value. Scoping to top-scored products' pairings produces marginal improvement at high implementation complexity.
+
+Builder function: `apps/catalog/lib/seo/faq-builder.ts` — pure function, takes region slug + region products array, returns `{ schema: FAQPageObject, qaItems: QAItem[] }`. The `qaItems` are rendered as visible HTML; the `schema` is emitted as JSON-LD. Generated at build time, zero runtime cost.
 
 ---
 
@@ -341,19 +369,21 @@ Vintage in product title: only include if `vintage` is a real year (not "Current
 
 ### OG / Social Tags
 
-Applied on every page:
+Applied on every page via `metadata.openGraph` and `metadata.twitter` in each page's `generateMetadata()`:
 
 ```html
 <meta property="og:type" content="website" />          <!-- "product" on /product/[sku] -->
 <meta property="og:locale" content="en_TH" />
 <meta property="og:site_name" content="WNLQ9" />
-<meta property="og:image" content="[url]" />
-<meta property="og:image:width" content="1200" />       <!-- always include dimensions -->
+<meta property="og:image" content="[absolute url]" />
+<meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 ```
 
-Fallback OG image: a single `public/og-default.jpg` (1200×630) used for pages without a product image. This prevents blank previews on social sharing.
+**Product pages:** bottle images from `th.wine-now.com` are portrait-format (~300×400px), not 1200×630. Do NOT use the raw bottle image as `og:image` without a social card wrapper — Facebook, Slack, and X will crop them badly. Use the fallback OG image for all product pages in this phase. A dedicated bottle-image social card (Next.js OG image generation) is a future enhancement.
+
+**Fallback OG image:** `apps/catalog/public/og-default.jpg` — must be created as part of this work (1200×630px, WNLQ9 brand lockup). Does not currently exist in the repo. Until it is created, omit the `og:image` tag rather than pointing to a missing file.
 
 ---
 
@@ -374,16 +404,11 @@ Builder: `apps/catalog/lib/seo/region-blurb-builder.ts`. Pure function, no LLM c
 
 Threshold: only generate for regions with ≥10 products. Below that, the blurb would be too thin to be credible.
 
-### 4.2 Speakable Schema (/about)
+### 4.2 Speakable Schema — DROPPED
 
-```json
-{
-  "@type": "SpeakableSpecification",
-  "cssSelector": [".about-intro", ".about-mission"]
-}
-```
+Google removed `Speakable` from its supported rich result types in 2023. It is no longer honored by any Google Search feature. Do not implement.
 
-Marks the introductory paragraphs on `/about` as speakable — used by Google Assistant and voice search to read aloud when someone asks "what is WNLQ9?".
+Replaced by: ensuring the `/about` page has strong natural-language copy that can be cited directly by AI systems without schema annotation. The `llms.txt` file (§4.3) serves this purpose more effectively for AEO.
 
 ### 4.3 llms.txt
 
@@ -430,52 +455,62 @@ Contact handles are read from env vars (same `getContactEnv()` pattern). The fil
 
 ```
 Phase 1 — Technical Foundation
-  apps/catalog/app/sitemap.ts                NEW
-  apps/catalog/app/robots.ts                 NEW
-  apps/catalog/app/finder/[step]/page.tsx    ADD noindex metadata
-  apps/catalog/app/finder/result/page.tsx    ADD noindex metadata
-  apps/catalog/app/layout.tsx               ADD hreflang alternates + root canonical
-  apps/catalog/app/shop/page.tsx             ADD export const metadata + canonical + noindex guard
+  apps/catalog/app/sitemap.ts                    NEW — single sitemap, in-stock + region URLs only
+  apps/catalog/app/robots.ts                     NEW — disallow /finder/, /api/
+  apps/catalog/app/finder/[step]/page.tsx        ADD robots: { index: false }
+  apps/catalog/app/finder/result/page.tsx        ADD robots: { index: false }
+  apps/catalog/app/product/[sku]/page.tsx        ADD robots: { index: false } for CATALOG-status SKUs
+  apps/catalog/app/shop/page.tsx                 ADD export const metadata + canonical + noindex guard
+  (hreflang — NOT implemented; deferred until Thai-language pages exist)
 
 Phase 2 — Structured Data
-  apps/catalog/components/seo/JsonLd.tsx     NEW — server component wrapper
-  apps/catalog/lib/seo/jsonld.ts             NEW — pure builder functions
-  apps/catalog/lib/seo/faq-builder.ts        NEW — FAQ schema from product data
-  apps/catalog/lib/seo/region-blurb-builder.ts  NEW — region text from product data
-  apps/catalog/app/layout.tsx               ADD WebSite + Organization JSON-LD
-  apps/catalog/app/product/[sku]/page.tsx   ADD Product + BreadcrumbList JSON-LD
-  apps/catalog/app/contact/page.tsx         ADD LocalBusiness JSON-LD
-  apps/catalog/app/explore-map/[region]/page.tsx  ADD CollectionPage + FAQPage JSON-LD
-  apps/catalog/app/shop/[group]/page.tsx     NEW — 10 static category group pages with ItemList
+  apps/catalog/components/seo/JsonLd.tsx         NEW — server component, never client-rendered
+  apps/catalog/lib/seo/jsonld.ts                 NEW — pure builder functions for all schema types
+  apps/catalog/lib/seo/faq-builder.ts            NEW — FAQPage schema + visible QA items from product data
+  apps/catalog/lib/seo/region-blurb-builder.ts   NEW — 3-sentence region blurb from product data
+  apps/catalog/app/layout.tsx                    ADD WebSite + Organization JSON-LD (@graph, no SearchAction)
+  apps/catalog/app/product/[sku]/page.tsx        ADD Product + BreadcrumbList + AggregateRating JSON-LD
+  apps/catalog/app/contact/page.tsx              ADD LocalBusiness JSON-LD (shared @id with Organization)
+  apps/catalog/app/explore-map/[region]/page.tsx ADD CollectionPage (with hasPart) + FAQPage JSON-LD
+  apps/catalog/app/shop/[group]/page.tsx         NEW — 10 static group pages with ItemList JSON-LD
 
 Phase 3 — Metadata Depth
-  apps/catalog/app/layout.tsx               UPGRADE root metadata title + OG defaults
-  apps/catalog/app/product/[sku]/page.tsx   UPGRADE generateMetadata() title template + OG dims
-  apps/catalog/app/shop/page.tsx             UPGRADE metadata title + description
-  apps/catalog/app/shop/[group]/page.tsx     ADD per-group metadata (in Phase 2 file)
-  apps/catalog/app/explore-map/[region]/page.tsx  UPGRADE generateMetadata() with data-driven desc
-  apps/catalog/app/about/page.tsx           UPGRADE metadata title/desc
-  apps/catalog/app/contact/page.tsx         UPGRADE metadata title/desc
+  apps/catalog/app/layout.tsx                    UPGRADE root title/desc; OG locale + site_name defaults
+  apps/catalog/app/product/[sku]/page.tsx        UPGRADE title template + canonical + OG (fallback image)
+  apps/catalog/app/shop/page.tsx                 UPGRADE title + desc + canonical
+  apps/catalog/app/shop/[group]/page.tsx         ADD per-group title/desc/canonical (in Phase 2 file)
+  apps/catalog/app/explore-map/[region]/page.tsx UPGRADE title/desc/canonical with data-driven content
+  apps/catalog/app/about/page.tsx                UPGRADE title/desc/canonical
+  apps/catalog/app/contact/page.tsx              UPGRADE title/desc/canonical
 
 Phase 4 — AEO
-  apps/catalog/public/llms.txt              NEW (static, updated at build time via script)
-  apps/catalog/app/about/page.tsx           ADD Speakable JSON-LD
-  apps/catalog/app/explore-map/[region]/page.tsx  ADD region blurb text (visible on page)
-  scripts/gen-llms-txt.mjs                  NEW — build-time llms.txt generator
+  apps/catalog/public/og-default.jpg             NEW — 1200×630 brand lockup (required before deploy)
+  apps/catalog/public/llms.txt                   NEW — generated by build script, kept current
+  scripts/gen-llms-txt.mjs                       NEW — reads export JSON, writes llms.txt at build time
+  apps/catalog/app/explore-map/[region]/page.tsx ADD visible region blurb + FAQ accordion (top 50 regions)
+  (Speakable — NOT implemented; deprecated by Google 2023)
 ```
 
 ---
 
 ## Constraints & Guard Rails
 
-- **No LLM calls** — all content is derived from `live_products_export.json` at build time
+- **No LLM calls** — all content derived from `live_products_export.json` at build time
 - **No new DB writes** — SEO layer is purely read-only against the existing export
 - **No Core Web Vitals regression** — all JSON-LD server-rendered; no client hydration of schema
-- **No duplicate content** — canonical tag on every page; filter URLs canonicalize to clean URL
-- **`classification` field is never used** — category routing uses `category_group`/`category_type` per Rule 12
-- **`custom_stock_status=CATALOG` products** — included in sitemap at priority 0.3, never labeled InStock
-- **Thin filter pages** — `/shop` with < 5 results gets `noindex` injected dynamically
-- **Region blurb threshold** — only regions with ≥ 10 products get auto-generated blurbs
+- **Canonical in every generateMetadata()** — cannot delegate to layout; Next.js 14 does not deep-merge `alternates`
+- **`classification` field never used** — category routing uses `category_group`/`category_type` per Rule 12
+- **Archived products** — excluded from sitemap AND get `robots: { index: false }` in generateMetadata()
+- **Thin filter pages** — `/shop` with < 5 results gets `noindex` injected dynamically in the server component
+- **AggregateRating** — `ratingValue` is always the mean of all critics, never the max; `bestRating: "100"` always required
+- **FAQPage** — content must be visible HTML on the page; JSON-LD must mirror it exactly; top 50 regions only
+- **CollectionPage** — must include `hasPart` with top 5 products or the type annotation provides no value
+- **SearchAction** — omitted until a server-rendered `/search?q=` route exists
+- **Speakable** — dropped; deprecated by Google in 2023
+- **hreflang** — not implemented; English-only site, `<html lang="en">` is sufficient
+- **OG image** — fallback `public/og-default.jpg` must be created before deployment; omit tag if file missing
+- **Product counts** — never hardcoded; always computed at build time from the export file
+- **Sitemap lastmod** — uses build date, not `product.updated_at` (not in PUBLIC_FIELDS; bulk runs stamp identical timestamps)
 - **Title cap** — 60 chars max; vintage only included when it is a 4-digit year
 
 ---
