@@ -17,9 +17,14 @@ import { getContactEnv } from '@/lib/contact-env';
  */
 
 export const metadata: Metadata = {
-  title: 'About — WNLQ9',
-  description:
-    'WNLQ9 is a considered selection of wine, whisky and spirits. Browse the collection and contact us to order.',
+  title: 'About WNLQ9 — Curated Wine & Spirits, Bangkok',
+  description: 'WNLQ9 is a curated selection of wine, whisky and spirits in Bangkok, Thailand. Browse and order via LINE or WhatsApp.',
+  alternates: { canonical: 'https://wnlq9-catalog.vercel.app/about' },
+  openGraph: {
+    title: 'About WNLQ9 — Curated Wine & Spirits, Bangkok',
+    locale: 'en_TH',
+    siteName: 'WNLQ9',
+  },
 };
 
 export default function AboutPage() {
