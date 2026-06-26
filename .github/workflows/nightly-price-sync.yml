@@ -1,0 +1,105 @@
+name: Nightly Price Sync
+
+on:
+  schedule:
+    # 19:00 UTC = 02:00 AM Bangkok (UTC+7)
+    - cron: "0 19 * * *"
+  workflow_dispatch: # allow manual trigger from GitHub UI
+
+jobs:
+  sync:
+    name: Sync prices from Google Sheets → Supabase
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install gspread google-auth psycopg2-binary
+
+      - name: Run price sync (Sheets → Supabase)
+        id: sync
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          python scripts/nightly_price_sync.py 2>&1 | tee /tmp/sync_output.txt
+          echo "exit_code=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
+
+      - name: Regenerate live products export from Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          python scripts/refresh_live_export_supabase.py 2>&1 | tee /tmp/export_output.txt
+
+      - name: Commit updated live export to repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # The file is git-ignored locally but we commit it from CI
+          git add -f data/live_products_export.json
+          if git diff --staged --quiet; then
+            echo "No changes to live export — skipping commit"
+          else
+            git commit -m "chore(data): nightly price sync $(date -u '+%Y-%m-%d')"
+            git push
+          fi
+
+      - name: Trigger Vercel deploy
+        id: vercel
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}")
+          echo "vercel_status=$STATUS" >> $GITHUB_OUTPUT
+          if [ "$STATUS" = "201" ]; then
+            echo "✓ Vercel deploy triggered (HTTP 201)"
+          else
+            echo "⚠ Vercel deploy hook returned HTTP $STATUS"
+          fi
+
+      - name: Send Gmail summary
+        if: always()
+        env:
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: |
+          python - <<'PYEOF'
+          import smtplib, os
+          from email.mime.text import MIMEText
+          from pathlib import Path
+
+          sync_out = Path("/tmp/sync_output.txt").read_text() if Path("/tmp/sync_output.txt").exists() else "(no output)"
+          export_out = Path("/tmp/export_output.txt").read_text() if Path("/tmp/export_output.txt").exists() else "(no output)"
+
+          body = f"""WNLQ9 Nightly Price Sync — $(date -u '+%Y-%m-%d %H:%M UTC')
+
+          === Price Sync (Sheets → Supabase) ===
+          {sync_out}
+
+          === Live Export Refresh ===
+          {export_out}
+
+          === Vercel Deploy ===
+          HTTP status: ${{ steps.vercel.outputs.vercel_status }}
+
+          --- Sent by GitHub Actions nightly-price-sync.yml ---
+          """
+
+          msg = MIMEText(body)
+          msg["Subject"] = "✅ WNLQ9 Price Sync — $(date -u '+%Y-%m-%d')"
+          msg["From"] = "winenowsommelier@gmail.com"
+          msg["To"] = "winenowsommelier@gmail.com"
+
+          pw = os.environ["GMAIL_APP_PASSWORD"].replace(" ", "")
+          with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
+              s.login("winenowsommelier@gmail.com", pw)
+              s.send_message(msg)
+          print("✓ Summary email sent")
+          PYEOF
