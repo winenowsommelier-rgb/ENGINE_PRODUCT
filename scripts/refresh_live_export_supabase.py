@@ -28,27 +28,31 @@ DEFAULT_OUT = REPO_ROOT / "data" / "live_products_export.json"
 # Must stay in sync with scripts/refresh_live_export.py EXPORT_COLS.
 # consign is intentionally excluded — internal only, must never reach the browser.
 EXPORT_COLS = [
-    "id", "sku", "name", "brand", "classification", "wine_classification", "designation",
-    "variety", "vintage", "alcohol",
-    "country", "region", "subregion", "appellation",
-    "body", "acidity", "tannin",
-    "blend_type", "production_style",
-    "sweetness", "intensity", "smokiness", "finish",
-    "food_matching", "food_matching_detail", "flavor_tags",
-    "bottle_size", "price", "currency",
-    "special_price", "sp_discount_pct",
-    "desc_en_short", "full_description",
-    "taste_profile",
-    "color", "image_url",
-    "validation_status", "enrichment_confidence", "enrichment_quality_grade",
-    "enrichment_source", "enrichment_note", "enriched_at", "enriched_by",
-    "popularity_score", "popularity_orders_window", "popularity_revenue_window",
-    "popularity_qty_window", "popularity_window_days", "popularity_synced_at",
-    "created_at", "updated_at",
-    "pairing_rationale",
-    "is_in_stock", "wn_stock", "quantity_in_stock", "custom_stock_status",
+    # Identity
+    "id", "sku", "name", "brand", "vintage", "bottle_size", "alcohol", "color",
+    # Taxonomy
+    "classification", "wine_classification", "designation", "variety", "blend_type",
+    "production_style", "country", "region", "subregion", "appellation",
+    # Taste
+    "body", "acidity", "tannin", "sweetness", "intensity", "smokiness", "finish",
+    "food_matching", "flavor_tags", "taste_profile",
+    # Pricing
+    "price", "cost", "currency", "special_price", "sp_discount_pct",
     "margin_pct", "b2b_margin_pct",
+    # Stock
+    "is_in_stock", "wn_stock", "quantity_in_stock", "custom_stock_status",
+    # Content
+    "desc_en_short", "full_description", "image_url",
+    # Enrichment metadata
+    "validation_status", "enrichment_confidence", "enrichment_source",
+    "enrichment_note", "enriched_at", "enriched_by",
+    # Popularity
+    "popularity_score", "popularity_qty_90d", "popularity_orders_90d",
+    "popularity_revenue_90d", "popularity_window_days", "popularity_synced_at",
+    # Critic scores
     "score_max", "score_summary",
+    # Timestamps
+    "created_at", "updated_at",
 ]
 
 # JSON-encoded text columns — decode so the export contains real objects.
