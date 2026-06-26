@@ -18,6 +18,8 @@ import { toTiers, toStructural } from '@/lib/taste-adapter';
 import { isInStock, parseFoodMatching, signatureDishes } from '@/lib/utils';
 import { sanitizeDescription } from '@/lib/sanitize-html';
 import type { PublicProduct } from '@/lib/types';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { buildProductSchema, buildBreadcrumbList, GROUP_SLUG } from '@/lib/seo/jsonld';
 
 /**
  * Product detail — SERVER component, statically generated for every SKU.
@@ -144,15 +146,37 @@ function FoodPairing({ food, detail }: { food?: string; detail?: string }) {
 export function generateMetadata({ params }: { params: { sku: string } }): Metadata {
   const product = getProductBySku(params.sku);
   if (!product) return { title: 'Not found — WNLQ9' };
-  const description =
-    product.desc_en_short || product.full_description || `${product.name} — available at WNLQ9.`;
+
+  const descText = product.desc_en_short
+    ? product.desc_en_short.replace(/<[^>]+>/g, ' ').trim()
+    : product.full_description
+    ? product.full_description.replace(/<[^>]+>/g, ' ').trim()
+    : `${product.name} — available at WNLQ9, Bangkok.`;
+
+  // Include vintage only if it's a real 4-digit year
+  const vintageStr = /^\d{4}$/.test(product.vintage?.trim() ?? '') ? ` ${product.vintage}` : '';
+  const rawTitle = `${product.name}${vintageStr} — Buy in Bangkok | WNLQ9`;
+  const title = rawTitle.length > 60 ? `${product.name} | WNLQ9 Bangkok` : rawTitle;
+
+  const canonical = `https://wnlq9-catalog.vercel.app/product/${product.sku}`;
+
   return {
-    title: `${product.name} — WNLQ9`,
-    description: description.slice(0, 160),
+    title,
+    description: `${descText.slice(0, 155)}. Available at WNLQ9, Bangkok.`,
+    alternates: { canonical },
+    // Archived (CATALOG status) products remain indexed — 100% have description, image, critic score.
+    // Offer.availability in JSON-LD signals Discontinued to crawlers without noindexing content.
     openGraph: {
-      title: `${product.name} — WNLQ9`,
-      description: description.slice(0, 160),
-      images: product.image_url ? [{ url: product.image_url }] : undefined,
+      title,
+      description: descText.slice(0, 155),
+      type: 'website',
+      locale: 'en_TH',
+      siteName: 'WNLQ9',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: descText.slice(0, 155),
     },
   };
 }
@@ -177,6 +201,7 @@ export default function Page({ params }: { params: { sku: string } }) {
 
   // Per-product contact deep-links (pre-fills "I'm interested in [name] — [sku]").
   const links = buildContactLinks(getContactEnv(), { name: product.name, sku: product.sku });
+  const groupSlug = GROUP_SLUG[groupForProduct(product)] ?? groupForProduct(product).toLowerCase();
 
   // Recommendations: resolve precomputed skus → products (cached lookups).
   const recs: PublicProduct[] = getRecsForSku(product.sku)
@@ -185,6 +210,8 @@ export default function Page({ params }: { params: { sku: string } }) {
 
   return (
     <main className="container flex flex-col gap-12 py-8 sm:py-10">
+      <JsonLd data={buildProductSchema(product)} />
+      <JsonLd data={buildBreadcrumbList(product.name, groupForProduct(product), groupSlug)} />
       {/* Breadcrumb back to shop. Category comes from groupForProduct (SKU-prefix
           override), NOT raw classification — so a whisky mislabeled "Wine product"
           correctly breadcrumbs under Whisky, linking to its shop tab. */}
