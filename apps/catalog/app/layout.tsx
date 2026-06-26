@@ -14,6 +14,7 @@ export const metadata: Metadata = {
     siteName: 'WNLQ9',
     locale: 'en_TH',
     type: 'website',
+    images: [{ url: 'https://wnlq9-catalog.vercel.app/og-default.jpg', width: 1200, height: 630 }],
   },
 };
 
