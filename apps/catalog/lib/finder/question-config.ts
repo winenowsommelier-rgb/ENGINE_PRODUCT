@@ -458,6 +458,22 @@ const WHISKY_PEAT_STEP: QuestionStep = {
   ],
 };
 
+// Sake — age / style freshness (scoring tokens: young | mature | any)
+// Sake aging is real (koshu = aged sake is mellow/complex; nama/fresh = lively).
+// Framing avoids wine language entirely.
+const SAKE_AGE_STEP: QuestionStep = {
+  id: 'age',
+  field: 'age',
+  title: 'Fresh and lively, or aged and mellow?',
+  hint: 'Fresh sake is bright and crisp; aged sake (koshu) is richer, deeper, and more complex.',
+  optional: true,
+  options: [
+    { token: 'young', label: 'Fresh & lively', icon: '🌱' },
+    { token: 'mature', label: 'Aged & complex', icon: '🍂' },
+    { token: 'any', label: 'No preference', icon: '🤷' },
+  ],
+};
+
 // Whisky — age (scoring tokens: young | mature | any)
 const WHISKY_AGE_STEP: QuestionStep = {
   id: 'age',
@@ -509,7 +525,7 @@ const DEEP_DIVE_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   // step is all the extra signal worth collecting.
   gin: [ADVENTURE_STEP],
   spirits: [ADVENTURE_STEP, WHISKY_AGE_STEP],
-  sake: [WINE_AGE_STEP],
+  sake: [SAKE_AGE_STEP],
 };
 
 /**
