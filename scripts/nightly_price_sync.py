@@ -16,6 +16,7 @@ import json
 import os
 import sys
 import time
+import urllib.parse
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
@@ -173,32 +174,46 @@ def row_to_payload(row: dict) -> Optional[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Supabase upsert
+# Supabase update (one PATCH per row, filtered by sku)
+# We never INSERT — price sync only updates existing products.
+# Batching via individual PATCHes is fine at ~12k rows with fast network.
 # ---------------------------------------------------------------------------
-def upsert_batch(payloads: list[dict]) -> list[str]:
+def update_row(payload: dict) -> Optional[str]:
     import urllib.request
     import urllib.error
 
-    # ?on_conflict=sku tells PostgREST which column to use for merge-on-conflict
-    url = f"{SUPABASE_URL}/rest/v1/products?on_conflict=sku"
+    sku = payload["sku"]
+    # Remove sku from body — it's in the filter, not the update fields
+    body_data = {k: v for k, v in payload.items() if k != "sku"}
+    url = f"{SUPABASE_URL}/rest/v1/products?sku=eq.{urllib.parse.quote(sku)}"
     headers = {
         "apikey": SUPABASE_KEY,
         "Authorization": f"Bearer {SUPABASE_KEY}",
         "Content-Type": "application/json",
-        "Prefer": "resolution=merge-duplicates,return=minimal",
+        "Prefer": "return=minimal",
     }
-    body = json.dumps(payloads).encode()
-    req = urllib.request.Request(url, data=body, headers=headers, method="POST")
+    body = json.dumps(body_data).encode()
+    req = urllib.request.Request(url, data=body, headers=headers, method="PATCH")
     try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            if resp.status not in (200, 201, 204):
-                return [f"HTTP {resp.status}: {resp.read()[:200]}"]
-            return []
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            if resp.status not in (200, 204):
+                return f"SKU {sku}: HTTP {resp.status}"
+            return None
     except urllib.error.HTTPError as e:
-        detail = e.read()[:300].decode("utf-8", errors="replace")
-        return [f"HTTP {e.code}: {detail}"]
+        detail = e.read()[:200].decode("utf-8", errors="replace")
+        return f"SKU {sku}: HTTP {e.code}: {detail}"
     except Exception as e:
-        return [str(e)]
+        return f"SKU {sku}: {e}"
+
+
+def update_batch(payloads: list[dict], result: "SyncResult") -> None:
+    import urllib.parse
+    for p in payloads:
+        err = update_row(p)
+        if err:
+            result.errors.append(err)
+        else:
+            result.upserted += 1
 
 
 # ---------------------------------------------------------------------------
@@ -222,7 +237,7 @@ def run(dry_run: bool = False) -> SyncResult:
             continue
         payloads.append(p)
 
-    print(f"  Prepared {len(payloads)} payloads to upsert", flush=True)
+    print(f"  Prepared {len(payloads)} rows to update", flush=True)
 
     if dry_run:
         print("\n[DRY RUN] No writes performed.")
@@ -231,16 +246,11 @@ def run(dry_run: bool = False) -> SyncResult:
         result.duration_s = time.time() - t0
         return result
 
-    # Batch upsert
+    # Update in batches, printing progress every BATCH_SIZE rows
     for i in range(0, len(payloads), BATCH_SIZE):
         batch = payloads[i : i + BATCH_SIZE]
-        errs = upsert_batch(batch)
-        if errs:
-            result.errors.extend(errs)
-            print(f"  [ERROR] batch {i//BATCH_SIZE + 1}: {errs[0]}", flush=True)
-        else:
-            result.upserted += len(batch)
-            print(f"  ✓ batch {i//BATCH_SIZE + 1}: {len(batch)} rows", flush=True)
+        update_batch(batch, result)
+        print(f"  ✓ {result.upserted} updated, {len(result.errors)} errors so far...", flush=True)
 
     result.duration_s = time.time() - t0
     return result
