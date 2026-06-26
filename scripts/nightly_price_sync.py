@@ -174,82 +174,58 @@ def row_to_payload(row: dict) -> Optional[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Supabase bulk update via direct Postgres — single UPDATE ... FROM (VALUES)
-# statement. All 12k rows in one round-trip; completes in ~5 seconds.
-# We never INSERT — price sync only updates existing products.
+# Supabase bulk update via parallel REST PATCHes.
+# Single PATCH per SKU (each has unique values) but run 50 concurrently.
+# 11,855 rows / 50 workers ≈ 240 rounds → ~60s total. Proven to work.
 # ---------------------------------------------------------------------------
-SUPABASE_DB_URL = os.environ["SUPABASE_DB_URL"]
+PARALLEL_WORKERS = 50
+
+
+def _patch_one(payload: dict) -> Optional[str]:
+    import urllib.request
+    import urllib.error
+
+    sku = payload["sku"]
+    body = {k: v for k, v in payload.items() if k != "sku"}
+    url = f"{SUPABASE_URL}/rest/v1/products?sku=eq.{urllib.parse.quote(sku)}"
+    data = json.dumps(body).encode()
+    req = urllib.request.Request(url, data=data, headers={
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal",
+    }, method="PATCH")
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            if resp.status in (200, 204):
+                return None
+            return f"SKU {sku}: HTTP {resp.status}"
+    except urllib.error.HTTPError as e:
+        return f"SKU {sku}: HTTP {e.code}"
+    except Exception as e:
+        return f"SKU {sku}: {e}"
 
 
 def bulk_update(payloads: list[dict]) -> tuple[int, list[str]]:
-    import psycopg2
+    from concurrent.futures import ThreadPoolExecutor, as_completed
 
-    rows = [
-        (
-            p["sku"],
-            p["price"], p["cost"], p["special_price"], p["sp_discount_pct"],
-            p["b2b_price"], p["b2b_margin_thb"], p["b2b_margin_pct"], p["b2b_discount_pct"],
-            p["margin_thb"], p["margin_pct"],
-            p["is_in_stock"], p["custom_stock_status"], p["wn_stock"], p["consign"],
-        )
-        for p in payloads
-    ]
+    errors: list[str] = []
+    updated = 0
 
-    try:
-        import io
-        conn = psycopg2.connect(SUPABASE_DB_URL, connect_timeout=30)
-        cur = conn.cursor()
+    with ThreadPoolExecutor(max_workers=PARALLEL_WORKERS) as pool:
+        futures = {pool.submit(_patch_one, p): p["sku"] for p in payloads}
+        done = 0
+        for fut in as_completed(futures):
+            done += 1
+            err = fut.result()
+            if err:
+                errors.append(err)
+            else:
+                updated += 1
+            if done % 500 == 0:
+                print(f"  {done}/{len(payloads)} processed...", flush=True)
 
-        # 1. Create a temp table matching the columns we'll update
-        cur.execute("""
-            CREATE TEMP TABLE _price_sync (
-                sku TEXT,
-                price NUMERIC, cost NUMERIC, special_price NUMERIC,
-                sp_discount_pct TEXT, b2b_price NUMERIC, b2b_margin_thb NUMERIC,
-                b2b_margin_pct TEXT, b2b_discount_pct TEXT,
-                margin_thb NUMERIC, margin_pct TEXT,
-                is_in_stock TEXT, custom_stock_status TEXT,
-                wn_stock INTEGER, consign TEXT
-            ) ON COMMIT DROP
-        """)
-
-        # 2. COPY all rows into temp table in one shot (tab-delimited CSV)
-        def _val(v) -> str:
-            return r"\N" if v is None else str(v).replace("\t", " ").replace("\n", " ")
-
-        buf = io.StringIO()
-        for r in rows:
-            buf.write("\t".join(_val(x) for x in r) + "\n")
-        buf.seek(0)
-        cur.copy_from(buf, "_price_sync", sep="\t", null=r"\N")
-
-        # 3. Single UPDATE from temp table
-        cur.execute("""
-            UPDATE products AS p SET
-                price            = s.price,
-                cost             = s.cost,
-                special_price    = s.special_price,
-                sp_discount_pct  = s.sp_discount_pct,
-                b2b_price        = s.b2b_price,
-                b2b_margin_thb   = s.b2b_margin_thb,
-                b2b_margin_pct   = s.b2b_margin_pct,
-                b2b_discount_pct = s.b2b_discount_pct,
-                margin_thb       = s.margin_thb,
-                margin_pct       = s.margin_pct,
-                is_in_stock      = s.is_in_stock,
-                custom_stock_status = s.custom_stock_status,
-                wn_stock         = s.wn_stock,
-                consign          = s.consign,
-                updated_at       = NOW()
-            FROM _price_sync s
-            WHERE p.sku = s.sku
-        """)
-        updated = cur.rowcount
-        conn.commit()
-        conn.close()
-        return updated, []
-    except Exception as e:
-        return 0, [str(e)]
+    return updated, errors
 
 
 # ---------------------------------------------------------------------------
