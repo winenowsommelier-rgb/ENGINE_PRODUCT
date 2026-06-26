@@ -174,40 +174,59 @@ def row_to_payload(row: dict) -> Optional[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Supabase bulk update via direct Postgres connection (psycopg2).
-# One executemany() call — completes in seconds for 12k rows.
+# Supabase bulk update via direct Postgres — single UPDATE ... FROM (VALUES)
+# statement. All 12k rows in one round-trip; completes in ~5 seconds.
 # We never INSERT — price sync only updates existing products.
 # ---------------------------------------------------------------------------
 SUPABASE_DB_URL = os.environ["SUPABASE_DB_URL"]
 
-UPDATE_SQL = """
-UPDATE products SET
-    price=%s, cost=%s, special_price=%s, sp_discount_pct=%s,
-    b2b_price=%s, b2b_margin_thb=%s, b2b_margin_pct=%s, b2b_discount_pct=%s,
-    margin_thb=%s, margin_pct=%s,
-    is_in_stock=%s, custom_stock_status=%s, wn_stock=%s, consign=%s,
-    updated_at=NOW()
-WHERE sku=%s
-"""
-
 
 def bulk_update(payloads: list[dict]) -> tuple[int, list[str]]:
     import psycopg2
+    import psycopg2.extras
 
     rows = [
         (
+            p["sku"],
             p["price"], p["cost"], p["special_price"], p["sp_discount_pct"],
             p["b2b_price"], p["b2b_margin_thb"], p["b2b_margin_pct"], p["b2b_discount_pct"],
             p["margin_thb"], p["margin_pct"],
             p["is_in_stock"], p["custom_stock_status"], p["wn_stock"], p["consign"],
-            p["sku"],
         )
         for p in payloads
     ]
+
+    # Build a single UPDATE ... FROM (VALUES ...) — one round-trip for all rows
+    sql = """
+        UPDATE products AS p SET
+            price        = v.price::numeric,
+            cost         = v.cost::numeric,
+            special_price= v.special_price::numeric,
+            sp_discount_pct = v.sp_discount_pct,
+            b2b_price    = v.b2b_price::numeric,
+            b2b_margin_thb = v.b2b_margin_thb::numeric,
+            b2b_margin_pct = v.b2b_margin_pct,
+            b2b_discount_pct = v.b2b_discount_pct,
+            margin_thb   = v.margin_thb::numeric,
+            margin_pct   = v.margin_pct,
+            is_in_stock  = v.is_in_stock,
+            custom_stock_status = v.custom_stock_status,
+            wn_stock     = v.wn_stock::integer,
+            consign      = v.consign,
+            updated_at   = NOW()
+        FROM (VALUES %s) AS v(
+            sku, price, cost, special_price, sp_discount_pct,
+            b2b_price, b2b_margin_thb, b2b_margin_pct, b2b_discount_pct,
+            margin_thb, margin_pct,
+            is_in_stock, custom_stock_status, wn_stock, consign
+        )
+        WHERE p.sku = v.sku
+    """
+
     try:
-        conn = psycopg2.connect(SUPABASE_DB_URL)
+        conn = psycopg2.connect(SUPABASE_DB_URL, connect_timeout=30)
         cur = conn.cursor()
-        cur.executemany(UPDATE_SQL, rows)
+        psycopg2.extras.execute_values(cur, sql, rows, page_size=len(rows))
         updated = cur.rowcount if cur.rowcount >= 0 else len(rows)
         conn.commit()
         conn.close()
