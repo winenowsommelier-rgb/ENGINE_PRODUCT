@@ -174,46 +174,46 @@ def row_to_payload(row: dict) -> Optional[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Supabase update (one PATCH per row, filtered by sku)
+# Supabase bulk update via direct Postgres connection (psycopg2).
+# One executemany() call — completes in seconds for 12k rows.
 # We never INSERT — price sync only updates existing products.
-# Batching via individual PATCHes is fine at ~12k rows with fast network.
 # ---------------------------------------------------------------------------
-def update_row(payload: dict) -> Optional[str]:
-    import urllib.request
-    import urllib.error
+SUPABASE_DB_URL = os.environ["SUPABASE_DB_URL"]
 
-    sku = payload["sku"]
-    # Remove sku from body — it's in the filter, not the update fields
-    body_data = {k: v for k, v in payload.items() if k != "sku"}
-    url = f"{SUPABASE_URL}/rest/v1/products?sku=eq.{urllib.parse.quote(sku)}"
-    headers = {
-        "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
-        "Content-Type": "application/json",
-        "Prefer": "return=minimal",
-    }
-    body = json.dumps(body_data).encode()
-    req = urllib.request.Request(url, data=body, headers=headers, method="PATCH")
+UPDATE_SQL = """
+UPDATE products SET
+    price=%s, cost=%s, special_price=%s, sp_discount_pct=%s,
+    b2b_price=%s, b2b_margin_thb=%s, b2b_margin_pct=%s, b2b_discount_pct=%s,
+    margin_thb=%s, margin_pct=%s,
+    is_in_stock=%s, custom_stock_status=%s, wn_stock=%s, consign=%s,
+    updated_at=NOW()
+WHERE sku=%s
+"""
+
+
+def bulk_update(payloads: list[dict]) -> tuple[int, list[str]]:
+    import psycopg2
+
+    rows = [
+        (
+            p["price"], p["cost"], p["special_price"], p["sp_discount_pct"],
+            p["b2b_price"], p["b2b_margin_thb"], p["b2b_margin_pct"], p["b2b_discount_pct"],
+            p["margin_thb"], p["margin_pct"],
+            p["is_in_stock"], p["custom_stock_status"], p["wn_stock"], p["consign"],
+            p["sku"],
+        )
+        for p in payloads
+    ]
     try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            if resp.status not in (200, 204):
-                return f"SKU {sku}: HTTP {resp.status}"
-            return None
-    except urllib.error.HTTPError as e:
-        detail = e.read()[:200].decode("utf-8", errors="replace")
-        return f"SKU {sku}: HTTP {e.code}: {detail}"
+        conn = psycopg2.connect(SUPABASE_DB_URL)
+        cur = conn.cursor()
+        cur.executemany(UPDATE_SQL, rows)
+        updated = cur.rowcount if cur.rowcount >= 0 else len(rows)
+        conn.commit()
+        conn.close()
+        return updated, []
     except Exception as e:
-        return f"SKU {sku}: {e}"
-
-
-def update_batch(payloads: list[dict], result: "SyncResult") -> None:
-    import urllib.parse
-    for p in payloads:
-        err = update_row(p)
-        if err:
-            result.errors.append(err)
-        else:
-            result.upserted += 1
+        return 0, [str(e)]
 
 
 # ---------------------------------------------------------------------------
@@ -246,11 +246,12 @@ def run(dry_run: bool = False) -> SyncResult:
         result.duration_s = time.time() - t0
         return result
 
-    # Update in batches, printing progress every BATCH_SIZE rows
-    for i in range(0, len(payloads), BATCH_SIZE):
-        batch = payloads[i : i + BATCH_SIZE]
-        update_batch(batch, result)
-        print(f"  ✓ {result.upserted} updated, {len(result.errors)} errors so far...", flush=True)
+    # Bulk update via direct Postgres — one round-trip for all rows
+    print("  Writing to Supabase via Postgres...", flush=True)
+    updated, errs = bulk_update(payloads)
+    result.upserted = updated
+    result.errors.extend(errs)
+    print(f"  ✓ {updated} rows updated", flush=True)
 
     result.duration_s = time.time() - t0
     return result
