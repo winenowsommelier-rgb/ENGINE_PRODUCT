@@ -1,0 +1,27 @@
+# WNLQ9
+
+> WNLQ9 is a curated wine, whisky and spirits retailer based in Bangkok, Thailand.
+
+WNLQ9 stocks 11,934 bottles from wine and spirits regions across 40+ countries, with a focus on France, Italy, USA, Japan, Australia, Scotland. The selection includes wine (red, white, rosé, sparkling, Champagne), whisky (single malt, blended, Japanese), spirits (gin, vodka, rum, tequila, cognac), sake, liqueurs, beer, and accessories.
+
+## How to order
+
+WNLQ9 does not process online payments. To order, contact the team directly:
+- Contact page: https://wnlq9-catalog.vercel.app/contact
+
+Contact page: https://wnlq9-catalog.vercel.app/contact
+
+## Catalog
+
+Full catalog: https://wnlq9-catalog.vercel.app/shop
+Browse by region: https://wnlq9-catalog.vercel.app/explore-map
+Sitemap: https://wnlq9-catalog.vercel.app/sitemap.xml
+
+## Key collections
+
+- Bordeaux (783 bottles): https://wnlq9-catalog.vercel.app/explore-map/bordeaux
+- Burgundy (565 bottles): https://wnlq9-catalog.vercel.app/explore-map/burgundy
+- Champagne (496 bottles): https://wnlq9-catalog.vercel.app/explore-map/champagne
+- Tuscany (457 bottles): https://wnlq9-catalog.vercel.app/explore-map/tuscany
+- California (447 bottles): https://wnlq9-catalog.vercel.app/explore-map/california
+- Veneto (396 bottles): https://wnlq9-catalog.vercel.app/explore-map/veneto
