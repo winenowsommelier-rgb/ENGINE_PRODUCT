@@ -1,5 +1,8 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+
+export const metadata: Metadata = { robots: { index: false } };
 import { TrustBar } from '@/components/TrustBar';
 import { StepShell } from '@/components/finder/StepShell';
 import { ChoiceCards } from '@/components/finder/ChoiceCards';
