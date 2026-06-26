@@ -3,11 +3,18 @@ import './globals.css';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Analytics } from '@vercel/analytics/next';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { buildWebSiteOrganization } from '@/lib/seo/jsonld';
 
 export const metadata: Metadata = {
-  title: 'WNLQ9',
+  title: 'WNLQ9 — Wine, Whisky & Spirits | Bangkok, Thailand',
   description:
-    'WNLQ9 — a considered selection of wine, whisky and spirits. Browse the collection and contact us to order.',
+    'WNLQ9 is a curated selection of wine, whisky and spirits in Bangkok. Thousands of bottles from 430 regions worldwide. Browse and order via LINE or WhatsApp.',
+  openGraph: {
+    siteName: 'WNLQ9',
+    locale: 'en_TH',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({
@@ -27,6 +34,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <Analytics />
+        <JsonLd data={buildWebSiteOrganization()} />
       </body>
     </html>
   );
