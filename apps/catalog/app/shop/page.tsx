@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { ChevronLeft, ChevronRight, SearchX } from 'lucide-react';
 import { TrustBar } from '@/components/TrustBar';
 import { Filters } from '@/components/Filters';
@@ -12,6 +13,30 @@ import { shopFacets, topGrapes, topFlavors } from '@/lib/shop-facets';
 import { DrillBreadcrumb } from '@/components/DrillBreadcrumb';
 import { buildQuery } from '@/lib/build-query';
 import { cn } from '@/lib/utils';
+
+export function generateMetadata({
+  searchParams,
+}: {
+  searchParams: ShopParams;
+}): Metadata {
+  const products = getAllProducts();
+  const { total } = applyShopQuery(products, searchParams);
+  const thinPage = total < 5;
+
+  return {
+    title: 'Shop Wine, Whisky & Spirits — WNLQ9 Bangkok',
+    description:
+      'Shop thousands of wines, whiskies and spirits at WNLQ9, Bangkok. Filter by region, variety, taste and price. Order via LINE or WhatsApp.',
+    alternates: { canonical: 'https://wnlq9-catalog.vercel.app/shop' },
+    openGraph: {
+      title: 'Shop Wine, Whisky & Spirits — WNLQ9 Bangkok',
+      description: 'Shop thousands of wines, whiskies and spirits at WNLQ9, Bangkok.',
+      locale: 'en_TH',
+      siteName: 'WNLQ9',
+    },
+    ...(thinPage ? { robots: { index: false, follow: true } } : {}),
+  };
+}
 
 /**
  * Fixed taste scales for the advanced-filter dropdowns (spec §6.6 minimum).
