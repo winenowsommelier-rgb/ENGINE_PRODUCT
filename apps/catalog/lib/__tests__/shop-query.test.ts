@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { applyShopQuery, matchesFilters, SHOP_PAGE_SIZE } from '@/lib/shop-query';
+import { applyShopQuery, matchesFilters, normalizeShopParams, SHOP_PAGE_SIZE } from '@/lib/shop-query';
 import type { PublicProduct } from '@/lib/types';
 
 /** Minimal product factory; only the fields a test cares about. */
@@ -134,6 +134,47 @@ describe('applyShopQuery — country / inStock / attribute filters', () => {
   it('combines filters with AND', () => {
     const r = applyShopQuery(data, { country: 'France', inStock: '1', grape: 'merlot' });
     expect(r.items.map((x) => x.sku)).toEqual(['fr']);
+  });
+});
+
+describe('normalizeShopParams — geography hierarchy cleanup', () => {
+  it('drops country-name region params like France > France', () => {
+    expect(normalizeShopParams({ bev: '1', country: 'France', region: 'France' })).toEqual({
+      bev: '1',
+      country: 'France',
+    });
+  });
+
+  it('canonicalizes region aliases and clears stale subregion', () => {
+    expect(normalizeShopParams({
+      bev: '1',
+      country: 'USA',
+      region: 'Napa Valley',
+      subregion: 'Oakville',
+    })).toEqual({
+      bev: '1',
+      country: 'USA',
+      region: 'California',
+    });
+  });
+
+  it('drops subregion when no region is active', () => {
+    expect(normalizeShopParams({ country: 'USA', subregion: 'Oakville' })).toEqual({
+      country: 'USA',
+    });
+  });
+
+  it('drops subregion values that are canonical regions', () => {
+    expect(normalizeShopParams({
+      bev: '1',
+      country: 'USA',
+      region: 'Lodi',
+      subregion: 'California',
+    })).toEqual({
+      bev: '1',
+      country: 'USA',
+      region: 'Lodi',
+    });
   });
 });
 

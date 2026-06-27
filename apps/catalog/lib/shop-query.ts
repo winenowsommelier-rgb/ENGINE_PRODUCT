@@ -57,6 +57,7 @@ import { tierById } from './price-tiers';
 import { isInStock } from './utils';
 import { normalizeScale } from './taste-adapter';
 import { designationForProduct } from './designation';
+import { canonicalRegionForCountry, isRegionLevelValueForCountry, regionMatchesFilter } from './geo-aliases';
 
 export const SHOP_PAGE_SIZE = 24;
 
@@ -78,6 +79,40 @@ export interface ShopQueryResult {
   totalPages: number;
   /** The slice for `page` only. */
   pageItems: PublicProduct[];
+}
+
+export function normalizeShopParams(params: ShopParams): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [key, value] of Object.entries(params)) {
+    const first = firstParam(value);
+    if (typeof first === 'string' && first.trim() !== '') out[key] = first;
+  }
+
+  if (!out.region) {
+    delete out.subregion;
+    return out;
+  }
+
+  const canonicalRegion = canonicalRegionForCountry(out.country, out.region);
+  if (!canonicalRegion) {
+    delete out.region;
+    delete out.subregion;
+    return out;
+  }
+
+  if (canonicalRegion !== out.region) {
+    out.region = canonicalRegion;
+    delete out.subregion;
+    return out;
+  }
+
+  if (out.subregion) {
+    if (isRegionLevelValueForCountry(out.country, out.subregion)) {
+      delete out.subregion;
+    }
+  }
+
+  return out;
 }
 
 /** First value of a param that may arrive as string | string[] | undefined. */
@@ -141,7 +176,7 @@ export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
   if (country && norm(p.country) !== country) return false;
 
   const region = norm(firstParam(params.region));
-  if (region && norm(p.region) !== region) return false;
+  if (region && !regionMatchesFilter(p.country, p.region, region)) return false;
 
   const subregion = norm(firstParam(params.subregion));
   if (subregion && norm(p.subregion) !== subregion) return false;

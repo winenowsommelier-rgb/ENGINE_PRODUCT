@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import { ChevronLeft, ChevronRight, SearchX } from 'lucide-react';
 import { TrustBar } from '@/components/TrustBar';
 import { Filters } from '@/components/Filters';
@@ -8,7 +9,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { getAllProducts } from '@/lib/catalog-data';
 import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
-import { applyShopQuery, type ShopParams } from '@/lib/shop-query';
+import { applyShopQuery, normalizeShopParams, type ShopParams } from '@/lib/shop-query';
 import { shopFacets, topGrapes, topFlavors } from '@/lib/shop-facets';
 import { DrillBreadcrumb } from '@/components/DrillBreadcrumb';
 import { buildQuery } from '@/lib/build-query';
@@ -20,7 +21,8 @@ export function generateMetadata({
   searchParams: ShopParams;
 }): Metadata {
   const products = getAllProducts();
-  const { total } = applyShopQuery(products, searchParams);
+  const normalizedParams = normalizeShopParams(searchParams);
+  const { total } = applyShopQuery(products, normalizedParams);
   const thinPage = total < 5;
 
   return {
@@ -128,17 +130,24 @@ export default function ShopPage({
 }: {
   searchParams: ShopParams;
 }) {
+  const normalizedParams = normalizeShopParams(searchParams);
+  const rawParams = toStringRecord(searchParams);
+  if (JSON.stringify(normalizedParams) !== JSON.stringify(rawParams)) {
+    const qs = buildQuery({}, normalizedParams);
+    redirect(qs ? `/shop?${qs}` : '/shop');
+  }
+
   const products = getAllProducts();
   const countries = distinctCountries();
-  const currentParams = toStringRecord(searchParams);
+  const currentParams = normalizedParams;
 
   // Context-aware drill-down option lists (sub-category / region / sub-region).
-  const facets = shopFacets(products, searchParams);
+  const facets = shopFacets(products, currentParams);
   // Catalog-wide typeahead seeds (cached; independent of active filters).
   const grapeOptions = getGrapeOptions();
   const flavorOptions = getFlavorOptions();
 
-  const result = applyShopQuery(products, searchParams);
+  const result = applyShopQuery(products, currentParams);
   const { pageItems, total, page, pageSize, totalPages } = result;
 
   // Global contact links (no product) for QuickView inside cards. Per-product

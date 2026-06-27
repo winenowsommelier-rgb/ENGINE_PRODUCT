@@ -18,6 +18,30 @@ const catalogRoot = path.join(__dirname, '..');
 const EXCLUDE_GROUPS = ['Accessories', 'Events', 'Cigars', 'Non-Alcoholic'];
 const PEEK_LIMIT = 6;
 
+const REGION_ALIASES_BY_COUNTRY = {
+  usa: {
+    napa: 'California',
+    'napa valley': 'California',
+  },
+  scotland: {
+    highlands: 'Highland',
+    lowlands: 'Lowland',
+  },
+};
+
+function normGeo(value) {
+  return String(value ?? '').trim().toLowerCase();
+}
+
+function canonicalRegionForCountry(country, region) {
+  const raw = String(region ?? '').trim();
+  if (!raw) return '';
+  const countryKey = normGeo(country);
+  const regionKey = normGeo(raw);
+  if (countryKey && countryKey === regionKey) return '';
+  return REGION_ALIASES_BY_COUNTRY[countryKey]?.[regionKey] ?? raw;
+}
+
 /** is_in_stock is a STRING "0"/"1"/null in the export. "0" is truthy in JS — coerce. */
 export function isInStockRaw(v) {
   return String(v ?? '').trim() === '1';
@@ -78,8 +102,8 @@ export function aggregate(rows, { excludeGroups = EXCLUDE_GROUPS } = {}) {
     if (excluded.has(group)) continue;
     // NOTE: no in-stock filter — the map counts all beverages (in + out of stock)
     // by design. See aggregate() docstring; shopHref drops inStock=1 to match.
-    const region = (r.region || '').trim();
     const country = (r.country || '').trim();
+    const region = canonicalRegionForCountry(country, r.region);
     if (country) bump(byCountry, country, r, group);
     if (region) bump(byRegion, region, r, group);
     if (region && country) bump(byRegionCountry, country + RC_SEP + region, r, group);

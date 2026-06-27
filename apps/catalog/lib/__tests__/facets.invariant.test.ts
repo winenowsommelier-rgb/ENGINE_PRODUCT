@@ -1,6 +1,7 @@
 import { getAllProducts } from '../catalog-data';
 import { applyShopQuery, matchesFilters } from '../shop-query';
 import { regionsFor, accessorySubCategoriesFor } from '../facets';
+import { canonicalRegionForCountry } from '../geo-aliases';
 
 describe('facet count consistent with grid total (context-aware invariant)', () => {
   const all = getAllProducts();
@@ -18,7 +19,7 @@ describe('facet count consistent with grid total (context-aware invariant)', () 
       // region is now EXACT (matches the chip): facet count == grid total exactly.
       // Regression guard against the substring count-mismatch bug.
       expect(grid.total).toBe(count);
-      const facetCounted = wine.filter((p) => (p.region ?? '').trim() === value);
+      const facetCounted = wine.filter((p) => canonicalRegionForCountry(p.country, p.region) === value);
       expect(facetCounted.length).toBe(count); // facet count is exact-value tally
       for (const p of facetCounted) {
         expect(matchesFilters(p, params)).toBe(true); // ...and all pass the grid

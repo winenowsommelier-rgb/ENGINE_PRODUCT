@@ -57,11 +57,24 @@ describe('regionsFor / subRegionsFor', () => {
     P({ country: 'France', region: 'Bordeaux', subregion: 'Pauillac' }),
     P({ country: 'France', region: 'Bordeaux', subregion: 'Margaux' }),
     P({ country: 'France', region: 'Burgundy', subregion: '' }),
+    P({ country: 'France', region: 'France', subregion: '' }),
+    P({ country: 'USA', region: 'Napa Valley', subregion: '' }),
+    P({ country: 'USA', region: 'Lodi', subregion: 'California' }),
+    P({ country: 'Scotland', region: 'Highlands', subregion: '' }),
   ];
   it('regionsFor returns distinct regions with counts (zeroes omitted)', () => {
-    expect(regionsFor('France', set)).toEqual([
+    expect(regionsFor('France', set.filter((p) => p.country === 'France'))).toEqual([
       { value: 'Bordeaux', count: 2 },
       { value: 'Burgundy', count: 1 },
+    ]);
+  });
+  it('regionsFor canonicalizes known region aliases', () => {
+    expect(regionsFor('USA', set.filter((p) => p.country === 'USA'))).toEqual([
+      { value: 'California', count: 1 },
+      { value: 'Lodi', count: 1 },
+    ]);
+    expect(regionsFor('Scotland', set.filter((p) => p.country === 'Scotland'))).toEqual([
+      { value: 'Highland', count: 1 },
     ]);
   });
   it('subRegionsFor returns distinct non-empty subregions with counts', () => {
@@ -69,5 +82,8 @@ describe('regionsFor / subRegionsFor', () => {
       { value: 'Margaux', count: 1 },
       { value: 'Pauillac', count: 1 },
     ]);
+  });
+  it('subRegionsFor excludes values that belong at country or region level', () => {
+    expect(subRegionsFor('Lodi', set.filter((p) => p.region === 'Lodi'))).toEqual([]);
   });
 });

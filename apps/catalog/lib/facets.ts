@@ -15,6 +15,7 @@ import {
   accessoryCategoryForSku,
 } from './category-groups';
 import { designationForProduct, DESIGNATIONS } from './designation';
+import { canonicalRegionForCountry, isRegionLevelValueForCountry } from './geo-aliases';
 
 export interface FacetOption {
   value: string;
@@ -77,12 +78,17 @@ export function countriesFor(products: PublicProduct[]): FacetOption[] {
 
 /** Distinct regions present (caller passes the country-filtered set). */
 export function regionsFor(_country: string, products: PublicProduct[]): FacetOption[] {
-  return tally(products, (p) => p.region);
+  return tally(products, (p) => canonicalRegionForCountry(p.country ?? _country, p.region));
 }
 
 /** Distinct sub-regions present (caller passes the region-filtered set). */
 export function subRegionsFor(_region: string, products: PublicProduct[]): FacetOption[] {
-  return tally(products, (p) => p.subregion);
+  return tally(products, (p) => {
+    const subregion = (p.subregion ?? '').trim();
+    if (!subregion) return '';
+    if (isRegionLevelValueForCountry(p.country, subregion)) return '';
+    return subregion;
+  });
 }
 
 /** Derived designations present, ordered by canonical specificity (most-specific first). */
