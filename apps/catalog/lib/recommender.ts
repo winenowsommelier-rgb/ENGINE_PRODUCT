@@ -27,6 +27,37 @@ import { typeForProduct } from '@/lib/category-groups';
 const MAX_RECS = 4;
 const PRICE_BAND = 0.4; // +/-40%
 
+// Variety alias clusters — exact-match on variety misses obvious affinities like
+// Syrah/Shiraz or Pinot Noir/Burgundy. Two varieties in the same cluster score
+// the same +2 as an exact match. Normalise to lowercase for comparison.
+const VARIETY_ALIASES: string[][] = [
+  ['syrah', 'shiraz'],
+  ['pinot noir', 'burgundy', 'bourgogne rouge'],
+  ['chardonnay', 'bourgogne blanc', 'chablis'],
+  ['grenache', 'garnacha'],
+  ['tempranillo', 'tinta roriz', 'tinto fino', 'cencibel'],
+  ['malbec', 'côt', 'auxerrois'],
+  ['mourvèdre', 'monastrell', 'mataro'],
+  ['sauvignon blanc', 'fumé blanc'],
+  ['cabernet sauvignon', 'cabernet'],
+];
+
+// Build a fast lookup: lowercase variety → cluster index
+const _varietyCluster = new Map<string, number>();
+for (let i = 0; i < VARIETY_ALIASES.length; i++) {
+  for (const v of VARIETY_ALIASES[i]) {
+    _varietyCluster.set(v, i);
+  }
+}
+
+function varietiesMatch(a: string | undefined | null, b: string | undefined | null): boolean {
+  if (!a || !b) return false;
+  const al = a.toLowerCase(), bl = b.toLowerCase();
+  if (al === bl) return true;
+  const ci = _varietyCluster.get(al);
+  return ci !== undefined && ci === _varietyCluster.get(bl);
+}
+
 /**
  * Lowercased, trimmed set of food_matching items, using the shared
  * pipe-first / paren-aware parser (see parseFoodMatching in lib/utils).
@@ -50,7 +81,8 @@ export function scoreCandidate(
   let score = 0;
 
   if (product.region && candidate.region && product.region === candidate.region) score += 3;
-  if (product.variety && candidate.variety && product.variety === candidate.variety) score += 2;
+  if (product.subregion && candidate.subregion && product.subregion === candidate.subregion) score += 2;
+  if (varietiesMatch(product.variety, candidate.variety)) score += 2;
   if (product.country && candidate.country && product.country === candidate.country) score += 1;
 
   const a = productFoods ?? foodSet(product.food_matching);
