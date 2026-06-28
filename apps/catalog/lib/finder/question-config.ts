@@ -502,13 +502,21 @@ const DEEP_DIVE_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   // grape step — rosé variety is a blend signal, not a single-grape pick like red/white.
   rose: [WINE_ACIDITY_STEP, ADVENTURE_STEP],
   sparkling: WINE_DEEP_DIVE_SPARKLING,
-  whisky: [WHISKY_PEAT_STEP, WHISKY_AGE_STEP, ADVENTURE_STEP],
+  // Whisky deep-dive: peat only. ADVENTURE removed (only 3/431 in-stock whiskies hit a
+  // famous region — Mendoza/Rioja outliers, not a real whisky region signal). AGE removed
+  // (52% NV + 40% null → only 3% have a parseable vintage year → near-dead scorer).
+  whisky: [WHISKY_PEAT_STEP],
   // Thin categories — kept deliberately short (gin MUST be shorter than red).
   // Gin's classic/contemporary axis is profile-only, so a single adventure
   // step is all the extra signal worth collecting.
   gin: [ADVENTURE_STEP],
-  spirits: [ADVENTURE_STEP, WHISKY_AGE_STEP],
-  sake: [SAKE_AGE_STEP],
+  // Spirits deep-dive: adventure only. AGE removed — 85% NV/null vintage for spirits
+  // → ageScore near-dead. Adventure IS meaningful for Cognac (Champagne/Armagnac regions
+  // hit the FAMOUS_REGIONS set), so it stays.
+  spirits: [ADVENTURE_STEP],
+  // Sake deep-dive: AGE removed — 285/440 NV, 134 null, only 1 parseable vintage year →
+  // the step asked a question that changed nothing for 99.8% of the pool.
+  sake: [],
 };
 
 /**

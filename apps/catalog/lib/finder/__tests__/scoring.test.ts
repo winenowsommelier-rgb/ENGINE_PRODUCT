@@ -545,6 +545,76 @@ describe('scoreProducts', () => {
     expect(out.products[0].sku).toBe('LSKsweet2');
   });
 
+  // ── Whisky smooth/rich style leans (audit fix: both previously scored 0). ──
+  // smooth → +1 when smokiness='none' (reliable unpeated indicator). Rank-only.
+  // rich   → +1 when flavor_tags_canonical contains sherry/dried-fruit notes. Rank-only.
+  // Both are weaker than the smoky +2 (positive-only, never gate quality).
+  it("whisky tasteFeel='smooth' boosts a smokiness=none bottle above one with no smokiness data", () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    const pool = [W({sku:'LWHnosig', smokiness:null, name:'Acme Malt'}),
+                  W({sku:'LWHnone', smokiness:'none', name:'Smooth Malt'})];
+    const out = scoreProducts({ category:'whisky', tasteFeel:'smooth' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHnone');
+  });
+  it("whisky tasteFeel='smooth' is rank-only: the smooth bump never clears the quality gate alone", () => {
+    // smooth lean is rank-only (in deepDiveBump, not `s`). With no axis1 and no other
+    // taste-tier answer, s=0 for all → degraded=true. But the ordering IS affected by the
+    // bump: smokiness=none bottles out-rank smokiness=heavy ones within the degraded pool.
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    const pool = [W({sku:'LWHheavy', smokiness:'heavy'}), W({sku:'LWHnone', smokiness:'none'})];
+    const out = scoreProducts({ category:'whisky', tasteFeel:'smooth' } as any, pool as any);
+    // smooth bump re-orders even in a degraded result
+    expect(out.products[0].sku).toBe('LWHnone');
+    // degraded=true because s=0 for all (smooth lean is rank-only, never taste-tier)
+    expect(out.degraded).toBe(true);
+  });
+  it("whisky tasteFeel='rich' boosts a bottle with sherry/dried-fruit flavor tags", () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    const pool = [W({sku:'LWHplain', flavor_tags_canonical:['Vanilla','Oak']}),
+                  W({sku:'LWHrich', flavor_tags_canonical:['Dried Fruit','Sherry']})];
+    const out = scoreProducts({ category:'whisky', tasteFeel:'rich' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHrich');
+  });
+  it("whisky tasteFeel='rich' gives 0 to a vanilla-only bottle (vanilla excluded — too universal)", () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    // both vanilla-only; neither gets rich boost → tie broken cheapest-first
+    const pool = [W({sku:'LWHa', flavor_tags_canonical:['Vanilla'], price:1000}),
+                  W({sku:'LWHb', flavor_tags_canonical:['Caramel'], price:2000})];
+    const out = scoreProducts({ category:'whisky', tasteFeel:'rich' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LWHa'); // cheaper wins (no rich bump for vanilla/caramel)
+  });
+  it("whisky overlap: a sherried Speyside scores BOTH smooth (+1) and rich (+1) simultaneously", () => {
+    const W = (o:any)=>({ price:2000, is_in_stock:true, classification:'Whisky', country:'Scotland', ...o });
+    const sherry = W({sku:'LWHsherry', smokiness:'none', flavor_tags_canonical:['Dried Fruit','Sherry']});
+    const plainVanilla = W({sku:'LWHvanilla', smokiness:null, flavor_tags_canonical:['Vanilla']});
+    const smoothOut = scoreProducts({ category:'whisky', tasteFeel:'smooth' } as any, [sherry, plainVanilla] as any);
+    expect(smoothOut.products[0].sku).toBe('LWHsherry'); // wins on smooth lean too
+    const richOut = scoreProducts({ category:'whisky', tasteFeel:'rich' } as any, [sherry, plainVanilla] as any);
+    expect(richOut.products[0].sku).toBe('LWHsherry');   // wins on rich lean
+  });
+
+  // ── Spirits smooth lean (audit fix: 'smooth' previously scored 0 like 'light'). ──
+  // smooth → +1 when smokiness='none'. Rank-only, positive-only.
+  it("spirits tasteFeel='smooth' boosts a smokiness=none bottle (e.g. clean vodka/rum)", () => {
+    const S = (o:any)=>({ price:2000, is_in_stock:true, category_group:'Spirits', category_type:'Vodka', ...o });
+    const pool = [S({sku:'LVKnosig', smokiness:null, name:'Acme Vodka'}),
+                  S({sku:'LVKsmooth', smokiness:'none', name:'Smooth Vodka'})];
+    const out = scoreProducts({ category:'spirits', tasteFeel:'smooth' } as any, pool as any);
+    expect(out.products[0].sku).toBe('LVKsmooth');
+  });
+  it("spirits tasteFeel='smooth' is rank-only and weaker than 'rich' aged-keyword lean", () => {
+    // smooth gives +1 (none-smokiness), rich gives +2 (age keyword). A rich-aged bottle
+    // with smokiness=none should lead when 'rich' is asked, not 'smooth'.
+    const S = (o:any)=>({ price:2000, is_in_stock:true, category_group:'Spirits', category_type:'Rum', ...o });
+    const pool = [S({sku:'LRMsmooth', smokiness:'none', name:'Acme Rum'}),
+                  S({sku:'LRMaged', smokiness:'none', name:'Acme Añejo Rum'})];
+    const richOut = scoreProducts({ category:'spirits', tasteFeel:'rich' } as any, pool as any);
+    expect(richOut.products[0].sku).toBe('LRMaged'); // age keyword wins for 'rich'
+    const smoothOut = scoreProducts({ category:'spirits', tasteFeel:'smooth' } as any, pool as any);
+    // both have smokiness=none → tie → cheapest-first (both ฿2000) → either; just no crash
+    expect(smoothOut.products.length).toBe(2);
+  });
+
   it('gin: ginStyleBump ignores classification (Rule 12) — keyword in classification scores 0', () => {
     // 'classic' keyword 'london' lives ONLY in classification on LGNcls. If ginStyleBump still
     // read classification it would win; since it must NOT, LGNname (keyword in name) leads.

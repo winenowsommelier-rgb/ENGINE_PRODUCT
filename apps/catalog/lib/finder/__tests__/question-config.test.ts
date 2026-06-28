@@ -143,9 +143,15 @@ describe('deepDiveStepsFor (opt-in sommelier branch)', () => {
       expect(t).toContain('surprise');        // every colour keeps the escape hatch
     }
   });
-  it('whisky deep-dive has peat/age/adventure and NO cask (spirit_style is phantom)', () => {
+  it('whisky deep-dive has peat only (age+adventure removed: near-dead scorers on NV-dominant pool)', () => {
+    // Regression guard: age was removed because 52% NV + 40% null → only 3% of whisky have a
+    // parseable vintage year. Adventure was removed because only 3/431 in-stock whiskies hit a
+    // FAMOUS_REGION (Rioja/Champagne mislabels, not real whisky regions). Both steps asked
+    // questions that changed nothing for 97%+ of the pool — Rule 5 anti-test fix.
     const fields = deepDiveStepsFor('whisky').map(s=>s.field);
-    expect(fields).toContain('peat'); expect(fields).toContain('age');
+    expect(fields).toContain('peat');
+    expect(fields).not.toContain('age');
+    expect(fields).not.toContain('adventure');
     expect(fields).not.toContain('cask');
   });
   it('every deep-dive step is optional', () => {

@@ -315,23 +315,34 @@ function ginStyleBump(a: Answers, p: PublicProduct): number {
   return 0;
 }
 
-// SPIRITS (other) Layer-1 tasteFeel → POSITIVE-ONLY age/grade rank lean (TASK A). Spirits
-// have no structured body/acidity worth ranking on (unlike wine), so the 'rich'/'aged'
-// feel reads age/grade keywords from name + desc (reposado/añejo/VSOP/XO/aged/gran reserva/
-// 'year') — the same noisy-text approach as ginStyleBump, kept RANK-ONLY (deep-dive bump,
-// never the taste-tier `s`): a keyword hit re-orders but cannot clear the quality gate.
-// 'light'/'smooth' impose NO text requirement (they describe a clean unaged style, which is
-// the absence of these markers, not a positive keyword) → 0 here, so a plain bottle is
-// never penalized. Rule 12: name/desc only, NEVER classification.
+// SPIRITS (other) Layer-1 tasteFeel → rank-only style leans (TASK A + audit fix). Two paths:
+//
+// 'rich'/'aged' → POSITIVE-ONLY age/grade keyword lean (+2). Reads age/grade keywords from
+//   name+desc (reposado/añejo/VSOP/XO/aged/gran reserva/'year'). A plain bottle scores 0 —
+//   never penalized. This is the original TASK A implementation.
+//
+// 'smooth' → POSITIVE-ONLY lean for smokiness='none' (+1). Audit finding: 'smooth' previously
+//   scored nothing, so vodka/rum users picking 'smooth' got zero signal. Smokiness='none'
+//   covers 91% of the spirits pool and is a reliable indicator of a clean unaged profile.
+//   +1 only (weaker than the aged +2, since 'none' is near-universal in this pool — it is a
+//   soft lean, not a strong discriminant). 'light' still scores 0 (deliberately — 'light' and
+//   'smooth' are so similar in the spirits context that we don't over-differentiate with noise).
+//
+// Rule 12: name/desc only for text keywords, NEVER classification.
 const SPIRITS_AGE_KEYWORDS = [
   'reposado', 'añejo', 'anejo', 'vsop', 'xo', 'x.o', 'aged', 'gran reserva', 'year',
 ];
 function spiritsFeelScore(a: Answers, p: PublicProduct): number {
   if (a.category !== 'spirits') return 0;
-  if (a.tasteFeel !== 'rich' && a.tasteFeel !== 'aged') return 0;
-  const hay = norm([p.name, p.desc_en_short].filter(Boolean).join(' '));
-  if (!hay) return 0;
-  return SPIRITS_AGE_KEYWORDS.some((k) => hay.includes(k)) ? 2 : 0;
+  if (a.tasteFeel === 'rich' || a.tasteFeel === 'aged') {
+    const hay = norm([p.name, p.desc_en_short].filter(Boolean).join(' '));
+    if (!hay) return 0;
+    return SPIRITS_AGE_KEYWORDS.some((k) => hay.includes(k)) ? 2 : 0;
+  }
+  if (a.tasteFeel === 'smooth') {
+    return norm(p.smokiness) === 'none' ? 1 : 0;
+  }
+  return 0;
 }
 
 // SAKE Layer-1 tasteFeel → aroma class from the STRUCTURED `variety` (TASK B). Unlike the
@@ -477,16 +488,38 @@ const FEEL_SECONDARY_AXIS: Record<string, 'tannin' | 'acidity'> = {
   sparkling: 'acidity',
 };
 
-// WHISKY Layer-1 tasteFeel='smoky' (spec §11.8). Positive-only smoky boost from REAL
-// evidence: smokiness='heavy' OR the peated-distillery name allow-list. NEVER excludes or
-// penalizes smokiness='none' (the export false-negatives Talisker/Ledaig), NEVER reads
-// region, NEVER asserts 'smooth' from 'none'. Kept in the deep-dive bump (rank-only): a
-// keyword/tag smoky lean re-orders but the whisky core taste-tier stays origin-driven.
-// 'smooth' and 'rich' tasteFeel tokens resolve to archetypes for COPY (taste-feel.ts) but
-// have no structured smoke field to score, so only 'smoky' earns a rank boost here.
+// WHISKY Layer-1 tasteFeel scoring (spec §11.8). Three paths — all rank-only, additive.
+//
+// 'smoky' → positive-only: smokiness='heavy' OR peated allow-list. NEVER penalizes
+//   smokiness='none' (export false-negatives Talisker/Ledaig). NEVER reads region.
+//
+// 'smooth' → lean on smokiness='none' as a reliable UNPEATED indicator (+1). A 'none'
+//   smokiness tag is not 100% reliable (some drams are miscoded) but it is the only
+//   structured unpeated signal available. Positive-only: we boost genuinely-tagged-none
+//   whiskies, never penalize missing/null smokiness.
+//
+// 'rich' → lean on sherry/dried-fruit flavor_tags_canonical (+1). We deliberately
+//   exclude vanilla/caramel (too universal — 75% of Scotch carry them) and use
+//   sherry-derived notes as the primary 'rich' discriminant. These notes appear in only
+//   ~24% of Scotch (57 sherry + 95 dried-fruit-tagged bottles), so the signal is specific.
+//   Smooth/rich OVERLAP note: 35/129 Scotch carry BOTH types of note — that is correct
+//   behaviour: a sherried Speyside IS legitimately smooth AND rich, so it scores +1 for
+//   EITHER question. Both bumps are rank-only and never gate quality, so the overlap
+//   produces a calibrated preference lean, not an exclusion.
+const WHISKY_RICH_TAGS = new Set(['dried fruit', 'sherry', 'oloroso', 'dark fruit', 'prune', 'sultana', 'raisin', 'malt']);
 function whiskyFeelSmokyBump(a: Answers, p: PublicProduct): number {
-  if (a.category !== 'whisky' || a.tasteFeel !== 'smoky') return 0;
-  return norm(p.smokiness) === 'heavy' || isLikelyPeated(p.name) ? 2 : 0;
+  if (a.category !== 'whisky') return 0;
+  if (a.tasteFeel === 'smoky') {
+    return norm(p.smokiness) === 'heavy' || isLikelyPeated(p.name) ? 2 : 0;
+  }
+  if (a.tasteFeel === 'smooth') {
+    return norm(p.smokiness) === 'none' ? 1 : 0;
+  }
+  if (a.tasteFeel === 'rich') {
+    const notes = new Set((p.flavor_tags_canonical ?? []).map(norm));
+    return [...WHISKY_RICH_TAGS].some((t) => notes.has(t)) ? 1 : 0;
+  }
+  return 0;
 }
 
 /** Points a wine earns from its tasteFeel answer vs the resolved archetype (0 = no signal). */
