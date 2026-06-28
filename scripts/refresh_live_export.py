@@ -84,6 +84,10 @@ EXPORT_COLS = [
     "margin_pct", "b2b_margin_pct",
     # Critic scores — required by score_threshold filter in curation
     "score_max", "score_summary",
+    # Refiner attributes — added 2026-06-27
+    # origin_system: the certification body (DOC/DOCG/AOC/IGT/AVA etc) — separated from designation
+    # accessory_type: sub-category for accessories (Glassware/Decanter/Pourer etc)
+    "origin_system", "accessory_type",
 ]
 
 # Columns that contain JSON-encoded text and should be decoded for export.
