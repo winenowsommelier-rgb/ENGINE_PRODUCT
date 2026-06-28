@@ -39,16 +39,8 @@ describe('answers URL codec', () => {
     const dec = decodeAnswers(new URLSearchParams(enc));
     expect(dec.tasteFeel).toBe('bold');
   });
-  // TASK B (Phase-2 sake): the new `serve` field (chilled/warm/either) must round-trip via 'sv'.
-  test('serve round-trips via URL params (sake chilled/warm)', () => {
-    const enc = encodeAnswers({ category: 'sake', serve: 'warm' });
-    const dec = decodeAnswers(new URLSearchParams(enc));
-    expect(dec.serve).toBe('warm');
-  });
-  test('serve omitted when unset (minimal round-trip clean)', () => {
-    const dec = decodeAnswers(new URLSearchParams(encodeAnswers({ category: 'sake' })));
-    expect(dec.serve).toBeUndefined();
-  });
+  // serve field removed — the SAKE_SERVE_STEP was collected but never scored,
+  // so the question was removed and the field dropped from Answers (deceptive UX fix).
   // ROSÉ (Phase-2) — THE TRAP. decodeAnswers validates `cat` against a RUNTIME
   // `CATEGORIES` array that tsc does NOT cross-check against the FinderCategory union.
   // If 'rose' is added to the union but NOT to that array, cat=rose silently decodes to

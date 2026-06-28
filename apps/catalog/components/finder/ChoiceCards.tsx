@@ -99,10 +99,6 @@ export function withAnswer(
     case 'adventure':
     case 'peat':
     case 'tasteFeel':
-    // `serve` is the Layer-1 sake serve preference (chilled/warm/either, TASK B) — a
-    // single-value string field, same shape. Without this case the sake serve step would
-    // write NOTHING (the known dropped-field bug the exhaustiveness guard below catches).
-    case 'serve':
       next[field] = value as string;
       break;
     default: {

@@ -43,8 +43,10 @@ const BODY_TOKEN: Record<string, string> = { light:'Light', medium:'Medium', bol
 // constraint. Reading the sparse-but-real field replaces the old "profile-only,
 // no reliable sweetness field" no-op so the finder answer actually ranks results.
 const SWEETNESS_LADDER = ['very dry', 'dry', 'off-dry', 'sweet'];
-// token → target bucket on the ladder (dry end vs sweet end).
-const SWEETNESS_TARGET: Record<string, string> = { dry: 'dry', sweet: 'sweet' };
+// tasteFeel → target bucket on the sweetness ladder.
+// After TASK B, axis1 carries the sub-type ('sake'/'shochu'/'umeshu'), NOT 'dry'/'sweet'.
+// The aroma feel ('fragrant'/'clean') maps cleanly onto sweet vs dry end of the ladder.
+const SWEETNESS_TARGET: Record<string, string> = { fragrant: 'sweet', clean: 'dry' };
 
 /** The product's sake sweetness value (taste_profile.axes.sweetness.value), or undefined. */
 function sakeSweetness(p: PublicProduct): string | undefined {
@@ -132,8 +134,22 @@ function tier2Score(a: Answers, p: PublicProduct): number {
       if (wantTypes && wantTypes.includes(norm(typeForProduct(p)))) s += 2;
       break;
     }
-    // gin: axis1 is profile-only (see doc above). sake: axis1 (sweetness) IS scored,
-    // but as a ladder term in scoreProducts (not here) — see the doc above.
+    case 'sake': {
+      // Sub-type answer (axis1 = 'sake'|'shochu'|'umeshu') → category_type match.
+      // Narrowing the pool by type isn't possible via CATEGORY_MAP.match (it's answer-
+      // unaware), so we score instead: +2 when the product's canonical category_type
+      // matches the chosen sub-type. This clears QUALITY_MIN for genuine sub-type matches
+      // and lets the degraded flag fire honestly when there's no match (e.g. user wants
+      // umeshu but only rice sake is in budget). 'sake' maps to 'rice sake' category_type.
+      const SAKE_SUBTYPE_TO_TYPE: Record<string, string> = {
+        sake: 'rice sake', shochu: 'shochu', umeshu: 'umeshu',
+      };
+      const wantType = a.axis1 ? SAKE_SUBTYPE_TO_TYPE[a.axis1] : undefined;
+      if (wantType && norm(typeForProduct(p)) === wantType) s += 2;
+      break;
+    }
+    // gin: axis1 is profile-only (see doc above). sake sweetness IS scored, but as a
+    // ladder term in scoreProducts keyed off tasteFeel (not here) — see the doc above.
   }
   return s;
 }
@@ -554,10 +570,12 @@ export function scoreProducts(a: Answers, products: PublicProduct[]): ScoreResul
     // ladder shape as wine body so it clears QUALITY_MIN for genuine matches. No-signal
     // sake (no taste_profile.axes.sweetness, ~74%) returns null → 0 (neutral, not
     // penalized). 'any' has no SWEETNESS_TARGET entry → no constraint.
-    if (a.category === 'sake' && a.axis1 && SWEETNESS_TARGET[a.axis1]) {
+    // SAKE sweetness — keyed off tasteFeel ('fragrant'→sweet end, 'clean'→dry end) since
+    // TASK B moved axis1 to the sub-type selector. No-signal sake returns undefined → 0.
+    if (a.category === 'sake' && a.tasteFeel && SWEETNESS_TARGET[a.tasteFeel]) {
       const have = sakeSweetness(p);
       if (have) {
-        s += ladderScore(sweetnessLadderDistance(SWEETNESS_TARGET[a.axis1], have), 4);
+        s += ladderScore(sweetnessLadderDistance(SWEETNESS_TARGET[a.tasteFeel], have), 4);
       }
     }
     if (a.flavorChips?.length) {

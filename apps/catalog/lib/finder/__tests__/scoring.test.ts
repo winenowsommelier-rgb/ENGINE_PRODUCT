@@ -113,41 +113,45 @@ describe('scoreProducts', () => {
     expect(out.products[0].sku).toBe('LMZm');
   });
 
-  // ── SAKE sweetness (axis1) — was profile-only (inert); now a real taste-tier ladder
-  // term reading taste_profile.axes.sweetness (~26% of sake populated). LSK* prefix →
-  // Sake & Asian group so finderPrefilter passes them. ──
+  // ── SAKE sweetness (tasteFeel) — reads taste_profile.axes.sweetness (~26% populated).
+  // After TASK B, axis1 is the sub-type selector ('sake'/'shochu'/'umeshu'), so sweetness
+  // is now keyed off tasteFeel: fragrant→sweet end, clean→dry end of the 4-level ladder.
+  // LSK* prefix → Sake & Asian group so finderPrefilter passes them. ──
   const SK = (sku: string, sweetness?: string, o: any = {}) => ({
     sku, price: 4000, is_in_stock: true,
     taste_profile: sweetness ? { axes: { sweetness: { value: sweetness } } } : undefined,
     ...o,
   });
-  it('sake: axis1=sweet ranks a Sweet bottle above a Very Dry one', () => {
+  it('sake: tasteFeel=fragrant ranks a Sweet bottle above a Very Dry one', () => {
+    // fragrant → target 'sweet' end of ladder; 'Sweet' is exact match, 'Very Dry' is far end.
     const pool = [SK('LSKdry', 'Very Dry'), SK('LSKsweet', 'Sweet')];
-    const out = scoreProducts({ category:'sake', axis1:'sweet' } as any, pool as any);
+    const out = scoreProducts({ category:'sake', tasteFeel:'fragrant' } as any, pool as any);
     expect(out.products[0].sku).toBe('LSKsweet');
   });
-  it('sake: axis1=dry ranks a Dry bottle above a Sweet one', () => {
+  it('sake: tasteFeel=clean ranks a Dry bottle above a Sweet one', () => {
+    // clean → target 'dry' end; 'Dry' is exact match (distance 0), 'Sweet' is far end.
     const pool = [SK('LSKsweet', 'Sweet'), SK('LSKdry', 'Dry')];
-    const out = scoreProducts({ category:'sake', axis1:'dry' } as any, pool as any);
+    const out = scoreProducts({ category:'sake', tasteFeel:'clean' } as any, pool as any);
     expect(out.products[0].sku).toBe('LSKdry');
   });
   it('sake: a sweetness match clears the quality gate (not degraded)', () => {
-    // Off-dry is adjacent to the Sweet target (ladder rung 3 ≥ QUALITY_MIN) → well-matched.
+    // Off-dry is adjacent to the fragrant/Sweet target (ladder rung 3 ≥ QUALITY_MIN) → well-matched.
     const pool = [SK('LSK1','Sweet'), SK('LSK2','Off-dry'), SK('LSK3','Sweet'), SK('LSK4','Off-dry')];
-    const out = scoreProducts({ category:'sake', axis1:'sweet' } as any, pool as any);
+    const out = scoreProducts({ category:'sake', tasteFeel:'fragrant' } as any, pool as any);
     expect(out.degraded).toBe(false);
   });
   it('sake: no-sweetness-data products are NEUTRAL (kept, not penalized, not degraded by absence)', () => {
     // 74% of real sake has no sweetness signal. Such a pool must still return matches and
-    // must NOT crash; absence scores 0 (degraded only because nothing clears the gate).
+    // must NOT crash; absence scores 0 (degraded because nothing clears the gate).
     const pool = Array.from({length:5},(_,i)=>SK(`LSKn${i}`)); // no taste_profile
-    const out = scoreProducts({ category:'sake', axis1:'sweet' } as any, pool as any);
+    const out = scoreProducts({ category:'sake', tasteFeel:'fragrant' } as any, pool as any);
     expect(out.products.length).toBeGreaterThanOrEqual(4);
     expect(out.products.every(p => p.sku.startsWith('LSKn'))).toBe(true);
   });
-  it("sake: axis1='any' imposes no sweetness constraint (no crash, all kept)", () => {
+  it("sake: tasteFeel='unsure' imposes no sweetness constraint (no crash, all kept)", () => {
+    // 'unsure' has no SWEETNESS_TARGET entry → no constraint (same as old axis1='any').
     const pool = [SK('LSKa','Sweet'), SK('LSKb','Dry')];
-    const out = scoreProducts({ category:'sake', axis1:'any' } as any, pool as any);
+    const out = scoreProducts({ category:'sake', tasteFeel:'unsure' } as any, pool as any);
     expect(out.products.length).toBe(2);
   });
 
@@ -532,10 +536,12 @@ describe('scoreProducts', () => {
     const out = scoreProducts({ category:'sake', tasteFeel:'fragrant' } as any, pool as any);
     expect(out.products.length).toBe(2);
   });
-  it('sake: existing sweetness (axis1) Layer-2 path is untouched by the aroma feel', () => {
-    // Regression guard: axis1=sweet still ranks a Sweet bottle first (sakeSweetness path).
-    const pool = [SK('LSKdry2', 'Very Dry'), SK('LSKsweet2', 'Sweet')];
-    const out = scoreProducts({ category:'sake', axis1:'sweet' } as any, pool as any);
+  it('sake: sweetness scoring via tasteFeel is independent of sakeAromaScore (deep-dive)', () => {
+    // Regression guard: tasteFeel='fragrant' drives sweetness scoring (taste-tier) AND
+    // sakeAromaScore (rank-only). Both paths active simultaneously must not conflict —
+    // the Sweet bottle still wins when both taste-tier and rank-only favor it.
+    const pool = [SK('LSKdry2', 'Very Dry', { variety:'Junmai' }), SK('LSKsweet2', 'Sweet', { variety:'Daiginjo' })];
+    const out = scoreProducts({ category:'sake', tasteFeel:'fragrant' } as any, pool as any);
     expect(out.products[0].sku).toBe('LSKsweet2');
   });
 

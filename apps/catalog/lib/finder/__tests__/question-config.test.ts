@@ -52,17 +52,11 @@ describe('question config', () => {
     const fields = stepsFor('spirits').map(s => s.field);
     expect(fields).toEqual(['occasion','budget','axis1','tasteFeel','flavorChips']);
   });
-  // TASK B (Phase-2 sake): sake Layer-1 = occasion, budget, sub-type(axis1), aroma(tasteFeel),
-  // serve(serve), flavor. Replaces the old single sweetness(axis1) step.
-  it('sake Layer-1 = occasion, budget, type(axis1), aroma(tasteFeel), serve(serve), flavor', () => {
+  // Sake Layer-1 = occasion, budget, sub-type(axis1), aroma(tasteFeel), flavor.
+  // SAKE_SERVE_STEP removed: the serve question was collected but never scored (deceptive UX).
+  it('sake Layer-1 = occasion, budget, type(axis1), aroma(tasteFeel), flavor (no serve step)', () => {
     const fields = stepsFor('sake').map(s => s.field);
-    expect(fields).toEqual(['occasion','budget','axis1','tasteFeel','serve','flavorChips']);
-  });
-  it('sake has a serve step with chilled/warm/either', () => {
-    const serve = stepsFor('sake').find(s => s.field === 'serve');
-    expect(serve).toBeTruthy();
-    const tokens = serve!.options.map(o => o.token);
-    expect(tokens).toEqual(expect.arrayContaining(['chilled','warm','either']));
+    expect(fields).toEqual(['occasion','budget','axis1','tasteFeel','flavorChips']);
   });
   it('flavor step is multi-select with ≥4 chips', () => {
     const flavor = stepsFor('red').find(s => s.field === 'flavorChips')!;
@@ -179,6 +173,6 @@ describe('deepDiveStepsFor (opt-in sommelier branch)', () => {
     // 'serve' is a CORE Layer-1 sake field (chilled/warm, Phase-2 TASK B) — added here when
     // sake replaced its single sweetness step with sub-type/aroma/serve.
     for (const c of ALL) for (const s of stepsFor(c))
-      expect(['occasion','budget','axis1','axis2','flavorChips','food','tasteFeel','serve']).toContain(s.field);
+      expect(['occasion','budget','axis1','axis2','flavorChips','food','tasteFeel']).toContain(s.field);
   });
 });

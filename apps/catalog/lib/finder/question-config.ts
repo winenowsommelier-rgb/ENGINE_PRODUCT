@@ -10,9 +10,6 @@ export type StepField =
   // Plain-language taste-feel step (Layer-1, no jargon). Resolves to an archetype
   // via taste-feel.ts; replaces the body/character axis1/axis2 questions for red & white.
   | 'tasteFeel'
-  // Sake serve preference (Layer-1, chilled/warm/either — TASK B). Core field, written by
-  // ChoiceCards; needs a case in withAnswer's switch or the step writes nothing.
-  | 'serve'
   // ── Opt-in sommelier deep-dive fields (separate from the core flow) ──
   | 'acidity'
   | 'tannin'
@@ -269,20 +266,6 @@ const SAKE_FEEL_STEP: QuestionStep = {
   ],
 };
 
-// Sake serve preference (serve). Chilled / warm / either. Optional preference; writes the
-// new `serve` field (URL param 'sv', see answers.ts).
-const SAKE_SERVE_STEP: QuestionStep = {
-  id: 'serve',
-  field: 'serve',
-  title: 'Chilled or warm?',
-  optional: true,
-  options: [
-    { token: 'chilled', label: 'Chilled', icon: '❄️' },
-    { token: 'warm', label: 'Warm', icon: '♨️' },
-    { token: 'either', label: 'Either', icon: '🤷' },
-  ],
-};
-
 export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   // Red Layer-1 is plain-language: occasion → budget → taste-feel → flavor. No body/
   // character jargon. (Food is an inline FoodChoice sub-step, not a config step.)
@@ -305,9 +288,9 @@ export const QUESTION_CONFIG: Record<FinderCategory, QuestionStep[]> = {
   // flavor. Keeps the TYPE question, adds ONE generic feel step after it.
   spirits: [OCCASION_STEP, BUDGET_STEP, SPIRITS_TYPE_STEP, SPIRITS_FEEL_STEP, FLAVOR_STEP],
   // Sake Layer-1 (TASK B): occasion → budget → sub-type (axis1) → aroma (tasteFeel) →
-  // serve (serve) → flavor. Replaces the old single sweetness(axis1) step. Sweetness is now
-  // an opt-in Layer-2 path (sakeSweetness in scoring.ts), still keyed off axis1 in deep-dive.
-  sake: [OCCASION_STEP, BUDGET_STEP, SAKE_TYPE_STEP, SAKE_FEEL_STEP, SAKE_SERVE_STEP, FLAVOR_STEP],
+  // flavor. Sweetness scoring is driven by tasteFeel (fragrant→sweet, clean→dry) against
+  // taste_profile.axes.sweetness in scoring.ts. No serve step — serve has no scored field.
+  sake: [OCCASION_STEP, BUDGET_STEP, SAKE_TYPE_STEP, SAKE_FEEL_STEP, FLAVOR_STEP],
 };
 
 /** Ordered steps for a category (after Step 1 category selection). */
