@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ProductCardB2B } from './ProductCardB2B';
 import type { B2BProduct } from '@/lib/types';
