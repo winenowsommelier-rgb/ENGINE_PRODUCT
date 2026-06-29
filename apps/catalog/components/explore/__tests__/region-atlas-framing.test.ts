@@ -2,25 +2,22 @@ import { describe, it, expect } from 'vitest';
 import { partitionWorldPins, SOUTH_LAT_THRESHOLD, type CountryPin } from '../RegionAtlas';
 
 /**
- * The world view used to fit ALL 62 country pins into one short band. Because the
- * data is bimodal — ~56 pins in the northern mid-latitudes (Europe/USA/Japan) plus
- * a handful of deep-south wine countries (Chile, Argentina, S.Africa, Australia,
- * NZ, Uruguay) — the single frame had to zoom out to ~0.36 to reach the south,
- * showing the world ~2.8x over in empty ocean.
+ * Previously, the world view split pins into a northern band + a southern-hemisphere
+ * badge. The map now shows all pins on a taller full-height canvas, so partitionWorldPins
+ * always returns all countries in `north` and an empty `south`.
  *
- * The fix frames the world to the NORTHERN cluster and surfaces the southern
- * outliers as one tappable badge. partitionWorldPins is the pure split that drives
- * that: north pins are framed; south pins back the badge.
+ * SOUTH_LAT_THRESHOLD is retained so external callers don't break; the partition
+ * function no longer uses it for splitting (every country goes into north).
  */
 
 function pin(name: string, lat: number, lng: number, total: number): CountryPin {
   return { name, slug: name.toLowerCase(), lat, lng, regions: [], total };
 }
 
-describe('partitionWorldPins — north/south split for world framing', () => {
+describe('partitionWorldPins — all pins go to north (no southern badge)', () => {
   const lens = 'all' as const;
 
-  it('puts deep-south wine countries in the south bucket', () => {
+  it('puts ALL countries including southern hemisphere into north bucket', () => {
     const pins = [
       pin('France', 46.6, 2.2, 2573),
       pin('USA', 38.5, -121.5, 789),
@@ -32,26 +29,25 @@ describe('partitionWorldPins — north/south split for world framing', () => {
       pin('South Africa', -33.9, 18.9, 84),
     ];
     const { north, south } = partitionWorldPins(pins, lens);
-    expect(south.map((c) => c.name).sort()).toEqual(
-      ['Argentina', 'Australia', 'Chile', 'New Zealand', 'South Africa'].sort(),
+    // All 8 countries go into north; south is always empty.
+    expect(north.map((c) => c.name).sort()).toEqual(
+      ['Argentina', 'Australia', 'Chile', 'France', 'Japan', 'New Zealand', 'South Africa', 'USA'].sort(),
     );
-    expect(north.map((c) => c.name).sort()).toEqual(['France', 'Japan', 'USA'].sort());
+    expect(south).toHaveLength(0);
   });
 
-  it('keeps near-equator northern-tropics origins (Brazil/Peru) in the NORTH bucket', () => {
-    // These sit just north of the threshold; they belong with the main band, not
-    // the deep-south badge, so they must not be split off.
+  it('puts near-equator southern countries into north (not split)', () => {
     const pins = [
-      pin('Brazil', -10, -55, 30), // slightly south but above threshold
+      pin('Brazil', -10, -55, 30),
       pin('Peru', -9.2, -75, 12),
       pin('Chile', -33, -71, 196),
     ];
     const { north, south } = partitionWorldPins(pins, lens);
-    expect(north.map((c) => c.name).sort()).toEqual(['Brazil', 'Peru'].sort());
-    expect(south.map((c) => c.name)).toEqual(['Chile']);
+    expect(north.map((c) => c.name).sort()).toEqual(['Brazil', 'Chile', 'Peru'].sort());
+    expect(south).toHaveLength(0);
   });
 
-  it('excludes pins with zero count under the active lens from BOTH buckets', () => {
+  it('excludes pins with zero count under the active lens', () => {
     const pins = [
       pin('France', 46.6, 2.2, 0), // no stock under lens
       pin('Chile', -33, -71, 0),
@@ -61,8 +57,8 @@ describe('partitionWorldPins — north/south split for world framing', () => {
     expect(south).toHaveLength(0);
   });
 
-  it('threshold is a sane deep-south boundary (between tropics and temperate-south)', () => {
-    expect(SOUTH_LAT_THRESHOLD).toBeLessThanOrEqual(-15);
-    expect(SOUTH_LAT_THRESHOLD).toBeGreaterThanOrEqual(-30);
+  it('SOUTH_LAT_THRESHOLD constant still exported for external callers', () => {
+    expect(typeof SOUTH_LAT_THRESHOLD).toBe('number');
+    expect(SOUTH_LAT_THRESHOLD).toBeLessThan(0);
   });
 });
