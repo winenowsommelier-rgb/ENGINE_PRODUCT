@@ -23,7 +23,7 @@ function parseCriticScore(summary?: string): { score: string; reviewer?: string 
 export default async function ProductDetailPage({ params }: Props) {
   const { sku } = await params;
   const product = getProductBySku(sku);
-  if (!product) notFound();
+  if (!product) return notFound();
 
   const criticInfo = parseCriticScore(product.score_summary);
   const isArchive = product.custom_stock_status === 'CATALOG';
