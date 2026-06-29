@@ -82,7 +82,7 @@ There are TWO directions to protect, by TWO different mechanisms:
    the guard** — the **app-layer `B2B_PUBLIC_FIELDS` allowlist + `toPublicProduct` is.**
    Therefore the B2B export script must **NOT** be a copy of `EXPORT_COLS` (which includes
    margin). It starts from a **minimal explicit display column list** and adds only `b2b_price`
-   (+ `b2b_discount_pct` if the detail page needs it). The Rule-6 invariant test asserts the
+   (NOT `b2b_discount_pct` — see Resolved Edge Cases). The Rule-6 invariant test asserts the
    **generated `b2b_products_export.json`** contains no `margin_pct`/`b2b_margin_pct`/`cost`/
    retail `price`.
 
@@ -92,17 +92,16 @@ New script **`scripts/refresh_b2b_export.py`**:
 
 - Reads `data/db/products.db`.
 - `B2B_EXPORT_COLS` = a **minimal, explicit display-column list** (NOT a copy of the public
-  `EXPORT_COLS`, which carries margin/cost) **plus `b2b_price`, `b2b_discount_pct`**, and
-  **minus retail `price`** (wholesale-only bundle — confirmed decision).
+  `EXPORT_COLS`, which carries margin/cost) **plus `b2b_price`** (NOT `b2b_discount_pct` —
+  see Resolved Edge Cases), and **minus retail `price`** (wholesale-only bundle — confirmed).
 - **Filters: only rows WHERE `b2b_price IS NOT NULL`** (~7,267). "Hide missing" enforced
   at the data layer so such products never reach the app.
 - **Never exports** `cost`, `margin_pct`, `b2b_margin_pct`, `b2b_margin_thb`, retail `price`.
 - Writes **`data/b2b_products_export.json`**.
 
 B2B app `lib/catalog-data.ts`:
-- `B2B_PUBLIC_FIELDS` allowlist = public display fields + `b2b_price` (+ `b2b_discount_pct`
-  if the detail page wants it), **minus** retail `price`/`special_price`/`sp_discount_pct`.
-  Keeps the `satisfies` drift guard.
+- `B2B_PUBLIC_FIELDS` allowlist = public display fields + `b2b_price` (NOT `b2b_discount_pct`),
+  **minus** retail `price`/`special_price`/`sp_discount_pct`. Keeps the `satisfies` drift guard.
 - **Replicates the public app-layer derivation** for `category_group`, `category_type`,
   `popularity_tier`, `flavor_tags_canonical` (these are NOT raw export columns — they are
   computed in `getAllProducts`/`toPublicProduct`). Reused finder/explore/drill-down depend
@@ -220,8 +219,10 @@ No other B2B task starts until the spike resolves this.
   retail fallback path exists. (Confirm `generateStaticParams` reads the B2B export.)
 - **Search index / finder / explore:** built from the B2B export only, so they structurally
   cannot reference a non-B2B SKU. State this explicitly; no extra filtering needed.
-- **`/product/[sku]` detail pricing:** shows `b2b_price` only by default (decide in planning
-  whether to also show `b2b_discount_pct`).
+- **`/product/[sku]` detail pricing:** shows `b2b_price` only. **`b2b_discount_pct` is NOT
+  shipped** to the B2B bundle — a discount % lets a viewer back-compute retail
+  (`retail = b2b_price / (1 − disc)`), which conflicts with the "wholesale price only,
+  no savings" non-goal. So `B2B_EXPORT_COLS` includes `b2b_price` only, not `b2b_discount_pct`.
 
 ## Deploy-Time Tasks
 
