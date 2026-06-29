@@ -30,6 +30,65 @@
 
 import type { PublicProduct } from '@/lib/types';
 import type { Tiers } from '@/components/product/TasteWheel';
+import { groupForProduct, typeForProduct } from '@/lib/category-groups';
+
+/**
+ * PER-CATEGORY AXIS POLICY — the "tannin on tequila" fix.
+ *
+ * The structural gauges (Body / Acidity / Tannin / Sweetness) are a WINE schema.
+ * Before this gate, ANY populated flat field rendered a gauge regardless of
+ * category, so Don Julio 1942 (tequila) and Jim Beam (bourbon) showed a Tannin
+ * gauge and whisky showed Acidity — meaningless to a knowledgeable buyer.
+ *
+ * Tannin is a grape-skin / oak property → RED WINE only.
+ * Acidity is meaningful for wine, sake and beer; not for brown/clear spirits.
+ * Body and Sweetness are broadly applicable.
+ *
+ * This gate suppresses inapplicable axes AT DISPLAY TIME. It does NOT delete the
+ * underlying (paid-for) enrichment data — toStructural is a read-side adapter.
+ *
+ * FUTURE AXES (design captured, not yet shipped): the StructuralGauges component
+ * also supports `intensity`, `bitterness`, `carbonation` — and we'd want
+ * smoke/peat for whisky. Those have NO flat source field in the export yet, so
+ * they are listed here as the INTENDED per-category profile but are inert until
+ * an enrichment run (Rule 10, paid) populates them. Listing an axis here that has
+ * no data is harmless: toStructural only emits axes whose value normalises, so
+ * there is never a silent-empty gauge.
+ */
+type Group =
+  | 'Wine' | 'Whisky' | 'Spirits' | 'Sake & Asian' | 'Liqueur'
+  | 'Beer & RTD' | 'Non-Alcoholic' | 'Cigars' | 'Events' | 'Accessories' | 'Unknown';
+
+// Axes allowed for each category group. Tannin is intentionally ABSENT from every
+// group here and handled separately (red-wine-only) in toStructural, because the
+// Wine group also contains white/rosé/sparkling where tannin must NOT show.
+// '*' (Unknown / unresolved) is permissive so legacy/synthetic products keep all axes.
+const AXES_BY_GROUP: Record<Group, ReadonlySet<string>> = {
+  // Wine tannin gated by sub-type below; body/acidity/sweetness always apply.
+  'Wine':          new Set(['body', 'acidity', 'sweetness']),
+  // Whisky: weight + sweetness (sherried/peated). Smoke/peat + intensity are future.
+  'Whisky':        new Set(['body', 'sweetness']),
+  // Clear/agave spirits: weight + a little sweetness; no acidity, no tannin.
+  'Spirits':       new Set(['body', 'sweetness']),
+  // Sake has genuine acidity; never tannin.
+  'Sake & Asian':  new Set(['body', 'acidity', 'sweetness']),
+  // Liqueurs: sweetness-led, with body; bitterness is future.
+  'Liqueur':       new Set(['body', 'sweetness']),
+  // Beer & RTD: body/sweetness/acidity (sours); carbonation + bitterness future.
+  'Beer & RTD':    new Set(['body', 'acidity', 'sweetness']),
+  // Non-alcoholic: keep body/sweetness/acidity (juices, mixers, NA wine).
+  'Non-Alcoholic': new Set(['body', 'acidity', 'sweetness']),
+  // No taste gauges for these — they have no flat taste data anyway.
+  'Cigars':        new Set<string>(),
+  'Events':        new Set<string>(),
+  'Accessories':   new Set<string>(),
+  // Unresolved category → permissive (don't drop data for synthetic/test SKUs).
+  'Unknown':       new Set(['body', 'acidity', 'sweetness']),
+};
+
+// Tannin is shown ONLY for these wine sub-types (typeForProduct). White/Rosé/
+// Sparkling/Sweet wines carry negligible tannin and must not display the gauge.
+const TANNIN_TYPES: ReadonlySet<string> = new Set(['Red Wine', 'Orange Wine']);
 
 /**
  * The intensity-vs-fullness scales differ between axes:
@@ -128,20 +187,40 @@ export function toTiers(taste_profile: Record<string, unknown> | null | undefine
  * normalising each value into the component scale and DROPPING empties.
  * Returns {} when the product has no usable structural data.
  *
+ * PER-CATEGORY GATE: only axes applicable to the product's category_group are
+ * emitted (see AXES_BY_GROUP), and tannin is restricted to red/orange wine
+ * sub-types (TANNIN_TYPES). Category is resolved from the SKU via the canonical
+ * taxonomy (groupForProduct/typeForProduct) — the live export does not carry the
+ * group field, so resolution drives the gate. This suppresses nonsensical gauges
+ * (tannin on tequila, acidity on whisky) WITHOUT deleting the underlying data.
+ *
  * body / acidity / tannin / sweetness are emitted from their flat fields
  * (sweetness is Phase-B-Run-2 enriched on the [Dry, Off-Dry, Medium-Sweet, Sweet]
  * gauge scale). The component also supports bitterness/carbonation/intensity but
- * those have no flat source here, so we don't emit them.
+ * those have no flat source here yet (see AXES_BY_GROUP doc), so we don't emit them.
  */
 export function toStructural(product: PublicProduct): Record<string, string> {
+  const group = (groupForProduct(product) as Group) ?? 'Unknown';
+  const allowed = AXES_BY_GROUP[group] ?? AXES_BY_GROUP.Unknown;
+  // Tannin: allowed only for red/orange wine sub-types, regardless of group set.
+  const tanninOK = group === 'Unknown' || TANNIN_TYPES.has(typeForProduct(product));
+
   const out: Record<string, string> = {};
-  const body = normalizeScale('body', product.body);
-  const acidity = normalizeScale('acidity', product.acidity);
-  const tannin = normalizeScale('tannin', product.tannin);
-  if (body) out.body = body;
-  if (acidity) out.acidity = acidity;
-  if (tannin) out.tannin = tannin;
-  const sweetness = normalizeScale('sweetness', product.sweetness);
-  if (sweetness) out.sweetness = sweetness;
+  if (allowed.has('body')) {
+    const body = normalizeScale('body', product.body);
+    if (body) out.body = body;
+  }
+  if (allowed.has('acidity')) {
+    const acidity = normalizeScale('acidity', product.acidity);
+    if (acidity) out.acidity = acidity;
+  }
+  if (tanninOK) {
+    const tannin = normalizeScale('tannin', product.tannin);
+    if (tannin) out.tannin = tannin;
+  }
+  if (allowed.has('sweetness')) {
+    const sweetness = normalizeScale('sweetness', product.sweetness);
+    if (sweetness) out.sweetness = sweetness;
+  }
   return out;
 }

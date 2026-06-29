@@ -141,3 +141,65 @@ describe('toStructural', () => {
     expect(toStructural({} as any).sweetness).toBeUndefined();
   });
 });
+
+/**
+ * Per-category axis gating (the "tannin on tequila" fix).
+ *
+ * The structural gauges are a WINE schema. Before this gate, any populated flat
+ * field rendered a gauge regardless of category — so Don Julio 1942 (tequila,
+ * SKU LTQ...) and Jim Beam (bourbon, SKU LWH...) showed a Tannin gauge, and
+ * whisky showed Acidity. Tannin is a grape-skin/oak property: red-wine only.
+ * Acidity is meaningful for wine + sake + beer. toStructural() now drops axes
+ * that don't apply to the product's category_group (and, for tannin, its
+ * red-wine sub-type) — WITHOUT deleting the underlying paid-for data.
+ *
+ * Category is resolved from the SKU via the canonical taxonomy (groupForProduct/
+ * typeForProduct); the live export does NOT carry category_group, so these tests
+ * use real-prefix SKUs so resolve() drives the gate.
+ */
+describe('toStructural — per-category axis gating', () => {
+  it('drops Tannin on tequila (Don Julio 1942, LTQ prefix) even when present', () => {
+    const s = toStructural(mk({ sku: 'LTQ0203BU', name: 'Don Julio 1942', tannin: 'Light', body: 'Full' }));
+    expect('tannin' in s).toBe(false);
+    expect(s.body).toBe('Full'); // body still applies to spirits
+  });
+
+  it('drops Tannin AND Acidity on whisky (Jim Beam bourbon, LWH prefix)', () => {
+    const s = toStructural(mk({ sku: 'LWH0329AA', name: 'Jim Beam Bourbon', tannin: 'Low', acidity: 'Low', body: 'Medium' }));
+    expect('tannin' in s).toBe(false);
+    expect('acidity' in s).toBe(false);
+    expect(s.body).toBe('Medium'); // body + sweetness are whisky-appropriate
+  });
+
+  it('drops Tannin on gin (Bombay Sapphire, LGN prefix)', () => {
+    const s = toStructural(mk({ sku: 'LGN0311DR', name: 'Bombay Sapphire Gin', tannin: 'Low', body: 'Light' }));
+    expect('tannin' in s).toBe(false);
+  });
+
+  it('KEEPS all four wine axes for red wine (tannin is correct here)', () => {
+    // A red-wine SKU prefix (WRW) resolves to type "Red Wine" → tannin allowed.
+    const s = toStructural(mk({ sku: 'WRW3100CI', name: 'A Red Wine', body: 'Full', acidity: 'Medium', tannin: 'High', sweetness: 'Dry' }));
+    expect(s.tannin).toBe('High');
+    expect(s.body).toBe('Full');
+    expect(s.acidity).toBe('Medium');
+    expect(s.sweetness).toBe('Dry');
+  });
+
+  it('drops Tannin on white wine (same Wine group, but not Red sub-type)', () => {
+    const s = toStructural(mk({ sku: 'WWW1000AA', name: 'A White Wine', body: 'Medium', acidity: 'High', tannin: 'Low' }));
+    expect('tannin' in s).toBe(false);
+    expect(s.acidity).toBe('High'); // acidity stays for white wine
+  });
+
+  it('keeps Acidity for sake but drops Tannin (sake has real acidity, no tannin)', () => {
+    const s = toStructural(mk({ sku: 'LSJ0024DG', name: 'A Sake', acidity: 'Medium', tannin: 'Low', body: 'Medium' }));
+    expect(s.acidity).toBe('Medium');
+    expect('tannin' in s).toBe(false);
+  });
+
+  it('an unknown-group product (synthetic sku:X) keeps all axes — gate is permissive on Unknown', () => {
+    // Legacy/test products with no resolvable category must not lose data.
+    const s = toStructural(mk({ sku: 'X', body: 'Medium', acidity: 'Medium', tannin: 'Medium', sweetness: 'Dry' }));
+    expect(s).toEqual({ body: 'Medium', acidity: 'Medium', tannin: 'Medium', sweetness: 'Dry' });
+  });
+});
