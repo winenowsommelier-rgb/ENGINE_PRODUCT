@@ -114,6 +114,15 @@ describe('toStructural', () => {
     expect(filled).toBeGreaterThan(0);
   });
 
+  it('folds lowercase tokens to the canonical scale value (3 rows have body=light)', () => {
+    // Regression: the Details table no longer lists body/acidity/tannin, so a
+    // lowercase value that fails to normalise would vanish entirely AND render
+    // an all-empty gauge. Case-fold so it fills.
+    expect(toStructural(mk({ body: 'light' })).body).toBe('Light');
+    expect(toStructural(mk({ acidity: 'high' })).acidity).toBe('High');
+    expect(toStructural(mk({ tannin: 'medium-full' })).tannin).toBe('Medium-High');
+  });
+
   it('drops empty/null axes rather than emitting silent-empty gauges', () => {
     const s = toStructural(mk({ body: 'Medium', acidity: null as unknown as undefined }));
     expect(s).toEqual({ body: 'Medium' });

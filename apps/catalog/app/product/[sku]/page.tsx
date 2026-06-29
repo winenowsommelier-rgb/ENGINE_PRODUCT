@@ -310,9 +310,8 @@ export default function Page({ params }: { params: { sku: string } }) {
               <AttrRow label="Variety" value={product.variety} />
               <AttrRow label="Vintage" value={product.vintage} />
               <AttrRow label="Bottle size" value={product.bottle_size} />
-              <AttrRow label="Body" value={product.body} />
-              <AttrRow label="Acidity" value={product.acidity} />
-              <AttrRow label="Tannin" value={product.tannin} />
+              {/* Body / Acidity / Tannin intentionally omitted here — shown as gauges
+                  in the Taste profile section below to avoid duplication. */}
             </dl>
           </section>
 

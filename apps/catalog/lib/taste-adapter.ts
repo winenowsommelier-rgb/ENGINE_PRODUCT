@@ -74,6 +74,20 @@ const SCALE: Record<Axis, ReadonlySet<string>> = {
   sweetness: new Set(['Dry', 'Off-Dry', 'Medium-Sweet', 'Sweet']),
 };
 
+// lowercase token → canonical-cased token, per axis. Covers both in-scale
+// values and remappable out-of-scale values so case folding happens before
+// the SCALE/REMAP lookups below.
+const CANON: Record<Axis, Map<string, string>> = (() => {
+  const out = {} as Record<Axis, Map<string, string>>;
+  (Object.keys(SCALE) as Axis[]).forEach((a) => {
+    const m = new Map<string, string>();
+    SCALE[a].forEach((t) => m.set(t.toLowerCase(), t));
+    Object.keys(REMAP[a]).forEach((t) => m.set(t.toLowerCase(), t));
+    out[a] = m;
+  });
+  return out;
+})();
+
 /**
  * Normalise a raw structural value into the component's scale for `axis`.
  *
@@ -85,8 +99,13 @@ export function normalizeScale(axis: string, value: string | null | undefined): 
   if (!value) return null;
   const a = axis as Axis;
   if (!(a in SCALE)) return null;
-  const v = value.trim();
-  if (v === '') return null;
+  const raw = value.trim();
+  if (raw === '') return null;
+  // Case-insensitive match: live export carries a few lowercase tokens
+  // (e.g. body='light', 3 rows). Without folding, indexOf -1 → silent-empty
+  // gauge AND (now that the Details table no longer lists body/acidity/tannin)
+  // the value would vanish entirely. Fold to the canonical-cased scale token.
+  const v = CANON[a].get(raw.toLowerCase()) ?? raw;
   if (SCALE[a].has(v)) return v;          // already valid → pass through
   const mapped = REMAP[a][v];
   return mapped ?? null;                    // unknown token → drop (null)
