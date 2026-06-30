@@ -31,7 +31,7 @@ export function ProductCardB2B({ product }: Props) {
 
   return (
     <Link href={`/product/${product.sku}`} className="group block">
-      <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-white border border-neutral-100 shadow-sm transition-shadow hover:shadow-md">
+      <div className="relative h-36 overflow-hidden rounded-lg bg-white border border-neutral-100 shadow-sm transition-shadow hover:shadow-md">
         {product.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
