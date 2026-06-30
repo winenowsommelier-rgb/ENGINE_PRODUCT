@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
 import { signToken, COOKIE_NAME, MAX_AGE } from '@/lib/auth';
 
 const B2B_PASSWORD = process.env.B2B_PASSWORD ?? '';
+
+// Constant-time string comparison using Web Crypto (works in Edge + Node).
+async function timingSafeEqual(a: string, b: string): Promise<boolean> {
+  const enc = new TextEncoder();
+  const ka = await crypto.subtle.importKey('raw', enc.encode(a), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const sig = await crypto.subtle.sign('HMAC', ka, enc.encode('check'));
+  const kb = await crypto.subtle.importKey('raw', enc.encode(b), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const sigB = await crypto.subtle.sign('HMAC', kb, enc.encode('check'));
+  return crypto.subtle.verify('HMAC', ka, sigB, enc.encode('check'));
+}
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   let body: { password?: string };
@@ -14,24 +23,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   const submitted = body.password ?? '';
 
-  // Constant-time comparison — prevents timing attacks even when B2B_PASSWORD is unset
-  const equal = (() => {
-    if (!B2B_PASSWORD) return false;
-    const a = Buffer.from(submitted);
-    const b = Buffer.from(B2B_PASSWORD);
-    if (a.length !== b.length) {
-      // Still run a dummy comparison to avoid length-based timing leak
-      crypto.timingSafeEqual(Buffer.alloc(1), Buffer.alloc(1));
-      return false;
-    }
-    return crypto.timingSafeEqual(a, b);
-  })();
-
-  if (!equal) {
+  if (!B2B_PASSWORD || !(await timingSafeEqual(submitted, B2B_PASSWORD))) {
     return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
   }
 
-  const token = signToken();
+  const token = await signToken();
   const res = NextResponse.json({ ok: true });
   res.cookies.set(COOKIE_NAME, token, {
     httpOnly: true,

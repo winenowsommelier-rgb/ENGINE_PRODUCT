@@ -13,7 +13,7 @@ const PUBLIC_PREFIXES = [
   '/icons/',
 ];
 
-export function middleware(req: NextRequest): NextResponse {
+export async function middleware(req: NextRequest): Promise<NextResponse> {
   const { pathname } = req.nextUrl;
 
   // Allow public paths
@@ -23,7 +23,7 @@ export function middleware(req: NextRequest): NextResponse {
 
   // Verify cookie
   const token = req.cookies.get(COOKIE_NAME)?.value;
-  if (verifyToken(token)) {
+  if (await verifyToken(token)) {
     return NextResponse.next();
   }
 

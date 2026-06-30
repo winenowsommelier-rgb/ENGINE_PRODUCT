@@ -2,26 +2,26 @@ import { describe, it, expect } from 'vitest';
 import { signToken, verifyToken } from './auth';
 
 describe('auth', () => {
-  it('verifyToken accepts a freshly signed token', () => {
-    expect(verifyToken(signToken())).toBe(true);
+  it('verifyToken accepts a freshly signed token', async () => {
+    expect(await verifyToken(await signToken())).toBe(true);
   });
-  it('rejects undefined', () => {
-    expect(verifyToken(undefined)).toBe(false);
+  it('rejects undefined', async () => {
+    expect(await verifyToken(undefined)).toBe(false);
   });
-  it('rejects empty string', () => {
-    expect(verifyToken('')).toBe(false);
+  it('rejects empty string', async () => {
+    expect(await verifyToken('')).toBe(false);
   });
-  it('rejects tampered payload', () => {
-    const token = signToken();
+  it('rejects tampered payload', async () => {
+    const token = await signToken();
     const tampered = 'ZmFrZQ.' + token.split('.')[1];
-    expect(verifyToken(tampered)).toBe(false);
+    expect(await verifyToken(tampered)).toBe(false);
   });
-  it('rejects tampered signature', () => {
-    const token = signToken();
+  it('rejects tampered signature', async () => {
+    const token = await signToken();
     const tampered = token.split('.')[0] + '.0000000000000000000000000000000000000000000000000000000000000000';
-    expect(verifyToken(tampered)).toBe(false);
+    expect(await verifyToken(tampered)).toBe(false);
   });
-  it('rejects wrong format (no dot)', () => {
-    expect(verifyToken('nodot')).toBe(false);
+  it('rejects wrong format (no dot)', async () => {
+    expect(await verifyToken('nodot')).toBe(false);
   });
 });
