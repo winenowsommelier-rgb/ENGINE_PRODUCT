@@ -7,6 +7,9 @@ import { applyB2BQuery, buildFacets, B2B_PAGE_SIZE } from '@/lib/b2b-query';
 import type { B2BProduct } from '@/lib/types';
 import type { B2BParams } from '@/lib/b2b-query';
 
+// Force dynamic rendering — no ISR/prerender caching; auth middleware must gate every request.
+export const dynamic = 'force-dynamic';
+
 function parseCriticScore(summary?: string): string | null {
   if (!summary) return null;
   try { const p = JSON.parse(summary); if (p?.score) return String(p.score); } catch {}
