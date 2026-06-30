@@ -75,7 +75,14 @@ function TasteGauge({ label, value }: { label: string; value?: string | null }) 
 /** Taste profile section — gauges + flavor tags. */
 function TasteSection({ product }: { product: B2BProduct }) {
   const hasGauges = product.body || product.acidity || product.tannin || product.sweetness || product.intensity || product.smokiness;
-  const hasFlavors = product.flavor_tags && product.flavor_tags.length > 0;
+  // flavor_tags may arrive as a JSON string from the DB; parse it safely
+  const flavorTags: string[] = (() => {
+    const raw = product.flavor_tags;
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw as string[];
+    try { const p = JSON.parse(raw as unknown as string); return Array.isArray(p) ? p : []; } catch { return []; }
+  })();
+  const hasFlavors = flavorTags.length > 0;
   if (!hasGauges && !hasFlavors) return null;
 
   return (
@@ -94,7 +101,7 @@ function TasteSection({ product }: { product: B2BProduct }) {
         )}
         {hasFlavors && (
           <div className="flex flex-wrap gap-1.5 mt-2">
-            {product.flavor_tags!.map((tag) => (
+            {flavorTags.map((tag) => (
               <span key={tag} className="rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-1 text-xs text-neutral-700">
                 {tag}
               </span>
