@@ -2,6 +2,11 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
+
+// Force dynamic rendering so every request re-runs the filter engine with
+// the actual searchParams. Without this, Next.js 14's router cache can serve
+// a stale SSR snapshot to subsequent navigations, showing unfiltered results.
+export const dynamic = 'force-dynamic';
 import { ChevronLeft, ChevronRight, SearchX } from 'lucide-react';
 import { TrustBar } from '@/components/TrustBar';
 import { Filters } from '@/components/Filters';
