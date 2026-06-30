@@ -31,41 +31,41 @@ export function ProductCardB2B({ product }: Props) {
 
   return (
     <Link href={`/product/${product.sku}`} className="group block">
-      <div className="relative aspect-[2/5] overflow-hidden rounded-lg bg-white border border-neutral-100">
+      <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-white border border-neutral-100 shadow-sm transition-shadow hover:shadow-md">
         {product.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={product.image_url}
             alt={product.name}
-            className="h-full w-full object-contain object-center group-hover:scale-105 transition-transform duration-300"
+            className="h-full w-full object-contain object-center transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="h-full w-full flex items-center justify-center text-neutral-400 text-xs">
+          <div className="h-full w-full flex items-center justify-center text-neutral-300 text-xs">
             No image
           </div>
         )}
-        {/* Critic score pill */}
+        {/* Critic score pill — top-left */}
         {criticScore && (
           <span className="absolute top-2 left-2 bg-amber-500 text-white text-[10px] font-bold rounded px-1.5 py-0.5 leading-none">
             {criticScore}
           </span>
         )}
-        {/* Stock badges */}
+        {/* Stock badges — top-right */}
         {isExpress && (
           <span className="absolute top-2 right-2 bg-emerald-600 text-white text-[9px] font-bold rounded px-1.5 py-0.5 leading-none">
             EXPRESS
           </span>
         )}
         {isArchive && (
-          <span className="absolute top-2 right-2 bg-neutral-500 text-white text-[9px] font-bold rounded px-1.5 py-0.5 leading-none">
+          <span className="absolute top-2 right-2 bg-neutral-400 text-white text-[9px] font-bold rounded px-1.5 py-0.5 leading-none">
             ARCHIVE
           </span>
         )}
       </div>
-      <div className="mt-2 space-y-0.5 px-0.5">
+      <div className="mt-2 space-y-0.5 px-0.5 pb-1">
         <p className="text-[11px] text-neutral-400 truncate">{product.brand ?? product.country ?? ''}</p>
-        <p className="text-xs font-medium text-neutral-900 leading-tight line-clamp-2">{product.name}</p>
-        <p className="text-sm font-bold text-neutral-900 mt-1">
+        <p className="text-sm font-medium text-neutral-900 leading-snug line-clamp-2">{product.name}</p>
+        <p className="text-sm font-bold text-neutral-900 mt-1 tabular-nums">
           {formatPrice(product.b2b_price, product.currency)}
         </p>
       </div>
