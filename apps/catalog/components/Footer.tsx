@@ -18,6 +18,7 @@ import { CATEGORY_GROUPS } from '@/lib/category-groups';
 const INFO_LINKS = [
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
+  { href: 'https://b2b.wnlq9.shop', label: 'WNLQ9 B2B', external: true },
 ] as const;
 
 // Placeholder contact channels — real deep-links land in Task 9.
@@ -76,6 +77,9 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
+                    {...('external' in link && link.external
+                      ? { target: '_blank', rel: 'noopener noreferrer' }
+                      : {})}
                     className="flex min-h-11 items-center text-base text-muted-foreground transition-colors hover:text-primary"
                   >
                     {link.label}
