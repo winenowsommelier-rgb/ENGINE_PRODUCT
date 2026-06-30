@@ -3,14 +3,16 @@ import { signToken, COOKIE_NAME, MAX_AGE } from '@/lib/auth';
 
 const B2B_PASSWORD = process.env.B2B_PASSWORD ?? '';
 
-// Constant-time string comparison using Web Crypto (works in Edge + Node).
-async function timingSafeEqual(a: string, b: string): Promise<boolean> {
-  const enc = new TextEncoder();
-  const ka = await crypto.subtle.importKey('raw', enc.encode(a), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const sig = await crypto.subtle.sign('HMAC', ka, enc.encode('check'));
-  const kb = await crypto.subtle.importKey('raw', enc.encode(b), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const sigB = await crypto.subtle.sign('HMAC', kb, enc.encode('check'));
-  return crypto.subtle.verify('HMAC', ka, sigB, enc.encode('check'));
+// Pure-JS constant-time string comparison — prevents timing attacks.
+// Works in both Edge and Node without any crypto API.
+function timingSafeEqual(a: string, b: string): boolean {
+  // Always iterate over the longer length to avoid short-circuit on length mismatch.
+  const maxLen = Math.max(a.length, b.length);
+  let diff = a.length ^ b.length;
+  for (let i = 0; i < maxLen; i++) {
+    diff |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
+  }
+  return diff === 0;
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
@@ -23,7 +25,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   const submitted = body.password ?? '';
 
-  if (!B2B_PASSWORD || !(await timingSafeEqual(submitted, B2B_PASSWORD))) {
+  if (!B2B_PASSWORD || !timingSafeEqual(submitted, B2B_PASSWORD)) {
     return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
   }
 
