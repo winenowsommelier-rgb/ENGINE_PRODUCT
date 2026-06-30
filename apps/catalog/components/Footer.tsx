@@ -18,6 +18,7 @@ import { CATEGORY_GROUPS } from '@/lib/category-groups';
 const INFO_LINKS = [
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
+  { href: 'https://b2b.wnlq9.shop', label: 'B2B' },
 ] as const;
 
 // Placeholder contact channels — real deep-links land in Task 9.
