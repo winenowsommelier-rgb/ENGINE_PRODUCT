@@ -1,6 +1,6 @@
 // apps/catalog/lib/seo/blog-jsonld.test.ts
 import { describe, it, expect } from 'vitest';
-import { buildArticleSchema, buildFaqSchema } from './blog-jsonld';
+import { buildArticleSchema, buildFaqSchema, type FaqPageSchema } from './blog-jsonld';
 import type { BlogPost } from '@/lib/blog/hashnode-posts';
 
 const basePost: BlogPost = {
@@ -66,5 +66,17 @@ describe('buildFaqSchema', () => {
       content: { html: '', markdown: '# Title\n\n## Frequently Asked Questions\n\nNo Q3 items.' },
     };
     expect(buildFaqSchema(post)).toBeNull();
+  });
+
+  it('parses FAQ section with lowercase header variant', () => {
+    const post = {
+      ...basePost,
+      content: { html: '', markdown: '# Title\n\n## frequently asked questions\n\n### What is wine?\nFermented grape juice.' },
+    };
+    const schema = buildFaqSchema(post) as FaqPageSchema;
+    expect(schema).not.toBeNull();
+    expect(schema['@type']).toBe('FAQPage');
+    expect(schema.mainEntity).toHaveLength(1);
+    expect(schema.mainEntity[0].name).toBe('What is wine?');
   });
 });

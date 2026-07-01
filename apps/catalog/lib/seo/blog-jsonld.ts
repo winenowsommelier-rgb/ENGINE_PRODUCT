@@ -21,8 +21,19 @@ export function buildArticleSchema(post: BlogPost, url: string): object {
   };
 }
 
-export function buildFaqSchema(post: BlogPost): object | null {
-  const parts = post.content.markdown.split('## Frequently Asked Questions');
+export interface FaqPageSchema {
+  '@context': 'https://schema.org';
+  '@type': 'FAQPage';
+  mainEntity: Array<{
+    '@type': 'Question';
+    name: string;
+    acceptedAnswer: { '@type': 'Answer'; text: string };
+  }>;
+}
+
+export function buildFaqSchema(post: BlogPost): FaqPageSchema | null {
+  // Case-insensitive split so "## frequently asked questions" also matches
+  const parts = post.content.markdown.split(/## Frequently Asked Questions/i);
   if (parts.length < 2) return null;
 
   const faqSection = parts[1];
@@ -40,12 +51,12 @@ export function buildFaqSchema(post: BlogPost): object | null {
   if (pairs.length === 0) return null;
 
   return {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
+    '@context': 'https://schema.org' as const,
+    '@type': 'FAQPage' as const,
     mainEntity: pairs.map((p) => ({
-      '@type': 'Question',
+      '@type': 'Question' as const,
       name: p.question,
-      acceptedAnswer: { '@type': 'Answer', text: p.answer },
+      acceptedAnswer: { '@type': 'Answer' as const, text: p.answer },
     })),
   };
 }
