@@ -449,7 +449,7 @@ Public post reads use the unauthenticated Hashnode GraphQL endpoint — `HASHNOD
 | `Article` JSON-LD | `buildArticleSchema()` on every post page | 1 |
 | `FAQPage` JSON-LD | `buildFaqSchema()` when `## Frequently Asked Questions` present | 1 |
 | OG image tag | `generateMetadata` with post cover or og-default | 1 |
-| HTML sanitization | `isomorphic-dompurify` in PostBody | 1 |
+| HTML sanitization | Hashnode sanitizes `content.html` before delivery — no client-side sanitizer needed (do NOT use `isomorphic-dompurify`, RSC-incompatible) | 1 |
 | Hashnode backlink | Posts also at `wnlq9.hashnode.dev` — DA boost | 1 |
 | Sitemap entries | `getAllPostSlugs()` appended to sitemap.ts | 2 |
 | Internal product links | `InlineProductCard` via `<!-- product: SKU -->` embeds | 2 |
