@@ -12,7 +12,7 @@ export async function hashnodeQuery<T>(
   const res = await fetch(ENDPOINT, {
     method: 'POST',
     headers,
-    body: JSON.stringify({ query, variables }),
+    body: JSON.stringify(variables ? { query, variables } : { query }),
     next: { revalidate: 3600 },
   });
 
@@ -21,5 +21,6 @@ export async function hashnodeQuery<T>(
   const json = await res.json();
   if (json.errors?.length) throw new Error(`Hashnode GQL error: ${json.errors[0].message}`);
 
+  if (!json.data) throw new Error('Hashnode response missing data field');
   return json.data as T;
 }
