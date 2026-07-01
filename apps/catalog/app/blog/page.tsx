@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getAllPosts } from '@/lib/blog/hashnode-posts';
+import { getAllPosts, type BlogPostPreview } from '@/lib/blog/hashnode-posts';
 import { PostCard } from '@/components/blog/PostCard';
 
 export const revalidate = 3600;
@@ -12,7 +12,12 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogIndexPage() {
-  const posts = await getAllPosts(12);
+  let posts: BlogPostPreview[] = [];
+  try {
+    posts = await getAllPosts(12);
+  } catch {
+    // Hashnode not configured or unavailable — show empty state
+  }
 
   return (
     <main className="container py-12">
