@@ -3,6 +3,7 @@ import type { MetadataRoute } from 'next';
 import path from 'node:path';
 import fs from 'node:fs';
 import { loadExploreMapData } from '@/lib/explore/map-data.server';
+import { getAllPostSlugs } from '@/lib/blog/hashnode-posts';
 
 const BASE = 'https://wnlq9.shop';
 
@@ -19,7 +20,7 @@ function getRawProducts(): Array<{ sku: string }> {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const buildDate = new Date().toISOString().split('T')[0];
   const products = getRawProducts();
   const { regions } = loadExploreMapData();
@@ -55,5 +56,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: 'weekly' as const,
   }));
 
-  return [...core, ...groupUrls, ...productUrls, ...regionUrls];
+  // Blog URLs (with try/catch guard so build doesn't fail without Hashnode creds)
+  let blogUrls: MetadataRoute.Sitemap = [];
+  try {
+    const postSlugs = await getAllPostSlugs();
+    // Blog index
+    blogUrls.push({
+      url: `${BASE}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.7,
+    });
+    // Per-post URLs
+    blogUrls.push(
+      ...postSlugs.map((post) => ({
+        url: `${BASE}/blog/${post.slug}`,
+        lastModified: post.updatedAt,
+        changeFrequency: 'weekly' as const,
+      })),
+    );
+  } catch {
+    // Gracefully skip blog URLs if Hashnode is unavailable
+  }
+
+  return [...core, ...groupUrls, ...productUrls, ...regionUrls, ...blogUrls];
 }

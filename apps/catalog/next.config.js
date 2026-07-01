@@ -4,6 +4,7 @@ const nextConfig = {
     unoptimized: true,
     remotePatterns: [
       { protocol: 'https', hostname: 'th.wine-now.com', pathname: '/media/**' },
+      { protocol: 'https', hostname: 'cdn.hashnode.com' },
     ],
   },
 };
