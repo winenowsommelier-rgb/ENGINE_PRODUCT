@@ -15,7 +15,8 @@ export type BlogPost = {
   canonicalUrl: string | null
 }
 
-type PostNode = Omit<BlogPost, 'content'> & { content?: BlogPost['content'] }
+// BlogPostPreview: list/tag pages don't request `content` — callers must not access post.content
+export type BlogPostPreview = Omit<BlogPost, 'content'>
 
 const PUB_ID = process.env.HASHNODE_PUBLICATION_ID ?? '';
 
@@ -26,8 +27,8 @@ const POST_FIELDS = `
   seo { title description }
 `;
 
-export async function getAllPosts(first = 12): Promise<BlogPost[]> {
-  const data = await hashnodeQuery<{ publication: { posts: { edges: { node: PostNode }[] } } }>(
+export async function getAllPosts(first = 12): Promise<BlogPostPreview[]> {
+  const data = await hashnodeQuery<{ publication: { posts: { edges: { node: BlogPostPreview }[] } } }>(
     `query GetPosts($publicationId: ObjectId!, $first: Int!) {
       publication(id: $publicationId) {
         posts(first: $first) {
@@ -37,7 +38,7 @@ export async function getAllPosts(first = 12): Promise<BlogPost[]> {
     }`,
     { publicationId: PUB_ID, first },
   );
-  return data.publication.posts.edges.map((e) => e.node as BlogPost);
+  return data.publication.posts.edges.map((e) => e.node);
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
@@ -55,10 +56,10 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   return data.publication.post;
 }
 
-export async function getPostsByTag(tag: string, first = 12): Promise<BlogPost[]> {
+export async function getPostsByTag(tag: string, first = 12): Promise<BlogPostPreview[]> {
   // NOTE: verify filter: { tagSlugs } is supported by the live Hashnode schema before
   // shipping tag pages. If not, fetch getAllPosts and filter client-side by tag slug.
-  const data = await hashnodeQuery<{ publication: { posts: { edges: { node: PostNode }[] } } }>(
+  const data = await hashnodeQuery<{ publication: { posts: { edges: { node: BlogPostPreview }[] } } }>(
     `query GetPostsByTag($publicationId: ObjectId!, $first: Int!, $tag: String!) {
       publication(id: $publicationId) {
         posts(first: $first, filter: { tagSlugs: [$tag] }) {
@@ -68,7 +69,7 @@ export async function getPostsByTag(tag: string, first = 12): Promise<BlogPost[]
     }`,
     { publicationId: PUB_ID, first, tag },
   );
-  return data.publication.posts.edges.map((e) => e.node as BlogPost);
+  return data.publication.posts.edges.map((e) => e.node);
 }
 
 export async function getAllPostSlugs(): Promise<{ slug: string; updatedAt: string }[]> {
