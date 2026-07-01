@@ -5,6 +5,8 @@ import { getAllPosts, getPostBySlug } from '@/lib/blog/hashnode-posts';
 import { PostBody } from '@/components/blog/PostBody';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildArticleSchema, buildFaqSchema } from '@/lib/seo/blog-jsonld';
+import { getAllProducts } from '@/lib/catalog-data';
+import { resolveProductEmbeds } from '@/lib/blog/resolve-product-embeds';
 
 export const revalidate = 3600;
 export const dynamicParams = true; // posts not in generateStaticParams served via ISR
@@ -59,6 +61,9 @@ export default async function BlogPostPage({
   const post = await getPostBySlug(params.slug);
   if (!post) notFound();
 
+  const allProducts = getAllProducts();
+  const productMap = resolveProductEmbeds(post.content.html, allProducts);
+
   const url = `${BASE}/blog/${post.slug}`;
   const faqSchema = buildFaqSchema(post);
 
@@ -73,7 +78,7 @@ export default async function BlogPostPage({
             year: 'numeric',
           })}
         </time>
-        <PostBody html={post.content.html} />
+        <PostBody html={post.content.html} productMap={productMap} />
       </article>
       <JsonLd data={buildArticleSchema(post, url)} />
       {faqSchema && <JsonLd data={faqSchema} />}
