@@ -37,6 +37,7 @@ async function readStdin(): Promise<string> {
   const rl = readline.createInterface({ input: process.stdin });
   const lines: string[] = [];
   for await (const line of rl) lines.push(line);
+  rl.close();
   return lines.join('\n');
 }
 
@@ -46,9 +47,13 @@ function slugify(title: string): string {
 
 function resolveProductImageUrl(coverSku: string): string {
   const exportPath = path.join(process.cwd(), 'data', 'live_products_export.json');
-  const products: Array<{ sku: string; image_url?: string | null }> = JSON.parse(
-    fs.readFileSync(exportPath, 'utf8'),
-  );
+  let products: Array<{ sku: string; image_url?: string | null }>;
+  try {
+    products = JSON.parse(fs.readFileSync(exportPath, 'utf8'));
+  } catch (err) {
+    console.error(`Failed to read ${exportPath}: ${(err as Error).message}`);
+    process.exit(1);
+  }
   const product = products.find((p) => p.sku === coverSku);
   if (!product) {
     console.warn(`⚠ SKU ${coverSku} not found in live_products_export.json`);
@@ -100,6 +105,11 @@ async function publish(
       variables: { input },
     }),
   });
+
+  if (!res.ok) {
+    console.error(`HTTP ${res.status} ${res.statusText}`);
+    process.exit(1);
+  }
 
   const json = await res.json();
   if (json.errors?.length) {
