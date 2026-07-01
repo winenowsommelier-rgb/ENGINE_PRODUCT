@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllPosts, getPostBySlug } from '@/lib/blog/hashnode-posts';
 import { PostBody } from '@/components/blog/PostBody';
+import { RelatedProducts } from '@/components/blog/RelatedProducts';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildArticleSchema, buildFaqSchema } from '@/lib/seo/blog-jsonld';
 import { getAllProducts } from '@/lib/catalog-data';
@@ -80,6 +81,7 @@ export default async function BlogPostPage({
         </time>
         <PostBody html={post.content.html} productMap={productMap} />
       </article>
+      <RelatedProducts tags={post.tags} allProducts={allProducts} />
       <JsonLd data={buildArticleSchema(post, url)} />
       {faqSchema && <JsonLd data={faqSchema} />}
     </main>
