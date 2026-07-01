@@ -1,7 +1,7 @@
 # Blog System Design — Hashnode Headless Integration
 
 **Date:** 2026-07-01  
-**Status:** Revised (post spec-review pass 1)  
+**Status:** Revised (post spec-review pass 2 — all blockers and warnings resolved)  
 **Scope:** Phase 1 + Phase 2 (Phase 3 Notion sync deferred, revisit after Phase 2)
 
 ---
@@ -136,8 +136,9 @@ query GetPostsByTag($publicationId: ObjectId!, $first: Int!, $tag: String!) {
   }
 }
 ```
+**⚠️ Verify before building tag pages:** Hashnode's `posts` connection `filter: { tagSlugs }` argument availability varies by API version. Test this query against the live schema at `https://gql.hashnode.com` before implementing tag pages. If the filter is unsupported, the tag page must client-side filter the full post list instead.
 
-**`getAllPostSlugs()`** — lightweight query for sitemap (slug + updatedAt only). Fetches up to 250 — this is the sitemap ceiling, not the SSG pre-render ceiling. `generateStaticParams` calls `getAllPosts(50)` separately and pre-renders only the 50 newest; posts 51–250 are served via ISR on first request (`dynamicParams = true`). The two numbers are intentionally different.
+**`getAllPostSlugs()`** — lightweight query for sitemap (slug + updatedAt only). Fetches up to 250 — this is the sitemap ceiling, not the SSG pre-render ceiling. `generateStaticParams` calls `getAllPosts(50)` separately and pre-renders only the 50 newest; posts 51–250 are served via ISR on first request (`dynamicParams = true`). The two numbers are intentionally different. **Known ceiling:** Hashnode uses cursor-based pagination; `first: 250` silently truncates if the publication exceeds 250 posts. This is an accepted constraint for now — add a paginator loop if the publication grows past 250.
 ```graphql
 query GetSlugs($publicationId: ObjectId!) {
   publication(id: $publicationId) {
@@ -173,7 +174,7 @@ apps/catalog/app/blog/
 - `export const dynamicParams = true` — posts not in `generateStaticParams` are served via ISR fallback (not 404)
 - `generateStaticParams`: calls `getAllPosts(50)`, returns `{ slug }` array for pre-rendering latest 50 at build
 - On request: calls `getPostBySlug(slug)`. If `null` → `notFound()`.
-- `generateMetadata`: `post.seo.title ?? post.title + ' | WNLQ9 Journal'`, description from `post.seo.description ?? post.brief`, OG image from `post.coverImage?.url ?? '/og-default.jpg'`
+- `generateMetadata`: title = `post.seo.title ?? post.title + ' | WNLQ9 Journal'`, description = `post.seo.description ?? post.brief ?? ''` (both can be null — always fall back to `post.brief`, then empty string), OG image = `post.coverImage?.url ?? '/og-default.jpg'`
 - **Canonical enforcement:** `alternates: { canonical: \`https://wnlq9.shop/blog/\${slug}\` }` — always set
 - Renders: `<PostBody post={post} productMap={productMap} />`, `<JsonLd data={buildArticleSchema(post, url)} />`, conditionally `<JsonLd data={buildFaqSchema(post)} />`
 - `productMap` (Phase 2): resolved by `resolveProductEmbeds(post.content.html)` called in the page server component before passing to PostBody
@@ -249,7 +250,7 @@ export function buildFaqSchema(post: BlogPost): object | null
 - Emits `FAQPage` schema with `mainEntity` array of `Question` objects
 - No external parser dependency — pure string/regex on markdown source
 
-**PostBody HTML sanitisation:** `PostBody` is responsible for sanitization internally — the page component passes raw html, and `PostBody` calls `DOMPurify.sanitize(html)` before `dangerouslySetInnerHTML`. This keeps the sanitization concern in one place and prevents callers from forgetting it.
+**PostBody HTML sanitisation:** Hashnode's `content.html` is sanitized by Hashnode before delivery — we do not control attacker input on this field. `PostBody` renders it directly via `dangerouslySetInnerHTML` without an additional sanitizer pass. If defense-in-depth is desired in future, use `sanitize-html` (Node-native, no jsdom dependency) — do NOT use `isomorphic-dompurify`, which requires jsdom and is incompatible with Next.js App Router server components.
 
 Both schemas emitted via the existing `<JsonLd>` component (`apps/catalog/components/seo/JsonLd.tsx`).
 
@@ -281,7 +282,7 @@ mutation PublishPost($input: PublishPostInput!) {
   title: string,                 // --title arg
   slug: string,                  // kebab-case derived from title (title.toLowerCase().replace(/[^a-z0-9]+/g, '-'))
   contentMarkdown: string,       // markdown source (NOT html — Hashnode converts internally)
-  tags: [{ slug: string, name: string }],  // derived from --tags comma-separated list
+  freeformTags: string[],                  // --tags comma-separated list as string array; use freeformTags NOT tags (tags requires pre-existing Hashnode tag registry entries and silently drops unknown tags)
   coverImageOptions?: { coverImageURL: string },  // optional
   metaTags?: { title: string, description: string },  // optional --meta-title / --meta-desc flags
   canonicalUrl: string,          // always set: `https://wnlq9.shop/blog/${slug}`
@@ -295,10 +296,10 @@ mutation PublishPost($input: PublishPostInput!) {
 - Reads `data/live_products_export.json` via `path.join(process.cwd(), 'data', 'live_products_export.json')`
 - Finds product where `sku === coverSku`
 - If `product.image_url` is set → uses it directly
-- Else → constructs Magento CDN path: `https://wnlq9.shop/media/catalog/product/${sku[0].toLowerCase()}/${sku[1].toLowerCase()}/${sku}.jpg`
+- Else → constructs Magento CDN path: `https://wnlq9.shop/media/catalog/product/${sku[0].toLowerCase()}/${sku[1].toLowerCase()}/${sku}.jpg` and prints a warning (`⚠ image_url is null for ${sku} — using constructed CDN path, verify the image is correct`) since 200 OK does not guarantee the right bottle image
 - Sets as `coverImageOptions.coverImageURL`
 
-**Auth:** The script uses `Authorization: Bearer ${process.env.HASHNODE_TOKEN}`. It reads `.env.local` via `dotenv/config` import at the top.
+**Auth:** The script uses `Authorization: Bearer ${process.env.HASHNODE_TOKEN}`. It loads `.env.local` via `dotenv.config({ path: '.env.local' })` (NOT `import 'dotenv/config'` which loads `.env` only, silently missing the token in dev).
 
 **Output:** Prints `✓ Published: https://wnlq9.shop/blog/${slug}` on success.
 
@@ -309,9 +310,9 @@ mutation PublishPost($input: PublishPostInput!) {
 - Renders: cover image (`next/image`, `sizes="(max-width:768px) 100vw, 50vw"`), H2 title, brief excerpt (truncate at 120 chars), tag chips, formatted `publishedAt` date, `<Link href={/blog/${post.slug}}>Read more</Link>`
 
 **`apps/catalog/components/blog/PostBody.tsx`** (server component, Phase 1)
-- Props: `html: string` (raw html from Hashnode — sanitized internally by this component), `productMap?: Map<string, PublicProduct>` (Phase 2, optional)
-- Phase 1: calls `DOMPurify.sanitize(html)` internally, then renders `<div dangerouslySetInnerHTML={{ __html: sanitized }} className="prose prose-neutral max-w-none" />`
-- Phase 2: before rendering, replaces `<!-- product: {SKU} -->` comments in the sanitized html with `ReactDOMServer.renderToStaticMarkup(<InlineProductCard product={productMap.get(sku)} />)` for each matched SKU
+- Props: `html: string` (Hashnode-sanitized html — trust Hashnode's output directly), `productMap?: Map<string, PublicProduct>` (Phase 2, optional)
+- Phase 1: renders `<div dangerouslySetInnerHTML={{ __html: html }} className="prose prose-neutral max-w-none" />` — no additional sanitizer needed (Hashnode sanitizes before delivery; do NOT use isomorphic-dompurify, incompatible with RSC)
+- Phase 2: split `html` on `<!-- product: SKU -->` comment boundaries into alternating string segments and `<InlineProductCard>` React nodes. Render as a React node array — do NOT use `ReactDOMServer.renderToStaticMarkup` (string injection bypasses React reconciliation)
 
 **`apps/catalog/components/Header.tsx`** — add "Journal" nav link pointing to `/blog` alongside existing nav items.
 
@@ -332,11 +333,11 @@ Writers signal a product embed with an HTML comment in the markdown:
 Hashnode preserves HTML comments in its rendered output.
 
 **`apps/catalog/lib/blog/resolve-product-embeds.ts`**
-- `resolveProductEmbeds(html: string): Map<string, PublicProduct>`
-- Scans `html` for `<!-- product: ([A-Z0-9]+) -->` (case-insensitive SKU)
-- Calls `getAllProducts()` once, builds a lookup map
-- Returns `Map<sku, PublicProduct>` for matched SKUs only (unmatched SKUs are silently skipped — no embed rendered)
-- Called in `app/blog/[slug]/page.tsx` before passing `productMap` to `PostBody`
+- `resolveProductEmbeds(html: string, allProducts: PublicProduct[]): Map<string, PublicProduct>`
+- Accepts the already-loaded product list — caller reads `live_products_export.json` once at the page level and passes it in (avoids a redundant full-file read per post request)
+- Scans `html` for `<!-- product: ([A-Z0-9]+) -->` (case-insensitive SKU), extracts matched SKU set
+- Returns `Map<sku, PublicProduct>` for matched SKUs only (unmatched SKUs silently skipped — no embed rendered)
+- Called in `app/blog/[slug]/page.tsx`: page loads full product list once, calls `resolveProductEmbeds(html, allProducts)`, passes `productMap` to `PostBody`
 
 **`apps/catalog/components/blog/InlineProductCard.tsx`** (server component)
 - Props: `product: PublicProduct`
@@ -422,11 +423,10 @@ apps/catalog/next.config.js          ← add cdn.hashnode.com to remotePatterns 
 
 ### New Dependencies
 ```
-isomorphic-dompurify   ← HTML sanitization in PostBody (Phase 1)
-@types/dompurify       ← dev dependency
-dotenv                 ← .env.local loading in blog-publish.ts script (Phase 1)
+dotenv                 ← .env.local loading in blog-publish.ts script (Phase 1); use dotenv.config({ path: '.env.local' })
 tsx                    ← already likely present; needed for npx tsx scripts/blog-publish.ts
 ```
+No sanitization library needed — Hashnode sanitizes `content.html` before delivery. Do NOT add `isomorphic-dompurify` (RSC-incompatible) or `sanitize-html` unless a future threat model requires defense-in-depth on this field.
 
 ---
 
