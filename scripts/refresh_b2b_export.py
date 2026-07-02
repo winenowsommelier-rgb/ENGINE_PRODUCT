@@ -11,9 +11,20 @@ import argparse
 import json
 import sqlite3
 import subprocess
+import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+# SKU taxonomy: derive category_group / category_type from SKU prefix.
+try:
+    from data.lib.taxonomy.sku_taxonomy import resolve as _resolve_category
+    _CATEGORY_AVAILABLE = True
+except Exception:  # noqa: BLE001
+    _CATEGORY_AVAILABLE = False
+
 DEFAULT_DB = REPO_ROOT / "data" / "db" / "products.db"
 DEFAULT_OUT = REPO_ROOT / "data" / "b2b_products_export.json"
 
@@ -103,6 +114,26 @@ def main(argv=None) -> int:
 
     records = [{k: r[k] for k in cols if r[k] is not None} for r in rows]
 
+    # Derive category_group / category_type from SKU prefix (same drift-proofing
+    # as refresh_live_export.py). These fields are NOT read from the DB column
+    # (which may be stale) — always recomputed from SKU at export time.
+    if _CATEGORY_AVAILABLE:
+        enriched = 0
+        for rec in records:
+            sku = rec.get("sku", "")
+            if sku:
+                taxonomy = _resolve_category({"sku": sku})
+                grp = taxonomy.get("group", "")
+                typ = taxonomy.get("type", "")
+                if grp:
+                    rec["category_group"] = grp
+                    enriched += 1
+                if typ:
+                    rec["category_type"] = typ
+        print(f"  category_group/type enriched: {enriched}/{len(records)} products")
+    else:
+        print("  WARN: sku_taxonomy unavailable — category_group/type will be absent")
+
     # [CRITICAL] double-check no forbidden field leaked into output
     for rec in records[:10]:
         leaked_out = _FORBIDDEN & set(rec.keys())
@@ -112,9 +143,11 @@ def main(argv=None) -> int:
     args.out.write_text(json.dumps(records, ensure_ascii=False))
 
     has_score = sum(1 for r in records if r.get("score_summary"))
+    has_category = sum(1 for r in records if r.get("category_group"))
     print(f"Wrote {len(records)} B2B products → {args.out}")
     print(f"  b2b_price sample: {records[0].get('b2b_price') if records else 'N/A'}")
     print(f"  score_summary populated: {has_score}")
+    print(f"  category_group populated: {has_category}/{len(records)}")
     print(f"  forbidden fields in output: NONE — clean")
     return 0
 
