@@ -87,20 +87,25 @@ ALTER TABLE products ADD COLUMN reputation_computed_at TEXT;
 
 **Source:** `critic_scores` table  
 **Method:** Percentile rank within critic (not raw score) to correct for score inflation
-(current avg: 93.4/100, 1,049 of 1,641 scores are ≥95). Steps:
+(current data: 1,049 of 3,205 score rows are ≥95 (33%); 541 of 1,641 scored SKUs have at
+least one score ≥95). Steps:
 
 1. Filter to `WHERE sku IS NOT NULL` — scraper writes NULL-sku rows for unmatched products;
    include only SKU-bound rows in percentile computation so the rank reflects matched inventory.
-2. For each critic, rank all their SKU-bound scores as a percentile (0–100).
-3. **v1 treats all rows as equal weight — do NOT filter or branch on `signal_tier`.**
+2. **Aggregate per (sku, critic) pair first** — take `MAX(score)` where a critic has scored
+   the same SKU more than once (17 such pairs exist, e.g. different vintages). This prevents
+   a critic scoring a SKU twice from being double-weighted in step 4.
+3. For each critic, rank all their (sku, critic) aggregated scores as a percentile (0–100).
+4. **v1 treats all rows as equal weight — do NOT filter or branch on `signal_tier`.**
    All 3,205 current rows have `signal_tier = 1`; a tier filter would be a silent no-op now
    but could drop rows if tier-2 data arrives before v2 ships. Tier weighting deferred to v2.
-4. Average the percentile scores across critics for the SKU.
-5. Multiply by 100 → acclaim score 0–100.
+5. Average the percentile scores across critics for the SKU.
+6. Multiply by 100 → acclaim score 0–100.
 
-**Confidence:** `min(1.0, num_scores / 3)` — saturates at 3 scores.  
+**Confidence:** `min(1.0, num_critics / 3)` — saturates at 3 distinct critics per SKU.  
 **No scores:** score = NULL, confidence = 0.  
-**Source note example:** *"Rated 96/100 by Wine Spectator (top 8% of their reviews)."*
+**Source note example:** *"Rated 96/100 by Wine Spectator (top 14% of their reviews)."*
+(Percentile is computed from actual data at runtime — the template inserts the real value.)
 
 ---
 
@@ -117,7 +122,7 @@ ALTER TABLE products ADD COLUMN reputation_computed_at TEXT;
 | Premier Cru | 88 | |
 | 1er Cru | 88 | Alias for Premier Cru |
 | Gran Reserva (Spain/Argentina wine) | 82 | Legally regulated ageing term in Rioja, Ribera etc. |
-| Gran Reserva (spirits / New World wine) | 68 | Marketing term; does not equal Rioja Gran Reserva |
+| Gran Reserva (spirits / New World wine) | 75 | Higher than Reserva but below Rioja Gran Reserva |
 | Cru Classé | 80 | 1855 Bordeaux classification |
 | Reserva Especial / Reserva Privada | 70 | Bridge between Reserva and Gran Reserva |
 | Reserva | 72 | |
@@ -136,9 +141,19 @@ terms would cause cheap Cava to score the same as a trophy Champagne on the pres
 Products whose only designation is Brut/Extra Brut fall to the `(no designation)` floor (20)
 and rely on price bonus and appellation for prestige scoring.
 
-**Gran Reserva split — implementation:** Check `country` field:
-- If `country` IN ('Spain', 'Argentina') AND `category_group` = wine → base 82
-- Otherwise (spirits, rum, Chilean wine, etc.) → base 68
+**Gran Reserva split — implementation:** `category_group` is NOT a DB column and must not be
+used as a SQL predicate. Resolve via `sku_taxonomy.resolve(sku)` in Python, then branch:
+
+```python
+tax = sku_taxonomy.resolve({'sku': sku})
+is_regulated_gran_reserva = (
+    tax['group'] == 'Wine'                      # note: capital W
+    and country in ('Spain', 'Argentina')
+)
+gran_reserva_base = 82 if is_regulated_gran_reserva else 75
+# 75 for spirits (e.g. Bacardi Gran Reserva) and New World wine (Chilean GR)
+# — above Reserva (72) to preserve the naming hierarchy, below Rioja GR (82)
+```
 
 Implementation note: match `designation IN ('Premier Cru', '1er Cru')` and
 `designation IN ('Reserva Especial', 'Reserva Privada')` — do not use slash-delimited strings.
@@ -161,11 +176,12 @@ table for future data, but do not read from `origin_system`. Treat as v2 appella
 | ≥ 50,000 | +52 |
 
 **Rationale for steeper curve:** With Brut/Extra Brut removed from the designation table,
-no-designation products (base 20) now reach a maximum of 72 (20 + 52) at ≥฿50,000 — placing
-them in `premium` territory. This correctly positions products like Château Pétrus (฿195,200)
-and Remy Martin Louis XIII (฿188,999) above a cheap Cava while still below any formally
-designated product. Previously the cap was 55, putting trophy no-designation bottles in the
-same bucket as entry-level sparkling wines.
+no-designation products (base 20) now reach a maximum of 72 (20 + 52) without appellation,
+or 77 (20 + 52 + 5) with an appellation populated — both land in `premium` territory (65–84).
+This correctly positions products like Château Pétrus (฿195,200, appellation = Pomerol → 77)
+and Remy Martin Louis XIII (฿188,999, no appellation → 72) above a cheap Cava while still
+below any formally designated product. Previously the cap was 55, putting trophy
+no-designation bottles in the same bucket as entry-level sparkling wines.
 
 **Final:** `MIN(100, designation_base + appellation_bonus + price_bonus)`  
 **Confidence:** 0.9 if designation present; 0.6 if only appellation; 0.4 if price-only.  
@@ -187,7 +203,15 @@ Steps:
    fall back to 1-char prefix family percentile (e.g. all `W*` prefixes together for wines,
    all `L*` for spirits). This prevents singleton groups returning 0 or 100 arbitrarily.
 
-**Confidence:** 0.8 if `sold_qty > 0`; 0.3 if both `sold_qty` and `sold_orders` are zero.  
+**Confidence:** 0.8 if `sold_qty > 0`; 0.3 if both are zero or NULL.  
+**NULL guard (critical):** In the DB, ~5,804 active SKUs have `sold_qty = NULL` and
+`sold_orders = NULL` (not 0). Implementation must use `COALESCE`:
+```python
+demand = (sold_qty or 0) + ((sold_orders or 0) * 2)
+confidence = 0.8 if (sold_qty or 0) > 0 else 0.3
+```
+A bare `sold_qty == 0` check evaluates `False` for `None` in Python, silently assigning 0.8
+confidence to ~5,804 products with no recorded sales.  
 **Source note example:** *"Top 15% by sales volume in its category."*
 
 **Note:** Once BI popularity backfill is complete, swap to `popularity_score` percentile and
@@ -200,8 +224,12 @@ re-run. No schema change needed.
 **Source:** `brand`, aggregated acclaim + prestige scores across all beverage SKUs for that brand.  
 **Method:**
 
-1. **Exclude accessory SKU prefixes** (ABA, GWN, CIG, AWC, GDC) before any aggregation.
-   Brands like Riedel, Jiggers, The 4 Barmen are accessories and must not enter the producer axis.
+1. **Exclude non-beverage SKUs** before any aggregation. Do NOT use a hard-coded prefix list
+   (it drifts as new prefixes are added). Instead, resolve each SKU via `sku_taxonomy.resolve()`
+   and include only SKUs where `group IN ('Wine', 'Spirits', 'Beer & Cider')`. Known non-beverage
+   groups excluded: Accessories (ABA, GWN, GLQ, GDC, GBE, GWA, AWC, CIG) and
+   Non-Alcoholic (NNA, MNA, WNA, WEV). Brands like Riedel (glassware), Jiggers (bar tools),
+   The 4 Barmen, and Monin (syrups) must not enter the producer axis.
 2. Group remaining active SKUs by `brand`.
 3. For each brand: average the `acclaim` and `prestige` axis scores across all their SKUs.
 4. Assign to each SKU of that brand.
@@ -263,7 +291,12 @@ reputation_confidence = weighted average of per-axis confidences (same weights a
 warning if the computed tier differs by more than one level.
 
 **Expected tier distribution at launch (sanity check):**
-Based on current data (677 designations, 889 critic-scored SKUs, 3,210 with sales):
+Based on current data (677 designations, 889 critic-scored SKUs, 584 with `sold_qty > 0` or
+`sold_orders > 0`). Note: the 3,210 figure cited in earlier analysis referred to
+`popularity_score > 0` — the BI-backfilled field not used in v1. v1 uses only `sold_qty` /
+`sold_orders`, which have genuine data for ~584 SKUs. Popularity confidence will be 0.3 for
+~5,804 SKUs, meaning the actual `unrated` count at launch may be toward the high end of the
+range below or above it:
 
 | Tier | Estimated SKU count |
 |---|---|
@@ -352,7 +385,9 @@ Phase 3 — Verify + export
   11. Print avg composite per SKU prefix group
   12. Print unrated count and top reasons (no scores, no designation, no sales)
   13. Run refresh_live_export.py
-  14. Confirm reputation_tier is in EXPORT_COLS allowlist
+  14. Confirm ALL FOUR reputation columns are in EXPORT_COLS allowlist:
+      reputation_tier, reputation_composite, reputation_confidence, reputation_summary
+      (a missing entry causes silent drop — the column exists in DB but never reaches the UI)
 ```
 
 **Verification output (required before declaring run complete — Rule 1):**
@@ -409,7 +444,7 @@ Add to `EXPORT_COLS` in `scripts/refresh_live_export.py`:
 | Critic score inflation compresses acclaim | Percentile rank within critic, not raw score |
 | NULL-sku rows in critic_scores skew per-critic percentile | Filter `WHERE sku IS NOT NULL` before ranking |
 | signal_tier branching drops rows when tier-2 data arrives | v1 ignores signal_tier entirely; all rows equal weight |
-| Accessory brands (Riedel, etc.) polluting producer axis | Exclude by SKU prefix (ABA, GWN, CIG, AWC, GDC) before brand aggregation |
+| Non-beverage brands (Riedel, Monin, etc.) polluting producer axis | Exclude by resolved taxonomy group, not prefix list; include only Wine/Spirits/Beer & Cider |
 | popularity_score degenerate until BI backfill | Use sold_qty/sold_orders percentile in v1; swap after backfill |
 | Singleton/tiny SKU prefix groups → extreme popularity scores | Fall back to 1-char prefix family for groups < 3 SKUs |
 | category_type not a DB column — silent empty query result | Resolve via sku_taxonomy.resolve() in app code; never use as SQL predicate |
