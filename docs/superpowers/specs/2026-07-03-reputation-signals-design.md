@@ -56,6 +56,9 @@ CREATE TABLE IF NOT EXISTS reputation_signals (
   UNIQUE(sku, axis) ON CONFLICT REPLACE
 );
 CREATE INDEX IF NOT EXISTS idx_rep_sig_sku ON reputation_signals(sku);
+-- Note: ON CONFLICT REPLACE deletes + re-inserts, so `id` increments on every re-run.
+-- No FK references to reputation_signals.id exist, so this is safe. Do not rely on id
+-- stability across runs. If needed in future, switch to INSERT OR REPLACE with explicit UPDATE.
 ```
 
 ### New columns on `products`
@@ -75,6 +78,9 @@ ALTER TABLE products ADD COLUMN reputation_summary    TEXT;
 
 ALTER TABLE products ADD COLUMN reputation_override   TEXT;
 -- if set, bypasses computed tier; same pattern as taste_profile_override
+-- Implementation must validate against enum {'iconic','premium','established','everyday','unrated'}
+-- before writing to reputation_tier; log a WARNING and ignore invalid values rather than
+-- writing a typo (e.g. 'icnoic') into the tier column.
 
 ALTER TABLE products ADD COLUMN reputation_computed_at TEXT;
 ```
@@ -120,19 +126,28 @@ least one score ≥95). Steps:
 |---|---|---|
 | Grand Cru | 95 | Legally protected quality classification |
 | Premier Cru | 88 | |
-| 1er Cru | 88 | Alias for Premier Cru |
-| Gran Reserva (Spain/Argentina wine) | 82 | Legally regulated ageing term in Rioja, Ribera etc. |
-| Gran Reserva (spirits / New World wine) | 75 | Higher than Reserva but below Rioja Gran Reserva |
-| Cru Classé | 80 | 1855 Bordeaux classification |
-| Reserva Especial / Reserva Privada | 70 | Bridge between Reserva and Gran Reserva |
-| Reserva | 72 | |
-| XO | 75 | Legally min 10yr cognac |
+| 1er Cru | 88 | Alias for Premier Cru (0 rows in DB today; included for forward-compat) |
+| Gran Reserva (Spain/Argentina still wine) | 82 | Legally regulated ageing — Rioja, Ribera del Duero, Mendoza; excludes Cava (see below) |
+| Cru Classé | 82 | 1855 Bordeaux classification; equal to Rioja GR, arguably above |
+| Gran Reserva (spirits / New World wine / Cava) | 75 | Marketing or lighter legal term; above Reserva but below regulated tier |
+| Reserva Especial / Reserva Privada | 74 | Producer-defined premium above Reserva; 0 rows in DB today, included for forward-compat |
+| Reserva | 70 | |
+| XO | 75 | Legally min 10yr cognac (BNIC 2018) |
 | Single Malt | 68 | Price bonus carries remaining differentiation |
 | VSOP | 62 | Legally min 4yr cognac |
-| Blanc de Blancs | 60 | Specialist Champagne category (all-Chardonnay) |
-| Blanc de Noirs | 58 | Specialist Champagne category (all-Pinot) |
+| Blanc de Blancs | 60 | Specialist Champagne category (all-Chardonnay); 0 rows today |
+| Blanc de Noirs | 58 | Specialist Champagne category (all-Pinot); 0 rows today |
 | Villages | 52 | |
 | (no designation) | 20 (floor) | Price bonus is primary differentiator |
+
+**Multiple-designation rule:** If a product matches more than one row (e.g. a wine tagged as
+both `Premier Cru` and `Villages`), take the **highest** base score. Never sum or average.
+Implementation must iterate all rows and pick the max.
+
+**Cava Gran Reserva note:** Cava Gran Reserva (min 30 months) is legally distinct from and
+significantly lower-bar than Rioja Gran Reserva (min 5 years total ageing). Cava SKUs in the
+DB resolve to `tax['type'] == 'Sparkling & Champagne'`. The regulated path (base 82) applies
+only to still wine from Spain/Argentina.
 
 **Removed from table:** `Brut` and `Extra Brut` — these are *dosage levels* (residual sugar
 classification), not prestige designations. They span the full quality range from ฿249
@@ -146,13 +161,15 @@ used as a SQL predicate. Resolve via `sku_taxonomy.resolve(sku)` in Python, then
 
 ```python
 tax = sku_taxonomy.resolve({'sku': sku})
+STILL_WINE_TYPES = {'Red Wine', 'White Wine', 'Rosé'}   # excludes Cava / Sparkling
 is_regulated_gran_reserva = (
     tax['group'] == 'Wine'                      # note: capital W
+    and tax.get('type') in STILL_WINE_TYPES     # Cava → 'Sparkling & Champagne' → excluded
     and country in ('Spain', 'Argentina')
 )
 gran_reserva_base = 82 if is_regulated_gran_reserva else 75
-# 75 for spirits (e.g. Bacardi Gran Reserva) and New World wine (Chilean GR)
-# — above Reserva (72) to preserve the naming hierarchy, below Rioja GR (82)
+# 75 for: spirits (Bacardi GR), New World wine (Chilean GR), Cava GR
+# — above Reserva (70) to preserve naming hierarchy, below regulated Rioja GR (82)
 ```
 
 Implementation note: match `designation IN ('Premier Cru', '1er Cru')` and
@@ -231,7 +248,12 @@ re-run. No schema change needed.
    Non-Alcoholic (NNA, MNA, WNA, WEV). Brands like Riedel (glassware), Jiggers (bar tools),
    The 4 Barmen, and Monin (syrups) must not enter the producer axis.
 2. Group remaining active SKUs by `brand`.
-3. For each brand: average the `acclaim` and `prestige` axis scores across all their SKUs.
+3. For each brand: average the `acclaim` and `prestige` axis scores across their SKUs,
+   **excluding NULL acclaim scores** (i.e. SKUs with no critic coverage). Only include a SKU
+   in the acclaim average if `acclaim_score IS NOT NULL`. This prevents brands like Antinori
+   (45 SKUs, most unscored) from having their acclaim average dragged toward zero by the
+   unscored majority. A brand with zero scored SKUs gets producer_acclaim = NULL (not 0) and
+   the producer score falls back to the prestige average only.
 4. Assign to each SKU of that brand.
 
 **Confidence scales with brand SKU count:**
@@ -384,10 +406,21 @@ Phase 3 — Verify + export
   10. Print tier distribution (count per tier, % of active SKUs)
   11. Print avg composite per SKU prefix group
   12. Print unrated count and top reasons (no scores, no designation, no sales)
-  13. Run refresh_live_export.py
-  14. Confirm ALL FOUR reputation columns are in EXPORT_COLS allowlist:
+  13. **Cross-check top 20 most expensive SKUs** — print sku, name, price, designation,
+      appellation, reputation_tier for the 20 highest-price active SKUs. If any trophy product
+      (e.g. DRC, Pétrus, Glenfiddich 50yr) shows NULL designation and NULL appellation, flag
+      it explicitly: "X SKUs in the top-20 by price have no designation/appellation — prestige
+      is price-only; consider enrichment before publishing reputation copy."
+      Rationale: ultra-premium SKUs with missing designation silently underperform; this
+      catches data gaps before they reach marketing copy.
+  14. **Cross-check top 20 most expensive spirits SKUs** — same output as step 13 but filtered
+      to spirits prefix group, to catch ultra-premium whiskies/cognacs with missing designation.
+  15. Run refresh_live_export.py
+  16. Confirm ALL FOUR reputation columns are in EXPORT_COLS allowlist:
       reputation_tier, reputation_composite, reputation_confidence, reputation_summary
-      (a missing entry causes silent drop — the column exists in DB but never reaches the UI)
+      Assert at runtime: if any of these keys is absent from a spot-checked export row, abort
+      and print "EXPORT_COLS missing: <column> — add to refresh_live_export.py"
+      (a missing entry causes silent drop — column exists in DB but never reaches the UI)
 ```
 
 **Verification output (required before declaring run complete — Rule 1):**
@@ -455,7 +488,7 @@ Add to `EXPORT_COLS` in `scripts/refresh_live_export.py`:
 | DOCG/DOC designation entries find no rows | Add to lookup for future data; do not read from origin_system in v1 |
 | Computed tiers conflicting with manual knowledge | reputation_override respected by rollup |
 | Brut/Extra Brut as style term inflating cheap sparkling prestige | Removed from designation table; falls to price-only floor |
-| Gran Reserva overstating prestige for spirits and New World wine | Split by country: Spain/Argentina wine = 82, all others = 68 |
+| Gran Reserva overstating prestige for spirits, Cava, and New World wine | Split: Spain/Argentina still wine = 82, all others (spirits/Cava/Chilean wine) = 75 |
 | No-designation luxury bottles (Pétrus, Louis XIII) scoring same as cheap Brut | Steeper price bonus curve; no-designation max now 72 vs 55 previously |
 
 ---
