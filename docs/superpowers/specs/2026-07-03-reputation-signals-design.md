@@ -111,24 +111,37 @@ ALTER TABLE products ADD COLUMN reputation_computed_at TEXT;
 
 **Designation base scores:**
 
-| Designation | Base score |
-|---|---|
-| Grand Cru | 95 |
-| Premier Cru | 88 |
-| 1er Cru | 88 |
-| Gran Reserva | 82 |
-| Cru Classé | 80 |
-| Reserva | 72 |
-| XO | 75 |
-| Single Malt | 68 |
-| VSOP | 62 |
-| Brut | 55 |
-| Extra Brut | 55 |
-| Villages | 52 |
-| (no designation) | 20 (floor) |
+| Designation | Base score | Notes |
+|---|---|---|
+| Grand Cru | 95 | Legally protected quality classification |
+| Premier Cru | 88 | |
+| 1er Cru | 88 | Alias for Premier Cru |
+| Gran Reserva (Spain/Argentina wine) | 82 | Legally regulated ageing term in Rioja, Ribera etc. |
+| Gran Reserva (spirits / New World wine) | 68 | Marketing term; does not equal Rioja Gran Reserva |
+| Cru Classé | 80 | 1855 Bordeaux classification |
+| Reserva Especial / Reserva Privada | 70 | Bridge between Reserva and Gran Reserva |
+| Reserva | 72 | |
+| XO | 75 | Legally min 10yr cognac |
+| Single Malt | 68 | Price bonus carries remaining differentiation |
+| VSOP | 62 | Legally min 4yr cognac |
+| Blanc de Blancs | 60 | Specialist Champagne category (all-Chardonnay) |
+| Blanc de Noirs | 58 | Specialist Champagne category (all-Pinot) |
+| Villages | 52 | |
+| (no designation) | 20 (floor) | Price bonus is primary differentiator |
 
-Implementation note: match on `designation IN ('Brut', 'Extra Brut')` and
-`designation IN ('Premier Cru', '1er Cru')` — do not use slash-delimited strings.
+**Removed from table:** `Brut` and `Extra Brut` — these are *dosage levels* (residual sugar
+classification), not prestige designations. They span the full quality range from ฿249
+(Freixenet Cava) to ฿41,100 (Champagne Chavost). Assigning a flat prestige base to these
+terms would cause cheap Cava to score the same as a trophy Champagne on the prestige axis.
+Products whose only designation is Brut/Extra Brut fall to the `(no designation)` floor (20)
+and rely on price bonus and appellation for prestige scoring.
+
+**Gran Reserva split — implementation:** Check `country` field:
+- If `country` IN ('Spain', 'Argentina') AND `category_group` = wine → base 82
+- Otherwise (spirits, rum, Chilean wine, etc.) → base 68
+
+Implementation note: match `designation IN ('Premier Cru', '1er Cru')` and
+`designation IN ('Reserva Especial', 'Reserva Privada')` — do not use slash-delimited strings.
 
 **DOCG / DOC note:** Zero rows currently have `designation = 'DOCG'` or `designation = 'DOC'`
 in the DB. The `origin_system` field holds certification bodies (DOC, DOCG, AOC, IGT) but is
@@ -137,15 +150,22 @@ table for future data, but do not read from `origin_system`. Treat as v2 appella
 
 **Appellation bonus:** +5 if `appellation` is populated.
 
-**Price bonus (15% weight within axis, secondary signal):**
+**Price bonus (secondary signal — steepened to prevent no-designation luxury items from scoring same as cheap Brut):**
 
 | Price (THB) | Bonus |
 |---|---|
 | < 500 | 0 |
-| 500–1,999 | +5 |
-| 2,000–9,999 | +15 |
-| 10,000–49,999 | +25 |
-| ≥ 50,000 | +35 |
+| 500–1,999 | +8 |
+| 2,000–9,999 | +22 |
+| 10,000–49,999 | +38 |
+| ≥ 50,000 | +52 |
+
+**Rationale for steeper curve:** With Brut/Extra Brut removed from the designation table,
+no-designation products (base 20) now reach a maximum of 72 (20 + 52) at ≥฿50,000 — placing
+them in `premium` territory. This correctly positions products like Château Pétrus (฿195,200)
+and Remy Martin Louis XIII (฿188,999) above a cheap Cava while still below any formally
+designated product. Previously the cap was 55, putting trophy no-designation bottles in the
+same bucket as entry-level sparkling wines.
 
 **Final:** `MIN(100, designation_base + appellation_bonus + price_bonus)`  
 **Confidence:** 0.9 if designation present; 0.6 if only appellation; 0.4 if price-only.  
@@ -399,6 +419,9 @@ Add to `EXPORT_COLS` in `scripts/refresh_live_export.py`:
 | Irreversible ALTER TABLE on wrong DB | Phase 0 backup required before any DDL |
 | DOCG/DOC designation entries find no rows | Add to lookup for future data; do not read from origin_system in v1 |
 | Computed tiers conflicting with manual knowledge | reputation_override respected by rollup |
+| Brut/Extra Brut as style term inflating cheap sparkling prestige | Removed from designation table; falls to price-only floor |
+| Gran Reserva overstating prestige for spirits and New World wine | Split by country: Spain/Argentina wine = 82, all others = 68 |
+| No-designation luxury bottles (Pétrus, Louis XIII) scoring same as cheap Brut | Steeper price bonus curve; no-designation max now 72 vs 55 previously |
 
 ---
 
