@@ -314,3 +314,54 @@ def reputation_summary(axes: dict[str, dict]) -> str | None:
     if (producer.get("confidence") or 0) >= 0.7:
         return producer.get("source_note") or None
     return None
+
+
+# ---------------------------------------------------------------------------
+# Phase 0 — Backup + DDL
+# ---------------------------------------------------------------------------
+
+DDL_SIGNALS = """
+CREATE TABLE IF NOT EXISTS reputation_signals (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  sku          TEXT NOT NULL,
+  axis         TEXT NOT NULL,
+  score        REAL NOT NULL,
+  confidence   REAL NOT NULL,
+  method       TEXT NOT NULL,
+  source_note  TEXT,
+  computed_at  TEXT DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(sku, axis) ON CONFLICT REPLACE
+);
+CREATE INDEX IF NOT EXISTS idx_rep_sig_sku ON reputation_signals(sku);
+"""
+
+DDL_PRODUCTS_COLS = [
+    "ALTER TABLE products ADD COLUMN reputation_tier       TEXT",
+    "ALTER TABLE products ADD COLUMN reputation_composite  REAL",
+    "ALTER TABLE products ADD COLUMN reputation_confidence REAL",
+    "ALTER TABLE products ADD COLUMN reputation_summary    TEXT",
+    "ALTER TABLE products ADD COLUMN reputation_override   TEXT",
+    "ALTER TABLE products ADD COLUMN reputation_computed_at TEXT",
+]
+
+
+def phase0_backup_and_ddl(db_path: Path) -> None:
+    ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+    backup = db_path.parent / f"products.db.backup-reputation-{ts}.db"
+    log.info("Phase 0: backing up DB → %s", backup)
+    shutil.copy2(db_path, backup)
+
+    conn = sqlite3.connect(db_path)
+    conn.executescript(DDL_SIGNALS)
+
+    existing = {r[1] for r in conn.execute("PRAGMA table_info(products)")}
+    for stmt in DDL_PRODUCTS_COLS:
+        col = stmt.split("ADD COLUMN")[1].strip().split()[0]
+        if col not in existing:
+            conn.execute(stmt)
+            log.info("Phase 0: added column %s", col)
+        else:
+            log.info("Phase 0: column %s already exists, skipping", col)
+    conn.commit()
+    conn.close()
+    log.info("Phase 0 complete.")
