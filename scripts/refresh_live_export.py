@@ -54,7 +54,7 @@ EXPORT_COLS = [
     "country", "region", "subregion", "appellation",
     "body", "acidity", "tannin",
     "blend_type", "production_style",
-    "sweetness", "intensity", "smokiness", "finish",
+    "sweetness", "intensity", "smokiness", "bitterness", "finish",
     "food_matching", "food_matching_detail", "flavor_tags",
     "bottle_size", "price", "currency",
     # Customer-facing SALE price. special_price is the discounted amount (populated
@@ -88,6 +88,12 @@ EXPORT_COLS = [
     # origin_system: the certification body (DOC/DOCG/AOC/IGT/AVA etc) — separated from designation
     # accessory_type: sub-category for accessories (Glassware/Decanter/Pourer etc)
     "origin_system", "accessory_type",
+    # Reputation signals — tier, composite score, confidence, and template copy.
+    # reputation_override and reputation_computed_at are internal-only, not exported.
+    "reputation_tier",
+    "reputation_composite",
+    "reputation_confidence",
+    "reputation_summary",
 ]
 
 # Columns that contain JSON-encoded text and should be decoded for export.
