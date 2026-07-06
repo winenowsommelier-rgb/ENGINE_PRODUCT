@@ -1,8 +1,10 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { trackFinderStep } from '@/lib/analytics';
 
 /**
  * StepShell — the chrome around one finder question.
@@ -29,6 +31,8 @@ interface StepShellProps {
   backHref: string;
   /** When set, render a "No preference / Skip" link to this href. */
   skipHref?: string;
+  /** Active category (e.g. "Wine") — passed through for GA4. */
+  category?: string;
   children: React.ReactNode;
 }
 
@@ -39,9 +43,15 @@ export function StepShell({
   hint,
   backHref,
   skipHref,
+  category,
   children,
 }: StepShellProps) {
   const pct = Math.round((stepNumber / totalSteps) * 100);
+
+  useEffect(() => {
+    trackFinderStep({ step_number: stepNumber, step_name: title, category });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepNumber]);
 
   return (
     <div className="flex flex-col gap-6">

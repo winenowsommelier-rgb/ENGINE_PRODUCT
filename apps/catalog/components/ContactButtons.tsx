@@ -3,6 +3,7 @@
 import { MessageCircle, Phone, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ContactLinks } from '@/lib/contact';
+import { trackGenerateLead } from '@/lib/analytics';
 
 /**
  * ContactButtons — up to three Maison-clean "talk to us" buttons (LINE,
@@ -30,6 +31,9 @@ interface ContactButtonsProps {
   links: ContactLinks;
   variant?: 'inline' | 'stacked';
   size?: 'sm' | 'md';
+  /** Optional product context — appended to the generate_lead GA4 event. */
+  productSku?: string;
+  productName?: string;
 }
 
 interface Channel {
@@ -43,6 +47,8 @@ export function ContactButtons({
   links,
   variant = 'inline',
   size = 'md',
+  productSku,
+  productName,
 }: ContactButtonsProps) {
   // Build the ordered channel list, dropping any with an empty link string.
   const channels: Channel[] = (
@@ -70,6 +76,15 @@ export function ContactButtons({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() =>
+            trackGenerateLead({
+              currency: 'THB',
+              value: 1,
+              lead_source: key === 'line' ? 'LINE' : key === 'whatsapp' ? 'WhatsApp' : 'Messenger',
+              item_id: productSku,
+              item_name: productName,
+            })
+          }
           className={cn(
             'inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md',
             'border border-border bg-background font-medium text-foreground',

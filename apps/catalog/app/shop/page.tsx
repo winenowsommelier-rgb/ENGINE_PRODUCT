@@ -19,6 +19,7 @@ import { shopFacets, topGrapes, topFlavors } from '@/lib/shop-facets';
 import { DrillBreadcrumb } from '@/components/DrillBreadcrumb';
 import { buildQuery } from '@/lib/build-query';
 import { cn } from '@/lib/utils';
+import { ViewItemListTracker } from '@/components/ViewItemListTracker';
 
 export function generateMetadata({
   searchParams,
@@ -232,6 +233,19 @@ export default function ShopPage({
           <EmptyState />
         ) : (
           <>
+            <ViewItemListTracker
+              listName={activeGroup || 'Shop'}
+              items={pageItems.slice(0, 50).map((p, i) => ({
+                item_id: p.sku,
+                item_name: p.name,
+                item_category: activeGroup || undefined,
+                item_category2: p.category_type ?? undefined,
+                price: p.price ? Math.round(p.price) : undefined,
+                currency: 'THB',
+                index: i,
+                item_list_name: activeGroup || 'Shop',
+              }))}
+            />
             <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
               {pageItems.map((product) => (
                 <ProductCard

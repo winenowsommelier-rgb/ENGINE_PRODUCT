@@ -12,6 +12,7 @@ import { decodeAnswers, encodeAnswers } from '@/lib/finder/answers';
 import { scoreProducts } from '@/lib/finder/scoring';
 import { resolveHeroProfile } from '@/lib/finder/style-profiles';
 import { cn } from '@/lib/utils';
+import { FinderResultTracker } from '@/components/finder/FinderResultTracker';
 
 /**
  * Finder result — the pay-off page.
@@ -69,6 +70,11 @@ export default function FinderResultPage({
   return (
     <>
       <TrustBar />
+      <FinderResultTracker
+        archetype={profile?.name ?? 'unknown'}
+        category={answers.category}
+        resultCount={products.length}
+      />
       <main className="container flex flex-col gap-10 py-8">
         {products.length === 0 ? (
           <section className="flex max-w-2xl flex-col gap-4">

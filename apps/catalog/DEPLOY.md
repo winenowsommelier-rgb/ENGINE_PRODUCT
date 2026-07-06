@@ -55,6 +55,7 @@ broken links, no crash). See `apps/catalog/.env.example`.
 | `LINE_OFFICIAL_URL` | Full URL, e.g. `https://line.me/R/ti/p/@wnlq9` | LINE official account link |
 | `WHATSAPP_NUMBER` | Digits only, country code, **no `+`**, e.g. `66812345678` | International format |
 | `FB_MESSENGER_PAGE` | Page handle only (part after `m.me/`), e.g. `wnlq9` | Facebook Messenger |
+| `NEXT_PUBLIC_GA_ID` | GA4 Measurement ID, e.g. `G-P6D0Y1NG57` | **Different value per project** — B2C: `G-P6D0Y1NG57` · B2B: `G-LCVD09KTRH`. Omit on local dev to disable GA. |
 
 Set them for **Production** (and Preview if you want them on preview deploys).
 Contact buttons omit any unconfigured channel.

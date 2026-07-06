@@ -20,6 +20,7 @@ import { sanitizeDescription } from '@/lib/sanitize-html';
 import type { PublicProduct } from '@/lib/types';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildProductSchema, buildBreadcrumbList, GROUP_SLUG } from '@/lib/seo/jsonld';
+import { ViewItemTracker } from '@/components/product/ViewItemTracker';
 
 /**
  * Product detail — SERVER component, statically generated for every SKU.
@@ -204,8 +205,21 @@ export default function Page({ params }: { params: { sku: string } }) {
     .map((sku) => getProductBySku(sku))
     .filter((p): p is PublicProduct => Boolean(p));
 
+  const priceValue = product.price ? Math.round(product.price) : undefined;
+
   return (
     <main className="container flex flex-col gap-12 py-8 sm:py-10">
+      <ViewItemTracker
+        item={{
+          item_id: product.sku,
+          item_name: product.name,
+          item_category: groupForProduct(product),
+          item_category2: product.category_type ?? undefined,
+          price: priceValue,
+          currency: 'THB',
+        }}
+        value={priceValue}
+      />
       {/* Breadcrumb back to shop. Category comes from groupForProduct (SKU-prefix
           override), NOT raw classification — so a whisky mislabeled "Wine product"
           correctly breadcrumbs under Whisky, linking to its shop tab. */}
@@ -333,7 +347,7 @@ export default function Page({ params }: { params: { sku: string } }) {
             <p className="text-sm text-muted-foreground">
               Message us to check availability or place an order.
             </p>
-            <ContactButtons links={links} variant="inline" />
+            <ContactButtons links={links} variant="inline" productSku={product.sku} productName={product.name} />
           </section>
         </div>
       </div>

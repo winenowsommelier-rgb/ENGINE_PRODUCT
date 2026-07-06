@@ -4,6 +4,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildWebSiteOrganization } from '@/lib/seo/jsonld';
 
@@ -44,6 +45,7 @@ export default function RootLayout({
         <Footer />
         <Analytics />
         <SpeedInsights />
+        <GoogleAnalytics />
         <JsonLd data={buildWebSiteOrganization()} />
       </body>
     </html>

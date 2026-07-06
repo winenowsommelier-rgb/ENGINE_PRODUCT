@@ -8,6 +8,7 @@ import { JsonLd } from '@/components/seo/JsonLd';
 import { buildArticleSchema, buildFaqSchema } from '@/lib/seo/blog-jsonld';
 import { getAllProducts } from '@/lib/catalog-data';
 import { resolveProductEmbeds } from '@/lib/blog/resolve-product-embeds';
+import { BlogViewTracker } from '@/components/blog/BlogViewTracker';
 
 export const revalidate = 3600;
 export const dynamicParams = true; // posts not in generateStaticParams served via ISR
@@ -69,21 +70,53 @@ export default async function BlogPostPage({
   const faqSchema = buildFaqSchema(post);
 
   return (
-    <main className="container max-w-3xl py-12">
-      <article>
-        <h1 className="mb-4 text-3xl font-bold leading-tight tracking-tight">{post.title}</h1>
-        <time className="mb-8 block text-sm text-muted-foreground" dateTime={post.publishedAt}>
-          {new Date(post.publishedAt).toLocaleDateString('en-TH', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-          })}
-        </time>
-        <PostBody html={post.content.html} productMap={productMap} />
-      </article>
-      <RelatedProducts tags={post.tags} allProducts={allProducts} />
+    <div className="min-h-screen bg-stone-50">
+      <BlogViewTracker slug={post.slug} title={post.title} />
+      <div className="mx-auto max-w-2xl px-5 pb-24 pt-12 sm:pt-16">
+        {/* Tags */}
+        {post.tags.length > 0 && (
+          <div className="mb-5 flex flex-wrap gap-2">
+            {post.tags.map((t) => (
+              <span
+                key={t.slug}
+                className="rounded-full border border-stone-200 bg-white px-3 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-stone-500"
+              >
+                {t.name}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Title */}
+        <h1 className="mb-4 font-serif text-3xl font-semibold leading-tight tracking-tight text-stone-900 sm:text-4xl">
+          {post.title}
+        </h1>
+
+        {/* Byline */}
+        <div className="mb-10 flex items-center gap-3 border-b border-stone-200 pb-8">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-stone-200">
+            <span className="text-xs font-semibold text-stone-500">WN</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-stone-700">WNLQ9 Sommelier</span>
+            <time className="text-xs text-stone-400" dateTime={post.publishedAt}>
+              {new Date(post.publishedAt).toLocaleDateString('en-TH', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              })}
+            </time>
+          </div>
+        </div>
+
+        <article>
+          <PostBody html={post.content.html} productMap={productMap} />
+        </article>
+
+        <RelatedProducts tags={post.tags} allProducts={allProducts} />
+      </div>
       <JsonLd data={buildArticleSchema(post, url)} />
       {faqSchema && <JsonLd data={faqSchema} />}
-    </main>
+    </div>
   );
 }
