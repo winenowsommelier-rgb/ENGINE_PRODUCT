@@ -326,6 +326,128 @@ button.taste-note:focus-visible {
   }
 }
 
+/* ────────────────────────────────────────────────────────────────────────────
+ * BLOG PROSE — editorial typography for the Journal post body.
+ * Layered on top of @tailwindcss/typography's .prose. Overrides the
+ * default plugin so post content reads like a premium print magazine,
+ * not a markdown preview dump.
+ * ────────────────────────────────────────────────────────────────────────── */
+
+/* Body paragraphs — generous leading, readable measure, warm ink. */
+.prose p {
+  font-size: 1.1rem;
+  line-height: 1.85;
+  color: hsl(0 0% 15%);
+  margin-top: 0;
+  margin-bottom: 1.6em;
+}
+
+/* Section headings */
+.prose h1 { display: none; } /* page <h1> already above the article */
+.prose h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: hsl(0 0% 8%);
+  margin-top: 2.8em;
+  margin-bottom: 0.9em;
+  padding-bottom: 0.4em;
+  border-bottom: 1.5px solid hsl(0 0% 90%);
+}
+.prose h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+  color: hsl(0 0% 10%);
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+}
+
+/* Inline emphasis */
+.prose strong {
+  font-weight: 700;
+  color: hsl(0 0% 8%);
+}
+.prose em {
+  font-style: italic;
+  color: hsl(0 0% 18%);
+}
+
+/* Thematic break — slim, restrained */
+.prose hr {
+  border: none;
+  border-top: 1px solid hsl(0 0% 88%);
+  margin: 2.5em 0;
+}
+
+/* Pull-quote table for the pairing reference section */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  margin: 2em 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid hsl(0 0% 88%);
+}
+.prose thead tr {
+  background: hsl(30 6% 96%);
+}
+.prose th {
+  padding: 0.7em 1em;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(0 0% 38%);
+  border-bottom: 1px solid hsl(0 0% 88%);
+}
+.prose td {
+  padding: 0.75em 1em;
+  color: hsl(0 0% 15%);
+  border-bottom: 1px solid hsl(0 0% 93%);
+  line-height: 1.55;
+}
+.prose tbody tr:last-child td {
+  border-bottom: none;
+}
+.prose tbody tr:nth-child(even) {
+  background: hsl(30 6% 98%);
+}
+
+/* Lists */
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+  margin-bottom: 1.6em;
+}
+.prose li {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: hsl(0 0% 15%);
+  margin-bottom: 0.4em;
+}
+
+/* Blockquote */
+.prose blockquote {
+  border-left: 3px solid hsl(350 47% 33%);
+  padding-left: 1.25em;
+  margin-left: 0;
+  color: hsl(0 0% 30%);
+  font-style: italic;
+}
+
+/* Cover image caption */
+.prose figcaption {
+  font-size: 0.8rem;
+  color: hsl(0 0% 55%);
+  text-align: center;
+  margin-top: 0.5em;
+}
+
 /* ── Structural gauges ──────────────────────────────────────────────────── */
 .structural-gauges {
   display: flex;

@@ -1,5 +1,7 @@
 // apps/catalog/app/blog/[slug]/page.tsx
 import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAllPosts, getPostBySlug } from '@/lib/blog/local-posts';
 import { PostBody } from '@/components/blog/PostBody';
@@ -66,48 +68,74 @@ export default async function BlogPostPage({
   const faqSchema = buildFaqSchema(post);
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-white">
       <BlogViewTracker slug={post.slug} title={post.title} />
-      <div className="mx-auto max-w-2xl px-5 pb-24 pt-12 sm:pt-16">
-        {/* Tags */}
-        {post.tags.length > 0 && (
-          <div className="mb-5 flex flex-wrap gap-2">
-            {post.tags.map((t) => (
-              <span
-                key={t.slug}
-                className="rounded-full border border-stone-200 bg-white px-3 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-stone-500"
-              >
-                {t.name}
-              </span>
-            ))}
-          </div>
-        )}
 
-        {/* Title */}
-        <h1 className="mb-4 font-serif text-3xl font-semibold leading-tight tracking-tight text-stone-900 sm:text-4xl">
-          {post.title}
-        </h1>
+      {/* Cover image — full-width hero, 480px tall on desktop */}
+      {post.coverImage && (
+        <div className="relative h-64 w-full sm:h-96 lg:h-[480px] overflow-hidden bg-stone-100">
+          <Image
+            src={post.coverImage.url}
+            alt={post.title}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          {/* Dark gradient so title reads over any image */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+        </div>
+      )}
 
-        {/* Byline */}
-        <div className="mb-10 flex items-center gap-3 border-b border-stone-200 pb-8">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-stone-200">
-            <span className="text-xs font-semibold text-stone-500">WN</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-semibold text-stone-700">WNLQ9 Sommelier</span>
-            <time className="text-xs text-stone-400" dateTime={post.publishedAt}>
-              {new Date(post.publishedAt).toLocaleDateString('en-TH', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-              })}
-            </time>
+      <div className="mx-auto max-w-2xl px-5 pb-24">
+        {/* Title block — sits right below the hero */}
+        <div className="-mt-2 relative z-10 pt-8 sm:pt-10">
+          {/* Tags */}
+          {post.tags.length > 0 && (
+            <div className="mb-4 flex flex-wrap gap-2">
+              {post.tags.map((t) => (
+                <span
+                  key={t.slug}
+                  className="rounded-full border border-stone-200 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-stone-500"
+                >
+                  {t.name}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <h1 className="mb-5 font-serif text-3xl font-bold leading-tight tracking-tight text-stone-900 sm:text-4xl lg:text-[2.6rem]">
+            {post.title}
+          </h1>
+
+          {/* Byline */}
+          <div className="mb-10 flex items-center gap-3 border-b border-stone-150 pb-8">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-stone-800">
+              <span className="text-xs font-bold text-white tracking-widest">WN</span>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <span className="text-sm font-semibold text-stone-800">WNLQ9 Sommelier</span>
+              <time className="text-sm text-stone-400" dateTime={post.publishedAt}>
+                {new Date(post.publishedAt).toLocaleDateString('en-TH', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                })}
+              </time>
+            </div>
           </div>
         </div>
 
         <article>
           <PostBody html={post.content.html} productMap={productMap} />
         </article>
+
+        {/* Back to Journal */}
+        <div className="mt-12 border-t border-stone-200 pt-8">
+          <Link href="/blog" className="text-sm font-semibold text-primary hover:underline">
+            ← Back to Journal
+          </Link>
+        </div>
 
         <RelatedProducts tags={post.tags} allProducts={allProducts} />
       </div>

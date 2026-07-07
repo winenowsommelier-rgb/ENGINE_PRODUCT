@@ -36,31 +36,32 @@ export function RelatedProducts({ tags, allProducts }: RelatedProductsProps) {
   if (related.length === 0) return null;
 
   return (
-    <section className="mt-12 border-t pt-8">
-      <h2 className="mb-6 text-xl font-semibold">You might also like</h2>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <section className="mt-14 border-t border-stone-200 pt-10">
+      <h2 className="mb-7 text-xl font-semibold text-stone-900">You might also like</h2>
+      <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
         {related.map((product) => (
           <Link
             key={product.sku}
             href={`/product/${product.sku}`}
-            className="group flex flex-col gap-2"
+            className="group flex flex-col gap-3"
           >
-            <div className="relative aspect-square overflow-hidden rounded-md bg-muted">
+            {/* Fixed 240px height so all bottles display full-length uniformly */}
+            <div className="relative h-60 w-full overflow-hidden rounded-xl bg-stone-50 border border-stone-100">
               {product.image_url ? (
                 <Image
                   src={product.image_url}
                   alt={product.name}
                   fill
                   sizes="(min-width: 640px) 25vw, 50vw"
-                  className="object-cover transition-transform group-hover:scale-105"
+                  className="object-contain p-3 transition-transform duration-300 group-hover:scale-105"
                 />
               ) : (
-                <div className="h-full w-full bg-muted" />
+                <div className="h-full w-full bg-stone-100" />
               )}
             </div>
-            <p className="text-sm font-medium leading-snug line-clamp-2">{product.name}</p>
+            <p className="text-sm font-semibold leading-snug line-clamp-2 text-stone-800">{product.name}</p>
             {product.price != null && (
-              <p className="text-sm text-muted-foreground">฿{product.price.toLocaleString()}</p>
+              <p className="text-sm font-medium text-stone-500">฿{product.price.toLocaleString()}</p>
             )}
           </Link>
         ))}
