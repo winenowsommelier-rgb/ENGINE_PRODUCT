@@ -28,8 +28,8 @@ The solutions are less well-known, because most wine writing was done in Europe 
 
 ### 1. Aromatic White Wines — the safest bet
 
-![Crisp white wine in a glass — the go-to style for aromatic Thai dishes](https://images.unsplash.com/photo-1474722883778-792e7990302f?fm=jpg&q=80&w=1000&auto=format&fit=crop)
-*Photo by [Terry Vlisidis](https://unsplash.com/photos/white-wine-glass-on-table-sD3nYaHNBFk) on Unsplash*
+![Pouring a glass of pale white wine — the style that works best with fragrant Thai dishes](https://images.unsplash.com/photo-1474722883778-792e7990302f?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+*High natural acidity and aromatic lift — the two qualities that make white wine the default choice for Thai food.*
 
 Sauvignon Blanc and Riesling are the go-to styles for Thai food, and for good reason. High natural acidity mirrors the lime and tamarind in Thai cooking. Low tannin means no bitterness clash with chilli. Aromatic intensity holds its own against lemongrass and holy basil.
 
@@ -71,8 +71,8 @@ Gewurztraminer is the most underrated Thai food wine, and almost no one orders i
 
 ### 3. Dry Rosé — the all-rounder
 
-![Pouring dry rosé wine — the most versatile pairing for a full Thai spread](https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?fm=jpg&q=80&w=1000&auto=format&fit=crop&sat=-20&hue=340)
-*Photo by [Le Tia](https://unsplash.com/photos/pouring-pink-rose-wine-into-a-glass-CPxcQlOECi8) on Unsplash*
+![Rosé wine being poured into a glass — the pale pink colour signals the dry, delicate style that works with Thai food](https://images.unsplash.com/photo-1628876153244-d10fca15052c?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+*Dry rosé sidesteps the tannin problem entirely while offering enough body and fruit to hold its own against fish sauce and lemongrass.*
 
 A well-made dry Provence-style rosé is the closest thing to a universal pairing for a Thai spread, because it sidesteps the tannin problem entirely while offering enough body and fruit to hold its own. The key word is *dry* — sweetness from a pink Moscato will clash with umami-heavy dishes.
 
@@ -108,8 +108,8 @@ The instinct to open a big Cabernet Sauvignon with a Thai feast is understandabl
 
 ### 5. Bubbles — the opener
 
-![Sparkling wine being poured — perfect for Thai appetisers and starters](https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?fm=jpg&q=80&w=1000&auto=format&fit=crop)
-*Photo by [Zoe Schaeffer](https://unsplash.com/photos/person-pouring-wine-on-wine-glass-wS7f61WuRZk) on Unsplash*
+![Champagne being poured into a glass — bubbles that scrub the palate and cut through fish sauce and fat](https://images.unsplash.com/photo-1623428454697-08da4a100602?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+*Sparkling wine is the most underrated Thai food pairing — the effervescence resets the palate between dishes.*
 
 Sparkling wine with Thai food is excellent, and more Bangkok tables should start with it. Bubbles scrub the palate, the acidity cuts through fish sauce and fat, and the festive context fits the meal. You don't need Champagne.
 
@@ -125,8 +125,8 @@ Sparkling wine with Thai food is excellent, and more Bangkok tables should start
 
 ## Quick Pairing Reference
 
-![A spread of Thai dishes — the context most Bangkok wine pairings need to handle](https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?fm=jpg&q=80&w=1000&auto=format&fit=crop)
-*Photo by [Bimo Luki](https://unsplash.com/photos/variety-of-dishes-HEfDEJY0_fI) on Unsplash*
+![A full spread of Thai dishes — pad thai, khao soi, tom yum, papaya salad and curry side by side](https://images.unsplash.com/photo-1675150277436-9c7348972c11?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+*The real challenge: a Thai group dinner means multiple dishes, multiple flavour profiles, all at once. One wine needs to handle all of them.*
 
 | Thai Dish | Best Match | Why |
 |---|---|---|
