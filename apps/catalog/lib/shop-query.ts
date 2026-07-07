@@ -61,7 +61,7 @@ import { canonicalRegionForCountry, isRegionLevelValueForCountry, regionMatchesF
 
 export const SHOP_PAGE_SIZE = 24;
 
-export type SortKey = 'recommended' | 'name' | 'price-asc' | 'price-desc';
+export type SortKey = 'recommended' | 'name' | 'price-asc' | 'price-desc' | 'reputation';
 
 /** Raw, untrusted params. Values may be string | string[] | undefined (Next's shape). */
 export type ShopParams = Record<string, string | string[] | undefined>;
@@ -131,6 +131,15 @@ const SORTS: Record<string, SortKey> = {
   name: 'name',
   'price-asc': 'price-asc',
   'price-desc': 'price-desc',
+  reputation: 'reputation',
+};
+
+const REPUTATION_TIER_ORDER: Record<string, number> = {
+  iconic: 4,
+  premium: 3,
+  established: 2,
+  everyday: 1,
+  unrated: 0,
 };
 
 /**
@@ -244,6 +253,14 @@ export function applyShopQuery(
     );
   } else if (sortKey === 'price-asc') {
     sorted.sort((a, b) => priceOf(a) - priceOf(b));
+  } else if (sortKey === 'reputation') {
+    sorted.sort((a, b) => {
+      const ra = REPUTATION_TIER_ORDER[a.reputation_tier ?? 'unrated'] ?? 0;
+      const rb = REPUTATION_TIER_ORDER[b.reputation_tier ?? 'unrated'] ?? 0;
+      if (rb !== ra) return rb - ra;
+      // Tiebreak: composite score descending (higher = better)
+      return (b.reputation_composite ?? 0) - (a.reputation_composite ?? 0);
+    });
   } else {
     sorted.sort((a, b) => priceOf(b) - priceOf(a));
   }

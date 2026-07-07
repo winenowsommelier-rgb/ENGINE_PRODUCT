@@ -33,6 +33,10 @@ export const PUBLIC_FIELDS = [
   // FORBIDDEN popularity_score; the raw score itself is never copied. Set by the
   // popularityTierBucket argument below, NOT read from the raw row's popularity_* keys.
   'popularity_tier',
+  // Reputation signals — safe to expose (tier label + composite score + confidence +
+  // summary copy). Internal-only fields (reputation_override, reputation_computed_at)
+  // are deliberately absent from this list.
+  'reputation_tier','reputation_composite','reputation_confidence','reputation_summary',
 ] as const;
 
 // Drift guard: every PUBLIC_FIELDS key must be a known PublicProduct key.

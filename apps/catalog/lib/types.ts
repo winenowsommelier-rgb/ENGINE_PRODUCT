@@ -94,4 +94,12 @@ export interface PublicProduct {
   // 2 = top seller (>= p75 of scored population). Drives Recommended ordering upstream
   // and is available for optional "Bestseller" badging. The raw score never ships.
   popularity_tier?: 0 | 1 | 2;
+  // Reputation signals — multi-axis scoring (acclaim + prestige + popularity + producer).
+  // reputation_tier drives the sort option and badge; composite/confidence/summary are
+  // available for product detail pages. Internal-only fields (override, computed_at) are
+  // deliberately absent.
+  reputation_tier?: 'iconic' | 'premium' | 'established' | 'everyday' | 'unrated';
+  reputation_composite?: number;
+  reputation_confidence?: number;
+  reputation_summary?: string;
 }
