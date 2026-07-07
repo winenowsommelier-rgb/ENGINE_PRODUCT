@@ -1,7 +1,7 @@
 // apps/catalog/app/blog/[slug]/page.tsx
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getAllPosts, getPostBySlug } from '@/lib/blog/hashnode-posts';
+import { getAllPosts, getPostBySlug } from '@/lib/blog/local-posts';
 import { PostBody } from '@/components/blog/PostBody';
 import { RelatedProducts } from '@/components/blog/RelatedProducts';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -15,14 +15,10 @@ export const dynamicParams = true; // posts not in generateStaticParams served v
 
 const BASE = 'https://wnlq9.shop';
 
-export async function generateStaticParams() {
-  // Pre-render newest 50 at build; posts 51-250 served by ISR on first request.
-  // Returns [] when HASHNODE_PUBLICATION_ID is not set (e.g. local builds without .env.local)
-  // so the build succeeds — all posts are served via ISR in that case.
-  if (!process.env.HASHNODE_PUBLICATION_ID) return [];
+export function generateStaticParams() {
+  // Pre-render all local posts at build time; ISR handles any added mid-deploy.
   try {
-    const posts = await getAllPosts(50);
-    return posts.map((p) => ({ slug: p.slug }));
+    return getAllPosts(250).map((p) => ({ slug: p.slug }));
   } catch {
     return [];
   }
@@ -33,7 +29,7 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const post = await getPostBySlug(params.slug);
+  const post = getPostBySlug(params.slug);
   if (!post) return {};
 
   const url = `${BASE}/blog/${post.slug}`;
@@ -60,7 +56,7 @@ export default async function BlogPostPage({
 }: {
   params: { slug: string };
 }) {
-  const post = await getPostBySlug(params.slug);
+  const post = getPostBySlug(params.slug);
   if (!post) notFound();
 
   const allProducts = getAllProducts();

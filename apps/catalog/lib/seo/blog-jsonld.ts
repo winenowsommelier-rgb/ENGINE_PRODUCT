@@ -33,7 +33,7 @@ export interface FaqPageSchema {
 
 export function buildFaqSchema(post: BlogPost): FaqPageSchema | null {
   // Case-insensitive split so "## frequently asked questions" also matches
-  const parts = post.content.markdown.split(/## Frequently Asked Questions/i);
+  const parts = post.content.markdown.split(/## (?:Frequently Asked Questions|FAQ)/i);
   if (parts.length < 2) return null;
 
   const faqSection = parts[1];
