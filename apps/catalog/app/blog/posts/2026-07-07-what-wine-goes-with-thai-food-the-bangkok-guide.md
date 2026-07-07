@@ -4,7 +4,7 @@ SLUG: what-wine-goes-with-thai-food-the-bangkok-guide
 DATE: 2026-07-07
 TAGS: pairing,thai-food,white-wine,rose,sparkling
 COVER-IMAGE: https://images.unsplash.com/photo-1763647818427-326fa8e6699f?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Photo by Christopher Yiu Chung on Unsplash (Unsplash License, free for commercial use)
+COVER-CREDIT: Photo by Christopher Yiu Chung on Unsplash
 COVER-CREDIT-URL: https://unsplash.com/photos/a-spread-of-delicious-thai-dishes-on-a-patterned-surface--wejEQuvw0E
 META-TITLE: Wine with Thai Food: Bangkok Buying Guide (฿519–฿1,699)
 META-DESC: Expert Thai food wine pairing guide for Bangkok. From pad thai to green curry — real bottles in stock at real Bangkok prices in THB.
@@ -20,13 +20,16 @@ Thai food is one of the hardest cuisines to pair with wine — and one of the mo
 
 The problems are well-known: chilli heat amplifies tannin and alcohol, making full-bodied reds taste harsh and bitter. Fish sauce and lime push flavour intensity high. Coconut-based dishes coat the palate with fat. Aromatic herbs — lemongrass, kaffir lime leaf, galangal — demand something with presence.
 
-The solutions are less well-known, because most wine writing was done in Europe for European food. In Bangkok you have an advantage: you can eat the actual food with the actual wine, in actual heat, and discover what works. Here's what does.
+The solutions are less well-known, because most wine writing was done in Europe for European food. As [Wine Folly explains](https://winefolly.com/video/what-wine-with-spicy-food/), the key is low tannin, moderate alcohol, and wines that lean aromatic or slightly off-dry. In Bangkok you have an advantage: you can eat the actual food with the actual wine, in actual heat, and discover what works. Here's what does.
 
 ---
 
 ## The Four Styles That Work
 
 ### 1. Aromatic White Wines — the safest bet
+
+![Crisp white wine in a glass — the go-to style for aromatic Thai dishes](https://images.unsplash.com/photo-1474722883778-792e7990302f?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+*Photo by [Terry Vlisidis](https://unsplash.com/photos/white-wine-glass-on-table-sD3nYaHNBFk) on Unsplash*
 
 Sauvignon Blanc and Riesling are the go-to styles for Thai food, and for good reason. High natural acidity mirrors the lime and tamarind in Thai cooking. Low tannin means no bitterness clash with chilli. Aromatic intensity holds its own against lemongrass and holy basil.
 
@@ -40,7 +43,7 @@ Sauvignon Blanc and Riesling are the go-to styles for Thai food, and for good re
 
 **Cloudy Bay Sauvignon Blanc** (Marlborough, ฿1,699) is the benchmark for this style. If you're pairing wine with a group dinner and want something that handles the whole spread — *pad kaprao*, *tom kha gai*, a plate of grilled prawns — this is the bottle to open. Score: 93.
 
-**Riesling** does something different: a touch of residual sugar in off-dry styles meets chilli sweetness, softening the heat. German Riesling from Mosel or Rheingau is the classic match for spicy Thai food, because the sugar doesn't make it taste sweet — it makes the fire feel rounder.
+**Riesling** does something different: a touch of residual sugar in off-dry styles meets chilli sweetness, softening the heat. [Decanter notes](https://www.decanter.com/learn/advice/what-s-the-wine-style-for-spicy-foods-51397/) that German Kabinett or Spätlese Riesling is a particularly well-suited match for Thai red curry and tom yum — the off-dry sweetness echoes the dish's complexity without fighting it.
 
 <!-- product: WWW5404AD -->
 
@@ -54,7 +57,7 @@ Sauvignon Blanc and Riesling are the go-to styles for Thai food, and for good re
 
 ### 2. Gewurztraminer — the specialist's move
 
-Gewurztraminer is the most underrated Thai food wine, and almost no one orders it in Bangkok. That's an opportunity. The grape is explosively aromatic — lychee, rose petal, white pepper — which means it doesn't disappear next to fish sauce, galangal, or a properly spiced *massaman*. The moderate acidity and slight sweetness in Alsace versions calm chilli heat instead of fighting it.
+Gewurztraminer is the most underrated Thai food wine, and almost no one orders it in Bangkok. That's an opportunity. The grape is explosively aromatic — lychee, rose petal, white pepper — which means it doesn't disappear next to fish sauce, galangal, or a properly spiced *massaman*. [Decanter's Asian food pairing guide](https://www.decanter.com/features/asian-fusion-248267/) rates Alsace whites as some of the most natural partners for strong Asian flavours, specifically because they combine richness and lively acidity without oak.
 
 <!-- product: WWW5415FJ -->
 
@@ -67,6 +70,9 @@ Gewurztraminer is the most underrated Thai food wine, and almost no one orders i
 ---
 
 ### 3. Dry Rosé — the all-rounder
+
+![Pouring dry rosé wine — the most versatile pairing for a full Thai spread](https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?fm=jpg&q=80&w=1000&auto=format&fit=crop&sat=-20&hue=340)
+*Photo by [Le Tia](https://unsplash.com/photos/pouring-pink-rose-wine-into-a-glass-CPxcQlOECi8) on Unsplash*
 
 A well-made dry Provence-style rosé is the closest thing to a universal pairing for a Thai spread, because it sidesteps the tannin problem entirely while offering enough body and fruit to hold its own. The key word is *dry* — sweetness from a pink Moscato will clash with umami-heavy dishes.
 
@@ -102,6 +108,9 @@ The instinct to open a big Cabernet Sauvignon with a Thai feast is understandabl
 
 ### 5. Bubbles — the opener
 
+![Sparkling wine being poured — perfect for Thai appetisers and starters](https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+*Photo by [Zoe Schaeffer](https://unsplash.com/photos/person-pouring-wine-on-wine-glass-wS7f61WuRZk) on Unsplash*
+
 Sparkling wine with Thai food is excellent, and more Bangkok tables should start with it. Bubbles scrub the palate, the acidity cuts through fish sauce and fat, and the festive context fits the meal. You don't need Champagne.
 
 <!-- product: WSP2627FR -->
@@ -115,6 +124,9 @@ Sparkling wine with Thai food is excellent, and more Bangkok tables should start
 ---
 
 ## Quick Pairing Reference
+
+![A spread of Thai dishes — the context most Bangkok wine pairings need to handle](https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+*Photo by [Bimo Luki](https://unsplash.com/photos/variety-of-dishes-HEfDEJY0_fI) on Unsplash*
 
 | Thai Dish | Best Match | Why |
 |---|---|---|
