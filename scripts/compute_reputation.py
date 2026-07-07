@@ -30,7 +30,7 @@ log = logging.getLogger(__name__)
 DB_PATH  = REPO_ROOT / "data" / "db" / "products.db"
 SCRIPT   = REPO_ROOT / "scripts" / "refresh_live_export.py"
 
-BEVERAGE_GROUPS = {"Wine", "Spirits", "Beer & Cider"}
+BEVERAGE_GROUPS = {"Wine", "Spirits", "Beer & RTD", "Whisky", "Liqueur", "Sake & Asian"}
 STILL_WINE_TYPES = {"Red Wine", "White Wine", "Rosé"}
 
 VALID_TIERS = {"iconic", "premium", "established", "everyday", "unrated"}
