@@ -43,26 +43,29 @@ export function RelatedProducts({ tags, allProducts }: RelatedProductsProps) {
           <Link
             key={product.sku}
             href={`/product/${product.sku}`}
-            className="group flex flex-col gap-3"
+            className="group flex flex-col rounded-xl border border-stone-200 bg-white overflow-hidden hover:border-stone-400 transition-colors"
           >
-            {/* Fixed 240px height so all bottles display full-length uniformly */}
-            <div className="relative h-60 w-full overflow-hidden rounded-xl bg-stone-50 border border-stone-100">
+            {/* Fixed image area — consistent height across all cards */}
+            <div className="relative h-56 w-full shrink-0">
               {product.image_url ? (
                 <Image
                   src={product.image_url}
                   alt={product.name}
                   fill
                   sizes="(min-width: 640px) 25vw, 50vw"
-                  className="object-contain p-3 transition-transform duration-300 group-hover:scale-105"
+                  className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
                 />
               ) : (
-                <div className="h-full w-full bg-stone-100" />
+                <div className="h-full w-full bg-white" />
               )}
             </div>
-            <p className="text-sm font-semibold leading-snug line-clamp-2 text-stone-800">{product.name}</p>
-            {product.price != null && (
-              <p className="text-sm font-medium text-stone-500">฿{product.price.toLocaleString()}</p>
-            )}
+            {/* Text area — fixed height so all cards align */}
+            <div className="flex flex-col gap-1.5 border-t border-stone-100 p-3 h-20 justify-between">
+              <p className="text-sm font-semibold leading-snug line-clamp-2 text-stone-800">{product.name}</p>
+              {product.price != null && (
+                <p className="text-sm font-medium text-stone-500">฿{product.price.toLocaleString()}</p>
+              )}
+            </div>
           </Link>
         ))}
       </div>

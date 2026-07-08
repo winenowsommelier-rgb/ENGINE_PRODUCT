@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { getAllPosts, getPostBySlug } from '@/lib/blog/local-posts';
 import { PostBody } from '@/components/blog/PostBody';
 import { RelatedProducts } from '@/components/blog/RelatedProducts';
+import { RecommendedPosts } from '@/components/blog/RecommendedPosts';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildArticleSchema, buildFaqSchema } from '@/lib/seo/blog-jsonld';
 import { getAllProducts } from '@/lib/catalog-data';
@@ -62,6 +63,7 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   const allProducts = getAllProducts();
+  const allPosts = getAllPosts(50);
   const productMap = resolveProductEmbeds(post.content.html, allProducts);
 
   const url = `${BASE}/blog/${post.slug}`;
@@ -138,6 +140,7 @@ export default async function BlogPostPage({
         </div>
 
         <RelatedProducts tags={post.tags} allProducts={allProducts} />
+        <RecommendedPosts currentSlug={post.slug} currentTags={post.tags} allPosts={allPosts} />
       </div>
       <JsonLd data={buildArticleSchema(post, url)} />
       {faqSchema && <JsonLd data={faqSchema} />}
