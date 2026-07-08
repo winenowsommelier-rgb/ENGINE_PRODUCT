@@ -1,10 +1,16 @@
 // apps/catalog/lib/blog/local-posts.ts
 // File-based blog source — replaces Hashnode. Posts live in app/blog/posts/*.md
-import fs from 'node:fs';
+import * as fs from 'node:fs';
 import path from 'node:path';
 import { marked } from 'marked';
 export type { BlogPost, BlogPostPreview } from './hashnode-posts';
 import type { BlogPost, BlogPostPreview } from './hashnode-posts';
+import {
+  DRINK_SLUGS,
+  DRINK_TAG_MAP,
+  PURPOSE_TAG_MAP,
+  type CategorySlug,
+} from './categories';
 
 const POSTS_DIR = path.join(process.cwd(), 'app', 'blog', 'posts');
 
@@ -65,6 +71,7 @@ function readPostFile(filename: string): BlogPost | null {
 
   return {
     id: slug,
+    featured: data['FEATURED'] === 'true',
     title,
     slug,
     brief: (data.BRIEF as string | undefined) ?? markdown.replace(/#+\s[^\n]+\n*/g, '').slice(0, 200).trim(),
@@ -130,4 +137,18 @@ export function getAllPostSlugs(): { slug: string; updatedAt: string }[] {
       return { slug: post.slug, updatedAt: post.updatedAt };
     })
     .filter((s): s is { slug: string; updatedAt: string } => s !== null);
+}
+
+export function getAllPostsForCategory(slug: CategorySlug): BlogPostPreview[] {
+  const isDrink = (DRINK_SLUGS as string[]).includes(slug)
+  return listPostFilenames()
+    .map(f => readPostFile(f))
+    .filter((p): p is BlogPost => p !== null)
+    .filter(p => {
+      const tagSlugs = p.tags.map(t => t.slug)
+      if (isDrink) return tagSlugs.some(t => DRINK_TAG_MAP[t] === slug)
+      return tagSlugs.some(t => PURPOSE_TAG_MAP[t] === slug)
+    })
+    .map(({ content: _content, ...preview }) => preview as BlogPostPreview)
+    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
 }
