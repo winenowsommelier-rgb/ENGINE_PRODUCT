@@ -35,7 +35,6 @@ Lean, citrus-mineral, bone dry. Brilliant with Thai seafood salads and lighter s
 ---
 
 ![Chilled white wines and sparkling ready to pour, condensation on the glass](https://images.pexels.com/photos/6273442/pexels-photo-6273442.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Diana ✨ via Pexels*
 
 ---
 
@@ -60,7 +59,6 @@ Dense, spiced southern Rhône blend — Grenache, Syrah, Mourvèdre. The Perrin 
 ---
 
 ![Red wine being poured at a dinner table, Bangkok evening light](https://images.pexels.com/photos/10422324/pexels-photo-10422324.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: 준섭 윤 via Pexels*
 
 ---
 

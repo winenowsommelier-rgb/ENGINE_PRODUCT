@@ -51,7 +51,6 @@ High acidity performs a different function: it cuts through the richness of coco
 Every bottle that works with Thai food obeys at least two of these rules. The best pairings hit all three.
 
 ![A glass of chilled Riesling beside a Thai green curry at a Bangkok restaurant table](https://images.pexels.com/photos/31029754/pexels-photo-31029754.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Sai Kuen Leung via Pexels*
 
 ---
 
@@ -98,7 +97,6 @@ Here, your only effective tool is maximum residual sugar combined with minimum a
 **Casillero del Diablo Pinot Noir, Chile/Aconcagua** — ฿519 (sale)
 
 ![Spread of Thai dishes including green curry, som tam and fresh herbs on a Bangkok dining table](https://images.pexels.com/photos/31029754/pexels-photo-31029754.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Sai Kuen Leung via Pexels*
 
 ---
 
@@ -126,7 +124,6 @@ This tips the calculation further toward lower-alcohol, high-acid, refreshingly 
 This is also why oaked Chardonnay fails so completely in this context. Its full body and low acidity provide no refreshment, no contrast, no relief. It sits heavy in the heat outside and amplifies the heat inside. Same logic applies to any skin-contact orange wine with grippy tannins, however fashionable they are elsewhere.
 
 ![Chilled white wine poured into a glass on a Bangkok rooftop, condensation on the bottle](https://images.pexels.com/photos/14654918/pexels-photo-14654918.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Daria Voronkov via Pexels*
 
 <!-- product: WWW1791AD -->
 **Trimbach Gewurztraminer, Alsace** — ฿1,289

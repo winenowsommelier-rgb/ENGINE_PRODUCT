@@ -18,7 +18,6 @@ Two whiskies. Same country, same grain, same oak casks, same legal minimum of th
 
 
 ![A crystal whisky glass filled with amber Scotch whisky set against a misty Scottish Highland landscape.](https://images.pexels.com/photos/34635797/pexels-photo-34635797.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Geert Rozendom via Pexels*
 
 ### Speyside: Scotland's Fruit Bowl
 
@@ -29,7 +28,6 @@ The character is defined by what Speyside *lacks* as much as what it has. Almost
 The result: **dried fruit, honey, vanilla, light floral notes, gentle spice.** At its best, Speyside feels effortless — the kind of whisky you can pour without ceremony and find immediately rewarding.
 
 ![Golden fields of malted barley in northeast Scotland with distillery buildings in the distance.](https://images.pexels.com/photos/17474381/pexels-photo-17474381.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 *The agricultural heartland of Speyside — rich barley, soft water, and clustered distilleries make it Scotland's most productive whisky region.*
 
 ### Islay: Smoke, Sea, and Peat
@@ -46,7 +44,6 @@ Where Speyside invites, Islay challenges. It is one of the most divisive spirits
 
 
 ![A glass of peaty Islay whisky with dark amber liquid catching light against a moody background.](https://images.pexels.com/photos/36083497/pexels-photo-36083497.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 
 Peat character in whisky is measured in **PPM — phenol parts per million** — which quantifies how much smoky phenol compound is present in the malted barley before distillation. It's not a perfect indicator of how smoky a finished whisky will taste (distillation, cask maturation, and dilution all modify the final result), but it gives a useful roadmap:
 
@@ -69,7 +66,6 @@ Think of PPM the way you'd think of Scoville units for chilli heat. It tells you
 
 
 ![Two glasses of scotch whisky side by side showing the color differences between a lighter Speyside and darker Islay whisky.](https://images.pexels.com/photos/7599324/pexels-photo-7599324.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Michael  M via Pexels*
 
 | | Speyside | Islay |
 |---|---|---|
@@ -90,7 +86,6 @@ Think of PPM the way you'd think of Scoville units for chilli heat. It tells you
 Speyside is where the majority of the world's Scotch drinkers begin — and where many stay. The style is forgiving, consistent, and genuinely delicious without requiring much whisky knowledge to appreciate.
 
 ![An amber pour of Speyside single malt in a crystal nosing glass, warm light catching the spirit's golden colour.](https://images.pexels.com/photos/29349921/pexels-photo-29349921.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Andrew Patrick Photo via Pexels*
 *Speyside at its best: clean amber colour, fruit-forward nose, and a finish that needs no explanation.*
 
 In Bangkok's heat, Speyside performs particularly well. A Glenfiddich 12 with a single large ice cube is one of the most reliably pleasant pours you can make at home. The fruity character doesn't fight the heat; the light body doesn't feel heavy in 35°C evenings.
@@ -107,7 +102,6 @@ In Bangkok's heat, Speyside performs particularly well. A Glenfiddich 12 with a 
 
 
 ![A tumbler of peaty Islay single malt scotch whisky with a dark amber hue, evoking the region's characteristic smoky and maritime character.](https://images.pexels.com/photos/20196256/pexels-photo-20196256.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Carsten Ruthemann via Pexels*
 
 Islay converts are among the most enthusiastic whisky drinkers alive. Once the smoke clicks — once the medicinal, briny character stops being confronting and starts being compelling — many people find it impossible to go back to un-peated whisky with the same enthusiasm.
 
@@ -125,7 +119,6 @@ The key is to lean into it rather than fight it. Islay whisky is not trying to b
 
 
 ![A crystal tumbler of amber Scotch whisky held against warm golden light, showcasing the spirit's rich color and clarity.](https://images.pexels.com/photos/12099381/pexels-photo-12099381.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Xuân Thống Trần via Pexels*
 
 The honest answer: they win at different moments.
 
@@ -136,7 +129,6 @@ The honest answer: they win at different moments.
 For the Bangkok heat specifically: Speyside is more versatile chilled or over ice. Islay at room temperature is where it performs best — adding ice dilutes and suppresses the smoke in ways that can flatten the experience.
 
 ![A single dram of smoky Islay whisky alongside a map of Scotland's whisky regions, showing the contrast between the northeast valleys and the remote Atlantic island.](https://images.pexels.com/photos/20196256/pexels-photo-20196256.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Carsten Ruthemann via Pexels*
 *Geography shapes flavour: Speyside's sheltered river valley versus Islay's Atlantic exposure explain everything about why these two regions taste nothing alike.*
 
 ---

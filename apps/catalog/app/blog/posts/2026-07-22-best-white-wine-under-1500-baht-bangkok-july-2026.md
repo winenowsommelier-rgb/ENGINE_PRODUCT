@@ -19,7 +19,6 @@ July in Bangkok. 35°C, 80% humidity. There is exactly one correct answer to thi
 
 
 ![Rolling green vineyards in New Zealand's Marlborough region during harvest season.](https://images.pexels.com/photos/28183895/pexels-photo-28183895.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: manvinder social via Pexels*
 Marlborough Sauvignon Blanc has a stranglehold on Bangkok's white wine market for a simple reason: it's reliably excellent, broadly available, and pairs beautifully with the citrus, herb, and seafood flavours at the heart of Thai cuisine. If you're buying white wine for a mixed group in Bangkok, this is the default call.
 
 Marlborough's combination of cool nights, intense sunlight, and free-draining stony soils produces the grape's most expressive version — lifted passionfruit, lime, cut grass, and a refreshing acidity that cuts through the richest Thai dishes.
@@ -44,7 +43,6 @@ Marlborough's combination of cool nights, intense sunlight, and free-draining st
 
 
 ![A crisp glass of pale Sauvignon Blanc positioned against a sunlit French vineyard landscape.](https://images.pexels.com/photos/4408180/pexels-photo-4408180.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Rachel Xiao via Pexels*
 
 France's Sauvignon Blanc, particularly from Bordeaux's Entre-Deux-Mers, is a quieter style than New Zealand — less aromatics, more minerality, the unmistakeable terroir stamp of chalky limestone soils.
 
@@ -61,7 +59,6 @@ France's Sauvignon Blanc, particularly from Bordeaux's Entre-Deux-Mers, is a qui
 
 
 ![A glass of golden chardonnay on a wooden surface with soft natural lighting.](https://images.pexels.com/photos/19284897/pexels-photo-19284897.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 Chardonnay is the world's most widely planted white grape, and also its most misunderstood. The heavily oaked, buttery "ABC wine" (Anything But Chardonnay) backlash of the 2000s was a reaction to a style, not a grape. Unoaked or lightly oaked Chardonnay at this price point is clean, apple-fresh, and crowd-friendly.
 
 <!-- product: WWW4855AD -->
@@ -76,7 +73,6 @@ Chardonnay is the world's most widely planted white grape, and also its most mis
 
 
 ![A chilled glass of pale Pinot Grigio wine with condensation on the glass, showcasing the wine's light, crystalline appearance.](https://images.pexels.com/photos/19284897/pexels-photo-19284897.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 
 Pinot Grigio occupies a specific niche: low tannin, high crispness, restrained fruit. It's the wine equivalent of sparkling water with pretensions — which is exactly what you want at a long lazy lunch in Bangkok's heat. The best versions come from northeastern Italy (Veneto, Trentino-Alto Adige, Friuli).
 
@@ -97,7 +93,6 @@ Pinot Grigio occupies a specific niche: low tannin, high crispness, restrained f
 
 
 ![A bottle of riesling displayed alongside fresh Asian ingredients and spices on a dining table.](https://images.pexels.com/photos/33097115/pexels-photo-33097115.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Eden FC via Pexels*
 This is the sommelier's secret weapon for Thai food. Riesling's naturally high acidity and residual sweetness (even in "dry" versions, there's often a few grams of sugar) are designed to handle spice — they cool the heat and amplify the fruit flavours in the dish. Most people who say they don't like Riesling haven't had a good one.
 
 <!-- product: WWW5404AD -->
@@ -112,7 +107,6 @@ This is the sommelier's secret weapon for Thai food. Riesling's naturally high a
 
 
 ![A crisp white wine in a glass positioned against rolling vineyard hills in a French wine region.](https://images.pexels.com/photos/2954929/pexels-photo-2954929.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Elle Hughes via Pexels*
 
 These are the two bottles to reach for when you want something genuinely special and food-appropriate within the ฿1,500 ceiling.
 
@@ -132,7 +126,6 @@ These are the two bottles to reach for when you want something genuinely special
 
 
 ![A crisp white wine in a clear glass with blurred vineyard rows visible in the background.](https://images.pexels.com/photos/8959907/pexels-photo-8959907.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Anastasia Lashkevich via Pexels*
 
 | Style | Pick | Price | Why |
 |---|---|---|---|

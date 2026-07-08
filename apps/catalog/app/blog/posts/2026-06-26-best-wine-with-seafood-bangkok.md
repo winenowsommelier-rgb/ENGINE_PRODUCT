@@ -15,7 +15,6 @@ Bangkok is one of the best cities in Asia to eat seafood. Street stalls piled wi
 The wine question is more specific here than it is in Paris or Sydney. Bangkok's seafood often comes with spice, aromatics, and bold sauces that change the pairing equation. This guide covers what works — and what doesn't — across the main seafood styles you'll encounter.
 
 ![Fresh seafood arranged on a market table — the salt, sweetness, and spice of Bangkok seafood each calls for a different wine strategy.](https://images.pexels.com/photos/4318376/pexels-photo-4318376.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Chait Goli via Pexels*
 *Bangkok's seafood ranges from clean and delicate to aggressively spiced — the wine needs to match the preparation, not just the protein.*
 
 ---
@@ -24,7 +23,6 @@ The wine question is more specific here than it is in Paris or Sydney. Bangkok's
 
 
 ![A crisp white wine in a clear glass beside fresh oysters and lemon wedges on a white plate.](https://images.pexels.com/photos/9332170/pexels-photo-9332170.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Nadin Sh via Pexels*
 
 The single most important thing a wine brings to a seafood pairing is acidity. Acid in wine does what lemon juice does on a plate — it lifts, brightens, and cuts through fat and brine. A low-acid wine next to a freshly grilled fish tastes flat and heavy. A high-acid wine makes the fish taste cleaner and more alive.
 
@@ -36,7 +34,6 @@ This is why the classic pairing works: Chablis (high-acid Chardonnay) with oyste
 
 
 ![A crisp white wine in a stemmed glass positioned beside fresh seafood on a dining table.](https://images.pexels.com/photos/9332170/pexels-photo-9332170.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Nadin Sh via Pexels*
 
 ### Sauvignon Blanc — The Go-To Choice
 
@@ -59,7 +56,6 @@ Sauvignon Blanc is the most reliable seafood wine in Bangkok. It's citrusy, gras
 ### Chablis — The Best Match for Oysters and Raw Shellfish
 
 ![A cluster of fresh oysters on ice — Chablis is the traditional match, but any high-acid, mineral white wine works.](https://images.pexels.com/photos/18136135/pexels-photo-18136135.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Valeria Boltneva via Pexels*
 *Chablis and oysters: the pairing works because both come from the same mineral environment — chalky limestone soil, cold Atlantic waters.*
 
 Chablis is Chardonnay, but unlike the oaky, buttery Chardonnays you might be used to, it's aged in steel, giving a bone-dry, mineral, almost saline character. This is exactly what you want next to oysters, clams, or raw shellfish. The minerality echoes the brine; the acidity cuts through it cleanly.
@@ -106,7 +102,6 @@ Here's the Bangkok-specific insight: if your seafood is spicy — *pla rad prik*
 
 
 ![A elegant champagne flute filled with sparkling wine served alongside fresh seafood on a white plate.](https://images.pexels.com/photos/19533265/pexels-photo-19533265.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Augustinus Martinus Noppé via Pexels*
 
 Sparkling wine works with virtually every seafood dish. The bubbles act like built-in palate cleanser; the acidity handles fat, spice, and brine; and the dryness suits everything from oysters to grilled lobster. If you can't decide on a white, open something sparkling.
 
@@ -124,7 +119,6 @@ Sparkling wine works with virtually every seafood dish. The bubbles act like bui
 
 
 ![A chilled glass of pale rosé wine positioned beside a plate of spiced seafood on a white linen table.](https://images.pexels.com/photos/4870435/pexels-photo-4870435.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: ROMAN ODINTSOV via Pexels*
 
 A dry Provence-style rosé sits in a useful middle ground for Bangkok seafood. It has the acidity to handle seafood but also enough body to stand up to slightly spicy or aromatic preparations — *hoi malaeng puu* (green mussels with Thai herbs), *poo pad pong karee* (crab curry), or seafood stir-fries with garlic and pepper.
 

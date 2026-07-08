@@ -16,7 +16,6 @@ Italy makes wine from over 350 native grape varieties across 20 regions — no o
 
 
 ![Rolling green vineyards with cypress trees dotting the Tuscan landscape under golden afternoon light.](https://images.pexels.com/photos/14515698/pexels-photo-14515698.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Helena Jankovičová Kováčová via Pexels*
 
 Most wine countries build their identity around one or two key grapes. France has Cabernet Sauvignon, Chardonnay, Pinot Noir. Spain has Tempranillo. Italy refuses to simplify.
 
@@ -27,7 +26,6 @@ Every Italian region has its own native varieties, its own classification system
 
 
 ![Rolling vineyard hills in Tuscany with cypress trees and golden hour lighting.](https://images.pexels.com/photos/32233445/pexels-photo-32233445.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Andrea Mosti via Pexels*
 Tuscany is where most people start with Italian wine, and for good reason. It's home to **Sangiovese** — one of the world's great red grapes — and to some of Italy's most internationally recognised appellations.
 
 ### Chianti DOCG — The Entry Point
@@ -64,7 +62,6 @@ Monte Antico Rosso (฿800) operates in this tradition: a Tuscan blend with Sang
 
 
 ![Rolling green vineyards in the Veneto region of northern Italy with scattered farmhouses nestled among the vines.](https://images.pexels.com/photos/31447951/pexels-photo-31447951.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Gotta Be Worth It via Pexels*
 
 The Veneto in northeastern Italy produces more DOC wine than any other Italian region. Two styles deserve attention.
 
@@ -82,7 +79,6 @@ Speri is one of Valpolicella's most respected family producers, with over a cent
 
 
 ![Rolling vineyard hills in southern Italy's Abruzzo region showcase the terroir that produces affordable quality wines.](https://images.pexels.com/photos/14515698/pexels-photo-14515698.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Helena Jankovičová Kováčová via Pexels*
 
 Montepulciano d'Abruzzo is one of Italy's most undervalued grapes: **deep colour, firm tannins, dark plum and earth**, with a natural robustness that makes it ideal for red meat and long pasta dishes. It's grown in Abruzzo on the Adriatic coast — a region that punches well above its reputation.
 
@@ -93,7 +89,6 @@ Montepulciano d'Abruzzo is one of Italy's most undervalued grapes: **deep colour
 
 
 ![Sicilian vineyard terraces overlooking the Mediterranean Sea with mature grapevines.](https://images.pexels.com/photos/23441099/pexels-photo-23441099.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Wolfgang Weiser via Pexels*
 Sicily spent decades producing bulk wine for blending into mainland Italian reds. Over the past 20 years, producers have been making estate-bottled wines under the Sicilia DOC appellation, and the results are compelling.
 
 Sicily's climate (hot, dry, volcanic soil from Etna) produces wines with natural concentration and character. Syrah in Sicily produces something darker and spicier than it does in the Rhône — **black pepper, violet, dark berry, with firm structure** that improves with food.
@@ -105,7 +100,6 @@ Sicily's climate (hot, dry, volcanic soil from Etna) produces wines with natural
 
 
 ![Close-up detail of a traditional Italian wine label showing denomination and producer information.](https://images.pexels.com/photos/19969487/pexels-photo-19969487.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Masood Aslami via Pexels*
 Italian labels can pile up information that's easy to misread. Here's a quick decoder:
 
 - **Producer name**: Usually prominent — the Famiglia, Cantina, or Podere
@@ -119,7 +113,6 @@ Italian labels can pile up information that's easy to misread. Here's a quick de
 
 
 ![A elegant table setting featuring Italian red wine in a glass paired with traditional Italian cuisine and fresh ingredients.](https://images.pexels.com/photos/8472744/pexels-photo-8472744.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Cup of  Couple via Pexels*
 
 Italian and Thai cuisines share high acidity, bold aromatics, and the central role of fresh produce. The parallels make Italian wine surprisingly compatible with Thai food:
 

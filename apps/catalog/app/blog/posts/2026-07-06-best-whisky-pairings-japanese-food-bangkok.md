@@ -20,7 +20,6 @@ The pairing logic is straightforward once you understand it. Here's the breakdow
 
 
 ![A crystal whisky glass with amber liquid beside a plate of artfully arranged sushi and sashimi on dark slate.](https://images.pexels.com/photos/51365/drink-alcohol-cup-whiskey-51365.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Pixabay via Pexels*
 
 Japanese cuisine shares two defining characteristics with good whisky: **precision** and **umami**.
 
@@ -34,7 +33,6 @@ The challenge: whisky is high-alcohol. The solution is **Highball** — whisky d
 
 
 ![A crystal highball glass filled with whisky and ice, garnished with a citrus twist.](https://images.pexels.com/photos/2835341/pexels-photo-2835341.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: George Shervashidze via Pexels*
 
 The Japanese Highball (*Whisky Highball* / ウィスキーハイボール) is not a cocktail — it's how whisky is drunk with food throughout Japan.
 
@@ -53,7 +51,6 @@ The result: crisp, refreshing, low enough ABV to drink through a full meal, with
 
 
 ![A crystal whisky glass beside artfully arranged nigiri sushi on a dark slate plate.](https://images.pexels.com/photos/5900879/pexels-photo-5900879.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: cottonbro studio via Pexels*
 
 ### Sushi and Sashimi
 
@@ -78,7 +75,6 @@ Delicate food needs a light whisky. The pairing rule: the more delicate the fish
 ### Yakitori and Grilled Skewers
 
 ![Yakitori skewers on a grill — the smoke and char of grilled chicken demands whisky with enough body and smokiness to match.](https://images.pexels.com/photos/14589731/pexels-photo-14589731.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: G N via Pexels*
 *Yakitori's smoke and char needs a whisky with some personality — Scotch blended malt or light peated single malt.*
 
 Yakitori changes the game. The smoke, char, and fat from the grill calls for more whisky character — this is where Scotch works.
@@ -151,7 +147,6 @@ Heavily peated Scotch (Islay: Laphroaig, Ardbeg, Bowmore) is the minority opinio
 
 
 ![A crystal whisky glass with ice cubes reflecting soft light, showcasing the amber color of premium Japanese whisky.](https://images.pexels.com/photos/7299629/pexels-photo-7299629.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Graham Walker via Pexels*
 
 | | Japanese Whisky | Scotch |
 |---|---|---|

@@ -21,7 +21,6 @@ The key to understanding Rhône wine is to split the valley in two: the narrow, 
 
 
 ![Terraced vineyards on steep slopes in the Northern Rhône Valley showcase the challenging terrain where Syrah grapes are cultivated.](https://images.pexels.com/photos/28249707/pexels-photo-28249707.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: SlimMars 13 via Pexels*
 The Northern Rhône is one of wine's great narrow corridors — steep granite terraces along the river producing Syrah (and only Syrah for the reds) in what many consider the grape's finest expression anywhere on earth.
 
 The key appellations are:
@@ -42,7 +41,6 @@ These are wines built for a decade in the cellar. At Bangkok retail prices, the 
 
 
 ![A collection of ripe Grenache, Syrah, and Mourvèdre grapes ready for harvest displays the three varietals used in Southern Rhône blends.](https://images.pexels.com/photos/10922960/pexels-photo-10922960.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Gonzalo Acuña via Pexels*
 A hundred kilometres south of Hermitage, the Rhône widens into a broad alluvial plain. The climate turns Mediterranean — lavender and thyme in the air, summer temperatures that rarely drop below 30°C. Here, Syrah is blended into something larger.
 
 The Southern Rhône's signature is the **GSM blend**: Grenache, Syrah, and Mourvèdre. Sometimes it's two of the three, sometimes all three plus other permitted varieties. The proportions vary by appellation and producer.
@@ -73,7 +71,6 @@ Cellier Des Princes Côtes du Rhône Vieilles Vignes takes things a step further
 
 
 ![Terraced vineyards cascade down sun-drenched hillsides in the Rhône Valley, showcasing the region's distinctive steep terrain where Syrah and Grenache grapes thrive.](https://images.pexels.com/photos/28249707/pexels-photo-28249707.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: SlimMars 13 via Pexels*
 
 This is the Rhône tip that most Bangkok wine drinkers don't know, and it's one of the most useful pieces of wine knowledge you can have.
 
@@ -97,7 +94,6 @@ Famille Perrin Réserve Côtes-du-Rhône Rouge is the step up — more structura
 
 
 ![Rolling vineyard hills in the Languedoc-Roussillon region of southern France, showing terraced cultivation on warm, sun-exposed slopes.](https://images.pexels.com/photos/20816554/pexels-photo-20816554.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: SlimMars 13 via Pexels*
 
 Directly west of the southern Rhône, the Languedoc-Roussillon produces wines in an almost identical style — GSM blends, warm Mediterranean climate, garrigue character — at prices even the Rhône finds hard to match. If you enjoy Côtes du Rhône, you should explore the Languedoc.
 
@@ -112,7 +108,6 @@ Domaine l'Ostal Cazes Estibals Minervois AOC is a biodynamic Languedoc estate ma
 
 
 ![A glass of pale golden Viognier wine captures the delicate aromatics and elegance characteristic of white Rhône wines.](https://images.pexels.com/photos/13037311/pexels-photo-13037311.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Vlad Fonsark via Pexels*
 White wines make up a small but important part of the Rhône's production, and they represent some of France's most distinctive whites.
 
 **Viognier** is the Northern Rhône's white grape — responsible for the famous Condrieu appellation and used (in tiny quantities) to add perfume to Côte-Rôtie reds. In its pure form, Viognier is the opposite of Sauvignon Blanc: low acidity, high alcohol, explosively aromatic (peach, apricot, honeysuckle), and rich in texture. It's a wine that divides opinion — some find it too heady; others find it revelatory. Either way, it's unlike anything else in France.
@@ -129,7 +124,6 @@ Belleville Chardonnay Viognier is a gateway white in the Rhône style — blendi
 
 
 ![Rolling vineyards of the Rhône Valley region in southeastern France during golden hour, showcasing the terraced hillsides characteristic of this prestigious wine-producing area.](https://images.pexels.com/photos/18356742/pexels-photo-18356742.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Filipp Romanovski via Pexels*
 
 The honest answer is undervaluation. Bordeaux and Burgundy have decades of marketing, trophy culture, and collector demand inflating their prices. The Rhône doesn't play that game — even Châteauneuf-du-Pape, one of France's greatest appellations, is relatively modest versus premier cru Burgundy.
 

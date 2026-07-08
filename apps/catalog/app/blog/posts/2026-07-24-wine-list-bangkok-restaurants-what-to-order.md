@@ -19,7 +19,6 @@ Before you can find value, you need to know what the baseline is. Bangkok restau
 This isn't cynicism — it's useful calibration. A 2× markup at a Bangkok restaurant is genuinely rare and worth rewarding. A 4× markup on a famous Burgundy or Napa Cabernet is standard and not worth arguing about; the restaurant knows exactly who they're selling it to. Your leverage lies in the bottles where the restaurant *doesn't* know the retail price is low: lesser-known appellations, southern French reds, overlooked South American producers.
 
 ![Wine cellar with bottles arranged in a dimly lit restaurant setting](https://images.pexels.com/photos/27305292/pexels-photo-27305292.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Valeria Boltneva via Pexels*
 
 ## The Second-Cheapest Bottle Myth
 
@@ -53,7 +52,6 @@ White wine markup in Bangkok is generally more aggressive than red because the c
 **Trimbach Pinot Gris Réserve, Alsace** — from ฿1,150
 
 ![Sommelier pouring white wine at a restaurant table with Thai food dishes visible](https://images.pexels.com/photos/5732799/pexels-photo-5732799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Laker via Pexels*
 
 ## Reading Old World vs New World Labels on a Bangkok Wine List
 
@@ -82,7 +80,6 @@ As a general rule: if two people are having the same food and both drinking wine
 Some Bangkok restaurants — particularly hotel all-day dining and neighbourhood bistros — have wine lists that are genuinely thin: thirty labels, heavy Bordeaux markup, nothing interesting under ฿3,000. In these cases, don't torture yourself trying to find value. Pick the most food-friendly option rather than the most prestigious one. An unoaked white Rioja or a simple Chablis will make Thai-leaning food better than a big Napa Cab that the menu wasn't designed around.
 
 ![Close-up of wine list menu at an elegant restaurant setting](https://images.pexels.com/photos/38079496/pexels-photo-38079496.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Steve B via Pexels*
 
 <!-- product: WWW1101AA -->
 **William Fèvre Chablis Village** — from ฿1,390

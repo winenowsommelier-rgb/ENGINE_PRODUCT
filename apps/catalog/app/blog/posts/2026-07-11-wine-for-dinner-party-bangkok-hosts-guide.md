@@ -17,7 +17,6 @@ You've been invited to a dinner party in Bangkok. You want to bring wine. You do
 
 
 ![A beautifully wrapped wine bottle with gold ribbon and tissue paper on a neutral surface, representing premium gift presentation.](https://images.pexels.com/photos/1050283/pexels-photo-1050283.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Andrea Piacquadio via Pexels*
 In Thai social contexts, a gift is appreciated but rarely opened immediately in front of you — don't be offended if the host sets the bottle aside. The gesture and the quality of the gift matter more than the price tag. A well-chosen bottle at ฿800 signals thoughtfulness more reliably than a generic bottle at ฿2,500.
 
 That said, a recognisable label helps. Wine literacy in Bangkok is growing rapidly, but most guests at a mixed-nationality dinner party will be reassured by a name they've seen before — Mouton Cadet, Champagne, Marlborough Sauvignon Blanc. Obscure natural wine is a gift for yourself, not your host.
@@ -27,7 +26,6 @@ That said, a recognisable label helps. Wine literacy in Bangkok is growing rapid
 
 
 ![Two wine bottles standing side by side—one containing red wine and one containing white wine—against a soft blurred background.](https://images.pexels.com/photos/37555750/pexels-photo-37555750.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Svet Svet via Pexels*
 When in doubt, bring one red and one white. It covers any menu, it signals generosity without ostentation, and it removes any awkwardness about guessing the food. At ฿800–900 per bottle, two wines fit comfortably under ฿2,000 total — reasonable for a casual dinner.
 
 **The safe red**: A southern French or Italian red with enough fruit to please non-wine-drinkers and enough structure to interest someone who knows the category. La Vieille Ferme Rouge (Rhône, ฿800) or Monte Antico Rosso (Tuscany, ฿800) are exactly right.
@@ -43,7 +41,6 @@ When in doubt, bring one red and one white. It covers any menu, it signals gener
 
 
 ![An assortment of wine bottles arranged by height and label quality, illustrating varying price points and quality levels.](https://images.pexels.com/photos/36137407/pexels-photo-36137407.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Laura Oliveira via Pexels*
 ### Under ฿1,000 — Thoughtful and Honest
 
 This tier is perfectly appropriate for a casual dinner among friends. Focus on wines with recognisable appellations or labels rather than unknown producers.
@@ -86,7 +83,6 @@ At this level, move into proper aged Bordeaux, premier cru Burgundy, or vintage 
 
 
 ![Crystal wine glasses filled with red and white wine arranged on a formally set dining table.](https://images.pexels.com/photos/17057034/pexels-photo-17057034.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Matheus Bertelli via Pexels*
 
 If the roles are reversed and you're the one hosting, the calculus changes. You know the menu; choose accordingly:
 

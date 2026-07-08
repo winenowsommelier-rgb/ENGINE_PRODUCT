@@ -25,7 +25,6 @@ Sangiovese is a high-acid, medium-to-high tannin grape with a signature flavour 
 The grape's behaviour changes dramatically with altitude, clone, and the winemaker's intervention. Which is exactly why Chianti and Brunello taste so different despite sharing the same DNA.
 
 ![Sangiovese grapes on the vine in late summer, Tuscany](https://images.pexels.com/photos/14515698/pexels-photo-14515698.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Helena Jankovičová Kováčová via Pexels*
 
 ---
 
@@ -69,7 +68,6 @@ South of Siena, the hill town of Montalcino sits at elevations between 250 and 6
 The result is wines that arrive to market already mature by most standards, and that continue to develop for another fifteen to twenty-five years. [Decanter](https://www.decanter.com/learn/brunello-di-montalcino/) describes Brunello as "one of the most age-worthy red wines in the world" — and on that point, there is no argument.
 
 ![Montalcino hilltop village with vineyards stretching below into the Tuscan valley](https://images.pexels.com/photos/35681768/pexels-photo-35681768.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Wolfgang Weiser via Pexels*
 
 At Bangkok prices, entry Brunello from a reliable producer in a good vintage lands at **฿3,000–4,500**. Top-tier producers — Biondi-Santi, Soldera, Poggio di Sotto — start at ฿6,000 and climb quickly. The premium is real, but so is the wine.
 
@@ -95,7 +93,6 @@ Tignanello caused a recalibration of what Italian wine could be. It proved that 
 Italy eventually created a legal home for them: **IGT Toscana** (Indicazione Geografica Tipica), a looser designation that permits non-traditional blends. Today, Tignanello, Sassicaia, and Ornellaia all carry the IGT label — and all command prices that dwarf most DOCG wines.
 
 ![Antique wine cellar with French oak barriques in a Tuscan cantina](https://images.pexels.com/photos/2946621/pexels-photo-2946621.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Robert Schrader via Pexels*
 
 ---
 

@@ -17,7 +17,6 @@ Rosé gets misunderstood in Bangkok more than any other wine category. People ei
 
 
 ![A glass of pale pink rosé wine held up to natural light, showing its characteristic color and clarity.](https://images.pexels.com/photos/36935829/pexels-photo-36935829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Kiril Georgiev via Pexels*
 The key word is **dry**. Good rosé has no residual sweetness — it's crisp, fresh, and pale in colour. The palest pinks (often from Provence in southern France) are almost translucent, like rose petals diluted in water. The fruit flavours lean toward **strawberry, watermelon, citrus peel, and dried herbs** — never jam, never candy.
 
 Colour is not a quality indicator on its own, but in practice the paler the wine, the more likely it's been made with care. Deeply coloured "blush" rosés are often sweeter and less interesting.
@@ -26,7 +25,6 @@ Colour is not a quality indicator on its own, but in practice the paler the wine
 
 
 ![A chilled glass of pale rosé wine beside a vineyard landscape in Provence, France.](https://images.pexels.com/photos/38148458/pexels-photo-38148458.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Doug Manning via Pexels*
 
 Provence is the benchmark. The region produces **nearly half of all French rosé**, and its style — pale, bone dry, subtly herbal — is what most serious rosé drinkers mean when they say they want a good pink. The Languedoc-Roussillon region, just west of Provence, produces wines in a very similar style at significantly lower prices.
 
@@ -37,7 +35,6 @@ Outside France, Chile has emerged as a strong value rosé source. Wines from coo
 
 
 ![Multiple rosé wine bottles arranged on a wooden shelf with visible labels and price points.](https://images.pexels.com/photos/9658801/pexels-photo-9658801.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Кирилл Абрамов via Pexels*
 ### Under ฿600 — The Everyday Pour
 
 **Aromo Rosé Syrah** (฿600) and **Alpaca Rosé** (฿600) are the Chilean value picks. Both are dry, both are reliably made, and both work brilliantly poured over ice on a Bangkok afternoon — which, let's be honest, is a legitimate delivery method in this climate.
@@ -74,7 +71,6 @@ Outside France, Chile has emerged as a strong value rosé source. Wines from coo
 
 
 ![Three glasses of rosé wine at different shades of pink arranged for a tasting comparison.](https://images.pexels.com/photos/34400995/pexels-photo-34400995.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Magda Ehlers via Pexels*
 
 | Wine | Region | Style | Best For |
 |---|---|---|---|
@@ -90,7 +86,6 @@ Outside France, Chile has emerged as a strong value rosé source. Wines from coo
 
 
 ![A glass of pale pink Moscato wine photographed against a bright background, showing the wine's characteristic light color and fizzy appearance.](https://images.pexels.com/photos/34400995/pexels-photo-34400995.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Magda Ehlers via Pexels*
 
 If a rosé is described as "sweet," "fruity," or comes in a frosted bottle with a screw cap and a cartoon label — it's not in this category. Sweet pink Moscato and White Zinfandel are technically pink wines, but they have nothing in common stylistically with dry rosé. They're fine for what they are, but if you're choosing a wine for Thai food or a dinner party, you want something dry.
 
@@ -99,7 +94,6 @@ If a rosé is described as "sweet," "fruity," or comes in a frosted bottle with 
 
 
 ![A glass of rosé wine beside a plate of fresh seafood and appetizers on a dining table.](https://images.pexels.com/photos/33144658/pexels-photo-33144658.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Busenur Demirkan via Pexels*
 Dry rosé is arguably the most food-friendly wine category for Thai cuisine. The acidity cuts through coconut-based curries; the red fruit stands up to chilli heat; the lack of tannins means no bitter clash with fish sauce. Specific pairings:
 
 - **Larb or som tam**: Laurent Miquel Cinsault Syrah — the freshness matches the lime and herb

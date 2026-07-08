@@ -20,7 +20,6 @@ Reading a wine label is a skill — and once you have it, you never stand there 
 
 
 ![A sprawling European vineyard with traditional stone buildings nestled among rolling hills and grapevines under natural sunlight.](https://images.pexels.com/photos/14213105/pexels-photo-14213105.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: SlimMars 13 via Pexels*
 
 This is the single most useful piece of label knowledge you can have.
 
@@ -29,7 +28,6 @@ This is the single most useful piece of label knowledge you can have.
 **New World** wines (Australia, Chile, New Zealand, USA, Argentina) put the **grape variety** on the label. "Sauvignon Blanc," "Shiraz," "Cabernet Sauvignon" — they tell you exactly what you're getting. This is deliberately consumer-friendly, and it's why New World wines tend to be the easier starting point for Bangkok shoppers learning the category.
 
 ![A bottle label — every element means something, once you know the code.](https://images.pexels.com/photos/8982957/pexels-photo-8982957.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 *Old World appellations encode centuries of terroir knowledge — the region name is the grape variety, if you know the code.*
 
 ---
@@ -38,7 +36,6 @@ This is the single most useful piece of label knowledge you can have.
 
 
 ![Rolling vineyard hills in a French wine region showing terraced grape vines under natural sunlight.](https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Kym Wilson via Pexels*
 
 European wine is governed by appellation laws — a system that legally defines what can be grown where, how it must be made, and what it can be called. The more specific the appellation, generally the stricter the rules and the more prestigious the designation.
 
@@ -64,7 +61,6 @@ Spain uses *Denominación de Origen* (DO) and *Denominación de Origen Calificad
 
 
 ![A close-up photograph of an Italian wine bottle label showing traditional text and aging classification markings.](https://images.pexels.com/photos/19969487/pexels-photo-19969487.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Masood Aslami via Pexels*
 
 These words appear on labels constantly and confuse everyone. The short version: **they don't all mean the same thing**, and one of them means very little at all.
 
@@ -87,7 +83,6 @@ The Viu Manent Estate Collection Reserva is a Chilean wine — "Reserva" here fo
 
 
 ![A close-up photograph of a New World wine bottle label prominently displaying the grape variety name in large typography.](https://images.pexels.com/photos/8982957/pexels-photo-8982957.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 
 New World producers solved the consumer confusion problem by doing the obvious thing: putting the grape on the front of the label. What you see is what you get.
 
@@ -105,7 +100,6 @@ Compare this to Dourthe Grands Terroirs Saint-Émilion. The label shows the appe
 
 
 ![A close-up photograph of a wine bottle label displaying vintage year, alcohol percentage, and château bottling information.](https://images.pexels.com/photos/8982957/pexels-photo-8982957.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 
 **Vintage year**: The year the grapes were harvested — not when the wine was bottled or when you bought it. Vintage matters more for Old World wines, where weather variation significantly impacts quality from year to year. For New World wines, year-to-year consistency is higher, so vintage is a lesser factor.
 
@@ -119,7 +113,6 @@ Compare this to Dourthe Grands Terroirs Saint-Émilion. The label shows the appe
 
 
 ![A close-up photograph of a wine bottle label displaying Thai text and traditional design elements.](https://images.pexels.com/photos/8982957/pexels-photo-8982957.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 
 In Thailand, all imported wine must carry a Thai-language label with specific information for Excise Department compliance. You'll always find:
 

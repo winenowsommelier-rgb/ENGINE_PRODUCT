@@ -37,7 +37,6 @@ France invented the modern concept of wine classification, and its system is the
 **Grand Cru** is the apex in Burgundy: 33 red vineyards and 13 white, covering a tiny fraction of the Côte d'Or's total area. Grand Cru Burgundy at WNLQ9 starts around ฿4,500 and climbs steeply from there. In Bordeaux, Grand Cru has been diluted — Saint-Émilion alone has over 80 *Grands Crus Classés*, ranging from serious to mediocre.
 
 ![Burgundy vineyard rows at harvest time, limestone slopes in autumn](https://images.pexels.com/photos/27138244/pexels-photo-27138244.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Tim & Martin Klement via Pexels*
 
 <!-- product: WRW3012AC -->
 **Gevrey-Chambertin Premier Cru, Louis Jadot** — ฿3,200
@@ -82,7 +81,6 @@ Spain's designation system is two-pronged: geographic tier plus aging category. 
 - **Gran Reserva** — minimum 5 years aging, at least 18 months in oak. Only produced in exceptional vintages by most bodegas. At WNLQ9, Gran Reserva Rioja typically runs ฿1,800–฿4,500 depending on producer prestige.
 
 ![Spanish Rioja Gran Reserva on a restaurant table in warm candlelight](https://images.pexels.com/photos/20874532/pexels-photo-20874532.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 
 <!-- product: WRW2541AD -->
 **Rioja Gran Reserva DOCa, Bodegas Muga** — ฿2,100
@@ -129,7 +127,6 @@ Import duties, excise tax, and VAT stack up aggressively in Thailand — a bottl
 This creates a practical rule of thumb: **mid-tier designations punch above their weight in Bangkok**. A Rioja Reserva or a Chianti Classico DOCG from a reliable producer offers better value per baht than a Grand Cru or Barolo Riserva, where you're paying Bangkok-inflated prices for peak-classification cachet. If budget is a consideration, target the second tier in any country's system.
 
 ![Close-up of wine label showing DOCG neck seal on an Italian bottle](https://images.pexels.com/photos/32009714/pexels-photo-32009714.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 
 <!-- product: WRW1887CD -->
 **Amarone della Valpolicella DOCG, Zenato** — ฿3,400

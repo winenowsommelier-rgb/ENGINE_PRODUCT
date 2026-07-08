@@ -16,7 +16,6 @@ Every wine shop in Bangkok has both on the shelf. Every beginner wonders which o
 
 
 ![Close-up of dark red wine grapes on the vine showing the subtle size and color differences between Cabernet Sauvignon and Merlot varieties.](https://images.pexels.com/photos/15532132/pexels-photo-15532132.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Tom Van Dyck via Pexels*
 
 Cabernet Sauvignon and Merlot are both red Bordeaux grapes — they've been grown side by side in southwest France for centuries and are frequently blended together. They share a parent: both are crosses of Cabernet Franc.
 
@@ -27,7 +26,6 @@ Despite their shared origin, they produce strikingly different wines. The key di
 
 
 ![A glass of deep ruby Cabernet Sauvignon showing its rich color and full-bodied appearance.](https://images.pexels.com/photos/9931217/pexels-photo-9931217.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Bastian Riccardi via Pexels*
 Cabernet Sauvignon has a **thick skin** relative to most red grapes. Thick skin means more tannin extraction, deeper colour, and longer potential ageing. It also means the grape is late-ripening and needs heat to develop properly.
 
 What it tastes like: **blackcurrant (cassis), dark cherry, cedar, tobacco, and graphite** in a classic expression. When young, Cabernet can feel tight and grippy on the palate — the tannins form a firm structure that food softens and time resolves. With age, it develops leather, earth, and dried herb notes.
@@ -51,7 +49,6 @@ Cabernet Sauvignon is the dominant grape in Left Bank Bordeaux (Médoc, Pauillac
 
 
 ![A pour of Merlot wine into a glass, highlighting its silky, approachable character.](https://images.pexels.com/photos/29441413/pexels-photo-29441413.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Andrew Patrick Photo via Pexels*
 Merlot has a **thinner skin** than Cabernet Sauvignon. Thinner skin means less tannin, earlier ripening, and a naturally softer texture. Where Cabernet grips, Merlot glides.
 
 What it tastes like: **plum, red cherry, chocolate, and dried herbs** — rounder and fleshier than Cabernet, with a velvety texture and less of that firm tannic structure. It's the variety most often described as "easy drinking" — not because it lacks complexity, but because its tannins don't demand food or age to resolve.
@@ -73,7 +70,6 @@ What it tastes like: **plum, red cherry, chocolate, and dried herbs** — rounde
 
 
 ![Two wine glasses side by side containing Cabernet Sauvignon and Merlot for direct visual comparison.](https://images.pexels.com/photos/8473221/pexels-photo-8473221.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Cup of  Couple via Pexels*
 | Property | Cabernet Sauvignon | Merlot |
 |---|---|---|
 | Skin thickness | Thick | Thin |
@@ -91,7 +87,6 @@ What it tastes like: **plum, red cherry, chocolate, and dried herbs** — rounde
 
 
 ![Rolling vineyards in the Bordeaux region of France, where Cabernet Sauvignon and Merlot grapes are traditionally blended together.](https://images.pexels.com/photos/35517711/pexels-photo-35517711.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Edouard CHASSAIGNE via Pexels*
 
 Here's the thing most people don't realise: in Bordeaux — where both grapes originate — they're almost never bottled alone. They're blended, and which grape leads determines the wine's character entirely.
 
@@ -103,7 +98,6 @@ Here's the thing most people don't realise: in Bordeaux — where both grapes or
 
 
 ![Two glasses of red wine on a table with elegant plating and dining setup.](https://images.pexels.com/photos/374877/pexels-photo-374877.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Burst via Pexels*
 
 **Drinking tonight, no food planned**: Merlot. The softness and immediate approachability make it more pleasurable without the structure that Cabernet provides (and that you need food to appreciate).
 

@@ -18,7 +18,6 @@ South America is the best value wine region for Bangkok shoppers, full stop. Whi
 
 
 ![Rolling vineyard hills in the Maipo Valley with Andean mountains in the background, showcasing Chile's premier wine-growing region.](https://images.pexels.com/photos/34004191/pexels-photo-34004191.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: DΛVΞ GΛRCIΛ via Pexels*
 
 Both countries share one massive geographical advantage: the Andes mountain range. The peaks create a natural barrier that keeps Atlantic humidity out, meaning disease pressure on vines is dramatically lower than in Europe. Less disease pressure means less intervention, lower yields when desired, and exceptional fruit concentration.
 
@@ -33,7 +32,6 @@ The result: deeply coloured, fruit-forward, structurally sound wines at ฿500�
 
 
 ![Carmenere grape clusters ripening on the vine in a Chilean vineyard during harvest season.](https://images.pexels.com/photos/27500678/pexels-photo-27500678.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Danny  Lema via Pexels*
 Chile's signature contribution to world wine is Carmenère — a grape that France forgot.
 
 Carmenère was one of the original six permitted Bordeaux varieties in the 19th century. Phylloxera (the root louse that destroyed most of Europe's vineyards in the 1860s–1880s) wiped it out in France. Vine cuttings had already been shipped to Chile, however, and the grape survived there — misidentified for over 100 years as Merlot.
@@ -69,7 +67,6 @@ Veramonte Reserva Pinot Noir demonstrates Chile's versatility — elegant, silky
 
 
 ![A glass of deep ruby Malbec wine showcasing its characteristic color and clarity.](https://images.pexels.com/photos/18189971/pexels-photo-18189971.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 Argentina's story is almost entirely the Malbec story — and it's one of wine's great reinventions.
 
 Like Carmenère in Chile, Malbec was a Bordeaux grape that found its best expression far from its homeland. In Bordeaux, it played a minor blending role and is increasingly rare. In Argentina's Mendoza province, planted at 700–1,100 metres in the foothills of the Andes, it became something else entirely: deeply purple, plush with dark fruit, full-bodied, with chocolate and violet character that makes it almost immediately likeable to anyone who encounters it.
@@ -95,7 +92,6 @@ Trapiche Vineyards Malbec represents one of Argentina's most historic estates. T
 
 
 ![Two wine bottles positioned side-by-side with tasting glasses arranged for a direct comparison.](https://images.pexels.com/photos/30140619/pexels-photo-30140619.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: C'Pho Ngondo R.Rouge via Pexels*
 | | Chile | Argentina |
 |---|---|---|
 | **Signature grape** | Carmenère (red), Sauvignon Blanc (white) | Malbec (red), Torrontés (white) |
@@ -112,7 +108,6 @@ Trapiche Vineyards Malbec represents one of Argentina's most historic estates. T
 
 
 ![A glass of deep red Malbec wine positioned against rolling South American vineyard hills at sunset.](https://images.pexels.com/photos/17674068/pexels-photo-17674068.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Valentin Angel Fernandez via Pexels*
 
 **For everyday drinking and dinner parties:** Argentine Malbec is the easier sell. It's immediately appealing to wine drinkers and non-wine-drinkers alike — nobody refuses a glass of good Malbec.
 

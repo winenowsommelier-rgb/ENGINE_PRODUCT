@@ -18,7 +18,6 @@ Pinot Noir is the grape that ruins you for everything else. Once you understand 
 
 
 ![A single glass of ruby-red Pinot Noir wine backlit to showcase its distinctive light color and translucent quality.](https://images.pexels.com/photos/6058230/pexels-photo-6058230.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Bastian Riccardi via Pexels*
 
 Pinot Noir is thin-skinned, low in tannin, and deeply expressive of where it grows. These three facts explain almost everything about why it behaves differently from Cabernet Sauvignon or Shiraz.
 
@@ -34,7 +33,6 @@ Pinot Noir is thin-skinned, low in tannin, and deeply expressive of where it gro
 
 
 ![Rolling vineyards of the Burgundy region in France, the traditional home of Pinot Noir production.](https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Kym Wilson via Pexels*
 
 Burgundy, in eastern France, is where Pinot Noir's reputation was built. The region runs roughly 50km north to south, planted almost entirely with Pinot Noir (red) and Chardonnay (white). The classification system — Village, Premier Cru, Grand Cru — divides the best vineyard sites with cartographic precision built over centuries.
 
@@ -56,7 +54,6 @@ The Edouard Delaunay Septembre Bourgogne Pinot Noir AOC (฿1,289) takes it furt
 
 
 ![Scenic rolling vineyard landscape in New Zealand's Marlborough region showing terraced wine country under clear skies.](https://images.pexels.com/photos/28183895/pexels-photo-28183895.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: manvinder social via Pexels*
 
 If Burgundy is the aspiration, New Zealand is where you get the closest experience at a fraction of the price. Central Otago and Marlborough are the two regions to know.
 
@@ -69,7 +66,6 @@ If Burgundy is the aspiration, New Zealand is where you get the closest experien
 The Annalina Marlborough Pinot Noir (฿649) is a genuinely surprising wine at this price. Marlborough Pinot at the accessible tier can be thin, but this one has real red fruit concentration and a clean, dry finish. Recommended without reservation.
 
 ![Oak barrels aging wine — Pinot Noir's relationship with wood is as important as the grape.](https://images.pexels.com/photos/2946621/pexels-photo-2946621.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Robert Schrader via Pexels*
 *New Zealand's Central Otago produces some of the world's most striking Pinot Noir — altitude, cold nights, and schist soil combine in ways Burgundy can't replicate.*
 
 ---
@@ -78,7 +74,6 @@ The Annalina Marlborough Pinot Noir (฿649) is a genuinely surprising wine at t
 
 
 ![Sun-drenched vineyard slopes in Chile's wine region with rows of grapevines stretching across rolling terrain.](https://images.pexels.com/photos/2339180/pexels-photo-2339180.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Tim Mossholder via Pexels*
 
 Chile's Casablanca Valley, west of Santiago with direct Pacific Ocean cooling, has become a credible source of cool-climate Pinot Noir at prices that make it genuinely accessible. The style is riper than New Zealand — more black cherry, some plum — but the acidity and structure are there.
 
@@ -96,7 +91,6 @@ The Veramonte Reserva Pinot Noir (฿600) from Colchagua Valley adds a touch mor
 
 
 ![Rolling vineyards and grapevines in South Australia's wine region during golden hour.](https://images.pexels.com/photos/5934491/pexels-photo-5934491.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Allen Cullen via Pexels*
 
 <!-- product: WRW5595AD -->
 
@@ -108,7 +102,6 @@ The Veramonte Reserva Pinot Noir (฿600) from Colchagua Valley adds a touch mor
 
 
 ![A glass of ruby-red Pinot Noir wine positioned against a soft-focus vineyard landscape backdrop.](https://images.pexels.com/photos/16547180/pexels-photo-16547180.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Tim Durand via Pexels*
 
 | Origin | Style | Price Range | Best For |
 |---|---|---|---|
@@ -124,7 +117,6 @@ The Veramonte Reserva Pinot Noir (฿600) from Colchagua Valley adds a touch mor
 
 
 ![A glass of ruby-red Pinot Noir positioned alongside traditional Thai dishes featuring fresh herbs and spices.](https://images.pexels.com/photos/6688471/pexels-photo-6688471.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Engin Akyurt via Pexels*
 
 The conventional wisdom is that red wine clashes with Thai food — the spice amplifies tannin and creates a bitter, hot sensation. This is true for Cabernet Sauvignon, Shiraz, and other high-tannin reds.
 

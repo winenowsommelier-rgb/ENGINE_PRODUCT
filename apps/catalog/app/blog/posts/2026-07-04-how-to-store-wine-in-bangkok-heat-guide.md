@@ -20,7 +20,6 @@ Wine survives Bangkok fine — if you treat it correctly. If you don't, a bottle
 
 
 ![A wine bottle showing visible oxidation and cork degradation caused by prolonged exposure to high temperatures.](https://images.pexels.com/photos/7219624/pexels-photo-7219624.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: cottonbro studio via Pexels*
 
 Wine is alive — it evolves continuously through chemical reactions, primarily oxidation. Temperature accelerates all chemical reactions. In practice:
 
@@ -37,7 +36,6 @@ The ideal storage temperature is **12–16°C**, with **under 1°C variation** d
 
 
 ![Wine bottles stored in a humid, warm environment showing condensation and potential cork damage from excessive heat exposure.](https://images.pexels.com/photos/28989792/pexels-photo-28989792.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Carmen van Laar via Pexels*
 
 ### Heat
 
@@ -62,7 +60,6 @@ UV light degrades wine. Clear glass bottles are worst (always buy wine in colour
 ### Option 1: Dedicated Wine Refrigerator (Best for Most Bangkok Residents)
 
 ![A wine fridge with bottles stored horizontally — a dedicated unit is the only practical solution for serious wine storage in Bangkok.](https://images.pexels.com/photos/28792254/pexels-photo-28792254.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Bingqian Li via Pexels*
 *A wine fridge maintains the stable, cool, humid environment that Bangkok's ambient conditions cannot provide.*
 
 A dedicated wine refrigerator (also called a wine cooler or wine conditioner) is the correct solution for Bangkok. It differs from a regular refrigerator in several ways:
@@ -105,7 +102,6 @@ This is the correct solution for wine you've paid ฿10,000+ per bottle for, or 
 
 
 ![Wine bottles stored horizontally on wooden racks in a temperature-controlled cellar environment.](https://images.pexels.com/photos/19714331/pexels-photo-19714331.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Ian Ramírez via Pexels*
 
 | Storage condition | Result after 3 months | Result after 12 months |
 |---|---|---|
@@ -122,7 +118,6 @@ The takeaway: **buy wine to drink, or store it properly.** The Bangkok middle gr
 
 
 ![A collection of wine bottles stored horizontally on wooden racks in a climate-controlled wine cellar with cool ambient lighting.](https://images.pexels.com/photos/19772196/pexels-photo-19772196.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Ramon Perucho via Pexels*
 
 **Buy what you'll drink within a month** — this eliminates the storage problem entirely. WNLQ9 delivers across Bangkok; you don't need to stockpile.
 

@@ -22,7 +22,6 @@ Here is how to read the difference and choose the right bottle.
 
 
 ![Oak barrels stacked in a winery cellar where Chardonnay undergoes maturation and develops its characteristic vanilla and butter notes.](https://images.pexels.com/photos/2946621/pexels-photo-2946621.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Robert Schrader via Pexels*
 
 Chardonnay is a neutral grape. That is both its weakness and its genius — it expresses whatever the winemaker and the land decide to give it. Oak is one of the loudest voices in that conversation.
 
@@ -37,7 +36,6 @@ Unoaked Chardonnay skips the barrel entirely — fermented and aged in stainless
 ## The Old World Benchmark: Burgundy vs. Chablis
 
 ![Rows of old Chardonnay vines on a limestone slope in Burgundy](https://images.pexels.com/photos/14816341/pexels-photo-14816341.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Gu Bra via Pexels*
 
 France's Burgundy region gives us both extremes in one appellation.
 
@@ -59,14 +57,12 @@ As [Decanter](https://www.decanter.com/learn/chardonnay/) notes, the key distinc
 
 
 ![Sprawling vineyard rows in Australia's wine country with golden afternoon light across the hillsides.](https://images.pexels.com/photos/5934491/pexels-photo-5934491.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Allen Cullen via Pexels*
 
 California's warmer climate and culture of winemaking intervention produced the "butter bomb" style that dominated the 1990s and early 2000s — 100% new oak, 100% malolactic fermentation, harvest at maximum ripeness. Tropical fruit, cream, and vanilla in every sip.
 
 The backlash was inevitable and healthy. Today California's best producers — and virtually all of Australia's top Chardonnay estates in Margaret River and Yarra Valley — use oak selectively. Partial new oak, partial older barrels, partial stainless. The wines are richer than Chablis but more precise than old-school California.
 
 ![A chilled glass of pale Australian Chardonnay on a sun-drenched outdoor table](https://images.pexels.com/photos/2584451/pexels-photo-2584451.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Krisztina Papp via Pexels*
 
 For Bangkok drinkers, the Australian style hits a practical sweet spot: fruit-forward enough to drink without food, structured enough to handle grilled fish or a chicken green curry, and priced well (฿800–฿1,800 for quality bottles).
 
@@ -82,7 +78,6 @@ For Bangkok drinkers, the Australian style hits a practical sweet spot: fruit-fo
 
 
 ![Two glasses of chardonnay wine side by side, one showing the golden hue of oaked chardonnay and the other the pale yellow of unoaked chardonnay.](https://images.pexels.com/photos/5732808/pexels-photo-5732808.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Laker via Pexels*
 
 | | **Unoaked Chardonnay** | **Oaked Chardonnay** |
 |---|---|---|
@@ -101,7 +96,6 @@ For Bangkok drinkers, the Australian style hits a practical sweet spot: fruit-fo
 
 
 ![A crisp glass of chardonnay wine photographed against a warm, humid tropical backdrop suggesting Bangkok's climate.](https://images.pexels.com/photos/20528318/pexels-photo-20528318.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 
 Heat is the honest answer here. Bangkok at 35°C with humidity makes heavy, oaky white wines feel oppressive when drunk without food — the alcohol reads hot, the butter reads cloying. That is why unoaked and lightly oaked styles dominate our by-the-glass lists for casual evenings.
 
@@ -110,7 +104,6 @@ However, air-conditioned restaurants change the equation entirely. A richer oake
 The practical guide: **unoaked for aperitif and Thai food; lightly oaked for Western dishes and seafood with sauces.**
 
 ![A sommelier pouring two styles of Chardonnay for comparison at a Bangkok restaurant](https://images.pexels.com/photos/5732799/pexels-photo-5732799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Laker via Pexels*
 
 <!-- product: WWW0987AC -->
 **Mâcon-Villages Blanc, Louis Jadot** — ฿1,150

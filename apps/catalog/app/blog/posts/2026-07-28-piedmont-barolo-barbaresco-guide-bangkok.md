@@ -19,7 +19,6 @@ This is your complete Barolo wine guide: what Barolo is, how Barbaresco differs,
 ## Nebbiolo: The Grape That Breaks the Rules
 
 ![Close-up of dark Nebbiolo grape clusters hanging on the vine in the Langhe hills of Piedmont, Italy, with misty hills in the background.](https://images.pexels.com/photos/19868742/pexels-photo-19868742.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Mauro Sassano via Pexels*
 *The Nebbiolo grape: small, thick-skinned, deceptively pale in the glass — and ferociously tannic on the palate.*
 
 Most wine drinkers learn early that deep color equals big tannins. Nebbiolo laughs at that rule. Despite producing some of the most aggressively tannic red wines in the world, Nebbiolo is relatively pale — a translucent garnet that turns brick-orange at the rim with age. Under ultraviolet light you can sometimes read a newspaper through a glass of Barolo.
@@ -34,14 +33,12 @@ What you get in return: a nose unlike anything else in Italy. Rose petals, dried
 
 
 ![A glass of deep ruby Barolo wine against a backdrop of rolling Piedmont vineyards in northern Italy.](https://images.pexels.com/photos/19062958/pexels-photo-19062958.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: K via Pexels*
 
 The phrase — *il vino dei re, il re dei vini* — was coined in the courts of the House of Savoy, the royal family that ruled Piedmont and unified Italy in the 19th century. Barolo as we know it today was partly shaped by French oenologist Louis Oudart, who helped local producers move from sweet, partially fermented versions of the wine to the fully dry style that could age for decades.
 
 The Savoy court drank it. Cavour served it at diplomatic dinners. And a wine that had been a rustic local curiosity became Italy's most prestigious red — a status it has held, with occasional challenges from Tuscany's Super Tuscans and Amarone from the Veneto, ever since.
 
 ![Historic stone cantina (winery cellar) in the village of Barolo, Piedmont, with large traditional Slavonian oak botti lined up in the barrel room.](https://images.pexels.com/photos/2946621/pexels-photo-2946621.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Robert Schrader via Pexels*
 *Traditional Slavonian oak botti — some holding 5,000 to 15,000 litres — are still used by traditionalist Barolo producers. The wine aged in these large barrels develops slowly and can last 30+ years.*
 
 ---
@@ -50,7 +47,6 @@ The Savoy court drank it. Cavour served it at diplomatic dinners. And a wine tha
 
 
 ![Rolling vineyards of the Barolo region in Piedmont, Italy, showing the distinctive terraced hillsides where Nebbiolo grapes are cultivated.](https://images.pexels.com/photos/19062958/pexels-photo-19062958.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: K via Pexels*
 
 Barolo DOCG covers 11 communes in the Langhe hills, south of the town of Alba in Cuneo province. The wine must be made from 100% Nebbiolo and aged a minimum of 38 months total, of which at least 18 must be in oak. Riserva versions require 62 months total. These are among the strictest aging requirements of any Italian DOCG.
 
@@ -78,7 +74,6 @@ Since 2010, Barolo has had an official single-vineyard system: **Menzioni Geogra
 
 
 ![A glass of deep red Barolo wine against a backdrop of rolling Piedmont vineyards during golden hour.](https://images.pexels.com/photos/19062958/pexels-photo-19062958.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: K via Pexels*
 
 No wine region in Italy has been more publicly torn by stylistic debate. The "Barolo Wars" of the 1980s and 1990s pitted two camps against each other:
 
@@ -95,7 +90,6 @@ According to [Decanter's comprehensive Barolo guide](https://www.decanter.com/wi
 ## Barbaresco DOCG: Barolo's Elegant Counterpart
 
 ![Autumn-coloured vineyard rows in the Barbaresco zone of Piedmont, with the medieval tower of Barbaresco village visible on the hilltop.](https://images.pexels.com/photos/33444169/pexels-photo-33444169.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Manzoni Studios via Pexels*
 *The village of Barbaresco, with its characteristic medieval tower, sits at the heart of one of Italy's most underrated great wine appellations.*
 
 Barbaresco DOCG covers just three communes northeast of Alba: Barbaresco, Neive, and Treiso. The zone is smaller than Barolo — roughly 700 hectares under vine versus Barolo's 2,000+ — and the wines are often called Barolo's "feminine" counterpart, a description [Jancis Robinson](https://www.jancisrobinson.com/articles/barbaresco-overview) herself notes is both useful and slightly patronising.
@@ -110,7 +104,6 @@ Aging requirements are shorter too: 26 months minimum (9 in oak), or 50 months f
 
 
 ![A glass of deep ruby Barolo wine held against rolling Piedmont vineyard hills in golden afternoon light.](https://images.pexels.com/photos/19062958/pexels-photo-19062958.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: K via Pexels*
 
 | | **Barolo DOCG** | **Barbaresco DOCG** | **Langhe Nebbiolo DOC** |
 |---|---|---|---|
@@ -128,7 +121,6 @@ Aging requirements are shorter too: 26 months minimum (9 in oak), or 50 months f
 
 
 ![A glass of light ruby Nebbiolo wine held against rolling Piedmont vineyard hills in golden afternoon light.](https://images.pexels.com/photos/2954929/pexels-photo-2954929.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Elle Hughes via Pexels*
 
 If you have never had Nebbiolo, do not open a serious Barolo first. It will be closed, tannic, and bewildering — not because the wine is poor, but because it is not yet ready. Start with Langhe Nebbiolo DOC instead.
 
@@ -146,7 +138,6 @@ Langhe Nebbiolo uses the same grape across the broader Langhe zone, with no mand
 
 
 ![A crystal wine glass filled with ruby-red Barbaresco wine against a soft-focus background.](https://images.pexels.com/photos/28826629/pexels-photo-28826629.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Emanuele Nuccilli via Pexels*
 
 For Bangkok wine buyers who want Nebbiolo at its expressive best without the 15-year wait, Barbaresco is the answer. The appellation's smaller size means quality is more consistent; the wines mature faster; and the price ceiling is lower than comparable Barolo.
 
@@ -162,7 +153,6 @@ For Bangkok wine buyers who want Nebbiolo at its expressive best without the 15-
 
 
 ![A crystal wine glass filled with deep red Barolo wine against a soft, blurred background.](https://images.pexels.com/photos/33879655/pexels-photo-33879655.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 
 Barolo is not an impulse purchase. The right approach is to buy two bottles of a good vintage, drink one at 10 years to see where it's going, and open the second at 15. Budget for that.
 
@@ -175,7 +165,6 @@ Barolo is not an impulse purchase. The right approach is to buy two bottles of a
 
 
 ![A crystal wine glass filled with deep ruby Barolo wine against a soft-focused background, showcasing the wine's rich color and premium presentation.](https://images.pexels.com/photos/33879655/pexels-photo-33879655.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Brett Jordan via Pexels*
 
 > "The single biggest mistake buyers make with Barolo is drinking it too young. If the vintage on your bottle is 2020 or later, put it in your cellar and forget about it. Open the 2015s and 2016s now — both are legendary vintages and should be hitting their stride. If you want Nebbiolo tonight, open a Langhe Nebbiolo or a young Barbaresco with 90 minutes of decanting."
 >

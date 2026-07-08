@@ -31,7 +31,6 @@ Yes, it's the obvious pick. But it's obvious for a reason. There is no better po
 ---
 
 ![A glass of pale rosé catching the last of the evening light on a Bangkok rooftop](https://images.pexels.com/photos/36935829/pexels-photo-36935829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Kiril Georgiev via Pexels*
 *Long Bangkok evenings call for something cold and pale.*
 
 ---
@@ -58,7 +57,6 @@ When the AC is running and the rain is really coming down, someone in the office
 ---
 
 ![Condensation on a cold wine glass against a warm Bangkok evening background](https://images.pexels.com/photos/6273442/pexels-photo-6273442.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Diana ✨ via Pexels*
 *Bottles worth opening this July — and a few worth storing for later.*
 
 ---

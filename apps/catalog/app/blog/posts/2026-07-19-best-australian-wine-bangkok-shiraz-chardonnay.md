@@ -20,7 +20,6 @@ Here's what you should know, and what you should buy.
 
 
 ![Rolling vineyard hills in a wine region during golden hour, showcasing the terroir that produces premium Australian wines.](https://images.pexels.com/photos/5934491/pexels-photo-5934491.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Allen Cullen via Pexels*
 
 Australian wine's reputation in the mid-price segment comes from a few structural advantages. The climate in the major wine regions is predictable — warm days, moderate nights — which means vintages are more consistent than in Europe's more marginal climates. Production technology in Australia is world-class. And the grape varieties planted (Shiraz, Cabernet Sauvignon, Chardonnay) are internationally understood, which keeps the marketing story simple.
 
@@ -33,7 +32,6 @@ What Australia doesn't have is France's appellation prestige or Italy's ancient 
 
 
 ![Rolling vineyard hills in a sun-drenched Australian wine region with terraced vines and blue sky.](https://images.pexels.com/photos/5934491/pexels-photo-5934491.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Allen Cullen via Pexels*
 **Barossa Valley, South Australia** — the heartland of big, bold Shiraz. Ancient vines (some over 100 years old), deep red soils, warm dry climate. Barossa Shiraz is what the world means when it says "Australian red wine" — dark fruit, chocolate, spice, and high alcohol (14–15% is normal). Penfolds Grange comes from here. The style is not subtle; it is not trying to be.
 
 **McLaren Vale, South Australia** — neighbouring Barossa but with a cooler maritime influence from Gulf St Vincent. McLaren Vale Shiraz tends to be more elegant than Barossa — still rich, but with better acidity and more savoury character.
@@ -49,7 +47,6 @@ What Australia doesn't have is France's appellation prestige or Italy's ancient 
 
 
 ![A glass of full-bodied red Shiraz wine with rich garnet color against a neutral background.](https://images.pexels.com/photos/29441413/pexels-photo-29441413.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Andrew Patrick Photo via Pexels*
 Shiraz is the same grape as France's Syrah — but Australia has made it its own. Where Northern Rhône Syrah is lean, peppery, and savory, Australian Shiraz is typically fuller-bodied, richer, and dark-fruited. The Australian style suits Bangkok's red wine drinker: approachable, generous, no harsh tannin edges.
 
 <!-- product: WRW4288BU -->
@@ -71,7 +68,6 @@ Shiraz is the same grape as France's Syrah — but Australia has made it its own
 
 
 ![A glass of golden Chardonnay displayed beside oak barrels in a wine cellar setting.](https://images.pexels.com/photos/2440528/pexels-photo-2440528.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Arthur Brognoli via Pexels*
 Australian Chardonnay spent the 1990s making heavily oaked, buttery, full-bodied white wines that divided opinion and eventually provoked a backlash. The "ABC" (Anything But Chardonnay) movement was largely aimed at this style.
 
 Australian winemakers responded by learning restraint. Contemporary Australian Chardonnay is better calibrated — still richer than a Chablis or a Sauvignon Blanc, but with more freshness and less heavy oak than the 1990s monster. The best examples from Margaret River and Adelaide Hills are genuinely world-class.
@@ -88,7 +84,6 @@ At the Bangkok accessible tier, Australian Chardonnay remains one of the most re
 
 
 ![A glass of pale rosé wine photographed against warm golden light, showcasing the wine's delicate color and premium presentation.](https://images.pexels.com/photos/36935829/pexels-photo-36935829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Kiril Georgiev via Pexels*
 
 <!-- product: WRS0236AH -->
 
@@ -100,7 +95,6 @@ At the Bangkok accessible tier, Australian Chardonnay remains one of the most re
 
 
 ![A full-bodied Cabernet Sauvignon wine in a crystal glass displaying deep ruby color and structured tannins.](https://images.pexels.com/photos/18737012/pexels-photo-18737012.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Kürşad Karaağaç via Pexels*
 
 <!-- product: WRW1040AD -->
 
@@ -125,7 +119,6 @@ At the Bangkok accessible tier, Australian Chardonnay remains one of the most re
 
 
 ![Rolling vineyard hills under blue sky in an Australian wine region, showcasing the terroir that produces premium Shiraz and Chardonnay.](https://images.pexels.com/photos/5934491/pexels-photo-5934491.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Allen Cullen via Pexels*
 
 Here's the honest truth about Australian wine in Bangkok: the red wine styles (bold Shiraz, structured Cab) are best suited to air-conditioned environments. A full-bodied Barossa Shiraz at 35°C outdoor temperature is not a comfortable drink — the alcohol warmth compounds the ambient heat.
 

@@ -20,7 +20,6 @@ Here's what you actually need to understand before you buy.
 
 
 ![Expansive agave plants growing in a Mexican landscape under golden sunlight, representing the agricultural origin of tequila and mezcal.](https://images.pexels.com/photos/6943107/pexels-photo-6943107.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Mikhail Nilov via Pexels*
 
 Both tequila and mezcal are made from agave — but that's where the easy comparison ends.
 
@@ -36,7 +35,6 @@ Think of it this way: **tequila is the refined, accessible category; mezcal is t
 
 
 ![A sprawling agave plant field in Mexico's highlands, showing the distinctive blue agave plants used in tequila production.](https://images.pexels.com/photos/12577018/pexels-photo-12577018.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Jose de los Santos Calderón via Pexels*
 
 Agave is not a cactus (a common misconception). It's a succulent that takes **7–12 years to mature** before it can be harvested. Blue Agave for tequila takes about 8 years. Rare mezcal agave varieties (Tobalá, Tepeztate) can take 15–25 years.
 
@@ -50,7 +48,6 @@ A bottle that says **"100% Agave"** or **"100% de Agave"** on the label uses onl
 
 
 ![Three tequila bottles displayed side by side showing the color progression from clear blanco to golden reposado to deep amber añejo spirits.](https://images.pexels.com/photos/5987337/pexels-photo-5987337.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Eric Nixon via Pexels*
 
 | Category | Oak Time | Colour | Character |
 |---|---|---|---|
@@ -69,7 +66,6 @@ For cocktails — Margarita, Paloma, Tequila Sour — Blanco or Reposado are the
 
 
 ![Assorted tequila and mezcal bottles arranged on a retail shelf, showcasing various brands and bottle styles.](https://images.pexels.com/photos/21544362/pexels-photo-21544362.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: K via Pexels*
 
 <!-- product: LTQ0034CN -->
 
@@ -101,7 +97,6 @@ For cocktails — Margarita, Paloma, Tequila Sour — Blanco or Reposado are the
 
 
 ![A crystal glass filled with clear tequila garnished with a salted rim and fresh lime wedge on a dark surface.](https://images.pexels.com/photos/32912385/pexels-photo-32912385.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: jose luis Umana via Pexels*
 
 The shot-salt-lime ritual exists to mask bad tequila. When the spirit is good, you don't need a distraction.
 
@@ -116,7 +111,6 @@ The shot-salt-lime ritual exists to mask bad tequila. When the spirit is good, y
 **The Paloma**: Tequila + grapefruit soda (Jarritos if you can find it in Bangkok, or a quality grapefruit juice and soda) + salt. Possibly the more refreshing of the two classic tequila cocktails in Bangkok's heat.
 
 ![Agave spirits — the cactus cousin of the spirit world, smoky and singular.](https://images.pexels.com/photos/30242758/pexels-photo-30242758.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Rodrigo Ortega via Pexels*
 *The Margarita is the entry-point cocktail that shows off what a good Blanco or Reposado can do. Fresh lime juice only — no substitutes.*
 
 ---
@@ -125,7 +119,6 @@ The shot-salt-lime ritual exists to mask bad tequila. When the spirit is good, y
 
 
 ![A skilled bartender pours golden tequila into a rocks glass with ice during evening service at a modern bar.](https://images.pexels.com/photos/2919731/pexels-photo-2919731.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Michal Lizuch via Pexels*
 
 Bangkok's cocktail culture has a serious mezcal presence if you know where to look. Bars in the Silom and Sukhumvit corridors have invested in small-batch mezcal from Oaxacan producers — expect Espadín, Tobalá, and occasionally rarer varieties. The smoke in a well-made mezcal cocktail works unexpectedly well with Bangkok's Asian flavour palette — the smokiness that clashes with European wine styles actually pairs with Southeast Asian spices.
 

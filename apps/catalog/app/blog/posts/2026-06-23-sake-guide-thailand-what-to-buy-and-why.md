@@ -20,7 +20,6 @@ Thailand now has over 300 sake SKUs in stock across dozens of breweries. Here's 
 
 
 ![A close-up of sake rice grains being rinsed in clear water during the traditional brewing preparation stage.](https://images.pexels.com/photos/18341856/pexels-photo-18341856.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Andy Lee via Pexels*
 
 Sake is fermented from rice — specifically strains like Yamada Nishiki or Gohyakumangoku — using water, koji mould, and yeast. The defining variable is **seimaibuai**: the percentage of the rice grain remaining after milling. The more you mill (lower the number), the purer and more refined the sake.
 
@@ -32,7 +31,6 @@ This is the key to reading a sake label.
 
 
 ![A close-up photograph of a sake bottle's label displaying Japanese characters and grade classifications.](https://images.pexels.com/photos/37849772/pexels-photo-37849772.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Iban Lopez Luna via Pexels*
 
 ### Junmai (純米)
 
@@ -83,7 +81,6 @@ Made from rice polished to at least 60% remaining (so 40%+ milled away). Ginjo u
 The pinnacle. Rice polished to at least 50% remaining — sometimes far more. Slow, cold fermentation. Every variable controlled for maximum elegance. The result is sake of extraordinary refinement: transparent, complex, often breathtaking.
 
 ![Two sake cups beside a sake bottle on a dark wooden surface — Daiginjo is the sake category that demands contemplation, not speed.](https://images.pexels.com/photos/37252641/pexels-photo-37252641.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Iban Lopez Luna via Pexels*
 *Daiginjo is to sake what Grand Cru is to Burgundy — the expression of everything a brewery can do.*
 
 <!-- product: LSK0448AB -->
@@ -108,7 +105,6 @@ The pinnacle. Rice polished to at least 50% remaining — sometimes far more. Sl
 
 
 ![A glass of nigori sake showing its characteristic milky white appearance and sediment.](https://images.pexels.com/photos/38029697/pexels-photo-38029697.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: gsgbfrbhe via Pexels*
 
 Nigori sake is intentionally left unfiltered — the rice solids give it a milky, slightly sweet character that stands apart from every other sake style. It can be still or sparkling.
 
@@ -126,7 +122,6 @@ Nigori sake is intentionally left unfiltered — the rice solids give it a milky
 
 
 ![A crystal sake glass filled with clear sake, garnished with ice or served at a specific temperature to highlight its delicate flavors.](https://images.pexels.com/photos/38029697/pexels-photo-38029697.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: gsgbfrbhe via Pexels*
 
 | Style | Serve at | Notes |
 |---|---|---|
@@ -142,7 +137,6 @@ Nigori sake is intentionally left unfiltered — the rice solids give it a milky
 
 
 ![A clear sake glass and wine glass positioned together with fresh Japanese cuisine ingredients on a wooden table.](https://images.pexels.com/photos/31313540/pexels-photo-31313540.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-*Photo: Alex Gonzo via Pexels*
 
 Sake's umami richness and clean acidity make it extraordinary with food. The pairing logic is different from wine:
 
