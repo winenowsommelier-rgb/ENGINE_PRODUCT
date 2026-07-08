@@ -3,9 +3,9 @@ TITLE: Burgundy Explained: Côte de Nuits vs Côte de Beaune
 SLUG: burgundy-explained-cote-de-nuits-vs-cote-de-beaune
 DATE: 2026-07-02
 TAGS: deep-dive,burgundy,france,pinot-noir,chardonnay
-COVER-IMAGE: https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Red wine in a Burgundy glass catching warm light — the Côte d'Or's Pinot Noir is unlike any other wine in the world.
-COVER-CREDIT-URL: https://unsplash.com/photos/1510812431401-41d2bd2722f3
+COVER-IMAGE: https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?fm=jpg&q=80&w=1200&auto=format&fit=crop
+COVER-CREDIT: Vineyard rows at harvest — the Côte d'Or, each row a different terroir.
+COVER-CREDIT-URL: https://unsplash.com/photos/1506377247377-2a5b3b417ebb
 META-TITLE: Burgundy Explained: Côte de Nuits vs Côte de Beaune 2026
 META-DESC: Burgundy's Côte de Nuits vs Côte de Beaune — what makes each sub-region different, what to buy in Bangkok, and why Gevrey-Chambertin tastes nothing like Chambolle-Musigny.
 ---
@@ -75,7 +75,7 @@ The Côte de Beaune runs from Ladoix (north of Beaune) to Santenay in the south.
 - **Puligny-Montrachet / Chassagne-Montrachet** — contain the greatest dry white wine vineyards in the world (Le Montrachet, Bâtard-Montrachet, Chevalier-Montrachet).
 - **Chablis** — technically a separate appellation to the north, but part of the Burgundy AOP hierarchy.
 
-![A white Burgundy being poured — the Côte de Beaune produces Chardonnay of a richness and minerality unmatched anywhere.](https://images.unsplash.com/photo-1682071308366-1d098905b498?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![White Burgundy — Chardonnay from the Côte de Beaune at its finest.](https://images.unsplash.com/photo-1494891848038-7bd202a2afeb?fm=jpg&q=80&w=1000&auto=format&fit=crop)
 *Meursault and Puligny-Montrachet are white wines that require a different vocabulary — butter, hazelnut, white truffle, wet stone.*
 
 What makes Côte de Beaune whites distinctive:

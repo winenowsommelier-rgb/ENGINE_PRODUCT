@@ -4,7 +4,7 @@ SLUG: best-wine-with-seafood-bangkok
 DATE: 2026-06-26
 TAGS: pairing,seafood,white-wine,sparkling,bangkok
 COVER-IMAGE: https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: A spread of fresh seafood — Bangkok's dining scene demands wines with enough acidity to cut through butter, spice, and brine.
+COVER-CREDIT: Fresh oysters on ice — seafood at its purest, the benchmark for white wine pairing.
 COVER-CREDIT-URL: https://unsplash.com/photos/1519708227418-c8fd9a32b7a2
 META-TITLE: Best Wine with Seafood in Bangkok — Pairings That Work
 META-DESC: The best white wines, sparkling, and rosé to pair with Bangkok's seafood — from street prawns to oyster bars to spicy Thai fish curries. Prices in THB.

@@ -4,7 +4,7 @@ SLUG: best-red-wines-under-1500-baht-bangkok-july-2026
 DATE: 2026-06-17
 TAGS: curated,red-wine,value,bordeaux,chile,italy
 COVER-IMAGE: https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: A generous pour of red wine against dark light — the test of any bottle under ฿1,500 is whether it earns a second glass.
+COVER-CREDIT: A glass of red wine — the everyday bottle, the one worth knowing.
 COVER-CREDIT-URL: https://unsplash.com/photos/1510812431401-41d2bd2722f3
 META-TITLE: Best Red Wine Under ฿1,500 in Bangkok — June 2026 Picks
 META-DESC: 10 red wines under ฿1,500 you can buy online in Bangkok right now. France, Chile, Italy, Argentina — the best bottles at every price band.
@@ -41,7 +41,7 @@ You don't need to spend ฿1,000 to drink well. The best entry-level bottles fro
 
 This is the sweet spot for Bangkok wine buyers. At ฿700–900 you're getting into wine with actual regional character — Rhône blends from France, Reserva-level Chileans from named valleys, and Italian DOC wines that have earned their appellation.
 
-![A bottle of red wine on a wooden surface in warm evening light — the ฿700–900 tier is where character starts to show.](https://images.unsplash.com/photo-1474722883778-792e7990302f?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![New World wine country — the landscape that produces accessible, honest red wine.](https://images.unsplash.com/photo-1580537659466-0a9bfa916a54?fm=jpg&q=80&w=1000&auto=format&fit=crop)
 *Wines in the ฿700–900 range are where production method and terroir start to matter.*
 
 <!-- product: WRW4771AB -->

@@ -3,9 +3,9 @@ TITLE: What Wine to Bring to a Bangkok Dinner Party
 SLUG: wine-for-dinner-party-bangkok-hosts-guide
 DATE: 2026-07-11
 TAGS: guide,dinner-party,gifting,red-wine,white-wine
-COVER-IMAGE: https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Rows of vines at golden hour — the kind of image that makes you want to open something good.
-COVER-CREDIT-URL: https://unsplash.com/photos/1506377247377-2a5b3b417ebb
+COVER-IMAGE: https://images.unsplash.com/photo-1504711434969-e33886168f5c?fm=jpg&q=80&w=1200&auto=format&fit=crop
+COVER-CREDIT: A dinner table set for guests — the occasion that wine was always built around.
+COVER-CREDIT-URL: https://unsplash.com/photos/1504711434969-e33886168f5c
 META-TITLE: What Wine to Bring to a Bangkok Dinner Party
 META-DESC: Host gift etiquette in Thailand, safe crowd-pleasers, and exactly which bottles to buy at every budget — a Bangkok dinner party guide.
 ---

@@ -4,7 +4,7 @@ SLUG: sake-guide-thailand-what-to-buy-and-why
 DATE: 2026-06-23
 TAGS: guide,sake,japan,japanese-food,bangkok
 COVER-IMAGE: https://images.unsplash.com/photo-1582450871972-ab5ca641643d?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: A traditional tokkuri sake flask and ochoko cup — sake's ritual of sharing is inseparable from its flavour.
+COVER-CREDIT: A sake vessel and cup — the understated ceremony of Japanese rice wine.
 COVER-CREDIT-URL: https://unsplash.com/photos/1582450871972-ab5ca641643d
 META-TITLE: Sake Guide for Thailand: What to Buy in Bangkok 2026
 META-DESC: A complete guide to sake grades, styles, and what to buy in Bangkok. Junmai, Ginjo, Daiginjo explained with prices in THB — 305 in-stock SKUs.

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default async function BlogIndexPage() {
   let posts: BlogPostPreview[] = [];
   try {
-    posts = getAllPosts(12);
+    posts = getAllPosts(100);
   } catch {
     // posts directory missing or unreadable — show empty state
   }

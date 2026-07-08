@@ -3,9 +3,9 @@ TITLE: What Is Gin? A Bangkok Drinker's Guide
 SLUG: gin-guide-bangkok-drinkers
 DATE: 2026-07-20
 TAGS: guide,gin,spirits,cocktails,bangkok
-COVER-IMAGE: https://images.unsplash.com/photo-1559496417-e7f25cb247f3?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: A Gin & Tonic with ice and botanicals — the simplest long drink in the world, and one that rewards every quality upgrade you give it.
-COVER-CREDIT-URL: https://unsplash.com/photos/1559496417-e7f25cb247f3
+COVER-IMAGE: https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?fm=jpg&q=80&w=1200&auto=format&fit=crop
+COVER-CREDIT: A gin bottle with botanicals — juniper, citrus, coriander, the formula that built a global obsession.
+COVER-CREDIT-URL: https://unsplash.com/photos/1514362545857-3bc16c4c7d1b
 META-TITLE: What Is Gin? A Bangkok Drinker's Guide 2026
 META-DESC: London Dry vs Japanese craft gin vs Thai botanical gin — what defines gin, how to drink it, Bangkok's best bottles from ฿499 to ฿949 with tasting notes.
 ---
@@ -44,7 +44,7 @@ Contemporary gins don't follow London Dry's rules. Distillers can add flavour po
 
 Neither style is wrong. They serve different purposes and different palates.
 
-![A row of different gin bottles in a bar setting](https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![A gin bar at dusk — the category built on botanicals and bartender culture.](https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?fm=jpg&q=80&w=1000&auto=format&fit=crop)
 *The gin shelf has become one of the most varied in any good bottle shop — the range from entry London Dry to Japanese craft to Thai botanical spans an enormous flavour territory.*
 
 ---

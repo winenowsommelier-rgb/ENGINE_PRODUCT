@@ -3,9 +3,9 @@ TITLE: New Zealand Sauvignon Blanc — Why Bangkok Can't Stop Drinking It
 SLUG: new-zealand-sauvignon-blanc-marlborough-bangkok
 DATE: 2026-07-16
 TAGS: deep-dive,sauvignon-blanc,new-zealand,white-wine,marlborough
-COVER-IMAGE: https://images.unsplash.com/photo-1682071308366-1d098905b498?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: A cold pour of New Zealand Sauvignon Blanc — the colour is pale gold with green hints, and the aroma arrives before the glass does.
-COVER-CREDIT-URL: https://unsplash.com/photos/1682071308366-1d098905b498
+COVER-IMAGE: https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?fm=jpg&q=80&w=1200&auto=format&fit=crop
+COVER-CREDIT: Green hills and open sky — the landscape that gives Marlborough Sauvignon Blanc its character.
+COVER-CREDIT-URL: https://unsplash.com/photos/1476224203421-9ac39bcb3327
 META-TITLE: New Zealand Sauvignon Blanc in Bangkok — The Complete Guide
 META-DESC: Why Marlborough Sauvignon Blanc dominates Bangkok wine lists. Tropical fruit, cut grass, Thai food pairings, and the best bottles to buy from ฿599.
 ---
@@ -24,7 +24,7 @@ What the region does is not mysterious. The Wairau Valley floor receives intense
 
 The style was new. Loire Valley Sauvignon Blanc (Sancerre, Pouilly-Fumé) is mineral, restrained, and herbaceous. Marlborough came at you with passion fruit and capsicum. Wine drinkers who found Sancerre austere found Marlborough immediately approachable. The rest is market share.
 
-![Marlborough valley vineyards with mountain backdrop](https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Wine country at golden hour — the terroir behind the bottle.](https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?fm=jpg&q=80&w=1000&auto=format&fit=crop)
 *The Wairau Plain in Marlborough: flat river valley, intense UV, cold nights — the combination that produces the style Bangkok knows.*
 
 ---

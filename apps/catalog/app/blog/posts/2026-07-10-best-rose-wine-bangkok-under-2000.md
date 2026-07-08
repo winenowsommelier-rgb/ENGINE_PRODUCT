@@ -4,7 +4,7 @@ SLUG: best-rose-wine-bangkok-under-2000
 DATE: 2026-07-10
 TAGS: curated,rosé,france,wine,bangkok
 COVER-IMAGE: https://images.unsplash.com/photo-1628876153244-d10fca15052c?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: A pale salmon rosé being poured into a stemless wine glass — exactly the colour you want for a dry Provence-style.
+COVER-CREDIT: A glass of pale rosé — summer in the south of France, now available in Bangkok.
 COVER-CREDIT-URL: https://unsplash.com/photos/1628876153244-d10fca15052c
 META-TITLE: Best Rosé Wine in Bangkok Under ฿2,000 (2026)
 META-DESC: Dry, food-friendly rosé from ฿560 to ฿800 — the best bottles in Bangkok right now, from Provence style to Chilean value picks.

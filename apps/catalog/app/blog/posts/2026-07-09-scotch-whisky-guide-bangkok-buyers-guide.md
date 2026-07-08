@@ -3,9 +3,9 @@ TITLE: Scotch Whisky 101 — A Bangkok Buyer's Guide
 SLUG: scotch-whisky-guide-bangkok-buyers-guide
 DATE: 2026-07-09
 TAGS: guide,whisky,scotch,scotland,bangkok
-COVER-IMAGE: https://images.unsplash.com/photo-1474722883778-792e7990302f?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Amber Scotch whisky being poured into a crystal glass — the colour alone tells a story about cask and time.
-COVER-CREDIT-URL: https://unsplash.com/photos/1474722883778-792e7990302f
+COVER-IMAGE: https://images.unsplash.com/photo-1459755486867-b55449bb39ff?fm=jpg&q=80&w=1200&auto=format&fit=crop
+COVER-CREDIT: Scotch whisky — a dram in the glass, the Scottish tradition in liquid form.
+COVER-CREDIT-URL: https://unsplash.com/photos/1459755486867-b55449bb39ff
 META-TITLE: Scotch Whisky Guide for Bangkok Buyers (2026)
 META-DESC: Single malt vs blended, Speyside vs Islay, age statements explained — everything you need to buy Scotch whisky in Bangkok with confidence.
 ---

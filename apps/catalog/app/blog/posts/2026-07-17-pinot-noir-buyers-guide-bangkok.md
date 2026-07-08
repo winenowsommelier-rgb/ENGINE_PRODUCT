@@ -3,9 +3,9 @@ TITLE: Pinot Noir — A Bangkok Buyer's Guide
 SLUG: pinot-noir-buyers-guide-bangkok
 DATE: 2026-07-17
 TAGS: guide,pinot-noir,red-wine,burgundy,new-zealand
-COVER-IMAGE: https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: A glass of Pinot Noir held against the light — translucent ruby red, the colour of a grape that demands everything from its grower.
-COVER-CREDIT-URL: https://unsplash.com/photos/1510812431401-41d2bd2722f3
+COVER-IMAGE: https://images.unsplash.com/photo-1546622891-02c72c1537b6?fm=jpg&q=80&w=1200&auto=format&fit=crop
+COVER-CREDIT: Pinot Noir in a glass — the lightest of the great reds, and the hardest to get right.
+COVER-CREDIT-URL: https://unsplash.com/photos/1546622891-02c72c1537b6
 META-TITLE: Pinot Noir Buyer's Guide for Bangkok 2026
 META-DESC: Burgundy vs New Zealand vs Chile Pinot Noir — everything you need to buy with confidence in Bangkok. Bottles from ฿569 to ฿1,289 with full tasting notes.
 ---
@@ -56,7 +56,7 @@ If Burgundy is the aspiration, New Zealand is where you get the closest experien
 
 The Annalina Marlborough Pinot Noir (฿649) is a genuinely surprising wine at this price. Marlborough Pinot at the accessible tier can be thin, but this one has real red fruit concentration and a clean, dry finish. Recommended without reservation.
 
-![Rolling hills of Central Otago with autumn vines](https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Oak barrels aging wine — Pinot Noir's relationship with wood is as important as the grape.](https://images.unsplash.com/photo-1551538827-9c037cb4f32a?fm=jpg&q=80&w=1000&auto=format&fit=crop)
 *New Zealand's Central Otago produces some of the world's most striking Pinot Noir — altitude, cold nights, and schist soil combine in ways Burgundy can't replicate.*
 
 ---

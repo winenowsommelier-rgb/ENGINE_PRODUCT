@@ -3,9 +3,9 @@ TITLE: Tequila & Mezcal in Bangkok — What to Buy and How to Drink It
 SLUG: tequila-mezcal-bangkok-guide
 DATE: 2026-07-18
 TAGS: guide,tequila,mezcal,spirits,mexico,bangkok
-COVER-IMAGE: https://images.unsplash.com/photo-1474722883778-792e7990302f?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: A spirit being poured neat — tequila at its best is sipped, not slammed, and the colour in the glass tells you how long it sat in oak.
-COVER-CREDIT-URL: https://unsplash.com/photos/1474722883778-792e7990302f
+COVER-IMAGE: https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?fm=jpg&q=80&w=1200&auto=format&fit=crop
+COVER-CREDIT: A tequila pour — agave spirit at its most elemental, Mexico in a glass.
+COVER-CREDIT-URL: https://unsplash.com/photos/1588196749597-9ff075ee6b5b
 META-TITLE: Tequila & Mezcal Bangkok Guide — What to Buy in 2026
 META-DESC: Blanco vs Reposado vs Añejo, tequila vs mezcal, how to drink it properly — your complete Bangkok guide to agave spirits with prices in THB.
 ---
@@ -95,7 +95,7 @@ The shot-salt-lime ritual exists to mask bad tequila. When the spirit is good, y
 
 **The Paloma**: Tequila + grapefruit soda (Jarritos if you can find it in Bangkok, or a quality grapefruit juice and soda) + salt. Possibly the more refreshing of the two classic tequila cocktails in Bangkok's heat.
 
-![A perfectly made Margarita with salt rim and lime](https://images.unsplash.com/photo-1559496417-e7f25cb247f3?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Agave spirits — the cactus cousin of the spirit world, smoky and singular.](https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?fm=jpg&q=80&w=1000&auto=format&fit=crop)
 *The Margarita is the entry-point cocktail that shows off what a good Blanco or Reposado can do. Fresh lime juice only — no substitutes.*
 
 ---

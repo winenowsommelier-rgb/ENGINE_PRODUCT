@@ -3,9 +3,9 @@ TITLE: Wine Gifts in Thailand — The Complete Buying Guide
 SLUG: wine-gifts-thailand-buying-guide
 DATE: 2026-07-21
 TAGS: guide,gifting,wine,thailand,bangkok
-COVER-IMAGE: https://images.unsplash.com/photo-1559496417-e7f25cb247f3?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Champagne glasses catching the light at a celebration — the universal language of a generous gift in Bangkok.
-COVER-CREDIT-URL: https://unsplash.com/photos/1559496417-e7f25cb247f3
+COVER-IMAGE: https://images.unsplash.com/photo-1543362906-acfc16c67564?fm=jpg&q=80&w=1200&auto=format&fit=crop
+COVER-CREDIT: A beautifully wrapped gift — the art of giving something the recipient will actually drink.
+COVER-CREDIT-URL: https://unsplash.com/photos/1543362906-acfc16c67564
 META-TITLE: Wine Gifts in Thailand — The Complete Buying Guide
 META-DESC: Gift-giving culture in Thailand meets premium wine. Which bottles to buy by occasion, how to present them, and what Thais actually enjoy drinking.
 ---

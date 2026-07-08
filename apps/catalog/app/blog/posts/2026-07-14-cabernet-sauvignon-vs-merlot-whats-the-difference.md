@@ -3,9 +3,9 @@ TITLE: Cabernet Sauvignon vs. Merlot — What's the Difference?
 SLUG: cabernet-sauvignon-vs-merlot-whats-the-difference
 DATE: 2026-07-14
 TAGS: compare,red-wine,cabernet-sauvignon,merlot,beginner
-COVER-IMAGE: https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Two glasses of red wine side by side — the structure of Cabernet versus the softness of Merlot is visible even in the colour.
-COVER-CREDIT-URL: https://unsplash.com/photos/1510812431401-41d2bd2722f3
+COVER-IMAGE: https://images.unsplash.com/photo-1464219789935-c2d9d9aba644?fm=jpg&q=80&w=1200&auto=format&fit=crop
+COVER-CREDIT: Red wine being poured — two grapes, one glass, the eternal comparison.
+COVER-CREDIT-URL: https://unsplash.com/photos/1464219789935-c2d9d9aba644
 META-TITLE: Cabernet Sauvignon vs Merlot: What's the Difference?
 META-DESC: The most-asked beginner wine question answered clearly — how Cab and Merlot differ in taste, tannin, food pairing, and which to buy in Bangkok.
 ---

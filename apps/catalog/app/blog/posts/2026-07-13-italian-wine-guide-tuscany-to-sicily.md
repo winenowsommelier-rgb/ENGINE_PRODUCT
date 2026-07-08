@@ -3,9 +3,9 @@ TITLE: Italian Wine Guide — From Tuscany to Sicily
 SLUG: italian-wine-guide-tuscany-to-sicily
 DATE: 2026-07-13
 TAGS: deep-dive,italy,red-wine,white-wine,tuscany
-COVER-IMAGE: https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Deep garnet red wine in a glass against dark background — the colour of a well-made Chianti or Valpolicella.
-COVER-CREDIT-URL: https://unsplash.com/photos/1510812431401-41d2bd2722f3
+COVER-IMAGE: https://images.unsplash.com/photo-1558618666-fcd25c85cd64?fm=jpg&q=80&w=1200&auto=format&fit=crop
+COVER-CREDIT: Italian food and wine — the combination that 2,000 years of tradition produced.
+COVER-CREDIT-URL: https://unsplash.com/photos/1558618666-fcd25c85cd64
 META-TITLE: Italian Wine Guide: Tuscany to Sicily (2026)
 META-DESC: Chianti, Valpolicella, Super Tuscans, DOC vs DOCG explained — your complete guide to Italian wine available in Bangkok right now.
 ---

@@ -3,9 +3,9 @@ TITLE: Bordeaux vs. Burgundy: Which French Red Should You Buy?
 SLUG: bordeaux-vs-burgundy-which-french-red-should-you-buy
 DATE: 2026-06-20
 TAGS: compare,red-wine,france,bordeaux,burgundy
-COVER-IMAGE: https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Rolling French vineyard rows at golden hour — the landscape that separates Bordeaux and Burgundy is as different as the wines themselves.
-COVER-CREDIT-URL: https://unsplash.com/photos/1506377247377-2a5b3b417ebb
+COVER-IMAGE: https://images.unsplash.com/photo-1506976785307-8732e854ad03?fm=jpg&q=80&w=1200&auto=format&fit=crop
+COVER-CREDIT: Red wine being decanted — the classic French red, ready to be poured.
+COVER-CREDIT-URL: https://unsplash.com/photos/1506976785307-8732e854ad03
 META-TITLE: Bordeaux vs Burgundy: Which French Red to Buy in Bangkok?
 META-DESC: Bordeaux vs Burgundy — the classic French wine debate settled for Bangkok buyers. Prices in THB, what to actually buy, and when each style wins.
 ---
@@ -27,7 +27,7 @@ The two banks of the Gironde estuary produce different styles:
 
 Entry-level Bordeaux (AOC Bordeaux or Bordeaux Supérieur) is where most buyers in Bangkok start — and where the category offers genuine value.
 
-![French vineyard rows stretching toward the horizon — Bordeaux's scale is part of what keeps entry-level prices accessible.](https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Rolling vineyard rows at elevation — Burgundy and Bordeaux share the vine but not the slope.](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fm=jpg&q=80&w=1000&auto=format&fit=crop)
 *Bordeaux's vast production scale — 57 sub-appellations, thousands of châteaux — is what makes affordable Bordeaux possible.*
 
 <!-- product: WRW1985AH -->

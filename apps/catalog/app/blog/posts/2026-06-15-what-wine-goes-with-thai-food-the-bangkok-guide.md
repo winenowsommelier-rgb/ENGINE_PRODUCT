@@ -4,8 +4,8 @@ SLUG: what-wine-goes-with-thai-food-the-bangkok-guide
 DATE: 2026-06-15
 TAGS: pairing,thai-food,white-wine,rose,sparkling
 COVER-IMAGE: https://images.unsplash.com/photo-1763647818427-326fa8e6699f?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Photo by Christopher Yiu Chung on Unsplash
-COVER-CREDIT-URL: https://unsplash.com/photos/a-spread-of-delicious-thai-dishes-on-a-patterned-surface--wejEQuvw0E
+COVER-CREDIT: Thai food on a Bangkok table — rice, curries, herbs and heat, the flavours that define the pairing challenge.
+COVER-CREDIT-URL: https://unsplash.com/photos/1763647818427-326fa8e6699f
 META-TITLE: Wine with Thai Food: Bangkok Buying Guide (฿519–฿1,699)
 META-DESC: Expert Thai food wine pairing guide for Bangkok. From pad thai to green curry — real bottles in stock at real Bangkok prices in THB.
 ---

@@ -3,9 +3,9 @@ TITLE: Best Japanese Whisky in Bangkok: What's In Stock — July 2026
 SLUG: best-japanese-whisky-bangkok-whats-in-stock-july-2026
 DATE: 2026-07-08
 TAGS: curated,japanese-whisky,whisky,japan,bangkok
-COVER-IMAGE: https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Japanese whisky in a rocks glass — the style that redefined what whisky could be, now widely available in Bangkok.
-COVER-CREDIT-URL: https://unsplash.com/photos/1553361371-9b22f78e8b1d
+COVER-IMAGE: https://images.unsplash.com/photo-1474722883778-792e7990302f?fm=jpg&q=80&w=1200&auto=format&fit=crop
+COVER-CREDIT: Japanese whisky in a rocks glass — the style that redefined what whisky could be.
+COVER-CREDIT-URL: https://unsplash.com/photos/1474722883778-792e7990302f
 META-TITLE: Best Japanese Whisky in Bangkok — July 2026 In-Stock Guide
 META-DESC: The best Japanese whisky available in Bangkok right now. Suntory, Nikka, Kurayoshi, and rising craft distilleries — ranked by style and value. Prices in THB.
 ---

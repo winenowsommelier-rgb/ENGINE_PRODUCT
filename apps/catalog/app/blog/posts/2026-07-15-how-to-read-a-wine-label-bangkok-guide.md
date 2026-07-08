@@ -3,9 +3,9 @@ TITLE: How to Read a Wine Label — A Bangkok Shopper's Guide
 SLUG: how-to-read-a-wine-label-bangkok-guide
 DATE: 2026-07-15
 TAGS: guide,beginner,wine-label,education,bangkok
-COVER-IMAGE: https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Vineyard rows stretching to the horizon — the origin on the label tells you everything about what's inside the bottle.
-COVER-CREDIT-URL: https://unsplash.com/photos/1506377247377-2a5b3b417ebb
+COVER-IMAGE: https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?fm=jpg&q=80&w=1200&auto=format&fit=crop
+COVER-CREDIT: A wine label close up — the small print that tells you everything, once you know how to read it.
+COVER-CREDIT-URL: https://unsplash.com/photos/1578911373434-0cb395d2cbfb
 META-TITLE: How to Read a Wine Label — Bangkok Shopper's Guide
 META-DESC: Old World vs New World labels, what Reserve really means, AOC and DOCG explained. Your complete guide to reading wine labels when buying in Bangkok.
 ---
@@ -24,7 +24,7 @@ This is the single most useful piece of label knowledge you can have.
 
 **New World** wines (Australia, Chile, New Zealand, USA, Argentina) put the **grape variety** on the label. "Sauvignon Blanc," "Shiraz," "Cabernet Sauvignon" — they tell you exactly what you're getting. This is deliberately consumer-friendly, and it's why New World wines tend to be the easier starting point for Bangkok shoppers learning the category.
 
-![Vineyard rows in Tuscany at golden hour](https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![A bottle label — every element means something, once you know the code.](https://images.unsplash.com/photo-1582450871972-ab5ca641643d?fm=jpg&q=80&w=1000&auto=format&fit=crop)
 *Old World appellations encode centuries of terroir knowledge — the region name is the grape variety, if you know the code.*
 
 ---
