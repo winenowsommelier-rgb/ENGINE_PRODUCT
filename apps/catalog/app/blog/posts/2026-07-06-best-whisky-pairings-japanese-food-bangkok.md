@@ -18,6 +18,10 @@ The pairing logic is straightforward once you understand it. Here's the breakdow
 
 ## Why Whisky Works With Japanese Food
 
+
+![A crystal whisky glass with amber liquid beside a plate of artfully arranged sushi and sashimi on dark slate.](https://images.pexels.com/photos/51365/drink-alcohol-cup-whiskey-51365.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Pixabay via Pexels*
+
 Japanese cuisine shares two defining characteristics with good whisky: **precision** and **umami**.
 
 The savory depth in *dashi*, soy sauce, miso, and grilled meat (*yakitori*) mirrors the malt, cereal, and sometimes smoky depth in whisky. Unlike wine, whisky has no tannins — so there's no clash with the delicate proteins in fish. And the alcohol acts as a palate cleanser between bites.
@@ -27,6 +31,10 @@ The challenge: whisky is high-alcohol. The solution is **Highball** — whisky d
 ---
 
 ## The Highball: How to Make It
+
+
+![A crystal highball glass filled with whisky and ice, garnished with a citrus twist.](https://images.pexels.com/photos/2835341/pexels-photo-2835341.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: George Shervashidze via Pexels*
 
 The Japanese Highball (*Whisky Highball* / ウィスキーハイボール) is not a cocktail — it's how whisky is drunk with food throughout Japan.
 
@@ -42,6 +50,10 @@ The result: crisp, refreshing, low enough ABV to drink through a full meal, with
 ---
 
 ## Pairings by Japanese Food Style
+
+
+![A crystal whisky glass beside artfully arranged nigiri sushi on a dark slate plate.](https://images.pexels.com/photos/5900879/pexels-photo-5900879.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: cottonbro studio via Pexels*
 
 ### Sushi and Sashimi
 
@@ -136,6 +148,10 @@ Heavily peated Scotch (Islay: Laphroaig, Ardbeg, Bowmore) is the minority opinio
 ---
 
 ## Japanese Whisky vs Scotch: Which to Choose
+
+
+![A crystal whisky glass with ice cubes reflecting soft light, showcasing the amber color of premium Japanese whisky.](https://images.pexels.com/photos/7299629/pexels-photo-7299629.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Graham Walker via Pexels*
 
 | | Japanese Whisky | Scotch |
 |---|---|---|

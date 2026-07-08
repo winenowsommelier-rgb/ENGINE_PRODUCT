@@ -14,6 +14,10 @@ Every wine shop in Bangkok has both on the shelf. Every beginner wonders which o
 
 ## The Two Grapes
 
+
+![Close-up of dark red wine grapes on the vine showing the subtle size and color differences between Cabernet Sauvignon and Merlot varieties.](https://images.pexels.com/photos/15532132/pexels-photo-15532132.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Tom Van Dyck via Pexels*
+
 Cabernet Sauvignon and Merlot are both red Bordeaux grapes — they've been grown side by side in southwest France for centuries and are frequently blended together. They share a parent: both are crosses of Cabernet Franc.
 
 Despite their shared origin, they produce strikingly different wines. The key differences come down to **skin thickness** — a physical characteristic of the grape that drives almost everything else about how the wine tastes.
@@ -85,6 +89,10 @@ What it tastes like: **plum, red cherry, chocolate, and dried herbs** — rounde
 
 ## How They're Blended in Bordeaux
 
+
+![Rolling vineyards in the Bordeaux region of France, where Cabernet Sauvignon and Merlot grapes are traditionally blended together.](https://images.pexels.com/photos/35517711/pexels-photo-35517711.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Edouard CHASSAIGNE via Pexels*
+
 Here's the thing most people don't realise: in Bordeaux — where both grapes originate — they're almost never bottled alone. They're blended, and which grape leads determines the wine's character entirely.
 
 **Left Bank Bordeaux** (Médoc, Graves, Pauillac) is Cabernet-dominant, typically 60-80% Cab with Merlot softening the tannins. These wines are firmer, more age-worthy, and more expensive.
@@ -92,6 +100,10 @@ Here's the thing most people don't realise: in Bordeaux — where both grapes or
 **Right Bank Bordeaux** (Saint-Émilion, Pomerol) is Merlot-dominant, with Cabernet Franc often blended in. These wines are softer, more approachable young, and equally serious at the top end. Pétrus — arguably the most famous wine in the world — is essentially 100% Merlot.
 
 ## Which to Buy in Bangkok, for What Occasion
+
+
+![Two glasses of red wine on a table with elegant plating and dining setup.](https://images.pexels.com/photos/374877/pexels-photo-374877.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Burst via Pexels*
 
 **Drinking tonight, no food planned**: Merlot. The softness and immediate approachability make it more pleasurable without the structure that Cabernet provides (and that you need food to appreciate).
 

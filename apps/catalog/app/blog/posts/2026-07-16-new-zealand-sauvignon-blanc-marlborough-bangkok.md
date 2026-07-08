@@ -18,6 +18,10 @@ Here's the full story.
 
 ## How Marlborough Became the World's Benchmark
 
+
+![Rolling green vineyards in Marlborough, New Zealand, showcase the region's distinctive terroir that produces world-class Sauvignon Blanc.](https://images.pexels.com/photos/4408180/pexels-photo-4408180.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Rachel Xiao via Pexels*
+
 Marlborough, at the northeastern tip of New Zealand's South Island, was planted with Sauvignon Blanc for the first time in 1973. By the late 1980s, Cloudy Bay's 1985 vintage had made international wine critics pay attention. By the 1990s, Marlborough Sauvignon Blanc was a global phenomenon.
 
 What the region does is not mysterious. The Wairau Valley floor receives intense sunshine — more UV at these latitudes than comparable European wine regions — which drives rapid sugar development in the grapes. At night, cold air flows down from the Kaikōura mountains, preserving the natural acidity. The result is a grape that is simultaneously ripe and razor-sharp: tropical fruit intensity balanced by a citric backbone that keeps the wine refreshing rather than flabby.
@@ -31,6 +35,10 @@ The style was new. Loire Valley Sauvignon Blanc (Sancerre, Pouilly-Fumé) is min
 ---
 
 ## The Flavour Profile: What You're Actually Tasting
+
+
+![A clear wine glass filled with pale golden sauvignon blanc wine, showcasing the wine's characteristic color and clarity.](https://images.pexels.com/photos/5732808/pexels-photo-5732808.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Laker via Pexels*
 
 Marlborough Sauvignon Blanc has a signature that no other region reliably replicates:
 
@@ -47,6 +55,10 @@ The acidity is the structural backbone. It's why the wine feels clean and bright
 
 ## Why It Works in Bangkok's Heat
 
+
+![A frosted Sauvignon Blanc glass with water droplets beading on the surface, emphasizing the wine's refreshing qualities in tropical climates.](https://images.pexels.com/photos/6273442/pexels-photo-6273442.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Diana ✨ via Pexels*
+
 Bangkok's climate is the perfect argument for Marlborough Sauvignon Blanc. At 33–36°C with humidity above 70%, your palate wants:
 
 1. **Cold temperature** — Sauvignon Blanc is served at 8–10°C, colder than most whites
@@ -59,6 +71,10 @@ A heavy, oaked Chardonnay in Bangkok heat can feel oppressive. A Marlborough Sau
 ---
 
 ## The Range: Entry to Premium
+
+
+![Rolling green hills and vines in the Marlborough region of New Zealand's South Island.](https://images.pexels.com/photos/4360899/pexels-photo-4360899.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Anastasia Yudin via Pexels*
 
 <!-- product: WWW2216BU -->
 
@@ -88,6 +104,10 @@ A heavy, oaked Chardonnay in Bangkok heat can feel oppressive. A Marlborough Sau
 
 ## Marlborough vs Loire Valley Sauvignon Blanc
 
+
+![Rolling green hills and grapevines in the Marlborough wine region of New Zealand's South Island.](https://images.pexels.com/photos/4360899/pexels-photo-4360899.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Anastasia Yudin via Pexels*
+
 | Style | Region | Flavour | Acidity | Price in Bangkok |
 |---|---|---|---|---|
 | **Marlborough** | New Zealand | Tropical fruit, passion fruit, capsicum | Very high | ฿599–฿909+ |
@@ -99,6 +119,10 @@ The Loire style is not "better" — it's different. Sancerre is more restrained 
 ---
 
 ## Food Pairings in Bangkok Context
+
+
+![A crisp glass of Sauvignon Blanc alongside fresh seafood and tropical fruits, showcasing classic wine pairing combinations.](https://images.pexels.com/photos/4408180/pexels-photo-4408180.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Rachel Xiao via Pexels*
 
 Marlborough Sauvignon Blanc is one of the most food-flexible whites you can order. In Bangkok specifically:
 

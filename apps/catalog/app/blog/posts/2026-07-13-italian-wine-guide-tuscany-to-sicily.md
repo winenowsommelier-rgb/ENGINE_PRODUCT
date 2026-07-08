@@ -14,6 +14,10 @@ Italy makes wine from over 350 native grape varieties across 20 regions — no o
 
 ## Why Italy Is the Most Complicated Wine Country
 
+
+![Rolling green vineyards with cypress trees dotting the Tuscan landscape under golden afternoon light.](https://images.pexels.com/photos/14515698/pexels-photo-14515698.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Helena Jankovičová Kováčová via Pexels*
+
 Most wine countries build their identity around one or two key grapes. France has Cabernet Sauvignon, Chardonnay, Pinot Noir. Spain has Tempranillo. Italy refuses to simplify.
 
 Every Italian region has its own native varieties, its own classification system, and its own food culture that the wine was built to serve. The same grape can produce completely different wines depending on the producer, the altitude, and the soil. **This complexity is a feature, not a bug** — once you find a style you love, there's a lifetime of exploration within it.
@@ -58,6 +62,10 @@ Monte Antico Rosso (฿800) operates in this tradition: a Tuscan blend with Sang
 
 ## Veneto — From Everyday to Extraordinary
 
+
+![Rolling green vineyards in the Veneto region of northern Italy with scattered farmhouses nestled among the vines.](https://images.pexels.com/photos/31447951/pexels-photo-31447951.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Gotta Be Worth It via Pexels*
+
 The Veneto in northeastern Italy produces more DOC wine than any other Italian region. Two styles deserve attention.
 
 ### Valpolicella — The Versatile Red
@@ -71,6 +79,10 @@ Speri is one of Valpolicella's most respected family producers, with over a cent
 **Amarone della Valpolicella** is the same zone's prestige wine — made from grapes that have been dried for months before fermentation, concentrating everything into a dense, powerful, expensive wine. Ripasso is the middle ground, a Valpolicella that has been re-fermented on Amarone pomace to add body.
 
 ## Abruzzo and the South — Value Country
+
+
+![Rolling vineyard hills in southern Italy's Abruzzo region showcase the terroir that produces affordable quality wines.](https://images.pexels.com/photos/14515698/pexels-photo-14515698.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Helena Jankovičová Kováčová via Pexels*
 
 Montepulciano d'Abruzzo is one of Italy's most undervalued grapes: **deep colour, firm tannins, dark plum and earth**, with a natural robustness that makes it ideal for red meat and long pasta dishes. It's grown in Abruzzo on the Adriatic coast — a region that punches well above its reputation.
 
@@ -104,6 +116,10 @@ Italian labels can pile up information that's easy to misread. Here's a quick de
 - **Classico**: The wine comes from the historical, core subzone of the appellation
 
 ## Italian Wine with Bangkok Food
+
+
+![A elegant table setting featuring Italian red wine in a glass paired with traditional Italian cuisine and fresh ingredients.](https://images.pexels.com/photos/8472744/pexels-photo-8472744.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Cup of  Couple via Pexels*
 
 Italian and Thai cuisines share high acidity, bold aromatics, and the central role of fresh produce. The parallels make Italian wine surprisingly compatible with Thai food:
 

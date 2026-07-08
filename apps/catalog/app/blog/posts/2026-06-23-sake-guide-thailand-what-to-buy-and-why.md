@@ -18,6 +18,10 @@ Thailand now has over 300 sake SKUs in stock across dozens of breweries. Here's 
 
 ## How Sake Is Made (The Short Version)
 
+
+![A close-up of sake rice grains being rinsed in clear water during the traditional brewing preparation stage.](https://images.pexels.com/photos/18341856/pexels-photo-18341856.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Andy Lee via Pexels*
+
 Sake is fermented from rice — specifically strains like Yamada Nishiki or Gohyakumangoku — using water, koji mould, and yeast. The defining variable is **seimaibuai**: the percentage of the rice grain remaining after milling. The more you mill (lower the number), the purer and more refined the sake.
 
 This is the key to reading a sake label.
@@ -25,6 +29,10 @@ This is the key to reading a sake label.
 ---
 
 ## The Grade System: What the Labels Mean
+
+
+![A close-up photograph of a sake bottle's label displaying Japanese characters and grade classifications.](https://images.pexels.com/photos/37849772/pexels-photo-37849772.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Iban Lopez Luna via Pexels*
 
 ### Junmai (純米)
 
@@ -98,6 +106,10 @@ The pinnacle. Rice polished to at least 50% remaining — sometimes far more. Sl
 
 ## Nigori: The Cloudy Exception
 
+
+![A glass of nigori sake showing its characteristic milky white appearance and sediment.](https://images.pexels.com/photos/38029697/pexels-photo-38029697.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: gsgbfrbhe via Pexels*
+
 Nigori sake is intentionally left unfiltered — the rice solids give it a milky, slightly sweet character that stands apart from every other sake style. It can be still or sparkling.
 
 <!-- product: LSK0436FS -->
@@ -112,6 +124,10 @@ Nigori sake is intentionally left unfiltered — the rice solids give it a milky
 
 ## What Temperature to Serve Sake
 
+
+![A crystal sake glass filled with clear sake, garnished with ice or served at a specific temperature to highlight its delicate flavors.](https://images.pexels.com/photos/38029697/pexels-photo-38029697.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: gsgbfrbhe via Pexels*
+
 | Style | Serve at | Notes |
 |---|---|---|
 | Junmai Daiginjo | 8–12°C (chilled) | Like white wine — cold preserves the aromatics |
@@ -123,6 +139,10 @@ Nigori sake is intentionally left unfiltered — the rice solids give it a milky
 ---
 
 ## Sake vs. Wine: What Pairs With What
+
+
+![A clear sake glass and wine glass positioned together with fresh Japanese cuisine ingredients on a wooden table.](https://images.pexels.com/photos/31313540/pexels-photo-31313540.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Alex Gonzo via Pexels*
 
 Sake's umami richness and clean acidity make it extraordinary with food. The pairing logic is different from wine:
 

@@ -22,6 +22,10 @@ The wine question is more specific here than it is in Paris or Sydney. Bangkok's
 
 ## The Rule: Acidity Is Everything
 
+
+![A crisp white wine in a clear glass beside fresh oysters and lemon wedges on a white plate.](https://images.pexels.com/photos/9332170/pexels-photo-9332170.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Nadin Sh via Pexels*
+
 The single most important thing a wine brings to a seafood pairing is acidity. Acid in wine does what lemon juice does on a plate — it lifts, brightens, and cuts through fat and brine. A low-acid wine next to a freshly grilled fish tastes flat and heavy. A high-acid wine makes the fish taste cleaner and more alive.
 
 This is why the classic pairing works: Chablis (high-acid Chardonnay) with oysters. Sauvignon Blanc with grilled fish. Champagne with almost anything from the sea. The acid is doing the work.
@@ -29,6 +33,10 @@ This is why the classic pairing works: Chablis (high-acid Chardonnay) with oyste
 ---
 
 ## White Wine: The Main Event
+
+
+![A crisp white wine in a stemmed glass positioned beside fresh seafood on a dining table.](https://images.pexels.com/photos/9332170/pexels-photo-9332170.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Nadin Sh via Pexels*
 
 ### Sauvignon Blanc — The Go-To Choice
 
@@ -96,6 +104,10 @@ Here's the Bangkok-specific insight: if your seafood is spicy — *pla rad prik*
 
 ## Sparkling Wine — The All-Rounder
 
+
+![A elegant champagne flute filled with sparkling wine served alongside fresh seafood on a white plate.](https://images.pexels.com/photos/19533265/pexels-photo-19533265.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Augustinus Martinus Noppé via Pexels*
+
 Sparkling wine works with virtually every seafood dish. The bubbles act like built-in palate cleanser; the acidity handles fat, spice, and brine; and the dryness suits everything from oysters to grilled lobster. If you can't decide on a white, open something sparkling.
 
 <!-- product: WSP5728FR -->
@@ -109,6 +121,10 @@ Sparkling wine works with virtually every seafood dish. The bubbles act like bui
 ---
 
 ## Light Rosé — When There's Spice and Sweetness
+
+
+![A chilled glass of pale rosé wine positioned beside a plate of spiced seafood on a white linen table.](https://images.pexels.com/photos/4870435/pexels-photo-4870435.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: ROMAN ODINTSOV via Pexels*
 
 A dry Provence-style rosé sits in a useful middle ground for Bangkok seafood. It has the acidity to handle seafood but also enough body to stand up to slightly spicy or aromatic preparations — *hoi malaeng puu* (green mussels with Thai herbs), *poo pad pong karee* (crab curry), or seafood stir-fries with garlic and pepper.
 

@@ -42,6 +42,10 @@ Marlborough's combination of cool nights, intense sunlight, and free-draining st
 
 ## French Sauvignon Blanc: The Bordeaux Value
 
+
+![A crisp glass of pale Sauvignon Blanc positioned against a sunlit French vineyard landscape.](https://images.pexels.com/photos/4408180/pexels-photo-4408180.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Rachel Xiao via Pexels*
+
 France's Sauvignon Blanc, particularly from Bordeaux's Entre-Deux-Mers, is a quieter style than New Zealand — less aromatics, more minerality, the unmistakeable terroir stamp of chalky limestone soils.
 
 <!-- product: WWW5952GW -->
@@ -69,6 +73,10 @@ Chardonnay is the world's most widely planted white grape, and also its most mis
 ---
 
 ## Pinot Grigio: Light, Crisp, and Effortless
+
+
+![A chilled glass of pale Pinot Grigio wine with condensation on the glass, showcasing the wine's light, crystalline appearance.](https://images.pexels.com/photos/19284897/pexels-photo-19284897.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Brett Jordan via Pexels*
 
 Pinot Grigio occupies a specific niche: low tannin, high crispness, restrained fruit. It's the wine equivalent of sparkling water with pretensions — which is exactly what you want at a long lazy lunch in Bangkok's heat. The best versions come from northeastern Italy (Veneto, Trentino-Alto Adige, Friuli).
 
@@ -102,6 +110,10 @@ This is the sommelier's secret weapon for Thai food. Riesling's naturally high a
 
 ## French Classics: The Month's Two Best Whites
 
+
+![A crisp white wine in a glass positioned against rolling vineyard hills in a French wine region.](https://images.pexels.com/photos/2954929/pexels-photo-2954929.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Elle Hughes via Pexels*
+
 These are the two bottles to reach for when you want something genuinely special and food-appropriate within the ฿1,500 ceiling.
 
 <!-- product: WWW0202AD -->
@@ -117,6 +129,10 @@ These are the two bottles to reach for when you want something genuinely special
 ---
 
 ## The July 2026 Shortlist
+
+
+![A crisp white wine in a clear glass with blurred vineyard rows visible in the background.](https://images.pexels.com/photos/8959907/pexels-photo-8959907.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Anastasia Lashkevich via Pexels*
 
 | Style | Pick | Price | Why |
 |---|---|---|---|

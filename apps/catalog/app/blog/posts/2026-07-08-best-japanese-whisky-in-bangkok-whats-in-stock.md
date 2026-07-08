@@ -18,6 +18,10 @@ The allocations have tightened. But good Japanese whisky — serious, interestin
 
 ## A Quick Map of the Category
 
+
+![A crystal whisky glass catching warm light as amber Japanese whisky is poured into it.](https://images.pexels.com/photos/29349921/pexels-photo-29349921.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Andrew Patrick Photo via Pexels*
+
 Japanese whisky draws from Scottish tradition (pot still malt whisky, blending philosophy) but adds distinctly Japanese qualities: exceptional precision in distillation, use of Japanese oak (*Mizunara*), and an emphasis on balance over power.
 
 The category divides into:
@@ -29,6 +33,10 @@ The category divides into:
 ---
 
 ## Everyday Japanese Whisky: Blends Under ฿2,000
+
+
+![A crystal glass of golden Japanese whisky with a single ice cube on a dark surface.](https://images.pexels.com/photos/28180094/pexels-photo-28180094.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Nano Erdozain via Pexels*
 
 These are the bottles that made Japanese whisky famous at the bar and dinner table. Designed for the Highball format.
 
@@ -82,6 +90,10 @@ Pure malt whisky blends single malts from multiple distilleries. More complexity
 
 ## Single Malt and Premium (฿3,000+)
 
+
+![A crystal glass filled with amber Japanese single malt whisky, showcasing its rich color and premium quality.](https://images.pexels.com/photos/51365/drink-alcohol-cup-whiskey-51365.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Pixabay via Pexels*
+
 <!-- product: LWH1083AB -->
 
 **Kurayoshi Pure Malt Sherry Cask** (฿3,400, Japan — Tottori). Sherry cask maturation adds dried fruit (raisin, fig, dark cherry), richness, and spice to the Kurayoshi base. The most complex bottle in the Matsui range available in Bangkok. Drink this neat or on a single large ice cube.
@@ -98,6 +110,10 @@ Pure malt whisky blends single malts from multiple distilleries. More complexity
 
 ## The Allocated Problem (and What to Do About It)
 
+
+![A premium Japanese whisky bottle displayed in soft lighting next to a filled tasting glass on a dark shelf.](https://images.pexels.com/photos/37252647/pexels-photo-37252647.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Iban Lopez Luna via Pexels*
+
 The elephant in the room: the most famous Japanese whiskies — Yamazaki 12, Hakushu 12, Hibiki 21, Nikka From the Barrel — are either unavailable or priced at multiples of their retail in Bangkok.
 
 What to do:
@@ -112,6 +128,10 @@ The allocated bottles are real. But the bottles that remain accessible are genui
 ---
 
 ## At a Glance: What to Buy
+
+
+![A crystal whisky glass filled with amber Japanese whisky, showcasing its rich color and clarity against a neutral background.](https://images.pexels.com/photos/51365/drink-alcohol-cup-whiskey-51365.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Pixabay via Pexels*
 
 | Budget | Pick | Why |
 |---|---|---|

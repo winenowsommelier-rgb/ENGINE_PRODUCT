@@ -16,6 +16,10 @@ South America is the best value wine region for Bangkok shoppers, full stop. Whi
 
 ## Why South America Dominates Value Wine in Bangkok
 
+
+![Rolling vineyard hills in the Maipo Valley with Andean mountains in the background, showcasing Chile's premier wine-growing region.](https://images.pexels.com/photos/34004191/pexels-photo-34004191.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: DΛVΞ GΛRCIΛ via Pexels*
+
 Both countries share one massive geographical advantage: the Andes mountain range. The peaks create a natural barrier that keeps Atlantic humidity out, meaning disease pressure on vines is dramatically lower than in Europe. Less disease pressure means less intervention, lower yields when desired, and exceptional fruit concentration.
 
 The altitude adds another dimension. Vineyards at 800–1,200 metres see warm sunny days (for ripeness) and cold nights (for acidity retention). That temperature swing is what gives both Chilean and Argentine wines their characteristic freshness despite the warmth. It's the same principle as Champagne or Germany's Mosel — cold nights lock in acidity that would otherwise be baked away.
@@ -105,6 +109,10 @@ Trapiche Vineyards Malbec represents one of Argentina's most historic estates. T
 ---
 
 ## Which Should You Buy?
+
+
+![A glass of deep red Malbec wine positioned against rolling South American vineyard hills at sunset.](https://images.pexels.com/photos/17674068/pexels-photo-17674068.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Valentin Angel Fernandez via Pexels*
 
 **For everyday drinking and dinner parties:** Argentine Malbec is the easier sell. It's immediately appealing to wine drinkers and non-wine-drinkers alike — nobody refuses a glass of good Malbec.
 

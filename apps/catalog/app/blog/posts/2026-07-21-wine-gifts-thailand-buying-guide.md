@@ -95,6 +95,10 @@ Champagne Ernest Rapeneau Rosé is a Rosé de Saignée style, which means the pi
 
 ## Quick Reference: Price by Occasion
 
+
+![A crystal wine glass filled with red wine sits on a marble surface alongside a wrapped gift box.](https://images.pexels.com/photos/1050283/pexels-photo-1050283.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Andrea Piacquadio via Pexels*
+
 | Occasion | Budget | Best Category |
 |---|---|---|
 | Dinner party thank-you | ฿700–900 | Southern French red |

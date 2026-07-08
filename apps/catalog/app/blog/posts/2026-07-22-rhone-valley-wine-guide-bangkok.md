@@ -71,6 +71,10 @@ Cellier Des Princes Côtes du Rhône Vieilles Vignes takes things a step further
 
 ## The Perrin Family: A Back Door to Beaucastel
 
+
+![Terraced vineyards cascade down sun-drenched hillsides in the Rhône Valley, showcasing the region's distinctive steep terrain where Syrah and Grenache grapes thrive.](https://images.pexels.com/photos/28249707/pexels-photo-28249707.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: SlimMars 13 via Pexels*
+
 This is the Rhône tip that most Bangkok wine drinkers don't know, and it's one of the most useful pieces of wine knowledge you can have.
 
 Château Beaucastel is one of Châteauneuf-du-Pape's most celebrated estates. It's a biodynamic property owned by the Perrin family, producing wines with a 50-year cellaring window and a price tag to match. A single bottle of Château Beaucastel Châteauneuf-du-Pape starts around ฿5,000–8,000. But the same Perrin family makes wines at every price point.
@@ -90,6 +94,10 @@ Famille Perrin Réserve Côtes-du-Rhône Rouge is the step up — more structura
 ---
 
 ## The Southern Neighbours: Languedoc-Roussillon
+
+
+![Rolling vineyard hills in the Languedoc-Roussillon region of southern France, showing terraced cultivation on warm, sun-exposed slopes.](https://images.pexels.com/photos/20816554/pexels-photo-20816554.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: SlimMars 13 via Pexels*
 
 Directly west of the southern Rhône, the Languedoc-Roussillon produces wines in an almost identical style — GSM blends, warm Mediterranean climate, garrigue character — at prices even the Rhône finds hard to match. If you enjoy Côtes du Rhône, you should explore the Languedoc.
 
@@ -118,6 +126,10 @@ Belleville Chardonnay Viognier is a gateway white in the Rhône style — blendi
 ---
 
 ## Why Rhône Overdelivers in Bangkok
+
+
+![Rolling vineyards of the Rhône Valley region in southeastern France during golden hour, showcasing the terraced hillsides characteristic of this prestigious wine-producing area.](https://images.pexels.com/photos/18356742/pexels-photo-18356742.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Filipp Romanovski via Pexels*
 
 The honest answer is undervaluation. Bordeaux and Burgundy have decades of marketing, trophy culture, and collector demand inflating their prices. The Rhône doesn't play that game — even Châteauneuf-du-Pape, one of France's greatest appellations, is relatively modest versus premier cru Burgundy.
 

@@ -18,6 +18,10 @@ Here's what you need to know.
 
 ## What Defines Gin
 
+
+![A crystal gin glass filled with clear spirit, ice, and tonic water garnished with a fresh juniper sprig and lime.](https://images.pexels.com/photos/7356871/pexels-photo-7356871.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Ivo Duarte Nogueira via Pexels*
+
 Gin starts as a neutral grain spirit — essentially high-quality vodka, typically distilled from wheat or corn. What separates gin from vodka is the mandatory addition of **juniper berries** and a selection of other botanicals, which are either macerated in the spirit or infused during a second distillation.
 
 Juniper is not optional. By legal definition in most jurisdictions (including the EU, UK, and most international standards), a spirit must have a "predominant" juniper character to be called gin. Everything else — the citrus, the floral notes, the spices, the herbs — is layered on top of that juniper foundation.
@@ -27,6 +31,10 @@ This botanical flexibility is what makes gin so varied. A London Dry and a Japan
 ---
 
 ## The Styles: London Dry vs Contemporary
+
+
+![A clear gin bottle with fresh botanicals like juniper berries, citrus peels, and herbs arranged beside a traditional gin glass.](https://images.pexels.com/photos/8950151/pexels-photo-8950151.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Camila Bou via Pexels*
 
 **London Dry Gin**
 
@@ -52,6 +60,10 @@ Neither style is wrong. They serve different purposes and different palates.
 
 ## Japanese Craft Gin: Precision in a Bottle
 
+
+![A crystal glass of clear Japanese gin with a minimalist bottle displayed on a dark surface, exemplifying traditional craftsmanship.](https://images.pexels.com/photos/25823021/pexels-photo-25823021.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Kyle  Miller via Pexels*
+
 Japan has applied its signature approach — meticulous technique, local ingredients, restrained elegance — to gin production, and the results are some of the most exciting spirits of the last decade.
 
 Japanese craft gins typically start with a neutral rice spirit or wheat spirit base (some use sake lees) and layer in botanical combinations that draw heavily on native Japanese botanicals: **yuzu, sakura (cherry blossom), shiso, sencha tea, sansho pepper, hinoki wood**. The juniper is present but often plays a supporting role, allowing the Japanese botanicals to carry the profile.
@@ -65,6 +77,10 @@ The style is subtle and precise — less aggressive than a London Dry, more comp
 ---
 
 ## Thai Botanical Gin: Bangkok's Local Chapter
+
+
+![A clear gin glass showcasing local Thai botanicals including lemongrass, galangal, and orchids used in Bangkok craft gin production.](https://images.pexels.com/photos/28284807/pexels-photo-28284807.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Ayberk Mirza via Pexels*
 
 Bangkok sits in a region of extraordinary botanical diversity. Thai herbs — galangal, lemongrass, kaffir lime leaf, butterfly pea flower, pandan, and dozens of others — are the building blocks of the cuisine. It was only a matter of time before someone applied them to gin.
 
@@ -82,6 +98,10 @@ Thailand's craft distilling scene has produced genuinely excellent gin using loc
 
 ## The Range: Entry to Premium
 
+
+![A carefully arranged selection of gin bottles ranging from clear London Dry styles to amber-hued premium expressions, showcasing the diversity of gin categories.](https://images.pexels.com/photos/11325915/pexels-photo-11325915.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Danny Doneo via Pexels*
+
 <!-- product: LGN0289CN -->
 
 **Silver Top Gin** (฿499, Netherlands) is the entry-level London Dry option in the Bangkok market. Clean, correct, juniper-forward, with a neutral spirit base that doesn't distract. For everyday G&Ts, cocktail mixing, or anyone who wants gin without paying for a craft story, Silver Top is an honest bottle.
@@ -98,6 +118,10 @@ Thailand's craft distilling scene has produced genuinely excellent gin using loc
 
 ## The Gin & Tonic: Getting It Right
 
+
+![A crystal gin and tonic cocktail garnished with fresh botanicals and ice in a premium glassware setting.](https://images.pexels.com/photos/225236/pexels-photo-225236.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: picjumbo.com via Pexels*
+
 The G&T is not as simple as "gin plus tonic." Small decisions make significant differences.
 
 **Gin ratio**: 1 part gin to 3 parts tonic (a 50ml gin to 150ml tonic is standard). More than this and you're drinking tonic water with gin flavour. Less and it's too spirit-forward for most palates.
@@ -112,6 +136,10 @@ The G&T is not as simple as "gin plus tonic." Small decisions make significant d
 
 ## Classic Gin Cocktails
 
+
+![A crystal gin cocktail glass filled with clear spirit, ice, and a fresh botanical garnish under warm lighting.](https://images.pexels.com/photos/7259083/pexels-photo-7259083.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Aram Diseño via Pexels*
+
 **The Martini** — Gin, dry vermouth, olive or lemon twist. The ratio is personal (from 2:1 to 15:1 gin:vermouth depending on how dry you want it). Use a London Dry. Stir, don't shake (shaking clouds it). This is gin at its most architectural — every ingredient is exposed. A Bulldog or quality London Dry at minimum.
 
 **The Negroni** — Equal parts gin, sweet vermouth, Campari. Stirred, served on ice, orange peel. The gin needs body to stand up to Campari's bitterness — a full-bodied London Dry is correct. The Negroni is the gateway cocktail that converts whisky drinkers to gin.
@@ -123,6 +151,10 @@ The G&T is not as simple as "gin plus tonic." Small decisions make significant d
 ---
 
 ## Bangkok's Gin Scene
+
+
+![A crystal gin cocktail garnished with fresh botanical botanicals on a dark surface.](https://images.pexels.com/photos/8950151/pexels-photo-8950151.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Camila Bou via Pexels*
 
 Bangkok's cocktail bars have embraced gin more enthusiastically than almost any other spirit. The Bangkok bar scene's affinity for local ingredients — lemongrass, kaffir lime, galangal, butterfly pea flower — translates naturally into gin cocktail building. You'll find Butterfly Pea Flower G&Ts (the drink turns colour with tonic's acidity) at most quality cocktail bars. The Negroni is now a Bangkok staple.
 

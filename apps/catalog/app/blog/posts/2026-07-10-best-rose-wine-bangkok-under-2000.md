@@ -24,6 +24,10 @@ Colour is not a quality indicator on its own, but in practice the paler the wine
 
 ## Provence Style vs. Other Rosés
 
+
+![A chilled glass of pale rosé wine beside a vineyard landscape in Provence, France.](https://images.pexels.com/photos/38148458/pexels-photo-38148458.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Doug Manning via Pexels*
+
 Provence is the benchmark. The region produces **nearly half of all French rosé**, and its style — pale, bone dry, subtly herbal — is what most serious rosé drinkers mean when they say they want a good pink. The Languedoc-Roussillon region, just west of Provence, produces wines in a very similar style at significantly lower prices.
 
 Outside France, Chile has emerged as a strong value rosé source. Wines from cooler Chilean appellations hit the dry, fruit-forward character at a fraction of the French price.
@@ -68,6 +72,10 @@ Outside France, Chile has emerged as a strong value rosé source. Wines from coo
 
 ## Rosé Comparison: What to Expect
 
+
+![Three glasses of rosé wine at different shades of pink arranged for a tasting comparison.](https://images.pexels.com/photos/34400995/pexels-photo-34400995.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Magda Ehlers via Pexels*
+
 | Wine | Region | Style | Best For |
 |---|---|---|---|
 | Domaine Fontval IGP | Languedoc | Pale, herbal, dry | Aperitif, seafood |
@@ -79,6 +87,10 @@ Outside France, Chile has emerged as a strong value rosé source. Wines from coo
 | Alpaca Rosé | Chile | Soft, accessible | Casual, pool-side |
 
 ## What to Avoid: The Pink Moscato Problem
+
+
+![A glass of pale pink Moscato wine photographed against a bright background, showing the wine's characteristic light color and fizzy appearance.](https://images.pexels.com/photos/34400995/pexels-photo-34400995.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Magda Ehlers via Pexels*
 
 If a rosé is described as "sweet," "fruity," or comes in a frosted bottle with a screw cap and a cartoon label — it's not in this category. Sweet pink Moscato and White Zinfandel are technically pink wines, but they have nothing in common stylistically with dry rosé. They're fine for what they are, but if you're choosing a wine for Thai food or a dinner party, you want something dry.
 

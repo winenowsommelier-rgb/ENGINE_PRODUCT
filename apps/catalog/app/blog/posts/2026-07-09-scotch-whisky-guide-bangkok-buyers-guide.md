@@ -14,6 +14,10 @@ Walk into any bottle shop in Bangkok and the Scotch section will swallow you who
 
 ## What Is Scotch Whisky?
 
+
+![A glass of amber scotch whisky against a neutral background, showcasing the spirit's rich golden-brown color.](https://images.pexels.com/photos/3645478/pexels-photo-3645478.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Moussa Idrissi via Pexels*
+
 Scotch must be distilled and matured in Scotland for a minimum of three years in oak casks — that's it at the most basic level. In practice, the category splits into five legal categories: Single Malt, Single Grain, Blended Malt, Blended Grain, and Blended Scotch Whisky. The two you'll see most often in Bangkok are **Single Malt** and **Blended Scotch**.
 
 A **Single Malt** comes from one distillery, made entirely from malted barley. A **Blended Scotch** is a marriage of malt and grain whiskies from multiple distilleries, assembled by a master blender for consistency and approachability. Neither is inherently better — they serve different moments.
@@ -82,6 +86,10 @@ Monkey Shoulder, a Blended Malt from three Speyside distilleries, is the smartes
 
 ## How to Read an Age Statement
 
+
+![A crystal glass of golden scotch whisky backlit to showcase its rich amber color and clarity.](https://images.pexels.com/photos/36322544/pexels-photo-36322544.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Konstantin Mishchenko via Pexels*
+
 The number on a Scotch label — 10, 12, 18, 21 — tells you the **age of the youngest whisky in the bottle**. A 12-year blended Scotch could contain whiskies up to 30 years old; the 12 is simply the floor.
 
 **No Age Statement (NAS)** bottles omit the number entirely. This is not automatically a red flag. Many distilleries use NAS to blend across vintages for a consistent flavour profile. Laphroaig Select is NAS — and it's a serious whisky. Judge by the liquid, not the label.
@@ -114,6 +122,10 @@ This is where Bangkok's whisky value is strongest.
 - **Highland Park 10** (฿2,799): The most well-rounded bottle at this tier. Peat, fruit, and sea salt in a rare balance.
 
 ## A Note on Bangkok's Whisky Culture
+
+
+![A crystal whisky glass filled with amber scotch, photographed against a warm, blurred background suggesting an upscale bar setting.](https://images.pexels.com/photos/36322544/pexels-photo-36322544.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Konstantin Mishchenko via Pexels*
 
 Scotch in Bangkok is frequently drunk with ice and soda — a style the Scots call a **highball** and the Japanese have turned into an art form. There is nothing wrong with this. Ice opens the spirit, soda lifts the aromatics, and in 35°C humidity it's genuinely the most pleasurable way to drink.
 

@@ -22,6 +22,10 @@ Everything on this list is under ฿3,000 and in stock now.
 
 ## Real Champagne: Why It's Worth It
 
+
+![A crystal champagne flute filled with golden bubbles and effervescent wine against a soft-focused luxury background.](https://images.pexels.com/photos/14071962/pexels-photo-14071962.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Ricardo Oliveira via Pexels*
+
 Champagne comes from one specific region in northern France, made by the *méthode champenoise* — where the second fermentation (the one that creates the bubbles) happens inside the bottle. This process produces smaller, more persistent bubbles and a bready, toasty complexity you don't get from Prosecco.
 
 The grapes are Chardonnay, Pinot Noir, and Pinot Meunier. Most Champagne sold is **NV (non-vintage)** — blended from multiple years to maintain a consistent house style. **Vintage Champagne** (from a single exceptional year) is rarer and more expensive.
@@ -76,6 +80,10 @@ It's not trying to be Champagne. Prosecco is the wine for Bangkok brunches, pool
 
 ## Cava: Spain's Secret Weapon
 
+
+![A flute of golden cava with fresh fruit and appetizers arranged on a wooden table.](https://images.pexels.com/photos/19552399/pexels-photo-19552399.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Marcelo Verfe via Pexels*
+
 Cava is Spain's answer to Champagne — made by the same traditional bottle-fermentation method, from native Spanish grapes (Macabeu, Parellada, Xarel·lo) in Catalonia. The result is drier and earthier than Prosecco, closer in character to Champagne, at Prosecco prices.
 
 It's the most underrated sparkling category in Bangkok.
@@ -88,6 +96,10 @@ It's the most underrated sparkling category in Bangkok.
 
 ## Australian Sparkling: Worth Knowing
 
+
+![Rolling vineyard hills in an Australian wine region during golden hour, showcasing the terroir of sparkling wine production.](https://images.pexels.com/photos/5934491/pexels-photo-5934491.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Allen Cullen via Pexels*
+
 Australia makes serious sparkling wine — particularly from Tasmania and cool-climate South Australia. The method is the same as Champagne; the result has more tropical fruit and slightly less of the toasty autolytic character.
 
 <!-- product: WSP1233AD -->
@@ -97,6 +109,10 @@ Australia makes serious sparkling wine — particularly from Tasmania and cool-c
 ---
 
 ## Champagne vs. Prosecco vs. Cava: Which to Choose
+
+
+![Three elegant wine glasses filled with champagne, prosecco, and cava side by side, showcasing the distinct characteristics of each sparkling wine.](https://images.pexels.com/photos/5379876/pexels-photo-5379876.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Leeloo The First via Pexels*
 
 | | Champagne | Prosecco | Cava |
 |---|---|---|---|
@@ -110,6 +126,10 @@ Australia makes serious sparkling wine — particularly from Tasmania and cool-c
 ---
 
 ## What to Buy for Each Occasion
+
+
+![Two crystal champagne flutes clinking together in a celebratory toast with golden bubbles visible inside the glasses.](https://images.pexels.com/photos/30169604/pexels-photo-30169604.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Matej Bizjak via Pexels*
 
 **Birthday or promotion:** Moët & Chandon Brut (฿2,229) — the label does the work.
 

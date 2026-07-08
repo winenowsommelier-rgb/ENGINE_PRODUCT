@@ -18,6 +18,10 @@ Reading a wine label is a skill — and once you have it, you never stand there 
 
 ## Old World vs New World: The Fundamental Difference
 
+
+![A sprawling European vineyard with traditional stone buildings nestled among rolling hills and grapevines under natural sunlight.](https://images.pexels.com/photos/14213105/pexels-photo-14213105.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: SlimMars 13 via Pexels*
+
 This is the single most useful piece of label knowledge you can have.
 
 **Old World** wines (France, Italy, Spain, Portugal, Germany) put the **region** on the label, not the grape. A bottle labelled "Chablis" is Chardonnay. A bottle labelled "Bordeaux" is mostly Cabernet Sauvignon or Merlot. A bottle labelled "Chianti" is Sangiovese. The assumption is that you know what grows where — or that the appellation name carries enough prestige on its own.
@@ -31,6 +35,10 @@ This is the single most useful piece of label knowledge you can have.
 ---
 
 ## The Appellation System: AOC, DOC, DOCG, IGT Explained
+
+
+![Rolling vineyard hills in a French wine region showing terraced grape vines under natural sunlight.](https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Kym Wilson via Pexels*
 
 European wine is governed by appellation laws — a system that legally defines what can be grown where, how it must be made, and what it can be called. The more specific the appellation, generally the stricter the rules and the more prestigious the designation.
 
@@ -54,6 +62,10 @@ Spain uses *Denominación de Origen* (DO) and *Denominación de Origen Calificad
 
 ## "Reserve," "Reserva," and "Riserva" — What They Actually Mean
 
+
+![A close-up photograph of an Italian wine bottle label showing traditional text and aging classification markings.](https://images.pexels.com/photos/19969487/pexels-photo-19969487.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Masood Aslami via Pexels*
+
 These words appear on labels constantly and confuse everyone. The short version: **they don't all mean the same thing**, and one of them means very little at all.
 
 | Term | Country | Legal Meaning |
@@ -73,6 +85,10 @@ The Viu Manent Estate Collection Reserva is a Chilean wine — "Reserva" here fo
 
 ## New World Labels: Grape Variety Front and Centre
 
+
+![A close-up photograph of a New World wine bottle label prominently displaying the grape variety name in large typography.](https://images.pexels.com/photos/8982957/pexels-photo-8982957.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Brett Jordan via Pexels*
+
 New World producers solved the consumer confusion problem by doing the obvious thing: putting the grape on the front of the label. What you see is what you get.
 
 <!-- product: WWW2032AD -->
@@ -87,6 +103,10 @@ Compare this to Dourthe Grands Terroirs Saint-Émilion. The label shows the appe
 
 ## Vintage, Alcohol Content, and "Mis en Bouteille au Château"
 
+
+![A close-up photograph of a wine bottle label displaying vintage year, alcohol percentage, and château bottling information.](https://images.pexels.com/photos/8982957/pexels-photo-8982957.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Brett Jordan via Pexels*
+
 **Vintage year**: The year the grapes were harvested — not when the wine was bottled or when you bought it. Vintage matters more for Old World wines, where weather variation significantly impacts quality from year to year. For New World wines, year-to-year consistency is higher, so vintage is a lesser factor.
 
 **Alcohol content**: Required by law on every bottle. Most table wines sit between 12% and 15% ABV. Higher alcohol generally (not always) indicates riper grapes from warmer climates or a later harvest. A 13.5% Burgundy and a 14.5% Barossa Shiraz are expressing very different climates.
@@ -96,6 +116,10 @@ Compare this to Dourthe Grands Terroirs Saint-Émilion. The label shows the appe
 ---
 
 ## Thai Labels: What the Thai Text Adds
+
+
+![A close-up photograph of a wine bottle label displaying Thai text and traditional design elements.](https://images.pexels.com/photos/8982957/pexels-photo-8982957.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Brett Jordan via Pexels*
 
 In Thailand, all imported wine must carry a Thai-language label with specific information for Excise Department compliance. You'll always find:
 

@@ -18,6 +18,10 @@ The short answer: **for most people, at most price points in Bangkok, Bordeaux g
 
 ## What Makes Bordeaux, Bordeaux
 
+
+![Sun-drenched vineyard rows stretch across rolling hills in the Bordeaux wine region of France.](https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Kym Wilson via Pexels*
+
 Bordeaux sits in southwest France, on the Atlantic coast. The region's reds are **blends** — primarily Cabernet Sauvignon and Merlot, with smaller amounts of Cabernet Franc, Petit Verdot, and Malbec depending on the producer and sub-region.
 
 The two banks of the Gironde estuary produce different styles:
@@ -47,6 +51,10 @@ Entry-level Bordeaux (AOC Bordeaux or Bordeaux Supérieur) is where most buyers 
 
 ## What Makes Burgundy, Burgundy
 
+
+![Terraced vineyard rows in the Burgundy region of France showcasing the region's distinctive landscape and pinot noir growing conditions.](https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Kym Wilson via Pexels*
+
 Burgundy is inland, in eastern France — the Côte d'Or (the "slope of gold") running south from Dijon. Unlike Bordeaux, Burgundy is almost never blended. **Red Burgundy is Pinot Noir, almost without exception.** White Burgundy is Chardonnay.
 
 The Pinot Noir here is unlike Pinot from anywhere else. It's lighter in color and body than most reds, high in acidity, and in the best expressions has a savory, earthy, almost haunting quality that serious wine drinkers chase for a lifetime.
@@ -75,6 +83,10 @@ The catch: the good stuff is expensive. A village-level Burgundy from a serious 
 
 ## Bordeaux vs. Burgundy: The Key Differences
 
+
+![Rolling vineyards with stone châteaux nestled in the Bordeaux wine region of France.](https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Kym Wilson via Pexels*
+
 | | Bordeaux | Burgundy |
 |---|---|---|
 | **Grape** | Cab Sauv + Merlot blend | Pinot Noir (single variety) |
@@ -88,6 +100,10 @@ The catch: the good stuff is expensive. A village-level Burgundy from a serious 
 ---
 
 ## Which Should You Buy?
+
+
+![Two glasses of red wine side by side showcasing the distinct color differences between Bordeaux and Burgundy varietals.](https://images.pexels.com/photos/16547185/pexels-photo-16547185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Tim Durand via Pexels*
 
 **Buy Bordeaux if:** you want something reliable, food-friendly, and fairly priced. You're hosting a dinner party. You want a classic French red without overthinking it.
 

@@ -18,6 +18,10 @@ Understanding why is one of the more satisfying things in wine.
 
 ## The Geography: Why It Matters
 
+
+![Terraced vineyard rows on hillsides in the Burgundy region of France, showing the distinctive limestone soil and elevation differences that define Côte de Nuits and Côte de Beaune.](https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Kym Wilson via Pexels*
+
 The Côte d'Or is not a flat vineyard. It's a slope — a hillside facing east/southeast, catching the morning sun, sheltered from the west by the hills of the Hautes-Côtes. Altitude, slope angle, and where you sit on the hill determine drainage, temperature, and the amount of clay vs. limestone in the soil.
 
 These variations happen across just a few hundred metres. That's why a Gevrey-Chambertin village wine (Côte de Nuits) and a Chambolle-Musigny village wine (also Côte de Nuits, 5km south) taste different enough that a knowledgeable taster can tell them apart blind.
@@ -25,6 +29,10 @@ These variations happen across just a few hundred metres. That's why a Gevrey-Ch
 ---
 
 ## Côte de Nuits: The Kingdom of Pinot Noir
+
+
+![Terraced vineyards of the Côte de Nuits region in Burgundy, France, showing rows of Pinot Noir vines on hillside slopes.](https://images.pexels.com/photos/6093721/pexels-photo-6093721.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Abynaya via Pexels*
 
 The Côte de Nuits runs from Marsannay (just south of Dijon) to Corgoloin. Almost entirely red wine — Pinot Noir. The greatest names in red Burgundy are here:
 
@@ -67,6 +75,10 @@ What makes Côte de Nuits reds distinctive:
 
 ## Côte de Beaune: Where White Wine Rules
 
+
+![Rolling green vineyards of the Côte de Beaune region in Burgundy, France, known for premium Chardonnay production.](https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Kym Wilson via Pexels*
+
 The Côte de Beaune runs from Ladoix (north of Beaune) to Santenay in the south. Reds exist here — Pommard and Volnay are serious Pinot Noir villages — but the Côte de Beaune is dominated by Chardonnay whites:
 
 - **Corton** — the only Grand Cru red in the Côte de Beaune.
@@ -103,6 +115,10 @@ What makes Côte de Beaune whites distinctive:
 
 ## Côte de Nuits vs. Côte de Beaune: The Key Differences
 
+
+![Rolling vineyards of the Burgundy region in France, showing the terraced slopes characteristic of Côte de Nuits and Côte de Beaune.](https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Kym Wilson via Pexels*
+
 | | Côte de Nuits | Côte de Beaune |
 |---|---|---|
 | **Key wines** | Red Pinot Noir | White Chardonnay (and red Pinot Noir) |
@@ -115,6 +131,10 @@ What makes Côte de Beaune whites distinctive:
 ---
 
 ## The Classification: A Quick Guide
+
+
+![Rolling vineyard slopes of the Côte d'Or region in Burgundy, France, showing the terraced classification system that defines these prestigious wine districts.](https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Kym Wilson via Pexels*
 
 Every wine from the Côte d'Or sits in one of four tiers:
 

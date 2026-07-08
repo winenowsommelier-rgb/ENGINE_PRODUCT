@@ -84,6 +84,10 @@ At this level, move into proper aged Bordeaux, premier cru Burgundy, or vintage 
 
 ## If You're the Host: What to Serve
 
+
+![Crystal wine glasses filled with red and white wine arranged on a formally set dining table.](https://images.pexels.com/photos/17057034/pexels-photo-17057034.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Matheus Bertelli via Pexels*
+
 If the roles are reversed and you're the one hosting, the calculus changes. You know the menu; choose accordingly:
 
 - **Thai food**: Dry rosé, off-dry Riesling, or a light Grenache-based red. Avoid big tannic reds.

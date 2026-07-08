@@ -18,6 +18,10 @@ Here's what you actually need to understand before you buy.
 
 ## Tequila vs Mezcal: The Core Difference
 
+
+![Expansive agave plants growing in a Mexican landscape under golden sunlight, representing the agricultural origin of tequila and mezcal.](https://images.pexels.com/photos/6943107/pexels-photo-6943107.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Mikhail Nilov via Pexels*
+
 Both tequila and mezcal are made from agave — but that's where the easy comparison ends.
 
 **Tequila** can only be made from one specific agave variety: *Agave tequilana Weber* (Blue Agave). It must be produced in specific Mexican states, primarily Jalisco. The agave hearts (*piñas*) are steamed in industrial ovens or autoclaves, then fermented and double-distilled. The result is clean, approachable, and consistent.
@@ -30,6 +34,10 @@ Think of it this way: **tequila is the refined, accessible category; mezcal is t
 
 ## The Agave Plant: Why It Matters
 
+
+![A sprawling agave plant field in Mexico's highlands, showing the distinctive blue agave plants used in tequila production.](https://images.pexels.com/photos/12577018/pexels-photo-12577018.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Jose de los Santos Calderón via Pexels*
+
 Agave is not a cactus (a common misconception). It's a succulent that takes **7–12 years to mature** before it can be harvested. Blue Agave for tequila takes about 8 years. Rare mezcal agave varieties (Tobalá, Tepeztate) can take 15–25 years.
 
 This long maturation cycle has major implications. Unlike wheat or sugar cane, you can't just plant more agave and have a crop next year — the supply chain is measured in decades. It explains why good agave spirits cost what they do, and why industrially produced tequila that cuts corners (using mixto — only 51% agave, with added sugars) tastes the way it does.
@@ -39,6 +47,10 @@ A bottle that says **"100% Agave"** or **"100% de Agave"** on the label uses onl
 ---
 
 ## Blanco, Reposado, and Añejo: What the Aging Means
+
+
+![Three tequila bottles displayed side by side showing the color progression from clear blanco to golden reposado to deep amber añejo spirits.](https://images.pexels.com/photos/5987337/pexels-photo-5987337.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Eric Nixon via Pexels*
 
 | Category | Oak Time | Colour | Character |
 |---|---|---|---|
@@ -54,6 +66,10 @@ For cocktails — Margarita, Paloma, Tequila Sour — Blanco or Reposado are the
 ---
 
 ## What's on the Bangkok Shelves
+
+
+![Assorted tequila and mezcal bottles arranged on a retail shelf, showcasing various brands and bottle styles.](https://images.pexels.com/photos/21544362/pexels-photo-21544362.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: K via Pexels*
 
 <!-- product: LTQ0034CN -->
 
@@ -83,6 +99,10 @@ For cocktails — Margarita, Paloma, Tequila Sour — Blanco or Reposado are the
 
 ## How to Drink Tequila Properly
 
+
+![A crystal glass filled with clear tequila garnished with a salted rim and fresh lime wedge on a dark surface.](https://images.pexels.com/photos/32912385/pexels-photo-32912385.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: jose luis Umana via Pexels*
+
 The shot-salt-lime ritual exists to mask bad tequila. When the spirit is good, you don't need a distraction.
 
 **Neat**: Pour into a small copita or a short glass (not a shot glass — the wide opening allows aromatics to escape). Nose the glass, take a small sip, let it coat your palate, then swallow. A quality Reposado or Añejo at room temperature needs nothing added.
@@ -102,6 +122,10 @@ The shot-salt-lime ritual exists to mask bad tequila. When the spirit is good, y
 ---
 
 ## Bangkok's Bar Scene
+
+
+![A skilled bartender pours golden tequila into a rocks glass with ice during evening service at a modern bar.](https://images.pexels.com/photos/2919731/pexels-photo-2919731.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Michal Lizuch via Pexels*
 
 Bangkok's cocktail culture has a serious mezcal presence if you know where to look. Bars in the Silom and Sukhumvit corridors have invested in small-batch mezcal from Oaxacan producers — expect Espadín, Tobalá, and occasionally rarer varieties. The smoke in a well-made mezcal cocktail works unexpectedly well with Bangkok's Asian flavour palette — the smokiness that clashes with European wine styles actually pairs with Southeast Asian spices.
 

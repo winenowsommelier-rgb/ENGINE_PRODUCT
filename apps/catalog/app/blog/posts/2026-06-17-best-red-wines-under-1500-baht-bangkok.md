@@ -22,6 +22,10 @@ We've pulled the best bottles across price bands — from the ฿500s that punch
 
 ## The ฿500–700 Tier: Smart Entry Points
 
+
+![A single glass of red wine backlit against a neutral background, showcasing its deep burgundy color and clarity.](https://images.pexels.com/photos/8251352/pexels-photo-8251352.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Julia Filirovska via Pexels*
+
 You don't need to spend ฿1,000 to drink well. The best entry-level bottles from Chile and southern France consistently outperform their price. Two styles to know: Chilean Carmenère (a grape that barely exists outside South America, often genuinely interesting at this price), and Languedoc reds from France, which give you Grenache-Syrah blends at a fraction of Rhône prices.
 
 <!-- product: WRW5883DD -->
@@ -61,6 +65,10 @@ This is the sweet spot for Bangkok wine buyers. At ฿700–900 you're getting i
 ---
 
 ## The ฿900–1,500 Tier: Bottles Worth the Occasion
+
+
+![A crystal wine glass filled with deep red wine beside a place setting and candlelight.](https://images.pexels.com/photos/374877/pexels-photo-374877.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Burst via Pexels*
 
 Push past ฿900 and you're buying wine with provenance — named appellations, longer aging, producers who've been making the same wine for generations. At ฿1,200–1,500, you're getting bottles that would cost ฿2,500–4,000 at a Bangkok restaurant.
 

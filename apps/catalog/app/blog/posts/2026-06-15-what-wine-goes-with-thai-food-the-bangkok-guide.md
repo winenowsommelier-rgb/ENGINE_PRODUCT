@@ -18,6 +18,10 @@ Thai food is one of the hardest cuisines to pair with wine — and one of the mo
 
 ## Why Thai Food Is Tricky (and Solvable)
 
+
+![A selection of white wine glasses arranged beside vibrant Thai dishes featuring chilies, lime, and fresh herbs.](https://images.pexels.com/photos/12824410/pexels-photo-12824410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Manit Seekhao via Pexels*
+
 The problems are well-known: chilli heat amplifies tannin and alcohol, making full-bodied reds taste harsh and bitter. Fish sauce and lime push flavour intensity high. Coconut-based dishes coat the palate with fat. Aromatic herbs — lemongrass, kaffir lime leaf, galangal — demand something with presence.
 
 The solutions are less well-known, because most wine writing was done in Europe for European food. As [Wine Folly explains](https://winefolly.com/video/what-wine-with-spicy-food/), the key is low tannin, moderate alcohol, and wines that lean aromatic or slightly off-dry. In Bangkok you have an advantage: you can eat the actual food with the actual wine, in actual heat, and discover what works. Here's what does.

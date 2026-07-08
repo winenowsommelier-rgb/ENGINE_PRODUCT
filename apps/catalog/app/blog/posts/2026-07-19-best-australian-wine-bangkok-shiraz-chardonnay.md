@@ -18,6 +18,10 @@ Here's what you should know, and what you should buy.
 
 ## Why Australia Over-Delivers on Value
 
+
+![Rolling vineyard hills in a wine region during golden hour, showcasing the terroir that produces premium Australian wines.](https://images.pexels.com/photos/5934491/pexels-photo-5934491.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Allen Cullen via Pexels*
+
 Australian wine's reputation in the mid-price segment comes from a few structural advantages. The climate in the major wine regions is predictable — warm days, moderate nights — which means vintages are more consistent than in Europe's more marginal climates. Production technology in Australia is world-class. And the grape varieties planted (Shiraz, Cabernet Sauvignon, Chardonnay) are internationally understood, which keeps the marketing story simple.
 
 What Australia doesn't have is France's appellation prestige or Italy's ancient classification system. This is actually an advantage for the Bangkok buyer: you're paying for what's in the bottle, not for centuries of perceived status. At the ฿300–฿800 range, this means the quality-per-baht ratio is often the best on the shelf.
@@ -82,6 +86,10 @@ At the Bangkok accessible tier, Australian Chardonnay remains one of the most re
 
 ## Rosé: Australian Style
 
+
+![A glass of pale rosé wine photographed against warm golden light, showcasing the wine's delicate color and premium presentation.](https://images.pexels.com/photos/36935829/pexels-photo-36935829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Kiril Georgiev via Pexels*
+
 <!-- product: WRS0236AH -->
 
 **Banrock Station Rosé** (฿509, Riverland) is the Australian entry-point for rosé. Riverland's warm climate produces a fruitier, off-dry style compared to the dry, mineral Provençal rosés that dominate the premium end. Banrock Station Rosé is salmon pink, strawberry and watermelon forward, and slightly off-dry — which makes it accessible and crowd-pleasing. On a Bangkok rooftop in the heat, this is a better choice than staring at a wine menu.
@@ -89,6 +97,10 @@ At the Bangkok accessible tier, Australian Chardonnay remains one of the most re
 ---
 
 ## Cabernet Sauvignon: The Structured Red
+
+
+![A full-bodied Cabernet Sauvignon wine in a crystal glass displaying deep ruby color and structured tannins.](https://images.pexels.com/photos/18737012/pexels-photo-18737012.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Kürşad Karaağaç via Pexels*
 
 <!-- product: WRW1040AD -->
 
@@ -110,6 +122,10 @@ At the Bangkok accessible tier, Australian Chardonnay remains one of the most re
 ---
 
 ## Australian Wine and Bangkok Weather
+
+
+![Rolling vineyard hills under blue sky in an Australian wine region, showcasing the terroir that produces premium Shiraz and Chardonnay.](https://images.pexels.com/photos/5934491/pexels-photo-5934491.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Allen Cullen via Pexels*
 
 Here's the honest truth about Australian wine in Bangkok: the red wine styles (bold Shiraz, structured Cab) are best suited to air-conditioned environments. A full-bodied Barossa Shiraz at 35°C outdoor temperature is not a comfortable drink — the alcohol warmth compounds the ambient heat.
 
