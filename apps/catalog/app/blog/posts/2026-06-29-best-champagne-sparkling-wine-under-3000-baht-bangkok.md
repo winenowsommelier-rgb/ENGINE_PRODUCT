@@ -14,7 +14,8 @@ Not all bubbles are the same. Champagne, Prosecco, Cava, and Australian sparklin
 
 Everything on this list is under ฿3,000 and in stock now.
 
-![Sparkling wine from the glass — the moment the bubbles tell you everything you need to know.](https://images.unsplash.com/photo-1546622891-02c72c1537b6?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Sparkling wine from the glass — the moment the bubbles tell you everything you need to know.](https://images.pexels.com/photos/12901646/pexels-photo-12901646.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Katelyn Whitson via Pexels*
 *Fine persistent bubbles rising in a straight line are the signature of traditional-method sparkling wine — Champagne, Cava, and quality Crémant.*
 
 ---
@@ -51,7 +52,8 @@ Under ฿3,000 in Bangkok, you're in grower-producer and smaller-house Champagne
 
 ## Prosecco: The Everyday Sparkling
 
-![Champagne caves — vast underground cellars where the bottles age in darkness.](https://images.unsplash.com/photo-1502741338009-cac2772e18bc?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Champagne caves — vast underground cellars where the bottles age in darkness.](https://images.pexels.com/photos/3953808/pexels-photo-3953808.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Leo Woessner via Pexels*
 *Prosecco is made in tanks, not bottles — which gives it a lighter, fruitier style and keeps the price accessible.*
 
 Prosecco comes from northeastern Italy (Veneto and Friuli), made from the Glera grape. Unlike Champagne, Prosecco ferments in large pressurised tanks (the *Charmat* method) — which makes it faster and cheaper to produce and gives it a lighter, fruitier, less complex style.

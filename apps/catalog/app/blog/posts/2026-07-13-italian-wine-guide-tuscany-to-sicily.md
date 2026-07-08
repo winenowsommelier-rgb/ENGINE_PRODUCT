@@ -20,6 +20,10 @@ Every Italian region has its own native varieties, its own classification system
 
 ## Tuscany — The Heart of Italian Fine Wine
 
+
+
+![Rolling vineyard hills in Tuscany with cypress trees and golden hour lighting.](https://images.pexels.com/photos/32233445/pexels-photo-32233445.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Andrea Mosti via Pexels*
 Tuscany is where most people start with Italian wine, and for good reason. It's home to **Sangiovese** — one of the world's great red grapes — and to some of Italy's most internationally recognised appellations.
 
 ### Chianti DOCG — The Entry Point
@@ -74,6 +78,10 @@ Montepulciano d'Abruzzo is one of Italy's most undervalued grapes: **deep colour
 
 ## Sicily — Italy's Fastest-Rising Region
 
+
+
+![Sicilian vineyard terraces overlooking the Mediterranean Sea with mature grapevines.](https://images.pexels.com/photos/23441099/pexels-photo-23441099.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Wolfgang Weiser via Pexels*
 Sicily spent decades producing bulk wine for blending into mainland Italian reds. Over the past 20 years, producers have been making estate-bottled wines under the Sicilia DOC appellation, and the results are compelling.
 
 Sicily's climate (hot, dry, volcanic soil from Etna) produces wines with natural concentration and character. Syrah in Sicily produces something darker and spicier than it does in the Rhône — **black pepper, violet, dark berry, with firm structure** that improves with food.
@@ -82,6 +90,10 @@ Sicily's climate (hot, dry, volcanic soil from Etna) produces wines with natural
 
 ## How to Read an Italian Wine Label
 
+
+
+![Close-up detail of a traditional Italian wine label showing denomination and producer information.](https://images.pexels.com/photos/19969487/pexels-photo-19969487.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Masood Aslami via Pexels*
 Italian labels can pile up information that's easy to misread. Here's a quick decoder:
 
 - **Producer name**: Usually prominent — the Famiglia, Cantina, or Podere

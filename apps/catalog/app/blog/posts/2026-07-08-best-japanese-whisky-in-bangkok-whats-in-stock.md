@@ -62,7 +62,8 @@ These are the bottles that made Japanese whisky famous at the bar and dinner tab
 
 Pure malt whisky blends single malts from multiple distilleries. More complexity and body than standard blends, without the rarity premiums of true single malt.
 
-![A Japanese whisky glass and bottle on a dark wood surface — pure malt whisky sits between accessible blends and rarefied single malts.](https://images.unsplash.com/photo-1474722883778-792e7990302f?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![A Japanese whisky glass and bottle on a dark wood surface — pure malt whisky sits between accessible blends and rarefied single malts.](https://images.pexels.com/photos/37252647/pexels-photo-37252647.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Iban Lopez Luna via Pexels*
 *Pure malt whisky is Japan's most underrated tier — the quality gap between it and single malt is small; the price gap is large.*
 
 <!-- product: LWH0714AB -->

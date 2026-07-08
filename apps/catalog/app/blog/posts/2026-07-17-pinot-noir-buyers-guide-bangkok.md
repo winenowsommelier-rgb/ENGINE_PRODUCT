@@ -56,7 +56,8 @@ If Burgundy is the aspiration, New Zealand is where you get the closest experien
 
 The Annalina Marlborough Pinot Noir (฿649) is a genuinely surprising wine at this price. Marlborough Pinot at the accessible tier can be thin, but this one has real red fruit concentration and a clean, dry finish. Recommended without reservation.
 
-![Oak barrels aging wine — Pinot Noir's relationship with wood is as important as the grape.](https://images.unsplash.com/photo-1551538827-9c037cb4f32a?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Oak barrels aging wine — Pinot Noir's relationship with wood is as important as the grape.](https://images.pexels.com/photos/2946621/pexels-photo-2946621.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Robert Schrader via Pexels*
 *New Zealand's Central Otago produces some of the world's most striking Pinot Noir — altitude, cold nights, and schist soil combine in ways Burgundy can't replicate.*
 
 ---

@@ -35,7 +35,8 @@ The Côte de Nuits runs from Marsannay (just south of Dijon) to Corgoloin. Almos
 - **Vosne-Romanée** — the most prestigious village. Contains Romanée-Conti (the most expensive wine in the world), La Tâche, and Richebourg.
 - **Nuits-Saint-Georges** — the most "commercial" of the Côte de Nuits villages. Earthier, more rustic, reliable value at village level.
 
-![Vine rows in Gevrey-Chambertin at harvest — the Côte de Nuits produces Pinot Noir of extraordinary power and longevity.](https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Vine rows in Gevrey-Chambertin at harvest — the Côte de Nuits produces Pinot Noir of extraordinary power and longevity.](https://images.pexels.com/photos/3842609/pexels-photo-3842609.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Grape Things via Pexels*
 *The Côte de Nuits limestone soil produces Pinot Noir of a depth and structure not found anywhere else.*
 
 What makes Côte de Nuits reds distinctive:
@@ -75,7 +76,8 @@ The Côte de Beaune runs from Ladoix (north of Beaune) to Santenay in the south.
 - **Puligny-Montrachet / Chassagne-Montrachet** — contain the greatest dry white wine vineyards in the world (Le Montrachet, Bâtard-Montrachet, Chevalier-Montrachet).
 - **Chablis** — technically a separate appellation to the north, but part of the Burgundy AOP hierarchy.
 
-![White Burgundy — Chardonnay from the Côte de Beaune at its finest.](https://images.unsplash.com/photo-1494891848038-7bd202a2afeb?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![White Burgundy — Chardonnay from the Côte de Beaune at its finest.](https://images.pexels.com/photos/28304438/pexels-photo-28304438.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: David Sotto via Pexels*
 *Meursault and Puligny-Montrachet are white wines that require a different vocabulary — butter, hazelnut, white truffle, wet stone.*
 
 What makes Côte de Beaune whites distinctive:

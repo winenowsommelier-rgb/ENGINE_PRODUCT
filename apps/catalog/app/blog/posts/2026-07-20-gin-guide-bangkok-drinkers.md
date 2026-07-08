@@ -44,7 +44,8 @@ Contemporary gins don't follow London Dry's rules. Distillers can add flavour po
 
 Neither style is wrong. They serve different purposes and different palates.
 
-![A gin bar at dusk — the category built on botanicals and bartender culture.](https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![A gin bar at dusk — the category built on botanicals and bartender culture.](https://images.pexels.com/photos/8950151/pexels-photo-8950151.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Camila Bou via Pexels*
 *The gin shelf has become one of the most varied in any good bottle shop — the range from entry London Dry to Japanese craft to Thai botanical spans an enormous flavour territory.*
 
 ---

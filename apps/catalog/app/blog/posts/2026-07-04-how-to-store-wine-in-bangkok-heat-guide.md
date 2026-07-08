@@ -53,7 +53,8 @@ UV light degrades wine. Clear glass bottles are worst (always buy wine in colour
 
 ### Option 1: Dedicated Wine Refrigerator (Best for Most Bangkok Residents)
 
-![A wine fridge with bottles stored horizontally — a dedicated unit is the only practical solution for serious wine storage in Bangkok.](https://images.unsplash.com/photo-1559496417-e7f25cb247f3?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![A wine fridge with bottles stored horizontally — a dedicated unit is the only practical solution for serious wine storage in Bangkok.](https://images.pexels.com/photos/28792254/pexels-photo-28792254.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Bingqian Li via Pexels*
 *A wine fridge maintains the stable, cool, humid environment that Bangkok's ambient conditions cannot provide.*
 
 A dedicated wine refrigerator (also called a wine cooler or wine conditioner) is the correct solution for Bangkok. It differs from a regular refrigerator in several ways:

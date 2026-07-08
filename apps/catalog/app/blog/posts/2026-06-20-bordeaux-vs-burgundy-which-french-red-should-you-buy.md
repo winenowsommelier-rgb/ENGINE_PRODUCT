@@ -27,7 +27,8 @@ The two banks of the Gironde estuary produce different styles:
 
 Entry-level Bordeaux (AOC Bordeaux or Bordeaux Supérieur) is where most buyers in Bangkok start — and where the category offers genuine value.
 
-![Rolling vineyard rows at elevation — Burgundy and Bordeaux share the vine but not the slope.](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Rolling vineyard rows at elevation — Burgundy and Bordeaux share the vine but not the slope.](https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Kym Wilson via Pexels*
 *Bordeaux's vast production scale — 57 sub-appellations, thousands of châteaux — is what makes affordable Bordeaux possible.*
 
 <!-- product: WRW1985AH -->

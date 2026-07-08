@@ -22,6 +22,10 @@ A **Blended Malt** (sometimes labelled "Pure Malt") sits in the middle: it blend
 
 ## The Regions: Where a Scotch Comes From Matters
 
+
+
+![Rolling green highlands with stone distillery buildings nestled in a misty valley.](https://images.pexels.com/photos/34635801/pexels-photo-34635801.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Geert Rozendom via Pexels*
 Scotland's whisky geography is often oversimplified. Here's what actually matters for your palate:
 
 ### Speyside — The Fruit Bowl of Scotland
@@ -56,6 +60,10 @@ Lowland whiskies are triple-distilled (a Scottish rarity), producing a lighter, 
 
 ## Single Malt vs. Blended vs. Blended Malt
 
+
+
+![Three distinct whisky bottles displaying varied label designs and amber liquid colors.](https://images.pexels.com/photos/6367/alcohol-bottles-drinks-party.jpg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Karolina Grabowska www.kaboompics.com via Pexels*
 | Style | Distilleries | Grain | Character |
 |---|---|---|---|
 | Single Malt | One only | Malted barley only | Regional, complex, specific |
@@ -82,6 +90,10 @@ Age does not equal quality in a simple linear way. A 10-year-old whisky matured 
 
 ## What to Buy in Bangkok — By Price Tier
 
+
+
+![Premium whisky bottles arranged on a wooden shelf with warm backlighting.](https://images.pexels.com/photos/18148755/pexels-photo-18148755.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Weichen Tian via Pexels*
 **Under ฿1,000 — Daily Drinkers**
 
 - **Clansman** (฿600): Ice, soda, or a simple highball. Honest blended Scotch with no pretensions.

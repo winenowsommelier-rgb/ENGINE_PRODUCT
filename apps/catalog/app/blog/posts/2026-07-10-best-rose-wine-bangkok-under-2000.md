@@ -14,6 +14,10 @@ Rosé gets misunderstood in Bangkok more than any other wine category. People ei
 
 ## What Makes a Good Rosé?
 
+
+
+![A glass of pale pink rosé wine held up to natural light, showing its characteristic color and clarity.](https://images.pexels.com/photos/36935829/pexels-photo-36935829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Kiril Georgiev via Pexels*
 The key word is **dry**. Good rosé has no residual sweetness — it's crisp, fresh, and pale in colour. The palest pinks (often from Provence in southern France) are almost translucent, like rose petals diluted in water. The fruit flavours lean toward **strawberry, watermelon, citrus peel, and dried herbs** — never jam, never candy.
 
 Colour is not a quality indicator on its own, but in practice the paler the wine, the more likely it's been made with care. Deeply coloured "blush" rosés are often sweeter and less interesting.
@@ -26,6 +30,10 @@ Outside France, Chile has emerged as a strong value rosé source. Wines from coo
 
 ## The Bottles: Ranked by Price
 
+
+
+![Multiple rosé wine bottles arranged on a wooden shelf with visible labels and price points.](https://images.pexels.com/photos/9658801/pexels-photo-9658801.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Кирилл Абрамов via Pexels*
 ### Under ฿600 — The Everyday Pour
 
 **Aromo Rosé Syrah** (฿600) and **Alpaca Rosé** (฿600) are the Chilean value picks. Both are dry, both are reliably made, and both work brilliantly poured over ice on a Bangkok afternoon — which, let's be honest, is a legitimate delivery method in this climate.
@@ -76,6 +84,10 @@ If a rosé is described as "sweet," "fruity," or comes in a frosted bottle with 
 
 ## Rosé with Food in Bangkok
 
+
+
+![A glass of rosé wine beside a plate of fresh seafood and appetizers on a dining table.](https://images.pexels.com/photos/33144658/pexels-photo-33144658.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Busenur Demirkan via Pexels*
 Dry rosé is arguably the most food-friendly wine category for Thai cuisine. The acidity cuts through coconut-based curries; the red fruit stands up to chilli heat; the lack of tannins means no bitter clash with fish sauce. Specific pairings:
 
 - **Larb or som tam**: Laurent Miquel Cinsault Syrah — the freshness matches the lime and herb

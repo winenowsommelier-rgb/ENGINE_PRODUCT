@@ -14,7 +14,8 @@ Bangkok is one of the best cities in Asia to eat seafood. Street stalls piled wi
 
 The wine question is more specific here than it is in Paris or Sydney. Bangkok's seafood often comes with spice, aromatics, and bold sauces that change the pairing equation. This guide covers what works — and what doesn't — across the main seafood styles you'll encounter.
 
-![Fresh seafood arranged on a market table — the salt, sweetness, and spice of Bangkok seafood each calls for a different wine strategy.](https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Fresh seafood arranged on a market table — the salt, sweetness, and spice of Bangkok seafood each calls for a different wine strategy.](https://images.pexels.com/photos/4318376/pexels-photo-4318376.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Chait Goli via Pexels*
 *Bangkok's seafood ranges from clean and delicate to aggressively spiced — the wine needs to match the preparation, not just the protein.*
 
 ---
@@ -49,7 +50,8 @@ Sauvignon Blanc is the most reliable seafood wine in Bangkok. It's citrusy, gras
 
 ### Chablis — The Best Match for Oysters and Raw Shellfish
 
-![A cluster of fresh oysters on ice — Chablis is the traditional match, but any high-acid, mineral white wine works.](https://images.unsplash.com/photo-1561731216-c3a4d99437d5?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![A cluster of fresh oysters on ice — Chablis is the traditional match, but any high-acid, mineral white wine works.](https://images.pexels.com/photos/18136135/pexels-photo-18136135.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Valeria Boltneva via Pexels*
 *Chablis and oysters: the pairing works because both come from the same mineral environment — chalky limestone soil, cold Atlantic waters.*
 
 Chablis is Chardonnay, but unlike the oaky, buttery Chardonnays you might be used to, it's aged in steel, giving a bone-dry, mineral, almost saline character. This is exactly what you want next to oysters, clams, or raw shellfish. The minerality echoes the brine; the acidity cuts through it cleanly.

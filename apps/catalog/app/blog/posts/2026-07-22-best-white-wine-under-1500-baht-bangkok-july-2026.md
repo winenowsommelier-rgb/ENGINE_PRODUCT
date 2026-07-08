@@ -16,6 +16,10 @@ July in Bangkok. 35°C, 80% humidity. There is exactly one correct answer to thi
 
 ## New Zealand Sauvignon Blanc: The Bangkok Crowd-Pleaser
 
+
+
+![Rolling green vineyards in New Zealand's Marlborough region during harvest season.](https://images.pexels.com/photos/28183895/pexels-photo-28183895.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: manvinder social via Pexels*
 Marlborough Sauvignon Blanc has a stranglehold on Bangkok's white wine market for a simple reason: it's reliably excellent, broadly available, and pairs beautifully with the citrus, herb, and seafood flavours at the heart of Thai cuisine. If you're buying white wine for a mixed group in Bangkok, this is the default call.
 
 Marlborough's combination of cool nights, intense sunlight, and free-draining stony soils produces the grape's most expressive version — lifted passionfruit, lime, cut grass, and a refreshing acidity that cuts through the richest Thai dishes.
@@ -50,6 +54,10 @@ France's Sauvignon Blanc, particularly from Bordeaux's Entre-Deux-Mers, is a qui
 
 ## Chardonnay: Entry-Level Done Right
 
+
+
+![A glass of golden chardonnay on a wooden surface with soft natural lighting.](https://images.pexels.com/photos/19284897/pexels-photo-19284897.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Brett Jordan via Pexels*
 Chardonnay is the world's most widely planted white grape, and also its most misunderstood. The heavily oaked, buttery "ABC wine" (Anything But Chardonnay) backlash of the 2000s was a reaction to a style, not a grape. Unoaked or lightly oaked Chardonnay at this price point is clean, apple-fresh, and crowd-friendly.
 
 <!-- product: WWW4855AD -->
@@ -78,6 +86,10 @@ Pinot Grigio occupies a specific niche: low tannin, high crispness, restrained f
 
 ## Riesling: The Unexpected Bangkok Pairing Weapon
 
+
+
+![A bottle of riesling displayed alongside fresh Asian ingredients and spices on a dining table.](https://images.pexels.com/photos/33097115/pexels-photo-33097115.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Eden FC via Pexels*
 This is the sommelier's secret weapon for Thai food. Riesling's naturally high acidity and residual sweetness (even in "dry" versions, there's often a few grams of sugar) are designed to handle spice — they cool the heat and amplify the fruit flavours in the dish. Most people who say they don't like Riesling haven't had a good one.
 
 <!-- product: WWW5404AD -->

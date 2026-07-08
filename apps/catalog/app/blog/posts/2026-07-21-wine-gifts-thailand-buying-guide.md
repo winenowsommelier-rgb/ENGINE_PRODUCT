@@ -16,6 +16,10 @@ Gift-giving in Thailand is serious business. It's not just about the item inside
 
 ## Is Wine an Appropriate Gift in Thailand?
 
+
+
+![A person presenting a gift with both hands in traditional Thai greeting style, demonstrating respect and cultural etiquette.](https://images.pexels.com/photos/5832635/pexels-photo-5832635.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: AI25.Studio  Studio via Pexels*
 Short answer: yes, and increasingly so. Wine has shifted from a luxury import curiosity to an everyday premium beverage in Bangkok, and it is now broadly accepted as a gift for colleagues, hosts, and close friends. A few things to bear in mind:
 
 - **Alcohol is perfectly acceptable as a gift** in most social contexts. Buddhist observance varies — if you're gifting a devout Buddhist who abstains, err toward the alternatives below.
@@ -27,6 +31,10 @@ Short answer: yes, and increasingly so. Wine has shifted from a luxury import cu
 
 ## Gift by Occasion: What to Buy and Spend
 
+
+
+![Curated collection of wine bottles at varying price points displayed together, showing range from accessible to premium options.](https://images.pexels.com/photos/17313073/pexels-photo-17313073.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Victor Cayke via Pexels*
 ### Birthday or Personal Promotion — ฿1,000–1,500
 
 A birthday calls for bubbles. Champagne is the one category that needs no explanation in any language — it signals celebration instinctively. For a friend's milestone or a colleague's promotion, a Champagne in this range hits the sweet spot of genuinely impressive without being extravagant.
@@ -100,6 +108,10 @@ Champagne Ernest Rapeneau Rosé is a Rosé de Saignée style, which means the pi
 
 ## How to Present Wine as a Gift in Thailand
 
+
+
+![Beautifully wrapped wine bottle with decorative ribbon and packaging, ready to be presented as a premium gift.](https://images.pexels.com/photos/1050283/pexels-photo-1050283.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Andrea Piacquadio via Pexels*
 **Packaging first.** A wine gift bag (velvet or kraft, with ribbon) elevates a ฿600 bottle into something that feels like a ฿1,200 gift. If you're buying from a premium wine shop, ask for a box — many will box Champagne for free.
 
 **The card matters.** Write something brief and personal in Thai if you can manage it, or English is fine. A note beats a sticker every time.

@@ -65,7 +65,8 @@ Delicate food needs a light whisky. The pairing rule: the more delicate the fish
 
 ### Yakitori and Grilled Skewers
 
-![Yakitori skewers on a grill — the smoke and char of grilled chicken demands whisky with enough body and smokiness to match.](https://images.unsplash.com/photo-1541532713592-79a0317b6b77?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Yakitori skewers on a grill — the smoke and char of grilled chicken demands whisky with enough body and smokiness to match.](https://images.pexels.com/photos/14589731/pexels-photo-14589731.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: G N via Pexels*
 *Yakitori's smoke and char needs a whisky with some personality — Scotch blended malt or light peated single malt.*
 
 Yakitori changes the game. The smoke, char, and fat from the grill calls for more whisky character — this is where Scotch works.

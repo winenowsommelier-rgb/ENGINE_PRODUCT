@@ -26,6 +26,10 @@ What Australia doesn't have is France's appellation prestige or Italy's ancient 
 
 ## The Regions: What to Know
 
+
+
+![Rolling vineyard hills in a sun-drenched Australian wine region with terraced vines and blue sky.](https://images.pexels.com/photos/5934491/pexels-photo-5934491.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Allen Cullen via Pexels*
 **Barossa Valley, South Australia** — the heartland of big, bold Shiraz. Ancient vines (some over 100 years old), deep red soils, warm dry climate. Barossa Shiraz is what the world means when it says "Australian red wine" — dark fruit, chocolate, spice, and high alcohol (14–15% is normal). Penfolds Grange comes from here. The style is not subtle; it is not trying to be.
 
 **McLaren Vale, South Australia** — neighbouring Barossa but with a cooler maritime influence from Gulf St Vincent. McLaren Vale Shiraz tends to be more elegant than Barossa — still rich, but with better acidity and more savoury character.
@@ -38,6 +42,10 @@ What Australia doesn't have is France's appellation prestige or Italy's ancient 
 
 ## Shiraz: Australia's Signature Red
 
+
+
+![A glass of full-bodied red Shiraz wine with rich garnet color against a neutral background.](https://images.pexels.com/photos/29441413/pexels-photo-29441413.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Andrew Patrick Photo via Pexels*
 Shiraz is the same grape as France's Syrah — but Australia has made it its own. Where Northern Rhône Syrah is lean, peppery, and savory, Australian Shiraz is typically fuller-bodied, richer, and dark-fruited. The Australian style suits Bangkok's red wine drinker: approachable, generous, no harsh tannin edges.
 
 <!-- product: WRW4288BU -->
@@ -56,6 +64,10 @@ Shiraz is the same grape as France's Syrah — but Australia has made it its own
 
 ## Chardonnay: The Oaked vs Unoaked Debate
 
+
+
+![A glass of golden Chardonnay displayed beside oak barrels in a wine cellar setting.](https://images.pexels.com/photos/2440528/pexels-photo-2440528.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Arthur Brognoli via Pexels*
 Australian Chardonnay spent the 1990s making heavily oaked, buttery, full-bodied white wines that divided opinion and eventually provoked a backlash. The "ABC" (Anything But Chardonnay) movement was largely aimed at this style.
 
 Australian winemakers responded by learning restraint. Contemporary Australian Chardonnay is better calibrated — still richer than a Chablis or a Sauvignon Blanc, but with more freshness and less heavy oak than the 1990s monster. The best examples from Margaret River and Adelaide Hills are genuinely world-class.

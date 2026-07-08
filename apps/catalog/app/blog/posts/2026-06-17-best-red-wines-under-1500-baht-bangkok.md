@@ -14,7 +14,8 @@ There are over 1,000 red wines under ฿1,500 in stock right now at WNLQ9. Most 
 
 We've pulled the best bottles across price bands — from the ฿500s that punch above their weight to the ฿1,200–1,500 range where serious wine starts to show up. Every bottle here is in stock and ready to deliver across Thailand.
 
-![A glass of red wine poured and held up to the light — the first test of any bottle.](https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![A glass of red wine poured and held up to the light — the first test of any bottle.](https://images.pexels.com/photos/1841591/pexels-photo-1841591.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Elina Sazonova via Pexels*
 *The best affordable reds reward a second look — and a second glass.*
 
 ---
@@ -41,7 +42,8 @@ You don't need to spend ฿1,000 to drink well. The best entry-level bottles fro
 
 This is the sweet spot for Bangkok wine buyers. At ฿700–900 you're getting into wine with actual regional character — Rhône blends from France, Reserva-level Chileans from named valleys, and Italian DOC wines that have earned their appellation.
 
-![New World wine country — the landscape that produces accessible, honest red wine.](https://images.unsplash.com/photo-1580537659466-0a9bfa916a54?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![New World wine country — the landscape that produces accessible, honest red wine.](https://images.pexels.com/photos/14515698/pexels-photo-14515698.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Helena Jankovičová Kováčová via Pexels*
 *Wines in the ฿700–900 range are where production method and terroir start to matter.*
 
 <!-- product: WRW4771AB -->

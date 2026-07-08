@@ -74,7 +74,8 @@ Made from rice polished to at least 60% remaining (so 40%+ milled away). Ginjo u
 
 The pinnacle. Rice polished to at least 50% remaining — sometimes far more. Slow, cold fermentation. Every variable controlled for maximum elegance. The result is sake of extraordinary refinement: transparent, complex, often breathtaking.
 
-![Two sake cups beside a sake bottle on a dark wooden surface — Daiginjo is the sake category that demands contemplation, not speed.](https://images.unsplash.com/photo-1565299715199-866c917206bb?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Two sake cups beside a sake bottle on a dark wooden surface — Daiginjo is the sake category that demands contemplation, not speed.](https://images.pexels.com/photos/37252641/pexels-photo-37252641.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Iban Lopez Luna via Pexels*
 *Daiginjo is to sake what Grand Cru is to Burgundy — the expression of everything a brewery can do.*
 
 <!-- product: LSK0448AB -->

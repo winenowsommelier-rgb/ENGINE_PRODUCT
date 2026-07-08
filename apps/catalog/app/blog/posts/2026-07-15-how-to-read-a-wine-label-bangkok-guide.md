@@ -24,7 +24,8 @@ This is the single most useful piece of label knowledge you can have.
 
 **New World** wines (Australia, Chile, New Zealand, USA, Argentina) put the **grape variety** on the label. "Sauvignon Blanc," "Shiraz," "Cabernet Sauvignon" — they tell you exactly what you're getting. This is deliberately consumer-friendly, and it's why New World wines tend to be the easier starting point for Bangkok shoppers learning the category.
 
-![A bottle label — every element means something, once you know the code.](https://images.unsplash.com/photo-1582450871972-ab5ca641643d?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![A bottle label — every element means something, once you know the code.](https://images.pexels.com/photos/8982957/pexels-photo-8982957.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Brett Jordan via Pexels*
 *Old World appellations encode centuries of terroir knowledge — the region name is the grape variety, if you know the code.*
 
 ---

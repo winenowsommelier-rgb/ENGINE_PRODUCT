@@ -24,7 +24,8 @@ What the region does is not mysterious. The Wairau Valley floor receives intense
 
 The style was new. Loire Valley Sauvignon Blanc (Sancerre, Pouilly-Fumé) is mineral, restrained, and herbaceous. Marlborough came at you with passion fruit and capsicum. Wine drinkers who found Sancerre austere found Marlborough immediately approachable. The rest is market share.
 
-![Wine country at golden hour — the terroir behind the bottle.](https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Wine country at golden hour — the terroir behind the bottle.](https://images.pexels.com/photos/18248851/pexels-photo-18248851.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: PHILIPPE SERRAND via Pexels*
 *The Wairau Plain in Marlborough: flat river valley, intense UV, cold nights — the combination that produces the style Bangkok knows.*
 
 ---

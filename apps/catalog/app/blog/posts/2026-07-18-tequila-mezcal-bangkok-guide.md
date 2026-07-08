@@ -95,7 +95,8 @@ The shot-salt-lime ritual exists to mask bad tequila. When the spirit is good, y
 
 **The Paloma**: Tequila + grapefruit soda (Jarritos if you can find it in Bangkok, or a quality grapefruit juice and soda) + salt. Possibly the more refreshing of the two classic tequila cocktails in Bangkok's heat.
 
-![Agave spirits — the cactus cousin of the spirit world, smoky and singular.](https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Agave spirits — the cactus cousin of the spirit world, smoky and singular.](https://images.pexels.com/photos/30242758/pexels-photo-30242758.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Rodrigo Ortega via Pexels*
 *The Margarita is the entry-point cocktail that shows off what a good Blanco or Reposado can do. Fresh lime juice only — no substitutes.*
 
 ---

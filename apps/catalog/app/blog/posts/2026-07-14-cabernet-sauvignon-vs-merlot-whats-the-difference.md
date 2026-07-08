@@ -20,6 +20,10 @@ Despite their shared origin, they produce strikingly different wines. The key di
 
 ## Cabernet Sauvignon — Structure and Power
 
+
+
+![A glass of deep ruby Cabernet Sauvignon showing its rich color and full-bodied appearance.](https://images.pexels.com/photos/9931217/pexels-photo-9931217.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Bastian Riccardi via Pexels*
 Cabernet Sauvignon has a **thick skin** relative to most red grapes. Thick skin means more tannin extraction, deeper colour, and longer potential ageing. It also means the grape is late-ripening and needs heat to develop properly.
 
 What it tastes like: **blackcurrant (cassis), dark cherry, cedar, tobacco, and graphite** in a classic expression. When young, Cabernet can feel tight and grippy on the palate — the tannins form a firm structure that food softens and time resolves. With age, it develops leather, earth, and dried herb notes.
@@ -40,6 +44,10 @@ Cabernet Sauvignon is the dominant grape in Left Bank Bordeaux (Médoc, Pauillac
 
 ## Merlot — Softness and Approachability
 
+
+
+![A pour of Merlot wine into a glass, highlighting its silky, approachable character.](https://images.pexels.com/photos/29441413/pexels-photo-29441413.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Andrew Patrick Photo via Pexels*
 Merlot has a **thinner skin** than Cabernet Sauvignon. Thinner skin means less tannin, earlier ripening, and a naturally softer texture. Where Cabernet grips, Merlot glides.
 
 What it tastes like: **plum, red cherry, chocolate, and dried herbs** — rounder and fleshier than Cabernet, with a velvety texture and less of that firm tannic structure. It's the variety most often described as "easy drinking" — not because it lacks complexity, but because its tannins don't demand food or age to resolve.
@@ -58,6 +66,10 @@ What it tastes like: **plum, red cherry, chocolate, and dried herbs** — rounde
 
 ## Side-by-Side Comparison
 
+
+
+![Two wine glasses side by side containing Cabernet Sauvignon and Merlot for direct visual comparison.](https://images.pexels.com/photos/8473221/pexels-photo-8473221.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Cup of  Couple via Pexels*
 | Property | Cabernet Sauvignon | Merlot |
 |---|---|---|
 | Skin thickness | Thick | Thin |
