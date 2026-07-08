@@ -273,7 +273,9 @@ In `readPostFile()`, add this field to the returned object:
 featured: data['FEATURED'] === 'true',
 ```
 
-The frontmatter parser stores raw string values. `FEATURED: true` in a `.md` file is stored as the string `"true"`. The comparison `=== 'true'` is correct. Authors must write `FEATURED: true` without quotes; `FEATURED: "true"` will not match (the stored value would be `'"true"'`). Default is `false` (the comparison returns `false` when the key is absent).
+The frontmatter parser (`line.slice(colon + 1).trim()`) stores raw string values. When an author writes `FEATURED: true` (bare, no quotes), the parser yields the string `'true'` and the comparison matches correctly. Default is `false` when the key is absent.
+
+**Author instruction:** write `FEATURED: true` — the bare unquoted value. No YAML quoting.
 
 ### 8.2 Type additions — `hashnode-posts.ts`
 
@@ -322,9 +324,10 @@ Add this field to both interfaces in `apps/catalog/lib/blog/hashnode-posts.ts`. 
 - No `noindex` on any page.
 
 ### 10.4 Open Graph images
-- `/blog/category/[slug]`: `og:image` = `getAllPostsForCategory(slug)[0]?.coverImage ?? '/images/og-journal-default.jpg'`
-- `/blog` landing page: `og:image` = featured post's `coverImage`, with same fallback.
-- The fallback file `/images/og-journal-default.jpg` must exist in the `public/` directory (create a placeholder or brand image before launch).
+- `/blog/category/[slug]`: `og:image` = `getAllPostsForCategory(slug)[0]?.coverImage ?? '/og-default.jpg'`
+- `/blog` landing page: `og:image` = featured post's `coverImage`, same fallback.
+- Fallback is `/og-default.jpg` — this file **already exists** at `apps/catalog/public/og-default.jpg`. Do not create a new path; reuse it.
+- All current cover images are Pexels URLs (`https://images.pexels.com/…`). Used in `<meta property="og:image">` (plain `<meta>` tag, not `<Image>`), so `remotePatterns` does not apply there. However, `HeroStrip` will render the featured post's cover image visually — use a plain `<img>` tag for that element (not Next.js `<Image>`), since `images.pexels.com` is not in `next.config.js` `remotePatterns` and adding it is out of scope for this task.
 
 ### 10.5 BreadcrumbList structured data
 Category pages emit a JSON-LD `<script>` in `<head>` (via Next.js metadata or inline in the layout):
