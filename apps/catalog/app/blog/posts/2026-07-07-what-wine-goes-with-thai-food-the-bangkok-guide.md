@@ -28,7 +28,7 @@ The solutions are less well-known, because most wine writing was done in Europe 
 
 ### 1. Aromatic White Wines — the safest bet
 
-![Pouring a glass of pale white wine — the style that works best with fragrant Thai dishes](https://images.unsplash.com/photo-1474722883778-792e7990302f?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Pouring a glass of pale white wine — the style that works best with fragrant Thai dishes](https://images.unsplash.com/photo-1682071308366-1d098905b498?fm=jpg&q=80&w=1000&auto=format&fit=crop)
 *High natural acidity and aromatic lift — the two qualities that make white wine the default choice for Thai food.*
 
 Sauvignon Blanc and Riesling are the go-to styles for Thai food, and for good reason. High natural acidity mirrors the lime and tamarind in Thai cooking. Low tannin means no bitterness clash with chilli. Aromatic intensity holds its own against lemongrass and holy basil.
