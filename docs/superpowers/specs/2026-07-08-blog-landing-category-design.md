@@ -28,7 +28,7 @@ The current `/blog` page is a flat 2-column grid of all posts with no categorisa
 | `wine` | Wine | France, Italy, New World, Sparkling |
 | `whisky` | Whisky | Scotch, Japanese, Bourbon |
 | `spirits` | Spirits | Gin, Tequila, Rum, Vodka |
-| `sake` | Sake & Japanese | Sake, Shochu, Pairing |
+| `sake` | Sake & Japanese | Sake, Shochu, Japanese Whisky |
 
 Sub-tags in the hero tiles are **static display strings** — not computed from post data. They serve as editorial hints only.
 
@@ -144,9 +144,9 @@ Filter pill and sort are **client-side state only** (not in the URL). Only `page
 
 - **Right: Drink-type tiles** — 4 stacked tiles (Wine / Whisky / Spirits / Sake). Each tile: emoji icon, label, article count, static sub-tags (see §3.1). Clicking navigates to `/blog/category/[slug]`. Article counts are computed at build time by filtering all posts through `DRINK_TAG_MAP`.
 
-**C. Browse by Purpose** — 6 compact cards in a single row (`repeat(6, 1fr)`): Guides, Pairings, Deep Dives, Curated Lists, Comparisons, Gifting & Events. Each card: icon, label, article count (computed at build time). Links to `/blog/category/[slug]`.
+**C. Browse by Purpose** — 6 compact cards in a single row (`repeat(6, 1fr)`): Guides, Pairings, Deep Dives, Curated Lists, Comparisons, Gifting & Events. Each card: icon, label, article count (computed at build time), and a short description clipped to ~6 words from `CATEGORY_META[slug].description` (shown as subtitle on mobile; shown on hover on desktop via CSS `title` tooltip or visible sub-line). Links to `/blog/category/[slug]`.
 
-**D. Latest Posts** — 3-column grid of the 3 most recent posts from `getAllPosts(3)`. Each card uses the existing `PostCard` component unchanged.
+**D. Latest Posts** — 3-column grid of the 6 most recent posts (2 rows) from `getAllPosts(6)`. Each card uses the existing `PostCard` component unchanged.
 
 No standalone "Browse by Category" drink-type card grid — the hero tiles serve that function.
 
@@ -289,10 +289,38 @@ FEATURED: true
 
 ## 10. SEO
 
+### 10.1 Page titles and meta descriptions
+- `/blog` landing page: `<title>` = `"The WNLQ9 Journal — Wine, Whisky, Spirits & Sake"` with `<meta description>` = `"Guides, pairings, and deep dives on wine, whisky, spirits, and sake — from Bangkok's finest selection."`.
+- Each `/blog/category/[slug]` page: `<title>` = `"{Label} — WNLQ9 Journal"` and `<meta description>` from `CATEGORY_META[slug].description`.
+
+### 10.2 Canonical tags
+- `/blog/category/[slug]` (page 1, no query param) = canonical URL.
+- Any request to `/blog/category/[slug]?page=1` must emit `<link rel="canonical" href="/blog/category/[slug]">` (no `?page=1`). This prevents Google treating the two URLs as duplicates.
+- Pages `?page=2+` are self-canonicalising (canonical = their own URL with the query param).
+
+### 10.3 Static generation and crawlability
 - Each `/blog/category/[slug]` page (base, no `?page`) is statically generated via `generateStaticParams` and fully crawlable.
 - Paginated `?page=N` pages render server-side on demand — not pre-generated as static HTML, but not blocked from crawling. Google can follow `Next →` links to discover them.
-- Each category page has a unique `<title>` (`{Label} — WNLQ9 Journal`) and `<meta description>` from `CATEGORY_META[slug].description`.
 - No `noindex` on any page.
+
+### 10.4 Open Graph images
+- Each `/blog/category/[slug]` page sets `og:image` to the cover image of the most recent post in that category (computed at build time from `getAllPostsForCategory(slug)[0].coverImage`).
+- Fallback if no posts or no cover image: a static brand image (`/images/og-journal-default.jpg`).
+- The `/blog` landing page uses the featured post's cover image as `og:image`.
+
+### 10.5 BreadcrumbList structured data
+- Category pages emit a `BreadcrumbList` JSON-LD script in `<head>`:
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Journal", "item": "/blog" },
+    { "@type": "ListItem", "position": 2, "name": "{Label}", "item": "/blog/category/{slug}" }
+  ]
+}
+```
+- This enables breadcrumb display in Google SERP results.
 
 ---
 
@@ -304,3 +332,4 @@ FEATURED: true
 - Author pages
 - Tag pages beyond the defined category slugs
 - Dynamic sub-tag computation in hero tiles
+- **Editorial row / Editor's Picks** — reserved for future use. When needed, implement via a `FEATURED_RANK: 1–6` integer frontmatter key (extends the existing `FEATURED: true` boolean). The parser change is trivial; the landing page would add a 6-card curated row above "Latest Posts". Do not use `FEATURED: true` for multi-slot editorial curation — that field is single-post only.
