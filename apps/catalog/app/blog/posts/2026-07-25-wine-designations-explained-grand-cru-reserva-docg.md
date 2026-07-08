@@ -3,9 +3,9 @@ TITLE: Wine Designations Explained: What Grand Cru, Reserva, DOCG Actually Mean 
 SLUG: wine-designations-explained-grand-cru-reserva-docg
 DATE: 2026-07-25
 TAGS: guide,designations,france,italy,spain,wine-education
-COVER-IMAGE: https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Rows of aged wine bottles in a European cellar — designations tell you what's inside before you open it
-COVER-CREDIT-URL: https://unsplash.com/photos/PLACEHOLDER
+COVER-IMAGE: https://images.pexels.com/photos/17862836/pexels-photo-17862836.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Riccardo Zerbinati via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/opus-wine-winery-17862836/
 META-TITLE: Wine Designations Explained: Grand Cru, Reserva & DOCG
 META-DESC: Confused by Grand Cru, DOCG, and Gran Reserva on wine labels? This Bangkok sommelier guide decodes every major wine designation — with THB pricing context.
 ---
@@ -36,7 +36,8 @@ France invented the modern concept of wine classification, and its system is the
 
 **Grand Cru** is the apex in Burgundy: 33 red vineyards and 13 white, covering a tiny fraction of the Côte d'Or's total area. Grand Cru Burgundy at WNLQ9 starts around ฿4,500 and climbs steeply from there. In Bordeaux, Grand Cru has been diluted — Saint-Émilion alone has over 80 *Grands Crus Classés*, ranging from serious to mediocre.
 
-![Burgundy vineyard rows at harvest time, limestone slopes in autumn](https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Burgundy vineyard rows at harvest time, limestone slopes in autumn](https://images.pexels.com/photos/27138244/pexels-photo-27138244.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Tim & Martin Klement via Pexels*
 
 <!-- product: WRW3012AC -->
 **Gevrey-Chambertin Premier Cru, Louis Jadot** — ฿3,200
@@ -80,7 +81,8 @@ Spain's designation system is two-pronged: geographic tier plus aging category. 
 - **Reserva** — minimum 3 years aging, at least 12 months in oak. More structure, longer life.
 - **Gran Reserva** — minimum 5 years aging, at least 18 months in oak. Only produced in exceptional vintages by most bodegas. At WNLQ9, Gran Reserva Rioja typically runs ฿1,800–฿4,500 depending on producer prestige.
 
-![Spanish Rioja Gran Reserva on a restaurant table in warm candlelight](https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Spanish Rioja Gran Reserva on a restaurant table in warm candlelight](https://images.pexels.com/photos/20874532/pexels-photo-20874532.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Brett Jordan via Pexels*
 
 <!-- product: WRW2541AD -->
 **Rioja Gran Reserva DOCa, Bodegas Muga** — ฿2,100
@@ -126,7 +128,8 @@ Import duties, excise tax, and VAT stack up aggressively in Thailand — a bottl
 
 This creates a practical rule of thumb: **mid-tier designations punch above their weight in Bangkok**. A Rioja Reserva or a Chianti Classico DOCG from a reliable producer offers better value per baht than a Grand Cru or Barolo Riserva, where you're paying Bangkok-inflated prices for peak-classification cachet. If budget is a consideration, target the second tier in any country's system.
 
-![Close-up of wine label showing DOCG neck seal on an Italian bottle](https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Close-up of wine label showing DOCG neck seal on an Italian bottle](https://images.pexels.com/photos/32009714/pexels-photo-32009714.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Brett Jordan via Pexels*
 
 <!-- product: WRW1887CD -->
 **Amarone della Valpolicella DOCG, Zenato** — ฿3,400

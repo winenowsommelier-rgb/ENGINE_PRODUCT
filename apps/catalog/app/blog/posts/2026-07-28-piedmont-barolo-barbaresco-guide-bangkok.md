@@ -3,9 +3,9 @@ TITLE: Piedmont: Barolo, Barbaresco and the King of Italian Reds
 SLUG: piedmont-barolo-barbaresco-guide-bangkok
 DATE: 2026-07-28
 TAGS: deep-dive,piedmont,italy,barolo,nebbiolo
-COVER-IMAGE: https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Misty autumn vineyards in the Langhe hills of Piedmont, home of Barolo and Barbaresco
-COVER-CREDIT-URL: https://unsplash.com/photos/PLACEHOLDER
+COVER-IMAGE: https://images.pexels.com/photos/33879655/pexels-photo-33879655.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Brett Jordan via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/elegant-barolo-wine-with-glass-on-wooden-table-33879655/
 META-TITLE: Barolo Wine Guide: Piedmont Reds in Bangkok | WNLQ9
 META-DESC: Your complete Barolo wine guide — what Barolo is, how it differs from Barbaresco, and the best Piedmont bottles to buy in Bangkok. Prices in THB.
 ---
@@ -18,7 +18,8 @@ This is your complete Barolo wine guide: what Barolo is, how Barbaresco differs,
 
 ## Nebbiolo: The Grape That Breaks the Rules
 
-![Close-up of dark Nebbiolo grape clusters hanging on the vine in the Langhe hills of Piedmont, Italy, with misty hills in the background.](https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Close-up of dark Nebbiolo grape clusters hanging on the vine in the Langhe hills of Piedmont, Italy, with misty hills in the background.](https://images.pexels.com/photos/19868742/pexels-photo-19868742.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Mauro Sassano via Pexels*
 *The Nebbiolo grape: small, thick-skinned, deceptively pale in the glass — and ferociously tannic on the palate.*
 
 Most wine drinkers learn early that deep color equals big tannins. Nebbiolo laughs at that rule. Despite producing some of the most aggressively tannic red wines in the world, Nebbiolo is relatively pale — a translucent garnet that turns brick-orange at the rim with age. Under ultraviolet light you can sometimes read a newspaper through a glass of Barolo.
@@ -39,7 +40,8 @@ The phrase — *il vino dei re, il re dei vini* — was coined in the courts of 
 
 The Savoy court drank it. Cavour served it at diplomatic dinners. And a wine that had been a rustic local curiosity became Italy's most prestigious red — a status it has held, with occasional challenges from Tuscany's Super Tuscans and Amarone from the Veneto, ever since.
 
-![Historic stone cantina (winery cellar) in the village of Barolo, Piedmont, with large traditional Slavonian oak botti lined up in the barrel room.](https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Historic stone cantina (winery cellar) in the village of Barolo, Piedmont, with large traditional Slavonian oak botti lined up in the barrel room.](https://images.pexels.com/photos/2946621/pexels-photo-2946621.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Robert Schrader via Pexels*
 *Traditional Slavonian oak botti — some holding 5,000 to 15,000 litres — are still used by traditionalist Barolo producers. The wine aged in these large barrels develops slowly and can last 30+ years.*
 
 ---
@@ -92,7 +94,8 @@ According to [Decanter's comprehensive Barolo guide](https://www.decanter.com/wi
 
 ## Barbaresco DOCG: Barolo's Elegant Counterpart
 
-![Autumn-coloured vineyard rows in the Barbaresco zone of Piedmont, with the medieval tower of Barbaresco village visible on the hilltop.](https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Autumn-coloured vineyard rows in the Barbaresco zone of Piedmont, with the medieval tower of Barbaresco village visible on the hilltop.](https://images.pexels.com/photos/33444169/pexels-photo-33444169.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Manzoni Studios via Pexels*
 *The village of Barbaresco, with its characteristic medieval tower, sits at the heart of one of Italy's most underrated great wine appellations.*
 
 Barbaresco DOCG covers just three communes northeast of Alba: Barbaresco, Neive, and Treiso. The zone is smaller than Barolo — roughly 700 hectares under vine versus Barolo's 2,000+ — and the wines are often called Barolo's "feminine" counterpart, a description [Jancis Robinson](https://www.jancisrobinson.com/articles/barbaresco-overview) herself notes is both useful and slightly patronising.

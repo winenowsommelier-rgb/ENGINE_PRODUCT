@@ -3,9 +3,9 @@ TITLE: Speyside vs. Islay: The Great Scotch Whisky Debate
 SLUG: speyside-vs-islay-scotch-whisky-debate
 DATE: 2026-07-29
 TAGS: compare,scotch,whisky,speyside,islay
-COVER-IMAGE: https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Two Scotch whiskies side by side — the amber warmth of Speyside against the smoky depth of Islay (Unsplash License)
-COVER-CREDIT-URL: https://unsplash.com/photos/PLACEHOLDER
+COVER-IMAGE: https://images.pexels.com/photos/34635797/pexels-photo-34635797.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Geert Rozendom via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/aerial-view-of-whiskey-barrels-in-dufftown-scotland-34635797/
 META-TITLE: Speyside vs Islay Whisky: Which Should You Buy?
 META-DESC: Speyside vs Islay whisky — the definitive guide for Bangkok drinkers. Peaty vs smooth, PPM explained, which bottles to buy and when. Prices in THB.
 ---
@@ -28,7 +28,8 @@ The character is defined by what Speyside *lacks* as much as what it has. Almost
 
 The result: **dried fruit, honey, vanilla, light floral notes, gentle spice.** At its best, Speyside feels effortless — the kind of whisky you can pour without ceremony and find immediately rewarding.
 
-![Golden fields of malted barley in northeast Scotland with distillery buildings in the distance.](https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Golden fields of malted barley in northeast Scotland with distillery buildings in the distance.](https://images.pexels.com/photos/17474381/pexels-photo-17474381.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Brett Jordan via Pexels*
 *The agricultural heartland of Speyside — rich barley, soft water, and clustered distilleries make it Scotland's most productive whisky region.*
 
 ### Islay: Smoke, Sea, and Peat
@@ -88,7 +89,8 @@ Think of PPM the way you'd think of Scoville units for chilli heat. It tells you
 
 Speyside is where the majority of the world's Scotch drinkers begin — and where many stay. The style is forgiving, consistent, and genuinely delicious without requiring much whisky knowledge to appreciate.
 
-![An amber pour of Speyside single malt in a crystal nosing glass, warm light catching the spirit's golden colour.](https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![An amber pour of Speyside single malt in a crystal nosing glass, warm light catching the spirit's golden colour.](https://images.pexels.com/photos/29349921/pexels-photo-29349921.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Andrew Patrick Photo via Pexels*
 *Speyside at its best: clean amber colour, fruit-forward nose, and a finish that needs no explanation.*
 
 In Bangkok's heat, Speyside performs particularly well. A Glenfiddich 12 with a single large ice cube is one of the most reliably pleasant pours you can make at home. The fruity character doesn't fight the heat; the light body doesn't feel heavy in 35°C evenings.
@@ -133,7 +135,8 @@ The honest answer: they win at different moments.
 
 For the Bangkok heat specifically: Speyside is more versatile chilled or over ice. Islay at room temperature is where it performs best — adding ice dilutes and suppresses the smoke in ways that can flatten the experience.
 
-![A single dram of smoky Islay whisky alongside a map of Scotland's whisky regions, showing the contrast between the northeast valleys and the remote Atlantic island.](https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![A single dram of smoky Islay whisky alongside a map of Scotland's whisky regions, showing the contrast between the northeast valleys and the remote Atlantic island.](https://images.pexels.com/photos/20196256/pexels-photo-20196256.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Carsten Ruthemann via Pexels*
 *Geography shapes flavour: Speyside's sheltered river valley versus Islay's Atlantic exposure explain everything about why these two regions taste nothing alike.*
 
 ---

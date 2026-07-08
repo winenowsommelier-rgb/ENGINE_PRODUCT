@@ -3,9 +3,9 @@ TITLE: Chardonnay: Oaked vs. Unoaked — Which Style Actually Suits You?
 SLUG: chardonnay-oaked-vs-unoaked-style-guide
 DATE: 2026-07-23
 TAGS: compare,chardonnay,white-wine,france,australia
-COVER-IMAGE: https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Two expressions of the world's most debated white grape, side by side
-COVER-CREDIT-URL: https://unsplash.com/photos/PLACEHOLDER
+COVER-IMAGE: https://images.pexels.com/photos/8207599/pexels-photo-8207599.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Brett Jordan via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/a-green-glass-bottle-on-the-table-8207599/
 META-TITLE: Oaked vs Unoaked Chardonnay: Which Style Is Right for You?
 META-DESC: Buttery Burgundy or crisp Chablis? Our Bangkok sommelier breaks down oaked vs unoaked Chardonnay with bottles to try under ฿2,000.
 ---
@@ -36,7 +36,8 @@ Unoaked Chardonnay skips the barrel entirely — fermented and aged in stainless
 
 ## The Old World Benchmark: Burgundy vs. Chablis
 
-![Rows of old Chardonnay vines on a limestone slope in Burgundy](https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![Rows of old Chardonnay vines on a limestone slope in Burgundy](https://images.pexels.com/photos/14816341/pexels-photo-14816341.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Gu Bra via Pexels*
 
 France's Burgundy region gives us both extremes in one appellation.
 
@@ -64,7 +65,8 @@ California's warmer climate and culture of winemaking intervention produced the 
 
 The backlash was inevitable and healthy. Today California's best producers — and virtually all of Australia's top Chardonnay estates in Margaret River and Yarra Valley — use oak selectively. Partial new oak, partial older barrels, partial stainless. The wines are richer than Chablis but more precise than old-school California.
 
-![A chilled glass of pale Australian Chardonnay on a sun-drenched outdoor table](https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![A chilled glass of pale Australian Chardonnay on a sun-drenched outdoor table](https://images.pexels.com/photos/2584451/pexels-photo-2584451.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Krisztina Papp via Pexels*
 
 For Bangkok drinkers, the Australian style hits a practical sweet spot: fruit-forward enough to drink without food, structured enough to handle grilled fish or a chicken green curry, and priced well (฿800–฿1,800 for quality bottles).
 
@@ -107,7 +109,8 @@ However, air-conditioned restaurants change the equation entirely. A richer oake
 
 The practical guide: **unoaked for aperitif and Thai food; lightly oaked for Western dishes and seafood with sauces.**
 
-![A sommelier pouring two styles of Chardonnay for comparison at a Bangkok restaurant](https://images.unsplash.com/photo-PLACEHOLDER?fm=jpg&q=80&w=1000&auto=format&fit=crop)
+![A sommelier pouring two styles of Chardonnay for comparison at a Bangkok restaurant](https://images.pexels.com/photos/5732799/pexels-photo-5732799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+*Photo: Laker via Pexels*
 
 <!-- product: WWW0987AC -->
 **Mâcon-Villages Blanc, Louis Jadot** — ฿1,150
