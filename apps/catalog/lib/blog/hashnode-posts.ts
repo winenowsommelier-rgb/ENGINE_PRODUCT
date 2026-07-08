@@ -6,6 +6,7 @@ export type BlogPost = {
   title: string
   slug: string
   brief: string
+  featured?: boolean
   content: { html: string; markdown: string }
   coverImage: { url: string } | null
   tags: { name: string; slug: string }[]
