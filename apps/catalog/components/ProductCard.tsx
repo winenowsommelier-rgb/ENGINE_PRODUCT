@@ -61,8 +61,8 @@ export function ProductCard({ product, contactLinks }: ProductCardProps) {
         <Link
           href={`/product/${product.sku}`}
           className={cn(
-            'block rounded-lg border border-transparent transition-all',
-            'hover:-translate-y-0.5 hover:border-border hover:shadow-sm',
+            'block rounded-xl border border-stone-100 bg-white transition-all',
+            'hover:-translate-y-0.5 hover:border-stone-200 hover:shadow-md',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
           )}
         >
@@ -128,7 +128,7 @@ export function ProductCard({ product, contactLinks }: ProductCardProps) {
           </div>
 
           {/* Text block */}
-          <div className="px-1 pb-1 pt-3">
+          <div className="px-3 pb-3 pt-3">
             <h3 className="line-clamp-2 text-lg font-medium leading-snug text-foreground">
               {product.name}
             </h3>

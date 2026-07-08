@@ -70,7 +70,7 @@ export function StorefrontImage({
           priority={priority}
           loading={priority ? undefined : 'lazy'}
           onError={() => setErrored(true)}
-          className="object-contain"
+          className="object-contain mix-blend-multiply"
         />
       )}
     </div>
