@@ -1,7 +1,7 @@
 ---
 TITLE: Bordeaux vs. Burgundy: Which French Red Should You Buy?
 SLUG: bordeaux-vs-burgundy-which-french-red-should-you-buy
-DATE: 2026-07-08
+DATE: 2026-06-20
 TAGS: compare,red-wine,france,bordeaux,burgundy
 COVER-IMAGE: https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?fm=jpg&q=80&w=1200&auto=format&fit=crop
 COVER-CREDIT: Rolling French vineyard rows at golden hour — the landscape that separates Bordeaux and Burgundy is as different as the wines themselves.

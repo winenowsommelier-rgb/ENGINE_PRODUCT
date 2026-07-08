@@ -1,7 +1,7 @@
 ---
 TITLE: Best Whisky Pairings for Japanese Food in Bangkok
 SLUG: best-whisky-pairings-japanese-food-bangkok
-DATE: 2026-07-08
+DATE: 2026-07-06
 TAGS: pairing,whisky,japanese-food,sushi,bangkok
 COVER-IMAGE: https://images.unsplash.com/photo-1474722883778-792e7990302f?fm=jpg&q=80&w=1200&auto=format&fit=crop
 COVER-CREDIT: A whisky poured over ice beside Japanese food — the umami of Japanese cuisine meets the malt of Scotch and the delicacy of Japanese whisky.

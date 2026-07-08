@@ -1,7 +1,7 @@
 ---
 TITLE: The Best Wine to Drink With Seafood in Bangkok
 SLUG: best-wine-with-seafood-bangkok
-DATE: 2026-07-08
+DATE: 2026-06-26
 TAGS: pairing,seafood,white-wine,sparkling,bangkok
 COVER-IMAGE: https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?fm=jpg&q=80&w=1200&auto=format&fit=crop
 COVER-CREDIT: A spread of fresh seafood — Bangkok's dining scene demands wines with enough acidity to cut through butter, spice, and brine.

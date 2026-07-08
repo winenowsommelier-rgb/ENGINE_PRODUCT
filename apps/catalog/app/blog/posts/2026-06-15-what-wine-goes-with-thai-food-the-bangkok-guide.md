@@ -1,7 +1,7 @@
 ---
 TITLE: What Wine Goes with Thai Food? The Bangkok Guide
 SLUG: what-wine-goes-with-thai-food-the-bangkok-guide
-DATE: 2026-07-07
+DATE: 2026-06-15
 TAGS: pairing,thai-food,white-wine,rose,sparkling
 COVER-IMAGE: https://images.unsplash.com/photo-1763647818427-326fa8e6699f?fm=jpg&q=80&w=1200&auto=format&fit=crop
 COVER-CREDIT: Photo by Christopher Yiu Chung on Unsplash

@@ -1,7 +1,7 @@
 ---
 TITLE: A Complete Guide to Sake in Thailand: What to Buy and Why
 SLUG: sake-guide-thailand-what-to-buy-and-why
-DATE: 2026-07-08
+DATE: 2026-06-23
 TAGS: guide,sake,japan,japanese-food,bangkok
 COVER-IMAGE: https://images.unsplash.com/photo-1582450871972-ab5ca641643d?fm=jpg&q=80&w=1200&auto=format&fit=crop
 COVER-CREDIT: A traditional tokkuri sake flask and ochoko cup — sake's ritual of sharing is inseparable from its flavour.

@@ -1,7 +1,7 @@
 ---
 TITLE: Burgundy Explained: Côte de Nuits vs Côte de Beaune
 SLUG: burgundy-explained-cote-de-nuits-vs-cote-de-beaune
-DATE: 2026-07-08
+DATE: 2026-07-02
 TAGS: deep-dive,burgundy,france,pinot-noir,chardonnay
 COVER-IMAGE: https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?fm=jpg&q=80&w=1200&auto=format&fit=crop
 COVER-CREDIT: Red wine in a Burgundy glass catching warm light — the Côte d'Or's Pinot Noir is unlike any other wine in the world.
