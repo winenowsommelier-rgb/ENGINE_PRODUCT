@@ -3,9 +3,9 @@ TITLE: Best Champagne & Sparkling Wine Under ฿3,000 in Bangkok
 SLUG: best-champagne-sparkling-wine-under-3000-baht-bangkok
 DATE: 2026-06-29
 TAGS: curated,sparkling,champagne,prosecco,celebration
-COVER-IMAGE: https://images.unsplash.com/photo-1559496417-e7f25cb247f3?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Champagne glasses clinking — the moment sparkling wine was invented for.
-COVER-CREDIT-URL: https://unsplash.com/photos/1559496417-e7f25cb247f3
+COVER-IMAGE: https://images.pexels.com/photos/30169604/pexels-photo-30169604.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Matej Bizjak via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/elegant-champagne-bottles-with-flutes-for-celebration-30169604/
 META-TITLE: Best Champagne Under ฿3,000 in Bangkok — Sparkling Picks 2026
 META-DESC: The best Champagne and sparkling wine under ฿3,000 available in Bangkok right now. Prosecco, Cava, Australian sparkling, and real Champagne ranked by occasion.
 ---

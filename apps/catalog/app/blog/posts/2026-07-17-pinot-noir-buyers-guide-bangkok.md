@@ -3,9 +3,9 @@ TITLE: Pinot Noir — A Bangkok Buyer's Guide
 SLUG: pinot-noir-buyers-guide-bangkok
 DATE: 2026-07-17
 TAGS: guide,pinot-noir,red-wine,burgundy,new-zealand
-COVER-IMAGE: https://images.unsplash.com/photo-1546622891-02c72c1537b6?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Pinot Noir in a glass — the lightest of the great reds, and the hardest to get right.
-COVER-CREDIT-URL: https://unsplash.com/photos/1546622891-02c72c1537b6
+COVER-IMAGE: https://images.pexels.com/photos/4515528/pexels-photo-4515528.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: lebəˈ nēz via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/person-holding-bottle-pouring-wine-on-clear-wine-glass-4515528/
 META-TITLE: Pinot Noir Buyer's Guide for Bangkok 2026
 META-DESC: Burgundy vs New Zealand vs Chile Pinot Noir — everything you need to buy with confidence in Bangkok. Bottles from ฿569 to ฿1,289 with full tasting notes.
 ---

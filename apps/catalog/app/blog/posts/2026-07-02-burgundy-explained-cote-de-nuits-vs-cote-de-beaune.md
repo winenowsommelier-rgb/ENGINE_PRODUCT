@@ -3,9 +3,9 @@ TITLE: Burgundy Explained: Côte de Nuits vs Côte de Beaune
 SLUG: burgundy-explained-cote-de-nuits-vs-cote-de-beaune
 DATE: 2026-07-02
 TAGS: deep-dive,burgundy,france,pinot-noir,chardonnay
-COVER-IMAGE: https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Vineyard rows at harvest — the Côte d'Or, each row a different terroir.
-COVER-CREDIT-URL: https://unsplash.com/photos/1506377247377-2a5b3b417ebb
+COVER-IMAGE: https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Kym Wilson via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/french-vineyard-with-scenic-village-view-34779799/
 META-TITLE: Burgundy Explained: Côte de Nuits vs Côte de Beaune 2026
 META-DESC: Burgundy's Côte de Nuits vs Côte de Beaune — what makes each sub-region different, what to buy in Bangkok, and why Gevrey-Chambertin tastes nothing like Chambolle-Musigny.
 ---

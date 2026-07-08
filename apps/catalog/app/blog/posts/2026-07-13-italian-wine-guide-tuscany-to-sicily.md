@@ -3,9 +3,9 @@ TITLE: Italian Wine Guide — From Tuscany to Sicily
 SLUG: italian-wine-guide-tuscany-to-sicily
 DATE: 2026-07-13
 TAGS: deep-dive,italy,red-wine,white-wine,tuscany
-COVER-IMAGE: https://images.unsplash.com/photo-1558618666-fcd25c85cd64?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Italian food and wine — the combination that 2,000 years of tradition produced.
-COVER-CREDIT-URL: https://unsplash.com/photos/1558618666-fcd25c85cd64
+COVER-IMAGE: https://images.pexels.com/photos/35681768/pexels-photo-35681768.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Wolfgang Weiser via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/idyllic-tuscan-landscape-in-summer-35681768/
 META-TITLE: Italian Wine Guide: Tuscany to Sicily (2026)
 META-DESC: Chianti, Valpolicella, Super Tuscans, DOC vs DOCG explained — your complete guide to Italian wine available in Bangkok right now.
 ---

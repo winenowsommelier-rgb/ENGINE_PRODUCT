@@ -3,9 +3,9 @@ TITLE: Best Whisky Pairings for Japanese Food in Bangkok
 SLUG: best-whisky-pairings-japanese-food-bangkok
 DATE: 2026-07-06
 TAGS: pairing,whisky,japanese-food,sushi,bangkok
-COVER-IMAGE: https://images.unsplash.com/photo-1541532713592-79a0317b6b77?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Grilled fish on a plate — Japanese cuisine at its most whisky-friendly.
-COVER-CREDIT-URL: https://unsplash.com/photos/1541532713592-79a0317b6b77
+COVER-IMAGE: https://images.pexels.com/photos/372959/pexels-photo-372959.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Pixabay via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/three-assorted-liquor-bottles-on-table-372959/
 META-TITLE: Best Whisky Pairings for Japanese Food in Bangkok 2026
 META-DESC: Which whisky pairs with sushi, yakitori, ramen, and Japanese food in Bangkok. Japanese whisky vs Scotch — what works and why. Prices in THB.
 ---

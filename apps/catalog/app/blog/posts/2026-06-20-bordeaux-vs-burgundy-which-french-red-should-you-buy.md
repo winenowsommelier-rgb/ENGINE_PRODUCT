@@ -3,9 +3,9 @@ TITLE: Bordeaux vs. Burgundy: Which French Red Should You Buy?
 SLUG: bordeaux-vs-burgundy-which-french-red-should-you-buy
 DATE: 2026-06-20
 TAGS: compare,red-wine,france,bordeaux,burgundy
-COVER-IMAGE: https://images.unsplash.com/photo-1506976785307-8732e854ad03?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Red wine being decanted — the classic French red, ready to be poured.
-COVER-CREDIT-URL: https://unsplash.com/photos/1506976785307-8732e854ad03
+COVER-IMAGE: https://images.pexels.com/photos/8769706/pexels-photo-8769706.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Gustavo Fring via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/selective-focus-photo-of-wine-glasses-8769706/
 META-TITLE: Bordeaux vs Burgundy: Which French Red to Buy in Bangkok?
 META-DESC: Bordeaux vs Burgundy — the classic French wine debate settled for Bangkok buyers. Prices in THB, what to actually buy, and when each style wins.
 ---

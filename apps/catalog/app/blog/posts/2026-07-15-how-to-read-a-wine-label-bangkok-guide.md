@@ -3,9 +3,9 @@ TITLE: How to Read a Wine Label — A Bangkok Shopper's Guide
 SLUG: how-to-read-a-wine-label-bangkok-guide
 DATE: 2026-07-15
 TAGS: guide,beginner,wine-label,education,bangkok
-COVER-IMAGE: https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: A wine label close up — the small print that tells you everything, once you know how to read it.
-COVER-CREDIT-URL: https://unsplash.com/photos/1578911373434-0cb395d2cbfb
+COVER-IMAGE: https://images.pexels.com/photos/8982957/pexels-photo-8982957.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Brett Jordan via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/grayscale-photo-of-lettering-on-a-wine-bottle-8982957/
 META-TITLE: How to Read a Wine Label — Bangkok Shopper's Guide
 META-DESC: Old World vs New World labels, what Reserve really means, AOC and DOCG explained. Your complete guide to reading wine labels when buying in Bangkok.
 ---

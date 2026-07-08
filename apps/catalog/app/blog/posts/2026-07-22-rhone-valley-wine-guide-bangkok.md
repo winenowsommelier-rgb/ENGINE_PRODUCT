@@ -3,9 +3,9 @@ TITLE: Rhône Valley Wine — France's Underrated Gem
 SLUG: rhone-valley-wine-guide-bangkok
 DATE: 2026-07-22
 TAGS: deep-dive,france,rhone-valley,syrah,grenache
-COVER-IMAGE: https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: The French countryside at golden hour — the Rhône Valley, France's most underrated wine region.
-COVER-CREDIT-URL: https://unsplash.com/photos/1594736797933-d0501ba2fe65
+COVER-IMAGE: https://images.pexels.com/photos/12740408/pexels-photo-12740408.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Mehmet Ali Turan via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/fields-in-autumn-valley-12740408/
 META-TITLE: Rhône Valley Wine Guide — Bangkok Buyer's Deep Dive
 META-DESC: Northern Syrah vs Southern GSM blends. Châteauneuf-du-Pape explained. Why Rhône Valley wine is France's best kept secret for Bangkok shoppers.
 ---

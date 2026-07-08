@@ -3,9 +3,9 @@ TITLE: How to Store Wine in Bangkok Heat: The Complete Guide
 SLUG: how-to-store-wine-in-bangkok-heat-guide
 DATE: 2026-07-04
 TAGS: guide,storage,bangkok,wine-care,heat
-COVER-IMAGE: https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Wine bottles in a dark cellar — the ideal storage: cool, dark, still.
-COVER-CREDIT-URL: https://unsplash.com/photos/1553361371-9b22f78e8b1d
+COVER-IMAGE: https://images.pexels.com/photos/19772196/pexels-photo-19772196.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Ramon Perucho via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/wine-kegs-in-winery-basement-19772196/
 META-TITLE: How to Store Wine in Bangkok Heat — Complete Guide 2026
 META-DESC: Wine storage in Bangkok's heat and humidity. What temperature to keep wine, the risks of cooked bottles, and your best options from a wine fridge to a dedicated cellar.
 ---

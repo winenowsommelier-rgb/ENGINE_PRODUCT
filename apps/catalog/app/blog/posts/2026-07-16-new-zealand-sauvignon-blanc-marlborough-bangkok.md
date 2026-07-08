@@ -3,9 +3,9 @@ TITLE: New Zealand Sauvignon Blanc — Why Bangkok Can't Stop Drinking It
 SLUG: new-zealand-sauvignon-blanc-marlborough-bangkok
 DATE: 2026-07-16
 TAGS: deep-dive,sauvignon-blanc,new-zealand,white-wine,marlborough
-COVER-IMAGE: https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Green hills and open sky — the landscape that gives Marlborough Sauvignon Blanc its character.
-COVER-CREDIT-URL: https://unsplash.com/photos/1476224203421-9ac39bcb3327
+COVER-IMAGE: https://images.pexels.com/photos/4323631/pexels-photo-4323631.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Phasha 360 via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/green-plants-on-the-field-4323631/
 META-TITLE: New Zealand Sauvignon Blanc in Bangkok — The Complete Guide
 META-DESC: Why Marlborough Sauvignon Blanc dominates Bangkok wine lists. Tropical fruit, cut grass, Thai food pairings, and the best bottles to buy from ฿599.
 ---

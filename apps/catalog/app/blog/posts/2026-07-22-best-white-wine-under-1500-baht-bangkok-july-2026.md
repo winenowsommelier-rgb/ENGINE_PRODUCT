@@ -3,9 +3,9 @@ TITLE: Best White Wine Under ฿1,500 in Bangkok — July 2026
 SLUG: best-white-wine-under-1500-baht-bangkok-july-2026
 DATE: 2026-07-22
 TAGS: curated,white-wine,value,sauvignon-blanc,chardonnay
-COVER-IMAGE: https://images.unsplash.com/photo-1494891848038-7bd202a2afeb?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: A chilled glass of white wine — the everyday white, the bottle that goes with everything.
-COVER-CREDIT-URL: https://unsplash.com/photos/1494891848038-7bd202a2afeb
+COVER-IMAGE: https://images.pexels.com/photos/27178136/pexels-photo-27178136.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Helena Lopes via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/pouring-white-wine-in-outdoor-garden-setting-27178136/
 META-TITLE: Best White Wine Under ฿1,500 Bangkok — July 2026
 META-DESC: Ten white wines under ฿1,500 available in Bangkok right now. Sauvignon Blanc, Chardonnay, Pinot Grigio, Riesling, and Chablis — ranked and reviewed.
 ---

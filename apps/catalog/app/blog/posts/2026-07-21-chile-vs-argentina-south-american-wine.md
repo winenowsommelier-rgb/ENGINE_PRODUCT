@@ -3,9 +3,9 @@ TITLE: Chile vs. Argentina — South American Wine Face-Off
 SLUG: chile-vs-argentina-south-american-wine
 DATE: 2026-07-21
 TAGS: compare,chile,argentina,malbec,carmenere,red-wine
-COVER-IMAGE: https://images.unsplash.com/photo-1516594798947-e65505dbb29d?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: South American landscape — two wine nations facing each other across the Andes.
-COVER-CREDIT-URL: https://unsplash.com/photos/1516594798947-e65505dbb29d
+COVER-IMAGE: https://images.pexels.com/photos/2954929/pexels-photo-2954929.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Elle Hughes via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/glass-filled-with-wine-2954929/
 META-TITLE: Chile vs Argentina Wine — South American Face-Off Bangkok
 META-DESC: Malbec vs Carmenère. Mendoza vs Colchagua. The two great South American wine countries compared — and which to buy in Bangkok right now.
 ---

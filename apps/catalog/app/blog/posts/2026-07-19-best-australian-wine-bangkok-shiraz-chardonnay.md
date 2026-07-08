@@ -3,9 +3,9 @@ TITLE: Best Australian Wine in Bangkok — Shiraz, Chardonnay & Beyond
 SLUG: best-australian-wine-bangkok-shiraz-chardonnay
 DATE: 2026-07-19
 TAGS: curated,australia,shiraz,chardonnay,red-wine,white-wine
-COVER-IMAGE: https://images.unsplash.com/photo-1508693926297-1d61ee3df82a?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: Australian wine country — big skies, bold flavours, the continent that built its reputation on value.
-COVER-CREDIT-URL: https://unsplash.com/photos/1508693926297-1d61ee3df82a
+COVER-IMAGE: https://images.pexels.com/photos/2339180/pexels-photo-2339180.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Tim Mossholder via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/panorama-of-garden-pathway-2339180/
 META-TITLE: Best Australian Wine in Bangkok 2026 — Shiraz & Chardonnay
 META-DESC: Australia over-delivers on wine value in Bangkok. Wolf Blass, Jacob's Creek, 19 Crimes — the best bottles from ฿319 to ฿509 with tasting notes.
 ---

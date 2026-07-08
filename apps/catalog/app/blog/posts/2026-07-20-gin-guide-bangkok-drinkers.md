@@ -3,9 +3,9 @@ TITLE: What Is Gin? A Bangkok Drinker's Guide
 SLUG: gin-guide-bangkok-drinkers
 DATE: 2026-07-20
 TAGS: guide,gin,spirits,cocktails,bangkok
-COVER-IMAGE: https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: A gin bottle with botanicals — juniper, citrus, coriander, the formula that built a global obsession.
-COVER-CREDIT-URL: https://unsplash.com/photos/1514362545857-3bc16c4c7d1b
+COVER-IMAGE: https://images.pexels.com/photos/1170598/pexels-photo-1170598.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Peter Fazekas via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/round-clear-glass-with-straw-closeup-photography-1170598/
 META-TITLE: What Is Gin? A Bangkok Drinker's Guide 2026
 META-DESC: London Dry vs Japanese craft gin vs Thai botanical gin — what defines gin, how to drink it, Bangkok's best bottles from ฿499 to ฿949 with tasting notes.
 ---

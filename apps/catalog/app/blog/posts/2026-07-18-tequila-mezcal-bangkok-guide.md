@@ -3,9 +3,9 @@ TITLE: Tequila & Mezcal in Bangkok — What to Buy and How to Drink It
 SLUG: tequila-mezcal-bangkok-guide
 DATE: 2026-07-18
 TAGS: guide,tequila,mezcal,spirits,mexico,bangkok
-COVER-IMAGE: https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?fm=jpg&q=80&w=1200&auto=format&fit=crop
-COVER-CREDIT: A tequila pour — agave spirit at its most elemental, Mexico in a glass.
-COVER-CREDIT-URL: https://unsplash.com/photos/1588196749597-9ff075ee6b5b
+COVER-IMAGE: https://images.pexels.com/photos/34566504/pexels-photo-34566504.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: Israyosoy S. via Pexels
+COVER-CREDIT-URL: https://www.pexels.com/photo/mexican-tequila-shot-with-lemon-and-salt-34566504/
 META-TITLE: Tequila & Mezcal Bangkok Guide — What to Buy in 2026
 META-DESC: Blanco vs Reposado vs Añejo, tequila vs mezcal, how to drink it properly — your complete Bangkok guide to agave spirits with prices in THB.
 ---
