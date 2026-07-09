@@ -20,12 +20,12 @@ export function generateMetadata({ params }: { params: { group: string } }): Met
   const groupName = SLUG_TO_GROUP[params.group];
   if (!groupName) return { title: 'Not found — WNLQ9 Catalog' };
   return {
-    title: `WNLQ9 Catalog — ${groupName} Price List (B2C)`,
+    title: `WNLQ9 Catalog — ${groupName} Price List`,
     robots: { index: false, follow: false },
   };
 }
 
-export default function B2CCategoryCatalogPage({ params }: { params: { group: string } }) {
+export default function RetailCategoryCatalogPage({ params }: { params: { group: string } }) {
   const groupName = SLUG_TO_GROUP[params.group];
   if (!groupName) notFound();
 
@@ -39,7 +39,7 @@ export default function B2CCategoryCatalogPage({ params }: { params: { group: st
       <CatalogToolbar
         title={`WNLQ9 Catalog — ${groupName}`}
         hint={`Retail price list · ${rows.length.toLocaleString()} items in stock`}
-        backHref="/catalogs/b2c"
+        backHref="/catalogs/retail"
       />
       <CatalogDocument
         edition="b2c"

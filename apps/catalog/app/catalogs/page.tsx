@@ -4,7 +4,7 @@ import { ArrowUpRight, Lock } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'WNLQ9 Catalog — Printable Price Lists',
-  description: 'Browse and print the WNLQ9 wine, whisky & spirits price list — retail (B2C) or trade (B2B).',
+  description: 'Browse and print the WNLQ9 wine, whisky & spirits price list — retail or trade (B2B).',
   robots: { index: false, follow: false },
 };
 
@@ -22,7 +22,7 @@ export default function CatalogsMenuPage() {
 
       <div className="mt-12 grid gap-5 sm:grid-cols-2">
         <Link
-          href="/catalogs/b2c"
+          href="/catalogs/retail"
           className="group flex flex-col justify-between rounded-lg border border-border bg-card p-6 transition-colors hover:border-foreground/30"
         >
           <div>
@@ -31,7 +31,7 @@ export default function CatalogsMenuPage() {
               <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </div>
             <p className="mt-2 text-sm text-muted-foreground">
-              Consumer price list (B2C). Print by category, or the full assortment — retail price, active
+              Consumer price list. Print by category, or the full assortment — retail price, active
               promotions, and critic scores for every in-stock item.
             </p>
           </div>

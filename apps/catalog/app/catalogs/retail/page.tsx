@@ -6,12 +6,12 @@ import { publicProductInScope } from '@/lib/catalog-print';
 import { GROUP_SLUG } from '@/lib/seo/jsonld';
 
 export const metadata: Metadata = {
-  title: 'WNLQ9 Catalog — Retail Price List (B2C)',
+  title: 'WNLQ9 Catalog — Retail Price List',
   description: 'Print the WNLQ9 retail price list by category, or the full catalog.',
   robots: { index: false, follow: false },
 };
 
-export default function B2CCatalogPickerPage() {
+export default function RetailCatalogPickerPage() {
   const inScope = getAllProducts().filter(publicProductInScope);
   const totalCount = inScope.length;
 
@@ -28,7 +28,7 @@ export default function B2CCatalogPickerPage() {
 
   return (
     <section className="container max-w-3xl py-16 sm:py-20">
-      <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">Retail · B2C</p>
+      <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">Retail</p>
       <h1 className="mt-3 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
         Print by Category
       </h1>
@@ -41,7 +41,7 @@ export default function B2CCatalogPickerPage() {
         {categories.map((c) => (
           <Link
             key={c.slug}
-            href={`/catalogs/b2c/${c.slug}`}
+            href={`/catalogs/retail/${c.slug}`}
             className="group flex items-center justify-between rounded-lg border border-border bg-card p-5 transition-colors hover:border-foreground/30"
           >
             <div>
@@ -55,7 +55,7 @@ export default function B2CCatalogPickerPage() {
 
       <div className="mt-10 border-t border-border pt-8">
         <Link
-          href="/catalogs/b2c/full"
+          href="/catalogs/retail/full"
           className="inline-flex items-center gap-2 text-sm font-medium text-foreground underline underline-offset-4"
         >
           Full catalog — all categories, {totalCount.toLocaleString()} items
