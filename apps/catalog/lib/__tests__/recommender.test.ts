@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { getRecommendations, precomputeRecommendations, priceBand, scoreCandidateDetailed } from '@/lib/recommender';
+import { getRecommendations, getRecommendationsWithBands, precomputeRecommendations, priceBand, scoreCandidateDetailed } from '@/lib/recommender';
+import type { Band } from '@/lib/types';
 
 const base = { sku:'A', name:'A', region:'Bordeaux', variety:'Cabernet',
   country:'France', classification:'Red Wine', food_matching:'Beef, Lamb', price:1600, is_in_stock:true } as any;
@@ -57,14 +58,18 @@ describe('getRecommendations', () => {
   });
 });
 
+// Helper to extract SKUs from the new map shape ({sku,band}[]).
+const skus = (map: Map<string, { sku: string; band: Band }[]>, sku: string) =>
+  (map.get(sku) ?? []).map(r => r.sku);
+
 describe('precomputeRecommendations', () => {
-  it('returns a Map<sku, sku[]> covering in-stock products', () => {
+  it('returns a Map<sku, {sku,band}[]> covering in-stock products', () => {
     const map = precomputeRecommendations(pool);
     expect(map.get('A')).toBeDefined();
     expect(Array.isArray(map.get('A'))).toBe(true);
-    expect(map.get('A')!.length).toBeLessThanOrEqual(4);
-    expect(map.get('A')).not.toContain('A');
-    expect(map.get('A')).not.toContain('E');
+    expect(map.get('A')!.length).toBeLessThanOrEqual(8);
+    expect(skus(map, 'A')).not.toContain('A');
+    expect(skus(map, 'A')).not.toContain('E');
   });
 
   // Pins the accepted region-bucketing approximation — see precomputeRecommendations
@@ -75,11 +80,11 @@ describe('precomputeRecommendations', () => {
     const P = { ...base, sku:'P', region:'Bordeaux', variety:'Merlot',
       country:'France', classification:'Red Wine', food_matching:'Beef', price:1000 };
 
-    // Five MORE in-stock products in P's OWN region bucket (Bordeaux), so the
-    // in-region pool reaches >= MIN_POOL (MAX_RECS + 1 = 5 incl. P) and the
-    // classification/country/global widening chain is NOT triggered. These share
-    // ONLY region with P (+3) and nothing else, so each scores exactly 3.
-    const inRegion = ['R1','R2','R3','R4','R5'].map((sku) => ({
+    // Nine MORE in-stock products in P's OWN region bucket (Bordeaux), so the
+    // in-region pool reaches >= MIN_POOL (MAX_RECS_EXTENDED + 1 = 9 incl. P) and
+    // the classification/country/global widening chain is NOT triggered. These
+    // share ONLY region with P (+3) and nothing else, so each scores exactly 3.
+    const inRegion = ['R1','R2','R3','R4','R5','R6','R7','R8','R9'].map((sku) => ({
       ...base, sku, region:'Bordeaux', variety:'none', country:'none',
       classification:'none', food_matching:'', price:999999, is_in_stock:true,
     }));
@@ -92,7 +97,7 @@ describe('precomputeRecommendations', () => {
       country:'France', classification:'Red Wine', food_matching:'Beef', price:1000, is_in_stock:true };
 
     const map = precomputeRecommendations([P, ...inRegion, crossRegion]);
-    const recsForP = map.get('P')!;
+    const recsForP = skus(map, 'P');
 
     // The approximation is pinned: X is NOT recommended even though it would win a
     // full scan. P's recs come only from its region bucket (the R* items).
@@ -103,7 +108,7 @@ describe('precomputeRecommendations', () => {
   // Tiny region bucket forces the widening chain. We can't observe the bounded
   // global slice from outside, so instead we assert the INVARIANTS still hold
   // after widening: <= MAX_RECS results, all valid in-stock non-self skus.
-  it('a product with a tiny region bucket still returns <= 4 valid in-stock non-self skus', () => {
+  it('a product with a tiny region bucket still returns <= 8 valid in-stock non-self skus', () => {
     // Subject T is alone in its region "Solo" — region bucket has only T itself,
     // so widening (classification -> country -> global fallback) must kick in.
     const T = { ...base, sku:'T', region:'Solo', variety:'Syrah',
@@ -119,11 +124,11 @@ describe('precomputeRecommendations', () => {
 
     const allProducts = [T, ...others, oos];
     const map = precomputeRecommendations(allProducts);
-    const recsForT = map.get('T')!;
+    const recsForT = skus(map, 'T');
     const inStockSkus = new Set(others.map((o) => o.sku)); // valid recommendable skus
 
     expect(recsForT.length).toBeGreaterThan(0); // widening produced neighbours
-    expect(recsForT.length).toBeLessThanOrEqual(4); // bounded by MAX_RECS
+    expect(recsForT.length).toBeLessThanOrEqual(8); // bounded by MAX_RECS_EXTENDED
     expect(new Set(recsForT).size).toBe(recsForT.length); // no dupes
     expect(recsForT).not.toContain('T'); // never self
     expect(recsForT).not.toContain('OOS'); // never out-of-stock
@@ -148,13 +153,13 @@ describe('precomputeRecommendations', () => {
     const inStockSkus = new Set(neighbours.map((n) => n.sku));
 
     const map = precomputeRecommendations([P, ...neighbours]);
-    const recsForP = map.get('POOS');
+    const recsForP = skus(map, 'POOS');
 
-    expect(recsForP).toBeDefined();          // OOS product IS a key now
-    expect(recsForP!.length).toBeGreaterThan(0); // and it has recommendations
+    expect(map.get('POOS')).toBeDefined();    // OOS product IS a key now
+    expect(recsForP.length).toBeGreaterThan(0); // and it has recommendations
     expect(recsForP).not.toContain('POOS');  // never recommends itself
     // every returned sku is an IN-STOCK candidate
-    expect(recsForP!.every((sku) => inStockSkus.has(sku))).toBe(true);
+    expect(recsForP.every((sku) => inStockSkus.has(sku))).toBe(true);
   });
 
   // is_in_stock undefined => treated as unavailable as a CANDIDATE (never
@@ -168,12 +173,60 @@ describe('precomputeRecommendations', () => {
     // (a) GHOST IS in the map now (OOS/unavailable products are valid subjects),
     //     and its recs are in-stock candidates that exclude itself.
     expect(map.has('GHOST')).toBe(true);
-    expect(map.get('GHOST')).not.toContain('GHOST');
+    expect(skus(map, 'GHOST')).not.toContain('GHOST');
 
     // (b) GHOST is never recommended to anyone else (excluded as a candidate).
     for (const recs of map.values()) {
-      expect(recs).not.toContain('GHOST');
+      expect(recs.map(r => r.sku)).not.toContain('GHOST');
     }
+  });
+
+  // GROUP-AWARE WIDENING (Step 4.5): a subject in a SMALL category group must not
+  // have its pool "filled" entirely by a big cross-group country bucket. Without
+  // group-aware widening, pool.length >= MIN_POOL would be satisfied by 200
+  // cross-group candidates, so the widening chain would stop BEFORE reaching a
+  // bucket that actually contains the subject's few same-group neighbours — and
+  // the Task-4 suppression gate inside getRecommendationsWithBands would then drop
+  // every one of those 200 cross-group candidates, yielding far fewer than the
+  // available same-group recs (or 0/2/3 instead of the true 3).
+  it('small-group subject gets all its same-group candidates despite a huge cross-group country bucket', () => {
+    // Subject S is Sake & Asian, region "Kyoto", country "Japan" — a small group.
+    const S = { ...base, sku: 'S', region: 'Kyoto', country: 'Japan',
+      variety: 'Rice', classification: 'Sake', food_matching: 'Sushi',
+      category_group: 'Sake & Asian', category_type: 'Sake', price: 1000,
+      is_in_stock: true };
+
+    // Only 3 same-group candidates exist, and they live in a DIFFERENT region
+    // ("Osaka") so they are NOT in S's region bucket — they only share S's
+    // country bucket ("Japan"). They share country + food + price with S so
+    // they score > 0.
+    const sameGroup = ['SG1', 'SG2', 'SG3'].map((sku) => ({
+      ...base, sku, region: 'Osaka', country: 'Japan', variety: 'Rice',
+      classification: 'Sake', food_matching: 'Sushi',
+      category_group: 'Sake & Asian', category_type: 'Sake', price: 1000,
+      is_in_stock: true,
+    }));
+
+    // 200 cross-group (Wine) candidates that ALSO live in country "Japan" — same
+    // country bucket as S, so the RAW pool.length check would be satisfied long
+    // before any same-group widening happens. These must be suppressed by
+    // isEligible's group gate and must NEVER appear in S's recs.
+    const crossGroup = Array.from({ length: 200 }, (_, i) => ({
+      ...base, sku: `CG${i}`, region: 'Osaka', country: 'Japan', variety: 'Rice',
+      classification: 'Red Wine', food_matching: 'Sushi',
+      category_group: 'Wine', category_type: 'Red Wine', price: 1000,
+      is_in_stock: true,
+    }));
+
+    const map = precomputeRecommendations([S, ...sameGroup, ...crossGroup]);
+    const recsForS = skus(map, 'S');
+
+    // All 3 same-group candidates are found (widening reached the country bucket
+    // that holds them, because eligibleCount() correctly saw the raw pool as
+    // "still too small" — 0 same-group matches from the region bucket alone).
+    expect(new Set(recsForS)).toEqual(new Set(['SG1', 'SG2', 'SG3']));
+    // Never a cross-group SKU, no matter how many were available.
+    expect(recsForS.some((sku) => sku.startsWith('CG'))).toBe(false);
   });
 });
 
@@ -316,5 +369,75 @@ describe('cross-category suppression', () => {
   it('Gin subject never returns Wine candidate', () => {
     const recs = getRecommendations(gin, [gin, vodka, wine]);
     expect(recs.find(r => r.sku === 'WINE')).toBeUndefined();
+  });
+});
+
+const mkProduct = (sku: string, price: number, overrides: any = {}) => ({
+  ...base, sku, name: sku, price, is_in_stock: true, ...overrides,
+});
+
+describe('getRecommendationsWithBands', () => {
+  it('returns max 8 results', () => {
+    const pool = Array.from({ length: 20 }, (_, i) => mkProduct(`P${i}`, 1600 + i * 10));
+    const results = getRecommendationsWithBands(pool[0], pool);
+    expect(results.length).toBeLessThanOrEqual(8);
+  });
+  it('returns fewer than 8 without padding when not enough candidates', () => {
+    const pool = [mkProduct('S', 1000), mkProduct('A', 1100), mkProduct('B', 1200)];
+    const results = getRecommendationsWithBands(pool[0], pool);
+    expect(results.length).toBeLessThanOrEqual(2); // only A and B are candidates
+  });
+  it('returns [] when no positive-scoring candidates', () => {
+    const subject = mkProduct('S', 1000, { region: 'UNIQUE_REGION_XYZ', variety: 'UNIQUE_VAR', country: 'NOWHERE', food_matching: '' });
+    const unrelated = mkProduct('U', 999999, { region: 'OTHER', variety: 'OTHER', country: 'OTHER', food_matching: '' });
+    const results = getRecommendationsWithBands(subject, [subject, unrelated]);
+    expect(results).toEqual([]);
+  });
+  it('slot 1 is always band similar', () => {
+    const pool = Array.from({ length: 15 }, (_, i) => mkProduct(`P${i}`, 1600 + i * 10));
+    const results = getRecommendationsWithBands(pool[0], pool);
+    expect(results[0]?.band).toBe('similar');
+  });
+  it('alternates similar/step-up while BOTH pools have candidates', () => {
+    // 5 similar (within ±20% of 1600) + 5 step-up (>20% above) — both pools deep
+    // enough that the canonical slot order is never forced into fallback.
+    const subject = mkProduct('S', 1600);
+    const similar = Array.from({ length: 5 }, (_, i) => mkProduct(`SIM${i}`, 1500 + i * 20));
+    const stepUp = Array.from({ length: 5 }, (_, i) => mkProduct(`UP${i}`, 2500 + i * 100));
+    const results = getRecommendationsWithBands(subject, [subject, ...similar, ...stepUp]);
+    expect(results.map(r => r.band)).toEqual([
+      'similar', 'step-up', 'similar', 'step-up',
+      'similar', 'step-up', 'similar', 'step-up',
+    ]);
+  });
+  // NOTE: adjacency of two step-up slots IS allowed once the similar pool
+  // exhausts — the fallback (popAny) intentionally fills remaining slots from
+  // whatever band is left rather than returning fewer items. Pin that too:
+  it('falls back to remaining band when preferred band exhausts (adjacency allowed)', () => {
+    const subject = mkProduct('S', 1600);
+    const stepUpOnly = Array.from({ length: 10 }, (_, i) => mkProduct(`UP${i}`, 2500 + i * 100));
+    const results = getRecommendationsWithBands(subject, [subject, ...stepUpOnly]);
+    expect(results.length).toBe(8);
+    expect(results.every(r => r.band === 'step-up')).toBe(true);
+  });
+  it('great-alternative absent by default (in-stock page)', () => {
+    const pool = Array.from({ length: 10 }, (_, i) => mkProduct(`P${i}`, 500 + i * 100));
+    const results = getRecommendationsWithBands(pool[5], pool); // subject mid-price
+    expect(results.every(r => r.band !== 'great-alternative')).toBe(true);
+  });
+  it('great-alternative present when includeGreatAlternative: true', () => {
+    const subject = mkProduct('S', 3000);
+    const cheaper = mkProduct('C', 500); // >20% cheaper = great-alternative
+    const similar = mkProduct('M', 2800);
+    const results = getRecommendationsWithBands(subject, [subject, cheaper, similar], { includeGreatAlternative: true });
+    expect(results.some(r => r.band === 'great-alternative')).toBe(true);
+  });
+  it('scoreBreakdown values sum to score', () => {
+    const pool = Array.from({ length: 5 }, (_, i) => mkProduct(`P${i}`, 1600 + i * 10));
+    const results = getRecommendationsWithBands(pool[0], pool);
+    for (const r of results) {
+      const sum = Object.values(r.scoreBreakdown).reduce((a, b) => a + b, 0);
+      expect(sum).toBeCloseTo(r.score, 5);
+    }
   });
 });

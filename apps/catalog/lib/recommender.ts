@@ -20,11 +20,12 @@
  * scores against a small bucket instead of the whole catalog. See its docblock.
  */
 
-import type { PublicProduct, Band } from '@/lib/types';
+import type { PublicProduct, Band, RecommendationResult } from '@/lib/types';
 import { isInStock, parseFoodMatching } from '@/lib/utils';
-import { typeForProduct, groupForProduct } from '@/lib/category-groups';
+import { typeForProduct, groupForProduct, type CategoryGroup } from '@/lib/category-groups';
 
 const MAX_RECS = 4;
+const MAX_RECS_EXTENDED = 8;
 
 // Variety alias clusters — exact-match on variety misses obvious affinities like
 // Syrah/Shiraz or Pinot Noir/Burgundy. Two varieties in the same cluster score
@@ -267,9 +268,119 @@ export function getRecommendations(
 }
 
 /**
+ * Canonical slot preference order for 8 positions.
+ * Odd positions (1,3,5,7 = index 0,2,4,6) → 'similar'
+ * Even positions (2,4,6,8 = index 1,3,5,7) → 'step-up'
+ */
+const SLOT_PREFERENCE: Band[] = [
+  'similar', 'step-up', 'similar', 'step-up',
+  'similar', 'step-up', 'similar', 'step-up',
+];
+
+/**
+ * Return up to 8 products "recommended together" with `product`, each tagged
+ * with an intent band ('similar' / 'step-up' / 'great-alternative') relative to
+ * the subject's price. Slots follow a canonical alternating preference order
+ * (odd slots prefer 'similar', even slots prefer 'step-up'); when a preferred
+ * band's pool is empty, the slot falls back to whatever band has candidates left
+ * (adjacency of the same band across slots is allowed in that case — see tests).
+ *
+ * 'great-alternative' (>20%+ cheaper) is EXCLUDED from slot-filling unless
+ * `opts.includeGreatAlternative` is true — the default in-stock product page only
+ * shows 'similar' and 'step-up'; a future OOS-alternative or B2B view can opt in.
+ *
+ * Excludes self and out-of-stock, dedupes by sku, cross-category suppressed via
+ * isEligible (same as getRecommendations), and only returns positive-scored
+ * matches — no zero-score padding, so fewer than 8 results is expected and correct
+ * when the pool doesn't have enough eligible candidates.
+ */
+export function getRecommendationsWithBands(
+  product: PublicProduct,
+  all: readonly PublicProduct[],
+  // B2B: PublicProduct has NO b2b_price — it is deliberately excluded from
+  // live_products_export.json ("must never leave the server", see
+  // refresh_live_export.py). Callers that want B2B banding INJECT a sku→price
+  // map (staff API loads it from data/b2b_products_export.json server-side).
+  // A `b2bMode` flag reading (product as any).b2b_price would silently no-op.
+  opts: { includeGreatAlternative?: boolean; b2bPrices?: ReadonlyMap<string, number> } = {},
+): RecommendationResult[] {
+  const { includeGreatAlternative = false, b2bPrices } = opts;
+
+  // Dedupe candidates.
+  const seen = new Set<string>();
+  const candidates: PublicProduct[] = [];
+  for (const p of all) {
+    if (seen.has(p.sku)) continue;
+    seen.add(p.sku);
+    candidates.push(p);
+  }
+
+  const productFoods = foodSet(product.food_matching);
+
+  // Score all eligible candidates and assign bands.
+  type Scored = { result: RecommendationResult };
+  const similar: Scored[] = [], stepUp: Scored[] = [], greatAlt: Scored[] = [];
+
+  // Band prices: injected B2B price when available for that SKU, else retail.
+  const priceOf = (p: PublicProduct) => b2bPrices?.get(p.sku) ?? p.price;
+  const subjectPrice = priceOf(product);
+
+  for (const c of candidates) {
+    if (!isEligible(product, c)) continue;
+    const { score, breakdown } = scoreCandidateDetailed(product, c, productFoods);
+    if (score <= 0) continue;
+
+    const band = priceBand(subjectPrice, priceOf(c));
+
+    const result: RecommendationResult = { product: c, band, score, scoreBreakdown: breakdown };
+    if (band === 'similar') similar.push({ result });
+    else if (band === 'step-up') stepUp.push({ result });
+    else if (includeGreatAlternative) greatAlt.push({ result });
+  }
+
+  // Sort each pool by score desc, SKU asc for determinism.
+  const sort = (arr: Scored[]) =>
+    arr.sort((a, b) =>
+      (b.result.score - a.result.score) ||
+      (a.result.product.sku < b.result.product.sku ? -1 : 1)
+    );
+  sort(similar); sort(stepUp); sort(greatAlt);
+
+  // Fill slots using canonical slot preference. When preferred band exhausts,
+  // fall back to any remaining candidates.
+  const pools: Record<Band, Scored[]> = {
+    'similar': similar,
+    'step-up': stepUp,
+    'great-alternative': greatAlt,
+  };
+  const pop = (band: Band): RecommendationResult | null => {
+    const arr = pools[band];
+    return arr.length > 0 ? arr.shift()!.result : null;
+  };
+  const popAny = (): RecommendationResult | null => {
+    for (const band of ['similar', 'step-up', 'great-alternative'] as Band[]) {
+      const r = pop(band);
+      if (r) return r;
+    }
+    return null;
+  };
+
+  const output: RecommendationResult[] = [];
+  for (let i = 0; i < MAX_RECS_EXTENDED; i++) {
+    const preferred = SLOT_PREFERENCE[i];
+    const result = pop(preferred) ?? popAny();
+    if (!result) break;
+    output.push(result);
+  }
+
+  return output;
+}
+
+/**
  * Precompute recommendations for EVERY product (in-stock OR out-of-stock),
- * returning a lightweight Map<sku, sku[]> (<=4 rec skus each). Pages resolve skus
- * via getProductBySku, so we store skus only — not full product objects.
+ * returning a lightweight Map<sku, {sku,band}[]> (<=8 rec entries each). Pages
+ * resolve skus via getProductBySku, so we store skus (+ band tag) only — not full
+ * product objects.
  *
  * SUBJECTS vs CANDIDATES (the two invariants — keep them straight)
  * ---------------------------------------------------------------
@@ -285,7 +396,7 @@ export function getRecommendations(
  * APPROXIMATION OF getRecommendations (accepted tradeoff — DO NOT "fix" to parity)
  * -------------------------------------------------------------------------------
  * This is a region-bucketed APPROXIMATION of getRecommendations, used to keep the
- * ~11,436-page static build fast (avoids O(n^2)). It may return a DIFFERENT top-4
+ * ~11,436-page static build fast (avoids O(n^2)). It may return a DIFFERENT top-N
  * than getRecommendations when a product's highest-scoring match lies OUTSIDE its
  * region bucket (and the in-region bucket is already large enough that the
  * widening chain below never reaches that better cross-region candidate). This is
@@ -300,25 +411,38 @@ export function getRecommendations(
  * The dominant scoring signal is `region` (+3). We bucket the in-stock CANDIDATES
  * by region once. For each SUBJECT product (in-stock or not) we score it only
  * against its own region bucket of in-stock candidates. If that bucket is too small
- * to yield MAX_RECS results, we widen with a
+ * to yield MAX_RECS_EXTENDED results, we widen with a
  * fallback chain so a product in a tiny/unique region still gets neighbours:
  *   1. region bucket
  *   2. + category_type bucket  (e.g. "Red Wine", "Gin")
  *   3. + country bucket
- *   4. + a bounded global slice  (last resort; capped so we never re-scan all n)
+ *   4. + a bounded global slice, SAME category_group as the subject when known
+ *      (last resort; capped so we never re-scan all n)
  * Buckets are merged and de-duplicated per product, then ranked with the same
- * §6 scoring used by getRecommendations, so precomputed results agree with the
- * single-product path within each bucket.
+ * scoring used by getRecommendationsWithBands, so precomputed results agree with
+ * the single-product path within each bucket.
+ *
+ * GROUP-AWARE WIDENING (interaction with the cross-category suppression gate)
+ * -----------------------------------------------------------------------
+ * The `byCountry`/global buckets mix category groups (e.g. France = wines +
+ * cognacs + gins), but isEligible() suppresses cross-group candidates entirely.
+ * If widening only checked RAW pool size, a subject in a small group could "fill"
+ * its pool with candidates that ALL get suppressed later, yielding far fewer recs
+ * than the catalog actually has available for it. So each widening check counts
+ * only SAME-GROUP candidates (what suppression will actually keep) via
+ * `eligibleCount()`, and the last-resort global fallback is built PER GROUP
+ * (`globalFallbackByGroup`) so it still contains group-relevant candidates.
  *
  * Complexity: ~O(n * b) where b is the average bucket size, plus a small bounded
  * global fallback — far below O(n^2) for a catalog with many regions/categories.
  * Iterating `all` (not just `inStock`) for the outer SUBJECT loop only adds the
  * OOS products as extra keys; each still scores against its own small bucket, so
- * complexity stays ~O(n * b).
+ * complexity stays ~O(n * b). `eligibleCount()` re-filters the (small, ≤ a few
+ * hundred) pool up to 3x per subject — negligible next to scoring cost.
  */
 export function precomputeRecommendations(
   all: readonly PublicProduct[],
-): Map<string, string[]> {
+): Map<string, { sku: string; band: Band }[]> {
   // In-stock CANDIDATES only (these are the only things we ever recommend). The
   // SUBJECT loop below iterates `all`, so OOS products still get recs computed FOR
   // them — just never recommended themselves. is_in_stock is a normalized boolean
@@ -346,14 +470,24 @@ export function precomputeRecommendations(
 
   // Bounded global fallback: a small fixed slice of in-stock products. Capped so
   // the fallback never degrades to a full O(n) scan per product.
-  const GLOBAL_FALLBACK_CAP = 50;
+  const GLOBAL_FALLBACK_CAP = 100;
   const globalFallback = inStock.slice(0, GLOBAL_FALLBACK_CAP);
 
-  // We want at least enough raw candidates to reliably surface MAX_RECS after
-  // eligibility/scoring filters; widen the bucket until we have a comfortable pool.
-  const MIN_POOL = MAX_RECS + 1;
+  // First GLOBAL_FALLBACK_CAP in-stock products PER GROUP, so the last-resort
+  // slice always contains candidates the suppression gate will actually keep.
+  const globalFallbackByGroup = new Map<CategoryGroup, PublicProduct[]>();
+  for (const p of inStock) {
+    const g = groupForProduct(p);
+    const arr = globalFallbackByGroup.get(g) ?? [];
+    if (arr.length < GLOBAL_FALLBACK_CAP) { arr.push(p); globalFallbackByGroup.set(g, arr); }
+  }
 
-  const result = new Map<string, string[]>();
+  // We want at least enough raw candidates to reliably surface MAX_RECS_EXTENDED
+  // after eligibility/scoring filters; widen the bucket until we have a
+  // comfortable pool.
+  const MIN_POOL = MAX_RECS_EXTENDED + 1;
+
+  const result = new Map<string, { sku: string; band: Band }[]>();
 
   // SUBJECTS: iterate ALL products (in-stock OR out-of-stock) so every product
   // page gets recommendations. Candidates remain in-stock-only (buckets above are
@@ -370,13 +504,20 @@ export function precomputeRecommendations(
       }
     };
 
-    merge(byRegion.get(product.region ?? ''));
-    if (pool.length < MIN_POOL) merge(byType.get(typeForProduct(product)));
-    if (pool.length < MIN_POOL) merge(byCountry.get(product.country ?? ''));
-    if (pool.length < MIN_POOL) merge(globalFallback);
+    // Widening counts only same-group candidates (what suppression will keep):
+    const subjectGroup = groupForProduct(product);
+    const eligibleCount = () =>
+      subjectGroup === 'Unknown'
+        ? pool.length
+        : pool.filter((p) => groupForProduct(p) === subjectGroup).length;
 
-    const recs = rankAgainst(product, pool, foodSet(product.food_matching));
-    result.set(product.sku, recs.map((r) => r.sku));
+    merge(byRegion.get(product.region ?? ''));
+    if (eligibleCount() < MIN_POOL) merge(byType.get(typeForProduct(product)));
+    if (eligibleCount() < MIN_POOL) merge(byCountry.get(product.country ?? ''));
+    if (eligibleCount() < MIN_POOL) merge(globalFallbackByGroup.get(subjectGroup) ?? globalFallback);
+
+    const recs = getRecommendationsWithBands(product, pool, { includeGreatAlternative: !isInStock(product.is_in_stock) });
+    result.set(product.sku, recs.map((r) => ({ sku: r.product.sku, band: r.band })));
   }
 
   return result;
