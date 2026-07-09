@@ -55,6 +55,9 @@ EXPORT_COLS = [
     "body", "acidity", "tannin",
     "blend_type", "production_style",
     "sweetness", "intensity", "smokiness", "bitterness", "finish",
+    # Phase 2 — spirits classification fields (manually assigned; schema-only in
+    # Task 9, populated later by Task 10). See scripts/migrate_spirits_fields.py.
+    "gin_style", "agave_aging", "rum_style", "peat_level", "production_method",
     "food_matching", "food_matching_detail", "flavor_tags",
     "bottle_size", "price", "currency",
     # Customer-facing SALE price. special_price is the discounted amount (populated
