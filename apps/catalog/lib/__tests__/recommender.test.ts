@@ -182,24 +182,53 @@ describe('precomputeRecommendations', () => {
   });
 
   // GROUP-AWARE WIDENING (Step 4.5): a subject in a SMALL category group must not
-  // have its pool "filled" entirely by a big cross-group country bucket. Without
-  // group-aware widening, pool.length >= MIN_POOL would be satisfied by 200
-  // cross-group candidates, so the widening chain would stop BEFORE reaching a
-  // bucket that actually contains the subject's few same-group neighbours — and
-  // the Task-4 suppression gate inside getRecommendationsWithBands would then drop
-  // every one of those 200 cross-group candidates, yielding far fewer than the
-  // available same-group recs (or 0/2/3 instead of the true 3).
-  it('small-group subject gets all its same-group candidates despite a huge cross-group country bucket', () => {
+  // have its pool "filled" entirely by a big cross-group bucket that is merged
+  // EARLY in the widening chain (region -> type -> country -> global fallback).
+  //
+  // To actually distinguish OLD vs NEW widening logic, the cross-group padding
+  // must sit in an EARLIER bucket than the subject's same-group candidates:
+  //   - REGION bucket (merged unconditionally, first): 200 cross-group (Wine)
+  //     candidates, region "Kyoto" (same as S). Raw pool.length is 200 >= MIN_POOL
+  //     right after this merge alone.
+  //       OLD logic: checked `pool.length < MIN_POOL` -> 200 >= 9 -> FALSE -> never
+  //       widens to the type bucket -> S's pool is 100% cross-group -> Task-4
+  //       suppression drops all 200 -> S gets ZERO recs.
+  //       NEW logic: checks `eligibleCount() < MIN_POOL`, i.e. SAME-GROUP count
+  //       from the pool so far -> 0 same-group items among the 200 Wine
+  //       candidates -> 0 < 9 -> TRUE -> widens to the type bucket next.
+  //   - TYPE bucket ("Sake", checked second): the 3 same-group candidates live
+  //     ONLY here (different region "Osaka", so NOT in S's region bucket). Only
+  //     reached by the NEW logic.
+  //
+  // This means the fixture actually fails under the old (ungated) widening logic
+  // and only passes with the eligibleCount() fix — verified by temporarily
+  // reverting the eligibleCount() change locally and re-running (see PR notes).
+  it('small-group subject gets all its same-group candidates despite a huge cross-group region bucket', () => {
     // Subject S is Sake & Asian, region "Kyoto", country "Japan" — a small group.
     const S = { ...base, sku: 'S', region: 'Kyoto', country: 'Japan',
       variety: 'Rice', classification: 'Sake', food_matching: 'Sushi',
       category_group: 'Sake & Asian', category_type: 'Sake', price: 1000,
       is_in_stock: true };
 
+    // 200 cross-group (Wine) candidates that live in S's OWN region ("Kyoto") —
+    // the FIRST bucket merged, unconditionally, before any MIN_POOL check runs.
+    // Raw pool.length (200) already satisfies the OLD `pool.length < MIN_POOL`
+    // check, so old logic would stop widening right here and never reach the
+    // type bucket below. These must be suppressed by isEligible's group gate and
+    // must NEVER appear in S's recs.
+    const crossGroup = Array.from({ length: 200 }, (_, i) => ({
+      ...base, sku: `CG${i}`, region: 'Kyoto', country: 'Other', variety: 'Rice',
+      classification: 'Red Wine', food_matching: 'Sushi',
+      category_group: 'Wine', category_type: 'Red Wine', price: 1000,
+      is_in_stock: true,
+    }));
+
     // Only 3 same-group candidates exist, and they live in a DIFFERENT region
-    // ("Osaka") so they are NOT in S's region bucket — they only share S's
-    // country bucket ("Japan"). They share country + food + price with S so
-    // they score > 0.
+    // ("Osaka") so they are NOT in S's region bucket at all — they only appear
+    // in S's TYPE bucket ("Sake"), the second bucket in the widening chain. Old
+    // logic never reaches this bucket because the region bucket alone already
+    // looked "full" (200 >= MIN_POOL). New logic reaches it because none of
+    // those 200 region-bucket items are same-group.
     const sameGroup = ['SG1', 'SG2', 'SG3'].map((sku) => ({
       ...base, sku, region: 'Osaka', country: 'Japan', variety: 'Rice',
       classification: 'Sake', food_matching: 'Sushi',
@@ -207,23 +236,12 @@ describe('precomputeRecommendations', () => {
       is_in_stock: true,
     }));
 
-    // 200 cross-group (Wine) candidates that ALSO live in country "Japan" — same
-    // country bucket as S, so the RAW pool.length check would be satisfied long
-    // before any same-group widening happens. These must be suppressed by
-    // isEligible's group gate and must NEVER appear in S's recs.
-    const crossGroup = Array.from({ length: 200 }, (_, i) => ({
-      ...base, sku: `CG${i}`, region: 'Osaka', country: 'Japan', variety: 'Rice',
-      classification: 'Red Wine', food_matching: 'Sushi',
-      category_group: 'Wine', category_type: 'Red Wine', price: 1000,
-      is_in_stock: true,
-    }));
-
     const map = precomputeRecommendations([S, ...sameGroup, ...crossGroup]);
     const recsForS = skus(map, 'S');
 
-    // All 3 same-group candidates are found (widening reached the country bucket
-    // that holds them, because eligibleCount() correctly saw the raw pool as
-    // "still too small" — 0 same-group matches from the region bucket alone).
+    // All 3 same-group candidates are found (widening continued past the
+    // "full but all cross-group" region bucket into the type bucket, because
+    // eligibleCount() correctly saw 0 same-group matches there).
     expect(new Set(recsForS)).toEqual(new Set(['SG1', 'SG2', 'SG3']));
     // Never a cross-group SKU, no matter how many were available.
     expect(recsForS.some((sku) => sku.startsWith('CG'))).toBe(false);
