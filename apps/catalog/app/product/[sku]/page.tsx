@@ -17,7 +17,7 @@ import { getContactEnv } from '@/lib/contact-env';
 import { toTiers, toStructural } from '@/lib/taste-adapter';
 import { isInStock, parseFoodMatching, signatureDishes } from '@/lib/utils';
 import { sanitizeDescription } from '@/lib/sanitize-html';
-import type { PublicProduct } from '@/lib/types';
+import type { PublicProduct, Band } from '@/lib/types';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildProductSchema, buildBreadcrumbList, GROUP_SLUG } from '@/lib/seo/jsonld';
 import { ViewItemTracker } from '@/components/product/ViewItemTracker';
@@ -58,10 +58,10 @@ export const revalidate = 3600;
  * every cold start, even for a single page). Instead we compute it on the FIRST
  * getRecsForSku() call and cache it for the instance lifetime.
  */
-let _recs: Map<string, string[]> | null = null;
+let _recs: Map<string, { sku: string; band: Band }[]> | null = null;
 function getRecsForSku(sku: string): string[] {
   if (_recs === null) _recs = precomputeRecommendations(getAllProducts());
-  return _recs.get(sku) ?? [];
+  return (_recs.get(sku) ?? []).map((r) => r.sku);
 }
 
 /**
