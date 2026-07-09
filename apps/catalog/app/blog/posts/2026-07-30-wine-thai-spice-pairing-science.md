@@ -64,8 +64,8 @@ These dishes bring warmth rather than fire. Coconut milk is dominant, spice is a
 
 **Pinot Grigio** — dry, light-bodied, high acid — works beautifully. It doesn't compete with the dish's subtlety, and its clean citrus notes cut through the coconut fat. An off-dry rosé is equally strong here, adding just enough fruit sweetness to mirror the curry's gentle warmth.
 
-<!-- product: WWW3914AD -->
-**Santa Margherita Pinot Grigio Alto Adige** — ฿1,290
+<!-- product: WWW2019BS -->
+**St. Paul's Pinot Grigio Alto Adige DOC** — ฿1,200
 
 <!-- product: WRS0035AB -->
 **Whispering Angel Rosé, Provence** — ฿1,049 (sale)

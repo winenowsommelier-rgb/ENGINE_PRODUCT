@@ -122,9 +122,9 @@ Sparkling wine works with virtually every seafood dish. The bubbles act like bui
 
 A dry Provence-style rosé sits in a useful middle ground for Bangkok seafood. It has the acidity to handle seafood but also enough body to stand up to slightly spicy or aromatic preparations — *hoi malaeng puu* (green mussels with Thai herbs), *poo pad pong karee* (crab curry), or seafood stir-fries with garlic and pepper.
 
-<!-- product: WRS5193FR -->
+<!-- product: WRS0227AB -->
 
-**PLACEHOLDER — Provence Rosé under ฿1,200** — ask our team for current stock in Côtes de Provence rosé.
+**Chateau d'Esclans The Pale, Côtes de Provence** — ฿900
 
 ---
 

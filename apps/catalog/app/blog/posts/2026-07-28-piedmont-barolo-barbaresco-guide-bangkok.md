@@ -126,11 +126,11 @@ If you have never had Nebbiolo, do not open a serious Barolo first. It will be c
 
 Langhe Nebbiolo uses the same grape across the broader Langhe zone, with no mandatory aging in wood and often a lighter touch from the winemaker. The wines show Nebbiolo's signature rose petal and sour cherry character without the fortress walls of tannin that a young Barolo erects. At ฿1,200–2,000 in Bangkok, it is also one of the best-value introductions to a serious grape category that exists.
 
-<!-- product: SKU001 -->
-**Produttori del Barbaresco Langhe Nebbiolo** (฿1,590). From the most reliable co-op in Piedmont. Clean, fragrant, honest Nebbiolo — roses, dried cherry, a whisper of tar. Exactly what the category should taste like, at a price that makes it repeatable.
+<!-- product: WRW1591BS -->
+**Cordero di Montezemolo Langhe Nebbiolo DOC** (฿1,800). From a La Morra family estate farming the same hill since 1340. Clean, fragrant, honest Nebbiolo — roses, dried cherry, a whisper of tar. Exactly what the category should taste like, at a price that makes it repeatable.
 
-<!-- product: SKU002 -->
-**Bruno Giacosa Nebbiolo d'Alba** (฿1,890). Nebbiolo d'Alba DOC (a sibling designation to Langhe Nebbiolo) from the producer many consider the greatest in Piedmont. More structured than most entry-level Nebbiolo but still approachable. This is a benchmark bottle — the kind you open to understand what the grape is capable of before graduating to Barolo.
+<!-- product: WRW7786BN -->
+**Bruno Giacosa Nebbiolo d'Alba** (฿2,000). Nebbiolo d'Alba DOC (a sibling designation to Langhe Nebbiolo) from the producer many consider the greatest in Piedmont. More structured than most entry-level Nebbiolo but still approachable. This is a benchmark bottle — the kind you open to understand what the grape is capable of before graduating to Barolo.
 
 ---
 
@@ -141,11 +141,11 @@ Langhe Nebbiolo uses the same grape across the broader Langhe zone, with no mand
 
 For Bangkok wine buyers who want Nebbiolo at its expressive best without the 15-year wait, Barbaresco is the answer. The appellation's smaller size means quality is more consistent; the wines mature faster; and the price ceiling is lower than comparable Barolo.
 
-<!-- product: SKU003 -->
-**Produttori del Barbaresco Barbaresco DOCG** (฿2,890). The co-op's village-level Barbaresco is one of the most reliable bottles in the category. Made from fruit sourced across all three communes, aged in large Slavonian oak in the traditional manner. Needs 2–3 years of breathing on opening; ideally, open a 2018 or 2019 vintage now or hold until 2028.
+<!-- product: WRW6181AE -->
+**Massolino Barbaresco DOCG** (฿2,550). Massolino is a Serralunga d'Alba house best known for Barolo, and its Barbaresco is one of the most reliable bottles in the category — aged in large Slavonian oak in the traditional manner. Needs 2–3 years of breathing on opening; ideally, open a 2018 or 2019 vintage now or hold until 2028.
 
-<!-- product: SKU004 -->
-**Prunotto Barbaresco DOCG** (฿3,250). Prunotto is an Antinori-owned house with roots going back to the 1920s as a co-op. Their Barbaresco is classic in style — dark fruit, rose, anise, substantial but approachable tannin. A reliable choice for a dinner centrepiece where you want something serious but not cellared.
+<!-- product: WRW7726HI -->
+**Prunotto Barbaresco Bric Turot DOCG** (฿2,500). Prunotto is an Antinori-owned house with roots going back to the 1920s as a co-op. Their Barbaresco is classic in style — dark fruit, rose, anise, substantial but approachable tannin. A reliable choice for a dinner centrepiece where you want something serious but not cellared.
 
 ---
 
@@ -156,8 +156,8 @@ For Bangkok wine buyers who want Nebbiolo at its expressive best without the 15-
 
 Barolo is not an impulse purchase. The right approach is to buy two bottles of a good vintage, drink one at 10 years to see where it's going, and open the second at 15. Budget for that.
 
-<!-- product: SKU005 -->
-**Ceretto Barolo DOCG "Zonchera"** (฿4,200). Ceretto is one of the great modernist houses of La Morra. The Zonchera bottling is their village-level wine — not a single-vineyard MGA — but it shows the La Morra character clearly: aromatic, floral, accessible at 8 years where a Serralunga would still be clenched. A smart first Barolo for a Bangkok cellar.
+<!-- product: WRW5130AA -->
+**Ceretto Barolo "Prapo" DOCG (organic)** (฿6,775). Ceretto is one of the great modernist houses of Alba. Prapo is a single-vineyard MGA in Serralunga d'Alba — deeper and more structured than the floral La Morra style, with the mineral spine Serralunga is famous for. Built to cellar; a serious step-up Barolo for a Bangkok collection.
 
 ---
 

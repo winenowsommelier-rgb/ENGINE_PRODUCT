@@ -42,8 +42,8 @@ Our budget hero this month. Gewürztraminer is criminally underordered in Bangko
 
 ---
 
-<!-- product: WRW2541AD -->
-**Bodegas Muga Rioja Reserva DOCa, Spain — ฿1,290 (sale)**
+<!-- product: WRW4225AJ -->
+**Bodegas Muga Reserva Rioja DOC, Spain — ฿1,758 (sale)**
 
 This is the red wine pick for July, and it's the one we've been reaching for on the evenings when the AC is running and you want something with more grip than a rosé. Muga Reserva is Rioja done right: 24 months in American oak, cherry and vanilla, firm enough to last the meal but approachable now. We've been having it with grilled pork neck from the vendor downstairs and it's a combination we'd stand behind. On sale this month — buy a case.
 

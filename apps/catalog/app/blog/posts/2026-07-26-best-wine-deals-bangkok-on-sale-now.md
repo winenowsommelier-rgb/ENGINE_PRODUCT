@@ -40,8 +40,8 @@ Lean, citrus-mineral, bone dry. Brilliant with Thai seafood salads and lighter s
 
 ## Red Wine Deals
 
-<!-- product: WRW2541AD -->
-**Bodegas Muga Rioja Reserva DOCa** — Normal ฿1,750 → **Sale ฿1,290**
+<!-- product: WRW4225AJ -->
+**Bodegas Muga Reserva Rioja DOC** — Normal ฿1,900 → **Sale ฿1,758**
 Muga is Rioja done right: 24 months in American oak, cherry and vanilla without the sweetness overdose. This is a cellar-worthy bottle you can open tonight. One of the best value plays on this list.
 
 <!-- product: WRW4745AD -->
@@ -52,9 +52,9 @@ Bright red fruit, silky tannins, high acidity. Works with laab nua or a barbecue
 **Whispering Angel Rosé, Provence** — Normal ฿1,199 → **Sale ฿1,049**
 The reference point for Provence rosé. Grenache, Cinsault, Syrah from sandy-limestone hillsides. Cold maceration, stainless steel, built for food. If your dinner is a Thai spread — multiple dishes, multiple proteins — open this.
 
-<!-- product: WRW0191AD -->
-**Famille Perrin Côtes du Rhône Rouge** — Normal ฿650 → **Sale ฿590**
-Dense, spiced southern Rhône blend — Grenache, Syrah, Mourvèdre. The Perrin family also makes Château Beaucastel; this is their everyday label, made with the same philosophy at a fraction of the price.
+<!-- product: WRW4742AD -->
+**Casillero del Diablo Reserva Cabernet Sauvignon** — Normal ฿569 → **Sale ฿519**
+Chile's most dependable budget red — blackcurrant, cedar, a soft round finish. The Reserva tier gets genuine oak treatment at a price that makes it a weeknight default.
 
 ---
 

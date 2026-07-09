@@ -36,22 +36,22 @@ This is the distinction most people miss, and it costs them money or underwhelms
 
 The **Chianti DOCG** zone is enormous — it sprawls across central Tuscany from Florence to Siena and beyond. Wines labelled simply "Chianti" can include Sangiovese blended with other permitted grapes, with minimum aging requirements of just a few months. The best are bright, food-friendly, and punchy at the price. The worst are thin and forgettable. As [Wine Folly](https://winefolly.com/deep-dive/chianti-guide/) puts it: "Chianti is a place, not just a wine style — and not all of it is created equal."
 
-<!-- product: WRW0713AC -->
-**Rocca delle Macie Chianti DOCG** — ฿790
+<!-- product: WRW1089AH -->
+**Piccini Chianti DOCG** — ฿599
 
 ### Chianti Classico (฿1,100–2,000)
 
 The **Chianti Classico DOCG** is the historic original heart of the Chianti zone — the hills between Florence and Siena. Wines must be at least 80% Sangiovese, aged a minimum of twelve months. The black rooster on the neck label (*Gallo Nero*) is your signal. The flavours are tighter, more structured, and more serious than generic Chianti. This is the tier worth paying for as a regular weeknight pour.
 
-<!-- product: WRW0887AC -->
-**Fonterutoli Chianti Classico DOCG** — ฿1,450
+<!-- product: WRW2988BN -->
+**Castello di Fonterutoli Chianti Classico DOCG** — ฿1,200
 
 ### Chianti Classico Gran Selezione (฿2,500–4,000)
 
 Introduced in 2014, **Gran Selezione** is the apex of the Chianti Classico pyramid — single vineyard or best-barrel selections, aged a minimum of thirty months, with at least three months in bottle. These are wines you open deliberately, with food, and ideally with two to three years of patience if you buy on release. At Bangkok prices they sit just below entry Brunello, and in good vintages they give Brunello serious competition.
 
-<!-- product: WRW1023AC -->
-**Barone Ricasoli Chianti Classico Gran Selezione DOCG** — ฿3,200
+<!-- product: WRW4272FC -->
+**Castello di Ama San Lorenzo Chianti Classico Gran Selezione DOCG** — ฿3,700
 
 ---
 
@@ -71,8 +71,8 @@ The result is wines that arrive to market already mature by most standards, and 
 
 At Bangkok prices, entry Brunello from a reliable producer in a good vintage lands at **฿3,000–4,500**. Top-tier producers — Biondi-Santi, Soldera, Poggio di Sotto — start at ฿6,000 and climb quickly. The premium is real, but so is the wine.
 
-<!-- product: WRW1744AD -->
-**Argiano Brunello di Montalcino DOCG** — ฿4,200
+<!-- product: WRW3587DH -->
+**Siro Pacenti Pelagrilli Brunello di Montalcino DOCG** — ฿3,200
 
 ### Vino Nobile di Montepulciano: The Middle Ground
 
@@ -104,8 +104,8 @@ Mario Incisa della Rocchetta planted Cabernet Sauvignon in Bolgheri in the 1940s
 
 Today Bolgheri is home to Sassicaia, **Ornellaia**, and **Masseto** — Merlot-dominant, Pomerol-rivalling wines that have established the Maremma coast as one of Italy's most prestigious addresses. The style here is richer and more internationally inflected than the Sangiovese-driven interior: think dark fruit, cedar, and graphite rather than sour cherry and dried herbs.
 
-<!-- product: WRW2891CD -->
-**Ornellaia Bolgheri Superiore IGT Toscana** — ฿9,800
+<!-- product: WRW6625AF -->
+**Ornellaia Bolgheri DOC Superiore** — ฿12,800
 
 ---
 

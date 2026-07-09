@@ -45,11 +45,11 @@ France's Burgundy region gives us both extremes in one appellation.
 
 As [Decanter](https://www.decanter.com/learn/chardonnay/) notes, the key distinction is integration: in great white Burgundy, you cannot identify where the oak ends and the wine begins.
 
-<!-- product: WWW1101AA -->
-**Domaine William Fèvre Chablis Village** — ฿1,390
+<!-- product: WWW0202AD -->
+**Domaine Laroche Chablis Les Chanoines** — ฿1,199
 
-<!-- product: WWW0952AC -->
-**Louis Jadot Meursault** — ฿2,890
+<!-- product: WWW6016GT -->
+**Maison Jaffelin Meursault** — ฿3,750
 
 ---
 
@@ -66,11 +66,11 @@ The backlash was inevitable and healthy. Today California's best producers — a
 
 For Bangkok drinkers, the Australian style hits a practical sweet spot: fruit-forward enough to drink without food, structured enough to handle grilled fish or a chicken green curry, and priced well (฿800–฿1,800 for quality bottles).
 
-<!-- product: WWW4882AD -->
-**Vasse Felix Chardonnay, Margaret River** — ฿1,590
+<!-- product: WWW4871AB -->
+**Vasse Felix Premier Chardonnay, Margaret River** — ฿1,800
 
-<!-- product: WWW3341BN -->
-**Pewsey Vale Eden Valley Chardonnay** — ฿990
+<!-- product: WWW0285FJ -->
+**Little Yering Chardonnay, Yarra Valley** — ฿849
 
 ---
 
@@ -105,11 +105,11 @@ The practical guide: **unoaked for aperitif and Thai food; lightly oaked for Wes
 
 ![A sommelier pouring two styles of Chardonnay for comparison at a Bangkok restaurant](https://images.pexels.com/photos/5732799/pexels-photo-5732799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
-<!-- product: WWW0987AC -->
-**Mâcon-Villages Blanc, Louis Jadot** — ฿1,150
+<!-- product: WWW5128FJ -->
+**Georges Duboeuf Mâcon-Villages** — ฿1,099
 
-<!-- product: WWW5102FC -->
-**Sonoma-Cutrer Russian River Ranches Chardonnay** — ฿2,190
+<!-- product: WWW5360AC -->
+**Napa Cellars Chardonnay, Napa Valley** — ฿1,600
 
 ---
 

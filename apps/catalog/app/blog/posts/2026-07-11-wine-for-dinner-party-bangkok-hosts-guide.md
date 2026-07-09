@@ -61,7 +61,7 @@ Step into this bracket when the occasion is a birthday, housewarming, or a host 
 
 <!-- product: WSP5728FR -->
 
-<!-- product: WRW2529AD -->
+<!-- product: WSP2529AD -->
 
 ### ฿2,000+ — When You Need to Make a Statement
 
