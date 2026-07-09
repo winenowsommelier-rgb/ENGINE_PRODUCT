@@ -146,3 +146,16 @@ export function rowFromPublicProduct(p: PublicProduct): CatalogRow | null {
 export function publicProductInScope(p: PublicProduct): boolean {
   return isInStock(p.is_in_stock) && p.custom_stock_status !== 'CATALOG';
 }
+
+/**
+ * All B2C catalog rows (margin-safe), optionally filtered to one
+ * category_group — shared by the full catalog route and the per-category
+ * print routes so both build from the same source of truth.
+ */
+export function getB2CCatalogRows(products: PublicProduct[], categoryGroup?: string): CatalogRow[] {
+  return products
+    .filter(publicProductInScope)
+    .filter((p) => !categoryGroup || p.category_group === categoryGroup)
+    .map(rowFromPublicProduct)
+    .filter((r): r is CatalogRow => r !== null);
+}

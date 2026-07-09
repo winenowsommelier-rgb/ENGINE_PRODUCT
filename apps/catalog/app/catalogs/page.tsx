@@ -31,8 +31,8 @@ export default function CatalogsMenuPage() {
               <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </div>
             <p className="mt-2 text-sm text-muted-foreground">
-              Consumer price list (B2C). Retail price, active promotions, and critic scores for every
-              in-stock item.
+              Consumer price list (B2C). Print by category, or the full assortment — retail price, active
+              promotions, and critic scores for every in-stock item.
             </p>
           </div>
           <p className="mt-6 text-xs uppercase tracking-wide text-muted-foreground">Public · No sign-in required</p>
