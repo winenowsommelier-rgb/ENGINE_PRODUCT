@@ -19,6 +19,16 @@ import { getRecommendationsWithBands } from '@/lib/recommender';
  * "internal network". Without this gate, anyone could enumerate b2b_price for
  * the whole catalog (margin leak, the exact thing EXPORT_COLS exists to prevent).
  * Fail CLOSED: if STAFF_RECS_TOKEN is unset, the route is disabled.
+ *
+ * PARTIAL B2B COVERAGE: the 503 guard below only catches TOTAL absence of B2B
+ * price data. getRecommendationsWithBands()'s priceOf() helper falls back to
+ * retail price PER-SKU whenever a given candidate isn't in the injected
+ * b2bPrices map (intentional degrade-per-item design in the scoring engine).
+ * That means individual rows in a b2b=true response can have their `band`
+ * computed against retail price when the SKU is simply missing from the B2B
+ * export (e.g. not yet synced). Each row's `band_price_basis` field tells staff
+ * which basis was actually used for THAT row, so a "similar"/"step-up" label
+ * computed against retail isn't silently mistaken for a B2B-accurate one.
  */
 export const dynamic = 'force-dynamic';
 
@@ -32,13 +42,25 @@ function b2bPrices(): Map<string, number> {
     path.join(process.cwd(), '..', '..', 'data', 'b2b_products_export.json'),
   ];
   const file = candidates.find((p) => fs.existsSync(p));
-  _b2bPrices = new Map();
+  const prices = new Map<string, number>();
   if (file) {
-    const rows: Array<{ sku: string; b2b_price?: number | null }> = JSON.parse(fs.readFileSync(file, 'utf8'));
-    for (const r of rows) {
-      if (r.sku && typeof r.b2b_price === 'number' && r.b2b_price > 0) _b2bPrices.set(r.sku, r.b2b_price);
+    try {
+      const rows: Array<{ sku: string; b2b_price?: number | null }> = JSON.parse(fs.readFileSync(file, 'utf8'));
+      for (const r of rows) {
+        if (r.sku && typeof r.b2b_price === 'number' && r.b2b_price > 0) prices.set(r.sku, r.b2b_price);
+      }
+    } catch (e) {
+      // Malformed B2B export must degrade to "no B2B data" (caught by the b2bMode
+      // guard below), never crash the route or leak parse details/file contents
+      // to the client — this route is margin-data hyper-scrutiny per CLAUDE.md.
+      console.error(`Failed to parse B2B price export at ${file}: ${(e as Error).message}`);
     }
   }
+  // Assign only after the try/catch resolves, so a thrown parse error never
+  // leaves _b2bPrices pointing at a partially-populated Map that would then
+  // short-circuit (`if (_b2bPrices) return _b2bPrices;`) on the next request
+  // for the life of this warm instance without ever retrying the read.
+  _b2bPrices = prices;
   return _b2bPrices;
 }
 
@@ -85,6 +107,11 @@ export async function GET(req: NextRequest) {
       name: r.product.name,
       price: r.product.price,
       b2b_price: prices?.get(r.product.sku) ?? null, // authed staff response only
+      // Per-row signal for partial B2B coverage: only meaningful when b2bMode is
+      // true. Tells staff whether THIS row's `band` was computed against the B2B
+      // price or fell back to retail because the SKU is missing from the B2B
+      // export — see the PARTIAL B2B COVERAGE note in the file header.
+      band_price_basis: b2bMode ? (prices?.has(r.product.sku) ? 'b2b' : 'retail') : undefined,
       band: r.band,
       score: r.score,
       scoreBreakdown: r.scoreBreakdown,
