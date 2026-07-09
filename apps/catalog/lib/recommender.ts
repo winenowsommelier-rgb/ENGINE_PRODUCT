@@ -202,6 +202,20 @@ function isEligible(product: PublicProduct, candidate: PublicProduct): boolean {
   if (candidate.sku === product.sku) return false; // not self
   if (!isInStock(candidate.is_in_stock)) return false; // out-of-stock excluded (handles raw "0" too)
   if (candidate.custom_stock_status === 'CATALOG') return false; // archived/discontinued — never recommend
+
+  // Suppress cross-category group recommendations (Wine ↔ Spirits, etc.): no amount
+  // of shared region/food/price signal makes a Wine->Whisky "you might also like"
+  // sensible. Skipped entirely (not suppressed) when either side resolves to
+  // 'Unknown' so synthetic/malformed fixtures without real SKUs/category_group
+  // aren't wrongly suppressed.
+  const subjectGroup = groupForProduct(product);
+  const candidateGroup = groupForProduct(candidate);
+  if (
+    subjectGroup !== 'Unknown' &&
+    candidateGroup !== 'Unknown' &&
+    subjectGroup !== candidateGroup
+  ) return false;
+
   return true;
 }
 

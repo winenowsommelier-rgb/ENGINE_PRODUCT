@@ -32,6 +32,18 @@ describe('getRecommendations', () => {
   it('ranks the most-similar product first', () => {
     expect(getRecommendations(base, pool)[0].sku).toBe('B');
   });
+  // D scores 0 (no shared region/variety/country/food/price/category_type signal
+  // with base) and so is dropped by scoreCandidate's score>0 filter — NOT by the
+  // cross-category suppression gate in isEligible(). Neither base (sku 'A') nor D
+  // (sku 'D') sets a real category_group, so groupForProduct() falls back to
+  // SKU-taxonomy resolution: D's sku (also 'D') doesn't match a known prefix and
+  // resolves to 'Unknown', while base's sku 'A' happens to resolve to
+  // 'Accessories' via the taxonomy's letter-fallback. Either way, the suppression
+  // gate short-circuits as soon as ONE side is 'Unknown' (candidateGroup here) —
+  // it never even reaches the group-equality check, so this test's drop is purely
+  // about score, not suppression. See the 'cross-category suppression' describe
+  // block below for tests that actually exercise the gate (those fixtures set
+  // category_group explicitly on both sides to a real, non-Unknown value).
   it('a far-out-of-band product (price 50000, no shared attrs) ranks last or is dropped', () => {
     const recs = getRecommendations(base, pool);
     const dIdx = recs.findIndex(r => r.sku === 'D');
@@ -279,5 +291,30 @@ describe('scoreCandidateDetailed — taste tiebreakers', () => {
     const { score, breakdown } = scoreCandidateDetailed(wineBase, candidate);
     const sum = Object.values(breakdown).reduce((a, b) => a + b, 0);
     expect(sum).toBeCloseTo(score, 5);
+  });
+});
+
+describe('cross-category suppression', () => {
+  const wine = { ...base, sku: 'WINE', category_group: 'Wine', category_type: 'Red Wine', is_in_stock: true };
+  const whisky = { ...base, sku: 'WHISK', category_group: 'Whisky', category_type: 'Whisky', is_in_stock: true };
+  const gin = { ...base, sku: 'GIN', category_group: 'Spirits', category_type: 'Gin', is_in_stock: true };
+  const vodka = { ...base, sku: 'VODKA', category_group: 'Spirits', category_type: 'Vodka', is_in_stock: true };
+  const rose = { ...base, sku: 'ROSE', category_group: 'Wine', category_type: 'Rose Wine', is_in_stock: true };
+
+  it('Wine subject never returns Whisky candidate', () => {
+    const recs = getRecommendations(wine, [wine, whisky, rose]);
+    expect(recs.find(r => r.sku === 'WHISK')).toBeUndefined();
+  });
+  it('Wine subject returns same-group Rosé candidate', () => {
+    const recs = getRecommendations(wine, [wine, whisky, rose]);
+    expect(recs.find(r => r.sku === 'ROSE')).toBeDefined();
+  });
+  it('Gin subject returns same-group Vodka candidate', () => {
+    const recs = getRecommendations(gin, [gin, vodka, wine]);
+    expect(recs.find(r => r.sku === 'VODKA')).toBeDefined();
+  });
+  it('Gin subject never returns Wine candidate', () => {
+    const recs = getRecommendations(gin, [gin, vodka, wine]);
+    expect(recs.find(r => r.sku === 'WINE')).toBeUndefined();
   });
 });
