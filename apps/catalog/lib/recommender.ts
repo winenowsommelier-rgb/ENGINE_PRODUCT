@@ -22,7 +22,7 @@
 
 import type { PublicProduct, Band } from '@/lib/types';
 import { isInStock, parseFoodMatching } from '@/lib/utils';
-import { typeForProduct } from '@/lib/category-groups';
+import { typeForProduct, groupForProduct } from '@/lib/category-groups';
 
 const MAX_RECS = 4;
 
@@ -91,6 +91,77 @@ function foodSet(food: string | undefined | null): Set<string> {
   return new Set(parseFoodMatching(food).map((s) => s.toLowerCase()));
 }
 
+// Sweetness/smokiness band ordering for "within 1 step" matching.
+// VOCAB VERIFIED against products.db 2026-07-09 (Rule 3 — don't trust assumed
+// constants): sweetness = Dry(1254)/Sweet(321)/Off-Dry(120)/Medium-Sweet(80).
+// There is NO 'Semi-Sweet' in the data. smokiness = none(1899)/heavy(71) and is
+// stored LOWERCASE — compare case-insensitively or the signal silently never
+// fires ('light'/'medium' kept in the scale for future enrichment).
+const SWEETNESS_BANDS = ['dry', 'off-dry', 'medium-sweet', 'sweet'];
+const SMOKINESS_BANDS = ['none', 'light', 'medium', 'heavy'];
+
+function withinOneBand(bands: string[], a: string | undefined | null, b: string | undefined | null): boolean {
+  if (!a || !b) return false;
+  const ai = bands.indexOf(a.toLowerCase()), bi = bands.indexOf(b.toLowerCase());
+  return ai !== -1 && bi !== -1 && Math.abs(ai - bi) <= 1;
+}
+
+/**
+ * Score a candidate against the current product, returning both the numeric
+ * score and a per-signal breakdown (used by staff API and getRecommendationsWithBands).
+ *
+ * Pre-split food set for `product` can be passed to avoid re-splitting it on
+ * every candidate (hot path during precompute).
+ */
+export function scoreCandidateDetailed(
+  product: PublicProduct,
+  candidate: PublicProduct,
+  productFoods?: Set<string>,
+): { score: number; breakdown: Record<string, number> } {
+  const breakdown: Record<string, number> = {};
+  const add = (key: string, pts: number) => { if (pts > 0) breakdown[key] = (breakdown[key] ?? 0) + pts; };
+
+  if (product.region && candidate.region && product.region === candidate.region) add('region', 3);
+  if (product.subregion && candidate.subregion && product.subregion === candidate.subregion) add('subregion', 2);
+  if (varietiesMatch(product.variety, candidate.variety)) add('variety', 2);
+  if (product.country && candidate.country && product.country === candidate.country) add('country', 1);
+
+  const a = productFoods ?? foodSet(product.food_matching);
+  const b = foodSet(candidate.food_matching);
+  let foodPts = 0;
+  for (const item of b) { if (a.has(item)) foodPts += 1; }
+  if (foodPts > 0) add('food', foodPts);
+
+  // Same canonical TYPE (category_type), not raw classification: a whisky mislabeled
+  // "Wine product" must score with other whiskies, not with wine. typeForProduct prefers
+  // the backfilled category_type, else resolves from the SKU.
+  const pt = typeForProduct(product);
+  const ct = typeForProduct(candidate);
+  if (pt && ct && pt !== 'Unknown' && pt === ct) add('category_type', 1);
+
+  if (typeof product.price === 'number' && product.price > 0 &&
+      typeof candidate.price === 'number' && candidate.price > 0) {
+    const { lo, hi } = similarRange(product.price);
+    if (candidate.price >= lo && candidate.price <= hi) add('price', 1);
+  }
+
+  // Taste tiebreakers — body/acidity/tannin always; sweetness/smokiness conditional.
+  if (product.body && candidate.body && product.body === candidate.body) add('body', 1.5);
+  if (product.acidity && candidate.acidity && product.acidity === candidate.acidity) add('acidity', 1.5);
+  if (product.tannin && candidate.tannin && product.tannin === candidate.tannin) add('tannin', 1.5);
+
+  const grp = groupForProduct(product);
+  if (grp === 'Wine' || grp === 'Liqueur') {
+    if (withinOneBand(SWEETNESS_BANDS, product.sweetness, candidate.sweetness)) add('sweetness', 0.5);
+  }
+  if (grp === 'Whisky' || grp === 'Spirits' || grp === 'Sake & Asian') {
+    if (withinOneBand(SMOKINESS_BANDS, product.smokiness, candidate.smokiness)) add('smokiness', 0.5);
+  }
+
+  const score = Object.values(breakdown).reduce((s, v) => s + v, 0);
+  return { score, breakdown };
+}
+
 /**
  * Score a candidate against the current product per spec §6.
  * Higher = more similar. Returns 0 for "nothing in common".
@@ -103,33 +174,7 @@ export function scoreCandidate(
   candidate: PublicProduct,
   productFoods?: Set<string>,
 ): number {
-  let score = 0;
-
-  if (product.region && candidate.region && product.region === candidate.region) score += 3;
-  if (product.subregion && candidate.subregion && product.subregion === candidate.subregion) score += 2;
-  if (varietiesMatch(product.variety, candidate.variety)) score += 2;
-  if (product.country && candidate.country && product.country === candidate.country) score += 1;
-
-  const a = productFoods ?? foodSet(product.food_matching);
-  const b = foodSet(candidate.food_matching);
-  for (const item of b) {
-    if (a.has(item)) score += 1; // +1 per shared food item
-  }
-
-  // Same canonical TYPE (category_type), not raw classification: a whisky mislabeled
-  // "Wine product" must score with other whiskies, not with wine. typeForProduct prefers
-  // the backfilled category_type, else resolves from the SKU.
-  const pt = typeForProduct(product);
-  const ct = typeForProduct(candidate);
-  if (pt && ct && pt !== 'Unknown' && pt === ct) score += 1;
-
-  if (typeof product.price === 'number' && product.price > 0 &&
-      typeof candidate.price === 'number' && candidate.price > 0) {
-    const { lo, hi } = similarRange(product.price);
-    if (candidate.price >= lo && candidate.price <= hi) score += 1;
-  }
-
-  return score;
+  return scoreCandidateDetailed(product, candidate, productFoods).score;
 }
 
 /**

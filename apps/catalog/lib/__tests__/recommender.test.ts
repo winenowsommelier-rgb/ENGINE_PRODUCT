@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getRecommendations, precomputeRecommendations, priceBand } from '@/lib/recommender';
+import { getRecommendations, precomputeRecommendations, priceBand, scoreCandidateDetailed } from '@/lib/recommender';
 
 const base = { sku:'A', name:'A', region:'Bordeaux', variety:'Cabernet',
   country:'France', classification:'Red Wine', food_matching:'Beef, Lamb', price:1600, is_in_stock:true } as any;
@@ -193,5 +193,91 @@ describe('priceBand', () => {
     expect(priceBand(20000, 21999)).toBe('similar');
     expect(priceBand(20000, 22001)).toBe('step-up');
     expect(priceBand(20000, 17000)).toBe('great-alternative');
+  });
+});
+
+const wineBase = {
+  sku: 'W1', name: 'W1', region: 'Burgundy', subregion: 'Côte de Nuits',
+  variety: 'Pinot Noir', country: 'France', category_group: 'Wine',
+  category_type: 'Red Wine', food_matching: 'Beef|Lamb', price: 1619,
+  is_in_stock: true, body: 'Medium', acidity: 'High', tannin: 'Low',
+} as any;
+
+describe('scoreCandidateDetailed — taste tiebreakers', () => {
+  it('body match adds +1.5', () => {
+    const candidate = { ...wineBase, sku: 'W2', body: 'Medium' };
+    const { score, breakdown } = scoreCandidateDetailed(wineBase, candidate);
+    expect(breakdown.body).toBe(1.5);
+    expect(score).toBeGreaterThan(0);
+  });
+  it('body mismatch adds 0', () => {
+    const candidate = { ...wineBase, sku: 'W2', body: 'Full' };
+    const { breakdown } = scoreCandidateDetailed(wineBase, candidate);
+    expect(breakdown.body ?? 0).toBe(0);
+  });
+  it('missing body on candidate adds 0, no penalty', () => {
+    const candidate = { ...wineBase, sku: 'W2', body: undefined };
+    const { breakdown } = scoreCandidateDetailed(wineBase, candidate);
+    expect(breakdown.body ?? 0).toBe(0);
+  });
+  it('acidity and tannin each add +1.5 when matched', () => {
+    const candidate = { ...wineBase, sku: 'W2', acidity: 'High', tannin: 'Low' };
+    const { breakdown } = scoreCandidateDetailed(wineBase, candidate);
+    expect(breakdown.acidity).toBe(1.5);
+    expect(breakdown.tannin).toBe(1.5);
+  });
+  it('three taste signals (+4.5) can surface cross-region match over same-region no-taste match', () => {
+    // Same-region-only candidate scores +3 (region)
+    const sameRegion = { ...wineBase, sku: 'SR', variety: 'none', food_matching: '', price: 99999 };
+    // Cross-region candidate with matching taste scores +4.5 (body+acidity+tannin) + other signals
+    const crossRegion = {
+      ...wineBase, sku: 'CR', region: 'Marlborough', country: 'New Zealand',
+      body: 'Medium', acidity: 'High', tannin: 'Low',
+    };
+    const { score: sr } = scoreCandidateDetailed(wineBase, sameRegion);
+    const { score: cr } = scoreCandidateDetailed(wineBase, crossRegion);
+    expect(cr).toBeGreaterThan(sr);
+  });
+  it('sweetness fires for Wine group subject', () => {
+    const subject = { ...wineBase, category_group: 'Wine', sweetness: 'Dry' } as any;
+    const candidate = { ...wineBase, sku: 'W2', sweetness: 'Off-Dry' }; // adjacent band
+    const { breakdown } = scoreCandidateDetailed(subject, candidate);
+    expect(breakdown.sweetness ?? 0).toBeGreaterThan(0);
+  });
+  it('sweetness does NOT fire for Whisky group subject', () => {
+    const subject = { ...wineBase, sku: 'WH1', category_group: 'Whisky', sweetness: 'Dry' } as any;
+    const candidate = { ...wineBase, sku: 'WH2', sweetness: 'Dry' };
+    const { breakdown } = scoreCandidateDetailed(subject, candidate);
+    expect(breakdown.sweetness ?? 0).toBe(0);
+  });
+  it('smokiness fires for Whisky group subject', () => {
+    const subject = { ...wineBase, sku: 'WH1', category_group: 'Whisky', smokiness: 'Heavy' } as any;
+    const candidate = { ...wineBase, sku: 'WH2', smokiness: 'Medium' }; // adjacent
+    const { breakdown } = scoreCandidateDetailed(subject, candidate);
+    expect(breakdown.smokiness ?? 0).toBeGreaterThan(0);
+  });
+  // REGRESSION GUARD (vocab-vs-DB): the DB stores smokiness LOWERCASE ('none',
+  // 'heavy'). A case-sensitive band lookup would silently kill this signal for
+  // 100% of real rows while synthetic capitalized tests stay green.
+  it('smokiness fires for real lowercase DB values (none/heavy)', () => {
+    const subject = { ...wineBase, sku: 'WH1', category_group: 'Whisky', smokiness: 'heavy' } as any;
+    const candidate = { ...wineBase, sku: 'WH2', smokiness: 'heavy' };
+    const { breakdown } = scoreCandidateDetailed(subject, candidate);
+    expect(breakdown.smokiness ?? 0).toBe(0.5);
+    // none vs heavy = 3 steps apart — must NOT fire
+    const far = { ...wineBase, sku: 'WH3', smokiness: 'none' };
+    expect(scoreCandidateDetailed(subject, far).breakdown.smokiness ?? 0).toBe(0);
+  });
+  it('smokiness does NOT fire for Wine group subject', () => {
+    const subject = { ...wineBase, category_group: 'Wine', smokiness: 'Heavy' } as any;
+    const candidate = { ...wineBase, sku: 'W2', smokiness: 'Heavy' };
+    const { breakdown } = scoreCandidateDetailed(subject, candidate);
+    expect(breakdown.smokiness ?? 0).toBe(0);
+  });
+  it('scoreBreakdown values sum to score', () => {
+    const candidate = { ...wineBase, sku: 'W2' };
+    const { score, breakdown } = scoreCandidateDetailed(wineBase, candidate);
+    const sum = Object.values(breakdown).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(score, 5);
   });
 });
