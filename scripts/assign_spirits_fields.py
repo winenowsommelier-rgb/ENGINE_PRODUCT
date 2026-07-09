@@ -98,13 +98,34 @@ PEAT_RULES = [
     ('heavy', r'\b(heavily peated|supernova|octomore|ardbeg|laphroaig|lagavulin|caol\s*ila|port charlotte|kilchoman|ledaig|longrow|smokehead)\b'),
     ('medium', r'\b(peat\w*|smok\w*|bowmore|highland park|benromach|springbank|talisker|ardmore|croftengea|yoichi|bruichladdich)\b'),
     ('light', r'\b(lightly peated|subtle smoke|bunnahabhain|jura|hakushu)\b'),
+    # REGION SIGNAL (2026-07-09, Task 10 review fix): "Islay" is overwhelmingly
+    # the peated-whisky region of Scotland. This is checked AFTER every
+    # brand-specific rule above (so a more specific brand/keyword match — e.g.
+    # Bowmore, Kilchoman, "peaty" — still wins) and after the
+    # _EXPLICIT_UNPEATED override in match_rules() (checked before this whole
+    # list, so "... Unpeated Islay ..." still resolves to 'none' correctly).
+    # 'medium' is the deliberately conservative default: Islay peat intensity
+    # spans light (some Bunnahabhain/Bruichladdich core range — already caught
+    # by brand rules or the Unpeated override before reaching here) to extreme
+    # (Octomore — already caught by the 'heavy' brand rule above), so a bare
+    # Islay name with no more specific signal should not default to 'none'
+    # (false claim of "definitely unpeated" — the exact bug this rule fixes)
+    # nor overclaim 'heavy'. Found via reviewer re-scan: Johnnie Walker Black
+    # Label Islay Origin (LWH0625BU), Douglas Laing's Double Barrel Islay &
+    # Highland (LWH1162EQ — blended malt combining Islay peated malt +
+    # Highland malt BY DEFINITION), Macleod's 8 Year Old Islay Single Malt
+    # (LWH0392AH) were all wrongly 'none' before this rule.
+    ('medium', r'\bislay\b'),
     ('none',  None),  # fallback for whisky — see warning above
 ]
 # CANARY REVIEW ADDITIONS (2026-07-09, Task 10): cross-referenced the full
-# 867-row in-stock Whisky catalog against known peated producers before the
-# full run. Found and fixed two real regex gaps that would have written
-# peat_level='none' as fact on genuinely peated products — the exact failure
-# shape this warning is about:
+# 867-row Whisky catalog (is_in_stock IS NOT NULL — the script's actual
+# processing scope; NOTE: the original Task 10 report mislabeled this as
+# "in-stock" when true in-stock count is 429/867 — a reporting-scope error,
+# not a processing bug, but it's likely why these gaps were initially missed)
+# against known peated producers before the full run. Found and fixed regex
+# gaps that would have written peat_level='none' as fact on genuinely peated
+# products — the exact failure shape this warning is about:
 #   1. 'smokehead' added explicitly: \bsmoke\b requires "smoke" as a standalone
 #      word and does not match "Smokehead" (one token, no space) — 3 SKUs
 #      (LWH0396AH, LWH0397AH, LWH0712AH) would have been mis-tagged 'none' for
@@ -113,14 +134,26 @@ PEAT_RULES = [
 #      smoky, smoked, smokier, etc.) — \bpeat\b did not match "Peaty" in
 #      Tomintoul's "With a Peaty Tang" (LWH0573BT), a specifically peated
 #      expression from an otherwise-unpeated distillery's core range.
+#   3. (independent reviewer re-scan, same day) bare 'islay' region signal
+#      added as a 'medium' rule above — the regex had brand names but no
+#      region signal, so Islay-named products from brands not in the list
+#      (Johnnie Walker, Douglas Laing blends, Macleod's) fell through to
+#      'none'. See rule comment above for the 3 confirmed SKUs. Checked
+#      Orkney (Highland Park territory) and Campbeltown (Springbank/Longrow
+#      territory) region words too — both brands are already covered by
+#      existing rules and no whisky row in the catalog has either word in its
+#      name with peat_level='none', so no additional region rule was needed
+#      for those two.
 # Verified no other known peated distillery (Ardmore, Benromach, Springbank/
 # Longrow, Bruichladdich, Bowmore, Highland Park, Talisker, Jura,
 # Bunnahabhain, Hakushu, Yoichi, Kilchoman, Port Charlotte, Octomore, Ledaig,
 # Ardbeg, Laphroaig, Lagavulin, Caol Ila) was missing from the catalog's 867
-# whisky rows. Confirmed correct non-matches: "Unpeated" (Glen Scotia 10 YO)
-# does NOT match peat\w* boundary-wise... re-verified below, and Arran /
-# GlenAllachie / Glendronach / Cotswolds core ranges / Lohin McKinnon core
-# range are genuinely unpeated distilleries — 'none' is correct for them.
+# whisky rows. Confirmed correct non-matches: Arran / GlenAllachie /
+# Glendronach / Cotswolds core ranges / Lohin McKinnon core range are
+# genuinely unpeated distilleries — 'none' is correct for them. Bruichladdich
+# "The Classic Laddie Unpeated Islay Single Malt" (LWH0315CN, LWH0543CN)
+# correctly resolves to 'none' via the _EXPLICIT_UNPEATED override, which is
+# checked before any PEAT_RULES entry including the new Islay rule.
 
 # ── Production method (sparkling) ──────────────────────────────────────────
 PRODUCTION_RULES = [
