@@ -103,3 +103,14 @@ export interface PublicProduct {
   reputation_confidence?: number;
   reputation_summary?: string;
 }
+
+/** Intent band assigned to each recommendation relative to the subject's price. */
+export type Band = 'similar' | 'step-up' | 'great-alternative';
+
+/** A single recommendation result with band tag and score detail. */
+export type RecommendationResult = {
+  product: PublicProduct;
+  band: Band;
+  score: number;
+  scoreBreakdown: Record<string, number>;
+};
