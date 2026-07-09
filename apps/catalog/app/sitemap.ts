@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next';
 import path from 'node:path';
 import fs from 'node:fs';
 import { loadExploreMapData } from '@/lib/explore/map-data.server';
-import { getAllPostSlugs } from '@/lib/blog/hashnode-posts';
+import { getAllPostSlugs } from '@/lib/blog/local-posts';
 
 const BASE = 'https://wnlq9.shop';
 
