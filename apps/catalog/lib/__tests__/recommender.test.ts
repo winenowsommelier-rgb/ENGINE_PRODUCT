@@ -246,6 +246,51 @@ describe('precomputeRecommendations', () => {
     // Never a cross-group SKU, no matter how many were available.
     expect(recsForS.some((sku) => sku.startsWith('CG'))).toBe(false);
   });
+
+  // Task 11 (Phase 2): regionWeightOverride === 0 for Gin means the region
+  // bucket must be SKIPPED entirely for gin subjects during precompute, not
+  // merely down-weighted at score time — otherwise a UK gin subject's pool
+  // would still be dominated by same-region non-gin noise (region bucket alone
+  // satisfies MIN_POOL, so the OLD widening chain would never reach the TYPE
+  // bucket where the cross-region gin_style match lives). If the
+  // `regionWeightOverride(product) !== 0` guard around `merge(byRegion...)`
+  // in precomputeRecommendations were reverted, this test fails: GIN_UK's pool
+  // fills with the 9 same-region Spirits candidates (score 0 vs GIN_UK — no
+  // shared signal), eligibleCount() >= MIN_POOL, and the type-bucket widening
+  // step never runs, so GIN_XR (Japan) never enters the pool at all.
+  it('gin subject skips its region bucket so a cross-region gin_style match is recommended', () => {
+    const GIN_UK = { ...base, sku: 'GIN_UK', region: 'London', country: 'UK',
+      variety: 'none', classification: 'Gin', food_matching: '',
+      category_group: 'Spirits', category_type: 'Gin', gin_style: 'contemporary_citrus',
+      price: 3000, is_in_stock: true };
+
+    // 9 same-region (London), same-group (Spirits) but DIFFERENT-type candidates
+    // (not Gin) so the region bucket alone reaches MIN_POOL (9 = MAX_RECS_EXTENDED
+    // + 1) and shares NO signal with GIN_UK (score 0 — never actually recommended,
+    // just present to "fill" the region bucket and prove it's skipped). country and
+    // variety are deliberately set to something other than GIN_UK's so these don't
+    // pick up a stray country/variety match that would let them slip into recs too.
+    const sameRegionNonGin = Array.from({ length: 9 }, (_, i) => ({
+      ...base, sku: `LNVOD${i}`, region: 'London', country: 'Elsewhere', variety: 'grain',
+      classification: 'Vodka', food_matching: '', category_group: 'Spirits',
+      category_type: 'Vodka', price: 999999, is_in_stock: true,
+    }));
+
+    // Cross-region gin (Japan) sharing gin_style with GIN_UK — must be surfaced
+    // via the TYPE bucket ("Gin") since the region bucket is skipped for gin.
+    const GIN_XR = { ...base, sku: 'GIN_XR', region: 'Osaka', country: 'Japan',
+      variety: 'none', classification: 'Gin', food_matching: '',
+      category_group: 'Spirits', category_type: 'Gin', gin_style: 'contemporary_citrus',
+      price: 3000, is_in_stock: true };
+
+    const map = precomputeRecommendations([GIN_UK, ...sameRegionNonGin, GIN_XR]);
+    const recsForGin = skus(map, 'GIN_UK');
+
+    expect(recsForGin).toContain('GIN_XR');
+    // The 9 same-region Vodka candidates share no signal (score 0) so none of
+    // them should be recommended either.
+    expect(recsForGin.some((sku) => sku.startsWith('LNVOD'))).toBe(false);
+  });
 });
 
 describe('priceBand', () => {

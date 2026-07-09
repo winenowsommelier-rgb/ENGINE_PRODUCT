@@ -23,6 +23,7 @@
 import type { PublicProduct, Band, RecommendationResult } from '@/lib/types';
 import { isInStock, parseFoodMatching } from '@/lib/utils';
 import { typeForProduct, groupForProduct, type CategoryGroup } from '@/lib/category-groups';
+import { categorySignalPoints, regionWeightOverride } from '@/lib/category-scorer';
 
 const MAX_RECS = 4;
 const MAX_RECS_EXTENDED = 8;
@@ -122,7 +123,13 @@ export function scoreCandidateDetailed(
   const breakdown: Record<string, number> = {};
   const add = (key: string, pts: number) => { if (pts > 0) breakdown[key] = (breakdown[key] ?? 0) + pts; };
 
-  if (product.region && candidate.region && product.region === candidate.region) add('region', 3);
+  // Region — check for category-specific override (e.g. gin suppresses region:
+  // "London Dry" gin is made in many countries, so region is a weak/misleading
+  // signal for gin specifically). Falls back to the default weight (+3).
+  const regionWeight = regionWeightOverride(product) ?? 3;
+  if (regionWeight > 0 && product.region && candidate.region && product.region === candidate.region) {
+    add('region', regionWeight);
+  }
   if (product.subregion && candidate.subregion && product.subregion === candidate.subregion) add('subregion', 2);
   if (varietiesMatch(product.variety, candidate.variety)) add('variety', 2);
   if (product.country && candidate.country && product.country === candidate.country) add('country', 1);
@@ -158,6 +165,11 @@ export function scoreCandidateDetailed(
   if (grp === 'Whisky' || grp === 'Spirits' || grp === 'Sake & Asian') {
     if (withinOneBand(SMOKINESS_BANDS, product.smokiness, candidate.smokiness)) add('smokiness', 0.5);
   }
+
+  // Category-specific signals (Phase 2: gin_style, agave_aging, rum_style,
+  // peat_level, production_method) — see category-scorer.ts.
+  const catPts = categorySignalPoints(product, candidate);
+  if (catPts > 0) add('category_signal', catPts);
 
   const score = Object.values(breakdown).reduce((s, v) => s + v, 0);
   return { score, breakdown };
@@ -520,7 +532,13 @@ export function precomputeRecommendations(
     };
     const eligibleCount = () => (subjectGroup === 'Unknown' ? pool.length : sameGroupCount);
 
-    merge(byRegion.get(product.region ?? ''));
+    // Gin & co.: region carries no signal (regionWeightOverride === 0), so
+    // region-bucket candidates are noise — pull from the TYPE bucket (all gins,
+    // any country) first instead, so the gin_style signal can actually surface
+    // cross-country matches. This check is O(1) per subject (no re-filter).
+    if (regionWeightOverride(product) !== 0) {
+      merge(byRegion.get(product.region ?? ''));
+    }
     if (eligibleCount() < MIN_POOL) merge(byType.get(typeForProduct(product)));
     if (eligibleCount() < MIN_POOL) merge(byCountry.get(product.country ?? ''));
     if (eligibleCount() < MIN_POOL) merge(globalFallbackByGroup.get(subjectGroup) ?? globalFallback);
