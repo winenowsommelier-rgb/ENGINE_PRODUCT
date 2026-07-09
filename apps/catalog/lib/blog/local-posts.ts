@@ -100,16 +100,21 @@ function listPostFilenames(): string[] {
   }
 }
 
+function isPublished(post: BlogPost): boolean {
+  return new Date(post.publishedAt).getTime() <= Date.now();
+}
+
 export function getAllPosts(limit = 12): BlogPostPreview[] {
   return listPostFilenames()
-    .slice(0, limit)
     .map((filename) => {
       const post = readPostFile(filename);
       if (!post) return null;
+      if (!isPublished(post)) return null;
       const { content: _content, ...preview } = post;
       return preview as BlogPostPreview;
     })
-    .filter((p): p is BlogPostPreview => p !== null);
+    .filter((p): p is BlogPostPreview => p !== null)
+    .slice(0, limit);
 }
 
 export function getPostBySlug(slug: string): BlogPost | null {
@@ -133,7 +138,7 @@ export function getAllPostSlugs(): { slug: string; updatedAt: string }[] {
   return listPostFilenames()
     .map((filename) => {
       const post = readPostFile(filename);
-      if (!post) return null;
+      if (!post || !isPublished(post)) return null;
       return { slug: post.slug, updatedAt: post.updatedAt };
     })
     .filter((s): s is { slug: string; updatedAt: string } => s !== null);
@@ -144,6 +149,7 @@ export function getAllPostsForCategory(slug: CategorySlug): BlogPostPreview[] {
   return listPostFilenames()
     .map(f => readPostFile(f))
     .filter((p): p is BlogPost => p !== null)
+    .filter(p => isPublished(p))
     .filter(p => {
       const tagSlugs = p.tags.map(t => t.slug)
       if (isDrink) return tagSlugs.some(t => DRINK_TAG_MAP[t] === slug)
