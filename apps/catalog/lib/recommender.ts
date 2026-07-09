@@ -437,8 +437,14 @@ export function getRecommendationsWithBands(
  * global fallback — far below O(n^2) for a catalog with many regions/categories.
  * Iterating `all` (not just `inStock`) for the outer SUBJECT loop only adds the
  * OOS products as extra keys; each still scores against its own small bucket, so
- * complexity stays ~O(n * b). `eligibleCount()` re-filters the (small, ≤ a few
- * hundred) pool up to 3x per subject — negligible next to scoring cost.
+ * complexity stays ~O(n * b). The same-group count used by the widening checks
+ * (`eligibleCount()`) is tracked INCREMENTALLY inside `merge()` — each candidate
+ * is classified by `groupForProduct()` exactly ONCE, when it is first added to the
+ * pool — rather than by re-filtering the accumulated pool from scratch on every
+ * widening decision. (An earlier version re-filtered the full pool up to 3x per
+ * subject via `pool.filter(...)`; at real-catalog bucket sizes — e.g. France
+ * 1,411 in-stock, Wine group 3,896 in-stock — that re-filter made the build hang
+ * and time out. Do NOT reintroduce a full re-filter here.)
  */
 export function precomputeRecommendations(
   all: readonly PublicProduct[],
@@ -495,21 +501,24 @@ export function precomputeRecommendations(
   for (const product of all) {
     const pool: PublicProduct[] = [];
     const poolSeen = new Set<string>();
+
+    // Widening counts only same-group candidates (what suppression will keep).
+    // Tracked INCREMENTALLY as items are merged, rather than re-derived via a
+    // full re-filter of `pool` on every widening check (that re-filter is what
+    // caused the O(n * pool^2)-ish build timeout — see PERFORMANCE note below).
+    // Each item is checked against subjectGroup exactly ONCE, at merge time.
+    const subjectGroup = groupForProduct(product);
+    let sameGroupCount = 0;
     const merge = (arr: PublicProduct[] | undefined) => {
       if (!arr) return;
       for (const p of arr) {
         if (poolSeen.has(p.sku)) continue;
         poolSeen.add(p.sku);
         pool.push(p);
+        if (subjectGroup === 'Unknown' || groupForProduct(p) === subjectGroup) sameGroupCount++;
       }
     };
-
-    // Widening counts only same-group candidates (what suppression will keep):
-    const subjectGroup = groupForProduct(product);
-    const eligibleCount = () =>
-      subjectGroup === 'Unknown'
-        ? pool.length
-        : pool.filter((p) => groupForProduct(p) === subjectGroup).length;
+    const eligibleCount = () => (subjectGroup === 'Unknown' ? pool.length : sameGroupCount);
 
     merge(byRegion.get(product.region ?? ''));
     if (eligibleCount() < MIN_POOL) merge(byType.get(typeForProduct(product)));
