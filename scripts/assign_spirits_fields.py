@@ -163,6 +163,28 @@ PRODUCTION_RULES = [
     ('traditional_method', None),  # fallback — assume traditional if we don't know
 ]
 
+# ── Known mis-taxonomied SKUs (exclude entirely) ─────────────────────────────
+# These SKUs resolve to a spirits category_type via sku_taxonomy.resolve()
+# (Rule 12 routing) but are NOT actually the spirits product that implies —
+# they are event listings / bundles / other junk rows accidentally sharing a
+# spirits SKU prefix. Writing spirits-classification data (e.g. peat_level) to
+# them asserts a false fact about a non-existent product attribute.
+#
+# LWF0018HC — "ISLAY FC @Blue Moon Siam Paragon": an event listing (football
+# club fixture at a venue), not a whisky bottle. Its SKU prefix resolves to
+# category_type='Whisky', and its name contains "ISLAY", so it wrongly matches
+# the Islay region rule in PEAT_RULES ('medium'). This is a SKU-taxonomy bug
+# tracked as a separate out-of-scope data-quality issue — do NOT write
+# spirits classification data to it here. Currently the DB already holds the
+# (also wrong, but non-NULL) legacy value peat_level='none' for this row, so
+# the `WHERE col IS NULL` guard in main() happens to skip it today — but that
+# is protection-by-accident: a future "reset column to NULL and recompute"
+# migration (this codebase has precedent for that pattern) would silently
+# re-introduce the wrong 'medium' classification on a re-run. This exclusion
+# is the real, code-level guard: skipped unconditionally, regardless of NULL
+# state.
+_KNOWN_MISTAXONOMIED_SKUS = {'LWF0018HC'}
+
 CATEGORY_RULES = {
     'Gin':     ('gin_style',         GIN_RULES),
     'Tequila': ('agave_aging',       AGAVE_RULES),
@@ -192,12 +214,19 @@ def match_rules(name: str, rules: list) -> str | None:
     return None
 
 
-def resolve_column_and_rules(category_type: str | None):
+def resolve_column_and_rules(category_type: str | None, sku: str | None = None):
     """Rule 12: route on category_type (derived from SKU prefix via
     sku_taxonomy.resolve()) ONLY — never fall back to raw Magento
     classification (it is a stale TYPE duplicate with a 1,509-row junk
     bucket). A row without a resolvable category_type is skipped rather than
-    guessed."""
+    guessed.
+
+    Known mis-taxonomied SKUs (see _KNOWN_MISTAXONOMIED_SKUS) are excluded
+    unconditionally here, before any rule matching — this is a hard skip,
+    not dependent on the caller's NULL-guard, so a future column reset can't
+    silently re-introduce a wrong classification on these rows."""
+    if sku in _KNOWN_MISTAXONOMIED_SKUS:
+        return None, None
     cat = category_type or ''
     if 'Gin' in cat:
         return 'gin_style', GIN_RULES
@@ -275,7 +304,7 @@ def main(argv=None) -> int:
 
     updates = []
     for sku, name, category_type in rows:
-        col, rules = resolve_column_and_rules(category_type)
+        col, rules = resolve_column_and_rules(category_type, sku)
         if col is None:
             continue
         value = match_rules(name or '', rules)
