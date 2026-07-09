@@ -20,12 +20,11 @@
  * scores against a small bucket instead of the whole catalog. See its docblock.
  */
 
-import type { PublicProduct } from '@/lib/types';
+import type { PublicProduct, Band } from '@/lib/types';
 import { isInStock, parseFoodMatching } from '@/lib/utils';
 import { typeForProduct } from '@/lib/category-groups';
 
 const MAX_RECS = 4;
-const PRICE_BAND = 0.4; // +/-40%
 
 // Variety alias clusters — exact-match on variety misses obvious affinities like
 // Syrah/Shiraz or Pinot Noir/Burgundy. Two varieties in the same cluster score
@@ -48,6 +47,32 @@ for (let i = 0; i < VARIETY_ALIASES.length; i++) {
   for (const v of VARIETY_ALIASES[i]) {
     _varietyCluster.set(v, i);
   }
+}
+
+/** Tiered price band — returns lo/hi inclusive range considered "similar". */
+function similarRange(price: number): { lo: number; hi: number } {
+  if (price < 1000)  return { lo: Math.max(0, price - 250), hi: price + 250 };
+  if (price < 5000)  return { lo: price * 0.80,             hi: price * 1.20 };
+  if (price < 15000) return { lo: price * 0.85,             hi: price * 1.15 };
+  return                    { lo: price * 0.90,             hi: price * 1.10 };
+}
+
+/**
+ * Assign an intent band to a candidate relative to the subject's price.
+ * Returns 'similar' when either price is missing/zero — safest default for display.
+ */
+export function priceBand(
+  subjectPrice: number | undefined | null,
+  candidatePrice: number | undefined | null,
+): Band {
+  if (
+    typeof subjectPrice !== 'number' || subjectPrice <= 0 ||
+    typeof candidatePrice !== 'number' || candidatePrice <= 0
+  ) return 'similar';
+  const { lo, hi } = similarRange(subjectPrice);
+  if (candidatePrice >= lo && candidatePrice <= hi) return 'similar';
+  if (candidatePrice > hi) return 'step-up';
+  return 'great-alternative';
 }
 
 function varietiesMatch(a: string | undefined | null, b: string | undefined | null): boolean {
@@ -98,9 +123,9 @@ export function scoreCandidate(
   const ct = typeForProduct(candidate);
   if (pt && ct && pt !== 'Unknown' && pt === ct) score += 1;
 
-  if (typeof product.price === 'number' && typeof candidate.price === 'number' && product.price > 0) {
-    const lo = product.price * (1 - PRICE_BAND);
-    const hi = product.price * (1 + PRICE_BAND);
+  if (typeof product.price === 'number' && product.price > 0 &&
+      typeof candidate.price === 'number' && candidate.price > 0) {
+    const { lo, hi } = similarRange(product.price);
     if (candidate.price >= lo && candidate.price <= hi) score += 1;
   }
 

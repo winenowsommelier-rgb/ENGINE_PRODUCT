@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getRecommendations, precomputeRecommendations } from '@/lib/recommender';
+import { getRecommendations, precomputeRecommendations, priceBand } from '@/lib/recommender';
 
 const base = { sku:'A', name:'A', region:'Bordeaux', variety:'Cabernet',
   country:'France', classification:'Red Wine', food_matching:'Beef, Lamb', price:1600, is_in_stock:true } as any;
@@ -162,5 +162,36 @@ describe('precomputeRecommendations', () => {
     for (const recs of map.values()) {
       expect(recs).not.toContain('GHOST');
     }
+  });
+});
+
+describe('priceBand', () => {
+  it('returns similar when both prices null', () => {
+    expect(priceBand(null, null)).toBe('similar');
+  });
+  it('returns similar when subject price is 0', () => {
+    expect(priceBand(0, 1500)).toBe('similar');
+  });
+  it('returns similar when candidate price is null', () => {
+    expect(priceBand(1619, null)).toBe('similar');
+  });
+  it('budget tier: lo clamped to 0 (not negative)', () => {
+    // Price 200, band is ±250 absolute → lo = max(0,-50) = 0
+    expect(priceBand(200, 1)).toBe('similar');   // any positive price is >= 0
+    expect(priceBand(200, 451)).toBe('step-up'); // 451 > 200+250
+  });
+  it('mid tier (1000-5000): ±20%', () => {
+    expect(priceBand(1619, 1900)).toBe('similar');      // within 20%
+    expect(priceBand(1619, 3500)).toBe('step-up');      // >20% above
+    expect(priceBand(1619, 800)).toBe('great-alternative'); // >20% below
+  });
+  it('high tier (5000-15000): ±15%', () => {
+    expect(priceBand(8000, 9000)).toBe('similar');
+    expect(priceBand(8000, 9300)).toBe('step-up');
+  });
+  it('premium tier (15000+): ±10%', () => {
+    expect(priceBand(20000, 21999)).toBe('similar');
+    expect(priceBand(20000, 22001)).toBe('step-up');
+    expect(priceBand(20000, 17000)).toBe('great-alternative');
   });
 });
