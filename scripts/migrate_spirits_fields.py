@@ -65,6 +65,13 @@ def main(argv=None) -> int:
         )
         return 1
 
+    # Print the resolved target on every run (Rule 9: know which data source
+    # you're reading/writing) — the guard above only proves the DB is populated,
+    # not that it's the CURRENT/correct one (e.g. a stray products.db.backup-*
+    # snapshot also has rows and would pass). Printing the path + row count lets
+    # a human catch a wrong-but-populated DB immediately from the output.
+    print(f'Target DB: {args.db} ({row_count} rows)')
+
     conn = sqlite3.connect(args.db)
     try:
         cur = conn.cursor()
