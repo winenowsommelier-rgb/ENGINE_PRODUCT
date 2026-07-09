@@ -29,6 +29,19 @@ import { getRecommendationsWithBands } from '@/lib/recommender';
  * export (e.g. not yet synced). Each row's `band_price_basis` field tells staff
  * which basis was actually used for THAT row, so a "similar"/"step-up" label
  * computed against retail isn't silently mistaken for a B2B-accurate one.
+ *
+ * SUBJECT-SIDE GAP (known limitation, not yet surfaced in the response): the
+ * SAME fallback applies to the subject SKU itself — getRecommendationsWithBands()
+ * computes `subjectPrice = priceOf(product)` with the identical retail-fallback
+ * logic, so if the SKU passed in `?sku=` has no B2B price, EVERY row's `band` in
+ * the response is silently anchored to a retail subject price, not just the rows
+ * missing B2B data. `band_price_basis` only reports the CANDIDATE side of this;
+ * there is currently no response field indicating the subject's basis, and the
+ * subject itself never appears as a row (only candidates do), so a caller has no
+ * way to detect this from the response alone. If precision matters, check
+ * whether `sku` exists in data/b2b_products_export.json independently before
+ * trusting a b2b=true result. Adding a `subject_price_basis` field is a
+ * follow-up, not required here.
  */
 export const dynamic = 'force-dynamic';
 
