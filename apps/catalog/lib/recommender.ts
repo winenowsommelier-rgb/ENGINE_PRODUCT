@@ -167,9 +167,11 @@ export function scoreCandidateDetailed(
   }
 
   // Category-specific signals (Phase 2: gin_style, agave_aging, rum_style,
-  // peat_level, production_method) — see category-scorer.ts.
-  const catPts = categorySignalPoints(product, candidate);
-  if (catPts > 0) add('category_signal', catPts);
+  // peat_level, production_method) — see category-scorer.ts. Attributed to
+  // the specific field it matched on (e.g. 'gin_style', 'peat_level') so the
+  // breakdown stays explainable, matching every other signal in this function.
+  const catSignal = categorySignalPoints(product, candidate);
+  if (catSignal) add(catSignal.field, catSignal.points);
 
   const score = Object.values(breakdown).reduce((s, v) => s + v, 0);
   return { score, breakdown };

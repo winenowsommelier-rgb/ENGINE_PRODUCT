@@ -22,21 +22,34 @@ const RUM_TYPES = new Set(['Rum']);
 const WHISKY_GROUPS = new Set(['Whisky']);
 const SPARKLING_TYPES = new Set(['Champagne', 'Sparkling Wine', 'Crémant', 'Cava', 'Prosecco', 'Pétillant Naturel']);
 
+/** Which field a category signal matched on, and how many points it's worth. */
+export interface CategorySignalMatch {
+  field: keyof PublicProduct;
+  points: number;
+}
+
 /**
  * Additional points from category-specific fields (gin_style, agave_aging, etc.)
- * Returns 0 when fields are absent — never penalises.
+ * Returns null when fields are absent or don't match — never penalises.
+ *
+ * Returns the matched field name alongside the points (rather than a bare
+ * number) so callers can attribute the points to a specific breakdown key
+ * (e.g. `gin_style`, `peat_level`) instead of a generic bucket — this is
+ * what keeps scoreBreakdown explainable for staff.
  */
 export function categorySignalPoints(
   product: PublicProduct,
   candidate: PublicProduct,
-): number {
+): CategorySignalMatch | null {
   const type = typeForProduct(product);
   const group = groupForProduct(product);
 
-  // Group-based checks first: category_group is the broader, more reliable
-  // classification signal. Checking it ahead of the type-based buckets below
-  // also avoids Whisky products being mis-routed into the Gin branch when
-  // category_type is stale/absent (category_group is populated independently).
+  // Group-based check first: category_type can be absent or stale for a given
+  // product even when category_group is populated (group is backfilled more
+  // reliably than type — see Tasks 9-10). Checking WHISKY_GROUPS ahead of the
+  // type-based buckets below ensures peat_level still gets scored for a Whisky
+  // product whose category_type is missing/out of date, instead of silently
+  // falling through to the `return null` at the bottom of this function.
   if (WHISKY_GROUPS.has(group)) {
     return matchField(product, candidate, 'peat_level', 3);
   }
@@ -52,18 +65,18 @@ export function categorySignalPoints(
   if (SPARKLING_TYPES.has(type)) {
     return matchField(product, candidate, 'production_method', 3);
   }
-  return 0;
+  return null;
 }
 
 function matchField(
   product: PublicProduct,
   candidate: PublicProduct,
-  field: string,
+  field: keyof PublicProduct,
   points: number,
-): number {
-  const a = (product as any)[field];
-  const b = (candidate as any)[field];
-  return a && b && a === b ? points : 0;
+): CategorySignalMatch | null {
+  const a = product[field];
+  const b = candidate[field];
+  return a && b && a === b ? { field, points } : null;
 }
 
 /**
@@ -72,8 +85,8 @@ function matchField(
  * All other categories: null (use default).
  */
 export function regionWeightOverride(product: PublicProduct): number | null {
-  // Whisky (group) takes precedence over a possibly-stale/default category_type,
-  // matching the precedence used in categorySignalPoints above.
+  // Whisky (group) is checked first for the same reason as in categorySignalPoints
+  // above: category_type may be stale/absent while category_group is reliable.
   if (WHISKY_GROUPS.has(groupForProduct(product))) return null;
   if (GIN_TYPES.has(typeForProduct(product))) return 0;
   return null;

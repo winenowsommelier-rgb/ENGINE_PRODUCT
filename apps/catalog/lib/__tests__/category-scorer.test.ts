@@ -8,62 +8,73 @@ const mkProduct = (overrides: any) => ({
 }) as any;
 
 describe('categorySignalPoints', () => {
-  it('gin_style match scores +3', () => {
+  it('gin_style match scores +3 under the gin_style key', () => {
     const subject = mkProduct({ gin_style: 'contemporary_citrus' });
     const candidate = mkProduct({ sku: 'Y', gin_style: 'contemporary_citrus' });
-    expect(categorySignalPoints(subject, candidate)).toBe(3);
+    const result = categorySignalPoints(subject, candidate);
+    expect(result?.points).toBe(3);
+    expect(result?.field).toBe('gin_style');
   });
-  it('gin_style mismatch scores 0', () => {
+  it('gin_style mismatch scores null', () => {
     const subject = mkProduct({ gin_style: 'contemporary_citrus' });
     const candidate = mkProduct({ sku: 'Y', gin_style: 'juniper_forward' });
-    expect(categorySignalPoints(subject, candidate)).toBe(0);
+    expect(categorySignalPoints(subject, candidate)).toBeNull();
   });
-  it('missing gin_style scores 0 (no penalty)', () => {
+  it('missing gin_style scores null (no penalty)', () => {
     const subject = mkProduct({ gin_style: 'contemporary_citrus' });
     const candidate = mkProduct({ sku: 'Y' }); // no gin_style
-    expect(categorySignalPoints(subject, candidate)).toBe(0);
+    expect(categorySignalPoints(subject, candidate)).toBeNull();
   });
-  it('agave_aging match scores +3 for Tequila', () => {
+  it('agave_aging match scores +3 under the agave_aging key for Tequila', () => {
     const subject = mkProduct({ category_type: 'Tequila', agave_aging: 'blanco' });
     const candidate = mkProduct({ sku: 'Y', category_type: 'Tequila', agave_aging: 'blanco' });
-    expect(categorySignalPoints(subject, candidate)).toBe(3);
+    const result = categorySignalPoints(subject, candidate);
+    expect(result?.points).toBe(3);
+    expect(result?.field).toBe('agave_aging');
   });
-  it('agave_aging mismatch (blanco vs anejo) scores 0', () => {
+  it('agave_aging mismatch (blanco vs anejo) scores null', () => {
     const subject = mkProduct({ category_type: 'Tequila', agave_aging: 'blanco' });
     const candidate = mkProduct({ sku: 'Y', category_type: 'Tequila', agave_aging: 'anejo' });
-    expect(categorySignalPoints(subject, candidate)).toBe(0);
+    expect(categorySignalPoints(subject, candidate)).toBeNull();
   });
-  it('peat_level match scores +3 for Whisky', () => {
+  it('peat_level match scores +3 under the peat_level key for Whisky', () => {
     const subject = mkProduct({ category_group: 'Whisky', peat_level: 'heavy' });
     const candidate = mkProduct({ sku: 'Y', category_group: 'Whisky', peat_level: 'heavy' });
-    expect(categorySignalPoints(subject, candidate)).toBe(3);
+    const result = categorySignalPoints(subject, candidate);
+    expect(result?.points).toBe(3);
+    expect(result?.field).toBe('peat_level');
   });
   it('peat_level match surfaces cross-distillery heavy-peat', () => {
     // Two "heavy peat" whiskies — Ardbeg (Islay) and Yoichi (Japan)
     const ardbeg = mkProduct({ sku: 'ARD', category_group: 'Whisky', region: 'Islay', peat_level: 'heavy' });
     const yoichi = mkProduct({ sku: 'YOI', category_group: 'Whisky', region: 'Hokkaido', peat_level: 'heavy' });
-    const points = categorySignalPoints(ardbeg, yoichi);
-    expect(points).toBe(3); // peat match alone gives +3, sufficient to surface cross-region
+    const result = categorySignalPoints(ardbeg, yoichi);
+    expect(result?.points).toBe(3); // peat match alone gives +3, sufficient to surface cross-region
+    expect(result?.field).toBe('peat_level');
   });
-  it('rum_style match scores +3', () => {
+  it('rum_style match scores +3 under the rum_style key', () => {
     const subject = mkProduct({ category_type: 'Rum', rum_style: 'spiced' });
     const candidate = mkProduct({ sku: 'Y', category_type: 'Rum', rum_style: 'spiced' });
-    expect(categorySignalPoints(subject, candidate)).toBe(3);
+    const result = categorySignalPoints(subject, candidate);
+    expect(result?.points).toBe(3);
+    expect(result?.field).toBe('rum_style');
   });
-  it('production_method match scores +3 for Sparkling', () => {
+  it('production_method match scores +3 under the production_method key for Sparkling', () => {
     const subject = mkProduct({ category_group: 'Wine', category_type: 'Champagne', production_method: 'traditional_method' });
     const candidate = mkProduct({ sku: 'Y', category_group: 'Wine', category_type: 'Sparkling Wine', production_method: 'traditional_method' });
-    expect(categorySignalPoints(subject, candidate)).toBe(3);
+    const result = categorySignalPoints(subject, candidate);
+    expect(result?.points).toBe(3);
+    expect(result?.field).toBe('production_method');
   });
-  it('production_method mismatch (traditional vs tank) scores 0', () => {
+  it('production_method mismatch (traditional vs tank) scores null', () => {
     const subject = mkProduct({ category_group: 'Wine', category_type: 'Champagne', production_method: 'traditional_method' });
     const candidate = mkProduct({ sku: 'Y', category_group: 'Wine', category_type: 'Sparkling Wine', production_method: 'tank_method' });
-    expect(categorySignalPoints(subject, candidate)).toBe(0);
+    expect(categorySignalPoints(subject, candidate)).toBeNull();
   });
-  it('scores 0 when no category-specific fields present (no penalty)', () => {
+  it('scores null when no category-specific fields present (no penalty)', () => {
     const subject = mkProduct({ category_type: 'Gin' }); // no gin_style
     const candidate = mkProduct({ sku: 'Y' });
-    expect(categorySignalPoints(subject, candidate)).toBe(0);
+    expect(categorySignalPoints(subject, candidate)).toBeNull();
   });
 });
 
