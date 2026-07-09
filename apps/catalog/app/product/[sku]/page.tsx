@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { StorefrontImage } from '@/components/StorefrontImage';
 import { ContactButtons } from '@/components/ContactButtons';
-import { ProductCard } from '@/components/ProductCard';
+import { RecsCarousel } from '@/components/RecsCarousel';
 import { TasteWheel } from '@/components/product/TasteWheel';
 import { StructuralGauges } from '@/components/product/StructuralGauges';
 import { CriticScoreStrip } from '@/components/CriticScoreStrip';
@@ -17,7 +17,7 @@ import { getContactEnv } from '@/lib/contact-env';
 import { toTiers, toStructural } from '@/lib/taste-adapter';
 import { isInStock, parseFoodMatching, signatureDishes } from '@/lib/utils';
 import { sanitizeDescription } from '@/lib/sanitize-html';
-import type { PublicProduct, Band } from '@/lib/types';
+import type { Band } from '@/lib/types';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildProductSchema, buildBreadcrumbList, GROUP_SLUG } from '@/lib/seo/jsonld';
 import { ViewItemTracker } from '@/components/product/ViewItemTracker';
@@ -59,9 +59,9 @@ export const revalidate = 3600;
  * getRecsForSku() call and cache it for the instance lifetime.
  */
 let _recs: Map<string, { sku: string; band: Band }[]> | null = null;
-function getRecsForSku(sku: string): string[] {
+function getRecsForSku(sku: string): { sku: string; band: Band }[] {
   if (_recs === null) _recs = precomputeRecommendations(getAllProducts());
-  return (_recs.get(sku) ?? []).map((r) => r.sku);
+  return _recs.get(sku) ?? [];
 }
 
 /**
@@ -200,10 +200,21 @@ export default function Page({ params }: { params: { sku: string } }) {
   // Per-product contact deep-links (pre-fills "I'm interested in [name] — [sku]").
   const links = buildContactLinks(getContactEnv(), { name: product.name, sku: product.sku });
 
-  // Recommendations: resolve precomputed skus → products (cached lookups).
-  const recs: PublicProduct[] = getRecsForSku(product.sku)
-    .map((sku) => getProductBySku(sku))
-    .filter((p): p is PublicProduct => Boolean(p));
+  const isProductOos = !isInStock(product.is_in_stock);
+
+  // Recommendations: resolve precomputed skus → products (cached lookups). Contact
+  // links are precomputed HERE, server-side, because RecsCarousel is a Client
+  // Component and cannot receive buildContactLinks/getContactEnv as function props.
+  const contactEnv = getContactEnv();
+  const recEntries = getRecsForSku(product.sku);
+  const recs = recEntries
+    .map(({ sku, band }) => {
+      const p = getProductBySku(sku);
+      return p
+        ? { product: p, band, contactLinks: buildContactLinks(contactEnv, { name: p.name, sku: p.sku }) }
+        : null;
+    })
+    .filter((r): r is NonNullable<typeof r> => Boolean(r));
 
   const priceValue = product.price ? Math.round(product.price) : undefined;
 
@@ -356,13 +367,9 @@ export default function Page({ params }: { params: { sku: string } }) {
       {recs.length > 0 ? (
         <section className="flex flex-col gap-6 border-t border-border pt-10">
           <h2 className="text-2xl font-semibold tracking-tight text-foreground">
-            You might also like
+            {isProductOos ? 'Available now — similar style' : 'You might also like'}
           </h2>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
-            {recs.map((p) => (
-              <ProductCard key={p.sku} product={p} contactLinks={buildContactLinks(getContactEnv(), { name: p.name, sku: p.sku })} />
-            ))}
-          </div>
+          <RecsCarousel items={recs} />
         </section>
       ) : null}
       <JsonLd data={buildProductSchema(product)} />
