@@ -95,6 +95,11 @@ A useful formula: one bottle per two guests for a seated dinner, plus one extra 
 
 ---
 
+
+---
+
+*Keep reading: [Burgundy Explained](/blog/burgundy-explained-cote-de-nuits-vs-cote-de-beaune) · [Best Rosé Wine in Bangkok Under ฿2,000](/blog/best-rose-wine-bangkok-under-2000) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### Is it rude to bring wine as a gift in Thailand?

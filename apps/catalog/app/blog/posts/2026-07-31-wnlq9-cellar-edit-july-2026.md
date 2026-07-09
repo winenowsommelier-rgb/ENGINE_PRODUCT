@@ -17,9 +17,9 @@ July in Bangkok is the real deal. The rain hammers the windows at 4pm, the air b
 ## The Picks
 
 <!-- product: WWW5368BN -->
-**Weingut Robert Weil Riesling Rheingau Tradition, Germany — ฿1,019 (sale)**
+**Weingut Robert Weil Riesling Rheingau Tradition, Germany — ฿1,200**
 
-We keep coming back to this one all July. Alsatian and Rheingau Riesling at this level is one of the great underrated pairings with Thai food — the natural acidity, the citrus precision, the mineral finish — it handles lemongrass and galangal like the wine was designed for it. We've been drinking it with tom kha gai and it is, frankly, a revelation. If you think you don't like Riesling, this is the bottle that changes your mind. On sale right now which makes it even easier to reach for.
+We keep coming back to this one all July. Alsatian and Rheingau Riesling at this level is one of the great underrated pairings with Thai food — the natural acidity, the citrus precision, the mineral finish — it handles lemongrass and galangal like the wine was designed for it. We've been drinking it with tom kha gai and it is, frankly, a revelation. If you think you don't like Riesling, this is the bottle that changes your mind.
 
 ---
 
@@ -71,3 +71,21 @@ We've been including Thai wine in the edit when it's genuinely worth drinking, a
 Next month we're going deep on South American reds — some serious Malbec and a Chilean Carménère we've been holding back for August.
 
 *All bottles in stock at WNLQ9. Prices in THB. Updated monthly.*
+
+---
+
+*Keep reading: [The Best Bottles on Sale Right Now — WNLQ9 Wine Deals Bangkok](/blog/best-wine-deals-bangkok-on-sale-now) · all [Curated Lists](/blog/category/curated) stories.*
+
+## Frequently Asked Questions
+
+### What is the WNLQ9 Cellar Edit?
+
+A monthly, personally tested shortlist from our team — the bottles we actually drank and would buy again, across price points. It is not a bestseller list and no bottle is included because a supplier asked.
+
+### Are Cellar Edit picks available for delivery in Bangkok?
+
+Yes — every pick is in stock at publication with Bangkok delivery. Some are small parcels and can sell through before the month ends; the product cards show live availability.
+
+### How are the prices in this edit set?
+
+Prices shown were correct at publication. Where a wine is on sale, the product card displays both the regular and sale price live, so you always see the current number before ordering.

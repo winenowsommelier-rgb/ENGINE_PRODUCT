@@ -92,8 +92,8 @@ The expatriate community, one of the largest in Southeast Asia, has also acceler
 
 One of the benchmark Brunellos — Sangiovese Grosso at altitude, aged in large Slavonian oak for four years before release. The kind of bottle that costs considerably more at a restaurant a few streets away. Available for delivery in Bangkok.
 
-<!-- product: WRW2541AD -->
-**Bodegas Muga Rioja Reserva DOCa** — ฿1,290 (sale)
+<!-- product: WRW4225AJ -->
+**Bodegas Muga Reserva Rioja DOC** — ฿1,758 (sale)
 
 The Spanish benchmark — Tempranillo and Garnacha aged in American and French oak, tight-grained and structured. Available at a price that makes it a weekly opener rather than an occasion bottle.
 
@@ -112,21 +112,26 @@ Fushimi's water — known for softness — shapes this. Clean fermentation with 
 
 The world's best-selling single malt, offered at retail price without the bar or hotel markup. The benchmark case for why buying direct in Bangkok changes the economics of drinking well.
 
+
+---
+
+*Keep reading: [Veneto](/blog/veneto-amarone-soave-ripasso-guide-bangkok) · [The WNLQ9 Sommelier's Personal Picks](/blog/sommelier-personal-picks-wnlq9) · all [Deep Dives](/blog/category/deep-dives) stories.*
+
 ## Frequently Asked Questions
 
-**Is Bangkok a good place to buy wine?**
+### Is Bangkok a good place to buy wine?
 
 Yes — and increasingly so. Bangkok has one of the deepest direct-to-consumer wine markets in Southeast Asia, with selection depth (5,000+ SKUs) and next-day delivery infrastructure that rivals any city in the region. The import duty structure adds cost relative to duty-free markets, but direct importer models bypass restaurant markups, which more than compensates for most buyers in the mid-range.
 
-**Is wine cheaper in Bangkok than Singapore?**
+### Is wine cheaper in Bangkok than Singapore?
 
 Often yes, for mid-range bottles bought retail. Singapore's zero-duty status is real but Singapore's cost of living, retail rents, and distributor margins mean final retail prices on mid-range bottles (SGD 30–60 range) are frequently comparable to Bangkok retail or higher. Where Singapore genuinely wins is on fine wine auction lots and trophy bottles, where the duty saving at the higher price point is substantial. For the ฿800–2,000 everyday market, Bangkok is competitive.
 
-**Where can I buy wine for delivery in Bangkok?**
+### Where can I buy wine for delivery in Bangkok?
 
 WNLQ9 offers next-day delivery across Bangkok from a catalogue of 5,000+ wines, spirits, sake, and craft beverages — from Burgundy Grand Cru to locally-made Thai wine and Japanese whisky. Orders placed before the daily cut-off arrive the following day. Villa Market and Gourmet Market carry a curated selection for immediate pickup. For auction lots and mature fine wine, specialist retailers in the Silom and Sukhumvit corridors are the right destination.
 
-**What is the import duty on wine in Thailand?**
+### What is the import duty on wine in Thailand?
 
 Thailand applies a layered tax structure to imported wine: import duty at 54% of the CIF value (cost, insurance, freight), followed by excise duty calculated on a tiered schedule based on the bottle's assessed value, and then VAT at 7% applied to the combined total. The effective total tax burden on an imported bottle can reach 150–200% of the ex-winery cost depending on origin and declared value. This is why direct importer-to-consumer pricing, which eliminates further distributor and restaurant markups, materially changes the economics for end buyers.
 

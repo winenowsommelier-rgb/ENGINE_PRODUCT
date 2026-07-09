@@ -1,17 +1,12 @@
 ---
-title: "Rum in Bangkok: A Guide to What's Worth Buying"
-slug: rum-guide-bangkok
-date: 2026-08-03
-tags:
-  - guide
-  - rum
-  - spirits
-  - bangkok
-cover_image: https://images.pexels.com/photos/4021983/pexels-photo-4021983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
-cover_credit: ELEVATE via Pexels
-cover_credit_url: https://www.pexels.com/photo/4021983/
-meta_title: "Rum Bangkok Guide: Best Bottles to Buy in Thailand"
-meta_description: "White, dark, aged, agricole — the complete Bangkok rum guide. What to buy, how to drink it, and which bottles are actually worth the baht."
+TITLE: Rum in Bangkok: A Guide to What's Worth Buying
+SLUG: rum-guide-bangkok
+DATE: 2026-08-03
+TAGS: guide,rum,spirits,bangkok
+COVER-IMAGE: https://images.pexels.com/photos/4021983/pexels-photo-4021983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
+COVER-CREDIT: A backlit line of rum bottles behind a dim bar — the range of colour, from water-white to dark mahogany, is the first clue to how each was aged.
+META-TITLE: Rum Bangkok Guide: Best Bottles to Buy in Thailand
+META-DESC: White, dark, aged, agricole — the complete Bangkok rum guide. What to buy, how to drink it, and which bottles are actually worth the baht.
 ---
 
 Bangkok has always had a soft spot for whisky — local blends, Japanese single malts, the occasional Scotch on the rocks while the fan spins overhead. And gin had its moment, as gin tends to do. But rum? Rum sits quietly at the back of most spirits cabinets here, waiting to be noticed. That is a shame, because when you look at what rum actually delivers — the complexity of aged barrels, the brightness of fresh cane, the regional diversity from Martinique to Guatemala to Phuket — it is offering more character per baht than almost anything else on the shelf.
@@ -123,3 +118,27 @@ Solera is a fractional blending system borrowed from the Sherry and Cognac tradi
 ---
 
 The bottle you open tonight doesn't need to be the most expensive one on the shelf. It just needs to be cold, honest, and well-made — and rum, more often than most categories, delivers all three at once.
+
+
+
+---
+
+*Keep reading: [Tequila & Mezcal in Bangkok — What to Buy and How to Drink It](/blog/tequila-mezcal-bangkok-guide) · [What Is Gin? A Bangkok Drinker's Guide](/blog/gin-guide-bangkok-drinkers) · all [Spirits](/blog/category/spirits) stories.*
+
+## Frequently Asked Questions
+
+### Where can I buy good rum in Bangkok?
+
+WNLQ9 stocks rums across every major style — white, gold, dark, aged, and agricole — with Bangkok delivery. The spirits selection runs from mixing rums under ฿1,000 to sipping rums worth pouring neat.
+
+### What is the difference between white, gold and dark rum?
+
+White rum is typically unaged or briefly aged and filtered clear — built for mixing. Gold rum sees some barrel time and adds vanilla and caramel notes. Dark rum is either long-aged or blended with richer marks, made for sipping or strong cocktails. Colour alone is not proof of age — some dark rums are coloured with caramel, which is why the label's age statement matters more than the shade.
+
+### Is rum good value compared to whisky in Thailand?
+
+Generally yes. Aged rum of comparable complexity to a mid-range single malt often costs 30–40% less in Bangkok, because rum carries less brand premium. A 12-year rum at ฿1,500–2,500 frequently outperforms similarly priced whisky for depth of flavour.
+
+### How should I drink aged rum in Bangkok's heat?
+
+Neat with a single large ice cube, or with a splash of still water to open the aromatics. Avoid drowning an aged rum in cola — that is what mixing rums are for.

@@ -116,9 +116,38 @@ Barbera d'Asti Superiore from the Nizza DOCG — the zone Piedmont designated sp
 **Magento Product Widget (all 10 SKUs):**
 
 ```
-{{widget type="Magento\CatalogWidget\Block\Product\ProductsList" show_pager="0" products_count="10" template="product/widget/content/grid.phtml" sort_by="recommended" conditions_encoded="^[`1`:^[`type`:`Magento||CatalogWidget||Model||Rule||Condition||Combine`,`aggregator`:`all`,`value`:`1`,`new_child`:``^],`1--1`:^[`type`:`Magento||CatalogWidget||Model||Rule||Condition||Product`,`attribute`:`sku`,`operator`:`()`,`value`:`WWW5368BN, WRW1309BS, WRW3412AD, WSP2617EG, WRW6007FJ, LRM0110DG, WRW4948FJ, WWW5469DD, LWH1079CN, WRW5900FS`^]^]"}}
+<!-- product: WWW5368BN -->
+<!-- product: WRW1309BS -->
+<!-- product: WRW3412AD -->
+<!-- product: WSP2617EG -->
+<!-- product: WRW6007FJ -->
+<!-- product: LRM0110DG -->
+<!-- product: WRW4948FJ -->
+<!-- product: WWW5469DD -->
+<!-- product: LWH1079CN -->
+<!-- product: WRW5900FS -->
 ```
 
 ---
 
 These aren't press picks or algorithm-generated recommendations. They're what we drink — and what we'd hand you if you showed up at our door and asked what to open tonight.
+
+
+
+---
+
+*Keep reading: [What We're Drinking This Month — The WNLQ9 Cellar Edit (July 2026)](/blog/wnlq9-cellar-edit-july-2026) · [New Arrivals](/blog/new-wine-arrivals-august-2026) · all [Curated Lists](/blog/category/curated) stories.*
+
+## Frequently Asked Questions
+
+### How were these picks chosen?
+
+Every bottle here is something our team actually drinks at home — chosen on taste-per-baht, not margin or supplier promotion. No bottle made this list because a supplier asked.
+
+### Are these wines available for delivery in Bangkok?
+
+Yes. All picks are in stock at WNLQ9 with Bangkok delivery at time of publication; a few are limited parcels, so availability can change within the month.
+
+### What is the best value pick on this list?
+
+The Burgundy Aligoté is the one we point to first — the underdog grape of Burgundy at a fraction of Chardonnay pricing, and the single most repeated bottle on our own dinner tables this year.

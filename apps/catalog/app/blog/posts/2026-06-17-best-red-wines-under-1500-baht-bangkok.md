@@ -82,9 +82,14 @@ Push past ฿900 and you're buying wine with provenance — named appellations, 
 
 <!-- product: WRW0318AD -->
 
-**Domaine l'Ostal Cazes Estibals Minervois AOC** (฿819, France — Languedoc-Roussillon). Minervois is one of the Languedoc's most underrated appellations. This Syrah-Grenache-Carignan blend from a biodynamic estate is the kind of wine that makes you question why you ever spent more. Earthy, structured, long finish.
+**Domaine l'Ostal Cazes Estibals Minervois AOC** (฿899, France — Languedoc-Roussillon). Minervois is one of the Languedoc's most underrated appellations. This Syrah-Grenache-Carignan blend from a biodynamic estate is the kind of wine that makes you question why you ever spent more. Earthy, structured, long finish.
 
 ---
+
+
+---
+
+*Keep reading: [What Wine Goes with Thai Food? The Bangkok Guide](/blog/what-wine-goes-with-thai-food-the-bangkok-guide) · all [Wine](/blog/category/wine) stories.*
 
 ## FAQ
 

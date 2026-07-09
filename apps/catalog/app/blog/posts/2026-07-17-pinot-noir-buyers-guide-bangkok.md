@@ -131,6 +131,11 @@ Specific pairings that work in Bangkok:
 
 ---
 
+
+---
+
+*Keep reading: [Cabernet Sauvignon vs. Merlot — What's the Difference?](/blog/cabernet-sauvignon-vs-merlot-whats-the-difference) · [New Zealand Sauvignon Blanc — Why Bangkok Can't Stop Drinking It](/blog/new-zealand-sauvignon-blanc-marlborough-bangkok) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### Why is Burgundy Pinot Noir so much more expensive than New Zealand?

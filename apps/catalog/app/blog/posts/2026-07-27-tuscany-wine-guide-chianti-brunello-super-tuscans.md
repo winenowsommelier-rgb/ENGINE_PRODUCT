@@ -123,6 +123,11 @@ Today Bolgheri is home to Sassicaia, **Ornellaia**, and **Masseto** — Merlot-d
 
 ---
 
+
+---
+
+*Keep reading: [Chardonnay](/blog/chardonnay-oaked-vs-unoaked-style-guide) · [Wine Designations Explained](/blog/wine-designations-explained-grand-cru-reserva-docg) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### What is a Super Tuscan wine?

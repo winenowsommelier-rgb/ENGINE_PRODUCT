@@ -7,7 +7,7 @@ COVER-IMAGE: https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpe
 COVER-CREDIT: Kym Wilson via Pexels
 COVER-CREDIT-URL: https://www.pexels.com/photo/french-vineyard-with-scenic-village-view-34779799/
 META-TITLE: Burgundy Explained: Côte de Nuits vs Côte de Beaune 2026
-META-DESC: Burgundy's Côte de Nuits vs Côte de Beaune — what makes each sub-region different, what to buy in Bangkok, and why Gevrey-Chambertin tastes nothing like Chambolle-Musigny.
+META-DESC: Côte de Nuits vs Côte de Beaune — what makes each Burgundy sub-region different and what to buy in Bangkok.
 ---
 
 Burgundy is a 60km ribbon of limestone hillside running south from Dijon. The Côte d'Or — the "slope of gold" — is divided into two halves: the **Côte de Nuits** in the north and the **Côte de Beaune** in the south. Same grape (Pinot Noir for red, Chardonnay for white). Same climate. But the wines taste completely different.
@@ -139,6 +139,11 @@ Every wine from the Côte d'Or sits in one of four tiers:
 At Bangkok prices, you're mostly working in Bourgogne AOC and village-level wines, with some Premier Crus reachable at ฿2,500–5,000. Grand Cru starts at ฿20,000+ in Bangkok.
 
 ---
+
+
+---
+
+*Keep reading: [Best Champagne & Sparkling Wine Under ฿3,000 in Bangkok](/blog/best-champagne-sparkling-wine-under-3000-baht-bangkok) · [Sassicaia](/blog/sassicaia-thailand-guide) · all [Wine](/blog/category/wine) stories.*
 
 ## FAQ
 

@@ -4,10 +4,10 @@ One primary keyword per post. No two posts share a primary keyword.
 Every post links UP to its hub (`/blog/category/[slug]`) and SIDEWAYS to 2–3 siblings listed here.
 Update this file every time a post ships.
 
-## Hubs (category pages — already live)
-- `/blog/category/red-wine` · `/blog/category/white-wine` · `/blog/category/sparkling`
-- `/blog/category/whisky` · `/blog/category/sake` · `/blog/category/pairing`
-- `/blog/category/guides` · `/blog/category/deals`
+## Hubs (category pages — already live; ONLY these slugs exist)
+Drink hubs: `/blog/category/wine` · `/blog/category/whisky` · `/blog/category/spirits` · `/blog/category/sake`
+Purpose hubs: `/blog/category/guides` · `/blog/category/pairings` · `/blog/category/deep-dives` · `/blog/category/curated` · `/blog/category/comparisons` · `/blog/category/gifting`
+(Hub values in the tables below are shorthand — map red-wine/white-wine/sparkling → wine, pairing → pairings, deals → curated.)
 
 ## Published posts (34) — primary keywords (locked)
 

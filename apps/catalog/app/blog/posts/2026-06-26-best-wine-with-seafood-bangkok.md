@@ -136,6 +136,11 @@ A dry Provence-style rosé sits in a useful middle ground for Bangkok seafood. I
 
 ---
 
+
+---
+
+*Keep reading: [Bordeaux vs. Burgundy](/blog/bordeaux-vs-burgundy-which-french-red-should-you-buy) · [Opus One in Bangkok](/blog/opus-one-bangkok-guide) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### What wine goes with grilled fish in Bangkok?

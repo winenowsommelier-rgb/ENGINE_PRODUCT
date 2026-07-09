@@ -44,7 +44,7 @@ This is one of the best-kept open secrets in Bangkok fine wine: the same estate,
 
 <!-- product: WRW1054AD -->
 
-For how Napa Cabernet compares to its Bordeaux benchmark — and when each is the right call — our [Bordeaux vs Burgundy guide](/blog/bordeaux-vs-burgundy-which-french-red-should-you-buy) covers the French side, and our [Château Margaux guide](/blog/chateau-margaux-bangkok-guide) covers the First Growth that inspired all of this. More in the [red wine journal](/blog/category/red-wine).
+For how Napa Cabernet compares to its Bordeaux benchmark — and when each is the right call — our [Bordeaux vs Burgundy guide](/blog/bordeaux-vs-burgundy-which-french-red-should-you-buy) covers the French side, and our [Château Margaux guide](/blog/chateau-margaux-bangkok-guide) covers the First Growth that inspired all of this. More in the [red wine journal](/blog/category/wine).
 
 ## Buying Opus One in Bangkok: Practical Notes
 
@@ -53,6 +53,11 @@ For how Napa Cabernet compares to its Bordeaux benchmark — and when each is th
 **Provenance still matters more than anything.** These wines travel from California through tropical heat. Buy from a merchant that can tell you how the bottle got here and where it has been sitting since. Once home, treat it like any fine wine in this climate — our [Bangkok wine storage guide](/blog/how-to-store-wine-in-bangkok-heat-guide) applies in full.
 
 **Decant it young.** Current-release Opus One repays an hour in a decanter. Drink it too cold and too fast and you paid for structure you never met.
+
+
+---
+
+*Keep reading: [Château Margaux in Bangkok](/blog/chateau-margaux-bangkok-guide) · [Bordeaux vs. Burgundy](/blog/bordeaux-vs-burgundy-which-french-red-should-you-buy) · all [Wine](/blog/category/wine) stories.*
 
 ## Frequently Asked Questions
 

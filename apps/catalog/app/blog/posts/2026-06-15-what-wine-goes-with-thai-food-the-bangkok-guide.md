@@ -152,6 +152,11 @@ Heavy, tannic reds (Cabernet Sauvignon, Syrah at full body, Barolo) — chilli a
 
 ---
 
+
+---
+
+*Keep reading: [Wine & Thai Spice: The Pairing Science](/blog/wine-thai-spice-pairing-science) · [The Best Wine to Drink With Seafood in Bangkok](/blog/best-wine-with-seafood-bangkok) · all [Pairings](/blog/category/pairings) stories.*
+
 ## FAQ
 
 ### What wine goes with Thai food?

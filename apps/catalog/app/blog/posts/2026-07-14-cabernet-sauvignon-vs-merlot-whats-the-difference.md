@@ -111,6 +111,11 @@ Here's the thing most people don't realise: in Bordeaux — where both grapes or
 
 ---
 
+
+---
+
+*Keep reading: [What Wine to Bring to a Bangkok Dinner Party](/blog/wine-for-dinner-party-bangkok-hosts-guide) · [Italian Wine Guide — From Tuscany to Sicily](/blog/italian-wine-guide-tuscany-to-sicily) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### Is Cabernet Sauvignon stronger than Merlot?

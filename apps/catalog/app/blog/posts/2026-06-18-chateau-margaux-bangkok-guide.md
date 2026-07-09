@@ -69,7 +69,12 @@ The village of Margaux gives its name to a whole appellation, and its second-mos
 
 **Vintage beats label.** A 98-point 2021 at ฿29,000 is arguably better buying than a legendary vintage at ฿70,000 — unless the occasion is the point. Decide whether you are buying to drink, to hold, or to mark something.
 
-If you are choosing between Bordeaux and Burgundy at the top end, our [Bordeaux vs Burgundy guide](/blog/bordeaux-vs-burgundy-which-french-red-should-you-buy) covers how the two regions differ — and all our red wine coverage lives in the [red wine journal](/blog/category/red-wine).
+If you are choosing between Bordeaux and Burgundy at the top end, our [Bordeaux vs Burgundy guide](/blog/bordeaux-vs-burgundy-which-french-red-should-you-buy) covers how the two regions differ — and all our red wine coverage lives in the [red wine journal](/blog/category/wine).
+
+
+---
+
+*Keep reading: [What Wine Goes with Thai Food? The Bangkok Guide](/blog/what-wine-goes-with-thai-food-the-bangkok-guide) · [Best Red Wines Under ฿1,500 in Bangkok — June 2026](/blog/best-red-wines-under-1500-baht-bangkok-july-2026) · all [Wine](/blog/category/wine) stories.*
 
 ## Frequently Asked Questions
 

@@ -49,7 +49,7 @@ Argentine Malbec from Mendoza's high-altitude Luján de Cuyo or Valle de Uco, an
 White wine markup in Bangkok is generally more aggressive than red because the cold-chain costs are real and the audience for serious white wine is smaller. The exception: Alsatian whites (Riesling, Pinot Gris, Gewurztraminer) and northern Italian whites (Soave Classico, Vermentino, Greco di Tufo) that appear on wine lists as supporting acts. Restaurants rarely put these in the spotlight, so they're priced to move rather than to impress. An Alsatian Pinot Gris at ฿2,000 with Thai food is one of the smartest calls you can make.
 
 <!-- product: WWW1791AD -->
-**Trimbach Pinot Gris Réserve, Alsace** — from ฿1,150
+**Trimbach Gewurztraminer, Alsace** — from ฿1,289
 
 ![Sommelier pouring white wine at a restaurant table with Thai food dishes visible](https://images.pexels.com/photos/5732799/pexels-photo-5732799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
@@ -88,6 +88,11 @@ Some Bangkok restaurants — particularly hotel all-day dining and neighbourhood
 **La Demoiselle de Sociando-Mallet, Haut-Médoc** — from ฿1,900
 
 ---
+
+
+---
+
+*Keep reading: [How to Store Wine in Bangkok Heat](/blog/how-to-store-wine-in-bangkok-heat-guide) · [How to Read a Wine Label — A Bangkok Shopper's Guide](/blog/how-to-read-a-wine-label-bangkok-guide) · all [Guides](/blog/category/guides) stories.*
 
 ## FAQ
 

@@ -79,3 +79,21 @@ The most affordable Japanese blended whisky in stock. Lighter and more neutral t
 Every bottle on this list was on sale at WNLQ9 at the time of writing, with the discount calculated from the regular shelf price — not an invented "RRP" inflated to make the markdown look bigger. We look for bottles where the saving is at least 10%, the quality is genuinely worth buying at *either* price point, and the remaining stock is deep enough that you'll actually find it in store. We refresh this post monthly as sale lines change.
 
 *Prices in THB. Sale prices valid while stock lasts. Updated July 2026.*
+
+---
+
+*Keep reading: [The Wine List at Bangkok's Best Restaurants](/blog/wine-list-bangkok-restaurants-what-to-order) · [Wine Designations Explained](/blog/wine-designations-explained-grand-cru-reserva-docg) · all [Curated Lists](/blog/category/curated) stories.*
+
+## Frequently Asked Questions
+
+### How often do wine deals change at WNLQ9?
+
+Sale prices rotate throughout the month as parcels sell through. This page reflects prices at time of writing; the product cards above always show the live price, so a deal that has ended will display its current price automatically.
+
+### Are wine sale prices in Bangkok genuine discounts?
+
+At WNLQ9, a sale price is always computed against the bottle's regular shelf price — the strikethrough you see on the product card is the price the wine actually sold at previously, not an inflated anchor.
+
+### What is the best way to catch wine deals in Bangkok?
+
+Check this page monthly — we refresh it as new parcels go on sale — and watch the Deals section of the Journal for the monthly Cellar Edit, where our team picks the offers actually worth a case purchase.

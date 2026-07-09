@@ -40,7 +40,7 @@ Under ฿3,000 in Bangkok, you're in grower-producer and smaller-house Champagne
 
 <!-- product: WSP2525AD -->
 
-**Champagne Drappier Carte d'Or** (฿2,099, France — Champagne). Drappier is a family-owned house in the Aube — Pinot Noir dominant, which gives their Champagne more body and red fruit character than the typical Chardonnay-heavy style. Excellent choice for food pairing (seafood, white meat, creamy dishes).
+**Champagne Drappier Carte d'Or** (฿2,499, France — Champagne). Drappier is a family-owned house in the Aube — Pinot Noir dominant, which gives their Champagne more body and red fruit character than the typical Chardonnay-heavy style. Excellent choice for food pairing (seafood, white meat, creamy dishes).
 
 <!-- product: WSP2529AD -->
 
@@ -137,6 +137,11 @@ Australia makes serious sparkling wine — particularly from Tasmania and cool-c
 **Budget celebration for a crowd:** Wolf Blass Eaglehawk Cuvée (฿395) — per-head cost makes sense.
 
 ---
+
+
+---
+
+*Keep reading: [Opus One in Bangkok](/blog/opus-one-bangkok-guide) · [The Best Wine to Drink With Seafood in Bangkok](/blog/best-wine-with-seafood-bangkok) · all [Wine](/blog/category/wine) stories.*
 
 ## FAQ
 

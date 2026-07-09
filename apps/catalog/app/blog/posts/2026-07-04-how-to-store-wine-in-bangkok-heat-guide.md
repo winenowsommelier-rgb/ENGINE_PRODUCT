@@ -7,7 +7,7 @@ COVER-IMAGE: https://images.pexels.com/photos/19772196/pexels-photo-19772196.jpe
 COVER-CREDIT: Ramon Perucho via Pexels
 COVER-CREDIT-URL: https://www.pexels.com/photo/wine-kegs-in-winery-basement-19772196/
 META-TITLE: How to Store Wine in Bangkok Heat — Complete Guide 2026
-META-DESC: Wine storage in Bangkok's heat and humidity. What temperature to keep wine, the risks of cooked bottles, and your best options from a wine fridge to a dedicated cellar.
+META-DESC: How to store wine in Bangkok heat — what 30°C does to wine, fridge vs cellar, and what actually works in a Thai condo.
 ---
 
 Bangkok sits at 13°N latitude. Average temperature: 33°C. Relative humidity: 72%. This is one of the most hostile wine storage environments on earth.
@@ -77,6 +77,12 @@ A dedicated wine refrigerator (also called a wine cooler or wine conditioner) is
 
 A wine fridge is not an indulgence. For anyone with more than ฿5,000 of wine in their home, it's the minimum viable storage.
 
+Two units we stock and stand behind — a compact single-zone for a starter collection, and a built-in cellar for a serious one:
+
+<!-- product: AWC0041DY -->
+
+<!-- product: AWC0135EN -->
+
 ### Option 2: Air-Conditioned Cupboard (Acceptable for Short Term)
 
 A dedicated cupboard with its own AC unit, set to 16°C, kept closed. This works for 3–6 month storage if you're disciplined about not letting the temperature swing. The problem: every time you open the door, the temperature spikes. It's not a substitute for a wine fridge but is better than nothing.
@@ -130,6 +136,11 @@ The takeaway: **buy wine to drink, or store it properly.** The Bangkok middle gr
 **Watch bottles that have been shipped long distances** — wine imported by sea to Thailand spends time in container ships where temperature control varies. Reputable importers refrigerate throughout; less scrupulous ones don't. Buy from established importers.
 
 ---
+
+
+---
+
+*Keep reading: [Sassicaia](/blog/sassicaia-thailand-guide) · [Burgundy Explained](/blog/burgundy-explained-cote-de-nuits-vs-cote-de-beaune) · all [Guides](/blog/category/guides) stories.*
 
 ## FAQ
 

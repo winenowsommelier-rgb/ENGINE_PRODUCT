@@ -66,7 +66,7 @@ Bangkok's heat is also relevant. Orange wine, served slightly cool (12–14°C i
 
 ## Bottles to try right now
 
-These four bottles cover a range of styles and price points — from a classic Italian Ramato to a Languedoc skin-contact Grenache. All available at Wine-Now.
+These four bottles cover a range of styles and price points — from a classic Italian Ramato to a Languedoc skin-contact Grenache. All available at WNLQ9.
 
 <!-- product: WRS0230AB -->
 **Monfort Pinot Grigio Ramato Vigneti Dolomiti IGT** — ฿1,000
@@ -88,23 +88,28 @@ Biodynamic farming, organic certification, and a natural winemaking philosophy f
 
 Organic from Languedoc's Gérard Bertrand, who has championed natural-approach winemaking at scale. The Naturalys range is a gateway to low-intervention winemaking for those not quite ready to commit to the full skin-contact deep end. Honest fruit, light touch, and the best value of this selection.
 
+
+---
+
+*Keep reading: [Piedmont](/blog/piedmont-barolo-barbaresco-guide-bangkok) · [Wine & Thai Spice](/blog/wine-thai-spice-pairing-science) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
-**Is orange wine actually orange?**
+### Is orange wine actually orange?
 
 Not exactly — but it's in the neighbourhood. The colour ranges from pale amber and old-gold through copper, burnished bronze, and occasionally a light rust. The name is more of a gesture toward that warm spectrum than a precise colour match. A brief maceration produces something closer to deep yellow; months of skin contact can produce a wine that genuinely looks orange in the glass. Either way, it's unmistakably different from a conventional white wine.
 
-**Is orange wine sweet?**
+### Is orange wine sweet?
 
 No. Orange wine is almost always dry — in fact, the tannins and oxidative character tend to make it feel even drier than a conventional white wine. The dried fruit flavours (apricot, quince, mango) can suggest sweetness on the nose, but on the palate, the wine finishes dry and structured. If you find sweetness in an orange wine, it's from aromatic ripeness in the grape, not residual sugar.
 
-**Does orange wine go with Thai food?**
+### Does orange wine go with Thai food?
 
 Better than most wines, yes. Thai cuisine's bold umami flavours, fermented elements, and aromatic herbs can overwhelm delicate white wines and fight with tannic reds. Orange wine sits in the middle: enough structure to hold its own next to fish sauce and shrimp paste, enough dried fruit and spice character to complement galangal, lemongrass, and chilli, and enough acidity to cut through richness. Try it with somtam, laab, grilled fish, or even a mild massaman curry.
 
-**Where can I buy orange wine in Bangkok?**
+### Where can I buy orange wine in Bangkok?
 
-Wine-Now delivers across Bangkok, and the bottles featured in this article are all in stock and ready to ship. Natural wine bars across the city — particularly in the Ari, Silom, and Thonglor areas — often carry small selections of orange and skin-contact wines if you'd prefer to try before you buy. But the easiest starting point is ordering one of the bottles above and opening it with dinner at home.
+WNLQ9 delivers across Bangkok, and the bottles featured in this article are all in stock and ready to ship. Natural wine bars across the city — particularly in the Ari, Silom, and Thonglor areas — often carry small selections of orange and skin-contact wines if you'd prefer to try before you buy. But the easiest starting point is ordering one of the bottles above and opening it with dinner at home.
 
 ---
 

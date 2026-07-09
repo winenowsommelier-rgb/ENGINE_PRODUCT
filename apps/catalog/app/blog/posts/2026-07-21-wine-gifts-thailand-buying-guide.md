@@ -122,6 +122,11 @@ Champagne Ernest Rapeneau Rosé is a Rosé de Saignée style, which means the pi
 
 ---
 
+
+---
+
+*Keep reading: [Best Australian Wine in Bangkok — Shiraz, Chardonnay & Beyond](/blog/best-australian-wine-bangkok-shiraz-chardonnay) · [Chile vs. Argentina — South American Wine Face-Off](/blog/chile-vs-argentina-south-american-wine) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### Is it rude to give wine as a gift in Thailand?

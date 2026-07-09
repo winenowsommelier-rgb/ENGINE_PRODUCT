@@ -128,6 +128,11 @@ Indoors, under air conditioning, the Shiraz shines. It's a wine built for the te
 
 ---
 
+
+---
+
+*Keep reading: [New Zealand Sauvignon Blanc — Why Bangkok Can't Stop Drinking It](/blog/new-zealand-sauvignon-blanc-marlborough-bangkok) · [Pinot Noir — A Bangkok Buyer's Guide](/blog/pinot-noir-buyers-guide-bangkok) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### What is the difference between Australian Shiraz and French Syrah?

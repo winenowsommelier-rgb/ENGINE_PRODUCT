@@ -104,8 +104,8 @@ Below Prädikat wines sits **QbA** (*Qualitätswein bestimmter Anbaugebiete*) �
 
 In Bangkok, German Riesling Prädikat wines are still underpriced relative to their quality. A Spätlese from Mosel or Rheingau typically runs ฿950–฿1,800 at WNLQ9.
 
-<!-- product: WWW5368BN -->
-**Weingut Robert Weil Riesling Spätlese, Rheingau** — ฿1,100
+<!-- product: WWW6246AA -->
+**Selbach Saar Riesling Spätlese "Tradition"** — ฿1,070
 
 ---
 
@@ -132,6 +132,11 @@ This creates a practical rule of thumb: **mid-tier designations punch above thei
 **Zenato Amarone della Valpolicella Classico DOC** — ฿4,080
 
 ---
+
+
+---
+
+*Keep reading: [Rhône Valley Wine — France's Underrated Gem](/blog/rhone-valley-wine-guide-bangkok) · [Chardonnay](/blog/chardonnay-oaked-vs-unoaked-style-guide) · all [Wine](/blog/category/wine) stories.*
 
 ## FAQ
 

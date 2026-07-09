@@ -158,6 +158,11 @@ Heavily peated Scotch (Islay: Laphroaig, Ardbeg, Bowmore) is the minority opinio
 
 ---
 
+
+---
+
+*Keep reading: [Burgundy Explained](/blog/burgundy-explained-cote-de-nuits-vs-cote-de-beaune) · [How to Store Wine in Bangkok Heat](/blog/how-to-store-wine-in-bangkok-heat-guide) · all [Whisky](/blog/category/whisky) stories.*
+
 ## FAQ
 
 ### What whisky goes with sushi in Bangkok?

@@ -126,6 +126,11 @@ The Thai label is applied after import and tells you about the distribution chai
 
 ---
 
+
+---
+
+*Keep reading: [How to Store Wine in Bangkok Heat](/blog/how-to-store-wine-in-bangkok-heat-guide) · all [Guides](/blog/category/guides) stories.*
+
 ## FAQ
 
 ### Why does a French wine label show the region but not the grape?

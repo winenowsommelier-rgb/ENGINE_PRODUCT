@@ -96,7 +96,7 @@ Pure malt whisky blends single malts from multiple distilleries. More complexity
 
 <!-- product: LWH0343AA -->
 
-**Suntory Hibiki Japanese Harmony** (฿4,599, Japan). Hibiki is Suntory's prestige blend — malt whiskies from Yamazaki and Hakushu, grain from Chita, all blended for balance. The bell-shaped bottle is recognisable globally. "Harmony" is the entry Hibiki expression: light, floral, layered. The gift whisky for someone who takes Japanese whisky seriously.
+**Suntory Hibiki Japanese Harmony** (฿5,295, Japan). Hibiki is Suntory's prestige blend — malt whiskies from Yamazaki and Hakushu, grain from Chita, all blended for balance. The bell-shaped bottle is recognisable globally. "Harmony" is the entry Hibiki expression: light, floral, layered. The gift whisky for someone who takes Japanese whisky seriously.
 
 <!-- product: LWH0720AB -->
 
@@ -137,6 +137,11 @@ The allocated bottles are real. But the bottles that remain accessible are genui
 | ฿4,000+ | Hibiki Japanese Harmony (฿4,599) | The prestige gift bottle |
 
 ---
+
+
+---
+
+*Keep reading: [Best Whisky Pairings for Japanese Food in Bangkok](/blog/best-whisky-pairings-japanese-food-bangkok) · all [Whisky](/blog/category/whisky) stories.*
 
 ## FAQ
 

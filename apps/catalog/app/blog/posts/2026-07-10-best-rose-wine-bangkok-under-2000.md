@@ -105,6 +105,11 @@ Serve all rosé well-chilled — 8–10°C. In Bangkok's heat, the bottle will w
 
 ---
 
+
+---
+
+*Keep reading: [Sassicaia](/blog/sassicaia-thailand-guide) · [Burgundy Explained](/blog/burgundy-explained-cote-de-nuits-vs-cote-de-beaune) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### What is the difference between rosé and pink Moscato?

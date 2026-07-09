@@ -123,6 +123,11 @@ Italian and Thai cuisines share high acidity, bold aromatics, and the central ro
 
 ---
 
+
+---
+
+*Keep reading: [Best Rosé Wine in Bangkok Under ฿2,000](/blog/best-rose-wine-bangkok-under-2000) · [What Wine to Bring to a Bangkok Dinner Party](/blog/wine-for-dinner-party-bangkok-hosts-guide) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### What is the difference between Chianti and Chianti Classico?

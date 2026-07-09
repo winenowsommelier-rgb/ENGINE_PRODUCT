@@ -121,6 +121,11 @@ Honestly? Buy both. They cost the same as a single bottle of mid-range French wi
 
 ---
 
+
+---
+
+*Keep reading: [Pinot Noir — A Bangkok Buyer's Guide](/blog/pinot-noir-buyers-guide-bangkok) · [Best Australian Wine in Bangkok — Shiraz, Chardonnay & Beyond](/blog/best-australian-wine-bangkok-shiraz-chardonnay) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### Is Chilean or Argentine wine better?

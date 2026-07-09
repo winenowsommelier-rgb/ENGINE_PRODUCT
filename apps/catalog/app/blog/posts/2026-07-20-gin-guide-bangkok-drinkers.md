@@ -153,6 +153,11 @@ For dedicated gin exploration, bars in the Thonglor and Ari areas tend to have t
 
 ---
 
+
+---
+
+*Keep reading: [Tequila & Mezcal in Bangkok — What to Buy and How to Drink It](/blog/tequila-mezcal-bangkok-guide) · all [Spirits](/blog/category/spirits) stories.*
+
 ## FAQ
 
 ### What is the difference between gin and vodka?

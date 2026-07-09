@@ -113,6 +113,11 @@ The practical guide: **unoaked for aperitif and Thai food; lightly oaked for Wes
 
 ---
 
+
+---
+
+*Keep reading: [Best White Wine Under ฿1,500 in Bangkok — July 2026](/blog/best-white-wine-under-1500-baht-bangkok-july-2026) · [Rhône Valley Wine — France's Underrated Gem](/blog/rhone-valley-wine-guide-bangkok) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### Why is Chardonnay sometimes buttery?

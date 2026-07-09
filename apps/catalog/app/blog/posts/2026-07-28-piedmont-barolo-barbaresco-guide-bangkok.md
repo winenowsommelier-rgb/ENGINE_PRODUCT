@@ -174,6 +174,11 @@ Bangkok's heat and humidity make a temperature-controlled storage solution essen
 
 ---
 
+
+---
+
+*Keep reading: [Wine Designations Explained](/blog/wine-designations-explained-grand-cru-reserva-docg) · [Tuscany Deep Dive](/blog/tuscany-wine-guide-chianti-brunello-super-tuscans) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### What is Barolo wine?

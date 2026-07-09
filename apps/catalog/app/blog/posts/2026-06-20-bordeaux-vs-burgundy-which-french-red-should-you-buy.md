@@ -108,6 +108,11 @@ The catch: the good stuff is expensive. A village-level Burgundy from a serious 
 
 ---
 
+
+---
+
+*Keep reading: [Best Red Wines Under ฿1,500 in Bangkok — June 2026](/blog/best-red-wines-under-1500-baht-bangkok-july-2026) · [Château Margaux in Bangkok](/blog/chateau-margaux-bangkok-guide) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### What is the difference between Bordeaux and Burgundy?

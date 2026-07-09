@@ -55,7 +55,7 @@ At 97 points from Wine Enthusiast and around ฿16,000, the 2020 is a supple, ea
 
 <!-- product: LGP0093AF -->
 
-For how designations like DOC and DOCG actually work — and why Sassicaia getting its own was unprecedented — see [wine designations explained](/blog/wine-designations-explained-grand-cru-reserva-docg). All our Italian coverage lives in the [red wine journal](/blog/category/red-wine).
+For how designations like DOC and DOCG actually work — and why Sassicaia getting its own was unprecedented — see [wine designations explained](/blog/wine-designations-explained-grand-cru-reserva-docg). All our Italian coverage lives in the [red wine journal](/blog/category/wine).
 
 ## Buying Sassicaia in Bangkok: Practical Notes
 
@@ -64,6 +64,11 @@ For how designations like DOC and DOCG actually work — and why Sassicaia getti
 **Provenance discipline applies in full.** Coastal Tuscany to tropical Bangkok is a hard journey for a fine wine. Verify storage before buying, and once home follow our [Bangkok heat storage guide](/blog/how-to-store-wine-in-bangkok-heat-guide) — 30 minutes in a hot condo entryway does more damage than a year in a proper fridge.
 
 **Give it air, not years, if drinking now.** The 2020 wants an hour in a decanter. The 2019 and 2021 want patience — five years minimum before they show what the scores describe.
+
+
+---
+
+*Keep reading: [The Best Wine to Drink With Seafood in Bangkok](/blog/best-wine-with-seafood-bangkok) · [Best Champagne & Sparkling Wine Under ฿3,000 in Bangkok](/blog/best-champagne-sparkling-wine-under-3000-baht-bangkok) · all [Wine](/blog/category/wine) stories.*
 
 ## Frequently Asked Questions
 

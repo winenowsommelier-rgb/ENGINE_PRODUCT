@@ -91,7 +91,7 @@ These dishes are built on serious chilli volume. Som tam uses raw bird's eye chi
 Here, your only effective tool is maximum residual sugar combined with minimum alcohol. A German Riesling Spätlese or Auslese (7–9% ABV, 20–40g/L RS) is the correct answer. The sweetness is not incidental — it is doing active work against the TRPV1 signal. A lightly chilled Pinot Noir — specifically a Burgundy or New Zealand style at 12.5% ABV or below — can work with laab if you prefer red. The key is low tannin and low alcohol. Anything heavier will suffer.
 
 <!-- product: WWW5368BN -->
-**Weingut Robert Weil Riesling Rheingau Tradition** — ฿1,019 (sale)
+**Weingut Robert Weil Riesling Rheingau Tradition** — ฿1,200
 
 <!-- product: WRW4745AD -->
 **Casillero del Diablo Pinot Noir, Chile/Aconcagua** — ฿519 (sale)
@@ -141,6 +141,11 @@ This is also why oaked Chardonnay fails so completely in this context. Its full 
 If someone hands you a glass of any of the above with a plate of som tam, drink water.
 
 ---
+
+
+---
+
+*Keep reading: [Tuscany Deep Dive](/blog/tuscany-wine-guide-chianti-brunello-super-tuscans) · [Piedmont](/blog/piedmont-barolo-barbaresco-guide-bangkok) · all [Wine](/blog/category/wine) stories.*
 
 ## FAQ
 

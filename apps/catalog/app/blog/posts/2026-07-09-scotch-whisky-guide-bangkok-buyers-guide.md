@@ -127,6 +127,11 @@ That said, try your next dram neat first, just for 30 seconds, before adding any
 
 ---
 
+
+---
+
+*Keep reading: [Best Whisky Pairings for Japanese Food in Bangkok](/blog/best-whisky-pairings-japanese-food-bangkok) · [Best Japanese Whisky in Bangkok](/blog/best-japanese-whisky-bangkok-whats-in-stock-july-2026) · all [Whisky](/blog/category/whisky) stories.*
+
 ## FAQ
 
 ### What is the difference between Single Malt and Blended Scotch?
