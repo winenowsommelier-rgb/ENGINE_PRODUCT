@@ -71,6 +71,20 @@ describe('categorySignalPoints', () => {
     const candidate = mkProduct({ sku: 'Y', category_group: 'Wine', category_type: 'Sparkling Wine', production_method: 'tank_method' });
     expect(categorySignalPoints(subject, candidate)).toBeNull();
   });
+  // REGRESSION GUARD: the real live export never has category_type 'Champagne'
+  // or 'Sparkling Wine' — every sparkling/champagne product (930/930, verified
+  // 2026-07-09) is typed 'Sparkling & Champagne'. Without this value in
+  // SPARKLING_TYPES, categorySignalPoints() silently never matched for ANY
+  // real product (Task 12 bug). This test uses the REAL value, not the
+  // aspirational one above, so a future edit that drops it fails loudly here
+  // instead of only in production.
+  it('production_method match scores +3 for the REAL category_type "Sparkling & Champagne"', () => {
+    const subject = mkProduct({ category_group: 'Wine', category_type: 'Sparkling & Champagne', production_method: 'traditional_method' });
+    const candidate = mkProduct({ sku: 'Y', category_group: 'Wine', category_type: 'Sparkling & Champagne', production_method: 'traditional_method' });
+    const result = categorySignalPoints(subject, candidate);
+    expect(result?.points).toBe(3);
+    expect(result?.field).toBe('production_method');
+  });
   it('scores null when no category-specific fields present (no penalty)', () => {
     const subject = mkProduct({ category_type: 'Gin' }); // no gin_style
     const candidate = mkProduct({ sku: 'Y' });
