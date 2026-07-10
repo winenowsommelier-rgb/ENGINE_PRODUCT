@@ -63,75 +63,92 @@ export function CatalogFilterPanel({ countries, resultCount }: CatalogFilterPane
   }
 
   return (
-    <div className={styles.wrap}>
-      <button
-        type="button"
-        className={styles.toggle}
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-      >
-        Filter before printing{activeCount > 0 ? ` (${activeCount})` : ''}
-        <span className={styles.count}>{resultCount.toLocaleString()} items</span>
-      </button>
+    <>
+      <div className={styles.wrap}>
+        <button
+          type="button"
+          className={styles.toggle}
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          aria-controls="catalog-filter-panel"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M4 6h16M7 12h10M10 18h4"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+          Filter before printing
+          {activeCount > 0 && <span className={styles.badge}>{activeCount}</span>}
+          <svg className={styles.chevron} width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span className={styles.count}>{resultCount.toLocaleString()} items</span>
+        </button>
+      </div>
 
       {open && (
-        <div className={styles.panel}>
-          <div className={styles.group}>
-            <span className={styles.label}>Price range (THB)</span>
-            <div className={styles.priceRow}>
-              <input
-                type="number"
-                inputMode="numeric"
-                placeholder="Min"
-                defaultValue={minPrice}
-                onBlur={(e) => setPrice('minPrice', e.target.value)}
-                className={styles.priceInput}
-                aria-label="Minimum price"
-              />
-              <span className={styles.dash}>–</span>
-              <input
-                type="number"
-                inputMode="numeric"
-                placeholder="Max"
-                defaultValue={maxPrice}
-                onBlur={(e) => setPrice('maxPrice', e.target.value)}
-                className={styles.priceInput}
-                aria-label="Maximum price"
-              />
-            </div>
-          </div>
-
-          <label className={styles.checkboxRow}>
-            <input type="checkbox" checked={scoreOnly} onChange={toggleScoreOnly} />
-            Has critic score only
-          </label>
-
-          {countries.length > 1 && (
+        <div className={styles.panelWrap}>
+          <div className={styles.panel} id="catalog-filter-panel">
             <div className={styles.group}>
-              <span className={styles.label}>Country</span>
-              <div className={styles.countryGrid}>
-                {countries.map((c) => (
-                  <label key={c.name} className={styles.checkboxRow}>
-                    <input
-                      type="checkbox"
-                      checked={selectedCountries.has(c.name)}
-                      onChange={() => toggleCountry(c.name)}
-                    />
-                    {c.name}
-                    <span className={styles.countryCount}>{c.count.toLocaleString()}</span>
-                  </label>
-                ))}
+              <span className={styles.label}>Price range (THB)</span>
+              <div className={styles.priceRow}>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="Min"
+                  defaultValue={minPrice}
+                  onBlur={(e) => setPrice('minPrice', e.target.value)}
+                  className={styles.priceInput}
+                  aria-label="Minimum price"
+                />
+                <span className={styles.dash}>–</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="Max"
+                  defaultValue={maxPrice}
+                  onBlur={(e) => setPrice('maxPrice', e.target.value)}
+                  className={styles.priceInput}
+                  aria-label="Maximum price"
+                />
               </div>
             </div>
-          )}
 
-          {activeCount > 0 && (
-            <button type="button" className={styles.clear} onClick={clearAll}>
-              Clear filters
-            </button>
-          )}
+            <label className={styles.checkboxRow}>
+              <input type="checkbox" checked={scoreOnly} onChange={toggleScoreOnly} />
+              Has critic score only
+            </label>
+
+            {countries.length > 1 && (
+              <div className={styles.group}>
+                <span className={styles.label}>Country</span>
+                <div className={styles.countryGrid}>
+                  {countries.map((c) => (
+                    <label key={c.name} className={styles.checkboxRow}>
+                      <input
+                        type="checkbox"
+                        checked={selectedCountries.has(c.name)}
+                        onChange={() => toggleCountry(c.name)}
+                      />
+                      {c.name}
+                      <span className={styles.countryCount}>{c.count.toLocaleString()}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeCount > 0 && (
+              <button type="button" className={styles.clear} onClick={clearAll}>
+                Clear filters
+              </button>
+            )}
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
