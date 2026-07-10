@@ -173,6 +173,29 @@ export function scoreCandidateDetailed(
   const catSignal = categorySignalPoints(product, candidate);
   if (catSignal) add(catSignal.field, catSignal.points);
 
+  // Popularity tiebreaker — the FIRST real behavioral (non-attribute) signal
+  // in this scorer. popularity_tier (0|1|2) is a p75-cutoff bucket derived at
+  // load time (catalog-data.ts) from popularity_score, which is itself a
+  // 365-day sales-velocity blend synced from BI order data
+  // (data/sync_popularity_from_bi.py). +1 when BOTH sides are tier 2 (top
+  // quartile by demand) — a small, bounded nudge, not a dominant signal:
+  // two demonstrably popular products are a LIGHTLY better mutual
+  // recommendation than two arbitrary ones, but shared demand alone doesn't
+  // make two products "alike" the way shared region/variety/taste do, so this
+  // sits below every attribute signal (region +3 down to sweetness +0.5).
+  // Only tier 2 counts (not >=1) to avoid rewarding the median product.
+  //
+  // DELIBERATELY NOT using reputation_tier here: a 2026-07-09 3-lens review
+  // (see memory project_reputation_v1_expert_review) found the 'iconic' tier
+  // materially miscalibrated — 181/199 iconic products have no real acclaim
+  // signal backing them, driven by a percentile tie-breaking bug affecting
+  // the 91% of SKUs with zero/near-zero demand. Scoring on reputation_tier
+  // would let the recommender confidently amplify a known-wrong "iconic"
+  // label. Revisit once that data fix lands (tracked, not yet shipped).
+  if (product.popularity_tier === 2 && candidate.popularity_tier === 2) {
+    add('popularity', 1);
+  }
+
   const score = Object.values(breakdown).reduce((s, v) => s + v, 0);
   return { score, breakdown };
 }

@@ -410,6 +410,44 @@ describe('scoreCandidateDetailed — taste tiebreakers', () => {
   });
 });
 
+describe('scoreCandidateDetailed — popularity tiebreaker', () => {
+  it('both tier-2 (top quartile) adds +1 under the popularity key', () => {
+    const subject = { ...wineBase, popularity_tier: 2 } as any;
+    const candidate = { ...wineBase, sku: 'W2', popularity_tier: 2 } as any;
+    const { breakdown } = scoreCandidateDetailed(subject, candidate);
+    expect(breakdown.popularity).toBe(1);
+  });
+  it('does NOT fire when only one side is tier 2', () => {
+    const subject = { ...wineBase, popularity_tier: 2 } as any;
+    const candidate = { ...wineBase, sku: 'W2', popularity_tier: 1 } as any;
+    expect(scoreCandidateDetailed(subject, candidate).breakdown.popularity ?? 0).toBe(0);
+  });
+  it('does NOT fire for two tier-1 (merely above-median) products — only tier 2 counts', () => {
+    const subject = { ...wineBase, popularity_tier: 1 } as any;
+    const candidate = { ...wineBase, sku: 'W2', popularity_tier: 1 } as any;
+    expect(scoreCandidateDetailed(subject, candidate).breakdown.popularity ?? 0).toBe(0);
+  });
+  it('does NOT fire when popularity_tier is absent on either side (no penalty)', () => {
+    const subject = { ...wineBase, popularity_tier: undefined } as any;
+    const candidate = { ...wineBase, sku: 'W2', popularity_tier: 2 } as any;
+    expect(scoreCandidateDetailed(subject, candidate).breakdown.popularity ?? 0).toBe(0);
+  });
+  it('popularity (+1) is smaller than every attribute signal, so it cannot override real dissimilarity', () => {
+    // Two products sharing NOTHING but tier-2 popularity must still score lower
+    // than a same-region, no-popularity-data candidate — popularity is a
+    // tiebreaker, not a substitute for genuine similarity.
+    const subject = { ...wineBase, popularity_tier: 2 } as any;
+    const popularOnly = {
+      ...wineBase, sku: 'PO', region: 'Nowhere', country: 'Nowhere',
+      variety: 'none', food_matching: '', popularity_tier: 2,
+    } as any;
+    const sameRegionOnly = { ...wineBase, sku: 'SR', variety: 'none', food_matching: '' } as any;
+    const popScore = scoreCandidateDetailed(subject, popularOnly).score;
+    const regionScore = scoreCandidateDetailed(subject, sameRegionOnly).score;
+    expect(regionScore).toBeGreaterThan(popScore);
+  });
+});
+
 describe('cross-category suppression', () => {
   const wine = { ...base, sku: 'WINE', category_group: 'Wine', category_type: 'Red Wine', is_in_stock: true };
   const whisky = { ...base, sku: 'WHISK', category_group: 'Whisky', category_type: 'Whisky', is_in_stock: true };
