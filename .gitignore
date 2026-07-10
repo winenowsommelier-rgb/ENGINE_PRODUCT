@@ -6,6 +6,9 @@ tsconfig.tsbuildinfo
 .vercel
 data/enrichment_results/
 data/needs_ai_review.json
+# B2B pricing exports — trade pricing must never land in the repo (public GitHub remote).
+data/b2b_products_export.json
+data/b2b_catalog_export.json
 data/t1_t2_product_library.*
 data/products.db
 data/taxonomy.db
