@@ -1,4 +1,5 @@
 import type { CatalogGroup, CatalogRow } from '@/lib/catalog-print';
+import { Wordmark } from '@/components/Wordmark';
 import styles from './catalog-print.module.css';
 
 export type CatalogEdition = 'b2c' | 'b2b';
@@ -167,7 +168,9 @@ export function CatalogDocument({ edition, editionLabel, dateLabel, groups, tota
             <div className={styles.lines}></div>
           </div>
           <div className={styles.mid}>
-            <h1 className={styles.word}>WNLQ9</h1>
+            <h1 className={styles.word}>
+              <Wordmark size="cover" />
+            </h1>
             <p className={styles.catWord}>Catalog</p>
             <span className={styles.edition}>{editionLabel}</span>
             <p className={styles.date}>{dateLabel} · Prices in THB incl. VAT</p>

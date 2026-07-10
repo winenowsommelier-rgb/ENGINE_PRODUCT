@@ -59,12 +59,10 @@
   border-top: 1px solid var(--hair2);
 }
 .mid .word {
-  font-family: Didot, 'Bodoni 72', 'Playfair Display', Georgia, serif;
-  font-weight: 400;
-  font-size: 64px;
-  letter-spacing: 0.3em;
+  /* Typography intentionally comes from <Wordmark size="cover" /> (the same
+     brand-wordmark component the site Header uses) so the cover always
+     matches the header's current style, including any future logo swap. */
   margin: 0 0 4mm;
-  text-indent: 0.3em;
 }
 .mid .catWord {
   font-family: Didot, 'Bodoni 72', 'Playfair Display', Georgia, serif;
