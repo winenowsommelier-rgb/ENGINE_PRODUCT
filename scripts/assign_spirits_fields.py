@@ -43,33 +43,133 @@ if str(ROOT) not in sys.path:
 from data.lib.taxonomy.sku_taxonomy import resolve as _resolve_taxonomy  # noqa: E402
 
 # ── Gin style ──────────────────────────────────────────────────────────────
+# DATA-QUALITY WARNING: this is the same brand-inference failure class as
+# PEAT_RULES (see warning below) and the reverted country-from-brand incident
+# (19/24 wrong, PR #48 -> #50). Before this fix, ANY gin with no specific
+# keyword hit the bare fallback ('juniper_forward', None), which WRITES A
+# GUESSED VALUE AS FACT. That fallback bucket contained well-known non-juniper
+# gins asserted as juniper-forward — e.g. Tanqueray No. TEN (citrus-forward:
+# grapefruit/lime/chamomile is its signature, not juniper) and every Hendrick's
+# expression (rose + cucumber floral infusion is the entire brand identity).
+# Mitigations applied 2026-07-10:
+#   (a) explicit brand+expression regexes below for products whose flavor
+#       profile is well known but not stated in the product name;
+#   (b) keyword coverage widened (rosa/sloe/quince/genever etc.) so more
+#       products resolve on real name signal instead of falling through;
+#   (c) the bare fallback now writes NULL, not a guessed value — matchField()
+#       in category-scorer.ts already treats NULL as "no signal" (verified),
+#       so an unmatched gin gets no scoring bonus/penalty instead of a false
+#       juniper_forward claim.
+# Tanqueray No. TEN: citrus-forward premium gin — fresh grapefruit, lime, and
+# chamomile are its stated signature botanicals, not a juniper-led profile.
+# Only the "No. TEN"/"No Ten" expression — "Tanqueray Flor de Sevilla"
+# (orange-forward, already caught by the citrus rule below) is handled by
+# the generic citrus rule further down.
+_GIN_TANQUERAY_NO_TEN = r'\btanqueray\s*no\.?\s*ten\b'
+# Plain "Tanqueray Gin" (no "London Dry" in this catalog's product name) IS
+# the brand's flagship London Dry expression — juniper-forward is its
+# universally known profile. Scoped narrowly (word "gin" immediately after
+# "tanqueray", nothing else) so it doesn't swallow No. TEN or Flor de
+# Sevilla, which are checked first anyway.
+_GIN_TANQUERAY_FLAGSHIP = r'\btanqueray\s+gin\b'
 GIN_RULES = [
+    ('contemporary_citrus',   _GIN_TANQUERAY_NO_TEN),
+    # Hendrick's: the brand's entire identity across its core range is rose +
+    # cucumber floral infusion (original), with named-flower expressions
+    # (Flora, Neptunia, Grand Cabaret) extending the floral theme rather than
+    # departing from it — a bare "Hendrick's Gin" with no other keyword match
+    # must resolve floral, not the juniper default.
+    ('contemporary_floral',   r"\bhendrick'?s\b"),
     ('aged_barrel',           r'\b(aged|barrel[- ]aged|cask)\b'),
     ('spiced',                r'\b(spiced|pepper|chilli|ginger)\b'),
-    ('contemporary_floral',   r'\b(floral|rose|elderflower|lavender|hibiscus|jasmine)\b'),
-    ('contemporary_fruit',    r'\b(berry|strawberry|raspberry|rhubarb|mango|pineapple|passion fruit)\b'),
-    ('contemporary_citrus',   r'\b(citrus|lemon|lime|grapefruit|orange|yuzu|bergamot)\b'),
-    ('juniper_forward',       r'\b(london dry|classic|traditional|juniper)\b'),
-    ('juniper_forward',       None),   # fallback — any gin without a more specific signal
+    ('contemporary_floral',   r'\b(floral|rose|rosa|elderflower|lavender|hibiscus|jasmine|sakura|violet)\b'),
+    ('contemporary_fruit',    r'\b(berry|bramble|strawberry|raspberry|rhubarb|mango|pineapple|passion\s?fruit|quince|sloe|apple|peach|pear|plum|watermelon|banana)\b'),
+    ('contemporary_citrus',   r'\b(citrus|lemon|lime|grapefruit|orange|yuzu|bergamot|arancia|limone|sevilla)\b'),
+    ('juniper_forward',       r'\b(london dry|classic|traditional|juniper|old tom|genever|jenever)\b'),
+    ('juniper_forward',       _GIN_TANQUERAY_FLAGSHIP),
+    (None,                     None),  # fallback — SEE WARNING ABOVE — was ('juniper_forward', None); genuinely unmatched gins now get NULL, not a guess
 ]
 
 # ── Agave aging ────────────────────────────────────────────────────────────
+# DATA-QUALITY WARNING: same brand-inference failure class (see GIN_RULES /
+# PEAT_RULES warnings). Before this fix, ANY tequila/mezcal with no specific
+# keyword hit the bare fallback ('blanco', None) — writing a guessed aging
+# tier as fact. Confirmed wrong: Don Julio 1942 (one of the most famous
+# AÑEJO tequilas in the world — 3+ years aged in American oak, explicitly
+# marketed as añejo, not blanco) was asserted 'blanco'. Clase Azul "Tequila
+# Gold" was also asserted 'blanco'; "Gold"-labeled tequilas are conventionally
+# joven/reposado-tier (young spirit blended with reposado/añejo or coloring —
+# NOT an unaged blanco), so a bare 'gold' keyword now maps to 'reposado' as
+# the closer of the two conservative buckets this script supports (this
+# script's value set doesn't have a distinct 'joven' bucket; reposado is the
+# lesser-wrong choice vs. asserting unaged blanco on a product literally
+# marketed as aged/gold-colored).
+# Mitigations: (a) explicit brand+expression correction for Don Julio 1942;
+# (b) 'gold'/'joven' keyword coverage added; (c) bare fallback now writes
+# NULL instead of a guessed 'blanco'.
+# Don Julio 1942: flagship añejo expression (per Don Julio's own
+# positioning), aged a minimum of 2.5 years — one of the best-known añejo
+# tequilas in the category. "1942" is the expression name, not a vintage
+# year, but the catalog rows for it (LTQ0240BU, LTQ0203BU) carry no other
+# aging qualifier, so this brand-specific correction is needed.
+_AGAVE_BRAND_CORRECTIONS = r'\bdon\s*julio\s*1942\b'
 AGAVE_RULES = [
+    ('anejo',       _AGAVE_BRAND_CORRECTIONS),
     ('extra_anejo', r'\bextra\s+a[ñn]ejo\b'),
     ('anejo',       r'\ba[ñn]ejo\b'),
-    ('reposado',    r'\breposado\b'),
-    ('blanco',      r'\b(blanco|silver|plata|cristalino)\b'),
-    ('blanco',      None),  # fallback
+    ('reposado',    r'\b(reposado|resposado|gold|joven)\b'),  # 'resposado' = observed catalog typo (Código 1530); 'gold'/'joven' see warning above
+    ('blanco',      r'\b(blanco|silver|plata|cristalino|platino|platinum)\b'),
+    (None,          None),  # fallback — SEE WARNING ABOVE — was ('blanco', None); genuinely unmatched agave spirits now get NULL, not a guess
 ]
 
 # ── Rum style ──────────────────────────────────────────────────────────────
+# DATA-QUALITY WARNING: same brand-inference failure class (see GIN_RULES /
+# AGAVE_RULES / PEAT_RULES warnings). Before this fix, ANY rum with no
+# specific keyword hit the bare fallback ('gold_light', None) — writing a
+# guessed style as fact on 121/195 (62%) of rum rows. Two distinct bugs
+# combined to inflate that bucket:
+#   1. Word-boundary bug: \bxo\b requires the bare word "xo" and does not
+#      match "X.O" (periods, no internal space) — same class as the already-
+#      fixed "Smokehead" vs \bsmoke\b bug in PEAT_RULES. Bumbu X.O Rum
+#      (LRM0241BU) fell through to 'gold_light' though X.O ("Extra Old") is
+#      an aging designation, not a style descriptor. Fixed: \bx\.?o\.?\b
+#      matches "XO", "X.O", "X.O.".
+#   2. Missing aging-language coverage: many aged/reserve rums carry their
+#      signal only in words like "Reserve"/"Reserva"/"Old"/"Years"/
+#      "Centenario"/"Solera"/"Extra Old"/"Selection" rather than the literal
+#      word "aged" — e.g. Appleton Estate 12/21/30 Years Old, Diplomatico
+#      Reserva Exclusiva, Mount Gay Extra Old, Havana Club 7 Years, Flor de
+#      Caña Centenario range. These are all dark/aged rums by definition (age
+#      statements + Spanish "Ron" aging terminology) and should resolve
+#      dark_aged, not the generic gold_light default.
+# Mitigations: (a) XO regex fixed; (b) aging-language keyword coverage
+# widened (year counts, reserve/reserva, centenario, solera, extra old,
+# selection/especial); (c) bare fallback now writes NULL instead of a
+# guessed 'gold_light' — genuinely ambiguous rums (no age statement, no color
+# word, e.g. a bare "Brand Rum" with no other descriptor) now get NULL.
 RUM_RULES = [
     ('pot_still_funk', r'\b(pot still|funky|hogo|overproof funk)\b'),
     ('overproof',      r'\b(overproof|151|navy strength)\b'),
     ('spiced',         r'\b(spiced|captain|flavou?red)\b'),
-    ('dark_aged',      r'\b(dark|aged|añejo|xo|vsop|vso|solera|vintage|mahogany)\b'),
+    # 'black'/'negra'/'negro' added: "Black Rum"/"Carta Negra" ("black label"
+    # in Spanish, Bacardi's dark-rum tier) is a real named dark-rum style —
+    # direct signal, not inference. Checked AFTER 'spiced' above, so "Black
+    # Spiced Rum" products (Kraken, Blackheart, The Colonist, etc.) still
+    # correctly resolve 'spiced' first and are not reclassified here.
+    ('dark_aged',      r'\b(dark|aged|a[ñn]ejo|x\.?o\.?|vsop|vso|solera|vintage|mahogany'
+                        r'|reserve|reserva|centenario|extra\s+old|extra\s+seco'
+                        r'|selection|especial|\d+\s*years?\b|\d+\s*yo\b|gran\s+reserva'
+                        r'|black|negra|negro)\b'),
     ('white_unaged',   r'\b(white|silver|blanco|carta blanca|light|agricole blanc)\b'),
-    ('gold_light',      None),  # fallback
+    # 'gold'/'golden'/'carta oro' as an EXPLICIT keyword match (not a guess):
+    # "Gold Rum" / "Carta Oro" ("gold label" in Spanish) is a real, named rum
+    # style — lightly aged/colored, between white and dark — so a product
+    # whose own name says "Gold" is direct signal, not inference. This is
+    # checked after dark_aged (an age-statement like "12 Years" still wins —
+    # e.g. Havana Club would resolve dark_aged before reaching here) and after
+    # white_unaged, and before the bare fallback.
+    ('gold_light',     r'\b(gold|golden|carta oro)\b'),
+    (None,              None),  # fallback — SEE WARNING ABOVE — was ('gold_light', None); genuinely unmatched rums now get NULL, not a guess
 ]
 
 # ── Peat level ─────────────────────────────────────────────────────────────
