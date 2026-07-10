@@ -15,8 +15,13 @@ const EDITION_DATE = 'July 2026';
 
 // Filters live in the URL (?country=...&minPrice=...), so this route can no
 // longer be fully static — it needs the request's searchParams to decide
-// which rows to render.
+// which rows to render. force-dynamic alone still let Vercel's edge CDN
+// cache the response as `public` and serve one filtered result for every
+// query string (verified in production: every ?country=... variant HIT the
+// same cached body) — revalidate = 0 forces a genuine no-store response so
+// each filter combination is actually re-rendered per request.
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export function generateMetadata({ params }: { params: { group: string } }): Metadata {
   const groupName = SLUG_TO_GROUP[params.group];
