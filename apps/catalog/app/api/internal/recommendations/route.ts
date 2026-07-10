@@ -62,19 +62,27 @@ function b2bPrices(): Map<string, number> {
       for (const r of rows) {
         if (r.sku && typeof r.b2b_price === 'number' && r.b2b_price > 0) prices.set(r.sku, r.b2b_price);
       }
+      // Cache ONLY on a successful parse. If we cached the empty Map on a parse
+      // failure too, `if (_b2bPrices) return _b2bPrices;` above would short-circuit
+      // on the truthy-but-empty Map for the rest of this warm instance's life —
+      // a transient bad read would permanently 503 the B2B route until redeploy.
+      // Leaving _b2bPrices null on failure means the next request retries the read.
+      _b2bPrices = prices;
     } catch (e) {
-      // Malformed B2B export must degrade to "no B2B data" (caught by the b2bMode
-      // guard below), never crash the route or leak parse details/file contents
-      // to the client — this route is margin-data hyper-scrutiny per CLAUDE.md.
+      // Malformed B2B export must degrade to "no B2B data" for THIS request
+      // (caught by the b2bMode guard below), never crash the route or leak parse
+      // details/file contents to the client — this route is margin-data
+      // hyper-scrutiny per CLAUDE.md. Do not cache — see comment above.
       console.error(`Failed to parse B2B price export at ${file}: ${(e as Error).message}`);
+      return prices;
     }
+  } else {
+    // No file at all: this is stable until redeploy (a missing file won't
+    // start existing mid-instance), so caching the empty Map here is safe and
+    // avoids re-probing the filesystem on every request.
+    _b2bPrices = prices;
   }
-  // Assign only after the try/catch resolves, so a thrown parse error never
-  // leaves _b2bPrices pointing at a partially-populated Map that would then
-  // short-circuit (`if (_b2bPrices) return _b2bPrices;`) on the next request
-  // for the life of this warm instance without ever retrying the read.
-  _b2bPrices = prices;
-  return _b2bPrices;
+  return _b2bPrices ?? prices;
 }
 
 export async function GET(req: NextRequest) {
