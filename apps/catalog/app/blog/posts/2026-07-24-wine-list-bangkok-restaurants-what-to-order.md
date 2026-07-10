@@ -84,8 +84,8 @@ Some Bangkok restaurants — particularly hotel all-day dining and neighbourhood
 <!-- product: WWW0202AD -->
 **Domaine Laroche Chablis Les Chanoines** — from ฿1,199
 
-<!-- product: WRW6480FT -->
-**La Demoiselle de Sociando-Mallet, Haut-Médoc** — from ฿1,900
+<!-- product: WRW7688AU -->
+**Château de Ferrand, Saint-Émilion Grand Cru Classé** — from ฿2,100
 
 ---
 

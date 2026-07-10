@@ -156,7 +156,11 @@ For Bangkok wine buyers who want Nebbiolo at its expressive best without the 15-
 
 Barolo is not an impulse purchase. The right approach is to buy two bottles of a good vintage, drink one at 10 years to see where it's going, and open the second at 15. Budget for that.
 
+<!-- product: WRW3607AD -->
+**Pio Cesare Barolo DOCG** (฿2,799). The classic first Barolo. Pio Cesare has blended fruit from across the zone since 1881, and the estate Barolo carries a 96-point rating at a price no single-vineyard bottling can touch. Traditional in style — tar, rose, firm tannin — and the reference point for what the King of Wines means.
+
 <!-- product: WRW5130AA -->
+
 **Ceretto Barolo "Prapo" DOCG (organic)** (฿6,775). Ceretto is one of the great modernist houses of Alba. Prapo is a single-vineyard MGA in Serralunga d'Alba — deeper and more structured than the floral La Morra style, with the mineral spine Serralunga is famous for. Built to cellar; a serious step-up Barolo for a Bangkok collection.
 
 ---

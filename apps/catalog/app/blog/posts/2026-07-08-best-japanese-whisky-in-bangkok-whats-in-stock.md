@@ -98,6 +98,10 @@ Pure malt whisky blends single malts from multiple distilleries. More complexity
 
 **Suntory Hibiki Japanese Harmony** (฿5,295, Japan). Hibiki is Suntory's prestige blend — malt whiskies from Yamazaki and Hakushu, grain from Chita, all blended for balance. The bell-shaped bottle is recognisable globally. "Harmony" is the entry Hibiki expression: light, floral, layered. The gift whisky for someone who takes Japanese whisky seriously.
 
+**Nikka Yoichi Single Malt** (฿5,499, Japan — Hokkaido). The other pillar of Japanese whisky. Yoichi is Nikka's coastal Hokkaido distillery, still running coal-fired pot stills — the peaty, maritime counterweight to Suntory's elegance. If Hibiki is the gift, Yoichi is the one you keep.
+
+<!-- product: LWH1052DG -->
+
 <!-- product: LWH0720AB -->
 
 **The Matsui Pure Malt Peated** (฿4,700, Japan — Tottori). A peated expression from Matsui — unusual for Japanese whisky, which rarely leans into smoke. The peat here is lighter than Islay Scotch but adds earthiness and complexity that the standard Kurayoshi range doesn't have. For the Scotch drinker curious about Japanese whisky.

@@ -34,9 +34,9 @@ Under ฿3,000 in Bangkok, you're in grower-producer and smaller-house Champagne
 
 **Champagne Alain Navarre Cuvée Tradition Brut** (฿1,299, France — Champagne). A grower Champagne at a genuinely accessible price for what it is. Brioche, citrus, fine persistent bubbles. The sommelier's pick when you want real Champagne without paying for a label.
 
-<!-- product: WSP0058AD -->
+<!-- product: WSP2474AC -->
 
-**Champagne Ernest Rapeneau Brut** (฿1,409, France — Champagne). A classic NV Brut from a respected Champagne house. Apple, brioche, good structure. Reliable for any occasion from birthday to dinner party arrival drink.
+**Dumangin Champagne L'Extra Brut Premier Cru** (฿2,299, France — Champagne). A grower's Premier Cru at low dosage — drier, more mineral and more serious than most big-house NV anywhere near this price. Rated 89 points.
 
 <!-- product: WSP2525AD -->
 

@@ -111,7 +111,7 @@ These are wines you can open sixty bottles of without apology. Fruit-forward, re
 
 <!-- product: WRW0282AD -->
 
-<!-- product: WWW5179FR -->
+<!-- product: WWW1106AD -->
 
 <!-- product: WRW0119AC -->
 

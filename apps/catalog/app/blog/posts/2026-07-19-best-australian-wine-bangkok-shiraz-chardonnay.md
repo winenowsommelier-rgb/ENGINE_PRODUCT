@@ -49,17 +49,17 @@ What Australia doesn't have is France's appellation prestige or Italy's ancient 
 ![A glass of full-bodied red Shiraz wine with rich garnet color against a neutral background.](https://images.pexels.com/photos/29441413/pexels-photo-29441413.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 Shiraz is the same grape as France's Syrah — but Australia has made it its own. Where Northern Rhône Syrah is lean, peppery, and savory, Australian Shiraz is typically fuller-bodied, richer, and dark-fruited. The Australian style suits Bangkok's red wine drinker: approachable, generous, no harsh tannin edges.
 
-<!-- product: WRW4288BU -->
+<!-- product: WRW3122CH -->
 
-**Jacob's Creek Classic Shiraz Cabernet** (฿319) is the entry-level door into Australian wine and it opens honestly. The Shiraz-Cabernet blend softens the tannin structure while adding the Cabernet's structure. At ฿319, you're looking at everyday BBQ wine, casual mid-week drinking, or a generous bottle for a group. It does what it says.
+**McGuigan Black Label Red** (฿499) is the entry-level door into Australian wine and it opens honestly — a soft, generous multi-grape red from one of Australia's most awarded wineries. Everyday BBQ wine, casual mid-week drinking, or a generous bottle for a group.
 
 <!-- product: WRW1039AD -->
 
 **Wolf Blass Eaglehawk Shiraz** (฿395) is a step up in concentration and varietal clarity. Eaglehawk is Wolf Blass's entry tier, but it's made with the same blending philosophy that makes Wolf Blass one of Australia's most consistently decorated producers. Black cherry, vanilla, and a touch of oak — correct and satisfying.
 
-<!-- product: WRW5595AD -->
+<!-- product: WRW4687AD -->
 
-**19 Crimes Pinot Noir** (฿595, South Australia) is worth mentioning here as a point of contrast within the Australian red lineup. It doesn't behave like a classic Pinot Noir from New Zealand or Burgundy — it's warmer, richer, and less delicate, reflecting South Australia's climate. It's an approachable, easy-drinking red that sits between a light red and a medium-bodied one. Good for those who want something lighter than Shiraz without going full Cabernet.
+**Penfolds Koonunga Hill Shiraz Cabernet** (฿695, South Australia) is the smartest brand-name step in the lineup — the entry point to Australia's most famous wine house. Medium-bodied, reliable, food-friendly, and an easy way to put the Penfolds name on a weeknight table.
 
 ---
 

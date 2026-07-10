@@ -37,9 +37,9 @@ Entry-level Bordeaux (AOC Bordeaux or Bordeaux Supérieur) is where most buyers 
 
 **Dourthe Grands Terroirs Saint-Émilion** (฿799). Saint-Émilion is the Right Bank's flagship appellation — and this Merlot-Cab Franc blend from Dourthe is a clean, honest expression of it. Soft tannins, plum and dark cherry, subtle oak. Approachable now, better with 30 minutes of air.
 
-<!-- product: WRW1952AH -->
+<!-- product: WRW6965GT -->
 
-**Château Pey la Tour Réserve Bordeaux Supérieur** (฿899). A proper château wine — not a négociant blend. Bordeaux Supérieur means stricter production rules than basic AOC Bordeaux, including lower yields and longer aging. Structured, with real cellar character.
+**Château Les Clavelines Saint-Émilion Grand Cru** (฿1,060, 92 points). A genuine Grand Cru appellation at a price most supermarket Bordeaux charges — Merlot-led, plush, and ready now.
 
 <!-- product: WRW0255AA -->
 

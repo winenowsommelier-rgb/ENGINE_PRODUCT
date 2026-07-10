@@ -96,9 +96,9 @@ Thailand's craft distilling scene has produced genuinely excellent gin using loc
 
 ![A carefully arranged selection of gin bottles ranging from clear London Dry styles to amber-hued premium expressions, showcasing the diversity of gin categories.](https://images.pexels.com/photos/11325915/pexels-photo-11325915.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
-<!-- product: LGN0289CN -->
+<!-- product: LGN0017BU -->
 
-**Silver Top Gin** (฿499, Netherlands) is the entry-level London Dry option in the Bangkok market. Clean, correct, juniper-forward, with a neutral spirit base that doesn't distract. For everyday G&Ts, cocktail mixing, or anyone who wants gin without paying for a craft story, Silver Top is an honest bottle.
+**Gilbey's Gin** (฿399) is the entry-level London Dry option in this guide — a 150-year-old name that makes an honest, juniper-forward G&T for less than the price of two cocktails in Thonglor.
 
 <!-- product: LGN0294EQ -->
 

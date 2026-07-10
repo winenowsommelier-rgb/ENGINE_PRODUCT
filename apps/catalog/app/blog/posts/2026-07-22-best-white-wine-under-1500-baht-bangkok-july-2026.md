@@ -31,9 +31,9 @@ Marlborough's combination of cool nights, intense sunlight, and free-draining st
 
 **Matua Sauvignon Blanc — ฿695** steps up the complexity slightly. Matua is another pioneering Marlborough producer with decades of Sauvignon Blanc expertise. The wine has a little more texture and length than the Brancott — worth the extra ฿100 when you want something with a bit more presence.
 
-<!-- product: WWW2032AD -->
+<!-- product: WWW1106AD -->
 
-**Villa Maria Private Bin Sauvignon Blanc — ฿749** is the top pick in this category and one of the best value whites in Bangkok at any price. Villa Maria is New Zealand's most awarded winery. "Private Bin" is their carefully selected, estate-quality tier. The wine has everything Marlborough Sauvignon Blanc should be — tropical fruit, herb, minerality — and it holds that character through a full meal rather than fading after the first sip.
+**Matua Marlborough Sauvignon Blanc — ฿695** is the top pick in this category. Matua made New Zealand's very first Sauvignon Blanc in 1974, and the estate still nails the style: tropical fruit, cut herbs and minerality that holds through a full meal rather than fading after the first sip.
 
 *Bangkok pairing: som tum, seafood pad thai, steamed fish with lemongrass, grilled river prawn.*
 
@@ -114,9 +114,9 @@ These are the two bottles to reach for when you want something genuinely special
 
 **Domaine Laroche Chablis Les Chanoines AOC — ฿1,199** is pure Chablis: the most austere, mineral expression of Chardonnay on earth. Chablis sits in northern Burgundy where cold Kimmeridgian limestone (literally ancient seabed) gives the wine a flinty, oyster-shell character that no winemaking technique can replicate. Laroche is one of Chablis's most respected producers — their wines show the appellation's true face: unoaked, steely, bone-dry, with a complexity that builds in the glass. This is the best white wine under ฿1,500 in Bangkok for food pairing.
 
-<!-- product: WWW5394AH -->
+<!-- product: WWW4810AA -->
 
-**Edouard Delaunay Septembre Bourgogne Chardonnay AOC — ฿1,289** is Burgundy Chardonnay from a respected négociant with a commitment to organic and biodynamic sourcing. "Bourgogne" is the broad Burgundy appellation, but a good négociant selects excellent fruit and adds skilled winemaking. This bottle has the Burgundy character — texture, white flower, hazelnut, and a richness that Chablis deliberately avoids. If you want Burgundy's opulence within this budget, this is the bottle.
+**Escudo Rojo Gran Reserva Chardonnay — ฿970** is Baron Philippe de Rothschild's Chilean project, and it drinks like twice the price: oak-aged richness, white flower and hazelnut, rated 92 points. If you want opulence within this budget, this is the bottle.
 
 *Bangkok pairing: both pair brilliantly with rich fish (sea bass, snapper), creamy pasta, and roast chicken. The Chablis also works magnificently with oysters and shellfish.*
 

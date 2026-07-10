@@ -36,8 +36,8 @@ This is the distinction most people miss, and it costs them money or underwhelms
 
 The **Chianti DOCG** zone is enormous — it sprawls across central Tuscany from Florence to Siena and beyond. Wines labelled simply "Chianti" can include Sangiovese blended with other permitted grapes, with minimum aging requirements of just a few months. The best are bright, food-friendly, and punchy at the price. The worst are thin and forgettable. As [Wine Folly](https://winefolly.com/deep-dive/chianti-guide/) puts it: "Chianti is a place, not just a wine style — and not all of it is created equal."
 
-<!-- product: WRW1089AH -->
-**Piccini Chianti DOCG** — ฿599
+<!-- product: WRW5951AH -->
+**Piccini Collezione Oro Chianti Riserva DOCG** — ฿649
 
 ### Chianti Classico (฿1,100–2,000)
 

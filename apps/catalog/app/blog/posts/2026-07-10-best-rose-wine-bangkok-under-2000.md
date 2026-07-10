@@ -37,11 +37,11 @@ Outside France, Chile has emerged as a strong value rosé source. Wines from coo
 ![Multiple rosé wine bottles arranged on a wooden shelf with visible labels and price points.](https://images.pexels.com/photos/9658801/pexels-photo-9658801.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 ### Under ฿600 — The Everyday Pour
 
-**Aromo Rosé Syrah** (฿600) and **Alpaca Rosé** (฿600) are the Chilean value picks. Both are dry, both are reliably made, and both work brilliantly poured over ice on a Bangkok afternoon — which, let's be honest, is a legitimate delivery method in this climate.
+**Aromo Rosé Syrah** (฿600) and **Viu Manent Reserva Rosé Malbec** (฿700) are the Chilean value picks. Both are dry, both are reliably made, and both work brilliantly poured over ice on a Bangkok afternoon — which, let's be honest, is a legitimate delivery method in this climate.
 
 <!-- product: WRS0218DD -->
 
-<!-- product: WRS0234AB -->
+<!-- product: WRS0104DD -->
 
 **Domaine Fontval Rosé Méditerranée IGP** (฿560) is the French option at this tier: light, herbal, and unmistakably southern French in character. At ฿560, it's the best value rosé in the catalogue.
 
@@ -53,9 +53,9 @@ Outside France, Chile has emerged as a strong value rosé source. Wines from coo
 
 <!-- product: WRS0057AD -->
 
-**Laurent Miquel Cinsault Syrah Rosé** (฿699) blends two classic southern French grapes. The Cinsault brings freshness and floral notes; the Syrah adds a touch of berry depth. A versatile food wine.
+**Georges Duboeuf Syrah Rosé** (฿699) is southern French Syrah in pink form — berry depth with floral freshness. A versatile food wine from one of France's best-known négociants.
 
-<!-- product: WRS0075AC -->
+<!-- product: WRS0199FJ -->
 
 ### ฿700–900 — Familiar Names, Reliable Quality
 
@@ -63,9 +63,9 @@ Outside France, Chile has emerged as a strong value rosé source. Wines from coo
 
 <!-- product: WRS0012AA -->
 
-**La Vieille Ferme Rosé** (฿800) is made by the Perrin family, who also produce Château Beaucastel — one of Châteauneuf-du-Pape's greatest estates. La Vieille Ferme is their everyday table wine, and it punches well above its price. Grenache and Cinsault from the Rhône Valley, dry and structured.
+**The Pale by Sacha Lichine** (฿900) comes from Château d'Esclans — the house that turned Provence rosé into a global category. Retro label, serious 98-point juice: dry, citrusy, and dangerously easy in this climate.
 
-<!-- product: WRS0156AB -->
+<!-- product: WRS0227AB -->
 
 ## Rosé Comparison: What to Expect
 
@@ -76,11 +76,11 @@ Outside France, Chile has emerged as a strong value rosé source. Wines from coo
 |---|---|---|---|
 | Domaine Fontval IGP | Languedoc | Pale, herbal, dry | Aperitif, seafood |
 | L'Ostal Cazes | Languedoc | Mineral, red fruit | Dinner centrepiece |
-| Laurent Miquel | Languedoc | Floral, fresh | Light Thai dishes |
+| Georges Duboeuf | Languedoc | Floral, fresh | Light Thai dishes |
 | Mouton Cadet Bordeaux | Bordeaux | Structured, reliable | Gift, dinner party |
 | La Vieille Ferme | Rhône Valley | Dry, rounded | Grilled food, versatile |
 | Aromo Syrah | Chile | Fruit-forward, clean | Everyday, ice optional |
-| Alpaca Rosé | Chile | Soft, accessible | Casual, pool-side |
+| Viu Manent Reserva Rosé | Chile | Soft, accessible | Casual, pool-side |
 
 ## What to Avoid: The Pink Moscato Problem
 

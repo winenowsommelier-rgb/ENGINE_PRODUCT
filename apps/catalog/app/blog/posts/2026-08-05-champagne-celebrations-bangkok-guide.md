@@ -91,10 +91,10 @@ These are the bottles to reach for when you need several and the per-bottle cost
 
 This is where the sommelier's personal cellar lives. At this price point you get real house character — more developed yeast notes, rounder mousse, better finish. Both currently on promotion, making them exceptional value.
 
-<!-- product: WSP2617EG -->
+<!-- product: WSP2474AC -->
 <!-- product: WSP2534DD -->
 
-<!-- product: WSP2617EG -->
+<!-- product: WSP2474AC -->
 <!-- product: WSP2534DD -->
 
 ---

@@ -62,6 +62,10 @@ California's warmer climate and culture of winemaking intervention produced the 
 
 The backlash was inevitable and healthy. Today California's best producers — and virtually all of Australia's top Chardonnay estates in Margaret River and Yarra Valley — use oak selectively. Partial new oak, partial older barrels, partial stainless. The wines are richer than Chablis but more precise than old-school California.
 
+At the top of that modern California school sits **Peter Michael 'La Carrière' Chardonnay** (฿6,300) — a 98-point, single-vineyard Knights Valley wine that shows what oak does when it serves the fruit instead of burying it. The collector's benchmark for the style.
+
+<!-- product: WWW1437BN -->
+
 ![A chilled glass of pale Australian Chardonnay on a sun-drenched outdoor table](https://images.pexels.com/photos/2584451/pexels-photo-2584451.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
 For Bangkok drinkers, the Australian style hits a practical sweet spot: fruit-forward enough to drink without food, structured enough to handle grilled fish or a chicken green curry, and priced well (฿800–฿1,800 for quality bottles).

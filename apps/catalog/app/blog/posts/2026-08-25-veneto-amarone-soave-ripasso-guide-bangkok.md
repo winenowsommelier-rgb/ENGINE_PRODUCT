@@ -53,7 +53,7 @@ The two Valpolicella bottles in our Bangkok range come from producers who take t
 
 Recommended: Entry Valpolicella
 
-<!-- product: WRW2046AC -->
+<!-- product: WRW0617AA -->
 <!-- product: WRW3412AD -->
 
 ## Ripasso: The Smart Buyer's Secret Weapon

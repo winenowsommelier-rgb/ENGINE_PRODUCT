@@ -64,9 +64,9 @@ Chablis is Chardonnay, but unlike the oaky, buttery Chardonnays you might be use
 
 **Domaine Laroche Chablis Les Chanoines AOC** (฿1,199, France — Chablis). Domaine Laroche is one of Chablis's most respected producers. This is textbook Chablis: chalk mineral, green apple, high acid. Pour it cold (8–10°C) with a dozen oysters.
 
-<!-- product: WWW5895GT -->
+<!-- product: WWW5261AB -->
 
-**Maison Jaffelin Chablis** (฿1,410, France — Chablis). Another reliable Chablis at a fair Bangkok price. Cleaner, more mineral than the Laroche — a slightly leaner style that rewards careful seafood pairing.
+**La Chablisienne Chablis 1er Cru Fourchaume** (฿2,900, France — Chablis). The step-up bottle: Premier Cru intensity and a 95-point rating, for the night the seafood deserves ceremony.
 
 ---
 

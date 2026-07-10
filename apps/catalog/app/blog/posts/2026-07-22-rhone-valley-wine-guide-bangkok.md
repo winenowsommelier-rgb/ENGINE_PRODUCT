@@ -34,6 +34,10 @@ Northern Rhône Syrah is a different animal from Australian Shiraz (the same gra
 
 These are wines built for a decade in the cellar. At Bangkok retail prices, the entry-level Crozes-Hermitage and Saint-Joseph appellations represent some of the best value in all of French wine.
 
+And if you want to see the summit, we hold it: E. Guigal's single-vineyard Côte-Rôtie La Landonne — a perfect 100-point wine and the Northern Rhône argument settled in one bottle.
+
+<!-- product: WRW6586AD -->
+
 ---
 
 ## The Southern Rhône: The GSM Blend
@@ -61,9 +65,9 @@ For Bangkok shoppers, Côtes du Rhône in the ฿600–800 range offers extraord
 
 Gallician Prestige Rouge is a blend of Syrah, Grenache, and Mourvèdre from the broader Languedoc-Rhône zone — a warm introduction to the GSM style at an extremely accessible price. Dark red fruit, spice, and the characteristic herbal note of sun-baked southern French wine.
 
-<!-- product: WRW6412DD -->
+<!-- product: WRW5457BN -->
 
-Cellier Des Princes Côtes du Rhône Vieilles Vignes takes things a step further. "Vieilles Vignes" (old vines) indicates that these Grenache and Syrah vines have decades of root depth behind them — they produce less fruit per vine, but what they produce is more concentrated and complex. This is the style that makes Côtes du Rhône an honest competitor to bottles costing twice as much.
+Domaine du Pégau Côtes du Rhône Cuvée Setier takes things a step further. Pégau is one of Châteauneuf-du-Pape's most celebrated cellars, and Setier is its 90-point village-level Côtes du Rhône — concentrated Grenache-Syrah depth that competes with bottles costing twice as much.
 
 ---
 
@@ -84,9 +88,9 @@ When you drink either of these, you are drinking wine made by a family whose top
 
 Famille Perrin La Vieille Ferme Rouge is the starting point: Grenache-dominant, juicy, and consistently good. At ฿800, it's arguably the most reliable value in all of Bangkok's French wine selection. Stock it as your house red and you'll never have a bad dinner.
 
-<!-- product: WRW5062AB -->
+<!-- product: WRW1468AD -->
 
-Famille Perrin Réserve Côtes-du-Rhône Rouge is the step up — more structural complexity, a higher Syrah component for backbone, and the kind of depth that makes it worth opening with food you care about. The difference between this and La Vieille Ferme is real; this is the bottle you open when you want to discuss what's in the glass.
+E. Guigal Crozes-Hermitage is the step up — pure Northern Rhône Syrah from the region's reference producer, rated 91 points. The difference between this and La Vieille Ferme is real; this is the bottle you open when you want to discuss what's in the glass.
 
 ---
 

@@ -138,8 +138,8 @@ Open the Bordeaux at least 30 minutes before it is served, or decant it briefly.
 <!-- product: WRW0255AA -->
 <!-- product: WWW2046AB -->
 <!-- product: WWW5406BN -->
-<!-- product: WRS0035AB -->
-<!-- product: WSP0058AD -->
+<!-- product: WRS0109BN -->
+<!-- product: WSP2474AC -->
 
 ---
 

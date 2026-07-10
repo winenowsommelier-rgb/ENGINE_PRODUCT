@@ -34,7 +34,7 @@ When in doubt, bring one red and one white. It covers any menu, it signals gener
 
 <!-- product: WRW4771AB -->
 
-<!-- product: WWW2032AD -->
+<!-- product: WWW1106AD -->
 
 ## Budget Tiers
 
