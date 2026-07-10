@@ -148,14 +148,52 @@ export function publicProductInScope(p: PublicProduct): boolean {
 }
 
 /**
- * All B2C catalog rows (margin-safe), optionally filtered to one
- * category_group — shared by the full catalog route and the per-category
- * print routes so both build from the same source of truth.
+ * Pre-print narrowing options — lets a user cut a long category down to a
+ * printable size instead of always getting every in-stock row. All fields
+ * are optional/additive (AND'd together); omitting all of them reproduces
+ * the previous unfiltered behavior.
  */
-export function getB2CCatalogRows(products: PublicProduct[], categoryGroup?: string): CatalogRow[] {
+export interface CatalogFilterOptions {
+  categoryGroup?: string;
+  countries?: string[];
+  minPrice?: number;
+  maxPrice?: number;
+  hasScoreOnly?: boolean;
+}
+
+function rowMatchesFilters(row: CatalogRow, opts: CatalogFilterOptions): boolean {
+  if (opts.categoryGroup && row.categoryGroup !== opts.categoryGroup) return false;
+  if (opts.countries?.length && !opts.countries.includes(row.country || UNKNOWN_COUNTRY)) return false;
+  if (opts.minPrice !== undefined && row.price < opts.minPrice) return false;
+  if (opts.maxPrice !== undefined && row.price > opts.maxPrice) return false;
+  if (opts.hasScoreOnly && !row.scoreSummary) return false;
+  return true;
+}
+
+/**
+ * All B2C catalog rows (margin-safe), optionally narrowed by
+ * CatalogFilterOptions — shared by the full catalog route and the
+ * per-category print routes so both build from the same source of truth.
+ */
+export function getB2CCatalogRows(
+  products: PublicProduct[],
+  opts: CatalogFilterOptions = {},
+): CatalogRow[] {
   return products
     .filter(publicProductInScope)
-    .filter((p) => !categoryGroup || p.category_group === categoryGroup)
     .map(rowFromPublicProduct)
-    .filter((r): r is CatalogRow => r !== null);
+    .filter((r): r is CatalogRow => r !== null)
+    .filter((r) => rowMatchesFilters(r, opts));
+}
+
+/** Distinct countries present in a row set, sorted by count desc — the
+ * candidate list for the pre-print country filter (scoped to whatever
+ * category/search the user is already looking at). */
+export function countriesInRows(rows: CatalogRow[]): { name: string; count: number }[] {
+  const counts = new Map<string, number>();
+  for (const r of rows) {
+    const c = r.country?.trim() || UNKNOWN_COUNTRY;
+    counts.set(c, (counts.get(c) ?? 0) + 1);
+  }
+  return [...counts.entries()].map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
 }
