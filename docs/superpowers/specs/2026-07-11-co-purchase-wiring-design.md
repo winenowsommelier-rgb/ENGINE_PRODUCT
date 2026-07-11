@@ -66,6 +66,18 @@ signal). This design builds on that state; it does not redo it.
    signal silently going dead (the same class of bug already caught twice
    this session per the file's own commit history — `regionWeightOverride`
    and `sync_popularity_from_bi.py` column mismatches).
+6. **Dampen the bonus by list length as a support proxy.** A spec-review pass
+   found `rate` carries no volume/support backing — the BI export has no
+   `count`/`n_orders` field, so a product bought together with another SKU in
+   its one and only recorded order reads as `rate = 1.0`, identical to a pair
+   with hundreds of corroborating orders. Verified empirically: 1,264/5,439
+   subjects (24%) hit `rate = 1.0` at rank 1, and those subjects have
+   materially shorter affinity lists on average (4.63 entries) than subjects
+   whose rank-1 rate is <1.0 (8.77 entries) — list length is a real, if
+   imperfect, proxy for "how much order history backs this subject's
+   affinities." The bonus formula (below) multiplies by a length-based
+   damping factor so thin-data subjects can't reach the full +5 ceiling on a
+   single coincidental order.
 
 ## Design
 
@@ -86,9 +98,12 @@ export function buildBaseSkuMap(all: readonly PublicProduct[]): Map<string, stri
 function baseCodeOf(sku: string): string;
 
 /**
- * Bonus points for candidate given subject, scaled from BI rate.
- * Returns 0 if no affinity data for subject, or candidate isn't a target.
- * K=5 -> max bonus +5 (rate=1.0); typical rank-1 real pair ~= +2 (rate~0.39-0.49 median).
+ * Bonus points for candidate given subject, scaled from BI rate and damped by
+ * how much affinity data backs the subject (list length as a support proxy —
+ * see DAMPING below). Returns 0 if no affinity data for subject, or candidate
+ * isn't a target.
+ * K=5 -> ceiling bonus +5, only reachable at rate=1.0 AND full support.
+ * Typical well-supported rank-1 real pair ~= +2 (rate~0.39-0.49 median, undamped).
  */
 export function getCoPurchaseBonus(
   subjectSku: string,
@@ -100,8 +115,32 @@ export function getCoPurchaseBonus(
 `getCoPurchaseBonus` resolves `subjectSku` to its base code, looks up
 `co_order_affinities` + `co_customer_affinities` for that base code, resolves
 each entry's `base_product_code` to live SKU(s) via `baseSkuMap`, and if
-`candidateSku` is among them, returns `rate * K` (using the **max** rate
-across both lists if the candidate appears in both). `K = 5`.
+`candidateSku` is among them, computes `rate * K * damping` (using the **max**
+rate across both lists if the candidate appears in both — the corroborating
+list's own length feeds `damping` too; see below). `K = 5`.
+
+**DAMPING (support-proxy fix from spec review):** the BI export has no
+order-count/support field, so `rate` alone can't distinguish "100% of 200
+orders" from "100% of 1 order." List length is the only available proxy for
+how much order history backs a subject's affinities — empirically, subjects
+whose rank-1 `co_order` rate is 1.0 average 4.63 total entries vs. 8.77 for
+subjects whose rank-1 rate is <1.0. Damping factor:
+
+```ts
+const SUPPORT_FULL_AT = 5; // list length at which damping saturates to 1.0
+function supportDamping(listLength: number): number {
+  return Math.min(1, listLength / SUPPORT_FULL_AT);
+}
+```
+
+Applied per-list (using whichever list — `co_order` or `co_customer` —
+produced the max rate for this candidate), so a candidate sourced from a
+2-entry list gets `damping = 0.4` even if its `rate = 1.0`, while a candidate
+sourced from an 8-entry list gets full weight (`damping = 1.0`, capped). This
+does not change the max-of-both-lists blend decision — it only scales the
+winning list's contribution before the max is taken, so a strong signal
+backed by a long list still wins over a nominally-higher rate backed by a
+short one where that reordering is warranted.
 
 ### `recommender.ts` changes
 
@@ -121,6 +160,21 @@ No changes to `getRecommendationsWithBands`, `precomputeRecommendations`
 bucketing, or the FUTURE/BI-SWAP-SEAM docblocks beyond marking the seam as
 now-implemented (docblock update, not a code path change).
 
+### Error handling: missing/malformed BI file
+
+`catalog-data.ts`'s loader for `live_products_export.json` fails the build
+loudly if that file is missing or unparseable — an established, deliberate
+pattern (the main product export is load-bearing; a broken build is
+preferable to silently serving stale/empty data). `bi-product-affinities.json`
+does **not** get the same treatment: it is an optional enrichment signal, not
+core catalog data. If the file is missing or fails to parse at module init,
+`co-purchase.ts` catches it, logs a single build-time warning (not per-request
+— this is a one-time module-init event, not the per-candidate skip case
+covered by the coverage guard), and `getCoPurchaseBonus` returns 0
+unconditionally thereafter. The scorer degrades to exactly today's
+rule-based-only behavior rather than failing the entire static build over an
+optional signal.
+
 ### Placement in the score hierarchy
 
 Region (+3) still dominates. Co-purchase max (+5) can now exceed region alone
@@ -136,9 +190,16 @@ in general.
 - `co-purchase.test.ts`:
   - `baseCodeOf` / `buildBaseSkuMap`: suffix stripping, fan-out to 2 SKUs,
     codes with no live match excluded from the map.
-  - `getCoPurchaseBonus`: correct `rate * K` scaling, max-of-both-lists when
-    present in both, 0 when subject has no BI record, 0 when candidate isn't
-    a listed target.
+  - `getCoPurchaseBonus`: correct `rate * K * damping` scaling, max-of-both-lists
+    when present in both, 0 when subject has no BI record, 0 when candidate
+    isn't a listed target.
+  - **Damping**: a short list (length 1-2) at rate=1.0 produces a bonus well
+    below the +5 ceiling; a list at/above `SUPPORT_FULL_AT` (5) reaches full
+    `rate * K`; damping never produces a negative or >K result.
+  - **Missing/malformed file**: module init with a missing or unparseable BI
+    file logs once and does not throw; `getCoPurchaseBonus` returns 0 for any
+    input afterward (scorer degrades to today's behavior, doesn't fail the
+    build).
   - **Coverage regression guard**: load the real
     `data/bi-product-affinities.json`, build the real base-SKU map against
     the real live export, assert mapped-coverage ratio > 0.90.
