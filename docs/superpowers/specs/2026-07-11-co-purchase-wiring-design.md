@@ -70,14 +70,18 @@ signal). This design builds on that state; it does not redo it.
    found `rate` carries no volume/support backing — the BI export has no
    `count`/`n_orders` field, so a product bought together with another SKU in
    its one and only recorded order reads as `rate = 1.0`, identical to a pair
-   with hundreds of corroborating orders. Verified empirically: 1,264/5,439
-   subjects (24%) hit `rate = 1.0` at rank 1, and those subjects have
-   materially shorter affinity lists on average (4.63 entries) than subjects
-   whose rank-1 rate is <1.0 (8.77 entries) — list length is a real, if
-   imperfect, proxy for "how much order history backs this subject's
-   affinities." The bonus formula (below) multiplies by a length-based
-   damping factor so thin-data subjects can't reach the full +5 ceiling on a
-   single coincidental order.
+   with hundreds of corroborating orders. Verified empirically on
+   `co_order_affinities` list length specifically (not combined with
+   `co_customer_affinities`): 1,264/5,439 subjects (24%) hit `rate = 1.0` at
+   rank 1, and those subjects have materially shorter `co_order_affinities`
+   lists on average (4.63 entries) than subjects whose rank-1 rate is <1.0
+   (8.77 entries) — list length is a real, if imperfect, proxy for "how much
+   order history backs this subject's affinities." `listLength` in the
+   damping formula below always means the length of the specific list
+   (`co_order` or `co_customer`) being damped, never a combined count. The
+   bonus formula (below) multiplies by a length-based damping factor so
+   thin-data subjects can't reach the full +5 ceiling on a single
+   coincidental order.
 
 ## Design
 
