@@ -3,16 +3,34 @@
 Every product embedded in a post goes through this process. No exceptions —
 including updates to existing posts. This codifies the 2026-07-09 upgrade pass.
 
-## 1. Generate candidates mechanically (never hand-pick from memory)
+## 0. Data sources (all BI-derived — never pick from memory)
+
+| Signal | Origin | Lands in | Refresh |
+|---|---|---|---|
+| Sales popularity (`popularity_*_window`) | BI DuckDB `marts.mart_pivot_base` | products.db → live export | `data/sync_popularity_from_bi.py` after each BI mart rebuild |
+| Reputation (`reputation_tier`, `score_max`) | reputation enrichment | products.db → live export | enrichment runs |
+| Co-purchase affinity (same basket / same customer) | BI DuckDB via `compute_affinities` | `data/bi-product-affinities.json` | `scripts/export-bi-affinities.py` after each BI mart rebuild |
+| Search demand (GSC keywords/pages, GA4) | Google APIs via BI app `api/seo_aeo.py` → Supabase | NOT yet wired for wnlq9.shop | pending: add wnlq9.shop to SITE_MAP + GSC property grant |
+
+The picker warns when popularity or affinity data is >14 days old — re-sync
+before trusting ranks. BI mart rebuild date = mtime of
+`CLAUDE DATA_WNLQ9 M REPORT ALL/data/processed/ecommerce_bi.duckdb`.
+
+## 1. Generate candidates mechanically
 
 ```
 .venv/bin/python scripts/content_product_picker.py --prefix WRW --country France --limit 15
+.venv/bin/python scripts/content_product_picker.py --anchor WRW6601AF   # co-purchase companions
 ```
 
 Ranking is premium-first: `reputation_tier` (iconic > premium > established >
 everyday > unrated) → `score_max` → `popularity_qty_window` → `price`.
 Filter to the post's topic (prefix/country/region/variety/price band) BEFORE
 looking at names. In-stock only (the picker already enforces this).
+
+Use `--anchor` for "customers also bought" / "complete the order" slots —
+real co-purchase behavior from BI beats guessed pairings. Companions that are
+out of stock are hidden automatically; the fit-filter in §2 still applies.
 
 ## 2. Filter for narrative fit like a sommelier (the human-judgment gate)
 
