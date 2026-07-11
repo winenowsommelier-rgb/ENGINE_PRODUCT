@@ -89,7 +89,7 @@ signal). This design builds on that state; it does not redo it.
    backing — the BI export has no `count`/`n_orders` field, so a product
    bought together with another SKU in its one and only recorded order reads
    as `rate = 1.0`, identical to a pair with hundreds of corroborating
-   orders. Verified empirically: 1,264/5,439 subjects (24%) hit
+   orders. Verified empirically: 1,264/5,439 subjects (23.2%) hit
    `rate = 1.0` at `co_order_affinities` rank 1, and those subjects have
    materially shorter `co_order_affinities` lists on average (4.63 entries)
    than subjects whose rank-1 rate is <1.0 (8.77 entries) — list length is a
@@ -143,7 +143,12 @@ type AffinityEntry = { rank: number; base_product_code: string; product_name: st
 // parsed as part of the file's shape but deliberately unused (decision #2).
 type AffinityRecord = { co_order_affinities: AffinityEntry[]; co_customer_affinities: AffinityEntry[] };
 
-// base_product_code (BI) -> live sku[] (0, 1, or rarely 2 entries)
+// base_product_code (BI) -> live sku[] (0, 1, or rarely 2 entries).
+// `all` = the full product pool (in-stock AND out-of-stock), matching the
+// existing `all` parameter convention on precomputeRecommendations/
+// getRecommendations — stock filtering is NOT this function's job, it
+// happens later via isEligible, same as every other candidate-pool step in
+// this file.
 export function buildBaseSkuMap(all: readonly PublicProduct[]): Map<string, string[]>;
 
 // live sku -> base_product_code, derived via ^([A-Z]{3}\d{4}) prefix match
@@ -203,21 +208,39 @@ refers to one unambiguous list.
 
 ### `recommender.ts` changes
 
-One new line in `scoreCandidateDetailed`, following the existing pattern of
-every other signal in that function:
+**Correction from spec re-review: this is NOT a one-line change.** The
+scoring line itself is one new line in `scoreCandidateDetailed`, following the
+existing pattern of every other signal in that function:
 
 ```ts
 const coPurchasePts = getCoPurchaseBonus(product.sku, candidate.sku, baseSkuMap);
 if (coPurchasePts > 0) add('co_purchase', coPurchasePts);
 ```
 
-`baseSkuMap` is built once per `precomputeRecommendations` call (and once per
-`getRecommendations` call) and threaded through, not rebuilt per-candidate —
-same performance discipline as the existing `productFoods` pre-split.
+...but `baseSkuMap` does not exist in `scoreCandidateDetailed`'s scope today
+and has to be threaded down to it, same as `productFoods` already is. Verified
+against the real call chains in `recommender.ts`:
 
-No changes to `getRecommendationsWithBands`, `precomputeRecommendations`
-bucketing, or the FUTURE/BI-SWAP-SEAM docblocks beyond marking the seam as
-now-implemented (docblock update, not a code path change).
+- `getRecommendations(product, all)` → `rankAgainst(product, candidates,
+  productFoods)` → `scoreCandidate(product, c, productFoods)` →
+  `scoreCandidateDetailed(...)`.
+- `precomputeRecommendations(all)` → `getRecommendationsWithBands(product,
+  pool, opts)` → `scoreCandidateDetailed(...)` directly.
+
+`baseSkuMap` needs a new parameter threaded through **every function in both
+chains**: `scoreCandidateDetailed`, `scoreCandidate`, `rankAgainst`,
+`getRecommendations`, `getRecommendationsWithBands`, and built once inside
+`precomputeRecommendations` (same place `inStock`/the region/type/country
+buckets are already built once) rather than per-subject or per-candidate —
+same performance discipline as the existing `productFoods` pre-split, just
+touching more call sites than a single new line implies. This is a mechanical,
+low-risk threading change (an added parameter, not a behavior change to any
+existing function), but the implementation plan should size it as touching
+~6 functions across the file, not 1.
+
+No changes to bucketing logic in `precomputeRecommendations`, or to the
+FUTURE/BI-SWAP-SEAM docblocks beyond marking the seam as now-implemented
+(docblock update, not a code path change).
 
 ### Error handling: missing/malformed BI file
 
@@ -276,8 +299,16 @@ points release over release, that is this loop in action, not a sign of a
     build).
   - **Coverage regression guard**: load the real
     `data/bi-product-affinities.json`, build the real base-SKU map against
-    the real live export, assert mapped-coverage ratio > 0.90 (measured
-    against `co_order_affinities` mapping only).
+    the real live export, assert mapped-coverage ratio > 0.90. Note:
+    `buildBaseSkuMap` maps BASE CODES to live SKUs from the live catalog
+    export via regex — this mapping is a property of SKU string formats
+    only, not of which BI list (`co_order` vs `co_customer`) a code came
+    from, so there is one base-SKU map, not a `co_order`-specific one.
+    (Confirmed by spec re-review: subject-key-level coverage is 96.25%
+    regardless of list; if measured at entry-level instead, `co_order`
+    entries individually map at ~96.0% and `co_customer` entries at ~89.9% —
+    a different, not-currently-used number. The 0.90 threshold applies to
+    the one real base-SKU map this module builds.)
 - `recommender.test.ts` addition: one integration case asserting a known real
   `co_order` BI-affinity pair (sampled from the live JSON, not synthetic)
   ranks above an otherwise-equivalent candidate with no co-purchase signal.
