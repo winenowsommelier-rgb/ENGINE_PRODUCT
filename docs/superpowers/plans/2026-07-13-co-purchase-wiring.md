@@ -1084,8 +1084,15 @@ it('scratch: dump top-4 recs for sampled high-popularity SKUs', () => {
 });
 ```
 
-Run in the scratch "before" worktree first:
+The scratch worktree has no `node_modules` (it's gitignored, so a fresh `git worktree add` checkout doesn't carry it over) — install dependencies there first. This install can take a couple of minutes; that's expected, not a stall:
 ```bash
+cd /tmp/recs-before/apps/catalog && npm install
+```
+
+Then copy the throwaway test file into the scratch worktree (it was never committed, so it doesn't exist there yet) and run it:
+```bash
+cp "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/.claude/worktrees/recs-engine-v2/apps/catalog/lib/__tests__/_scratch-diff.test.ts" \
+   /tmp/recs-before/apps/catalog/lib/__tests__/_scratch-diff.test.ts
 cd /tmp/recs-before/apps/catalog && npx vitest run lib/__tests__/_scratch-diff.test.ts
 mv /tmp/recs-diff-output.txt /tmp/before.txt
 ```
