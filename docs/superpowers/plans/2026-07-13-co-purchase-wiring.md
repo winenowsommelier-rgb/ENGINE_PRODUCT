@@ -923,50 +923,76 @@ This is not optional per project rules: counting that tests pass is not verifica
 
 - [ ] **Step 1: Run `precomputeRecommendations` over the real live export and inspect actual output**
 
-Run (adjust the script path if `ts-node`/`tsx` isn't set up — use a quick Node script via the project's existing test infra if simpler, e.g. a throwaway `.test.ts` you delete after, or a `tsx` one-liner):
+Use a throwaway vitest test file (same pattern as Task 13 — vitest is already wired and TS-aware, no extra tool install needed). Create `apps/catalog/lib/__tests__/_scratch-verify.test.ts` (never committed, deleted at the end of Step 2):
 
-```bash
-cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/.claude/worktrees/recs-engine-v2/apps/catalog"
-npx tsx -e "
+```ts
+import { it } from 'vitest';
 import fs from 'fs';
-import { precomputeRecommendations, scoreCandidateDetailed } from './lib/recommender';
-import { buildBaseSkuMap } from './lib/co-purchase';
+import path from 'path';
+import { precomputeRecommendations, scoreCandidateDetailed } from '@/lib/recommender';
+import { buildBaseSkuMap } from '@/lib/co-purchase';
 
-const raw = JSON.parse(fs.readFileSync('../../data/live_products_export.json', 'utf8'));
-const rows = Array.isArray(raw) ? raw : raw.products;
-// crude normalize of is_in_stock for this ad hoc check
-const all = rows.map((r: any) => ({ ...r, is_in_stock: r.is_in_stock === '1' || r.is_in_stock === 1 }));
+function findRealFile(relPath: string): string {
+  const candidates = [path.join(process.cwd(), relPath), path.join(process.cwd(), '..', '..', relPath)];
+  const found = candidates.find((p) => fs.existsSync(p));
+  if (!found) throw new Error(`not found: ${relPath}`);
+  return found;
+}
 
-const bi = JSON.parse(fs.readFileSync('../../data/bi-product-affinities.json', 'utf8'));
-const baseSkuMap = buildBaseSkuMap(all);
+it('scratch: verify co_purchase bonus reaches real scores and the precomputed map', () => {
+  const raw = JSON.parse(fs.readFileSync(findRealFile('data/live_products_export.json'), 'utf8'));
+  const rows = Array.isArray(raw) ? raw : raw.products;
+  const all = rows.map((r: any) => ({ ...r, is_in_stock: r.is_in_stock === '1' || r.is_in_stock === 1 }));
+  const bi = JSON.parse(fs.readFileSync(findRealFile('data/bi-product-affinities.json'), 'utf8'));
+  const baseSkuMap = buildBaseSkuMap(all);
+  const bySku = new Map(all.map((p: any) => [p.sku, p]));
 
-let checked = 0, sawCoPurchase = 0;
-for (const [base, record] of Object.entries(bi.affinities).slice(0, 500) as any) {
-  const subjectSkus = baseSkuMap.get(base) ?? [];
-  for (const sSku of subjectSkus) {
-    const subject = all.find((p: any) => p.sku === sSku);
-    if (!subject) continue;
-    for (const entry of record.co_order_affinities ?? []) {
-      const candSkus = baseSkuMap.get(entry.base_product_code) ?? [];
-      for (const cSku of candSkus) {
-        const cand = all.find((p: any) => p.sku === cSku);
-        if (!cand) continue;
-        checked++;
-        const { breakdown } = scoreCandidateDetailed(subject, cand, undefined, baseSkuMap);
-        if (breakdown.co_purchase > 0) sawCoPurchase++;
+  // Step 1: confirm the bonus reaches scoreCandidateDetailed's breakdown for real pairs.
+  let checked = 0, sawCoPurchase = 0;
+  const hitSubjects: string[] = [];
+  for (const [base, record] of (Object.entries(bi.affinities) as any).slice(0, 500)) {
+    for (const sSku of baseSkuMap.get(base) ?? []) {
+      const subject = bySku.get(sSku);
+      if (!subject) continue;
+      for (const entry of record.co_order_affinities ?? []) {
+        for (const cSku of baseSkuMap.get(entry.base_product_code) ?? []) {
+          const cand = bySku.get(cSku);
+          if (!cand) continue;
+          checked++;
+          const { breakdown } = scoreCandidateDetailed(subject, cand, undefined, baseSkuMap);
+          if (breakdown.co_purchase > 0) { sawCoPurchase++; hitSubjects.push(sSku); }
+        }
       }
     }
   }
-}
-console.log(\`checked \${checked} real BI pairs, co_purchase bonus present in breakdown for \${sawCoPurchase}\`);
-"
+  console.log(`checked ${checked} real BI pairs, co_purchase bonus present in breakdown for ${sawCoPurchase}`);
+
+  // Step 2: confirm a co-order partner actually survives into the final precomputed
+  // {sku, band}[] list (score contribution alone doesn't guarantee survival into
+  // top-8 if other candidates score higher) for a few of the subjects hit above.
+  const precomputed = precomputeRecommendations(all);
+  for (const sSku of hitSubjects.slice(0, 3)) {
+    console.log(sSku, '->', JSON.stringify(precomputed.get(sSku)));
+  }
+});
 ```
 
-Expected: a non-zero `sawCoPurchase` count — this confirms the bonus is actually reflected in scores, not just that the JSON loader parses correctly (satisfies project CLAUDE.md Rule 6: end-to-end invariant, not just "the loader ran").
+Run:
+```bash
+cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/.claude/worktrees/recs-engine-v2/apps/catalog"
+npx vitest run lib/__tests__/_scratch-verify.test.ts
+```
+
+Expected: a non-zero `sawCoPurchase` count in the console output — this confirms the bonus is actually reflected in scores, not just that the JSON loader parses correctly (satisfies project CLAUDE.md Rule 6: end-to-end invariant, not just "the loader ran").
 
 - [ ] **Step 2: Spot-check the precomputed map directly for 2-3 sampled subjects**
 
-Extend the same script (or a follow-up one-liner) to call `precomputeRecommendations(all)` for a small slice and print the recs for 2-3 of the subjects checked above, confirming a co-order partner actually appears in the final `{sku, band}[]` list, not just that the raw score has a `co_purchase` breakdown entry (score contribution ≠ guaranteed to survive into top-8 if other candidates score higher — this step confirms it's actually surfacing for at least a few real subjects, not just theoretically wired).
+Read the 3 printed `precomputed.get(sSku)` lines from Step 1's console output and confirm at least one shows a co-order partner sku present in the final `{sku, band}[]` list.
+
+Then delete the scratch file — it must never be committed:
+```bash
+rm "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/.claude/worktrees/recs-engine-v2/apps/catalog/lib/__tests__/_scratch-verify.test.ts"
+```
 
 - [ ] **Step 3: Record findings**
 
@@ -1022,37 +1048,55 @@ No commit (investigation only).
 
 Per spec decision #7b: for a sample of high-traffic SKUs, generate top-4 recs before and after this change, and manually review plausibility.
 
-- [ ] **Step 1: Capture "before" recommendations (from `main`/pre-change state)**
+- [ ] **Step 1: Capture "before" recommendations (from the pre-Task-7 state) using a scratch worktree**
 
-The cleanest way to get a true "before" is to run `getRecommendations` with a `baseSkuMap` of `undefined`/empty (the code already supports this — Task 7 made `baseSkuMap` optional in `scoreCandidateDetailed`, defaulting to no co-purchase bonus). Write a throwaway script:
+By this point Tasks 7-12 are already committed, so there is nothing uncommitted to `git stash` — do NOT use `git stash` here (this worktree also has pre-existing unrelated dirty files, e.g. `data/onboard_preflight_report.md` and various `products.db.backup-*` files, so a broad stash is not a safe or even useful move for this comparison). Instead, use a temporary `git worktree` checked out at the commit immediately before Task 7's "thread baseSkuMap" commit — this gives a clean, isolated "before" snapshot without touching the main worktree at all:
 
 ```bash
-cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/.claude/worktrees/recs-engine-v2/apps/catalog"
-npx tsx -e "
-import fs from 'fs';
-import { getRecommendations, scoreCandidate } from './lib/recommender';
-import { buildBaseSkuMap } from './lib/co-purchase';
-
-const raw = JSON.parse(fs.readFileSync('../../data/live_products_export.json', 'utf8'));
-const rows = Array.isArray(raw) ? raw : raw.products;
-const all = rows.map((r: any) => ({ ...r, is_in_stock: r.is_in_stock === '1' || r.is_in_stock === 1 }));
-
-// Sample ~50 high-popularity in-stock products.
-const sample = all.filter((p: any) => p.popularity_tier === 2 && p.is_in_stock).slice(0, 50);
-
-for (const subject of sample) {
-  const after = getRecommendations(subject, all).slice(0, 4).map((p: any) => p.sku);
-  console.log(subject.sku, '->', after.join(','));
-}
-"
+cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/.claude/worktrees/recs-engine-v2"
+git log --oneline | grep "thread baseSkuMap"
+# note the commit hash printed, then find its parent:
+BEFORE_SHA=$(git rev-parse <that-commit-hash>^)
+git worktree add /tmp/recs-before "$BEFORE_SHA"
 ```
 
-Since `getRecommendations` now always builds its own `baseSkuMap` internally (Task 7 Step 5), get "before" by temporarily stashing the co-purchase wiring: easiest is `git stash` the Task 7-12 commits, run the same script for "before" output, `git stash pop`, then run again for "after". Save both outputs to files for diffing:
+Then, using a throwaway vitest test file (vitest is already wired and TS-aware in this repo — no extra tool install needed) in EACH location, capture top-4 recs for a fixed sample of high-popularity SKUs. Create `apps/catalog/lib/__tests__/_scratch-diff.test.ts` (same file, run once in each worktree, deleted afterward — never committed):
 
+```ts
+import { it } from 'vitest';
+import fs from 'fs';
+import path from 'path';
+import { getRecommendations } from '@/lib/recommender';
+
+it('scratch: dump top-4 recs for sampled high-popularity SKUs', () => {
+  const exportFile = fs.existsSync(path.join(process.cwd(), '..', '..', 'data', 'live_products_export.json'))
+    ? path.join(process.cwd(), '..', '..', 'data', 'live_products_export.json')
+    : path.join(process.cwd(), 'data', 'live_products_export.json');
+  const raw = JSON.parse(fs.readFileSync(exportFile, 'utf8'));
+  const rows = Array.isArray(raw) ? raw : raw.products;
+  const all = rows.map((r: any) => ({ ...r, is_in_stock: r.is_in_stock === '1' || r.is_in_stock === 1 }));
+  const sample = all.filter((p: any) => p.popularity_tier === 2 && p.is_in_stock).slice(0, 50);
+  const lines = sample.map((subject: any) => {
+    const after = getRecommendations(subject, all).slice(0, 4).map((p: any) => p.sku);
+    return `${subject.sku} -> ${after.join(',')}`;
+  });
+  fs.writeFileSync('/tmp/recs-diff-output.txt', lines.join('\n'));
+});
+```
+
+Run in the scratch "before" worktree first:
 ```bash
-# From a clean state before Task 7's commit (or check out that commit in a scratch dir):
-git log --oneline | grep "thread baseSkuMap"
-# capture the commit hash BEFORE that one as the "before" point, run script, save to /tmp
+cd /tmp/recs-before/apps/catalog && npx vitest run lib/__tests__/_scratch-diff.test.ts
+mv /tmp/recs-diff-output.txt /tmp/before.txt
+```
+
+Then run again in the main worktree (current HEAD, after Task 12) for "after":
+```bash
+cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/.claude/worktrees/recs-engine-v2/apps/catalog"
+npx vitest run lib/__tests__/_scratch-diff.test.ts
+mv /tmp/recs-diff-output.txt /tmp/after.txt
+rm apps/catalog/lib/__tests__/_scratch-diff.test.ts  # never commit the scratch file
+git worktree remove /tmp/recs-before
 ```
 
 - [ ] **Step 2: Diff before/after and manually review**
