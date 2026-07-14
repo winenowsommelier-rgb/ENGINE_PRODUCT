@@ -24,6 +24,7 @@ import type { PublicProduct, Band, RecommendationResult } from '@/lib/types';
 import { isInStock, parseFoodMatching } from '@/lib/utils';
 import { typeForProduct, groupForProduct, type CategoryGroup } from '@/lib/category-groups';
 import { categorySignalPoints, regionWeightOverride } from '@/lib/category-scorer';
+import { getCoPurchaseBonus, buildBaseSkuMap } from '@/lib/co-purchase';
 
 const MAX_RECS = 4;
 const MAX_RECS_EXTENDED = 8;
@@ -119,6 +120,7 @@ export function scoreCandidateDetailed(
   product: PublicProduct,
   candidate: PublicProduct,
   productFoods?: Set<string>,
+  baseSkuMap?: Map<string, string[]>,
 ): { score: number; breakdown: Record<string, number> } {
   const breakdown: Record<string, number> = {};
   const add = (key: string, pts: number) => { if (pts > 0) breakdown[key] = (breakdown[key] ?? 0) + pts; };
@@ -196,6 +198,17 @@ export function scoreCandidateDetailed(
     add('popularity', 1);
   }
 
+  // Co-purchase (real BI "bought in the same order" data) — see
+  // docs/superpowers/specs/2026-07-11-co-purchase-wiring-design.md. Only
+  // active when a baseSkuMap is provided (both call chains build one; tests
+  // that omit it simply get 0 co-purchase bonus, same as a subject with no
+  // BI record). Placed above popularity: two SPECIFIC products bought
+  // together is stronger evidence than both merely being popular in general.
+  if (baseSkuMap) {
+    const coPurchasePts = getCoPurchaseBonus(product.sku, candidate.sku, baseSkuMap);
+    if (coPurchasePts > 0) add('co_purchase', coPurchasePts);
+  }
+
   const score = Object.values(breakdown).reduce((s, v) => s + v, 0);
   return { score, breakdown };
 }
@@ -211,8 +224,9 @@ export function scoreCandidate(
   product: PublicProduct,
   candidate: PublicProduct,
   productFoods?: Set<string>,
+  baseSkuMap?: Map<string, string[]>,
 ): number {
-  return scoreCandidateDetailed(product, candidate, productFoods).score;
+  return scoreCandidateDetailed(product, candidate, productFoods, baseSkuMap).score;
 }
 
 /**
@@ -265,11 +279,12 @@ function rankAgainst(
   product: PublicProduct,
   candidates: readonly PublicProduct[],
   productFoods: Set<string>,
+  baseSkuMap?: Map<string, string[]>,
 ): PublicProduct[] {
   const scored: Array<{ p: PublicProduct; score: number }> = [];
   for (const c of candidates) {
     if (!isEligible(product, c)) continue;
-    const score = scoreCandidate(product, c, productFoods);
+    const score = scoreCandidate(product, c, productFoods, baseSkuMap);
     if (score > 0) scored.push({ p: c, score });
   }
   scored.sort((x, y) => (y.score - x.score) || (x.p.sku < y.p.sku ? -1 : x.p.sku > y.p.sku ? 1 : 0));
@@ -301,7 +316,8 @@ export function getRecommendations(
     seen.add(p.sku);
     candidates.push(p);
   }
-  return rankAgainst(product, candidates, foodSet(product.food_matching));
+  const baseSkuMap = buildBaseSkuMap(all);
+  return rankAgainst(product, candidates, foodSet(product.food_matching), baseSkuMap);
 }
 
 /**
@@ -353,6 +369,7 @@ export function getRecommendationsWithBands(
   }
 
   const productFoods = foodSet(product.food_matching);
+  const baseSkuMap = buildBaseSkuMap(all);
 
   // Score all eligible candidates and assign bands.
   type Scored = { result: RecommendationResult };
@@ -364,7 +381,7 @@ export function getRecommendationsWithBands(
 
   for (const c of candidates) {
     if (!isEligible(product, c)) continue;
-    const { score, breakdown } = scoreCandidateDetailed(product, c, productFoods);
+    const { score, breakdown } = scoreCandidateDetailed(product, c, productFoods, baseSkuMap);
     if (score <= 0) continue;
 
     const band = priceBand(subjectPrice, priceOf(c));
