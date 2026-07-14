@@ -571,6 +571,16 @@ describe('co-purchase integration (real BI data)', () => {
     // cross-category-group candidates entirely (Wine <-> Accessories, etc.),
     // regardless of co-purchase bonus, so a same-group pair is required for the
     // partner to ever reach getRecommendations' output.
+    //
+    // Must NOT share country with the subject: the twin below nulls out
+    // region/country/variety/food_matching to strip every OTHER rule-based
+    // signal, so ONLY category_type+price (unavoidable, since the twin spreads
+    // the partner's own category_type/price) and the co-purchase bonus can
+    // differ between partner and twin. If the real pair happened to share
+    // country, the twin's overridden (non-matching) country wouldn't actually
+    // null anything — country would keep contributing to the partner's score
+    // for a reason OTHER than co-purchase, weakening the proof that the bonus
+    // is what separates them. Requiring a country mismatch rules that out.
     outer:
     for (const [base, record] of Object.entries(bi.affinities) as any) {
       const subjectSkus = baseSkuMap.get(base) ?? [];
@@ -587,7 +597,8 @@ describe('co-purchase integration (real BI data)', () => {
               cSku !== sSku &&
               p.category_group &&
               cand.category_group &&
-              p.category_group === cand.category_group
+              p.category_group === cand.category_group &&
+              p.country !== cand.country
             ) {
               subjectProduct = p;
               coOrderPartnerSku = cSku;
