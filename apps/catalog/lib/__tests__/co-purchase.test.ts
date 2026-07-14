@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { baseCodeOf, buildBaseSkuMap } from '@/lib/co-purchase';
 import { getCoPurchaseBonus, __resetForTest } from '@/lib/co-purchase';
+import { supportDamping } from '@/lib/co-purchase';
 
 describe('baseCodeOf', () => {
   it('strips a trailing variant-lot suffix', () => {
@@ -40,5 +41,20 @@ describe('BI file loading — graceful degradation', () => {
   it('getCoPurchaseBonus returns 0 when there is no co_order data for the subject', () => {
     const map = new Map<string, string[]>();
     expect(getCoPurchaseBonus('NOSUCHSKU0000', 'ALSONOTREAL0000', map)).toBe(0);
+  });
+});
+
+describe('supportDamping', () => {
+  it('a short list (length 1) is damped well below 1.0', () => {
+    expect(supportDamping(1)).toBeCloseTo(0.2, 5);
+  });
+  it('a list at SUPPORT_FULL_AT (5) reaches full damping (1.0)', () => {
+    expect(supportDamping(5)).toBe(1);
+  });
+  it('a list longer than SUPPORT_FULL_AT is capped at 1.0, never exceeds it', () => {
+    expect(supportDamping(50)).toBe(1);
+  });
+  it('a list of length 0 damps to 0', () => {
+    expect(supportDamping(0)).toBe(0);
   });
 });

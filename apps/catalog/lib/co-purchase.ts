@@ -87,6 +87,17 @@ export function __resetForTest(): void {
 
 const K = 5; // ceiling bonus, only reachable at rate=1.0 AND full damping
 
+// SUPPORT_FULL_AT is curve-fit to an observed gap between well-supported and
+// thinly-supported subjects' co_order list lengths (see Task 1 investigation
+// and spec decision #6) — a rough proxy, not a calibrated confidence
+// threshold. TODO: replace with a real order-count-based Wilson/Bayesian
+// shrinkage once/if the BI export adds a support (n_orders) field per pair.
+const SUPPORT_FULL_AT = 5;
+
+export function supportDamping(listLength: number): number {
+  return Math.min(1, listLength / SUPPORT_FULL_AT);
+}
+
 /**
  * Bonus points for candidate given subject, scaled from BI co_order rate.
  * Returns 0 if no co_order data for subject, or candidate isn't a listed
@@ -107,5 +118,6 @@ export function getCoPurchaseBonus(
   const entry = record.co_order_affinities.find((e) => e.base_product_code === candidateBase);
   if (!entry) return 0;
 
-  return entry.rate * K;
+  const damping = supportDamping(record.co_order_affinities.length);
+  return entry.rate * K * damping;
 }
