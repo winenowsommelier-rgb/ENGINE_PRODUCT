@@ -42,3 +42,70 @@ export function buildBaseSkuMap(all: readonly PublicProduct[]): Map<string, stri
   }
   return map;
 }
+
+/**
+ * Resolve the absolute path to the BI affinity file. Mirrors the multi-path
+ * probe in catalog-data.ts's exportPath() (cwd differs between local dev and
+ * the Vercel build) but does NOT throw when nothing is found — see module
+ * docblock on graceful degradation.
+ */
+function affinityPath(): string | null {
+  const candidates = [
+    path.join(process.cwd(), 'data', 'bi-product-affinities.json'),
+    path.join(process.cwd(), '..', '..', 'data', 'bi-product-affinities.json'),
+  ];
+  return candidates.find((p) => fs.existsSync(p)) ?? null;
+}
+
+let _affinities: Record<string, AffinityRecord> | null = null;
+let _loaded = false;
+
+function loadAffinities(): Record<string, AffinityRecord> {
+  if (_loaded) return _affinities ?? {};
+  _loaded = true;
+  const file = affinityPath();
+  if (!file) {
+    console.warn('[co-purchase] bi-product-affinities.json not found; co-purchase bonus disabled for this build.');
+    return {};
+  }
+  try {
+    const parsed = JSON.parse(fs.readFileSync(file, 'utf8')) as AffinityFile;
+    _affinities = parsed.affinities ?? {};
+    return _affinities;
+  } catch (e) {
+    console.warn(`[co-purchase] failed to parse ${file}: ${(e as Error).message}; co-purchase bonus disabled for this build.`);
+    return {};
+  }
+}
+
+// Test-only: reset module-level cache so tests can simulate a fresh load.
+// Not exported from any public index — import directly from this module in tests.
+export function __resetForTest(): void {
+  _affinities = null;
+  _loaded = false;
+}
+
+const K = 5; // ceiling bonus, only reachable at rate=1.0 AND full damping
+
+/**
+ * Bonus points for candidate given subject, scaled from BI co_order rate.
+ * Returns 0 if no co_order data for subject, or candidate isn't a listed
+ * co_order target. Deliberately never consults co_customer_affinities (spec
+ * decision #2) — no blend, no fallback to it when co_order is empty.
+ */
+export function getCoPurchaseBonus(
+  subjectSku: string,
+  candidateSku: string,
+  baseSkuMap: Map<string, string[]>,
+): number {
+  const affinities = loadAffinities();
+  const subjectBase = baseCodeOf(subjectSku);
+  const record = affinities[subjectBase];
+  if (!record || !record.co_order_affinities?.length) return 0;
+
+  const candidateBase = baseCodeOf(candidateSku);
+  const entry = record.co_order_affinities.find((e) => e.base_product_code === candidateBase);
+  if (!entry) return 0;
+
+  return entry.rate * K;
+}
