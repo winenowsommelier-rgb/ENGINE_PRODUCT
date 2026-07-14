@@ -3,13 +3,16 @@
  *
  * Scores other products against a given product and returns the best matches.
  *
- * BI-SWAP SEAM
- * ------------
- * This is a *rule-based* placeholder for real co-purchase intelligence. When BI
- * co-purchase data becomes available, it plugs in via the `coPurchaseStrategy`
- * seam in `getRecommendations` (see the FUTURE comment there) WITHOUT any change
- * to the UI: callers keep calling getRecommendations / precomputeRecommendations
- * and keep receiving PublicProduct[] / Map<sku, sku[]>.
+ * BI CO-PURCHASE SIGNAL (implemented 2026-07-13)
+ * ------------------------------------------------
+ * Real BI "bought in the same order" data (data/bi-product-affinities.json,
+ * co_order_affinities only — see lib/co-purchase.ts) is wired in as one more
+ * additive signal inside scoreCandidateDetailed, not a separate
+ * override/replace path. See
+ * docs/superpowers/specs/2026-07-11-co-purchase-wiring-design.md for the full
+ * design and the decisions behind it (esp. why co_customer_affinities is
+ * deliberately unused, and the known feedback-loop risk that is not yet
+ * mitigated).
  *
  * PERFORMANCE
  * -----------
@@ -300,9 +303,6 @@ function rankAgainst(
  * product is a candidate. This is the authoritative, exact rule-based ranking.
  * `precomputeRecommendations` is a region-bucketed APPROXIMATION of this function
  * (see its docblock) and may return a different top-4 for the same product.
- *
- * FUTURE: if a coPurchaseStrategy provides real BI data for product.sku, use it
- * first; fall back to the rule-based scoring below.
  */
 export function getRecommendations(
   product: PublicProduct,
