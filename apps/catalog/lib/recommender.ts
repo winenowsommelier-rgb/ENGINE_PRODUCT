@@ -355,7 +355,11 @@ export function getRecommendationsWithBands(
   // refresh_live_export.py). Callers that want B2B banding INJECT a sku→price
   // map (staff API loads it from data/b2b_products_export.json server-side).
   // A `b2bMode` flag reading (product as any).b2b_price would silently no-op.
-  opts: { includeGreatAlternative?: boolean; b2bPrices?: ReadonlyMap<string, number> } = {},
+  opts: {
+    includeGreatAlternative?: boolean;
+    b2bPrices?: ReadonlyMap<string, number>;
+    baseSkuMap?: Map<string, string[]>;
+  } = {},
 ): RecommendationResult[] {
   const { includeGreatAlternative = false, b2bPrices } = opts;
 
@@ -369,7 +373,11 @@ export function getRecommendationsWithBands(
   }
 
   const productFoods = foodSet(product.food_matching);
-  const baseSkuMap = buildBaseSkuMap(all);
+  // Callers with a hot-path Map<sku, sku[]> already built (e.g.
+  // precomputeRecommendations, which builds it ONCE against the full pool
+  // instead of rebuilding it per-product) can pass it in directly; standalone
+  // callers fall back to building it from `all` as before.
+  const baseSkuMap = opts.baseSkuMap ?? buildBaseSkuMap(all);
 
   // Score all eligible candidates and assign bands.
   type Scored = { result: RecommendationResult };
@@ -510,6 +518,11 @@ export function precomputeRecommendations(
   // (see isEligible docblock).
   const inStock = all.filter((p) => isInStock(p.is_in_stock) && p.custom_stock_status !== 'CATALOG');
 
+  // Built once against the FULL pool (in-stock + out-of-stock), same
+  // convention as buildBaseSkuMap's own contract — matches how byRegion/
+  // byType/byCountry are pre-split once here rather than per-subject.
+  const baseSkuMap = buildBaseSkuMap(all);
+
   const byRegion = new Map<string, PublicProduct[]>();
   const byType = new Map<string, PublicProduct[]>();
   const byCountry = new Map<string, PublicProduct[]>();
@@ -585,7 +598,10 @@ export function precomputeRecommendations(
     if (eligibleCount() < MIN_POOL) merge(byCountry.get(product.country ?? ''));
     if (eligibleCount() < MIN_POOL) merge(globalFallbackByGroup.get(subjectGroup) ?? globalFallback);
 
-    const recs = getRecommendationsWithBands(product, pool, { includeGreatAlternative: !isInStock(product.is_in_stock) });
+    const recs = getRecommendationsWithBands(product, pool, {
+      includeGreatAlternative: !isInStock(product.is_in_stock),
+      baseSkuMap,
+    });
     result.set(product.sku, recs.map((r) => ({ sku: r.product.sku, band: r.band })));
   }
 
