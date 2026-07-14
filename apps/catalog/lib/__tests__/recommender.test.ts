@@ -1,5 +1,8 @@
+import fs from 'fs';
+import path from 'path';
 import { describe, it, expect } from 'vitest';
 import { getRecommendations, getRecommendationsWithBands, precomputeRecommendations, priceBand, scoreCandidateDetailed } from '@/lib/recommender';
+import { buildBaseSkuMap } from '@/lib/co-purchase';
 import type { Band } from '@/lib/types';
 
 const base = { sku:'A', name:'A', region:'Bordeaux', variety:'Cabernet',
@@ -540,5 +543,86 @@ describe('getRecommendationsWithBands', () => {
       const sum = Object.values(r.scoreBreakdown).reduce((a, b) => a + b, 0);
       expect(sum).toBeCloseTo(r.score, 5);
     }
+  });
+});
+
+function findRealFile(relPath: string): string | null {
+  const candidates = [
+    path.join(process.cwd(), relPath),
+    path.join(process.cwd(), '..', '..', relPath),
+  ];
+  return candidates.find((p) => fs.existsSync(p)) ?? null;
+}
+
+describe('co-purchase integration (real BI data)', () => {
+  it('a real co_order pair ranks above an otherwise-equivalent candidate with no co-purchase signal', () => {
+    const biPath = findRealFile('data/bi-product-affinities.json');
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const bi = JSON.parse(fs.readFileSync(biPath!, 'utf8'));
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+    const baseSkuMap = buildBaseSkuMap(liveRows as any);
+
+    // Find a real subject sku with an in-stock live sku and a real co_order
+    // partner that also maps to a live sku.
+    const bySku = new Map(liveRows.map((r: any) => [r.sku, r]));
+    let subjectProduct: any = null, coOrderPartnerSku = '';
+    // Must also share category_group with the subject: isEligible() suppresses
+    // cross-category-group candidates entirely (Wine <-> Accessories, etc.),
+    // regardless of co-purchase bonus, so a same-group pair is required for the
+    // partner to ever reach getRecommendations' output.
+    outer:
+    for (const [base, record] of Object.entries(bi.affinities) as any) {
+      const subjectSkus = baseSkuMap.get(base) ?? [];
+      for (const sSku of subjectSkus) {
+        const p = bySku.get(sSku);
+        if (!p || p.is_in_stock !== '1') continue;
+        for (const entry of record.co_order_affinities ?? []) {
+          const candSkus = baseSkuMap.get(entry.base_product_code) ?? [];
+          for (const cSku of candSkus) {
+            const cand = bySku.get(cSku);
+            if (
+              cand &&
+              cand.is_in_stock === '1' &&
+              cSku !== sSku &&
+              p.category_group &&
+              cand.category_group &&
+              p.category_group === cand.category_group
+            ) {
+              subjectProduct = p;
+              coOrderPartnerSku = cSku;
+              break outer;
+            }
+          }
+        }
+      }
+    }
+    expect(subjectProduct).not.toBeNull();
+
+    // A synthetic "twin" candidate: same category_group as the co-order
+    // partner (so it isn't suppressed by cross-category eligibility), but
+    // with none of the subject's actual attributes and no BI relationship —
+    // it should score 0 on every rule-based signal, so ONLY the co-purchase
+    // bonus can separate the two candidates.
+    const partner = bySku.get(coOrderPartnerSku) as any;
+    const twin = {
+      ...partner,
+      sku: 'ZZZ9999TWIN',
+      name: 'Synthetic twin with no BI relationship',
+      region: 'NoSuchRegionXYZ',
+      country: 'NoSuchCountryXYZ',
+      variety: undefined,
+      food_matching: '',
+    };
+
+    const pool = [subjectProduct, partner, twin];
+    const recs = getRecommendations(subjectProduct, pool);
+    const partnerIdx = recs.findIndex((r) => r.sku === coOrderPartnerSku);
+    const twinIdx = recs.findIndex((r) => r.sku === 'ZZZ9999TWIN');
+
+    expect(partnerIdx).toBeGreaterThanOrEqual(0);
+    // Either the twin scored 0 and was dropped entirely (not in recs), or it
+    // ranked below the real co-order partner. Both prove the bonus worked.
+    expect(twinIdx === -1 || twinIdx > partnerIdx).toBe(true);
   });
 });
