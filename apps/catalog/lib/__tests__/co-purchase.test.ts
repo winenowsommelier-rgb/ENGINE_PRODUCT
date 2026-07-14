@@ -88,3 +88,71 @@ function findRealFile(relPath: string): string | null {
   ];
   return candidates.find((p) => fs.existsSync(p)) ?? null;
 }
+
+describe('getCoPurchaseBonus — real data integration', () => {
+  it('returns a positive bonus for a real known co_order pair', () => {
+    __resetForTest();
+    const biPath = findRealFile('data/bi-product-affinities.json');
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const bi = JSON.parse(fs.readFileSync(biPath!, 'utf8'));
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+    const baseSkuMap = buildBaseSkuMap(liveRows as any);
+
+    // Find one real subject with a co_order entry that maps to a live sku.
+    let subjectSku = '', candidateSku = '';
+    outer:
+    for (const [base, record] of Object.entries(bi.affinities) as any) {
+      const subjectSkus = baseSkuMap.get(base);
+      if (!subjectSkus?.length) continue;
+      for (const entry of record.co_order_affinities ?? []) {
+        const candSkus = baseSkuMap.get(entry.base_product_code);
+        if (candSkus?.length) {
+          subjectSku = subjectSkus[0];
+          candidateSku = candSkus[0];
+          break outer;
+        }
+      }
+    }
+    expect(subjectSku).not.toBe('');
+
+    const bonus = getCoPurchaseBonus(subjectSku, candidateSku, baseSkuMap);
+    expect(bonus).toBeGreaterThan(0);
+    expect(bonus).toBeLessThanOrEqual(5); // K ceiling
+  });
+
+  // REGRESSION GUARD: a candidate that appears ONLY in co_customer_affinities
+  // (never in co_order_affinities) must score 0 — this is the dropped
+  // max-blend decision (spec decision #2). If this test ever fails, someone
+  // reintroduced the co_customer fallback; don't "fix" the test, fix the code.
+  it('scores 0 for a candidate that ONLY appears in co_customer_affinities, not co_order_affinities', () => {
+    __resetForTest();
+    const biPath = findRealFile('data/bi-product-affinities.json');
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const bi = JSON.parse(fs.readFileSync(biPath!, 'utf8'));
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+    const baseSkuMap = buildBaseSkuMap(liveRows as any);
+
+    let subjectSku = '', candidateSku = '';
+    outer:
+    for (const [base, record] of Object.entries(bi.affinities) as any) {
+      const subjectSkus = baseSkuMap.get(base);
+      if (!subjectSkus?.length) continue;
+      const orderCodes = new Set((record.co_order_affinities ?? []).map((e: any) => e.base_product_code));
+      for (const entry of record.co_customer_affinities ?? []) {
+        if (orderCodes.has(entry.base_product_code)) continue; // must be customer-only
+        const candSkus = baseSkuMap.get(entry.base_product_code);
+        if (candSkus?.length) {
+          subjectSku = subjectSkus[0];
+          candidateSku = candSkus[0];
+          break outer;
+        }
+      }
+    }
+    expect(subjectSku).not.toBe(''); // sanity: found a customer-only pair to test against
+
+    const bonus = getCoPurchaseBonus(subjectSku, candidateSku, baseSkuMap);
+    expect(bonus).toBe(0);
+  });
+});
