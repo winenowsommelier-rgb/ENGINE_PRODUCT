@@ -80,6 +80,9 @@ CREATE TABLE wine_dossier (
   cuisine_tags_json TEXT,             -- thai|japanese|italian|steak|seafood|...
   provenance_json TEXT,               -- per-FIELD {confidence, source_urls[]}
                                       -- confidence: 'sourced'|'partial'|'model'
+                                      -- ('model' = generated without product-
+                                      --  specific sources; a field that is NULL
+                                      --  or 'model' is what §6/§8 call unverified)
   review_status TEXT NOT NULL DEFAULT 'unreviewed'
     CHECK(review_status IN ('unreviewed','ai-cross-checked','human-approved')),
   reviewed_by TEXT, reviewed_at TEXT,
@@ -124,9 +127,9 @@ CREATE TABLE dossier_runs (
 );
 
 CREATE TABLE dossier_staging (        -- crash/resume cache (enrichment_cache pattern)
-  sku TEXT NOT NULL, run_id TEXT NOT NULL,
-  raw_response_json TEXT, created_at TEXT,
-  PRIMARY KEY (sku, run_id)
+  wine_key TEXT NOT NULL, run_id TEXT NOT NULL,  -- keyed by wine_key: generation
+  raw_response_json TEXT, created_at TEXT,       -- and resume operate per wine,
+  PRIMARY KEY (wine_key, run_id)                 -- not per SKU (matches §8)
 );
 ```
 
@@ -171,7 +174,7 @@ scripts never enable it).
 | Social content | `sourced` |
 | HoReCa menus/lists | `sourced` or `partial` |
 | Internal tooling | any (incl. `model`) |
-| `unverified`/NULL | never leaves internal tooling |
+| `model`/NULL ("unverified") | never leaves internal tooling |
 
 All consumer queries join live `products` for price/stock at query time —
 dossiers are evergreen; availability is not.
@@ -196,7 +199,8 @@ New table is invisible to the UI by itself. Following the proven
 - Schema migration + clobber-guard upsert + indexes.
 - Resolve/purge the 20 orphan critic SKUs.
 - wine_key normalizer (producer+cuvée; groups ~35 multi-vintage families).
-- Scope table: in-stock critic-scored SKUs.
+- Scope table: in-stock critic-scored SKUs — re-derived at run time (stock
+  shifts nightly; the 903 count in §3 is a 2026-07-15 snapshot, not a constant).
 - Serve-guidance defaults derived from category_type + body/tannin lookup
   (~30 lines); dossier stores exceptions only.
 - Validators (no-price-language, pairing-token mapping, provenance-URL check).
