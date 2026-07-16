@@ -45,6 +45,15 @@ def build_audit(conn: sqlite3.Connection) -> dict:
 
     multi = sum(1 for skus in groups.values() if len(skus) > 1)
 
+    def _sku_entries(skus: list[str]) -> list[dict]:
+        # Human eyeballing this artifact needs the product name right next to
+        # the SKU -- a bare SKU list forces a separate lookup before the
+        # owner can judge whether a merge/flag is correct.
+        return [
+            {"sku": sku, "name": names_by_sku[sku]}
+            for sku in sorted(skus)
+        ]
+
     flagged_for_review = []
     for key, skus in sorted(groups.items()):
         if len(skus) < 2 or len(skus) > _FLAG_GROUP_SIZE_MAX:
@@ -55,7 +64,7 @@ def build_audit(conn: sqlite3.Connection) -> dict:
         if any(_FORMAT_TOKENS.search(names_by_sku[sku]) for sku in skus):
             flagged_for_review.append({
                 "wine_key": key,
-                "skus": sorted(skus),
+                "skus": _sku_entries(skus),
                 "reason": (
                     "contains a stripped format-size token -- verify this "
                     "isn't a false merge of two distinct products"
@@ -67,7 +76,7 @@ def build_audit(conn: sqlite3.Connection) -> dict:
         "distinct_wine_key_count": len(groups),
         "multi_vintage_family_count": multi,
         "groups": [
-            {"wine_key": k, "skus": sorted(v)}
+            {"wine_key": k, "skus": _sku_entries(v)}
             for k, v in sorted(groups.items())
         ],
         "flagged_for_review": flagged_for_review,

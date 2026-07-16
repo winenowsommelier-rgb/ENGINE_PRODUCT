@@ -17,6 +17,8 @@ WINE_KEY_OVERRIDES: dict[str, str] = {}
 
 # Bottle-format tokens to strip. These describe packaging, not the wine
 # itself, so they must never be part of the key (hazard: format variants).
+# NOTE: imported directly by scripts/audit_wine_keys.py to flag small groups
+# for human review -- treat as a semi-public symbol, not safely renameable.
 _FORMAT_TOKENS = re.compile(
     r"\b(750\s?ml|375\s?ml|1\.?5\s?l|magnum|jeroboam|methuselah|imperial|"
     r"double\s?magnum|half\s?bottle)\b",
