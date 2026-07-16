@@ -94,26 +94,48 @@ def test_invariant_2_sourced_dossier_surfaces_in_export(dossier_conn):
     assert not missing, f"{len(missing)} SKUs have sourced dossier content but nothing in the export: {missing[:10]}"
 
 
-def test_invariant_3_orphan_guard(dossier_conn):
-    """Zero overlay SKUs absent from products; zero overlays without a
-    wine_dossier parent. Vacuously true on an empty table -- meaningful once
-    real content generation writes rows."""
-    products_db_path = REPO_ROOT / "data" / "db" / "products.db"
+def _check_products_db_readable(products_db_path: Path):
+    """Returns (products_conn, None) if products_db_path is a readable sqlite
+    db with a 'products' table, else (None, reason_str)."""
     if not products_db_path.exists() or products_db_path.stat().st_size == 0:
-        pytest.skip(f"products.db not present or empty: {products_db_path}")
+        return None, f"products.db not present or empty: {products_db_path}"
     products_conn = sqlite3.connect(products_db_path)
     try:
         table_exists = products_conn.execute(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='products'"
         ).fetchone()
     except sqlite3.DatabaseError:
-        pytest.skip(f"products.db is not a valid sqlite database: {products_db_path}")
-        return
+        return None, f"products.db is not a valid sqlite database: {products_db_path}"
     if not table_exists:
-        pytest.skip(f"products.db has no 'products' table: {products_db_path}")
+        return None, f"products.db has no 'products' table: {products_db_path}"
+    return products_conn, None
+
+
+def _run_invariant_3_orphan_guard(dossier_conn, products_db_path: Path):
+    """Core logic, factored out so the regression test below can point it at
+    a deliberately-broken products.db path without touching the real file."""
+    overlay_rows = dossier_conn.execute("SELECT sku FROM sku_dossier_overlay").fetchall()
+    overlay_count = len(overlay_rows)
+
+    products_conn, unreadable_reason = _check_products_db_readable(products_db_path)
+    if products_conn is None:
+        if overlay_count == 0:
+            # Nothing to check against -- vacuously safe to skip regardless
+            # of products.db's state.
+            pytest.skip(unreadable_reason)
+        else:
+            # sku_dossier_overlay has real rows but we have no way to verify
+            # them against products.db -- this must be loud, not silent,
+            # since it is exactly the situation the orphan guard exists to
+            # catch (see products.db.backup-* recovery-incident history).
+            pytest.fail(
+                f"sku_dossier_overlay has {overlay_count} rows but products.db "
+                f"is unreadable/missing the products table -- cannot verify "
+                f"orphan guard ({unreadable_reason})"
+            )
 
     product_skus = {r[0] for r in products_conn.execute("SELECT sku FROM products")}
-    overlay_skus = [r[0] for r in dossier_conn.execute("SELECT sku FROM sku_dossier_overlay")]
+    overlay_skus = [r[0] for (r,) in overlay_rows]
     orphan_skus = [s for s in overlay_skus if s not in product_skus]
     assert not orphan_skus, f"{len(orphan_skus)} overlay SKUs absent from products: {orphan_skus[:10]}"
 
@@ -123,6 +145,46 @@ def test_invariant_3_orphan_guard(dossier_conn):
         WHERE w.wine_key IS NULL
     """).fetchall()
     assert not orphan_overlays, f"overlays with no wine_dossier parent: {orphan_overlays}"
+
+
+def test_invariant_3_orphan_guard(dossier_conn):
+    """Zero overlay SKUs absent from products; zero overlays without a
+    wine_dossier parent. Vacuously true on an empty overlay table -- but if
+    the overlay has real rows and products.db can't be read, that must fail
+    loud, not skip silently (see test_invariant_3_fails_loud_when_overlay_has_data_and_products_db_broken)."""
+    products_db_path = REPO_ROOT / "data" / "db" / "products.db"
+    _run_invariant_3_orphan_guard(dossier_conn, products_db_path)
+
+
+def test_invariant_3_fails_loud_when_overlay_has_data_and_products_db_broken(dossier_conn, tmp_path):
+    """Regression guard for the gap flagged in code review: a corrupt/missing
+    products.db must not silently swallow a real orphan-guard violation just
+    because it happens to also be unreadable. Seeds a synthetic overlay row
+    (cleaned up in a finally block, same pattern as invariant 4) and points
+    the orphan-guard logic at a tmp_path sqlite file with no 'products'
+    table -- simulating the broken-products.db condition without touching
+    the real file."""
+    broken_products_db = tmp_path / "products_missing_table.db"
+    # Create a valid-but-wrong sqlite file (no 'products' table) so we
+    # exercise the "table missing" branch, not the "file absent" branch.
+    sqlite3.connect(broken_products_db).execute("CREATE TABLE not_products (x INTEGER)").connection.commit()
+
+    dossier_conn.execute("""
+        INSERT OR IGNORE INTO wine_dossier (wine_key, style_summary, review_status)
+        VALUES ('__test_orphan_guard_key__', 'synthetic parent row', 'unreviewed')
+    """)
+    dossier_conn.execute("""
+        INSERT OR IGNORE INTO sku_dossier_overlay (sku, wine_key)
+        VALUES ('__TEST_ORPHAN_SKU__', '__test_orphan_guard_key__')
+    """)
+    dossier_conn.commit()
+    try:
+        with pytest.raises(pytest.fail.Exception, match="sku_dossier_overlay has .* rows but products.db"):
+            _run_invariant_3_orphan_guard(dossier_conn, broken_products_db)
+    finally:
+        dossier_conn.execute("DELETE FROM sku_dossier_overlay WHERE sku = '__TEST_ORPHAN_SKU__'")
+        dossier_conn.execute("DELETE FROM wine_dossier WHERE wine_key = '__test_orphan_guard_key__'")
+        dossier_conn.commit()
 
 
 def test_invariant_4_human_approved_survives_regeneration(dossier_conn):
