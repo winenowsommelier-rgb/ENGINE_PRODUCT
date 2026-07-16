@@ -10,6 +10,21 @@ content-authoring to split into per-region rows where a designation's
 meaning genuinely differs (Grand Cru: Burgundy vs Alsace vs Champagne mean
 different things) and leave 'ALL' where it doesn't (XO, VSOP mean the same
 thing everywhere).
+
+SCOPE: wine-only (category_scope == "wine"), per spec's v1 scope of ~21
+designation rows. classification_master.json has 78 active rows total, but
+51 of them are out of scope for this table right now:
+  - 39 are legitimate whisky/rum/tequila/cognac/gin/sake designations
+    (e.g. VSOP, Single Malt, Reposado) -- real designations, but spirits/sake
+    support is an explicit Phase 2/3 addendum, not this task.
+  - 12 aren't designations at all -- glassware material (Crystal), wine-fridge
+    tech (Compressor, Dual Zone), cigar construction (Handmade, Long Filler),
+    and generic marketing tiers (Premium, Limited Edition) that happen to
+    share the same source file via category_scope in ('glassware',
+    'wine_fridge', 'cigar', 'all').
+Filtering to category_scope == "wine" yields 27 rows (verified 2026-07-16),
+close to the spec's ~21 estimate. Fixed 2026-07-16 after a code-quality
+review caught the initial version seeding all 78 rows unfiltered.
 """
 from __future__ import annotations
 
@@ -27,10 +42,18 @@ def extract_designation_region_pairs(master: dict) -> list[tuple[str, str, str |
     """Returns (designation, region, kind) triples. region is always 'ALL' --
     see module docstring. kind is left None -- inferring quality-rank/dosage/
     aging-class/production-style requires judgment later content-authoring
-    supplies, not something this file encodes."""
+    supplies, not something this file encodes.
+
+    Filtered to category_scope == "wine" only -- see module docstring SCOPE
+    section. Spirits/sake designations and non-designation rows (glassware,
+    wine_fridge, cigar, marketing tiers) are excluded until a later phase."""
     pairs = []
-    active_only = [r for r in master.get("data", []) if r.get("is_active", 1)]
-    for entry in active_only:
+    wine_active = [
+        r
+        for r in master.get("data", [])
+        if r.get("is_active", 1) and r.get("category_scope") == "wine"
+    ]
+    for entry in wine_active:
         designation = entry.get("classification")
         if not designation:
             continue
