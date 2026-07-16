@@ -363,8 +363,34 @@ full-scope ~$225–405) for the remainder. Rule 10 money steps apply then.
 
 ## 10. Out of scope for v1 (explicit)
 
-- Spirits/sake/champagne-house dossiers (no critic-score coverage; needs a
-  different acclaim source — competition medals, age statements. Phase-2.)
+- **Spirits/sake dossiers — Phase 2/3, own addendum spec, NOT a checkbox
+  extension of this schema.** Confirmed 2026-07-16: the process (citation-or-
+  NULL, confidence enum, staging/resume, orchestrator-sole-writer, clobber
+  guard, export path, §8b quality bar, $0 in-session generation) all carry
+  over unchanged. What does NOT carry over and must be re-derived per
+  category before any generation:
+  - **Grain.** wine_key's producer+cuvée+vintage model doesn't fit whisky
+    (single-cask releases are one-of-one — no shared dossier possible across
+    "vintages"; NAS bottlings have no vintage at all) or sake (brewing-season
+    `BY` variance; grade — Junmai Daiginjo etc. — behaves more like
+    designation than vintage). Each category needs its own key-minting logic;
+    the six wine_key hazard classes (§5.7) do not transfer.
+  - **Scope/inclusion criterion.** v1's "already critic-scored" shortcut
+    relies on `critic_scores` being wine-heavy (WE/WA/WS/JS). Whisky/sake
+    critic scoring (Jim Murray, IWSC, Ultimate Spirits Challenge) is not yet
+    in the DB, so spirits scope can't reuse the 903-SKU derivation — needs a
+    different inclusion criterion (e.g. in-stock + has designation/age
+    statement) or a smaller hand-picked starting set.
+  - **Pairing shape.** The Thai-cuisine food-pairing quota (§4
+    signature_pairings_json) is wine/food-service logic; spirits pairing is
+    closer to serve-style (neat/rocks/highball, mixers) than dish pairing.
+  - **designation_reference vocabulary.** The ~21-row wine table (Grand Cru,
+    DOCG, etc.) doesn't extend to spirits — XO/VSOP, Single Malt, Junmai-shu
+    grades need sibling rows scoped by category. The schema's
+    `(designation, region)` key already supports this; the rows don't exist.
+  - Sequencing rationale: wine ships first end-to-end (validates the whole
+    pipeline); the addendum is a half-day brainstorming pass once wine's
+    canary proves the mechanics work, not a rebuild.
 - Archived (CATALOG) SKUs — regenerate on restock instead.
 - Stock-quantity-based cellar advice ("buy 6 bottles") — `quantity_in_stock`
   is 0 for every row in the DB; no stock-depth signal exists. All quantity
