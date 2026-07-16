@@ -84,6 +84,9 @@ CREATE TABLE IF NOT EXISTS dossier_runs (
   skus_attempted INTEGER, skus_sourced INTEGER, total_cost_usd REAL
 );
 
+-- wine_key here is deliberately NOT a foreign key to wine_dossier: staging
+-- rows are written before a wine_key is promoted/validated into wine_dossier,
+-- so an FK constraint would reject valid pending rows, not catch bad ones.
 CREATE TABLE IF NOT EXISTS dossier_staging (
   wine_key TEXT NOT NULL, run_id TEXT NOT NULL,
   raw_response_json TEXT,
@@ -95,9 +98,19 @@ CREATE TABLE IF NOT EXISTS dossier_staging (
 """
 
 
+def connect(db_path: Path) -> sqlite3.Connection:
+    """Open a connection to dossier.db with FK enforcement ON. SQLite requires
+    this pragma per-connection — it does NOT persist with the database file,
+    so every writer must use this helper (or replicate the pragma) rather
+    than a bare sqlite3.connect()."""
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
+
+
 def migrate(db_path: Path) -> None:
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(db_path)
+    conn = connect(db_path)
     conn.execute("PRAGMA journal_mode=WAL")
     conn.executescript(SCHEMA_SQL)
     conn.commit()
