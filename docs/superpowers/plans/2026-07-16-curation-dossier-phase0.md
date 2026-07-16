@@ -130,7 +130,13 @@ Expected: FAIL — `scripts/migrate_dossier_schema.py` does not exist (`FileNotF
 WHY a separate file, not products.db: parallel processes in this repo are
 known to replace products.db wholesale (see the ~20 products.db.backup-*
 files in the working tree) — that would wipe weeks of batched curation
-content. dossier.db is ATTACHed at derive/read time (precedent: taxonomy.db).
+content. dossier.db is ATTACHed at derive/read time. NOTE: this repo has a
+similar precedent of using a SEPARATE file (data/taxonomy.db, read via its
+own independent connection) but no EXISTING code actually uses SQLite's
+ATTACH DATABASE mechanism — Task 10 is the first. ATTACH is a standard,
+well-supported SQLite feature, but treat the cross-database join as new
+territory to smoke-test (WAL mode across two attached files, path handling),
+not as a proven pattern being copied.
 
 Idempotent: safe to run against an existing dossier.db (CREATE TABLE IF NOT EXISTS).
 """
@@ -1328,7 +1334,35 @@ git commit -m "feat(dossier): validators - price language, banned phrases, n-gra
 
 - [ ] **Step 1: Inspect the existing classification_master.json shape**
 
-Run: `.venv/bin/python -c "import json; d=json.load(open('data/taxonomy/classification_master.json')); print(list(d.keys())[:5] if isinstance(d,dict) else d[:5])"`
+Run: `.venv/bin/python -c "import json; d=json.load(open('data/taxonomy/classification_master.json')); print(json.dumps(d['data'][:3], indent=2))"`
+
+**Verified real shape (2026-07-16):** the file is `{"data": [...]}` where each
+record looks like:
+
+```json
+{
+  "classification_id": 1,
+  "classification": "First Growth",
+  "classification_slug": "first-growth",
+  "classification_group": "wine_classification",
+  "category_scope": "wine",
+  "priority": 1,
+  "description": "Bordeaux 1855 top tier",
+  "is_active": 1
+}
+```
+
+**There is no `region` field anywhere in this file** — not under a different
+name, genuinely absent. `designation_reference`'s primary key is
+`(designation, region)` (spec §4: "Grand Cru differs across Burgundy/Alsace/
+Champagne"), so region can't be mechanically extracted here; it has to be
+assigned per-row. Step 4 below seeds every row with `region='ALL'` as a
+placeholder — Phase 0.5's actual authoring work is precisely to split these
+into per-region rows where the designation's meaning genuinely differs (Grand
+Cru) and leave `region='ALL'` where it doesn't (XO, VSOP). Do not treat the
+`region='ALL'` stub as a real answer; it exists only so the table has
+non-empty structural rows for Phase 0.5 to edit, not to duplicate, and so
+Task 9's own test has something to assert against.
 
 - [ ] **Step 2: Write the failing test**
 
@@ -1360,7 +1394,7 @@ def test_seed_creates_key_only_rows(tmp_path):
 Run: `.venv/bin/pytest tests/test_seed_designation_reference_stub.py -v`
 Expected: FAIL — script does not exist.
 
-- [ ] **Step 4: Write the implementation** (adapt the exact source field names after Step 1's inspection — this is a sketch; fill in real key extraction once you've seen the file's actual shape)
+- [ ] **Step 4: Write the implementation** (field names below match the verified real shape from Step 1 — `classification`, not a guessed `label`/`region` key)
 
 ```python
 #!/usr/bin/env python3
@@ -1382,13 +1416,24 @@ MASTER = REPO_ROOT / "data" / "taxonomy" / "classification_master.json"
 
 
 def extract_designation_region_pairs(master: dict) -> list[tuple[str, str, str | None]]:
-    """Returns (designation, region, kind) triples. `kind` left None where not
-    inferable structurally — Phase 0.5 fills gaps via web-checked authoring."""
-    # NOTE: adapt this extraction to classification_master.json's real shape
-    # (inspected in Step 1) before running for real.
+    """Returns (designation, region, kind) triples. `region` is always 'ALL' —
+    classification_master.json has NO region field (verified 2026-07-16); this
+    is a structural placeholder, not a real answer. Phase 0.5's authoring work
+    is precisely to split the 'ALL' rows into per-region rows where the
+    designation's meaning genuinely differs (e.g. Grand Cru: Burgundy vs
+    Alsace vs Champagne mean different things) and leave 'ALL' where it
+    doesn't (XO, VSOP mean the same thing everywhere). `kind` is left None —
+    inferring quality-rank/dosage/aging-class/production-style also requires
+    judgment Phase 0.5 supplies, not something this file encodes."""
     pairs = []
-    for entry in master.get("designations", []):
-        pairs.append((entry.get("label"), entry.get("region", "ALL"), None))
+    seen_active_only = [
+        r for r in master.get("data", []) if r.get("is_active", 1)
+    ]
+    for entry in seen_active_only:
+        designation = entry.get("classification")
+        if not designation:
+            continue
+        pairs.append((designation, "ALL", None))
     return pairs
 
 
@@ -1424,9 +1469,19 @@ if __name__ == "__main__":
 - [ ] **Step 5: Run test to verify it passes**
 
 Run: `.venv/bin/pytest tests/test_seed_designation_reference_stub.py -v`
-Expected: PASS. If `classification_master.json`'s real shape differs from the sketch above, fix `extract_designation_region_pairs` first, then re-run.
+Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 6: Run against the real dossier.db and sanity-check row count**
+
+Run: `.venv/bin/python scripts/seed_designation_reference_stub.py`
+Then verify the count landed and matches the active-row count in the source file:
+```bash
+sqlite3 data/db/dossier.db "SELECT COUNT(*) FROM designation_reference"
+.venv/bin/python -c "import json; d=json.load(open('data/taxonomy/classification_master.json')); print(sum(1 for r in d['data'] if r.get('is_active', 1)))"
+```
+The two counts should match (or the dossier.db count should be lower only if some `classification` values repeat across rows, since `INSERT OR IGNORE` dedupes on the `(designation, region)` primary key).
+
+- [ ] **Step 7: Commit**
 
 ```bash
 git add scripts/seed_designation_reference_stub.py tests/test_seed_designation_reference_stub.py
@@ -1670,7 +1725,24 @@ sqlite3 data/db/products.db "ALTER TABLE products ADD COLUMN curation_dossier TE
 ```
 Verify: `sqlite3 data/db/products.db "SELECT COUNT(*) FROM products WHERE curation_dossier IS NOT NULL"` → expect `0`.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 6: Smoke-test ATTACH against the two real files**
+
+No existing code in this repo uses SQLite's `ATTACH DATABASE` (verified during plan review — `data/taxonomy.db` is read via its own independent connection, not attached to anything). Task 10's tests exercise ATTACH against synthetic tmp_path fixtures, which proves the logic works, but not that ATTACH behaves cleanly against the real WAL-mode files. Confirm directly before relying on it in Phase 1:
+
+```bash
+.venv/bin/python -c "
+import sqlite3
+conn = sqlite3.connect('data/db/products.db')
+conn.execute(\"ATTACH DATABASE 'data/db/dossier.db' AS dossier\")
+print(conn.execute('SELECT COUNT(*) FROM dossier.wine_dossier').fetchone())
+print(conn.execute('SELECT COUNT(*) FROM products').fetchone())
+conn.execute('DETACH DATABASE dossier')
+print('ATTACH/DETACH OK')
+"
+```
+Expected: prints two zero-or-real counts and `ATTACH/DETACH OK` with no errors. If this fails (e.g. a WAL-mode conflict), resolve it here — before Phase 1 generation depends on it working.
+
+- [ ] **Step 7: Commit**
 
 ```bash
 git add scripts/refresh_products_dossier.py tests/test_refresh_products_dossier.py
