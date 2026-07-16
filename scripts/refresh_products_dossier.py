@@ -9,6 +9,18 @@ this public JSON. 'partial'/'model'/NULL never leave internal tooling.
 stock_snapshot_json and provenance URLs are excluded entirely (price leak
 risk / no reason to expose raw source URLs publicly).
 
+FIELD COVERAGE (deliberately partial, not comprehensive): this deriver only
+gates style_summary, expert_note, producer_history, and signature_pairings_json
+today. wine_dossier has other content columns -- content_hooks_json,
+occasion_tags_json, cuisine_tags_json, course_placement, serve_guidance_json --
+that are NOT yet wired here, even though data/lib/dossier/validators.py's
+KNOWN_PROVENANCE_FIELDS already treats them as legitimate gate-able fields.
+This is safe today (Phase 0 has generated no content for any field), but
+before Phase 1 populates any of these other columns with 'sourced' confidence,
+extend derive_curation_dossier() to cover them -- otherwise that content will
+silently never reach the public export, which is exactly the failure mode
+Rule 1 (verify paid work lands in the user-facing destination) exists to catch.
+
 Phase 0 note: this script is NOT yet wired into scripts/refresh_live_export.py
 EXPORT_COLS or apps/catalog/lib/catalog-data.ts PUBLIC_FIELDS. That hookup is
 deliberately deferred to right before real dossier content generation starts
