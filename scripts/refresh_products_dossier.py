@@ -44,16 +44,21 @@ def _gate_field(value, field_name: str, provenance: dict):
 def derive_curation_dossier(conn: sqlite3.Connection, sku: str, wine_key: str):
     """Build the public-facing curation_dossier JSON for one SKU/wine_key pair.
     Returns None when there's no dossier row, it's suppressed, or every field
-    is gated out (never fabricate an empty-but-present JSON blob)."""
+    is gated out (never fabricate an empty-but-present JSON blob).
+
+    Raises on malformed JSON in provenance_json/signature_pairings_json rather
+    than swallowing it -- batch callers (refresh_all) are responsible for
+    catching per-row failures so one bad row can't take down the whole run;
+    this function stays strict so a single-SKU caller finds out immediately."""
     wd = conn.execute(
-        "SELECT style_summary, expert_note, "
+        "SELECT style_summary, expert_note, producer_history, "
         "signature_pairings_json, provenance_json, suppressed "
         "FROM dossier.wine_dossier WHERE wine_key = ?",
         (wine_key,),
     ).fetchone()
-    if not wd or wd[4]:  # missing or suppressed
+    if not wd or wd[5]:  # missing or suppressed
         return None
-    style_summary, expert_note, pairings_json, provenance_json, _ = wd
+    style_summary, expert_note, producer_history, pairings_json, provenance_json, _ = wd
     provenance = json.loads(provenance_json) if provenance_json else {}
 
     out = {}
@@ -63,6 +68,9 @@ def derive_curation_dossier(conn: sqlite3.Connection, sku: str, wine_key: str):
     gated_note = _gate_field(expert_note, "expert_note", provenance)
     if gated_note:
         out["expert_note"] = gated_note
+    gated_history = _gate_field(producer_history, "producer_history", provenance)
+    if gated_history:
+        out["producer_history"] = gated_history
 
     if pairings_json:
         pairings = json.loads(pairings_json)
@@ -77,7 +85,16 @@ def derive_curation_dossier(conn: sqlite3.Connection, sku: str, wine_key: str):
 
 def refresh_all(conn: sqlite3.Connection) -> int:
     """Re-derive products.curation_dossier for every SKU with an overlay row.
-    Self-healing: SKUs that lose their overlay/dossier get reset to NULL."""
+    Self-healing: SKUs that lose their overlay/dossier get reset to NULL.
+
+    Per-row isolation: a single SKU with malformed dossier content (bad JSON,
+    missing keys, etc.) must not crash the whole batch, and must not corrupt
+    OTHER, unrelated SKUs' already-correct values. Each row's derive+write is
+    wrapped in its own try/except; on failure we log a warning identifying
+    the SKU and skip writing for that SKU (its existing curation_dossier
+    value is left untouched -- NOT forced to NULL, since that would itself
+    be a data-loss action based on a failure that has nothing to do with
+    that SKU's actual data)."""
     rows = conn.execute(
         "SELECT sku, wine_key FROM dossier.sku_dossier_overlay"
     ).fetchall()
@@ -90,7 +107,12 @@ def refresh_all(conn: sqlite3.Connection) -> int:
 
     written = 0
     for sku, wine_key in rows:
-        dossier_json = derive_curation_dossier(conn, sku, wine_key)
+        try:
+            dossier_json = derive_curation_dossier(conn, sku, wine_key)
+        except Exception as exc:
+            print(f"WARNING: skipping curation_dossier for sku={sku} "
+                  f"wine_key={wine_key}: {exc}", file=sys.stderr)
+            continue
         cur = conn.execute(
             "UPDATE products SET curation_dossier = ? WHERE sku = ?",
             (dossier_json, sku),
@@ -115,6 +137,10 @@ def main(argv=None) -> int:
         return 1
 
     conn = sqlite3.connect(args.products_db)
+    # ATTACH doesn't support parameter binding for the path; this f-string is
+    # intentionally not parameterized. Not a user-facing injection vector --
+    # args.dossier_db only ever comes from an argparse CLI flag controlled by
+    # whoever runs this script, never from request/user input.
     conn.execute(f"ATTACH DATABASE '{args.dossier_db}' AS dossier")
     cols = {r[1] for r in conn.execute("PRAGMA table_info(products)")}
     if "curation_dossier" not in cols:
