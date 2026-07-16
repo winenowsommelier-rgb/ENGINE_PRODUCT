@@ -68,7 +68,10 @@ CREATE TABLE wine_dossier (
   producer_history TEXT,              -- separated from bottling-specific notes
   signature_pairings_json TEXT,       -- [{dish, dish_local, cuisine, course,
                                       --   heat_level_ok(0-3), reason, confidence}]
-                                      -- >=2 Thai-cuisine entries required per wine
+                                      -- >=2 Thai-context entries where a credible
+                                      -- pairing exists; else 1 serving-context note
+                                      -- + explicit rationale (never pad a Sauternes
+                                      -- with forced matches)
   serve_guidance_json TEXT,           -- {temp_c_min, temp_c_max, glass_code,
                                       --  decant:{type:'none'|'aerate'|'sediment',
                                       --          minutes_min, minutes_max}, notes}
@@ -79,15 +82,25 @@ CREATE TABLE wine_dossier (
   btg_suitable INTEGER,               -- by-the-glass viability flag
   cuisine_tags_json TEXT,             -- thai|japanese|italian|steak|seafood|...
   provenance_json TEXT,               -- per-FIELD {confidence, source_urls[]}
-                                      -- confidence: 'sourced'|'partial'|'model'
-                                      -- ('model' = generated without product-
-                                      --  specific sources; a field that is NULL
-                                      --  or 'model' is what §6/§8 call unverified)
+                                      -- confidence: 'sourced'|'partial'|
+                                      --   'pairing-theory'|'model'
+                                      -- 'pairing-theory' = classic pairing logic
+                                      --   applied to this wine's style (category-
+                                      --   knowledge carve-out, §5.3) — SHIPPABLE
+                                      --   to social/HoReCa; pairings for specific
+                                      --   wines are rarely web-sourced and must
+                                      --   not be laundered as 'sourced'
+                                      -- 'model' = product-specific claim without
+                                      --   sources; NULL or 'model' is what §6/§8
+                                      --   call unverified
   review_status TEXT NOT NULL DEFAULT 'unreviewed'
     CHECK(review_status IN ('unreviewed','ai-cross-checked','human-approved')),
   reviewed_by TEXT, reviewed_at TEXT,
   model_id TEXT, prompt_version TEXT, source_run_id TEXT,
-  generated_at TEXT, refresh_due TEXT,
+  generated_at TEXT,
+  refresh_due TEXT,                   -- generator sets generated_at + 12 months
+                                      -- (windows age); deriver's Rule-1 tally
+                                      -- prints the overdue count
   suppressed INTEGER NOT NULL DEFAULT 0,
   CHECK (signature_pairings_json IS NULL OR json_valid(signature_pairings_json)),
   CHECK (serve_guidance_json IS NULL OR json_valid(serve_guidance_json)),
@@ -128,9 +141,16 @@ CREATE TABLE dossier_runs (
 
 CREATE TABLE dossier_staging (        -- crash/resume cache (enrichment_cache pattern)
   wine_key TEXT NOT NULL, run_id TEXT NOT NULL,  -- keyed by wine_key: generation
-  raw_response_json TEXT, created_at TEXT,       -- and resume operate per wine,
-  PRIMARY KEY (wine_key, run_id)                 -- not per SKU (matches §8)
+  raw_response_json TEXT,                        -- and resume operate per wine
+  validation_status TEXT NOT NULL DEFAULT 'pending'
+    CHECK(validation_status IN ('pending','applied','rejected')),
+  error TEXT, created_at TEXT, validated_at TEXT,
+  PRIMARY KEY (wine_key, run_id)
 );
+-- 'rejected' rows are retryable — resume queries must not treat them as done.
+-- The dossier tables live in their OWN file, data/db/dossier.db (ATTACHed at
+-- derive time; precedent: taxonomy.db) — parallel processes are known to
+-- replace products.db wholesale, which would wipe weeks of batched curation.
 ```
 
 Writers run `PRAGMA foreign_keys=ON` (off by default in SQLite; most existing
@@ -147,8 +167,9 @@ scripts never enable it).
 2. **No second store of critic scores.** Numeric scores live exclusively in
    `critic_scores`. `honors_json` holds only non-score honors (medals, Top-100
    placements, classification promotions). Newly discovered scores are written
-   as `critic_scores` rows (`source='llm_websearch'`) and merged by the
-   existing `refresh_products_summary.py` precedence.
+   as `critic_scores` rows (`source='llm_websearch'`, `confidence >= 0.5` —
+   below `refresh_products_summary.py`'s badge floor they are silently
+   dropped) and merged by that script's existing precedence.
 3. **No fabrication.** Product-specific claims (expert_note, producer_history,
    honors, drinking windows) require ≥1 fetched source URL in provenance.
    No source → field stays NULL. Category-level knowledge
@@ -159,25 +180,56 @@ scripts never enable it).
    The former `cellar_role='investment'` concept is deleted; the deliverable
    is the drinking window.
 5. **Precedence.** Dossier pairings are a curated subset + narrative of
-   existing `food_matching` tokens (validator: each pairing maps to an
-   existing token or is flagged as an addition). Dossier never restates taste
-   axes. UI precedence: dossier sourced pairings > food_matching_detail >
-   inferred.
+   `food_matching`, validated against the CANONICAL token list only (via
+   `parseFoodMatching()` vocabulary — the raw column mixes three generations
+   of tokens and free-text sentences and is not a stable target). Thai dish
+   entries are an EXPECTED-additions class, not flagged noise. Dossier never
+   restates taste axes. UI precedence: dossier pairings (sourced or
+   pairing-theory) > food_matching_detail > inferred.
 6. **Clobber guard.** Upsert is
    `ON CONFLICT DO UPDATE ... WHERE review_status != 'human-approved'`;
-   unit test asserts a human-approved row survives regeneration.
+   unit test asserts a human-approved row survives regeneration. Guard covers
+   `wine_dossier` only — overlay drink-windows/honors MAY be regenerated under
+   a human-approved parent (windows age; that is intended).
+7. **wine_key minting is one-time.** `sku_dossier_overlay` IS the registry:
+   resolution reads the existing sku→wine_key mapping first; the normalizer
+   only mints keys for unmapped SKUs. A product rename (masterfile intakes do
+   this) must never re-mint a key — that would orphan a human-approved dossier
+   and silently defeat the clobber guard. Parity test: re-running the
+   normalizer reproduces every existing mapping. Known hazards the normalizer
+   must handle (all verified in live data): vintage-year stripping ("Sassicaia
+   2020/2021" → one key), format variants (375ml/Magnum/Jeroboam → one key),
+   producer case drift ("Rocca Di/di Frassinello"), inconsistent double-space
+   separators (169/903 names lack them), conflated houses ("Salon Delamotte…"
+   must NOT merge), single-vineyard vs base bottling ("Brunello DOCG" vs
+   "Brunello DOCG Poggio alle Mura" must NOT merge). Irreducibles go in a
+   manual override map (`sku_overrides.json` pattern). Phase 0 produces a full
+   key→SKUs audit artifact eyeballed by the owner before any generation.
+8. **Name-vintage consistency check.** Live data contains SKUs whose name
+   embeds one year and whose vintage field says another (e.g. name "…2017",
+   field "2004 [MAY CHANGE]"). Phase 0 flags these; contradictions force
+   `vintage_scope='unknown-stock-vintage'` and cap confidence at 'partial'
+   regardless of what sources are found.
+9. **No verbatim critic prose.** Synthesizing from fetched retailer pages
+   that quote critics risks reproducing copyrighted tasting notes under our
+   banner. The validator runs an n-gram overlap check between generated prose
+   and fetched page text at generation time; provenance stores short
+   supporting excerpts (as `honors_json` already does) so overlap stays
+   auditable after URLs rot.
 
 ## 6. Consumer gates
 
 | Consumer | Minimum per-field confidence |
 |---|---|
-| Social content | `sourced` |
-| HoReCa menus/lists | `sourced` or `partial` |
+| Social content | `sourced`; pairings also at `pairing-theory` |
+| HoReCa menus/lists | `sourced` or `partial`; pairings also at `pairing-theory` |
 | Internal tooling | any (incl. `model`) |
 | `model`/NULL ("unverified") | never leaves internal tooling |
 
-All consumer queries join live `products` for price/stock at query time —
-dossiers are evergreen; availability is not.
+The PUBLIC EXPORT gate is `sourced` (+ `pairing-theory` for pairings) — the
+export is public-facing. HoReCa list-building at `partial` queries the dossier
+tables directly, not the export. All consumer queries join live `products` for
+price/stock at query time — dossiers are evergreen; availability is not.
 
 ## 7. Export path (Rule 9)
 
@@ -190,20 +242,45 @@ New table is invisible to the UI by itself. Following the proven
    below the consumer gate).
 2. Column added to `EXPORT_COLS` **and** `JSON_COLS` in
    `scripts/refresh_live_export.py`; Rule-1 tally block extended with a
-   `has_dossier` count.
-3. Then `refresh_live_export.py` as usual.
+   `has_dossier` count (plus the overdue `refresh_due` count).
+3. Column added to the `toPublicProduct` allowlist in
+   `apps/catalog/lib/catalog-data.ts` — without this hop, nothing reaches the
+   UI while invariant test 2 (which checks the export file) passes green.
+4. The public column EXCLUDES `stock_snapshot_json` (contains price) and raw
+   provenance URLs. Size budget: ~4 KB per dossier (~+2–3.5 MB on the 42.9 MB
+   export; fine, but pairings/hooks arrays must not balloon past it).
+5. ORDERING RULE: the export-path code (items 1–4) is merged to main BEFORE
+   the first generation batch. The nightly price-sync bot regenerates and
+   commits the export directly — until the bot's checkout has the new column
+   in `EXPORT_COLS`, every nightly run silently strips dossiers from the
+   export (line 124 only WARNs). Batch-end verification re-checks the export
+   AFTER the next nightly run.
+6. Then `refresh_live_export.py` as usual.
 
 ## 8. Generation process (in-session, resumable)
 
 **Phase 0 — pure code, no LLM (build first regardless):**
-- Schema migration + clobber-guard upsert + indexes.
+- Schema migration in `data/db/dossier.db` (own file, §4) + clobber-guard
+  upsert + indexes.
 - Resolve/purge the 20 orphan critic SKUs.
-- wine_key normalizer (producer+cuvée; groups ~35 multi-vintage families).
+- wine_key normalizer + registry semantics (§5.7): unit tests on the six
+  hazard classes, manual override map, full key→SKUs audit artifact eyeballed
+  by the owner, parity test. The "~35 multi-vintage families" estimate is
+  unverified until this runs.
+- Name-year vs vintage-field consistency check (§5.8).
 - Scope table: in-stock critic-scored SKUs — re-derived at run time (stock
   shifts nightly; the 903 count in §3 is a 2026-07-15 snapshot, not a constant).
 - Serve-guidance defaults derived from category_type + body/tannin lookup
-  (~30 lines); dossier stores exceptions only.
-- Validators (no-price-language, pairing-token mapping, provenance-URL check).
+  (~30 lines); dossier stores exceptions only. EXCEPTION: sparkling (WSP) keys
+  on designation/dosage tokens (NV brut 6–8°C flute ≠ prestige cuvée 10–12°C
+  wider glass ≠ demi-sec), and sweet/fortified (WDW) on port-style (Tawny: no
+  decant ≠ Vintage Port: sediment decant) — for these two categories body/
+  tannin derives nothing useful, so defaults key on designation or guidance
+  is explicit per row.
+- Validators: no-price-language, canonical-pairing-token mapping (§5.5),
+  provenance-URL check, JSON Schema conformance for staged responses
+  (schema file versioned alongside prompt_version), n-gram overlap check
+  (§5.9), banned-phrase list (§8b).
 - Invariant tests (§9) + export deriver.
 
 **Phase 0.5 — designation_reference:** authored in-session (~21 rows),
@@ -213,19 +290,54 @@ grounded in classification_master.json + web checks.
 5–10 wine_keys in-session with WebSearch/WebFetch grounding → staging →
 eyeball EVERY citation → invariant tests → UI walkthrough → measure sourced-
 field yield against the recon baseline (60% found-rate, 36% sparse/none).
+Additional canary exit criteria:
+- 3–5 owner-approved GOLD EXEMPLAR dossiers produced and versioned; "reads as
+  one sommelier's voice across all 10" is a pass/fail criterion.
+- Thai-text spot-check on every `dish_local` (a misspelled Thai dish name is
+  instantly credibility-destroying to the target audience).
+- Measure per-position sourced-yield within each subagent's batch (later
+  wines in a batch get systematically thinner sourcing) and real throughput —
+  these set the Phase 2 batch size, not assumptions.
 
 **Phase 2 — batched full run:**
-- Fan-out subagents, each taking 5–10 wine_keys: search → fetch → synthesize
-  structured dossier JSON with citations.
-- Every result lands in `dossier_staging` first, then applies through the
-  guarded upsert. Commit per-SKU. Resume = `WHERE wine_key NOT IN (staging
-  for this run)`.
-- ~903 SKUs (fewer wine_keys) at 40–80 per session ≈ 12–20 sessions, or a
-  scheduled routine. Sequence by expected source yield (famous wines first).
+- Fan-out subagents, each taking 3–5 wine_keys (context fills fast with
+  fetched pages; small batches prevent the within-batch quality slope):
+  search → fetch → synthesize structured dossier JSON with citations.
+- SUBAGENTS NEVER TOUCH THE DB. They return JSON to the orchestrator, which
+  is the sole writer: JSON Schema validation → staging (with
+  validation_status) → guarded upsert. Commit per wine_key. Resume =
+  wine_keys with no 'applied' staging row (rejected rows are retryable).
+- Plan ~40 SKUs per session ≈ 15–25 sessions, or a scheduled routine.
+  Sequence by expected source yield (famous wines first).
 - Expect ~35% of items to come back thin ('unverified'/NULL fields) — that is
-  correct behavior, not failure.
+  correct behavior, not failure. Drinking-window expectations: realistic
+  SOURCED window coverage is ~10–20% of scope (authoritative sources are
+  paywalled; 71% of scope has mutable/unknown vintage) — the window is a
+  bonus field where sourced, not the per-row deliverable. PRODUCER TECH
+  SHEETS are an explicitly blessed free source class (best legal source of
+  per-vintage windows). `vintage_scope='adjacent-vintage'` assignment rule:
+  same wine, ±1 vintage, same appellation, never across a notoriously weak
+  year; anything looser is 'producer-track-record'.
 - Every batch ends with the count query against dossier tables AND the export
   (Rule 1/6) — never "N subagents completed."
+
+**§8b — Content quality bar (canary-enforced, validator-backed):**
+- Per-field length caps: style_summary ≤ 160 chars; expert_note 40–120 words;
+  producer_history ≤ 100 words; pairing reason ≤ 30 words.
+- Banned-phrase list wired into the validator: "notes of", "perfect for any
+  occasion", "elevate your experience", "a must-have", "hidden gem",
+  "world-class" and similar marketing sludge; maintained as a versioned list
+  alongside prompt_version.
+- Voice anchor: the gold exemplar dossiers (Phase 1) ship with every
+  generation prompt; one-page style guide versioned alongside prompt_version.
+- `review_status='ai-cross-checked'` is EARNED, not stamped: an independent
+  agent (different session/prompt) re-fetches each cited URL and confirms the
+  claim is supported; any unsupported claim downgrades that field to 'model'
+  and the row stays 'unreviewed'.
+- `review_status='human-approved'` may be set only by the owner, with a
+  defined checklist: open every citation, confirm claim support, verify Thai
+  text. (No sommelier exists in the org; this status means "owner-audited",
+  and the UI must not imply an independent expert reviewed it.)
 
 **Fallback:** if in-session throughput disappoints, the same staging + prompt
 + validator machinery runs against the paid API (Sonnet, ~$0.25/SKU mid-case;
@@ -240,9 +352,14 @@ full-scope ~$225–405) for the remainder. Rule 10 money steps apply then.
 3. Orphan guard: zero overlay SKUs absent from products; zero overlays without
    a wine_dossier parent.
 4. Review guard: regenerating over `review_status='human-approved'` is a no-op.
-5. Provenance guard: any field marked 'sourced' has ≥1 source_url.
+5. Provenance guard: any field marked 'sourced' has ≥1 source_url — AND the
+   converse: any field marked 'sourced' whose column is NULL fails; AND
+   provenance keys ⊆ the known field list (a typo'd key otherwise passes
+   every json_each test silently).
 6. Vintage guard: any honor with `applies_to_stock=false` never renders
    "this bottle" phrasing (validator-level).
+7. wine_key parity: re-running the normalizer reproduces every existing
+   sku→wine_key mapping in `sku_dossier_overlay` (§5.7).
 
 ## 10. Out of scope for v1 (explicit)
 
@@ -264,3 +381,15 @@ this spec. Key corrections that reviews forced: scope 3,205→903, vintage
 integrity fields, deletion of 'investment', accolades→critic_scores
 unification, designation_explainer→reference table, per-field provenance,
 wine-level grain, clobber guard, export path, Thai-cuisine pairing shape.
+
+Second-round final review 2026-07-16 (sommelier + data-engineering lenses,
+both "ready-with-notes") amended: 'pairing-theory' confidence class resolving
+the Thai-quota/gate contradiction, wine_key one-time-minting registry rule +
+verified hazard classes + parity test, staging validation_status/error
+columns + orchestrator-sole-writer rule, separate dossier.db file,
+toPublicProduct allowlist hop + nightly-bot ordering rule, content quality
+bar (§8b: length caps, banned phrases, gold exemplars, earned
+ai-cross-checked), plagiarism n-gram check, name-vintage consistency check,
+WSP/WDW serve-default exceptions, drinking-window yield expectations +
+producer tech sheets, batch resizing (3–5 keys/subagent, ~40 SKUs/session,
+15–25 sessions).
