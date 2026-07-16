@@ -1,0 +1,12 @@
+{
+  "cases": [
+    {"sku": "WRW0001", "name": "Sassicaia 2020", "expected_key": "sassicaia"},
+    {"sku": "WRW0002", "name": "Sassicaia 2021", "expected_key": "sassicaia"},
+    {"sku": "WRW0003", "name": "Petrus 2015 750ml", "expected_key": "petrus"},
+    {"sku": "WRW0004", "name": "Petrus 2015 Magnum", "expected_key": "petrus"},
+    {"sku": "WSP0001", "name": "Salon Le Mesnil Blanc de Blancs", "expected_key": "salon-le-mesnil-blanc-de-blancs"},
+    {"sku": "WSP0002", "name": "Delamotte Blanc de Blancs", "expected_key": "delamotte-blanc-de-blancs"},
+    {"sku": "WRW0010", "name": "Brunello DOCG", "expected_key": "brunello-docg"},
+    {"sku": "WRW0011", "name": "Brunello DOCG Poggio alle Mura", "expected_key": "brunello-docg-poggio-alle-mura"}
+  ]
+}
