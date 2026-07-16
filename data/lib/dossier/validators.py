@@ -7,11 +7,7 @@ from __future__ import annotations
 import re
 from collections import Counter
 
-try:
-    import jsonschema
-    _HAS_JSONSCHEMA = True
-except ImportError:
-    _HAS_JSONSCHEMA = False
+import jsonschema
 
 _PRICE_LANGUAGE_RE = re.compile(
     r"(฿\s?\d|only\s+\$|great\s+value|a\s+steal|investment|"
@@ -39,6 +35,12 @@ BANNED_PHRASES = [
 # almost certainly a typo that would otherwise pass schema validation
 # silently, since JSON Schema's additionalProperties sub-schema only
 # constrains the VALUE shape, not which keys are allowed.
+#
+# Cross-checked against scripts/migrate_dossier_schema.py's CREATE TABLE
+# statements (wine_dossier, sku_dossier_overlay) 2026-07-16. Two real
+# columns are deliberately EXCLUDED here, not missing by oversight:
+#   - btg_suitable: a boolean flag, not a sourced content claim.
+#   - stock_snapshot_json: operational/system data, not generation output.
 KNOWN_PROVENANCE_FIELDS = {
     "style_summary",
     "expert_note",
@@ -47,12 +49,15 @@ KNOWN_PROVENANCE_FIELDS = {
     "serve_guidance_json",
     "content_hooks_json",
     "occasion_tags_json",
+    "course_placement",
     "cuisine_tags_json",
     "honors_json",
     "drink_from_year",
     "drink_to_year",
     "peak_from_year",
     "peak_to_year",
+    "vintage_scope",
+    "window_source_url",
 }
 
 
@@ -108,12 +113,8 @@ def validate_against_schema(response: dict, schema: dict) -> list[str]:
     """Validate `response` against the JSON Schema, then layer on the
     unknown-provenance-key check that JSON Schema alone can't express
     (a closed enum of allowed object keys)."""
-    errors: list[str] = []
-    if _HAS_JSONSCHEMA:
-        validator = jsonschema.Draft7Validator(schema)
-        errors.extend(e.message for e in validator.iter_errors(response))
-    elif "wine_key" not in response:
-        errors.append("missing required field: wine_key")
+    validator = jsonschema.Draft7Validator(schema)
+    errors = [e.message for e in validator.iter_errors(response)]
 
     unknown = unknown_provenance_keys(response.get("provenance", {}))
     if unknown:

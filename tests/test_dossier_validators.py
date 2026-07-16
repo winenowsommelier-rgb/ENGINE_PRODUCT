@@ -1,9 +1,12 @@
+import re
+
 from data.lib.dossier.validators import (
     contains_price_language,
     contains_banned_phrase,
     ngram_overlap_ratio,
     provenance_has_source_for_sourced_fields,
     validate_against_schema,
+    KNOWN_PROVENANCE_FIELDS,
 )
 
 
@@ -56,3 +59,32 @@ def test_schema_validation_rejects_unknown_provenance_key():
     }
     errors = validate_against_schema(bad_response, schema)
     assert errors  # typo'd key should not silently pass
+
+
+def test_known_provenance_fields_is_subset_of_actual_db_columns():
+    """Regression guard: KNOWN_PROVENANCE_FIELDS must stay a subset of the
+    real dossier DB columns (scripts/migrate_dossier_schema.py), else a
+    legitimate field gets flagged as an 'unknown provenance key' false
+    positive. Parses column names out of SCHEMA_SQL rather than executing
+    it -- no DB file is created."""
+    from pathlib import Path
+
+    migrate_src = (
+        Path(__file__).resolve().parent.parent / "scripts" / "migrate_dossier_schema.py"
+    ).read_text()
+
+    # Pull the SCHEMA_SQL triple-quoted string out and collect column names
+    # (first token of each comma-separated "name TYPE..." definition inside
+    # a CREATE TABLE body -- some lines declare more than one column, e.g.
+    # "drink_from_year INTEGER, drink_to_year INTEGER,").
+    schema_sql = re.search(r'SCHEMA_SQL = """(.*?)"""', migrate_src, re.DOTALL).group(1)
+    columns = set()
+    for table_body in re.findall(r"CREATE TABLE IF NOT EXISTS \w+ \((.*?)\n\);", schema_sql, re.DOTALL):
+        for part in table_body.replace("\n", " ").split(","):
+            part = part.strip()
+            if not part or part.upper().startswith(("CHECK", "PRIMARY KEY", "FOREIGN KEY", "UNIQUE")):
+                continue
+            columns.add(part.split()[0])
+
+    missing = KNOWN_PROVENANCE_FIELDS - columns
+    assert not missing, f"KNOWN_PROVENANCE_FIELDS has entries not in the real DB schema: {missing}"
