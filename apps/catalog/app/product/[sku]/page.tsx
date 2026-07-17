@@ -8,6 +8,7 @@ import { TasteWheel } from '@/components/product/TasteWheel';
 import { StructuralGauges } from '@/components/product/StructuralGauges';
 import { CriticScoreStrip } from '@/components/CriticScoreStrip';
 import { PriceBlock } from '@/components/product/PriceBlock';
+import { ReputationBadge, reputationBadgeLabel } from '@/components/product/ReputationBadge';
 import { getAllProducts, getProductBySku } from '@/lib/catalog-data';
 import { groupForProduct } from '@/lib/category-groups';
 import { precomputeRecommendations } from '@/lib/recommender';
@@ -108,6 +109,29 @@ function AttrRow({ label, value }: { label: string; value?: string | number | nu
       <dt className="text-sm text-muted-foreground">{label}</dt>
       <dd className="text-right text-sm font-medium text-foreground">{value}</dd>
     </div>
+  );
+}
+
+/**
+ * ReputationNote — the PDP's reputation block. Only renders for iconic/
+ * premium tiers (same gate as the badge) AND only when reputation_summary
+ * has real copy — never shows the raw 0-100 composite score to shoppers
+ * (2026-07-09 expert review: a bare number reads as a fake precision claim
+ * a shopper can't sanity-check). reputation_summary backfills useful
+ * context on the ~40% of products with no description.
+ */
+function ReputationNote({ product }: { product: PublicProduct }) {
+  const label = reputationBadgeLabel(product.reputation_tier);
+  if (!label) return null;
+  return (
+    <section className="flex items-start gap-3 rounded-lg border border-border bg-card px-4 py-3">
+      <ReputationBadge tier={product.reputation_tier} />
+      {product.reputation_summary ? (
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          {product.reputation_summary}
+        </p>
+      ) : null}
+    </section>
   );
 }
 
@@ -303,6 +327,8 @@ export default function Page({ params }: { params: { sku: string } }) {
               />
             </div>
           </header>
+
+          <ReputationNote product={product} />
 
           {/* Description — ONLY when present (40% have none; don't show an empty block).
               Sanitized Magento HTML rendered for formatting; safe per sanitizeDescription. */}

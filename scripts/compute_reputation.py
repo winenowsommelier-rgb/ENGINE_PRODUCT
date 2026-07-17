@@ -9,6 +9,7 @@ Phases:
 """
 from __future__ import annotations
 
+import json
 import logging
 import re
 import shutil
@@ -16,6 +17,7 @@ import sqlite3
 import subprocess
 import sys
 from datetime import datetime, timezone
+from functools import lru_cache
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -29,32 +31,94 @@ log = logging.getLogger(__name__)
 
 DB_PATH  = REPO_ROOT / "data" / "db" / "products.db"
 SCRIPT   = REPO_ROOT / "scripts" / "refresh_live_export.py"
+PRODUCER_PRESTIGE_PATH = REPO_ROOT / "data" / "taxonomy" / "producer_prestige.json"
+
+# tier -> base score. Mirrors data/taxonomy/producer_prestige.json's "_tiers"
+# block; kept as a Python constant (rather than reading "_tiers" from the
+# JSON at runtime) so a typo'd tier name in the curated file fails loudly
+# (KeyError) instead of silently defaulting.
+PRODUCER_PRESTIGE_TIER_SCORES = {
+    "reference": 97,
+    "first_growth": 95,
+    "grande_marque": 92,
+    "benchmark": 88,
+    "notable": 78,
+}
 
 BEVERAGE_GROUPS = {"Wine", "Spirits", "Beer & RTD", "Whisky", "Liqueur", "Sake & Asian"}
 STILL_WINE_TYPES = {"Red Wine", "White Wine", "Rosé"}
+# "Gran Reserva" is a legitimate designation for still wine (Spain/Argentina
+# regulated) and aged rum (Ron Matusalem, Bacardi Gran Reserva Diez — real
+# product lines verified in DB). Not valid for Whisky/Sake & Asian, where
+# any occurrence is leaked wine-category text.
+GRAN_RESERVA_GROUPS = {"Wine", "Spirits"}
 
 VALID_TIERS = {"iconic", "premium", "established", "everyday", "unrated"}
 
 # Designation base scores.
 # Keys are exact values as they appear in the products.designation column.
 # Gran Reserva is NOT listed here — handled separately via _gran_reserva_base().
+# Grand Cru is NOT listed here — handled separately via _grand_cru_base()
+# (Burgundy's apex tier and Saint-Émilion's baseline appellation share the
+# same designation string; they are not the same rank).
 # Brut / Extra Brut deliberately excluded — dosage level, not prestige designation.
-DESIGNATION_TABLE: dict[str, int] = {
-    "Grand Cru":        95,
-    "Premier Cru":      88,
-    "1er Cru":          88,
-    "Cru Classé":       82,
-    "DOCG":             82,
-    "Reserva Especial": 74,
-    "Reserva Privada":  74,
-    "XO":               75,
-    "DOC":              70,
-    "Reserva":          70,
-    "Single Malt":      68,
-    "VSOP":             62,
-    "Blanc de Blancs":  60,
-    "Blanc de Noirs":   58,
-    "Villages":         52,
+#
+# Each entry is GATED to the wine groups it is meaningful for (`groups`).
+# A designation token appearing on a SKU outside its gated groups (e.g. a
+# whisky whose name contains stray wine-cask-finish text) is IGNORED rather
+# than scored — this is what let a "Grand Cru Burgundy Cask Finish" whisky
+# become "iconic". See _designation_base().
+DESIGNATION_TABLE: dict[str, dict] = {
+    "Premier Cru":      {"score": 88, "groups": {"Wine"}},
+    "1er Cru":          {"score": 88, "groups": {"Wine"}},
+    "Cru Classé":       {"score": 96, "groups": {"Wine"}},  # Bordeaux classed growth — above plain Grand Cru
+    "DOCG":             {"score": 82, "groups": {"Wine"}},
+    "Reserva Especial": {"score": 74, "groups": {"Wine"}},
+    "Reserva Privada":  {"score": 74, "groups": {"Wine"}},
+    "XO":               {"score": 75, "groups": {"Spirits", "Whisky", "Liqueur"}},
+    "DOC":              {"score": 70, "groups": {"Wine"}},
+    "Reserva":          {"score": 70, "groups": {"Wine"}},
+    "Single Malt":      {"score": 55, "groups": {"Whisky", "Spirits"}},  # production method, not a rank — low base
+    "VSOP":             {"score": 62, "groups": {"Spirits", "Whisky", "Liqueur"}},
+    "Blanc de Blancs":  {"score": 60, "groups": {"Wine"}},
+    "Blanc de Noirs":   {"score": 58, "groups": {"Wine"}},
+    "Villages":         {"score": 52, "groups": {"Wine"}},
+}
+
+# Whisky age-statement bands (years -> base score). Matched against product
+# name, e.g. "18 Year Old", "21 Years Old". Calibrated against live catalog
+# price ladder 2026-07-09 (Yamazaki 25YO ฿349,999 down to 12YO entry tier).
+AGE_STATEMENT_BANDS = [
+    (25, 90),
+    (21, 84),
+    (18, 78),
+    (15, 68),
+    (12, 58),
+]
+_AGE_RE = re.compile(r"\b(\d{1,2})\s*Y(?:ears?)?\.?\s*O(?:ld)?\b", re.I)
+
+# Sake grades, highest to lowest (Junmai Daiginjo is the apex classification —
+# ≤50% rice polishing ratio, no added alcohol). Matched against product name.
+SAKE_GRADE_BANDS = [
+    (re.compile(r"junmai\s+daiginjo", re.I), 85),
+    (re.compile(r"daiginjo", re.I),          78),
+    (re.compile(r"junmai\s+ginjo", re.I),    68),
+    (re.compile(r"ginjo", re.I),             62),
+    (re.compile(r"junmai", re.I),            55),
+]
+
+# Champagne prestige cuvées — hand-identified flagship bottlings that carry
+# house-level prestige not captured by any structured field. Matched against
+# product name (case-insensitive substring).
+CHAMPAGNE_CUVEE_TERMS = {
+    "grande cuvee": 88, "grande cuvée": 88,
+    "dom perignon": 92, "dom pérignon": 92,
+    "cristal": 92,
+    "la grande dame": 90,
+    "comtes de champagne": 90,
+    "sir winston churchill": 90,
+    "clos du mesnil": 94,
+    "clos des goisses": 88,
 }
 
 PRICE_BONUS_TABLE = [
@@ -97,12 +161,101 @@ def _gran_reserva_base(sku: str, country: str | None) -> int:
     return 82 if is_regulated else 75
 
 
-def _designation_base(designation: str | None, sku: str, country: str | None) -> int:
-    if not designation:
-        return 20
-    if designation == "Gran Reserva":
+_ST_EMILION_RE = re.compile(r"st[.\s-]?emil?lion", re.I)
+
+
+def _grand_cru_base(
+    sku: str, country: str | None, appellation: str | None, name: str | None = None,
+) -> int:
+    """Burgundy Grand Cru (apex of a 5-tier ladder) scores well above a
+    Saint-Émilion Grand Cru (that appellation's entry-level classification —
+    below Grand Cru Classé and Premier Grand Cru Classé). Distinguish by
+    appellation/name text; appellation is often blank in this catalog so
+    "St.Emillion"/"Saint Emilion" in the product NAME is the primary signal
+    (verified: WRW3496BN/WRW3497BN carry it only in name). Default to the
+    Burgundy (higher) reading only when the wine is French and neither
+    signal indicates Saint-Émilion, since "Grand Cru" alone is far more
+    often used as the Burgundy apex term across the catalog's vocabulary."""
+    appellation_l = (appellation or "").lower()
+    is_st_emilion = bool(_ST_EMILION_RE.search(appellation_l)) or bool(_ST_EMILION_RE.search(name or ""))
+    if is_st_emilion:
+        return 65
+    tax = _resolve({"sku": sku})
+    if tax["group"] == "Wine" and country == "France":
+        return 95
+    return 80
+
+
+def _name_based_designation(name: str | None, group: str) -> int | None:
+    """Fallback prestige lookup over free-text `name` for categories the
+    structured `designation` column has no vocabulary for: whisky age
+    statements, sake grades, champagne prestige cuvées. Returns None if
+    nothing matches (caller falls through to the no-designation base)."""
+    n = name or ""
+    nl = n.lower()
+
+    if group in ("Whisky", "Spirits"):
+        m = _AGE_RE.search(n)
+        if m:
+            years = int(m.group(1))
+            for threshold, score in AGE_STATEMENT_BANDS:
+                if years >= threshold:
+                    return score
+
+    if group == "Sake & Asian":
+        for pattern, score in SAKE_GRADE_BANDS:
+            if pattern.search(n):
+                return score
+
+    if group == "Wine":
+        for term, score in CHAMPAGNE_CUVEE_TERMS.items():
+            if term in nl:
+                return score
+
+    return None
+
+
+def _designation_base(
+    designation: str | None,
+    sku: str,
+    country: str | None,
+    name: str | None = None,
+    appellation: str | None = None,
+) -> int:
+    tax = _resolve({"sku": sku})
+    group = tax["group"]
+
+    if designation == "Gran Reserva" and group not in GRAN_RESERVA_GROUPS:
+        # "Gran Reserva" is a genuine aged-rum designation (Ron Matusalem,
+        # Bacardi Gran Reserva Diez are real product lines — verified in
+        # DB), so it's valid for Wine and Spirits. Not valid for Whisky/Sake.
+        designation = None
+    elif designation == "Grand Cru" and group != "Wine":
+        # Unlike Gran Reserva, "Grand Cru" has no legitimate non-wine usage
+        # in this catalog — every non-wine occurrence found was leaked wine
+        # marketing text (e.g. LWH1034DG "Grand Cru Burgundy Cask Finish"
+        # whisky, which scored iconic/94.24 before this gate). Ignore it.
+        designation = None
+    elif designation == "Gran Reserva":
         return _gran_reserva_base(sku, country)
-    return DESIGNATION_TABLE.get(designation, 20)
+    elif designation == "Grand Cru":
+        return _grand_cru_base(sku, country, appellation, name)
+    if designation:
+        entry = DESIGNATION_TABLE.get(designation)
+        if entry is not None:
+            if group in entry["groups"]:
+                return entry["score"]
+            # Designation token present but doesn't apply to this product's
+            # category (e.g. wine-cask-finish text on a whisky) — ignore it
+            # rather than scoring it, and fall through to name-based lookup.
+        else:
+            return 20
+
+    name_based = _name_based_designation(name, group)
+    if name_based is not None:
+        return name_based
+
+    return 20
 
 
 def prestige_score(
@@ -111,8 +264,9 @@ def prestige_score(
     price: float | None,
     country: str | None,
     sku: str,
+    name: str | None = None,
 ) -> int:
-    base = _designation_base(designation, sku, country)
+    base = _designation_base(designation, sku, country, name, appellation)
     appellation_bonus = 5 if appellation else 0
     return min(100, base + appellation_bonus + _price_bonus(price))
 
@@ -123,21 +277,33 @@ def prestige_score_multi(
     price: float | None,
     country: str | None,
     sku: str,
+    name: str | None = None,
 ) -> int:
     """Take the MAX base score across multiple designations, then add bonuses once."""
     if not designations:
-        base = 20
+        base = _name_based_designation(name, _resolve({"sku": sku})["group"]) or 20
     else:
-        base = max(_designation_base(d, sku, country) for d in designations)
+        base = max(_designation_base(d, sku, country, name, appellation) for d in designations)
     appellation_bonus = 5 if appellation else 0
     return min(100, base + appellation_bonus + _price_bonus(price))
 
 
-def prestige_confidence(designation: str | None, appellation: str | None) -> float:
-    if designation:
+def prestige_confidence(
+    designation: str | None,
+    appellation: str | None,
+    name: str | None = None,
+    sku: str | None = None,
+) -> float:
+    group = _resolve({"sku": sku})["group"] if sku is not None else None
+    gated_out = (
+        designation in ("Gran Reserva", "Grand Cru") and group is not None and group != "Wine"
+    )
+    if designation and not gated_out:
         return 0.9
     if appellation:
         return 0.6
+    if sku is not None and _name_based_designation(name, group) is not None:
+        return 0.7  # name-derived (age statement / sake grade / cuvée) — solid but not structured-field level
     return 0.4
 
 
@@ -190,6 +356,14 @@ def _demand(sold_qty, sold_orders) -> int:
     return (sold_qty or 0) + ((sold_orders or 0) * 2)
 
 
+# Below this many demand units, a SKU is indistinguishable from "no sales
+# history" for confidence/copy purposes — a single 1-2 bottle sale must not
+# unlock "Top X% by sales" language. Tuned against live data 2026-07-09:
+# 91% of active beverage SKUs have zero demand, so any nonzero threshold
+# below this let 428 products show false "Top 4%" copy off 1-2 bottles sold.
+DEMAND_FLOOR = 5
+
+
 def popularity_percentile(skus: list[dict]) -> dict[str, dict]:
     """
     Returns {sku: {score, confidence, source_note}} for all input SKUs.
@@ -211,40 +385,58 @@ def popularity_percentile(skus: list[dict]) -> dict[str, dict]:
             by_letter[letter].extend(members)
 
     def _percentile_rank(items: list[dict]) -> dict[str, float]:
+        """Mid-rank (fractional) percentile: tied demand values share the
+        SAME score — the midpoint of their rank span — instead of being
+        split apart by insertion order. Fixes the bug where 91% zero-demand
+        SKUs got arbitrary scores 0-100 based on DB row order."""
         n = len(items)
         if n == 1:
             return {items[0]["sku"]: 50.0}
-        sorted_items = sorted(items, key=lambda s: _demand(s["sold_qty"], s["sold_orders"]))
-        return {
-            s["sku"]: (i / (n - 1)) * 100
-            for i, s in enumerate(sorted_items)
+        demand_by_sku = {
+            s["sku"]: _demand(s["sold_qty"], s["sold_orders"]) for s in items
         }
+        by_demand: dict[int, list[str]] = defaultdict(list)
+        for sku, d in demand_by_sku.items():
+            by_demand[d].append(sku)
+        sorted_items = sorted(items, key=lambda s: demand_by_sku[s["sku"]])
+        ranks: dict[str, float] = {}
+        i = 0
+        for s in sorted_items:
+            d = demand_by_sku[s["sku"]]
+            tied = by_demand[d]
+            if tied[0] in ranks:
+                continue
+            span = list(range(i, i + len(tied)))
+            mid_rank = sum(span) / len(span)
+            score = (mid_rank / (n - 1)) * 100
+            for sku in tied:
+                ranks[sku] = score
+            i += len(tied)
+        return ranks
 
     result: dict[str, dict] = {}
 
-    # Score thin-group SKUs using letter-family ranking
-    for letter, members in by_letter.items():
+    def _score_group(members: list[dict], broader: bool) -> None:
         ranks = _percentile_rank(members)
         for s in members:
             sku = s["sku"]
             score = ranks[sku]
-            conf = 0.8 if _demand(s["sold_qty"], s["sold_orders"]) > 0 else 0.3
+            demand = _demand(s["sold_qty"], s["sold_orders"])
+            conf = 0.8 if demand >= DEMAND_FLOOR else 0.3
             pct_display = max(1, round(100 - score))
-            note = f"Top {pct_display}% by sales in its broader category." if conf == 0.8 else ""
+            scope = "broader category" if broader else "category"
+            note = f"Top {pct_display}% by sales in its {scope}." if conf == 0.8 else ""
             result[sku] = {"score": score, "confidence": conf, "source_note": note}
+
+    # Score thin-group SKUs using letter-family ranking
+    for letter, members in by_letter.items():
+        _score_group(members, broader=True)
 
     # Score normal groups (≥ 3 members)
     for prefix, members in by_prefix3.items():
         if len(members) < 3:
             continue
-        ranks = _percentile_rank(members)
-        for s in members:
-            sku = s["sku"]
-            score = ranks[sku]
-            conf = 0.8 if _demand(s["sold_qty"], s["sold_orders"]) > 0 else 0.3
-            pct_display = max(1, round(100 - score))
-            note = f"Top {pct_display}% by sales in its category." if conf == 0.8 else ""
-            result[sku] = {"score": score, "confidence": conf, "source_note": note}
+        _score_group(members, broader=False)
 
     return result
 
@@ -273,6 +465,7 @@ def tier_for_composite(
     score: float | None,
     confidence: float,
     override: str | None = None,
+    has_acclaim: bool = True,
 ) -> str:
     if override is not None:
         if override in VALID_TIERS:
@@ -282,7 +475,11 @@ def tier_for_composite(
     if score is None or confidence < 0.3:
         return "unrated"
     if score >= 85:
-        return "iconic"
+        # "Iconic" implies independent critical corroboration, not just a
+        # designation token + price. 181/199 iconic SKUs had zero acclaim
+        # signal (e.g. a ฿900 Gran Reserva with 2 bottles sold, 0 reviews).
+        # Without acclaim, cap at premium regardless of prestige score.
+        return "iconic" if has_acclaim else "premium"
     if score >= 65:
         return "premium"
     if score >= 40:
@@ -442,17 +639,82 @@ def _compute_critic_percentiles(conn: sqlite3.Connection) -> dict[str, list[dict
     return dict(by_sku)
 
 
-def _prestige_source_note(designation: str | None, appellation: str | None) -> str:
+def _prestige_source_note(
+    designation: str | None,
+    appellation: str | None,
+    name: str | None = None,
+    sku: str | None = None,
+) -> str:
+    group = _resolve({"sku": sku})["group"] if sku is not None else None
+    gated_out = (
+        designation in ("Gran Reserva", "Grand Cru") and group is not None and group != "Wine"
+    )
     parts = []
-    if designation:
+    if designation and not gated_out:
         parts.append(designation)
     if appellation:
         parts.append(appellation)
-    return (", ".join(parts) + ".") if parts else ""
+    if parts:
+        return ", ".join(parts) + "."
+    if sku is not None:
+        n = name or ""
+        nl = n.lower()
+        if group in ("Whisky", "Spirits"):
+            m = _AGE_RE.search(n)
+            if m:
+                return f"{m.group(1)} Year Old."
+        if group == "Sake & Asian":
+            for pattern, _ in SAKE_GRADE_BANDS:
+                m = pattern.search(n)
+                if m:
+                    return f"{m.group(0)}."
+        if group == "Wine":
+            for term in CHAMPAGNE_CUVEE_TERMS:
+                if term in nl:
+                    return f"{term.title()}."
+    return ""
+
+
+@lru_cache(maxsize=1)
+def _load_producer_prestige() -> dict[str, dict]:
+    """Load the curated brand->tier overrides (data/taxonomy/producer_prestige.json).
+
+    Returns {} if the file is absent (curated list is optional — the pipeline
+    falls back to brand-average for every brand, same as before this existed).
+    Keys starting with '_' (schema doc, tier table) are metadata, not brands.
+    Raises KeyError loudly if an entry's tier isn't in
+    PRODUCER_PRESTIGE_TIER_SCORES — a typo'd tier name should fail the run,
+    not silently produce a wrong/default score.
+    """
+    if not PRODUCER_PRESTIGE_PATH.exists():
+        return {}
+    data = json.loads(PRODUCER_PRESTIGE_PATH.read_text())
+    out = {}
+    for brand, entry in data.items():
+        if brand.startswith("_"):
+            continue
+        tier = entry["tier"]
+        if tier not in PRODUCER_PRESTIGE_TIER_SCORES:
+            raise KeyError(
+                f"producer_prestige.json: brand {brand!r} has unknown tier {tier!r} "
+                f"— must be one of {sorted(PRODUCER_PRESTIGE_TIER_SCORES)}"
+            )
+        out[brand] = entry
+    return out
 
 
 def _compute_producer_signals(skus: list[dict], signals: list[dict], now: str) -> None:
-    """Aggregate brand-level acclaim + prestige → producer signal per SKU."""
+    """Aggregate brand-level acclaim + prestige → producer signal per SKU.
+
+    Brands in the curated prestige list (data/taxonomy/producer_prestige.json)
+    use their curated tier score directly — this is the fix for the circular
+    self-average bug: a single-SKU brand like Krug or The Macallan no longer
+    just echoes its own acclaim/prestige score back at 10% weight, it gets an
+    independent, human-verified reputation signal. Confidence is fixed at 0.85
+    for curated brands (high — hand-verified — but not 1.0, since it's still
+    a house-level generalization applied to a specific SKU). Brands NOT in the
+    curated list keep the original brand-average behavior unchanged.
+    """
     from collections import defaultdict
 
     pres_by_sku: dict[str, float] = {}
@@ -463,11 +725,31 @@ def _compute_producer_signals(skus: list[dict], signals: list[dict], now: str) -
         elif sig["axis"] == "acclaim":
             acc_by_sku[sig["sku"]] = sig["score"]
 
+    curated = _load_producer_prestige()
+
     by_brand: dict[str, list[dict]] = defaultdict(list)
     for s in skus:
         by_brand[s["brand"]].append(s)
 
     for brand, brand_skus in by_brand.items():
+        curated_entry = curated.get(brand)
+        if curated_entry is not None:
+            brand_score = PRODUCER_PRESTIGE_TIER_SCORES[curated_entry["tier"]]
+            conf = 0.85
+            note_extra = curated_entry.get("note")
+            note = (
+                f"{brand}: curated {curated_entry['tier'].replace('_', ' ')} producer"
+                + (f" — {note_extra}." if note_extra else ".")
+            )
+            for s in brand_skus:
+                signals.append({
+                    "sku": s["sku"], "axis": "producer",
+                    "score": brand_score, "confidence": conf,
+                    "method": "curated-producer-prestige",
+                    "source_note": note, "computed_at": now,
+                })
+            continue
+
         pres_scores = [pres_by_sku[s["sku"]] for s in brand_skus if s["sku"] in pres_by_sku]
         acc_scores  = [acc_by_sku[s["sku"]] for s in brand_skus
                        if acc_by_sku.get(s["sku"]) is not None]
@@ -533,10 +815,10 @@ def phase1_per_axis_scores(conn: sqlite3.Connection) -> None:
         acc_score, acc_conf, acc_note = acclaim_score_for_sku(sku, critic_rows)
 
         pres_score = prestige_score(
-            s["designation"], s["appellation"], s["price"], s["country"], sku
+            s["designation"], s["appellation"], s["price"], s["country"], sku, s["name"]
         )
-        pres_conf = prestige_confidence(s["designation"], s["appellation"])
-        pres_note = _prestige_source_note(s["designation"], s["appellation"])
+        pres_conf = prestige_confidence(s["designation"], s["appellation"], s["name"], sku)
+        pres_note = _prestige_source_note(s["designation"], s["appellation"], s["name"], sku)
 
         if acc_score is not None:
             signals.append({
@@ -607,9 +889,10 @@ def phase2_rollup(conn: sqlite3.Connection) -> None:
         comp = composite_score(axes)
         conf = _weighted_confidence(axes)
         override = overrides.get(sku)
-        tier = tier_for_composite(comp, conf, override)
+        has_acclaim = axes.get("acclaim", {}).get("score") is not None
+        tier = tier_for_composite(comp, conf, override, has_acclaim=has_acclaim)
         if override and override in VALID_TIERS:
-            computed_tier = tier_for_composite(comp, conf, override=None)
+            computed_tier = tier_for_composite(comp, conf, override=None, has_acclaim=has_acclaim)
             tier_order = ["everyday", "established", "premium", "iconic"]
             if computed_tier in tier_order and override in tier_order:
                 diff = abs(tier_order.index(override) - tier_order.index(computed_tier))
@@ -651,7 +934,12 @@ EXPORT_REQUIRED_COLS = {
 }
 
 
-def phase3_verify_and_export(conn: sqlite3.Connection) -> None:
+def phase3_verify_and_export(
+    conn: sqlite3.Connection,
+    db_path: Path = DB_PATH,
+    export_out: Path | None = None,
+    skip_export: bool = False,
+) -> None:
     """Print tier distribution, cross-checks, then run refresh_live_export.py."""
     log.info("Phase 3: verifying results …")
 
@@ -744,17 +1032,22 @@ def phase3_verify_and_export(conn: sqlite3.Connection) -> None:
     # Precondition: refuse to run the export if the allowlist is missing reputation cols.
     _assert_export_cols()
 
+    if skip_export:
+        log.info("Phase 3: skip_export=True — not running refresh_live_export.py")
+        print("\nPhase 3 complete — reputation signals verified (export skipped).")
+        return
+
     log.info("Phase 3: running refresh_live_export.py …")
-    result = subprocess.run(
-        [sys.executable, str(SCRIPT)],
-        capture_output=True, text=True
-    )
+    export_cmd = [sys.executable, str(SCRIPT), "--db", str(db_path)]
+    if export_out is not None:
+        export_cmd += ["--out", str(export_out)]
+    result = subprocess.run(export_cmd, capture_output=True, text=True)
     if result.returncode != 0:
         log.error("refresh_live_export.py failed:\n%s", result.stderr)
         sys.exit(1)
     log.info("Phase 3: live export updated.")
 
-    print("\nLive export updated: data/live_products_export.json")
+    print(f"\nLive export updated: {export_out or 'data/live_products_export.json'}")
     print("Phase 3 complete — reputation signals verified.")
 
 
@@ -775,8 +1068,20 @@ def _assert_export_cols() -> None:
 # Entry point
 # ---------------------------------------------------------------------------
 
-def main() -> None:
-    db = DB_PATH
+def main(argv: list[str] | None = None) -> None:
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--db", type=Path, default=DB_PATH)
+    ap.add_argument("--export-out", type=Path, default=None,
+                     help="live export destination (default: refresh_live_export.py's own default)")
+    ap.add_argument("--skip-export", action="store_true",
+                     help="compute + write products.db but don't run refresh_live_export.py "
+                          "(tests use this against a throwaway db copy)")
+    ap.add_argument("--no-backup", action="store_true",
+                     help="skip the Phase 0 DB backup (tests use a throwaway db copy)")
+    args = ap.parse_args(argv)
+
+    db = args.db
     if not db.exists():
         log.error("DB not found: %s", db)
         sys.exit(1)
@@ -787,7 +1092,19 @@ def main() -> None:
     log.info("=== compute_reputation.py ===")
     log.info("DB: %s", db)
 
-    phase0_backup_and_ddl(db)
+    if not args.no_backup:
+        phase0_backup_and_ddl(db)
+    else:
+        # Tests still need the DDL (new columns/table) applied — just skip the copy.
+        conn2 = sqlite3.connect(db)
+        conn2.executescript(DDL_SIGNALS)
+        existing = {r[1] for r in conn2.execute("PRAGMA table_info(products)")}
+        for stmt in DDL_PRODUCTS_COLS:
+            col = re.search(r'ADD COLUMN\s+(\w+)', stmt).group(1)
+            if col not in existing:
+                conn2.execute(stmt)
+        conn2.commit()
+        conn2.close()
     # Re-connect after DDL so row_factory sees new columns
     conn.close()
     conn = sqlite3.connect(db)
@@ -799,7 +1116,7 @@ def main() -> None:
 
     conn = sqlite3.connect(db)
     conn.row_factory = sqlite3.Row
-    phase3_verify_and_export(conn)
+    phase3_verify_and_export(conn, db_path=db, export_out=args.export_out, skip_export=args.skip_export)
     conn.close()
 
 

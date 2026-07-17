@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Eye } from 'lucide-react';
 import { StorefrontImage } from '@/components/StorefrontImage';
 import { CriticScoreStrip } from '@/components/CriticScoreStrip';
+import { ReputationBadge } from '@/components/product/ReputationBadge';
 import { QuickView } from '@/components/QuickView';
 import { formatPrice, resolveSale } from '@/lib/price-tiers';
 import { cn, isInStock } from '@/lib/utils';
@@ -91,15 +92,7 @@ export function ProductCard({ product, contactLinks }: ProductCardProps) {
 
             {/* Reputation tier — bottom-left, iconic/premium only. Renders nothing for
                 established/everyday/unrated (too noisy) or when no data. */}
-            {product.reputation_tier === 'iconic' ? (
-              <span className="absolute bottom-14 left-2 rounded-full bg-amber-500/90 px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
-                Iconic
-              </span>
-            ) : product.reputation_tier === 'premium' ? (
-              <span className="absolute bottom-14 left-2 rounded-full bg-background/90 px-2.5 py-1 text-xs font-medium text-foreground shadow-sm ring-1 ring-border">
-                Top Rated
-              </span>
-            ) : null}
+            <ReputationBadge tier={product.reputation_tier} className="absolute bottom-14 left-2" />
 
             {/* Critic score — compact pill, top-right. Renders nothing for
                 unscored products (helper-gated), so no empty overlay. */}

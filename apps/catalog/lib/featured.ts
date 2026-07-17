@@ -84,3 +84,30 @@ export function resolveFeatured(count: number = FEATURED_COUNT): PublicProduct[]
 
   return chosen;
 }
+
+/** Default number of tiles the home "Icons" row shows. */
+export const ICONS_COUNT = 8;
+
+/**
+ * Resolve the "Icons" home-page row — the ONLY data-driven (not
+ * hand-curated) rail. Unlike Featured, this is safe to sort by a real
+ * signal: reputation_tier === 'iconic' now REQUIRES acclaim corroboration
+ * (2026-07-10 Phase A fix — see compute_reputation.py's has_acclaim gate),
+ * so "Iconic" here means genuinely critic-backed, not just a designation
+ * token + price. Ordered by composite score descending.
+ *
+ * Same resilience contract as resolveFeatured: only in-stock, image-bearing
+ * products; never returns a broken/empty tile. Returns [] (row hidden) if
+ * fewer than 4 iconic products exist — a 1-2 tile "Icons" row would look
+ * broken rather than curated.
+ */
+const ICONS_MIN_TO_SHOW = 4;
+
+export function resolveIcons(count: number = ICONS_COUNT): PublicProduct[] {
+  const candidates = getAllProducts()
+    .filter((p) => p.reputation_tier === 'iconic' && isDisplayable(p))
+    .sort((a, b) => (b.reputation_composite ?? 0) - (a.reputation_composite ?? 0));
+
+  if (candidates.length < ICONS_MIN_TO_SHOW) return [];
+  return candidates.slice(0, count);
+}
