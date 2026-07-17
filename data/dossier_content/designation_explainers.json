@@ -1,0 +1,205 @@
+[
+  {
+    "designation": "First Growth",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "The top tier of the 1855 Bordeaux Classification, commissioned by Napoleon III for the Paris Exposition. Originally just 4 Médoc châteaux (Lafite Rothschild, Latour, Margaux, Haut-Brion); Mouton Rothschild was promoted from Second Growth in 1973, the classification's only change since 1855. Ranking was based on the trading price of each château's wine at the time, not modern quality assessment.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Bordeaux_Wine_Official_Classification_of_1855\", \"https://www.wine-searcher.com/regions-first+growth\"]"
+  },
+  {
+    "designation": "Second Growth",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "The second tier of the 1855 Bordeaux Classification (14 châteaux, all Médoc). Ranking reflected historical market price, not a modern re-tasting -- several Second Growths (e.g. Léoville Las Cases, Cos d'Estournel) are widely regarded by critics as performing above their official rank today.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Bordeaux_Wine_Official_Classification_of_1855\"]"
+  },
+  {
+    "designation": "Third Growth",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "The third tier of the 1855 Bordeaux Classification (14 châteaux, all Médoc). Like the other 1855 tiers, the ranking has never been revised except for Mouton Rothschild's 1973 promotion.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Bordeaux_Wine_Official_Classification_of_1855\"]"
+  },
+  {
+    "designation": "Fourth Growth",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "The fourth tier of the 1855 Bordeaux Classification (10 châteaux, all Médoc).",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Bordeaux_Wine_Official_Classification_of_1855\"]"
+  },
+  {
+    "designation": "Fifth Growth",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "The fifth and largest tier of the 1855 Bordeaux Classification (18 châteaux, all Médoc), including well-known names like Lynch-Bages and Pontet-Canet that command prices well above their official rank.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Bordeaux_Wine_Official_Classification_of_1855\"]"
+  },
+  {
+    "designation": "Premier Grand Cru Classé A",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "The highest tier of the Saint-Émilion classification (distinct from the 1855 Médoc/Sauternes system), reserved for the region's most prestigious châteaux (e.g. Cheval Blanc, Ausone, Pavie, Angélus). Unlike 1855, Saint-Émilion's classification is revised roughly every 10 years by re-tasting and reviewing each estate.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Classification_of_Saint-%C3%89milion_wine\"]"
+  },
+  {
+    "designation": "Premier Grand Cru Classé B",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "The second-highest tier of the Saint-Émilion classification, one step below Premier Grand Cru Classé A. Also subject to the roughly decade-long re-classification cycle.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Classification_of_Saint-%C3%89milion_wine\"]"
+  },
+  {
+    "designation": "Grand Cru Classé",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "The third tier of the Saint-Émilion classification -- a broader group of classified châteaux below the two Premier Grand Cru Classé tiers, but still an officially recognized quality distinction above unclassified Saint-Émilion producers.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Classification_of_Saint-%C3%89milion_wine\"]"
+  },
+  {
+    "designation": "Grand Cru",
+    "region": "Burgundy",
+    "kind": "quality-rank",
+    "explainer": "Burgundy's highest vineyard classification -- roughly 33 named vineyard sites (e.g. Romanée-Conti, Montrachet, Chambertin) recognized as the region's finest terroir, representing about 1-2% of Burgundy's total production. Grand Cru wines are typically labeled by vineyard name alone, without the village name.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Burgundy_wine\", \"https://www.bourgogne-wines.com/discover-our-wines/appellations,1476,7563.html\"]"
+  },
+  {
+    "designation": "Grand Cru",
+    "region": "Alsace",
+    "kind": "quality-rank",
+    "explainer": "Alsace's top vineyard classification, covering 51 named vineyard sites, introduced in 1975 (decades after Burgundy's) and restricted to four grape varieties: Riesling, Gewürztraminer, Pinot Gris, and Muscat. A separate designation from Burgundy Grand Cru despite the shared name -- Alsace's system is grape-restricted and site-based rather than the broader Burgundy hierarchy.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Alsace_Grand_Cru_AOC\"]"
+  },
+  {
+    "designation": "Grand Cru",
+    "region": "Champagne",
+    "kind": "quality-rank",
+    "explainer": "In Champagne, Grand Cru is not a vineyard designation like Burgundy or Alsace -- it rates entire villages (17 of Champagne's ~320 growing villages hold Grand Cru status) under the historical Échelle des Crus rating system, which graded villages by grape price potential. A Champagne can be Grand Cru only if all its grapes come from Grand Cru-rated villages.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/%C3%89chelle_des_Crus\", \"https://www.champagne.fr/en/terroir-appellation/grands-crus-premiers-crus\"]"
+  },
+  {
+    "designation": "Premier Cru",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "Second-tier vineyard classification, one step below Grand Cru. In Burgundy, roughly 640 named Premier Cru vineyard sites across various villages (about 10% of production); in Champagne, a village-level rating (one tier below Grand Cru villages) under the same Échelle des Crus system.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Burgundy_wine\", \"https://en.wikipedia.org/wiki/%C3%89chelle_des_Crus\"]"
+  },
+  {
+    "designation": "Village",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "Burgundy's third-tier classification -- wines labeled with a village/commune name (e.g. Gevrey-Chambertin, Meursault) rather than a specific vineyard, made from grapes grown within that village's boundaries but outside its Grand Cru and Premier Cru sites. Represents roughly 36% of Burgundy production.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Burgundy_wine\"]"
+  },
+  {
+    "designation": "Regional",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "Burgundy's broadest classification tier (e.g. Bourgogne Rouge, Bourgogne Blanc) -- grapes may be sourced from anywhere within the wider Burgundy appellation boundary, not tied to a specific village or vineyard. Represents just over half of all Burgundy production.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Burgundy_wine\"]"
+  },
+  {
+    "designation": "AOC",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "Appellation d'Origine Contrôlée -- France's legal appellation system, regulating which grapes, yields, and winemaking methods can be used within a defined geographic area. An AOC label is a guarantee of geographic origin and production-rule compliance, not itself a numeric quality score.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Appellation_d%27origine_contr%C3%B4l%C3%A9e\"]"
+  },
+  {
+    "designation": "DOC",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "Denominazione di Origine Controllata -- Italy's mid-tier legal appellation, one step below DOCG. Regulates permitted grapes, yields, and production zone for a given wine name.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Denominazione_di_origine_controllata\"]"
+  },
+  {
+    "designation": "DOCG",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "Denominazione di Origine Controllata e Garantita -- Italy's highest legal wine classification, adding government-tasted quality guarantee and stricter production rules on top of the DOC requirements. Fewer than 80 Italian wines hold DOCG status (e.g. Barolo, Brunello di Montalcino, Chianti Classico).",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Denominazione_di_origine_controllata_e_garantita\"]"
+  },
+  {
+    "designation": "IGT",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "Indicazione Geografica Tipica -- Italy's most flexible legal wine category, below DOC/DOCG, allowing wider grape and blending latitude. Despite ranking below DOC/DOCG in the legal hierarchy, IGT includes some of Italy's most sought-after and expensive wines (the 'Super Tuscans'), which use IGT specifically to escape DOC/DOCG's stricter grape-variety rules.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Indicazione_geografica_tipica\"]"
+  },
+  {
+    "designation": "DO",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "Denominación de Origen -- Spain's standard legal appellation system, regulating geographic origin, permitted grapes, and production methods, roughly equivalent to France's AOC or Italy's DOC.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Denominaci%C3%B3n_de_Origen_(Spain)\"]"
+  },
+  {
+    "designation": "DOCa",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "Denominación de Origen Calificada -- Spain's highest legal appellation tier, above DO. Only two regions hold this status: Rioja (since 1991) and Priorat (since 2009).",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Denominaci%C3%B3n_de_Origen_Calificada\"]"
+  },
+  {
+    "designation": "Gran Reserva",
+    "region": "ALL",
+    "kind": "aging-class",
+    "explainer": "Spain's highest aging classification, reserved for good vintages. Minimum aging requirements vary by region and color, but for Rioja red: at least 5 years total aging with a minimum 2 years in oak barrel before release.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Rioja_(wine)\", \"https://www.riojawine.com/en/our-wines/aging-qualification/\"]"
+  },
+  {
+    "designation": "Reserva",
+    "region": "ALL",
+    "kind": "aging-class",
+    "explainer": "Spain's middle aging tier, below Gran Reserva. For Rioja red: minimum 3 years total aging with at least 1 year in oak barrel before release.",
+    "sources_json": "[\"https://www.riojawine.com/en/our-wines/aging-qualification/\"]"
+  },
+  {
+    "designation": "Crianza",
+    "region": "ALL",
+    "kind": "aging-class",
+    "explainer": "Spain's entry-level aging classification. For Rioja red: minimum 2 years total aging with at least 1 year in oak barrel before release -- the shortest-aged of Spain's three official aging tiers (Crianza, Reserva, Gran Reserva).",
+    "sources_json": "[\"https://www.riojawine.com/en/our-wines/aging-qualification/\"]"
+  },
+  {
+    "designation": "Riserva",
+    "region": "ALL",
+    "kind": "aging-class",
+    "explainer": "Italy's extended-aging designation, requiring longer minimum aging than the base wine of the same DOC/DOCG (exact duration varies by appellation -- e.g. Chianti Classico Riserva requires at least 24 months, Barolo Riserva at least 62 months).",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Chianti_Classico\", \"https://en.wikipedia.org/wiki/Barolo_DOCG\"]"
+  },
+  {
+    "designation": "Gran Selezione",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "The top tier of Chianti Classico, introduced in 2013 above Riserva. Must be estate-grown, aged at least 30 months, and pass a stricter tasting panel than Riserva -- created to give Chianti Classico's best producers a designation above Riserva that IGT ('Super Tuscan') producers couldn't undercut.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Chianti_Classico\", \"https://www.chianticlassico.com/en/the-wine/gran-selezione/\"]"
+  },
+  {
+    "designation": "Superiore",
+    "region": "ALL",
+    "kind": "quality-rank",
+    "explainer": "An Italian quality suffix (e.g. Soave Superiore, Valpolicella Superiore) indicating a wine meets higher standards than the base DOC/DOCG version -- typically higher minimum alcohol and/or longer aging. Rules are set per-appellation, not standardized nationally.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Italian_wine_classification\"]"
+  },
+  {
+    "designation": "Late Harvest",
+    "region": "ALL",
+    "kind": "production-style",
+    "explainer": "A sweet-wine production style where grapes are left on the vine well past normal ripeness, concentrating sugar (and often flavor) before pressing. Distinct from Ice Wine (frozen grapes) and Noble Rot wines (botrytis-affected grapes), though styles can overlap in the same bottle.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Late_harvest_wine\"]"
+  },
+  {
+    "designation": "Ice Wine",
+    "region": "ALL",
+    "kind": "production-style",
+    "explainer": "A sweet-wine production style made from grapes left on the vine until they freeze naturally (typically -8°C or colder), then pressed while still frozen -- the ice crystals stay behind, concentrating the sugar in the juice extracted. Most associated with Germany (Eiswein) and Canada, where it's a protected term with legal minimum-temperature requirements.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Icewine\"]"
+  },
+  {
+    "designation": "Noble Rot",
+    "region": "ALL",
+    "kind": "production-style",
+    "explainer": "A sweet-wine production style using grapes affected by Botrytis cinerea, a fungus that, under the right humid-then-dry conditions, dehydrates grapes and concentrates their sugar and flavor rather than spoiling them. The basis of Sauternes, Tokaji Aszú, and German Beerenauslese/Trockenbeerenauslese.",
+    "sources_json": "[\"https://en.wikipedia.org/wiki/Botrytized_wine\"]"
+  }
+]
