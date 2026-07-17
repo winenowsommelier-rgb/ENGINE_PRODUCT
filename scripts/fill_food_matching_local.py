@@ -14,6 +14,9 @@ from typing import Optional
 ROOT = Path(__file__).parent.parent
 EXPORT = ROOT / "data" / "live_products_export.json"
 
+sys.path.insert(0, str(ROOT))
+from data.lib.taxonomy.sku_taxonomy import type_for
+
 # ---------------------------------------------------------------------------
 # Food pairing maps (copied from extract_fields_pass3.py)
 # ---------------------------------------------------------------------------
@@ -46,6 +49,12 @@ FOOD_MAP_SPIRITS = {
     "beer":     "Pizza, Burgers, Fried chicken, Spicy food, Sausages",
     "liqueur":  "Desserts, Ice cream, Fruit tarts, Cheese platters, Coffee cake",
     "brandy":   "Dark chocolate, Dried fruit, Aged cheese, Crêpes Suzette, Nuts",
+    "absinthe": "Dark chocolate, Anise-spiced desserts, Strong cheese, Charcuterie",
+    "cider":    "Roast pork, Aged cheddar, Fried appetizers, Apple desserts",
+    "baijiu":   "Spicy Sichuan dishes, Braised meats, Hotpot, Salted nuts",
+    "umeshu":   "Light appetizers, Grilled fish, Soft cheese, Fruit desserts",
+    "calvados": "Roast pork, Apple tarts, Aged cheese, Duck dishes",
+    "spirit":   "Light appetizers, Fresh fruit, Cured meats, Mild cheese",
 }
 
 SPIRIT_KEYWORDS = {
@@ -64,6 +73,30 @@ SPIRIT_KEYWORDS = {
     "liqueur":  ["liqueur", "triple sec", "schnapps", "amaretto", "baileys", "kahlua",
                  "cointreau", "chartreuse", "limoncello", "aperol", "campari"],
     "brandy":   ["brandy", "pisco", "grappa", "marc"],
+    "absinthe": ["absinthe"],
+    "cider":    ["cider"],
+    "baijiu":   ["baijiu"],
+    "umeshu":   ["umeshu"],
+    "calvados": ["calvados"],
+    "spirit":   ["white spirits", "spirit"],
+}
+
+# Maps data/lib/taxonomy/sku_taxonomy.py type_for() output -> a SPIRIT_KEYWORDS key,
+# used as a fallback when classification is blank (SKU prefix is the project's
+# canonical type source, more reliable than parsing free-text names/classification).
+TAXONOMY_TYPE_TO_SPIRIT = {
+    "Whisky": "whisky", "Bourbon": "bourbon", "Cognac": "cognac", "Armagnac": "armagnac",
+    "Rum": "rum", "Gin": "gin", "Vodka": "vodka", "Tequila": "tequila", "Mezcal": "mezcal",
+    "Sake": "sake", "Sake / Shochu": "sake", "Umeshu": "umeshu", "Beer": "beer",
+    "Liqueur": "liqueur", "Brandy": "brandy", "Grappa": "brandy", "Absinthe": "absinthe",
+    "Cider": "cider", "Baijiu": "baijiu", "Calvados": "calvados",
+    "Spirit": "spirit", "White Spirits": "spirit",
+}
+TAXONOMY_TYPE_TO_WINE_KEY = {
+    "Red Wine": "red_medium", "White Wine": "white_default", "Rosé Wine": "rose",
+    "Rose Wine": "rose", "Sparkling Wine": "sparkling", "Champagne": "sparkling",
+    "Sparkling & Champagne": "sparkling", "Dessert Wine": "dessert",
+    "Sweet/Dessert": "dessert", "Port Wine": "port", "Orange Wine": "orange",
 }
 
 
@@ -76,7 +109,8 @@ def _classify_spirit(classification: str) -> Optional[str]:
 
 
 def derive_food_matching(classification: str, style: str, body: str,
-                         tannin: str, acidity: str, grape: str) -> Optional[str]:
+                         tannin: str, acidity: str, grape: str,
+                         sku: Optional[str] = None) -> Optional[str]:
     cl = (classification or "").lower()
     bd = (body or "").lower()
     tn = (tannin or "").lower()
@@ -85,6 +119,19 @@ def derive_food_matching(classification: str, style: str, body: str,
     spirit = _classify_spirit(classification)
     if spirit:
         return FOOD_MAP_SPIRITS.get(spirit)
+
+    # classification is blank/unhelpful (e.g. "Wine product" junk bucket, or None) —
+    # fall back to the SKU-prefix taxonomy, the project's canonical type source
+    # (see CLAUDE.md Rule 12: classification is NOT a reliable category/type signal).
+    if not cl or cl == "wine product":
+        if sku:
+            taxo_type = type_for(sku)
+            tax_spirit = TAXONOMY_TYPE_TO_SPIRIT.get(taxo_type)
+            if tax_spirit:
+                return FOOD_MAP_SPIRITS.get(tax_spirit)
+            tax_wine_key = TAXONOMY_TYPE_TO_WINE_KEY.get(taxo_type)
+            if tax_wine_key:
+                return FOOD_MAP_WINE.get(tax_wine_key)
 
     # Non-drinkable (glassware, accessories)
     non_drink = ["glassware", "accessory", "accessories", "equipment", "tool", "gift set"]
@@ -169,6 +216,7 @@ def main():
             p.get("tannin", ""),
             p.get("acidity", ""),
             p.get("variety", ""),
+            p.get("sku"),
         )
         if result:
             if args.dry_run:
