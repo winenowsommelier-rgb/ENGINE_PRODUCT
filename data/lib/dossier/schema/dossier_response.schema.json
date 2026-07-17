@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "dossier_response.schema.json",
+  "title": "Curation dossier subagent response (prompt_version tracks this file)",
+  "type": "object",
+  "required": ["wine_key"],
+  "properties": {
+    "wine_key": {"type": "string"},
+    "style_summary": {"type": ["string", "null"], "maxLength": 160},
+    "expert_note": {"type": ["string", "null"]},
+    "producer_history": {"type": ["string", "null"]},
+    "signature_pairings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["dish", "cuisine", "confidence"],
+        "properties": {
+          "dish": {"type": "string"},
+          "dish_local": {"type": ["string", "null"]},
+          "cuisine": {"type": "string"},
+          "course": {"type": ["string", "null"]},
+          "heat_level_ok": {"type": "integer", "minimum": 0, "maximum": 3},
+          "reason": {"type": "string", "maxLength": 200},
+          "confidence": {"enum": ["sourced", "partial", "pairing-theory", "model"]}
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["confidence"],
+        "properties": {
+          "confidence": {"enum": ["sourced", "partial", "pairing-theory", "model"]},
+          "source_urls": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": true
+}
