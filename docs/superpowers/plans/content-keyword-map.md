@@ -47,6 +47,11 @@ Purpose hubs: `/blog/category/guides` · `/blog/category/pairings` · `/blog/cat
 | speyside-vs-islay | speyside vs islay | whisky |
 | wine-thai-spice-pairing-science | wine and spicy food science | pairing |
 | wnlq9-cellar-edit-july-2026 | (brand series — no target) | deals |
+| austrian-wine-gruner-veltliner-guide-bangkok | austrian wine bangkok | white-wine |
+| best-cognac-bangkok | cognac bangkok | guides |
+| best-premium-sake-bangkok | premium sake bangkok | sake |
+| dessert-wine-mango-sticky-rice-bangkok | dessert wine mango sticky rice | pairing |
+| dom-perignon-vs-veuve-clicquot-bangkok | dom perignon vs veuve clicquot | sparkling |
 
 ## Planned Tier A (35–70) — primary keywords (reserve before writing)
 
@@ -59,24 +64,18 @@ Purpose hubs: `/blog/category/guides` · `/blog/category/pairings` · `/blog/cat
 | 39 | best-bordeaux-under-15000-bangkok | fine bordeaux bangkok | red-wine | 35, 38, 44 |
 | 40 | best-champagne-under-1500-bangkok | champagne under 1500 baht | sparkling | champagne-under-3000, 42 |
 | 41 | penfolds-grange-thailand | penfolds grange price thailand | red-wine | 35, best-australian-wine |
-| 42 | dom-perignon-vs-veuve-clicquot | dom perignon vs veuve clicquot | sparkling | 40, champagne-under-3000 |
 | 43 | how-to-buy-fine-wine-bangkok | buy fine wine bangkok | guides | 35, 36, 37, 41, 70 |
 | 44 | bordeaux-premier-cru-explained | premier cru bordeaux | red-wine | 35, 38, 39, designations |
 | 45 | wine-with-thai-grilled-meat | wine with grilled meat | pairing | thai-food, 46, 48 |
 | 46 | wine-with-tom-yum | wine with tom yum | pairing | thai-food, 45, spice-science |
 | 47 | wine-with-khao-man-gai | wine with khao man gai | pairing | thai-food, 46, 48 |
 | 48 | wine-with-pad-thai | wine with pad thai | pairing | thai-food, 45, 47 |
-| 49 | dessert-wine-mango-sticky-rice | dessert wine thailand | pairing | 46, 47 |
 | 50 | spanish-wine-guide-bangkok | spanish wine bangkok | red-wine | designations, chile-vs-argentina |
 | 51 | german-riesling-guide-bangkok | german wine bangkok | white-wine | 52, white-under-1500 |
-| 52 | austrian-wine-gruner-thailand | austrian wine bangkok | white-wine | 51, white-under-1500 |
-| 53 | best-sake-under-1500-bangkok | sake under 1500 baht | sake | sake-guide, 54, 55 |
-| 54 | best-premium-sake-bangkok | premium sake bangkok | sake | 53, 55 |
-| 55 | sake-grades-daiginjo-junmai | sake grades explained | sake | sake-guide, 53, 54 |
+| 53 | best-sake-under-1500-bangkok | sake under 1500 baht | sake | sake-guide, best-premium-sake-bangkok |
 | 56 | single-malt-vs-blended-scotch | single malt vs blended | whisky | scotch-guide, 57, speyside-vs-islay |
 | 57 | best-single-malt-under-2000 | single malt under 2000 baht | whisky | 56, scotch-guide |
-| 58 | best-cognac-bangkok | cognac bangkok | guides | 59 |
-| 59 | xo-vs-vsop-cognac | xo vs vsop | guides | 58 |
+| 59 | xo-vs-vsop-cognac | xo vs vsop | guides | best-cognac-bangkok |
 | 60 | natural-wine-bangkok | natural wine bangkok | guides | 61 |
 | 61 | organic-wine-bangkok | organic wine bangkok | guides | 60 |
 | 62 | best-prosecco-under-1000 | prosecco bangkok | sparkling | 40, champagne-under-3000 |
