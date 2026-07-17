@@ -74,7 +74,12 @@ async function fetchBrandStyle(): Promise<StyleSpecification | null> {
     if (!res.ok) return null;
     const style = (await res.json()) as StyleSpecification;
     for (const layer of style.layers ?? []) {
-      const anyLayer = layer as { id: string; type: string; paint?: Record<string, unknown> };
+      const anyLayer = layer as {
+        id: string;
+        type: string;
+        paint?: Record<string, unknown>;
+        layout?: Record<string, unknown>;
+      };
       const paint = (anyLayer.paint ??= {});
       const id = anyLayer.id;
       if (anyLayer.type === 'background') paint['background-color'] = TINT.land;
@@ -87,6 +92,13 @@ async function fetchBrandStyle(): Promise<StyleSpecification | null> {
       } else if (anyLayer.type === 'symbol') {
         paint['text-color'] = TINT.label;
         paint['text-halo-color'] = TINT.halo;
+        // English-only place labels: positron stacks `name:latin`/`name:nonlatin`
+        // (→ "Russia / Россия", Thai-script cities). OpenMapTiles carries
+        // English names, so any name-driven label is rewritten to prefer them.
+        const layout = (anyLayer.layout ??= {});
+        if (JSON.stringify(layout['text-field'] ?? '').includes('name')) {
+          layout['text-field'] = ['coalesce', ['get', 'name:en'], ['get', 'name:latin'], ['get', 'name']];
+        }
       }
     }
     return style;
