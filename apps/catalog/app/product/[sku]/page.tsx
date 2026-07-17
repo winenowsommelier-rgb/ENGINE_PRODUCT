@@ -8,6 +8,8 @@ import { TasteWheel } from '@/components/product/TasteWheel';
 import { StructuralGauges } from '@/components/product/StructuralGauges';
 import { CriticScoreStrip } from '@/components/CriticScoreStrip';
 import { PriceBlock } from '@/components/product/PriceBlock';
+import fs from 'fs';
+import path from 'path';
 import { getAllProducts, getProductBySku } from '@/lib/catalog-data';
 import { groupForProduct } from '@/lib/category-groups';
 import { precomputeRecommendations } from '@/lib/recommender';
@@ -52,6 +54,22 @@ export const revalidate = 3600;
  * O(n^2). We store sku→sku[] and resolve to products per page via the cached
  * getProductBySku.
  *
+ * BUILD-TIME CACHE (Task 14 fix, 2026-07-18): Next's static build spreads page
+ * rendering across several `jest-worker` child processes, each a SEPARATE Node
+ * process with its own module cache — the module-level memoization below only
+ * dedupes WITHIN one worker, not across them. Every worker that renders at
+ * least one product page during `generateStaticParams`'s prerender slice was
+ * independently paying the full precompute cost (~10s solo, but 51-65s/worker
+ * under real multi-worker build contention — enough to blow past Next's 60s
+ * per-page static-generation timeout and fail the build). scripts/gen-recs-cache.mjs
+ * now runs precomputeRecommendations ONCE at prebuild and writes the result to
+ * data/recs-cache.json (same pattern as gen-search-index.mjs). We read that
+ * file first; if it's missing (e.g. local `next dev` without running
+ * `prebuild`, or an on-demand ISR render for a SKU outside the prerendered
+ * slice after the cache format changes), we fall back to a live
+ * precomputeRecommendations() call — same graceful-degradation shape as
+ * co-purchase.ts's BI file loader.
+ *
  * LAZY + MEMOIZED (ISR): with on-demand page generation this module is imported
  * inside the request that first renders an un-prerendered SKU. We therefore do NOT
  * compute RECS eagerly at module top-level (that would run the full precompute on
@@ -59,8 +77,27 @@ export const revalidate = 3600;
  * getRecsForSku() call and cache it for the instance lifetime.
  */
 let _recs: Map<string, { sku: string; band: Band }[]> | null = null;
+
+function loadRecsCache(): Map<string, { sku: string; band: Band }[]> | null {
+  const candidates = [
+    path.join(process.cwd(), 'data', 'recs-cache.json'),
+    path.join(process.cwd(), 'apps', 'catalog', 'data', 'recs-cache.json'),
+  ];
+  const file = candidates.find((p) => fs.existsSync(p));
+  if (!file) return null;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(file, 'utf8')) as Record<
+      string,
+      { sku: string; band: Band }[]
+    >;
+    return new Map(Object.entries(parsed));
+  } catch {
+    return null;
+  }
+}
+
 function getRecsForSku(sku: string): { sku: string; band: Band }[] {
-  if (_recs === null) _recs = precomputeRecommendations(getAllProducts());
+  if (_recs === null) _recs = loadRecsCache() ?? precomputeRecommendations(getAllProducts());
   return _recs.get(sku) ?? [];
 }
 

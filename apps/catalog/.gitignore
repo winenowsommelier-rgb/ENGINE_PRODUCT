@@ -26,3 +26,6 @@ tsconfig.tsbuildinfo
 
 # generated at prebuild (scripts/gen-explore-map-data.mjs) — regenerated on every build
 /data/explore-map-data.json
+
+# generated at prebuild (scripts/gen-recs-cache.mjs) — regenerated on every build
+/data/recs-cache.json
