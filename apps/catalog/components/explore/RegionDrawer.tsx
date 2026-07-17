@@ -1,4 +1,5 @@
 'use client';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { StorefrontImage } from '@/components/StorefrontImage';
 import type { LensKey, MapRegion } from '@/lib/explore/types';
@@ -19,22 +20,34 @@ export function RegionDrawer({ region, lens, onClose }: {
   region: MapRegion; lens: LensKey; onClose: () => void;
 }) {
   const count = lensCount(region, lens);
+
+  // Escape closes the sheet — standard escape route for an overlay.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
   return (
     <>
       {/* Mobile backdrop — tap to dismiss. Desktop keeps the map interactive. */}
       <div
         aria-hidden="true"
         onClick={onClose}
-        className="fixed inset-0 z-40 bg-black/25 md:hidden"
+        className="fixed inset-0 z-40 bg-black/25 md:hidden motion-safe:animate-in motion-safe:fade-in motion-safe:duration-200"
       />
       <aside
         aria-label={`${region.name} details`}
         className={[
           'z-50 flex flex-col overflow-hidden bg-card',
           // Mobile: fixed bottom sheet.
-          'fixed inset-x-0 bottom-0 max-h-[72vh] rounded-t-3xl border-t border-border shadow-[0_-12px_40px_-12px_rgba(60,30,20,0.35)]',
+          'fixed inset-x-0 bottom-0 max-h-[72vh] rounded-t-3xl border-t border-border shadow-[0_-12px_40px_-12px_rgba(0,0,0,0.30)]',
           // Desktop: side panel pinned inside the (relative) map container.
           'md:absolute md:inset-x-auto md:bottom-4 md:right-4 md:top-4 md:z-30 md:max-h-none md:w-[24rem] md:rounded-2xl md:border md:shadow-xl',
+          // Entrance motion: sheet rises on mobile, panel slides in on desktop.
+          // 300ms ease-out, gated on prefers-reduced-motion.
+          'motion-safe:animate-in motion-safe:fade-in motion-safe:duration-300 motion-safe:ease-out',
+          'motion-safe:slide-in-from-bottom-8 md:motion-safe:slide-in-from-bottom-0 md:motion-safe:slide-in-from-right-6',
         ].join(' ')}
       >
         {/* Drag-handle affordance (mobile only, visual). */}
@@ -63,23 +76,26 @@ export function RegionDrawer({ region, lens, onClose }: {
 
           {region.peeks.length > 0 && (
             <div>
-              <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">A few to explore</h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-6">
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">A few to explore</h3>
+              {/* Compact 3-up tiles: small enough that several bottles (and the
+                  cut-off next row) are visible at once — signalling there is
+                  more to browse — instead of two huge cropped cards. */}
+              <ul className="grid grid-cols-3 gap-x-3 gap-y-4">
                 {region.peeks.map((p) => (
                   <li key={p.sku}>
                     <Link
                       href={`/product/${p.sku}`}
                       aria-label={p.name}
-                      className="group block focus:outline-none"
+                      className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded-lg"
                     >
-                      <div className="overflow-hidden rounded-xl border border-border/60 bg-white p-3 shadow-sm transition-shadow duration-300 group-hover:shadow-md">
+                      <div className="overflow-hidden rounded-lg border border-border/60 bg-white p-2 shadow-sm transition-shadow duration-300 group-hover:shadow-md group-active:scale-[0.97] motion-safe:transition-transform">
                         <StorefrontImage
                           src={p.image_url}
                           alt={p.name}
                           className="aspect-[3/4] transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                         />
                       </div>
-                      <span className="mt-2.5 block text-sm font-medium leading-snug tracking-tight text-foreground line-clamp-2 group-hover:text-primary">
+                      <span className="mt-1.5 block text-xs font-medium leading-snug tracking-tight text-foreground line-clamp-2 group-hover:text-primary">
                         {p.name}
                       </span>
                     </Link>

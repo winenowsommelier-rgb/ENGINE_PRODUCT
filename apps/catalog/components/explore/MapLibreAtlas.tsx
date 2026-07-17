@@ -42,20 +42,29 @@ import {
 
 const STYLE_URL = 'https://tiles.openfreemap.org/styles/positron';
 
-/** Brand parchment/burgundy palette for the basemap tint. */
+/**
+ * Grayscale basemap palette — black/white dominant with the burgundy pins as
+ * the SINGLE accent color, so the data (pins/labels) pops off a neutral map.
+ * Land is near-white, sea a step darker for figure-ground; basemap place
+ * labels stay muted gray so OUR ink-black pin labels always win the eye.
+ */
 const TINT = {
-  background: '#f0e9dd', // sea
-  water: '#eae2d3',
-  land: '#faf5ec',
-  boundary: '#ddd2bf',
-  label: '#8a7a66',
-  halo: '#faf5ec',
+  // In positron the `background` layer is the LAND BASE; water fills draw the
+  // sea on top of it. Every non-water fill (landcover/landuse/park) gets the
+  // same land tone so the land reads as ONE flat surface, not blotchy patches.
+  land: '#fbfbfa',
+  water: '#e4e4e3',
+  boundary: '#d0d0d0',
+  label: '#8a8a8a',
+  halo: '#ffffff',
 };
+/** Ink for our own pin labels — near-black on near-white land (AAA contrast). */
+const INK = '#1a1a1a';
 const BURGUNDY = '#7d2340';
 const BURGUNDY_DEEP = '#5c142c';
 
 /**
- * Re-paint the Positron style to the parchment palette. Pure best-effort: any
+ * Re-paint the Positron style to the grayscale palette. Pure best-effort: any
  * failure (fetch, unexpected schema) returns null and the caller falls back to
  * the stock style URL — tinting must never break the map.
  */
@@ -68,7 +77,7 @@ async function fetchBrandStyle(): Promise<StyleSpecification | null> {
       const anyLayer = layer as { id: string; type: string; paint?: Record<string, unknown> };
       const paint = (anyLayer.paint ??= {});
       const id = anyLayer.id;
-      if (anyLayer.type === 'background') paint['background-color'] = TINT.background;
+      if (anyLayer.type === 'background') paint['background-color'] = TINT.land;
       else if (anyLayer.type === 'fill') {
         paint['fill-color'] = /water/i.test(id) ? TINT.water : TINT.land;
         delete paint['fill-pattern'];
@@ -319,7 +328,7 @@ export function MapLibreAtlas({
               'text-optional': true,
             }}
             paint={{
-              'text-color': BURGUNDY_DEEP,
+              'text-color': INK,
               'text-halo-color': '#ffffff',
               'text-halo-width': 1.4,
             }}
@@ -356,7 +365,7 @@ export function MapLibreAtlas({
               'text-optional': true,
             }}
             paint={{
-              'text-color': BURGUNDY_DEEP,
+              'text-color': INK,
               'text-halo-color': '#ffffff',
               'text-halo-width': 1.4,
             }}
@@ -374,9 +383,9 @@ export function MapLibreAtlas({
           closeOnClick={false}
           className="atlas-hover-popup"
         >
-          <span className="text-sm font-medium text-[#5c142c]">
+          <span className="text-sm font-medium text-neutral-900">
             {hover.name}
-            <span className="ml-1.5 tabular-nums text-[#8a7a66]">{hover.count.toLocaleString()}</span>
+            <span className="ml-1.5 tabular-nums text-neutral-500">{hover.count.toLocaleString()}</span>
           </span>
         </Popup>
       )}
@@ -394,11 +403,11 @@ export function MapLibreAtlas({
           maxWidth="260px"
         >
           <div className="flex flex-col gap-1.5 p-1">
-            <p className="text-base font-semibold text-[#3d2a20]">
+            <p className="text-base font-semibold text-neutral-900">
               {flagEmoji(card.pin.name) && <span aria-hidden="true" className="mr-1.5">{flagEmoji(card.pin.name)}</span>}
               {card.pin.name}
             </p>
-            <p className="text-sm text-[#8a7a66]">
+            <p className="text-sm text-neutral-500">
               {card.count.toLocaleString()} {card.count === 1 ? 'bottle' : 'bottles'}
             </p>
             <Link

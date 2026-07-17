@@ -544,7 +544,7 @@ button.taste-note:focus-visible {
  * ──────────────────────────────────────────────────────────────────────────── */
 .maplibregl-popup-content {
   border-radius: 0.75rem;
-  box-shadow: 0 4px 18px -6px rgba(60, 30, 20, 0.35);
+  box-shadow: 0 4px 18px -6px rgba(0, 0, 0, 0.28);
   padding: 0.5rem 0.75rem;
 }
 .maplibregl-popup-tip {
@@ -553,7 +553,7 @@ button.taste-note:focus-visible {
 .maplibregl-ctrl-group {
   border-radius: 9999px;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(60, 30, 20, 0.18);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.16);
 }
 /* Hover chips are informational — never intercept the next tap/click. */
 .atlas-hover-popup {

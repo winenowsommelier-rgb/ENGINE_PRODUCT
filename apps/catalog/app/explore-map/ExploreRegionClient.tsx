@@ -17,7 +17,7 @@ const MapLibreAtlas = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="h-full w-full animate-pulse bg-[hsl(34_30%_93%)]" aria-label="Loading map…" />
+      <div className="h-full w-full animate-pulse bg-neutral-100" aria-label="Loading map…" />
     ),
   },
 );
@@ -49,7 +49,17 @@ export function ExploreRegionClient({ data, initialRegionSlug }: {
   for (const r of data.regions) addLensesFor(r.countsByGroup);
   for (const c of data.countries) addLensesFor(c.countsByGroup);
 
-  const goWorld = () => { setSelected(null); setFocusCountry(null); router.push('/explore-map', { scroll: false }); };
+  /**
+   * Shallow URL sync (Next 14 native history support): selecting/deselecting a
+   * region must NOT router.push between /explore-map and /explore-map/[slug] —
+   * that navigates to a different route, remounting this whole client (map
+   * re-init, country focus lost on close, RSC round-trip lag). pushState keeps
+   * the deep-linkable URL in sync while state, camera and motion stay smooth.
+   * Direct loads of /explore-map/[slug] still get the full SSG page.
+   */
+  const syncUrl = (path: string) => { window.history.pushState(null, '', path); };
+
+  const goWorld = () => { setSelected(null); setFocusCountry(null); syncUrl('/explore-map'); };
 
   /**
    * Lens switch rule (spec): if the focused country has nothing under the new
@@ -60,12 +70,12 @@ export function ExploreRegionClient({ data, initialRegionSlug }: {
     setLens(l);
     if (focusCountry && countryLensCount(focusCountry, l) === 0) {
       setSelected(null); setFocusCountry(null);
-      router.push('/explore-map', { scroll: false });
+      syncUrl('/explore-map');
       return;
     }
     if (selected && lensCount(selected, l) === 0) {
       setSelected(null);
-      router.push('/explore-map', { scroll: false });
+      syncUrl('/explore-map');
     }
   };
 
@@ -86,10 +96,14 @@ export function ExploreRegionClient({ data, initialRegionSlug }: {
     goCountry(c);
   };
 
+  const closeRegion = () => { setSelected(null); syncUrl('/explore-map'); };
   const selectRegion = (r: MapRegion) => {
+    // Tapping the already-selected region (pin or chip) deselects — the same
+    // gesture toggles, so users always have an obvious way back.
+    if (selected?.slug === r.slug) { closeRegion(); return; }
     setSelected(r);
     if (!focusCountry) setFocusCountry(countryPins.find((c) => c.name === r.country) ?? null);
-    router.push(`/explore-map/${r.slug}`, { scroll: false });
+    syncUrl(`/explore-map/${r.slug}`);
   };
 
   return (
@@ -115,7 +129,7 @@ export function ExploreRegionClient({ data, initialRegionSlug }: {
       {/* The map is the hero: a tall immersive canvas on every viewport (vs the old
           ~150px mobile letterbox strip). The container is position:relative — the
           breadcrumb and the desktop region panel anchor inside it. */}
-      <div className="relative h-[62vh] max-h-[760px] min-h-[420px] w-full overflow-hidden rounded-3xl border border-[hsl(28_25%_86%)] bg-[hsl(34_38%_97%)] shadow-[0_1px_2px_rgba(60,30,20,0.04),0_12px_28px_-18px_rgba(60,30,20,0.22)]">
+      <div className="relative h-[62vh] max-h-[760px] min-h-[420px] w-full overflow-hidden rounded-3xl border border-neutral-200 bg-neutral-100 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_28px_-18px_rgba(0,0,0,0.18)]">
         {/* Breadcrumb — frosted pill, top-left, over the map. */}
         <nav
           aria-label="Breadcrumb"
@@ -154,11 +168,7 @@ export function ExploreRegionClient({ data, initialRegionSlug }: {
 
         {/* Region details over the map: bottom sheet (mobile) / side panel (desktop). */}
         {selected && (
-          <RegionDrawer
-            region={selected}
-            lens={lens}
-            onClose={() => { setSelected(null); router.push('/explore-map', { scroll: false }); }}
-          />
+          <RegionDrawer region={selected} lens={lens} onClose={closeRegion} />
         )}
       </div>
 
