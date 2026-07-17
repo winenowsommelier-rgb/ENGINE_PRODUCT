@@ -24,6 +24,17 @@ CASES = {
     "Chateau Margaux 4Ème Cru Classé": "Cru Classé",
     "Yellow Tail Shiraz": None,
     "Doctorow Estate Red": None,
+    # DOC/DOCG/IGT/AOC must match regardless of case (masterfile writes "Doc"/"Docg" too).
+    # DOC/DOCG/IGT/AOC outrank Classico/Superiore when both present (the legally-defined
+    # appellation is the more specific designation; Classico/Superiore are sub-modifiers):
+    "Pieropan Soave Classico La Rocca Doc": "DOC",
+    "Montelvini Asolo Prosecco Superiore Docg Extra Dry": "DOCG",
+    "Masseto Toscana Igt 2021": "IGT",
+    "Ronan by Clinet Bordeaux Aoc Red": "AOC",
+    # New designation terms (Spanish/Italian aging & sub-zone classes):
+    "El Coto Rioja Crianza": "Crianza",
+    "Carpineto Chianti Classico": "Classico",
+    "Roccolo Grassi Valpolicella Superiore": "Superiore",
 }
 
 def test_python_resolver_matches_expected():
