@@ -1,7 +1,7 @@
 ---
 TITLE: Best Cognac in Bangkok: A Buyer's Guide to VS, VSOP, and XO
 SLUG: best-cognac-bangkok
-DATE: 2026-09-02
+DATE: 2026-07-12
 TAGS: guide,cognac,spirits,bangkok
 COVER-IMAGE: https://images.pexels.com/photos/7254446/pexels-photo-7254446.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Eva Bronzini via Pexels

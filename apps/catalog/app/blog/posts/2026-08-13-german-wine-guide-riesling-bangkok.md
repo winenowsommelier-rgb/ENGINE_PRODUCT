@@ -1,7 +1,7 @@
 ---
 TITLE: German Wine: Riesling, the Prädikat System, and the Dry/Sweet Question
 SLUG: german-wine-guide-riesling-bangkok
-DATE: 2026-08-13
+DATE: 2026-07-02
 TAGS: guide,germany,riesling,white-wine
 COVER-IMAGE: https://images.pexels.com/photos/5947052/pexels-photo-5947052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Maria Orlova via Pexels

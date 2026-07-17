@@ -1,7 +1,7 @@
 ---
 TITLE: Best Australian Wine in Bangkok — Shiraz, Chardonnay & Beyond
 SLUG: best-australian-wine-bangkok-shiraz-chardonnay
-DATE: 2026-07-19
+DATE: 2026-06-11
 TAGS: curated,australia,shiraz,chardonnay,red-wine,white-wine
 COVER-IMAGE: https://images.pexels.com/photos/2339180/pexels-photo-2339180.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Tim Mossholder via Pexels

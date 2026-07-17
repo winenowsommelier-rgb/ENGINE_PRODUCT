@@ -1,7 +1,7 @@
 ---
 TITLE: Best White Wine Under ฿1,500 in Bangkok — July 2026
 SLUG: best-white-wine-under-1500-baht-bangkok-july-2026
-DATE: 2026-07-22
+DATE: 2026-06-15
 TAGS: curated,white-wine,value,sauvignon-blanc,chardonnay
 COVER-IMAGE: https://images.pexels.com/photos/27178136/pexels-photo-27178136.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Helena Lopes via Pexels

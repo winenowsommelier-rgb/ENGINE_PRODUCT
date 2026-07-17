@@ -1,7 +1,7 @@
 ---
 TITLE: Rhône Valley Wine — France's Underrated Gem
 SLUG: rhone-valley-wine-guide-bangkok
-DATE: 2026-07-22
+DATE: 2026-06-16
 TAGS: deep-dive,france,rhone-valley,syrah,grenache
 COVER-IMAGE: https://images.pexels.com/photos/12740408/pexels-photo-12740408.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Mehmet Ali Turan via Pexels

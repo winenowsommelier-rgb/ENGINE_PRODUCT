@@ -1,7 +1,7 @@
 ---
 TITLE: Wine Investment in Thailand: An Honest Guide for Bangkok Collectors
 SLUG: wine-investment-thailand
-DATE: 2026-09-14
+DATE: 2026-07-18
 TAGS: guide,fine-wine,investment,bangkok
 COVER-IMAGE: https://images.pexels.com/photos/30557568/pexels-photo-30557568.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Liv Kao via Pexels

@@ -1,7 +1,7 @@
 ---
 TITLE: Best Premium Sake in Bangkok: Daiginjo Bottles Worth Seeking Out
 SLUG: best-premium-sake-bangkok
-DATE: 2026-09-04
+DATE: 2026-07-13
 TAGS: curated,sake,japan,bangkok,premium
 COVER-IMAGE: https://images.pexels.com/photos/18341856/pexels-photo-18341856.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Andy Lee via Pexels

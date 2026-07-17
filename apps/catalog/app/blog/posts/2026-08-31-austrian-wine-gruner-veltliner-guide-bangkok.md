@@ -1,7 +1,7 @@
 ---
 TITLE: Austrian Wine: Grüner Veltliner and the Case for Looking Past Germany
 SLUG: austrian-wine-gruner-veltliner-guide-bangkok
-DATE: 2026-08-31
+DATE: 2026-07-11
 TAGS: deep-dive,austria,gruner-veltliner,riesling,white-wine
 COVER-IMAGE: https://images.pexels.com/photos/1637065/pexels-photo-1637065.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Diego F. Parra via Pexels

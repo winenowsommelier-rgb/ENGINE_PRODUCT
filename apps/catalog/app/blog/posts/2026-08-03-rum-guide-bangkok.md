@@ -1,7 +1,7 @@
 ---
 TITLE: Rum in Bangkok: A Guide to What's Worth Buying
 SLUG: rum-guide-bangkok
-DATE: 2026-08-03
+DATE: 2026-06-27
 TAGS: guide,rum,spirits,bangkok
 COVER-IMAGE: https://images.pexels.com/photos/4021983/pexels-photo-4021983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: A backlit line of rum bottles behind a dim bar — the range of colour, from water-white to dark mahogany, is the first clue to how each was aged.

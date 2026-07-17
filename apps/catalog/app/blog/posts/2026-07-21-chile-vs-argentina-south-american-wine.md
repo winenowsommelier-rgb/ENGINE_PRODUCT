@@ -1,7 +1,7 @@
 ---
 TITLE: Chile vs. Argentina — South American Wine Face-Off
 SLUG: chile-vs-argentina-south-american-wine
-DATE: 2026-07-21
+DATE: 2026-06-13
 TAGS: compare,chile,argentina,malbec,carmenere,red-wine
 COVER-IMAGE: https://images.pexels.com/photos/2954929/pexels-photo-2954929.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Elle Hughes via Pexels

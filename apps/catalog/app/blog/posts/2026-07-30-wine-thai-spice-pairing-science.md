@@ -1,7 +1,7 @@
 ---
 TITLE: Wine & Thai Spice: The Science of Pairing with Heat
 SLUG: wine-thai-spice-pairing-science
-DATE: 2026-07-30
+DATE: 2026-06-24
 TAGS: pairing,thai-food,spicy,science,white-wine
 COVER-IMAGE: https://images.pexels.com/photos/20272821/pexels-photo-20272821.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Aida Shukuhi via Pexels

@@ -1,7 +1,7 @@
 ---
 TITLE: Sake Food Pairing: What Japanese Sake Goes With in Bangkok
 SLUG: sake-food-pairing-guide-bangkok
-DATE: 2026-08-19
+DATE: 2026-07-05
 TAGS: pairing,sake,japanese,food
 COVER-IMAGE: https://images.pexels.com/photos/1407846/pexels-photo-1407846.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Pixabay via Pexels

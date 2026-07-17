@@ -1,7 +1,7 @@
 ---
 TITLE: What Is Gin? A Bangkok Drinker's Guide
 SLUG: gin-guide-bangkok-drinkers
-DATE: 2026-07-20
+DATE: 2026-06-12
 TAGS: guide,gin,spirits,cocktails,bangkok
 COVER-IMAGE: https://images.pexels.com/photos/1170598/pexels-photo-1170598.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Peter Fazekas via Pexels

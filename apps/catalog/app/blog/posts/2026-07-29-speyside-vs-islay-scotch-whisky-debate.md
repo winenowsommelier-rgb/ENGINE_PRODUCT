@@ -1,7 +1,7 @@
 ---
 TITLE: Speyside vs. Islay: The Great Scotch Whisky Debate
 SLUG: speyside-vs-islay-scotch-whisky-debate
-DATE: 2026-07-29
+DATE: 2026-06-23
 TAGS: compare,scotch,whisky,speyside,islay
 COVER-IMAGE: https://images.pexels.com/photos/34635797/pexels-photo-34635797.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Geert Rozendom via Pexels

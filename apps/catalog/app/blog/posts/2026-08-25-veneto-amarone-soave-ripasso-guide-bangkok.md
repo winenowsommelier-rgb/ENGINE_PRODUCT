@@ -1,7 +1,7 @@
 ---
 TITLE: Veneto: Amarone, Soave, and Why Italy's Most-Exported Region Is Underrated
 SLUG: veneto-amarone-soave-ripasso-guide-bangkok
-DATE: 2026-08-25
+DATE: 2026-07-08
 TAGS: deep-dive,italy,veneto,amarone
 COVER-IMAGE: https://images.pexels.com/photos/4021983/pexels-photo-4021983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: ELEVATE via Pexels

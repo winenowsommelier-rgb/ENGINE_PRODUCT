@@ -1,7 +1,7 @@
 ---
 TITLE: What to Drink at Thai Weddings and Events: A Bangkok Buying Guide
 SLUG: wine-for-thai-weddings-events-bangkok
-DATE: 2026-08-17
+DATE: 2026-07-04
 TAGS: guide,events,weddings,curated,bangkok
 COVER-IMAGE: https://images.pexels.com/photos/5947052/pexels-photo-5947052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Maria Orlova via Pexels

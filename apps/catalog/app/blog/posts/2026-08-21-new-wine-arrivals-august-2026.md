@@ -1,7 +1,7 @@
 ---
 TITLE: New Arrivals: What Just Landed at WNLQ9 — August 2026
 SLUG: new-wine-arrivals-august-2026
-DATE: 2026-08-21
+DATE: 2026-07-06
 TAGS: news,arrivals,collection,new
 COVER-IMAGE: https://images.pexels.com/photos/3407777/pexels-photo-3407777.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Magda Ehlers via Pexels

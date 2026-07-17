@@ -1,7 +1,7 @@
 ---
 TITLE: Spanish Wine Beyond Rioja: What to Explore Next
 SLUG: spanish-wine-guide-beyond-rioja-bangkok
-DATE: 2026-08-11
+DATE: 2026-07-01
 TAGS: deep-dive,spain,rioja,wine-guide
 COVER-IMAGE: https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Dmitry Zvolskiy via Pexels

@@ -1,7 +1,7 @@
 ---
 TITLE: Wine Gifts in Thailand — The Complete Buying Guide
 SLUG: wine-gifts-thailand-buying-guide
-DATE: 2026-07-21
+DATE: 2026-06-14
 TAGS: guide,gifting,wine,thailand,bangkok
 COVER-IMAGE: https://images.pexels.com/photos/10148902/pexels-photo-10148902.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Alessandro Di Bella via Pexels

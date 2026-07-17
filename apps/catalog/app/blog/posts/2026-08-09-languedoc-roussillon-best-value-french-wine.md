@@ -1,7 +1,7 @@
 ---
 TITLE: Languedoc-Roussillon: France's Best-Value Wine Region
 SLUG: languedoc-roussillon-best-value-french-wine
-DATE: 2026-08-09
+DATE: 2026-06-30
 TAGS: deep-dive,france,languedoc,value
 COVER-IMAGE: https://images.pexels.com/photos/5947052/pexels-photo-5947052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Maria Orlova via Pexels

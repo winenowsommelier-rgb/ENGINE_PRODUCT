@@ -1,7 +1,7 @@
 ---
 TITLE: XO vs. VSOP Cognac: Which Should You Actually Buy?
 SLUG: xo-vs-vsop-cognac
-DATE: 2026-09-10
+DATE: 2026-07-16
 TAGS: compare,cognac,spirits,bangkok
 COVER-IMAGE: https://images.pexels.com/photos/36322544/pexels-photo-36322544.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Konstantin Mishchenko via Pexels

@@ -1,7 +1,7 @@
 ---
 TITLE: Wine Under ฿1,000 in Bangkok: The Best Bottles You're Ignoring
 SLUG: best-wine-under-1000-baht-bangkok
-DATE: 2026-08-23
+DATE: 2026-07-07
 TAGS: curated,value,budget,red-wine,white-wine
 COVER-IMAGE: https://images.pexels.com/photos/5947052/pexels-photo-5947052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Maria Orlova via Pexels

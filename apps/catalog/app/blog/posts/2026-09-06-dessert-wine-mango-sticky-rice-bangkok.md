@@ -1,7 +1,7 @@
 ---
 TITLE: What Wine Goes With Mango Sticky Rice? A Bangkok Dessert Wine Guide
 SLUG: dessert-wine-mango-sticky-rice-bangkok
-DATE: 2026-09-06
+DATE: 2026-07-14
 TAGS: pairing,dessert-wine,thai-food,mango-sticky-rice,bangkok
 COVER-IMAGE: https://images.pexels.com/photos/7361018/pexels-photo-7361018.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Likeboss lertpongsaporn via Pexels

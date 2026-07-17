@@ -1,7 +1,7 @@
 ---
 TITLE: How to Host a Wine Tasting at Home in Bangkok
 SLUG: how-to-host-wine-tasting-at-home-bangkok
-DATE: 2026-08-07
+DATE: 2026-06-29
 TAGS: guide,tasting,home,entertaining
 COVER-IMAGE: https://images.pexels.com/photos/1407846/pexels-photo-1407846.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Pixabay via Pexels

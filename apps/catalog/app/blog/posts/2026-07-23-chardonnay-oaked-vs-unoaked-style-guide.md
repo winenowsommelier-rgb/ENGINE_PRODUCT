@@ -1,7 +1,7 @@
 ---
 TITLE: Chardonnay: Oaked vs. Unoaked — Which Style Actually Suits You?
 SLUG: chardonnay-oaked-vs-unoaked-style-guide
-DATE: 2026-07-23
+DATE: 2026-06-17
 TAGS: compare,chardonnay,white-wine,france,australia
 COVER-IMAGE: https://images.pexels.com/photos/8207599/pexels-photo-8207599.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Brett Jordan via Pexels

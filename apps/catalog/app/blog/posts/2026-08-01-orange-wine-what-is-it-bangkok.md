@@ -1,7 +1,7 @@
 ---
 TITLE: Orange Wine: What Is It, and Should You Try It in Bangkok?
 SLUG: orange-wine-what-is-it-bangkok
-DATE: 2026-08-01
+DATE: 2026-06-26
 TAGS: deep-dive,natural-wine,orange-wine,white-wine
 COVER-IMAGE: https://images.pexels.com/photos/3407777/pexels-photo-3407777.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Elle Hughes via Pexels

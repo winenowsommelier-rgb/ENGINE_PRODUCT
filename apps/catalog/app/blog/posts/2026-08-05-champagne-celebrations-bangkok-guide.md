@@ -1,7 +1,7 @@
 ---
 TITLE: Champagne for Celebrations: The Bangkok Guide to Buying Bubbly
 SLUG: champagne-celebrations-bangkok-guide
-DATE: 2026-08-05
+DATE: 2026-06-28
 TAGS: guide,champagne,sparkling,occasions
 COVER-IMAGE: https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Dmitry Zvolskiy via Pexels

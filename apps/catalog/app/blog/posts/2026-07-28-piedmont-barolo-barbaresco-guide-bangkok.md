@@ -1,7 +1,7 @@
 ---
 TITLE: Piedmont: Barolo, Barbaresco and the King of Italian Reds
 SLUG: piedmont-barolo-barbaresco-guide-bangkok
-DATE: 2026-07-28
+DATE: 2026-06-22
 TAGS: deep-dive,piedmont,italy,barolo,nebbiolo
 COVER-IMAGE: https://images.pexels.com/photos/33879655/pexels-photo-33879655.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Brett Jordan via Pexels

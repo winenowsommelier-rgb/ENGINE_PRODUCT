@@ -1,7 +1,7 @@
 ---
 TITLE: Dom Pérignon vs. Veuve Clicquot: Which Champagne Should You Buy?
 SLUG: dom-perignon-vs-veuve-clicquot-bangkok
-DATE: 2026-09-08
+DATE: 2026-07-15
 TAGS: compare,champagne,dom-perignon,veuve-clicquot,sparkling
 COVER-IMAGE: https://images.pexels.com/photos/3642295/pexels-photo-3642295.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Moran Avni via Pexels

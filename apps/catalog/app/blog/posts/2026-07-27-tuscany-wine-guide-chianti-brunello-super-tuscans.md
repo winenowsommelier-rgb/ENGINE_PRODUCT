@@ -1,7 +1,7 @@
 ---
 TITLE: Tuscany Deep Dive: Chianti, Brunello, and Super Tuscans Explained
 SLUG: tuscany-wine-guide-chianti-brunello-super-tuscans
-DATE: 2026-07-27
+DATE: 2026-06-21
 TAGS: deep-dive,tuscany,italy,chianti,brunello
 COVER-IMAGE: https://images.pexels.com/photos/32233445/pexels-photo-32233445.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Andrea Mosti via Pexels

@@ -1,7 +1,7 @@
 ---
 TITLE: Natural vs. Organic Wine: What's the Difference, and What to Buy in Bangkok
 SLUG: natural-wine-bangkok
-DATE: 2026-09-12
+DATE: 2026-07-17
 TAGS: guide,natural-wine,organic-wine,bangkok
 COVER-IMAGE: https://images.pexels.com/photos/9566125/pexels-photo-9566125.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Francesco Ungaro via Pexels

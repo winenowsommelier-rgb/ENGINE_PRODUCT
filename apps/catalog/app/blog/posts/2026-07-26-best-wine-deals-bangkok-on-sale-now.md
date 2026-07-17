@@ -1,7 +1,7 @@
 ---
 TITLE: The Best Bottles on Sale Right Now — WNLQ9 Wine Deals Bangkok
 SLUG: best-wine-deals-bangkok-on-sale-now
-DATE: 2026-07-26
+DATE: 2026-06-20
 TAGS: curated,deals,sale,value,bangkok
 COVER-IMAGE: https://images.pexels.com/photos/30447488/pexels-photo-30447488.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Kalilou Tirera via Pexels

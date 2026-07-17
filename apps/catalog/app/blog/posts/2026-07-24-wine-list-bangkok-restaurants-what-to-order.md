@@ -1,7 +1,7 @@
 ---
 TITLE: The Wine List at Bangkok's Best Restaurants: What to Order
 SLUG: wine-list-bangkok-restaurants-what-to-order
-DATE: 2026-07-24
+DATE: 2026-06-18
 TAGS: guide,restaurants,bangkok,wine-list,sommelier
 COVER-IMAGE: https://images.pexels.com/photos/19393192/pexels-photo-19393192.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Vladimir Srajber via Pexels
