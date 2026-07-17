@@ -538,3 +538,24 @@ button.taste-note:focus-visible {
     display: none !important;
   }
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Explore map (MapLibre) — soften the default popup chrome to match the brand.
+ * ──────────────────────────────────────────────────────────────────────────── */
+.maplibregl-popup-content {
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 18px -6px rgba(60, 30, 20, 0.35);
+  padding: 0.5rem 0.75rem;
+}
+.maplibregl-popup-tip {
+  border-top-color: #ffffff;
+}
+.maplibregl-ctrl-group {
+  border-radius: 9999px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(60, 30, 20, 0.18);
+}
+/* Hover chips are informational — never intercept the next tap/click. */
+.atlas-hover-popup {
+  pointer-events: none;
+}

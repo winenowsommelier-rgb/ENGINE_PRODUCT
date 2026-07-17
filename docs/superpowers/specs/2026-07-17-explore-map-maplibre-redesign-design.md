@@ -50,9 +50,12 @@ lib/explore/geojson.ts  ← NEW       (pure data→GeoJSON builders, unit-tested
 - **Country view:** `fitBounds` to the country's region points (padded); regions
   render from a second source (no clustering needed at country zoom — engine
   collision handles label overlap). Click region → `onSelectRegion`.
-- **Region-less countries** (Spain-type, no curated regions): click opens a mini
-  popup card (flag, name, count, "View bottles →" to `/shop?country=X`) instead of
-  today's surprise instant navigation.
+- **Region-less countries** (Spain-type, no curated regions): the atlas handles the
+  click INTERNALLY — it opens a mini popup card (flag, name, count, "View bottles →"
+  to `/shop?country=X`) and never calls `onSelectCountry` for them. The parent's
+  `goCountry` therefore drops its `router.push` branch and only ever focuses
+  countries that have regions. CountryChips keeps its current instant-navigate for
+  region-less chips (a chip is a labeled button; navigation is expected there).
 - Hover: name + bottle-count chip (desktop pointer only).
 - Breadcrumb pill overlay (World › Country › Region) + reset; kept from current UI.
 - `cooperativeGestures: true` so page scroll never gets trapped by the map.
@@ -76,8 +79,30 @@ lib/explore/geojson.ts  ← NEW       (pure data→GeoJSON builders, unit-tested
 - `components/explore/RegionAtlas.tsx`, `lib/explore/world-path.ts`,
   `region-atlas-framing.test.ts`, `region-atlas-world-fill.test.ts` — the
   projection/cluster/spread/framing machinery is now the engine's job.
-- `countryLensCount`/pin partition helpers move to `lib/explore/` (still used by
-  CountryChips) with their tests.
+  `partitionWorldPins` + `SOUTH_LAT_THRESHOLD` (already no-op legacy) are deleted
+  outright with their test — their only consumers were RegionAtlas itself and that
+  test.
+- ONLY `countryLensCount`, the `CountryPin` type and the pin-building logic
+  (extracted from ExploreRegionClient's useMemo) move to
+  `lib/explore/country-pins.ts` (client-safe, still used by CountryChips) with a
+  new unit test.
+
+## Dependencies (explicit)
+
+- Add to `apps/catalog/package.json`: `react-map-gl@^8` AND `maplibre-gl@^5`
+  (peer dep, not bundled with react-map-gl).
+- `import 'maplibre-gl/dist/maplibre-gl.css'` is REQUIRED in the map component —
+  without it popups, attribution and the cooperativeGestures overlay render broken.
+  Legal as a global CSS import inside an app-router client component.
+- Cap map `maxZoom` (~7.5) — street-level zoom is meaningless on a wine map.
+
+## Lens switching while focused (state rule)
+
+- If the active lens drops the FOCUSED country's `countryLensCount` to 0 → reset
+  to world view (clear focus + selection, `router.push('/explore-map')`).
+- If only the SELECTED region drops to 0 (country still has stock) → close the
+  sheet, keep the country focus.
+- Unit-tested alongside the geojson builders.
 
 ## Data flow (unchanged)
 
