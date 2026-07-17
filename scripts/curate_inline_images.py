@@ -2,11 +2,14 @@
 """
 curate_inline_images.py — Replace/add inline images inside blog post bodies.
 
-For posts that HAVE inline images: replace every Unsplash `![]()` with a curated Pexels photo.
+For posts that HAVE inline images: replace every Unsplash `![]()` with a curated Pexels/Pixabay photo.
 For posts with NO inline images: insert 2-3 images after the first major ## sections.
 
 Usage:
-    PEXELS_API_KEY=xxx python3 scripts/curate_inline_images.py [--dry-run] [--slug SLUG]
+    PEXELS_API_KEY=xxx PIXABAY_API_KEY=yyy python3 scripts/curate_inline_images.py [--dry-run] [--slug SLUG]
+
+Pixabay (PIXABAY_API_KEY) is optional — used as a fallback when Pexels has no
+results for a query. Get a free key at https://pixabay.com/api/docs/.
 """
 import os, sys, re, time, argparse
 import requests
@@ -15,6 +18,8 @@ import anthropic
 POSTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'apps', 'catalog', 'app', 'blog', 'posts')
 PEXELS_API_KEY = os.environ.get('PEXELS_API_KEY', '')
 PEXELS_SEARCH = 'https://api.pexels.com/v1/search'
+PIXABAY_API_KEY = os.environ.get('PIXABAY_API_KEY', '')
+PIXABAY_SEARCH = 'https://pixabay.com/api/'
 
 _claude = anthropic.Anthropic()
 
@@ -91,12 +96,58 @@ def search_pexels(query: str, per_page: int = 10):
     }
 
 
+def search_pixabay(query: str, per_page: int = 10):
+    """
+    Search Pixabay and return best photo dict, or None if no results/no key.
+    Same return shape as search_pexels() so callers can treat them interchangeably.
+    """
+    if not PIXABAY_API_KEY:
+        return None
+
+    try:
+        resp = requests.get(
+            PIXABAY_SEARCH,
+            params={
+                'key': PIXABAY_API_KEY,
+                'q': query,
+                'image_type': 'photo',
+                'orientation': 'horizontal',
+                'per_page': max(per_page, 3),  # Pixabay minimum is 3
+                'safesearch': 'true',
+            },
+            timeout=15,
+        )
+        resp.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        status = e.response.status_code if e.response else 0
+        if status == 429:
+            raise RuntimeError('Pixabay rate limit hit (429) — wait before retrying') from e
+        raise
+
+    hits = resp.json().get('hits', [])
+    if not hits:
+        return None
+
+    best = next((p for p in hits if p.get('imageWidth', 0) >= 1920), hits[0])
+    img_url = best.get('largeImageURL') or best.get('webformatURL')
+    user = best.get('user', 'Pixabay')
+    photo_url = best.get('pageURL', 'https://pixabay.com')
+
+    return {
+        'url': img_url,
+        'credit': f"{user} via Pixabay",
+        'credit_url': photo_url,
+    }
+
+
 def fetch_photo(query: str):
-    """Try query then 2-word fallback."""
+    """Try Pexels, then Pixabay, then a broadened 2-word Pexels/Pixabay retry."""
     photo = search_pexels(query)
     if not photo:
+        photo = search_pixabay(query)
+    if not photo:
         broad = ' '.join(query.split()[:2])
-        photo = search_pexels(broad)
+        photo = search_pexels(broad) or search_pixabay(broad)
     time.sleep(0.4)
     return photo
 
@@ -247,7 +298,7 @@ def insert_new_images(body: str, title: str, tags: str, dry_run: bool = False) -
         print(f"  → after: {heading[:50]} | query: {query}")
         photo = fetch_photo(query)
         if not photo:
-            print(f"    ✗ no Pexels results — skipping")
+            print(f"    ✗ no results (Pexels/Pixabay) — skipping")
             continue
 
         img_block = f"\n\n![{alt}]({photo['url']})\n*Photo: {photo['credit']}*\n"
