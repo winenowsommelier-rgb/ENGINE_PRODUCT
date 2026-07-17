@@ -9,7 +9,7 @@ Drink hubs: `/blog/category/wine` · `/blog/category/whisky` · `/blog/category/
 Purpose hubs: `/blog/category/guides` · `/blog/category/pairings` · `/blog/category/deep-dives` · `/blog/category/curated` · `/blog/category/comparisons` · `/blog/category/gifting`
 (Hub values in the tables below are shorthand — map red-wine/white-wine/sparkling → wine, pairing → pairings, deals → curated.)
 
-## Published posts (34) — primary keywords (locked)
+## Published posts (42) — primary keywords (locked)
 
 | Post | Primary keyword | Hub |
 |---|---|---|
@@ -52,6 +52,9 @@ Purpose hubs: `/blog/category/guides` · `/blog/category/pairings` · `/blog/cat
 | best-premium-sake-bangkok | premium sake bangkok | sake |
 | dessert-wine-mango-sticky-rice-bangkok | dessert wine mango sticky rice | pairing |
 | dom-perignon-vs-veuve-clicquot-bangkok | dom perignon vs veuve clicquot | sparkling |
+| xo-vs-vsop-cognac | xo vs vsop | guides |
+| natural-wine-bangkok | natural wine bangkok (merged #60+#61; also locks: organic wine bangkok) | guides |
+| wine-investment-thailand | wine investment thailand | guides |
 
 ## Planned Tier A (35–70) — primary keywords (reserve before writing)
 
@@ -75,9 +78,6 @@ Purpose hubs: `/blog/category/guides` · `/blog/category/pairings` · `/blog/cat
 | 53 | best-sake-under-1500-bangkok | sake under 1500 baht | sake | sake-guide, best-premium-sake-bangkok |
 | 56 | single-malt-vs-blended-scotch | single malt vs blended | whisky | scotch-guide, 57, speyside-vs-islay |
 | 57 | best-single-malt-under-2000 | single malt under 2000 baht | whisky | 56, scotch-guide |
-| 59 | xo-vs-vsop-cognac | xo vs vsop | guides | best-cognac-bangkok |
-| 60 | natural-wine-bangkok | natural wine bangkok | guides | 61 |
-| 61 | organic-wine-bangkok | organic wine bangkok | guides | 60 |
 | 62 | best-prosecco-under-1000 | prosecco bangkok | sparkling | 40, champagne-under-3000 |
 | 63 | best-malbec-bangkok | malbec bangkok | red-wine | chile-vs-argentina |
 | 64 | best-shiraz-bangkok | shiraz bangkok | red-wine | best-australian-wine, 41 |
@@ -86,7 +86,6 @@ Purpose hubs: `/blog/category/guides` · `/blog/category/pairings` · `/blog/cat
 | 67 | wine-gifts-under-1000 | wine gift under 1000 baht | guides | wine-gifts, 68 |
 | 68 | wine-gifts-under-3000 | wine gift under 3000 baht | guides | wine-gifts, 67 |
 | 69 | how-to-order-wine-restaurant | how to order wine bangkok | guides | restaurant-wine-list |
-| 70 | wine-investment-thailand | wine investment thailand | guides | 43, 35 |
 
 ## Rules
 1. Before writing a post, check its primary keyword is not taken above.

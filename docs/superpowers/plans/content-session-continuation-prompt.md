@@ -17,8 +17,8 @@ Next.js storefront at `apps/catalog/`.
 
 Posts are Markdown files at `apps/catalog/app/blog/posts/YYYY-MM-DD-slug.md`.
 
-**57 posts published** (as of 2026-07-18): all 50 posts from the original
-`content-50-topic-plan.md` are done, plus 7 Tier-A posts from
+**60 posts published** (as of 2026-07-18, second session): all 50 posts from
+the original `content-50-topic-plan.md` are done, plus 10 Tier-A posts from
 `content-keyword-map.md`'s planned-topics table. Full list:
 `ls apps/catalog/app/blog/posts/`.
 
@@ -100,45 +100,38 @@ Posts are Markdown files at `apps/catalog/app/blog/posts/YYYY-MM-DD-slug.md`.
 
 ---
 
-## SESSION STATE — as of 2026-07-18
+## SESSION STATE — as of 2026-07-18 (second session, evening)
 
-**5 new posts written and gate-passed this session, NOT yet committed:**
-- `2026-08-31-austrian-wine-gruner-veltliner-guide-bangkok.md`
-- `2026-09-02-best-cognac-bangkok.md`
-- `2026-09-04-best-premium-sake-bangkok.md`
-- `2026-09-06-dessert-wine-mango-sticky-rice-bangkok.md`
-- `2026-09-08-dom-perignon-vs-veuve-clicquot-bangkok.md`
+**All prior pending work is COMMITTED.** The first 2026-07-18 batch (5 posts,
+2026-08-31 → 2026-09-08) went in as commit `829d45c`. The three final Tier-A
+posts were then written, gate-passed, and committed:
 
-`content-keyword-map.md` updated to reflect all 5 as published, uncommitted.
-`data/live_products_export.json` was also regenerated this session (see
-Known Issues #2) — also uncommitted.
+- `2026-09-10-xo-vs-vsop-cognac.md` (#59 — comparison shape; anchored on the
+  Camus Borderies VSOP-vs-XO same-house-same-cru pair)
+- `2026-09-12-natural-wine-bangkok.md` (#60+#61 MERGED into one post —
+  primary keyword "natural wine bangkok", also locks "organic wine bangkok";
+  natural depth was thin (Santa Julia Cuy line), organic depth deep)
+- `2026-09-14-wine-investment-thailand.md` (#70 — editorial; web-verified the
+  2024 Thai import-duty elimination and the Excise-Department licence
+  requirement that blocks private resale; 3 collector embeds)
 
-**Next publish date: 2026-09-10.**
+**Next publish date: 2026-09-16.**
 
-**First thing to do in the next session: ask the user whether to commit this
-batch (5 posts + keyword-map + regenerated export) before writing anything
-new**, unless they've already said so.
+**THE TIER-A LIST (35–70) IS NOW EXHAUSTED** (written, merged, or
+deliberately skipped — #53/#55 skipped for overlap, see below). Next session
+must pick a new content mode:
+1. Extend the keyword map with a new researched topic tier (needs GSC data —
+   blocked on Known Issue #1), or
+2. Shift to recurring modes per `content-50-topic-plan.md`: monthly "Cellar
+   Edit" refresh (last one: July 2026), seasonal posts, archive refreshes.
+   Note rows 35-57 of the old planned table (Margaux/Opus One/Sassicaia/fine
+   Bordeaux etc.) were removed from planning long ago but some remain
+   unwritten — re-evaluate against catalog depth before reviving any.
 
----
-
-## REMAINING TIER-A TOPICS — verified real catalog depth, 2026-07-18
-
-| # | Topic | Real depth | Notes |
-|---|---|---|---|
-| 59 | XO vs VSOP Cognac | 8 in-stock SKUs name-matching "VSOP", 21 matching "XO" | The just-shipped Cognac post (`best-cognac-bangkok`) already surfaced a good bottle pool — reuse those candidates rather than re-querying from scratch, but re-verify stock/price since prices drift |
-| 60/61 | Natural wine / Organic wine | 55 in-stock SKUs (name search "natural wine"/"organic") | Consider merging into ONE post — near-duplicate angles on a thin catalog. `orange-wine-what-is-it-bangkok` and the Austrian post's Judith Beck Pet Nat already touch this territory — read both before drafting to avoid overlap/contradiction |
-| 70 | Wine investment Thailand | N/A — editorial, not a buying guide | Different post shape: investment mechanics, storage, resale/legal context in Thailand — not primarily a catalog query. Likely wants 2-3 illustrative collector-tier embeds (Bordeaux/Burgundy), but the core content needs research beyond the product picker |
-
-**Already correctly skipped this session — do not redo without new
-justification:**
+**Skipped permanently (do not redo without new justification):**
 - #53 sake under ฿1,500 — overlaps the existing sake buying guide's price range
 - #55 sake grades explained (Daiginjo/Junmai) — overlaps the existing sake
   guide's "The Grade System: What the Labels Mean" section
-
-Once #59/60-61/70 are done, the Tier-A list (35-70) is exhausted. At that
-point, either extend the keyword map with new topics or shift to a different
-content mode (archive refresh, seasonal/monthly recurring posts per
-`content-50-topic-plan.md`'s "Curated" monthly-refresh category).
 
 ---
 
