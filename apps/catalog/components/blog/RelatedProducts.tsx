@@ -1,5 +1,7 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import { StorefrontImage } from '@/components/StorefrontImage';
+import { ReputationBadge } from '@/components/product/ReputationBadge';
+import { formatPrice, resolveSale } from '@/lib/price-tiers';
 import type { PublicProduct } from '@/lib/types';
 
 interface RelatedProductsProps {
@@ -17,18 +19,24 @@ export function RelatedProducts({ tags, allProducts }: RelatedProductsProps) {
     .filter((p) => {
       // is_in_stock is a boolean (per types.ts line 85)
       if (!p.is_in_stock) return false;
+      // Accessories (stoppers, glassware, etc.) can name-match drink keywords
+      // ("Sparkling Wine Stopper") without being a drink themselves — exclude.
+      if (p.category_group === 'Accessories') return false;
 
-      const regionSlug = (p.region ?? '').toLowerCase().replace(/\s+/g, '-');
+      const regionSlug = (p.region ?? '').trim().toLowerCase().replace(/\s+/g, '-');
       const name = p.name.toLowerCase();
       const catGroup = (p.category_group ?? '').toLowerCase();
+      const catType = (p.category_type ?? '').toLowerCase();
 
       return (
-        // Match by region slug
-        tagSlugs.some((s) => regionSlug.includes(s) || s.includes(regionSlug.replace(/-/g, ' '))) ||
+        // Match by region slug — guarded against empty region, which would
+        // otherwise vacuously match every tag via ''.includes('').
+        (regionSlug.length > 0 &&
+          tagSlugs.some((s) => regionSlug.includes(s) || s.includes(regionSlug.replace(/-/g, ' ')))) ||
         // Match by product name
         tagNames.some((n) => name.includes(n)) ||
-        // Match by category_group
-        tagSlugs.some((s) => catGroup.includes(s))
+        // Match by category_group / category_type (canonical taxonomy, not raw classification)
+        tagSlugs.some((s) => (catGroup.length > 0 && catGroup.includes(s)) || (catType.length > 0 && catType.includes(s)))
       );
     })
     .slice(0, 4);
@@ -38,36 +46,49 @@ export function RelatedProducts({ tags, allProducts }: RelatedProductsProps) {
   return (
     <section className="mt-14 border-t border-stone-200 pt-10">
       <h2 className="mb-7 text-xl font-semibold text-stone-900">You might also like</h2>
-      <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
-        {related.map((product) => (
-          <Link
-            key={product.sku}
-            href={`/product/${product.sku}`}
-            className="group flex flex-col rounded-xl border border-stone-200 bg-white overflow-hidden hover:border-stone-400 transition-colors"
-          >
-            {/* Fixed image area — consistent height across all cards */}
-            <div className="relative h-56 w-full shrink-0">
-              {product.image_url ? (
-                <Image
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-5">
+        {related.map((product) => {
+          const sale = resolveSale(product.price, product.special_price);
+
+          return (
+            <Link
+              key={product.sku}
+              href={`/product/${product.sku}`}
+              className="group flex flex-col rounded-xl border border-stone-200 bg-white overflow-hidden transition-all hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <div className="relative">
+                <StorefrontImage
                   src={product.image_url}
                   alt={product.name}
-                  fill
                   sizes="(min-width: 640px) 25vw, 50vw"
-                  className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
+                  className="transition-transform duration-300 group-hover:scale-105"
                 />
-              ) : (
-                <div className="h-full w-full bg-white" />
-              )}
-            </div>
-            {/* Text area — fixed height so all cards align */}
-            <div className="flex flex-col gap-1.5 border-t border-stone-100 p-3 h-20 justify-between">
-              <p className="text-sm font-semibold leading-snug line-clamp-2 text-stone-800">{product.name}</p>
-              {product.price != null && (
-                <p className="text-sm font-medium text-stone-500">฿{product.price.toLocaleString()}</p>
-              )}
-            </div>
-          </Link>
-        ))}
+                <ReputationBadge tier={product.reputation_tier} className="absolute bottom-2 left-2" />
+              </div>
+
+              {/* Text area — name wraps to 2 lines instead of truncating */}
+              <div className="flex flex-1 flex-col gap-1 p-3">
+                <p className="text-sm font-semibold leading-snug text-stone-800 line-clamp-2 min-h-[2.5em]">
+                  {product.name}
+                </p>
+                {sale ? (
+                  <div className="mt-auto flex flex-wrap items-baseline gap-x-1.5">
+                    <span className="text-sm font-semibold text-primary tabular-nums">
+                      {formatPrice(sale.special)}
+                    </span>
+                    <span className="text-xs text-stone-400 line-through tabular-nums">
+                      {formatPrice(product.price)}
+                    </span>
+                  </div>
+                ) : (
+                  <p className="mt-auto text-sm font-medium text-stone-500 tabular-nums">
+                    {formatPrice(product.price)}
+                  </p>
+                )}
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

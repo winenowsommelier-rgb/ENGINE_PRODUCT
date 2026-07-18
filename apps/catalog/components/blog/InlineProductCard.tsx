@@ -33,7 +33,7 @@ export function InlineProductCard({ product }: { product: PublicProduct }) {
         href={`/product/${product.sku}`}
         className="shrink-0 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors min-w-[72px] text-center"
       >
-        Order
+        Explore
       </Link>
     </aside>
   );
