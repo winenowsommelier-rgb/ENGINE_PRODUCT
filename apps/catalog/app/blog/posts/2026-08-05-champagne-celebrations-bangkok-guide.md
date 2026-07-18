@@ -65,7 +65,8 @@ The sweet spot. Grower Champagnes and established NV cuvées with real complexit
 
 Name-brand houses (Veuve, Moët, Bollinger) and Prestige Cuvées. Buy these when the name on the label is part of the gift.
 
-![Champagne being poured into flutes at a celebration table](https://images.pexels.com/photos/5947052/pexels-photo-5947052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+![Champagne being poured into a line of flutes](https://live.staticflickr.com/6212/6378253977_b17acae4c4_b.jpg)
+*Photo: Didriks via Flickr (CC BY)*
 
 The pour matters as much as the label — fill flutes two-thirds for ideal bubble retention and temperature control.
 
@@ -105,15 +106,11 @@ Champagne Rosé has a reputation for being purely decorative, but a good one bri
 
 <!-- product: WSP2529AD -->
 
-<!-- product: WSP2529AD -->
-
 ---
 
 ### Premium House Champagne — When the Label Is the Statement
 
 Sometimes the person receiving the bottle knows exactly what the yellow label means, and that recognition is part of the gift. The 375ml format is a smart choice for intimate celebrations — two glasses each, and nothing left to go flat.
-
-<!-- product: WSP1095AD -->
 
 <!-- product: WSP1095AD -->
 
@@ -131,7 +128,6 @@ Not sure which bottle fits the moment? Use this as your starting point.
 Serving Temperature
 
 Champagne is almost always served too warm in Bangkok. The ambient heat means a bottle can gain 4–6°C from the moment it leaves the fridge to the moment it's poured. Serve between **8–10°C**: chill the bottle for at least three hours, and keep it in an ice bucket with a 50/50 mix of ice and water throughout the meal. Never freeze it — that destroys the bubbles.
-
 
 ---
 

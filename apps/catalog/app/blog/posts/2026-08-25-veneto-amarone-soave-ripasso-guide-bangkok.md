@@ -3,13 +3,12 @@ TITLE: Veneto: Amarone, Soave, and Why Italy's Most-Exported Region Is Underrate
 SLUG: veneto-amarone-soave-ripasso-guide-bangkok
 DATE: 2026-07-08
 TAGS: deep-dive,italy,veneto,amarone
-COVER-IMAGE: https://images.pexels.com/photos/4021983/pexels-photo-4021983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
-COVER-CREDIT: ELEVATE via Pexels
-COVER-CREDIT-URL: https://www.pexels.com/photo/4021983/
+COVER-IMAGE: https://live.staticflickr.com/1035/1341379713_5436854d10_b.jpg
+COVER-CREDIT: mykaul via Flickr (CC BY-ND)
+COVER-CREDIT-URL: https://www.flickr.com/photos/75756973@N00/1341379713
 META-TITLE: Veneto Wine Guide Bangkok: Amarone, Soave & Ripasso Explained
 META-DESC: Veneto wine explained — Amarone, Ripasso, Valpolicella and Soave: how they differ and which bottles to buy in Bangkok.
 ---
-WNLQ9 Sommelier Team
 
 Every wine conversation in Bangkok eventually turns to Tuscany — Chianti, Brunello, Super Tuscans. Meanwhile, Veneto quietly bottles more wine than any other region in Italy, exports it to over 150 countries, and produces one of the most dramatic wines on the planet. It's time Veneto got its moment.
 
@@ -84,8 +83,6 @@ Recommended: Ripasso — Entry to Mid-Range
 <!-- product: WRW0139AD -->
 <!-- product: WRW6973AD -->
 
-![Dried grapes on bamboo racks during the appassimento process used to make Amarone della Valpolicella](https://images.pexels.com/photos/1407846/pexels-photo-1407846.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-
 Corvina grapes drying on bamboo racks in a *fruttaio* (drying loft) — the appassimento process that transforms Valpolicella into Amarone. Up to 30% of the grape's weight is lost to evaporation before fermentation begins.
 
 ## Amarone: Italy's Most Dramatic Wine
@@ -139,8 +136,6 @@ Veneto's most exported wine is not Amarone, Ripasso, or Soave. It is Prosecco �
 Prosecco's bubbles are made using the Charmat method — secondary fermentation in pressurised steel tanks rather than in the bottle — which preserves fresh fruit aromatics and keeps production costs low. The resulting wine is lighter, fruitier, and less yeasty than Champagne, designed for immediate enjoyment rather than cellaring.
 
 Prosecco Superiore DOCG from Conegliano-Valdobbiadene or Asolo is a step above the standard DOC: hillside vineyards, lower yields, more texture. The single-vineyard Rive wines represent the appellation's finest expression. But for most occasions, well-made Prosecco DOC is cheerful, affordable, and exactly what it sets out to be.
-
-
 
 ---
 

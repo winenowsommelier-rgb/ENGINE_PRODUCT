@@ -65,7 +65,8 @@ Granmonte in the Asoke Valley, Khao Yai province, is the more interesting story.
 
 The New Latitude Wines movement — producers working in tropical and subtropical climates that conventional wisdom dismissed — has created a framework for understanding what these wines are trying to do. Bangkok wine buyers have the rare privilege of drinking these wines where they're made, in the culture that produced them, alongside the food they were designed for. That is an experience Singapore and Hong Kong simply cannot replicate.
 
-![Wine bottles on a shelved wall — the depth of selection available in Bangkok retail](https://images.pexels.com/photos/5947052/pexels-photo-5947052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+![Wine racks stacked deep — the depth of selection in Bangkok retail](https://live.staticflickr.com/8200/8229814589_040bfb7969_b.jpg)
+*Photo: Didriks via Flickr (CC BY)*
 
 *Selection depth is Bangkok's strongest card — a range that spans old-world classics, emerging Thai wines, and Japanese spirits unavailable elsewhere in the region.*
 
@@ -111,7 +112,6 @@ Fushimi's water — known for softness — shapes this. Clean fermentation with 
 **Glenfiddich 12 Year Old** — ฿2,399
 
 The world's best-selling single malt, offered at retail price without the bar or hotel markup. The benchmark case for why buying direct in Bangkok changes the economics of drinking well.
-
 
 ---
 

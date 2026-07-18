@@ -3,17 +3,14 @@ TITLE: Malbec: The Argentine Grape Taking Over Bangkok Wine Lists
 SLUG: malbec-wine-guide-bangkok
 DATE: 2026-07-03
 TAGS: deep-dive,argentina,malbec,red-wine
-COVER-IMAGE: https://images.pexels.com/photos/4021983/pexels-photo-4021983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
-COVER-CREDIT: ELEVATE via Pexels
-COVER-CREDIT-URL: https://www.pexels.com/photo/4021983/
+COVER-IMAGE: https://live.staticflickr.com/7260/7508478908_5b39deb89a_b.jpg
+COVER-CREDIT: Faisal Akram via Flickr (CC BY-SA)
+COVER-CREDIT-URL: https://www.flickr.com/photos/72847119@N00/7508478908
 META-TITLE: Malbec Wine Guide Bangkok: Best Argentine Bottles in Thailand
 META-DESC: Malbec deep dive for Bangkok wine lovers — Mendoza explained, Luján de Cuyo vs Valle de Uco, altitude's role, and the best bottles from entry to premium.
 ---
-![Deep ruby Malbec wine being poured into a glass](https://images.pexels.com/photos/4021983/pexels-photo-4021983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
 Deep Dive  ·  Red Wine  ·  Argentina
-
-WNLQ9 Sommelier Team
 
 Fifty years ago, Malbec was a supporting actor — a blending grape in Bordeaux, added for colour and body and then largely forgotten. Today it is Argentina's calling card, one of the most reliably delicious red wines on the planet, and increasingly, a fixture on Bangkok restaurant lists. Here is everything you need to know about why it matters — and which bottles are worth your baht.
 
@@ -92,7 +89,7 @@ For most Bangkok wine drinkers trying Malbec for the first time, Luján de Cuyo 
 
 Malbec has a flavour profile that is almost uniquely crowd-pleasing — rich enough to feel indulgent, but with enough structure to be interesting.
 
-![A glass of deep ruby Malbec held against warm light](https://images.pexels.com/photos/1407846/pexels-photo-1407846.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+![A bottle of red wine ready for the table, with grapes and flowers](https://images.pexels.com/photos/1407846/pexels-photo-1407846.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
 The deep ruby-purple colour of a well-made Malbec — a direct result of thick skins grown under intense Andean UV radiation.
 
@@ -191,7 +188,6 @@ One of Malbec's great strengths is its versatility with food. The soft tannins a
 - **Very spicy Thai food** — high alcohol and heat in the same mouthful amplifies both. The wine tastes harsh, the food tastes hotter. If you want wine with a spicy meal, reach for a sweeter Riesling or a dry rosé instead.
 - **Delicate seafood** — Malbec's body overwhelms light fish. The wine simply bulldozes everything subtle on the plate.
 - **Very sweet sauces** — teriyaki or hoisin-glazed dishes with pronounced sweetness make Malbec taste flat and less fruity.
-
 
 ---
 

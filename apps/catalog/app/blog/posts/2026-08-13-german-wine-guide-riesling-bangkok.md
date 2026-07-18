@@ -3,17 +3,12 @@ TITLE: German Wine: Riesling, the Prädikat System, and the Dry/Sweet Question
 SLUG: german-wine-guide-riesling-bangkok
 DATE: 2026-07-02
 TAGS: guide,germany,riesling,white-wine
-COVER-IMAGE: https://images.pexels.com/photos/5947052/pexels-photo-5947052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
-COVER-CREDIT: Maria Orlova via Pexels
-COVER-CREDIT-URL: https://www.pexels.com/photo/5947052/
+COVER-IMAGE: https://live.staticflickr.com/5749/22680682583_0ea318b961_b.jpg
+COVER-CREDIT: baldeaglebluff via Flickr (CC BY-SA)
+COVER-CREDIT-URL: https://www.flickr.com/photos/8389569@N08/22680682583
 META-TITLE: German Wine Guide Bangkok: Riesling Sweet or Dry?
 META-DESC: German wine demystified — the Prädikat system, Kabinett vs Spätlese, Trocken vs Halbtrocken, and the best Riesling bottles to buy in Bangkok right now.
 ---
-![Riesling grapes on steep Mosel slate vineyards](https://images.pexels.com/photos/5947052/pexels-photo-5947052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-
-GUIDE  ·  WHITE WINE  ·  GERMANY
-
-WNLQ9 Sommelier Team
 
 German wine has one of the most complex label systems in the world — and most buyers give up before they understand it. Spätlese, Trockenbeerenauslese, Trocken, Halbtrocken: the labels read like a test you didn't study for. This guide solves that, once and for all.
 
@@ -25,41 +20,21 @@ The Prädikat level tells you how ripe the grapes were when they were picked. Ri
 
 Work your way up the ladder, from the lightest and most delicate to the rarest and most concentrated:
 
-Kabinett
+**1. Kabinett** — The lightest category. Grapes picked at normal harvest ripeness. Wines are low in alcohol (often 7–9% ABV), elegant, and refreshing. Often made off-dry.
 
-The lightest category. Grapes picked at normal harvest ripeness. Wines are low in alcohol (often 7–9% ABV), elegant, and refreshing. Often made off-dry.
+**2. Spätlese** — "Late harvest." Grapes picked at least a week after the main harvest. More concentrated fruit, higher potential alcohol, deeper flavour. Can be dry (*Trocken*) or off-dry.
 
-Ripeness
+**3. Auslese** — "Selected harvest." Individual bunches selected for exceptional ripeness. Rich, golden, complex. Often retains noticeable sweetness and some noble rot (*Botrytis*) character.
 
-Spätlese
+**4. Beerenauslese** — Individual berries selected — each one hand-picked for perfect overripeness and Botrytis. Intensely sweet, rich as honey, extremely rare. Cellared for decades.
 
-"Late harvest." Grapes picked at least a week after the main harvest. More concentrated fruit, higher potential alcohol, deeper flavour. Can be dry (*Trocken*) or off-dry.
+**5. Trockenbeerenauslese** — The pinnacle. "Dry berry selection" — Botrytis-shrivelled individual grapes, almost raisined on the vine. Syrup-thick, otherworldly sweetness and acidity. Often costs more than Sauternes Premiers Crus.
 
-Ripeness
-
-Auslese
-
-"Selected harvest." Individual bunches selected for exceptional ripeness. Rich, golden, complex. Often retains noticeable sweetness and some noble rot (*Botrytis*) character.
-
-Ripeness
-
-Beerenauslese
-
-Individual berries selected — each one hand-picked for perfect overripeness and Botrytis. Intensely sweet, rich as honey, extremely rare. Cellared for decades.
-
-Ripeness
-
-Trockenbeerenauslese
-
-The pinnacle. "Dry berry selection" — Botrytis-shrivelled individual grapes, almost raisined on the vine. Syrup-thick, otherworldly sweetness and acidity. Often costs more than Sauternes Premiers Crus.
-
-Ripeness
-
-🍷 Sommelier Note
-
-There is also **Eiswein** (ice wine) — grapes frozen on the vine, which concentrates sugars dramatically. It sits alongside Beerenauslese in terms of sweetness intensity, though it is made in a different way.
-
-For everyday drinking, focus on Kabinett and Spätlese — these are the levels where Riesling shines brightest as a food wine.
+> **🍷 Sommelier Note**
+>
+> There is also **Eiswein** (ice wine) — grapes frozen on the vine, which concentrates sugars dramatically. It sits alongside Beerenauslese in terms of sweetness intensity, though it is made in a different way.
+>
+> For everyday drinking, focus on Kabinett and Spätlese — these are the levels where Riesling shines brightest as a food wine.
 
 ## Trocken vs. Halbtrocken vs. Off-Dry
 
@@ -92,7 +67,8 @@ A south-facing stretch of the Rhine between Wiesbaden and Rüdesheim. Deeper soi
 
 Germany's warmest wine region, sheltered by the Haardt mountains. Riper, more tropical fruit (mango, pineapple), rounder acidity, and higher alcohol. Pfalz Riesling is the most approachable in style — less austere than Mosel, more generous than Rheingau. The region also excels with Gewürztraminer and Grauburgunder (Pinot Gris).
 
-![Close-up of Riesling wine being poured into a glass](https://images.pexels.com/photos/3407777/pexels-photo-3407777.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+![Riesling mid-pour — pale gold, translucent, precise](https://live.staticflickr.com/3782/14298450945_50563de364_b.jpg)
+*Photo: jenny downing via Flickr (CC BY)*
 
 The hallmark of great Riesling: a pale gold colour, a translucent brilliance, and a nose that leads with fruit and follows with minerals.
 
@@ -112,13 +88,13 @@ A Mosel Kabinett at 7.5% ABV is forgiving in Bangkok's heat. Chilled to 10°C, i
 
 Riesling's naturally high acidity cuts through rich, coconut-based curries and cleansing the palate between bites — the same role that lime juice plays in Thai cooking itself.
 
-🍷 The Pairing Formula
-
-**Spicy dishes** (green curry, som tum, pad kra pao) → Off-dry Spätlese or Kabinett from the Mosel. The sweetness absorbs the heat.
-
-**Delicate dishes** (steamed fish, raw oysters, green mango salad) → Dry Riesling (Trocken), Rheingau or Pfalz style. The minerality matches the freshness.
-
-**Rich dishes** (massaman curry, pork belly) → Auslese or fuller Spätlese. The weight and natural sweetness stand up to the richness.
+> **🍷 The Pairing Formula**
+>
+> **Spicy dishes** (green curry, som tum, pad kra pao) → Off-dry Spätlese or Kabinett from the Mosel. The sweetness absorbs the heat.
+>
+> **Delicate dishes** (steamed fish, raw oysters, green mango salad) → Dry Riesling (Trocken), Rheingau or Pfalz style. The minerality matches the freshness.
+>
+> **Rich dishes** (massaman curry, pork belly) → Auslese or fuller Spätlese. The weight and natural sweetness stand up to the richness.
 
 ## A Word on Grüner Veltliner
 
@@ -140,12 +116,9 @@ Each of these represents a different entry point into German white wine — from
 
 The Mosel is where the Prädikat system was built. These wines exemplify the off-dry style that made German Riesling famous — low alcohol, high acidity, and a signature slate mineral finish.
 
-Featured Products
 <!-- product: WWW5371AB -->
 
 **Nollen Erben Mosel Riesling Spätlese — ฿559** (on sale). A textbook Mosel Spätlese: off-dry, with ripe peach and apricot fruit, bright acidity, and that characteristic slate-mineral note on the finish. The residual sweetness is balanced, not cloying. This is the wine to try if you are new to German Riesling.
-
-<!-- product: WWW2006AB -->
 
 <!-- product: WWW2006AB -->
 
@@ -159,11 +132,7 @@ For those who prefer their whites bone dry, German Trocken Riesling delivers int
 
 <!-- product: WWW5372AB -->
 
-<!-- product: WWW5372AB -->
-
 **Nollen Erben Mosel Dry Riesling — ฿700.** The Trocken sibling of the Spätlese above: same grapes, same vineyard, all the sugar fermented to dryness. The result is lean, precise, and electric — pure lime citrus and white stone fruit, with a piercingly mineral finish. Proof that the Mosel can do austere as convincingly as it does off-dry.
-
-<!-- product: WWW5404AD -->
 
 <!-- product: WWW5404AD -->
 
@@ -177,8 +146,6 @@ The Rheingau produces Germany's most structured whites — fuller-bodied, with f
 
 <!-- product: WWW5368BN -->
 
-<!-- product: WWW5368BN -->
-
 **Weingut Robert Weil Riesling Rheingau Tradition — ฿1,200.** Robert Weil is the Rheingau's defining estate. The Tradition bottling is their introductory tier — and it still shows everything the region stands for: ripe peach and citrus peel, genuine body and weight, a touch of spice on the finish, and the kind of structure that suggests this wine will still be interesting in five years. If you are ready to move beyond Mosel, start here.
 
 ---
@@ -189,10 +156,7 @@ Gewürztraminer is the aromatic companion to Riesling — different grape, same 
 
 <!-- product: WWW5373AB -->
 
-<!-- product: WWW5373AB -->
-
 **Nollen Erben Rheinhessen Gewürztraminer Kabinett — ฿615** (on sale). Kabinett ripeness means this is light and delicate by Gewürztraminer standards — the lychee and rose are present but not overwhelming. Off-dry, fragrant, and beautiful with spicy Thai starters. An excellent first Gewürztraminer if you have never tried the variety.
-
 
 ---
 

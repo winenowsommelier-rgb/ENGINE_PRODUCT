@@ -68,7 +68,8 @@ For every time someone has said to us, "I don't really drink rum" — this is ou
 
 ---
 
-![A sommelier carefully pouring wine at a tasting table, surrounded by bottles](https://images.pexels.com/photos/5947052/pexels-photo-5947052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+![A glass of red wine poured for evaluation](https://live.staticflickr.com/1238/1403787329_39c4a6df14_b.jpg)
+*Photo: willia4 via Flickr (CC BY-SA)*
 *The best bottle is the one you've tasted, questioned, and decided you'd genuinely buy again.*
 
 ---
@@ -131,8 +132,6 @@ Barbera d'Asti Superiore from the Nizza DOCG — the zone Piedmont designated sp
 ---
 
 These aren't press picks or algorithm-generated recommendations. They're what we drink — and what we'd hand you if you showed up at our door and asked what to open tonight.
-
-
 
 ---
 

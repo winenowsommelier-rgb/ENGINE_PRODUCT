@@ -3,9 +3,9 @@ TITLE: New Arrivals: What Just Landed at WNLQ9 — August 2026
 SLUG: new-wine-arrivals-august-2026
 DATE: 2026-07-06
 TAGS: news,arrivals,collection,new
-COVER-IMAGE: https://images.pexels.com/photos/3407777/pexels-photo-3407777.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
-COVER-CREDIT: Magda Ehlers via Pexels
-COVER-CREDIT-URL: https://www.pexels.com/photo/3407777/
+COVER-IMAGE: https://live.staticflickr.com/8200/8229814589_040bfb7969_b.jpg
+COVER-CREDIT: Didriks via Flickr (CC BY)
+COVER-CREDIT-URL: https://www.flickr.com/photos/49889671@N03/8229814589
 META-TITLE: WNLQ9 New Wine Arrivals: August 2026
 META-DESC: What just arrived at WNLQ9 in August 2026 — new bottles across wine and spirits, why we're excited about each one.
 ---
@@ -13,7 +13,6 @@ August is when we go hunting for bottles that genuinely excite us — and this m
 
 ![Late-evening sun over ripening vineyard rows](https://images.unsplash.com/photo-1567072629554-20e689de2400?fm=jpg&q=80&w=1000&auto=format&fit=crop)
 *Every bottle in this month's round-up started in a row like this one — August is when the estates we buy from are watching their fruit come in.*
-
 
 <!-- product: WRW1064AA -->
 
@@ -63,8 +62,6 @@ All three of our Italian new arrivals — the Brunello, the Mormoreto, and the S
 <!-- product: WRW1065AA -->
 <!-- product: WRW1034HI -->
 <!-- product: WRW1151AB -->
-
-
 
 ---
 

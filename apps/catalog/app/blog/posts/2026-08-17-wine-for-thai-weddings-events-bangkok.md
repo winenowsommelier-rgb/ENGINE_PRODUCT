@@ -3,13 +3,12 @@ TITLE: What to Drink at Thai Weddings and Events: A Bangkok Buying Guide
 SLUG: wine-for-thai-weddings-events-bangkok
 DATE: 2026-07-04
 TAGS: guide,events,weddings,curated,bangkok
-COVER-IMAGE: https://images.pexels.com/photos/5947052/pexels-photo-5947052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
-COVER-CREDIT: Maria Orlova via Pexels
-COVER-CREDIT-URL: https://www.pexels.com/photo/5947052/
+COVER-IMAGE: https://live.staticflickr.com/3315/3267959243_c0f9c6271b_b.jpg
+COVER-CREDIT: Al404 via Flickr (CC BY-SA)
+COVER-CREDIT-URL: https://www.flickr.com/photos/al404/3267959243
 META-TITLE: Wine for Thai Weddings & Events: Bangkok Buying Guide
 META-DESC: How many bottles, which wines, at what price — the practical Bangkok guide to buying wine for Thai weddings, corporate events, birthday parties, and dinners.
 ---
-WNLQ9 Sommelier Team
 
 Buying wine for a Thai wedding or corporate event is a completely different exercise from choosing a bottle for dinner. The stakes are higher, the crowd is more varied, and you need the right volume at the right price — before the venue calls to say the ice ran out. This is the practical guide we wish we'd had.
 
@@ -71,7 +70,7 @@ Event wine has one job: make every guest comfortable. The wines you love to drin
 - **Fruit-forward wins the room.** Berry-driven reds and citrus-driven whites read as approachable and pleasant to drinkers at every experience level. They also pair well with the wide variety of dishes served at Thai banquets.
 - **Think about finish length.** Long, complex finishes are wasted on guests chatting across a loud table. Save complexity for the few bottles you open at the top table.
 
-![Wine being poured at an outdoor evening reception with warm ambient lighting](https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+![A champagne toast at the reception](https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
 Outdoor receptions in Bangkok demand a different approach to wine service — chilling reds slightly and having ice buckets at every station makes a real difference in how the wine tastes and how long guests linger.
 
@@ -136,7 +135,6 @@ Reserve these for the moments that matter most: the couple's table, the CEO's se
 <!-- product: WRW5406BN -->
 
 ---
-
 
 ---
 
