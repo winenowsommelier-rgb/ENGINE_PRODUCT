@@ -17,6 +17,9 @@ from scripts.compute_reputation import (
     composite_score,
     tier_for_composite,
     reputation_summary,
+    _compute_producer_signals,
+    _load_producer_prestige,
+    PRODUCER_PRESTIGE_TIER_SCORES,
 )
 
 
@@ -52,9 +55,21 @@ class TestPrestigeScore:
         assert score == min(100, 82 + 8)
 
     def test_gran_reserva_spirits_not_regulated(self):
-        # Spirits (e.g. LSK prefix) → non-regulated = 75
-        score = prestige_score("Gran Reserva", None, 1000, "Cuba", "LSK001")
+        # Rum (LRM prefix → Spirits/Rum) → non-regulated = 75. "Gran Reserva"
+        # is a legitimate aged-rum designation (Ron Matusalem, Bacardi Gran
+        # Reserva Diez are real product lines) so it's still scored, just
+        # without the Spain/Argentina still-wine regulation bonus.
+        # Regression guard: LSK (Sake & Asian) was wrongly used as the
+        # "spirits" fixture here — Gran Reserva must NOT score on sake.
+        score = prestige_score("Gran Reserva", None, 1000, "Cuba", "LRM001")
         assert score == min(100, 75 + 8)
+
+    def test_gran_reserva_sake_not_scored(self):
+        # Gran Reserva has no legitimate use on Sake & Asian products —
+        # any occurrence would be leaked wine/spirits text. Must be ignored,
+        # not scored via the non-regulated 75 base.
+        score = prestige_score("Gran Reserva", None, 1000, "Japan", "LSK001")
+        assert score == min(100, 20 + 8)
 
     def test_gran_reserva_cava_not_regulated(self):
         # Cava (WCH prefix → Sparkling & Champagne) is NOT in STILL_WINE_TYPES → 75
@@ -129,6 +144,70 @@ class TestPrestigeScore:
         from scripts.compute_reputation import DESIGNATION_TABLE
         assert "Brut" not in DESIGNATION_TABLE
         assert "Extra Brut" not in DESIGNATION_TABLE
+
+    def test_grand_cru_wine_marketing_text_ignored_on_whisky(self):
+        # Regression guard: LWH1034DG "Glendalough Grand Cru Burgundy Cask
+        # Finish Single Cask Irish Whiskey" had designation="Grand Cru"
+        # (leaked wine-cask-finish marketing text) and scored iconic
+        # (94.24). A whisky must never inherit a wine designation score.
+        score = prestige_score("Grand Cru", None, 2279, "Ireland", "LWH1034DG")
+        assert score == min(100, 20 + 22)  # falls to no-designation floor + price bonus
+
+    def test_grand_cru_burgundy_above_saint_emilion(self):
+        # Burgundy Grand Cru (apex of a 5-tier ladder) must score above a
+        # Saint-Émilion Grand Cru (that appellation's entry-level tier,
+        # below Grand Cru Classé). Distinguished via "St.Emillion"/"Saint
+        # Emilion" text in appellation OR name (appellation is often blank
+        # in this catalog — verified WRW3496BN carries it only in name).
+        burgundy = prestige_score("Grand Cru", "Chablis", 4650, "France", "WWW5292GC",
+                                   "Domaine Nathalie & Gilles Fevre Chablis Grand Cru Les Preuses")
+        st_emilion = prestige_score("Grand Cru", None, 1400, "France", "WRW3496BN",
+                                     "Chateau Teyssier  St.Emillion Grand Cru")
+        assert st_emilion < burgundy
+
+    def test_cru_classe_above_plain_grand_cru(self):
+        # Bordeaux Cru Classé must rank ABOVE plain Grand Cru — the prior
+        # table had this backwards (Cru Classé=82 < Grand Cru=95). Use
+        # price=0 to isolate base scores from the shared 100-point cap.
+        cru_classe = prestige_score("Cru Classé", None, 0, "France", "WRW001")
+        grand_cru = prestige_score("Grand Cru", None, 0, "France", "WRW001")
+        assert cru_classe > grand_cru
+
+    def test_rum_gran_reserva_scored_not_gated(self):
+        # Confirms the Gran Reserva gate is designation-specific, not a
+        # blanket Wine-only rule — real rum product lines (Ron Matusalem,
+        # Bacardi Gran Reserva Diez) carry this designation legitimately.
+        score = prestige_score("Gran Reserva", None, 1000, "Dominican Republic", "LRM0156CN")
+        assert score > 20  # actually scored, not gated to the no-designation floor
+
+    def test_whisky_age_statement_scored_from_name(self):
+        # Krug/Macallan-class gap: designation is empty for age-stated
+        # whisky, so structured lookup returned 20 (floor) — Macallan 18
+        # landed "unrated". Age must now be read from the product name.
+        no_age = prestige_score(None, None, 21499, "Scotland", "LWH0668CN", "The Macallan Double Cask")
+        with_age = prestige_score(None, None, 21499, "Scotland", "LWH0668CN",
+                                   "The Macallan  18 Year Old Double Cask (700 ml)")
+        assert with_age > no_age
+
+    def test_older_whisky_age_statement_scores_higher(self):
+        aged_12 = prestige_score(None, None, 1000, "Scotland", "LWH001", "Glenlivet 12 Year Old")
+        aged_25 = prestige_score(None, None, 1000, "Scotland", "LWH001", "Glenlivet 25 Year Old")
+        assert aged_25 > aged_12
+
+    def test_sake_grade_scored_from_name(self):
+        # Dassai (Junmai Daiginjo) was "unrated" — no designation vocabulary
+        # existed for sake grades. Must now score from product name.
+        no_grade = prestige_score(None, None, 2000, "Japan", "LSK0118AB", "Dassai 23")
+        daiginjo = prestige_score(None, None, 2000, "Japan", "LSK0118AB",
+                                   "Dassai  Junmai Daiginjou Migaki Niwari Sanbu 23")
+        assert daiginjo > no_grade
+
+    def test_champagne_prestige_cuvee_scored_from_name(self):
+        # Krug Grande Cuvée / Dom Pérignon / Cristal were "unrated" — no
+        # designation column entry. Must now score from product name.
+        plain = prestige_score(None, None, 12599, "France", "WSP1093AD", "Krug Rose")
+        cuvee = prestige_score(None, None, 12599, "France", "WSP1093AD", "Krug  Grande Cuvee (750 ml)")
+        assert cuvee > plain
 
 
 class TestPrestigeConfidence:
@@ -212,6 +291,31 @@ class TestPopularityPercentile:
         # ZZZ001 is a singleton in ZZZ; falls back to Z* family
         assert 0 <= result["ZZZ001"]["score"] <= 100
 
+    def test_tied_zero_demand_gets_same_score_not_rowid_order(self):
+        # Regression guard: 91% of active SKUs have zero demand. Before the
+        # mid-rank fix, a stable sort on equal keys let insertion (rowid)
+        # order assign them arbitrary scores spanning 0-100. They must now
+        # all share the SAME mid-rank score.
+        skus = [{"sku": f"WRW{i:03d}", "sold_qty": 0, "sold_orders": 0} for i in range(8)]
+        result = popularity_percentile(skus)
+        scores = {result[s["sku"]]["score"] for s in skus}
+        assert len(scores) == 1, f"tied zero-demand SKUs got different scores: {scores}"
+
+    def test_demand_floor_gates_confidence_and_copy(self):
+        # A 1-2 unit sale must not unlock "Top X% by sales" language or the
+        # 0.8 confidence bump — 428 products shipped false "Top 4%" copy off
+        # 1-2 bottles sold before this floor existed.
+        skus = [
+            {"sku": "WRW001", "sold_qty": 2,  "sold_orders": 0},  # below floor (5)
+            {"sku": "WRW002", "sold_qty": 10, "sold_orders": 0},  # above floor
+            {"sku": "WRW003", "sold_qty": 0,  "sold_orders": 0},
+        ]
+        result = popularity_percentile(skus)
+        assert result["WRW001"]["confidence"] == pytest.approx(0.3)
+        assert result["WRW001"]["source_note"] == ""
+        assert result["WRW002"]["confidence"] == pytest.approx(0.8)
+        assert result["WRW002"]["source_note"] != ""
+
 
 # ---------------------------------------------------------------------------
 # Composite and tier
@@ -280,6 +384,26 @@ class TestTierForComposite:
         # Typo in override must be ignored (logged, not written)
         assert tier_for_composite(85.0, 0.9, override="icnoic") == "iconic"
 
+    def test_iconic_requires_acclaim(self):
+        # Regression guard: 181/199 iconic SKUs had zero critic acclaim
+        # (e.g. a ฿900 Chilean Gran Reserva, 2 bottles sold, 0 reviews,
+        # composite 85.45, tiered "iconic"). A high score without acclaim
+        # corroboration must cap at premium.
+        assert tier_for_composite(85.0, 0.8, has_acclaim=False) == "premium"
+        assert tier_for_composite(99.0, 0.9, has_acclaim=False) == "premium"
+        assert tier_for_composite(85.0, 0.8, has_acclaim=True) == "iconic"
+
+    def test_acclaim_gate_does_not_affect_lower_tiers(self):
+        # The gate only caps the iconic threshold; premium/established/
+        # everyday classification is unaffected by has_acclaim.
+        assert tier_for_composite(65.0, 0.8, has_acclaim=False) == "premium"
+        assert tier_for_composite(40.0, 0.8, has_acclaim=False) == "established"
+        assert tier_for_composite(1.0, 0.8, has_acclaim=False) == "everyday"
+
+    def test_override_beats_acclaim_gate(self):
+        # An explicit human override still wins even without acclaim.
+        assert tier_for_composite(85.0, 0.9, override="iconic", has_acclaim=False) == "iconic"
+
 
 # ---------------------------------------------------------------------------
 # Summary copy
@@ -318,3 +442,97 @@ class TestReputationSummary:
         }
         summary = reputation_summary(axes)
         assert summary is None
+
+
+# ---------------------------------------------------------------------------
+# Producer prestige (curated brand overrides — Phase C, 2026-07-10)
+# ---------------------------------------------------------------------------
+
+class TestProducerPrestigeLoader:
+
+    def test_loads_real_seed_file(self):
+        # Regression guard: the live data/taxonomy/producer_prestige.json must
+        # parse and every entry's tier must be a known tier (loader raises
+        # KeyError otherwise — this test would fail loudly on a typo).
+        curated = _load_producer_prestige()
+        assert len(curated) > 50, "expected the seeded curated list to have entries"
+        assert "Krug" in curated
+        assert "The Macallan" in curated
+
+    def test_metadata_keys_excluded(self):
+        curated = _load_producer_prestige()
+        assert "_comment" not in curated
+        assert "_tiers" not in curated
+
+    def test_unknown_tier_raises(self, tmp_path, monkeypatch):
+        import json
+        import scripts.compute_reputation as cr
+        bad_file = tmp_path / "bad_producer_prestige.json"
+        bad_file.write_text(json.dumps({"Some Brand": {"tier": "not_a_real_tier"}}))
+        monkeypatch.setattr(cr, "PRODUCER_PRESTIGE_PATH", bad_file)
+        _load_producer_prestige.cache_clear()
+        try:
+            with pytest.raises(KeyError):
+                _load_producer_prestige()
+        finally:
+            _load_producer_prestige.cache_clear()  # don't poison other tests' cache
+
+    def test_missing_file_returns_empty_dict(self, tmp_path, monkeypatch):
+        import scripts.compute_reputation as cr
+        monkeypatch.setattr(cr, "PRODUCER_PRESTIGE_PATH", tmp_path / "does_not_exist.json")
+        _load_producer_prestige.cache_clear()
+        try:
+            assert _load_producer_prestige() == {}
+        finally:
+            _load_producer_prestige.cache_clear()
+
+
+class TestComputeProducerSignals:
+
+    def test_curated_brand_overrides_circular_self_average(self):
+        # Regression guard: before this existed, a single-SKU brand's
+        # "producer" signal just echoed its own prestige score back — zero
+        # independent information. Krug (curated "reference" tier = 97) must
+        # now get that score regardless of its own prestige/acclaim scores.
+        skus = [{"sku": "WSP1093AD", "brand": "Krug"}]
+        signals = [
+            {"sku": "WSP1093AD", "axis": "prestige", "score": 40, "confidence": 0.4},
+        ]
+        _compute_producer_signals(skus, signals, "2026-07-10T00:00:00")
+        producer = [s for s in signals if s["axis"] == "producer"][0]
+        assert producer["method"] == "curated-producer-prestige"
+        assert producer["score"] == PRODUCER_PRESTIGE_TIER_SCORES["reference"]
+        assert producer["score"] != 40  # did NOT echo its own low prestige score
+        assert producer["confidence"] == pytest.approx(0.85)
+
+    def test_uncurated_brand_keeps_brand_average_behavior(self):
+        # Non-curated brands must be byte-for-byte unaffected by this feature.
+        skus = [{"sku": "WRW0001ZZ", "brand": "Some Obscure Label"}]
+        signals = [
+            {"sku": "WRW0001ZZ", "axis": "prestige", "score": 40, "confidence": 0.4},
+        ]
+        _compute_producer_signals(skus, signals, "2026-07-10T00:00:00")
+        producer = [s for s in signals if s["axis"] == "producer"][0]
+        assert producer["method"] == "brand-avg-acclaim-prestige"
+        assert producer["score"] == 40.0
+
+    def test_curated_multi_sku_brand_all_get_same_score(self):
+        skus = [
+            {"sku": "LWH0001AA", "brand": "The Macallan"},
+            {"sku": "LWH0002AA", "brand": "The Macallan"},
+        ]
+        signals = [
+            {"sku": "LWH0001AA", "axis": "prestige", "score": 20, "confidence": 0.4},
+            {"sku": "LWH0002AA", "axis": "prestige", "score": 90, "confidence": 0.9},
+        ]
+        _compute_producer_signals(skus, signals, "2026-07-10T00:00:00")
+        producer_scores = {s["sku"]: s["score"] for s in signals if s["axis"] == "producer"}
+        assert producer_scores["LWH0001AA"] == producer_scores["LWH0002AA"] == PRODUCER_PRESTIGE_TIER_SCORES["reference"]
+
+    def test_source_note_mentions_curated(self):
+        skus = [{"sku": "WSP1093AD", "brand": "Krug"}]
+        signals = [{"sku": "WSP1093AD", "axis": "prestige", "score": 40, "confidence": 0.4}]
+        _compute_producer_signals(skus, signals, "2026-07-10T00:00:00")
+        producer = [s for s in signals if s["axis"] == "producer"][0]
+        assert "curated" in producer["source_note"].lower()
+        assert "Krug" in producer["source_note"]

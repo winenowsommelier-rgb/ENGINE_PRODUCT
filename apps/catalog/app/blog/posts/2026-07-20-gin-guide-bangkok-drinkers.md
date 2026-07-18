@@ -1,7 +1,7 @@
 ---
 TITLE: What Is Gin? A Bangkok Drinker's Guide
 SLUG: gin-guide-bangkok-drinkers
-DATE: 2026-07-20
+DATE: 2026-06-12
 TAGS: guide,gin,spirits,cocktails,bangkok
 COVER-IMAGE: https://images.pexels.com/photos/1170598/pexels-photo-1170598.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Peter Fazekas via Pexels
@@ -96,9 +96,9 @@ Thailand's craft distilling scene has produced genuinely excellent gin using loc
 
 ![A carefully arranged selection of gin bottles ranging from clear London Dry styles to amber-hued premium expressions, showcasing the diversity of gin categories.](https://images.pexels.com/photos/11325915/pexels-photo-11325915.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
-<!-- product: LGN0289CN -->
+<!-- product: LGN0017BU -->
 
-**Silver Top Gin** (฿499, Netherlands) is the entry-level London Dry option in the Bangkok market. Clean, correct, juniper-forward, with a neutral spirit base that doesn't distract. For everyday G&Ts, cocktail mixing, or anyone who wants gin without paying for a craft story, Silver Top is an honest bottle.
+**Gilbey's Gin** (฿399) is the entry-level London Dry option in this guide — a 150-year-old name that makes an honest, juniper-forward G&T for less than the price of two cocktails in Thonglor.
 
 <!-- product: LGN0294EQ -->
 
@@ -152,6 +152,11 @@ Bangkok's cocktail bars have embraced gin more enthusiastically than almost any 
 For dedicated gin exploration, bars in the Thonglor and Ari areas tend to have the deepest gin selections. If you see Thai craft gins on the menu (Inchon, Chalong Bay's gin offering, or local small-batch producers), order them — you're drinking something made from the same ingredients your dinner was cooked with, and that specificity of place is what craft spirits are for.
 
 ---
+
+
+---
+
+*Keep reading: [Tequila & Mezcal in Bangkok — What to Buy and How to Drink It](/blog/tequila-mezcal-bangkok-guide) · all [Spirits](/blog/category/spirits) stories.*
 
 ## FAQ
 

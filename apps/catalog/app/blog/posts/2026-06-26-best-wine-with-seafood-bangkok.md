@@ -64,9 +64,9 @@ Chablis is Chardonnay, but unlike the oaky, buttery Chardonnays you might be use
 
 **Domaine Laroche Chablis Les Chanoines AOC** (฿1,199, France — Chablis). Domaine Laroche is one of Chablis's most respected producers. This is textbook Chablis: chalk mineral, green apple, high acid. Pour it cold (8–10°C) with a dozen oysters.
 
-<!-- product: WWW5895GT -->
+<!-- product: WWW5261AB -->
 
-**Maison Jaffelin Chablis** (฿1,410, France — Chablis). Another reliable Chablis at a fair Bangkok price. Cleaner, more mineral than the Laroche — a slightly leaner style that rewards careful seafood pairing.
+**La Chablisienne Chablis 1er Cru Fourchaume** (฿2,900, France — Chablis). The step-up bottle: Premier Cru intensity and a 95-point rating, for the night the seafood deserves ceremony.
 
 ---
 
@@ -122,9 +122,9 @@ Sparkling wine works with virtually every seafood dish. The bubbles act like bui
 
 A dry Provence-style rosé sits in a useful middle ground for Bangkok seafood. It has the acidity to handle seafood but also enough body to stand up to slightly spicy or aromatic preparations — *hoi malaeng puu* (green mussels with Thai herbs), *poo pad pong karee* (crab curry), or seafood stir-fries with garlic and pepper.
 
-<!-- product: WRS5193FR -->
+<!-- product: WRS0227AB -->
 
-**PLACEHOLDER — Provence Rosé under ฿1,200** — ask our team for current stock in Côtes de Provence rosé.
+**Chateau d'Esclans The Pale, Côtes de Provence** — ฿900
 
 ---
 
@@ -135,6 +135,11 @@ A dry Provence-style rosé sits in a useful middle ground for Bangkok seafood. I
 **Oaky Chardonnay** — heavily oaked Chardonnay (think Australian commercial Chardonnay at this price point) overwhelms delicate seafood. Go unoaked or stainless-steel Chardonnay instead — or step to Chablis.
 
 ---
+
+
+---
+
+*Keep reading: [Bordeaux vs. Burgundy](/blog/bordeaux-vs-burgundy-which-french-red-should-you-buy) · [Opus One in Bangkok](/blog/opus-one-bangkok-guide) · all [Wine](/blog/category/wine) stories.*
 
 ## FAQ
 

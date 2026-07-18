@@ -19,6 +19,7 @@ const INFO_LINKS = [
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
   { href: '/blog', label: 'Journal' },
+  { href: '/catalogs', label: 'Catalogs' },
   { href: 'https://b2b.wnlq9.shop', label: 'WNLQ9 B2B', external: true },
 ] as const;
 

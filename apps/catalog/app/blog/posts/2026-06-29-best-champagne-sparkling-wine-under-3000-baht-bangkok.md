@@ -34,13 +34,13 @@ Under ฿3,000 in Bangkok, you're in grower-producer and smaller-house Champagne
 
 **Champagne Alain Navarre Cuvée Tradition Brut** (฿1,299, France — Champagne). A grower Champagne at a genuinely accessible price for what it is. Brioche, citrus, fine persistent bubbles. The sommelier's pick when you want real Champagne without paying for a label.
 
-<!-- product: WSP0058AD -->
+<!-- product: WSP2474AC -->
 
-**Champagne Ernest Rapeneau Brut** (฿1,409, France — Champagne). A classic NV Brut from a respected Champagne house. Apple, brioche, good structure. Reliable for any occasion from birthday to dinner party arrival drink.
+**Dumangin Champagne L'Extra Brut Premier Cru** (฿2,299, France — Champagne). A grower's Premier Cru at low dosage — drier, more mineral and more serious than most big-house NV anywhere near this price. Rated 89 points.
 
 <!-- product: WSP2525AD -->
 
-**Champagne Drappier Carte d'Or** (฿2,099, France — Champagne). Drappier is a family-owned house in the Aube — Pinot Noir dominant, which gives their Champagne more body and red fruit character than the typical Chardonnay-heavy style. Excellent choice for food pairing (seafood, white meat, creamy dishes).
+**Champagne Drappier Carte d'Or** (฿2,499, France — Champagne). Drappier is a family-owned house in the Aube — Pinot Noir dominant, which gives their Champagne more body and red fruit character than the typical Chardonnay-heavy style. Excellent choice for food pairing (seafood, white meat, creamy dishes).
 
 <!-- product: WSP2529AD -->
 
@@ -137,6 +137,11 @@ Australia makes serious sparkling wine — particularly from Tasmania and cool-c
 **Budget celebration for a crowd:** Wolf Blass Eaglehawk Cuvée (฿395) — per-head cost makes sense.
 
 ---
+
+
+---
+
+*Keep reading: [Opus One in Bangkok](/blog/opus-one-bangkok-guide) · [The Best Wine to Drink With Seafood in Bangkok](/blog/best-wine-with-seafood-bangkok) · all [Wine](/blog/category/wine) stories.*
 
 ## FAQ
 

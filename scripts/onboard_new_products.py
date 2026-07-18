@@ -9,6 +9,7 @@ import shutil
 import datetime
 import sqlite3
 import argparse
+import subprocess
 from pathlib import Path
 from collections import Counter
 
@@ -404,6 +405,29 @@ def _verify_insert(db_path: str, before_count: int, inserted: int) -> None:
           f"{len(sample)} sampled onboarded rows pass margin invariant")
 
 
+def _recompute_reputation(db_path: str) -> None:
+    """Rerun the reputation pipeline so newly-onboarded SKUs get a tier
+    instead of sitting at NULL until the next unrelated bulk run. Failure
+    here does NOT roll back the insert (the products are correctly
+    onboarded either way) — but it must be surfaced loudly, not swallowed,
+    per Rule 2 (investigate warnings, don't let them pass silently)."""
+    script = str(Path(__file__).resolve().parent / "compute_reputation.py")
+    result = subprocess.run(
+        [sys.executable, script, "--db", db_path],
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        print(
+            "WARNING: reputation recompute FAILED after onboarding insert — "
+            "newly-onboarded SKUs may be stuck at NULL reputation_tier until "
+            "the next successful run of scripts/compute_reputation.py.\n"
+            f"{result.stderr}",
+            file=sys.stderr,
+        )
+        return
+    print("reputation recomputed for newly-onboarded SKUs; live export refreshed")
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--db", default=DEFAULT_DB)
@@ -413,6 +437,8 @@ def main(argv=None) -> int:
                          "writes NOTHING to the DB")
     ap.add_argument("--no-backup", action="store_true",
                     help="skip the pre-insert DB backup (tests use a throwaway db copy)")
+    ap.add_argument("--no-reputation", action="store_true",
+                    help="skip the post-insert reputation recompute (tests use a throwaway db copy)")
     args = ap.parse_args(argv)
 
     if args.dry_run:
@@ -439,6 +465,10 @@ def main(argv=None) -> int:
     held = len(report["image_cross_sku_held"])
     print(f"inserted {inserted} (images set {report['image_set']}, held {held})")
     _verify_insert(args.db, before, inserted)
+
+    if inserted and not args.no_reputation:
+        _recompute_reputation(args.db)
+
     return 0
 
 

@@ -1,7 +1,7 @@
 ---
 TITLE: Speyside vs. Islay: The Great Scotch Whisky Debate
 SLUG: speyside-vs-islay-scotch-whisky-debate
-DATE: 2026-07-29
+DATE: 2026-06-23
 TAGS: compare,scotch,whisky,speyside,islay
 COVER-IMAGE: https://images.pexels.com/photos/34635797/pexels-photo-34635797.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Geert Rozendom via Pexels
@@ -93,8 +93,8 @@ In Bangkok's heat, Speyside performs particularly well. A Glenfiddich 12 with a 
 <!-- product: LWH0001AA -->
 **Glenfiddich 12 Year Old** (Speyside, ฿2,399). The world's best-selling Single Malt — a statistic that reflects genuine quality, not just marketing. Pear drops, light oak, subtle vanilla, clean finish. If you've never had Speyside, this is the textbook. If you've had Speyside many times, this remains the benchmark.
 
-<!-- product: LWH0546AD -->
-**The Macallan 12 Year Old Double Cask** (Speyside, ฿3,299). Where Glenfiddich leans toward fresh fruit and bourbon-cask vanilla, Macallan leans into sherry-cask richness — dried raisin, dark toffee, warming spice. Both are Speyside; they're as different from each other as they are from Islay. A sherry-cask Macallan is particularly good in Bangkok opposite a cheese board or dark chocolate.
+<!-- product: LWH0195CN -->
+**The Macallan 12 Year Old Sherry Oak** (Speyside, ฿5,559). Where Glenfiddich leans toward fresh fruit and bourbon-cask vanilla, Macallan leans into sherry-cask richness — dried raisin, dark toffee, warming spice. Both are Speyside; they're as different from each other as they are from Islay. A sherry-cask Macallan is particularly good in Bangkok opposite a cheese board or dark chocolate.
 
 ---
 
@@ -107,11 +107,11 @@ Islay converts are among the most enthusiastic whisky drinkers alive. Once the s
 
 The key is to lean into it rather than fight it. Islay whisky is not trying to be Speyside. It's trying to be itself — and what it is, is extraordinary.
 
-<!-- product: LWH0280AA -->
-**Laphroaig 10 Year Old** (Islay, ~฿2,199). The most recognisable Islay expression in Bangkok, and one of the most distinctive whisky bottles on the planet. Heavy iodine, medicinal antiseptic character, dense peat smoke, seaweed on the finish. [Decanter](https://www.decanter.com/learn/scotch-whisky-regions-islay/) describes the Laphroaig style as "unforgettable once encountered" — which is accurate in both directions. Laphroaig is the test. If you finish a dram and want another, you're an Islay drinker.
+<!-- product: LWH0024AA -->
+**Laphroaig 10 Year Old** (Islay, ~฿4,199). The most recognisable Islay expression in Bangkok, and one of the most distinctive whisky bottles on the planet. Heavy iodine, medicinal antiseptic character, dense peat smoke, seaweed on the finish. [Decanter](https://www.decanter.com/learn/scotch-whisky-regions-islay/) describes the Laphroaig style as "unforgettable once encountered" — which is accurate in both directions. Laphroaig is the test. If you finish a dram and want another, you're an Islay drinker.
 
-<!-- product: LWH1016CN -->
-**Lagavulin 16 Year Old** (Islay, ~฿3,799). If Laphroaig is the aggressive introduction to peat, Lagavulin 16 is the refined graduate course. The extra years in cask soften and integrate the smoke — you still get intense peat, but with a complexity and length that justify every baht. Lagavulin is consistently one of the highest-rated whiskies in the world, and in Bangkok the 16-year sits at a price that represents genuine value for what's in the bottle.
+<!-- product: LWH0161BU -->
+**Lagavulin 16 Year Old** (Islay, ~฿4,999). If Laphroaig is the aggressive introduction to peat, Lagavulin 16 is the refined graduate course. The extra years in cask soften and integrate the smoke — you still get intense peat, but with a complexity and length that justify every baht. Lagavulin is consistently one of the highest-rated whiskies in the world, and in Bangkok the 16-year sits at a price that represents genuine value for what's in the bottle.
 
 ---
 
@@ -132,6 +132,11 @@ For the Bangkok heat specifically: Speyside is more versatile chilled or over ic
 *Geography shapes flavour: Speyside's sheltered river valley versus Islay's Atlantic exposure explain everything about why these two regions taste nothing alike.*
 
 ---
+
+
+---
+
+*Keep reading: [Best Japanese Whisky in Bangkok](/blog/best-japanese-whisky-bangkok-whats-in-stock-july-2026) · [Scotch Whisky 101 — A Bangkok Buyer's Guide](/blog/scotch-whisky-guide-bangkok-buyers-guide) · all [Whisky](/blog/category/whisky) stories.*
 
 ## FAQ
 

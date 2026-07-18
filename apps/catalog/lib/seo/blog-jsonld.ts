@@ -12,7 +12,7 @@ export function buildArticleSchema(post: BlogPost, url: string): object {
     dateModified: post.updatedAt,
     image: post.coverImage?.url ?? `${BASE}/og-default.jpg`,
     url,
-    author: { '@type': 'Organization', name: 'WNLQ9', url: BASE },
+    author: { '@type': 'Person', name: 'WNLQ9 Sommelier', url: `${BASE}/about` },
     publisher: {
       '@type': 'Organization',
       name: 'WNLQ9',

@@ -131,6 +131,11 @@ Marlborough Sauvignon Blanc is one of the most food-flexible whites you can orde
 
 ---
 
+
+---
+
+*Keep reading: [Italian Wine Guide — From Tuscany to Sicily](/blog/italian-wine-guide-tuscany-to-sicily) · [Cabernet Sauvignon vs. Merlot — What's the Difference?](/blog/cabernet-sauvignon-vs-merlot-whats-the-difference) · all [Wine](/blog/category/wine) stories.*
+
 ## FAQ
 
 ### Why is New Zealand Sauvignon Blanc so consistent across brands?

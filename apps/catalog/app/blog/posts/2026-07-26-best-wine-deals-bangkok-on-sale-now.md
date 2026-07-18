@@ -1,7 +1,7 @@
 ---
 TITLE: The Best Bottles on Sale Right Now — WNLQ9 Wine Deals Bangkok
 SLUG: best-wine-deals-bangkok-on-sale-now
-DATE: 2026-07-26
+DATE: 2026-06-20
 TAGS: curated,deals,sale,value,bangkok
 COVER-IMAGE: https://images.pexels.com/photos/30447488/pexels-photo-30447488.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Kalilou Tirera via Pexels
@@ -40,8 +40,8 @@ Lean, citrus-mineral, bone dry. Brilliant with Thai seafood salads and lighter s
 
 ## Red Wine Deals
 
-<!-- product: WRW2541AD -->
-**Bodegas Muga Rioja Reserva DOCa** — Normal ฿1,750 → **Sale ฿1,290**
+<!-- product: WRW4225AJ -->
+**Bodegas Muga Reserva Rioja DOC** — Normal ฿1,900 → **Sale ฿1,758**
 Muga is Rioja done right: 24 months in American oak, cherry and vanilla without the sweetness overdose. This is a cellar-worthy bottle you can open tonight. One of the best value plays on this list.
 
 <!-- product: WRW4745AD -->
@@ -52,9 +52,9 @@ Bright red fruit, silky tannins, high acidity. Works with laab nua or a barbecue
 **Whispering Angel Rosé, Provence** — Normal ฿1,199 → **Sale ฿1,049**
 The reference point for Provence rosé. Grenache, Cinsault, Syrah from sandy-limestone hillsides. Cold maceration, stainless steel, built for food. If your dinner is a Thai spread — multiple dishes, multiple proteins — open this.
 
-<!-- product: WRW0191AD -->
-**Famille Perrin Côtes du Rhône Rouge** — Normal ฿650 → **Sale ฿590**
-Dense, spiced southern Rhône blend — Grenache, Syrah, Mourvèdre. The Perrin family also makes Château Beaucastel; this is their everyday label, made with the same philosophy at a fraction of the price.
+<!-- product: WRW4742AD -->
+**Casillero del Diablo Reserva Cabernet Sauvignon** — Normal ฿569 → **Sale ฿519**
+Chile's most dependable budget red — blackcurrant, cedar, a soft round finish. The Reserva tier gets genuine oak treatment at a price that makes it a weeknight default.
 
 ---
 
@@ -79,3 +79,21 @@ The most affordable Japanese blended whisky in stock. Lighter and more neutral t
 Every bottle on this list was on sale at WNLQ9 at the time of writing, with the discount calculated from the regular shelf price — not an invented "RRP" inflated to make the markdown look bigger. We look for bottles where the saving is at least 10%, the quality is genuinely worth buying at *either* price point, and the remaining stock is deep enough that you'll actually find it in store. We refresh this post monthly as sale lines change.
 
 *Prices in THB. Sale prices valid while stock lasts. Updated July 2026.*
+
+---
+
+*Keep reading: [The Wine List at Bangkok's Best Restaurants](/blog/wine-list-bangkok-restaurants-what-to-order) · [Wine Designations Explained](/blog/wine-designations-explained-grand-cru-reserva-docg) · all [Curated Lists](/blog/category/curated) stories.*
+
+## Frequently Asked Questions
+
+### How often do wine deals change at WNLQ9?
+
+Sale prices rotate throughout the month as parcels sell through. This page reflects prices at time of writing; the product cards above always show the live price, so a deal that has ended will display its current price automatically.
+
+### Are wine sale prices in Bangkok genuine discounts?
+
+At WNLQ9, a sale price is always computed against the bottle's regular shelf price — the strikethrough you see on the product card is the price the wine actually sold at previously, not an inflated anchor.
+
+### What is the best way to catch wine deals in Bangkok?
+
+Check this page monthly — we refresh it as new parcels go on sale — and watch the Deals section of the Journal for the monthly Cellar Edit, where our team picks the offers actually worth a case purchase.

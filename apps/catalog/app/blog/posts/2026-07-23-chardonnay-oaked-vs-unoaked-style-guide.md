@@ -1,7 +1,7 @@
 ---
 TITLE: Chardonnay: Oaked vs. Unoaked — Which Style Actually Suits You?
 SLUG: chardonnay-oaked-vs-unoaked-style-guide
-DATE: 2026-07-23
+DATE: 2026-06-17
 TAGS: compare,chardonnay,white-wine,france,australia
 COVER-IMAGE: https://images.pexels.com/photos/8207599/pexels-photo-8207599.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Brett Jordan via Pexels
@@ -45,11 +45,11 @@ France's Burgundy region gives us both extremes in one appellation.
 
 As [Decanter](https://www.decanter.com/learn/chardonnay/) notes, the key distinction is integration: in great white Burgundy, you cannot identify where the oak ends and the wine begins.
 
-<!-- product: WWW1101AA -->
-**Domaine William Fèvre Chablis Village** — ฿1,390
+<!-- product: WWW0202AD -->
+**Domaine Laroche Chablis Les Chanoines** — ฿1,199
 
-<!-- product: WWW0952AC -->
-**Louis Jadot Meursault** — ฿2,890
+<!-- product: WWW6016GT -->
+**Maison Jaffelin Meursault** — ฿3,750
 
 ---
 
@@ -62,15 +62,19 @@ California's warmer climate and culture of winemaking intervention produced the 
 
 The backlash was inevitable and healthy. Today California's best producers — and virtually all of Australia's top Chardonnay estates in Margaret River and Yarra Valley — use oak selectively. Partial new oak, partial older barrels, partial stainless. The wines are richer than Chablis but more precise than old-school California.
 
+At the top of that modern California school sits **Peter Michael 'La Carrière' Chardonnay** (฿6,300) — a 98-point, single-vineyard Knights Valley wine that shows what oak does when it serves the fruit instead of burying it. The collector's benchmark for the style.
+
+<!-- product: WWW1437BN -->
+
 ![A chilled glass of pale Australian Chardonnay on a sun-drenched outdoor table](https://images.pexels.com/photos/2584451/pexels-photo-2584451.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
 For Bangkok drinkers, the Australian style hits a practical sweet spot: fruit-forward enough to drink without food, structured enough to handle grilled fish or a chicken green curry, and priced well (฿800–฿1,800 for quality bottles).
 
-<!-- product: WWW4882AD -->
-**Vasse Felix Chardonnay, Margaret River** — ฿1,590
+<!-- product: WWW4871AB -->
+**Vasse Felix Premier Chardonnay, Margaret River** — ฿1,800
 
-<!-- product: WWW3341BN -->
-**Pewsey Vale Eden Valley Chardonnay** — ฿990
+<!-- product: WWW0285FJ -->
+**Little Yering Chardonnay, Yarra Valley** — ฿849
 
 ---
 
@@ -105,13 +109,18 @@ The practical guide: **unoaked for aperitif and Thai food; lightly oaked for Wes
 
 ![A sommelier pouring two styles of Chardonnay for comparison at a Bangkok restaurant](https://images.pexels.com/photos/5732799/pexels-photo-5732799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
-<!-- product: WWW0987AC -->
-**Mâcon-Villages Blanc, Louis Jadot** — ฿1,150
+<!-- product: WWW5128FJ -->
+**Georges Duboeuf Mâcon-Villages** — ฿1,099
 
-<!-- product: WWW5102FC -->
-**Sonoma-Cutrer Russian River Ranches Chardonnay** — ฿2,190
+<!-- product: WWW5360AC -->
+**Napa Cellars Chardonnay, Napa Valley** — ฿1,600
 
 ---
+
+
+---
+
+*Keep reading: [Best White Wine Under ฿1,500 in Bangkok — July 2026](/blog/best-white-wine-under-1500-baht-bangkok-july-2026) · [Rhône Valley Wine — France's Underrated Gem](/blog/rhone-valley-wine-guide-bangkok) · all [Wine](/blog/category/wine) stories.*
 
 ## FAQ
 

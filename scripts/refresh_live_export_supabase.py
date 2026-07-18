@@ -23,7 +23,21 @@ SUPABASE_URL = os.environ["SUPABASE_URL"]
 SUPABASE_KEY = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 DEFAULT_OUT = REPO_ROOT / "data" / "live_products_export.json"
+
+# category_group / category_type are NOT Supabase columns — they're derived
+# server-side from the SKU prefix (see data/lib/taxonomy/sku_taxonomy.py) and
+# backfilled on every refresh, same as refresh_live_export.py (SQLite path).
+# This import is NOT guarded: category_group is a load-bearing field the
+# catalog's /catalogs/retail picker depends on (CLAUDE.md Rule 3 — inherited
+# thresholds/gaps must not be silently tolerated). If this import fails, the
+# nightly sync should fail loudly rather than silently ship an export with no
+# category_group on any row — which is exactly what happened on 2026-07-09
+# when this import was missing entirely: every row shipped with
+# category_group absent, breaking the retail catalog's category picker.
+from data.lib.taxonomy.sku_taxonomy import resolve as resolve_category
 
 # Must stay in sync with scripts/refresh_live_export.py EXPORT_COLS.
 # consign is intentionally excluded — internal only, must never reach the browser.
@@ -106,6 +120,16 @@ def decode_json_cols(rows: list[dict]) -> list[dict]:
     return out
 
 
+def add_category_taxonomy(rows: list[dict]) -> list[dict]:
+    """Backfill category_group/category_type from the SKU prefix, always —
+    drift-proof, same as refresh_live_export.py (SQLite path)."""
+    for r in rows:
+        cat = resolve_category(r)
+        r["category_group"] = cat["group"]
+        r["category_type"] = cat["type"]
+    return rows
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--out", type=Path, default=DEFAULT_OUT)
@@ -114,6 +138,7 @@ def main(argv: list[str] | None = None) -> int:
     print("Fetching products from Supabase...", flush=True)
     rows = fetch_all_products()
     rows = decode_json_cols(rows)
+    rows = add_category_taxonomy(rows)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(rows, ensure_ascii=False, default=str), encoding="utf-8")
@@ -123,6 +148,11 @@ def main(argv: list[str] | None = None) -> int:
     # Verification
     none_price = sum(1 for r in rows if not r.get("price"))
     print(f"  products with price > 0: {len(rows) - none_price}/{len(rows)}")
+    has_category = sum(1 for r in rows if r.get("category_group"))
+    print(f"  category_group set: {has_category}/{len(rows)}  ← required by /catalogs/retail")
+    if has_category == 0 and rows:
+        print("ERROR: no row has category_group set — taxonomy backfill failed silently", file=sys.stderr)
+        return 1
     return 0
 
 

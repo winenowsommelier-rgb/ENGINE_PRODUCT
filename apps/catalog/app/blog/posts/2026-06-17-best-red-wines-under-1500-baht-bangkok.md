@@ -34,9 +34,9 @@ You don't need to spend ฿1,000 to drink well. The best entry-level bottles fro
 
 **La Rue de l'Amour Premium Rouge** (฿410, France — Bordeaux). A Bordeaux blend at ฿410 sounds suspicious — and it would be, except this bottle consistently delivers clean, dry Cab-Merlot character. No complexity, but honest. The "pour by the glass at a dinner party" choice when budget is the constraint.
 
-<!-- product: WRW5688FR -->
+<!-- product: WRW5951AH -->
 
-**Famiglia Castellani Chianti Colli Senesi DOCG** (฿580, Italy — Tuscany). Chianti at under ฿600 from a reliable Tuscan producer. Sangiovese-forward, dry, good acidity. Perfect with pizza, pasta, or anything tomato-based. The DOCG on the label means this is real Chianti — not generic Italian red.
+**Piccini Collezione Oro Chianti Riserva DOCG** (฿649, Italy — Tuscany). A Riserva — longer ageing than standard Chianti — from one of Tuscany's most recognisable houses, at a price that undercuts most basic bottlings.
 
 ---
 
@@ -47,9 +47,9 @@ This is the sweet spot for Bangkok wine buyers. At ฿700–900 you're getting i
 ![New World wine country — the landscape that produces accessible, honest red wine.](https://images.pexels.com/photos/14515698/pexels-photo-14515698.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 *Wines in the ฿700–900 range are where production method and terroir start to matter.*
 
-<!-- product: WRW4771AB -->
+<!-- product: WRW5457BN -->
 
-**Famille Perrin La Vieille Ferme Rouge** (฿800, France — Rhône Valley). The Perrin family makes Château Beaucastel, one of the most famous wines in the world. La Vieille Ferme is their entry-level Rhône blend — Grenache, Syrah, Carignan — and it significantly outperforms its price. Warm, spiced, full-bodied. One of the best-value bottles on the list.
+**Domaine du Pégau Côtes du Rhône Cuvée Setier** (฿1,100, France — Rhône Valley). Pégau is one of Châteauneuf-du-Pape's legendary cellars; this 90-point village-level cuvée is the cheapest way to taste that house style.
 
 <!-- product: WRW3306DD -->
 
@@ -72,9 +72,9 @@ Push past ฿900 and you're buying wine with provenance — named appellations, 
 
 **Baron Philippe de Rothschild Mouton Cadet Bordeaux Rouge** (฿825, France — Bordeaux). The Rothschild name is attached to Mouton Cadet for a reason — it's their entry-level Bordeaux and it carries the house standard for cleanliness and balance. Merlot-dominant, smooth, good with beef or lamb. This is what you bring to a dinner party when you want the label to speak.
 
-<!-- product: WRW3412AD -->
+<!-- product: WRW0617AA -->
 
-**Speri Valpolicella DOC Classico** (฿819, Italy — Veneto). Speri is one of the top producers in Valpolicella. The Classico is a benchmark expression of the Corvina-Rondinella blend — light in body, high in acid, and utterly food-friendly. Chill it slightly and drink it with charcuterie or Thai larb.
+**Allegrini Palazzo della Torre IGT** (฿1,355, Italy — Veneto). Allegrini is Valpolicella royalty, and this 93-point 'baby Amarone' — made partly from dried grapes — is the most serious red on this list for the money.
 
 <!-- product: WRW6412DD -->
 
@@ -82,9 +82,14 @@ Push past ฿900 and you're buying wine with provenance — named appellations, 
 
 <!-- product: WRW0318AD -->
 
-**Domaine l'Ostal Cazes Estibals Minervois AOC** (฿819, France — Languedoc-Roussillon). Minervois is one of the Languedoc's most underrated appellations. This Syrah-Grenache-Carignan blend from a biodynamic estate is the kind of wine that makes you question why you ever spent more. Earthy, structured, long finish.
+**Domaine l'Ostal Cazes Estibals Minervois AOC** (฿899, France — Languedoc-Roussillon). Minervois is one of the Languedoc's most underrated appellations. This Syrah-Grenache-Carignan blend from a biodynamic estate is the kind of wine that makes you question why you ever spent more. Earthy, structured, long finish.
 
 ---
+
+
+---
+
+*Keep reading: [What Wine Goes with Thai Food? The Bangkok Guide](/blog/what-wine-goes-with-thai-food-the-bangkok-guide) · all [Wine](/blog/category/wine) stories.*
 
 ## FAQ
 

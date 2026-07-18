@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Search, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SearchOverlay } from '@/components/SearchOverlay';
+import { Wordmark } from '@/components/Wordmark';
 
 /**
  * Global site header — Maison minimal style.
@@ -42,10 +43,10 @@ export function Header() {
         {/* Wordmark */}
         <Link
           href="/"
-          className="flex h-11 items-center text-2xl font-bold tracking-tight text-foreground transition-colors hover:text-primary sm:text-3xl"
+          className="flex h-11 items-center text-foreground transition-colors hover:text-primary"
           aria-label="WNLQ9 home"
         >
-          WNLQ9
+          <Wordmark size="header" />
         </Link>
 
         {/* Desktop nav */}

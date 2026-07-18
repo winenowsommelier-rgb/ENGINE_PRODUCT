@@ -2,7 +2,7 @@
 import type { LensKey, MapRegion } from '@/lib/explore/types';
 import { lensCount } from '@/lib/explore/map-data';
 import { flagEmoji } from '@/lib/explore/flags';
-import { countryLensCount, type CountryPin } from './RegionAtlas';
+import { countryLensCount, type CountryPin } from '@/lib/explore/country-pins';
 
 /**
  * CountryChips — the discoverable "menu" of what's available, below the map.

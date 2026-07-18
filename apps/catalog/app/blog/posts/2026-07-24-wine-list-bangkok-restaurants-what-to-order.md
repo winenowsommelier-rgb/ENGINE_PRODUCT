@@ -1,7 +1,7 @@
 ---
 TITLE: The Wine List at Bangkok's Best Restaurants: What to Order
 SLUG: wine-list-bangkok-restaurants-what-to-order
-DATE: 2026-07-24
+DATE: 2026-06-18
 TAGS: guide,restaurants,bangkok,wine-list,sommelier
 COVER-IMAGE: https://images.pexels.com/photos/19393192/pexels-photo-19393192.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Vladimir Srajber via Pexels
@@ -34,22 +34,22 @@ Three categories consistently punch above their weight on Bangkok wine lists:
 
 Grenache-dominant blends from the Rhône — Côtes du Rhône, Gigondas, Vacqueyras — and the big, structured reds of Languedoc (Faugères, Saint-Chinian, Minervois) are chronically underpriced at retail, which means even a 3× restaurant markup lands them in a range that looks reasonable next to a Châteauneuf-du-Pape at four times the price. Look for these on any French-leaning list. A Grenache-Syrah-Mourvèdre from Vacqueyras at ฿2,200 is almost always better value than a Saint-Émilion at ฿4,500.
 
-<!-- product: WRW0191AD -->
-**Famille Perrin Côtes du Rhône Rouge** — from ฿590
+<!-- product: WRW5062AB -->
+**Famille Perrin Réserve Côtes du Rhône Rouge** — from ฿1,000
 
 ### South America: Argentina and Chile Beyond the Entry Level
 
 Argentine Malbec from Mendoza's high-altitude Luján de Cuyo or Valle de Uco, and Chilean Carménère from Colchagua, are deeply unfashionable in the fine dining world — which is precisely why restaurants price them fairly. Restaurants want their French and Italian bottles to look like the prestige tier, so the South American mid-list often gets a more restrained markup. A serious Malbec from a single-vineyard producer in Uco at ฿2,800 on a restaurant list is often retailing for ฿950. That's still a markup, but it's honest.
 
-<!-- product: WRW3912BN -->
-**Achaval Ferrer Malbec, Mendoza** — from ฿1,290
+<!-- product: WRW2332BN -->
+**Altos Las Hormigas Reserve Malbec, Mendoza** — from ฿1,400
 
 ### Alsace and Northern Italy for Whites
 
 White wine markup in Bangkok is generally more aggressive than red because the cold-chain costs are real and the audience for serious white wine is smaller. The exception: Alsatian whites (Riesling, Pinot Gris, Gewurztraminer) and northern Italian whites (Soave Classico, Vermentino, Greco di Tufo) that appear on wine lists as supporting acts. Restaurants rarely put these in the spotlight, so they're priced to move rather than to impress. An Alsatian Pinot Gris at ฿2,000 with Thai food is one of the smartest calls you can make.
 
 <!-- product: WWW1791AD -->
-**Trimbach Pinot Gris Réserve, Alsace** — from ฿1,150
+**Trimbach Gewurztraminer, Alsace** — from ฿1,289
 
 ![Sommelier pouring white wine at a restaurant table with Thai food dishes visible](https://images.pexels.com/photos/5732799/pexels-photo-5732799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
@@ -81,13 +81,18 @@ Some Bangkok restaurants — particularly hotel all-day dining and neighbourhood
 
 ![Close-up of wine list menu at an elegant restaurant setting](https://images.pexels.com/photos/38079496/pexels-photo-38079496.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
-<!-- product: WWW1101AA -->
-**William Fèvre Chablis Village** — from ฿1,390
+<!-- product: WWW0202AD -->
+**Domaine Laroche Chablis Les Chanoines** — from ฿1,199
 
-<!-- product: WRW0113AQ -->
-**Château Sociando-Mallet Haut-Médoc** — from ฿1,890
+<!-- product: WRW7688AU -->
+**Château de Ferrand, Saint-Émilion Grand Cru Classé** — from ฿2,100
 
 ---
+
+
+---
+
+*Keep reading: [How to Store Wine in Bangkok Heat](/blog/how-to-store-wine-in-bangkok-heat-guide) · [How to Read a Wine Label — A Bangkok Shopper's Guide](/blog/how-to-read-a-wine-label-bangkok-guide) · all [Guides](/blog/category/guides) stories.*
 
 ## FAQ
 

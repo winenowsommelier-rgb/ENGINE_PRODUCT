@@ -54,7 +54,7 @@ That said, Islay whiskies have a devoted following in Bangkok, particularly amon
 
 The Highlands is the largest and most geographically diverse region — styles vary enormously. Highland Park from Orkney (technically the Northern Isles, but classified Highland) sits in its own lane entirely: **heather, peat, dried fruit, and maritime salt**, with a balance that defies easy categorisation. It consistently outperforms its price.
 
-<!-- product: LWH1016CN -->
+<!-- product: LWH0544AD -->
 
 ### Lowland — Light, Floral, and Often Underrated
 
@@ -114,7 +114,7 @@ This is where Bangkok's whisky value is strongest.
 - **Glenfarclas Heritage** (฿2,389): Sherry-forward Speyside from a family-owned distillery that's been running since 1836. A serious bottle.
 - **Glenfiddich 12** (฿2,399): The world's best-selling Single Malt for good reason — approachable, consistent, and a reliable gift.
 - **Laphroaig Select** (฿2,699): For the peat-curious. The most accessible Islay entry point without losing the island's soul.
-- **Highland Park 10** (฿2,799): The most well-rounded bottle at this tier. Peat, fruit, and sea salt in a rare balance.
+- **The Dalmore 12** (฿3,589): Sherry-cask Highland elegance — orange, chocolate and spice. The premium pick at this tier.
 
 ## A Note on Bangkok's Whisky Culture
 
@@ -126,6 +126,11 @@ Scotch in Bangkok is frequently drunk with ice and soda — a style the Scots ca
 That said, try your next dram neat first, just for 30 seconds, before adding anything. The vanilla from American oak, the heather from Highland peat, the brine from an Islay shore — these are things you can only smell and taste undiluted.
 
 ---
+
+
+---
+
+*Keep reading: [Best Whisky Pairings for Japanese Food in Bangkok](/blog/best-whisky-pairings-japanese-food-bangkok) · [Best Japanese Whisky in Bangkok](/blog/best-japanese-whisky-bangkok-whats-in-stock-july-2026) · all [Whisky](/blog/category/whisky) stories.*
 
 ## FAQ
 

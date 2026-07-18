@@ -12,6 +12,9 @@ const BASE = 'https://wnlq9.shop';
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE),
+  verification: {
+    google: 'NbhETCVYUGLUVqjoU-w29QSCl-QGhJ0Szwh3xsO7ioM',
+  },
   title: 'WNLQ9 — Wine, Whisky & Spirits | Bangkok, Thailand',
   description:
     'WNLQ9 is a curated selection of wine, whisky and spirits in Bangkok. Thousands of bottles from 430 regions worldwide. Browse and order via LINE or WhatsApp.',

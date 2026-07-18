@@ -1,7 +1,7 @@
 ---
 TITLE: Wine Designations Explained: What Grand Cru, Reserva, DOCG Actually Mean (And Whether They're Worth the Price)
 SLUG: wine-designations-explained-grand-cru-reserva-docg
-DATE: 2026-07-25
+DATE: 2026-06-19
 TAGS: guide,designations,france,italy,spain,wine-education
 COVER-IMAGE: https://images.pexels.com/photos/17862836/pexels-photo-17862836.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Riccardo Zerbinati via Pexels
@@ -38,8 +38,8 @@ France invented the modern concept of wine classification, and its system is the
 
 ![Burgundy vineyard rows at harvest time, limestone slopes in autumn](https://images.pexels.com/photos/27138244/pexels-photo-27138244.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
-<!-- product: WRW3012AC -->
-**Gevrey-Chambertin Premier Cru, Louis Jadot** — ฿3,200
+<!-- product: WRW6474DJ -->
+**Albert Bichot Gevrey-Chambertin 1er Cru "Petite Chapelle"** — ฿7,300
 
 ---
 
@@ -58,11 +58,11 @@ There are currently 77 DOCGs in Italy, including Barolo, Brunello di Montalcino,
 
 One wrinkle: some of Italy's most expensive wines — Sassicaia, Tignanello, the original *Super Tuscans* — launched as IGT because they used non-traditional grapes (Cabernet Sauvignon, Merlot) not permitted under DOC rules. Sassicaia eventually earned its own DOC (*Bolgheri Sassicaia DOC*), but the IGT label alone should never signal low quality. Context matters.
 
-<!-- product: WRW1423CD -->
-**Barolo DOCG, Marchesi di Barolo** — ฿2,800
+<!-- product: WRW4368HI -->
+**Prunotto Barolo DOCG** — ฿2,600
 
-<!-- product: WRW0887AC -->
-**Chianti Classico Gran Selezione DOCG, Castello di Brolio** — ฿1,650
+<!-- product: WRW1310BS -->
+**Ricasoli Chianti Classico Gran Selezione Castello di Brolio** — ฿2,700
 
 ---
 
@@ -82,8 +82,8 @@ Spain's designation system is two-pronged: geographic tier plus aging category. 
 
 ![Spanish Rioja Gran Reserva on a restaurant table in warm candlelight](https://images.pexels.com/photos/20874532/pexels-photo-20874532.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
-<!-- product: WRW2541AD -->
-**Rioja Gran Reserva DOCa, Bodegas Muga** — ฿2,100
+<!-- product: WRW5313FC -->
+**Bodegas LAN Rioja Gran Reserva** — ฿2,800
 
 ---
 
@@ -104,8 +104,8 @@ Below Prädikat wines sits **QbA** (*Qualitätswein bestimmter Anbaugebiete*) �
 
 In Bangkok, German Riesling Prädikat wines are still underpriced relative to their quality. A Spätlese from Mosel or Rheingau typically runs ฿950–฿1,800 at WNLQ9.
 
-<!-- product: WWW5368BN -->
-**Weingut Robert Weil Riesling Spätlese, Rheingau** — ฿1,100
+<!-- product: WWW6246AA -->
+**Selbach Saar Riesling Spätlese "Tradition"** — ฿1,070
 
 ---
 
@@ -128,10 +128,15 @@ This creates a practical rule of thumb: **mid-tier designations punch above thei
 
 ![Close-up of wine label showing DOCG neck seal on an Italian bottle](https://images.pexels.com/photos/32009714/pexels-photo-32009714.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
-<!-- product: WRW1887CD -->
-**Amarone della Valpolicella DOCG, Zenato** — ฿3,400
+<!-- product: WRW1852AE -->
+**Zenato Amarone della Valpolicella Classico DOC** — ฿4,080
 
 ---
+
+
+---
+
+*Keep reading: [Rhône Valley Wine — France's Underrated Gem](/blog/rhone-valley-wine-guide-bangkok) · [Chardonnay](/blog/chardonnay-oaked-vs-unoaked-style-guide) · all [Wine](/blog/category/wine) stories.*
 
 ## FAQ
 

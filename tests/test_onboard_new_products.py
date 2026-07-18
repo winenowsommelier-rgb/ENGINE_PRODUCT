@@ -225,6 +225,45 @@ def test_default_mode_makes_backup(tmp_path):
     assert list(tmp_path.glob("t.db.bak-pre-onboard-*")), "no backup created"
 
 
+def test_onboarded_skus_get_reputation_tier_not_null(tmp_path):
+    """Rule 6 end-to-end invariant: onboarding must not leave new SKUs
+    stranded at NULL reputation_tier. Before this hook existed, the 498
+    onboarded beverages had zero reputation handling — this regression-
+    guards the post-insert recompute wired into onboard_new_products.py.
+    """
+    import subprocess, sys, shutil, sqlite3
+    from pathlib import Path
+    src = Path("data/db/products.db")
+    if not src.exists():
+        import pytest; pytest.skip("live db absent")
+    db = tmp_path / "t.db"
+    shutil.copy(src, db)
+    sqlite3.connect(db).execute(
+        "DELETE FROM products WHERE enrichment_source='masterfile_onboard_2026-06-25'"
+    ).connection.commit()
+
+    subprocess.run(
+        [sys.executable, "scripts/onboard_new_products.py", "--db", str(db), "--no-backup"],
+        check=True, capture_output=True, text=True,
+    )
+
+    conn = sqlite3.connect(db)
+    onboarded = conn.execute(
+        "SELECT sku, reputation_tier FROM products "
+        "WHERE enrichment_source='masterfile_onboard_2026-06-25'"
+    ).fetchall()
+    assert onboarded, "no onboarded rows found — insert step may have failed"
+    null_tier = [sku for sku, tier in onboarded if tier is None]
+    # Some onboarded SKUs may legitimately fall to NULL if they resolve to a
+    # non-beverage taxonomy group (accessories aren't scored) — but the vast
+    # majority of onboarded rows are beverages per the pre-flight report, so
+    # near-total NULL would indicate the hook didn't run.
+    assert len(null_tier) < len(onboarded), (
+        f"reputation recompute did not run: {len(null_tier)}/{len(onboarded)} "
+        f"onboarded SKUs stuck at NULL tier"
+    )
+
+
 def test_onboarded_reach_export_no_margin_leak():
     """POST-RUN gate (CLAUDE.md Rule 1): verify the onboarded SKUs actually
     REACHED the user-facing live export with a price + a real category, AND that

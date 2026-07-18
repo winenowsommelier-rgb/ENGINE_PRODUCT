@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """
-curate_blog_images.py — Replace blog cover images with quality Pexels photos.
+curate_blog_images.py — Replace blog cover images with quality Pexels/Pixabay photos.
 
 Usage:
-    PEXELS_API_KEY=xxx python3 scripts/curate_blog_images.py [--dry-run] [--slug SLUG]
+    PEXELS_API_KEY=xxx PIXABAY_API_KEY=yyy python3 scripts/curate_blog_images.py [--dry-run] [--slug SLUG]
 
 Options:
     --dry-run    Print what would change without writing files
     --slug SLUG  Process only the post with this slug or filename fragment
+
+Pixabay (PIXABAY_API_KEY) is optional — used as a fallback when Pexels has no
+results for a query. Get a free key at https://pixabay.com/api/docs/.
 """
 import os, sys, time, argparse
 import requests
@@ -16,6 +19,8 @@ import anthropic
 POSTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'apps', 'catalog', 'app', 'blog', 'posts')
 PEXELS_API_KEY = os.environ.get('PEXELS_API_KEY', '')
 PEXELS_SEARCH = 'https://api.pexels.com/v1/search'
+PIXABAY_API_KEY = os.environ.get('PIXABAY_API_KEY', '')
+PIXABAY_SEARCH = 'https://pixabay.com/api/'
 
 _claude = anthropic.Anthropic()
 
@@ -145,6 +150,61 @@ def search_pexels(query: str, per_page: int = 10):
     }
 
 
+def search_pixabay(query: str, per_page: int = 10):
+    """
+    Search Pixabay and return best photo dict, or None if no results/no key.
+    Same return shape as search_pexels() so callers can treat them interchangeably.
+    """
+    if not PIXABAY_API_KEY:
+        return None
+
+    try:
+        resp = requests.get(
+            PIXABAY_SEARCH,
+            params={
+                'key': PIXABAY_API_KEY,
+                'q': query,
+                'image_type': 'photo',
+                'orientation': 'horizontal',
+                'per_page': max(per_page, 3),  # Pixabay minimum is 3
+                'safesearch': 'true',
+            },
+            timeout=15,
+        )
+        resp.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        status = e.response.status_code if e.response else 0
+        if status == 429:
+            raise RuntimeError('Pixabay rate limit hit (429) — wait before retrying') from e
+        raise
+
+    hits = resp.json().get('hits', [])
+    if not hits:
+        return None
+
+    best = next((p for p in hits if p.get('imageWidth', 0) >= 1920), hits[0])
+    img_url = best.get('largeImageURL') or best.get('webformatURL')
+    user = best.get('user', 'Pixabay')
+    photo_url = best.get('pageURL', 'https://pixabay.com')
+
+    return {
+        'url': img_url,
+        'credit': f"{user} via Pixabay",
+        'credit_url': photo_url,
+    }
+
+
+def fetch_photo(query: str):
+    """Try Pexels, then Pixabay, then a broadened 2-word Pexels retry."""
+    photo = search_pexels(query)
+    if not photo:
+        photo = search_pixabay(query)
+    if not photo:
+        broad = ' '.join(query.split()[:2])
+        photo = search_pexels(broad) or search_pixabay(broad)
+    return photo
+
+
 # ---------------------------------------------------------------------------
 # Write back
 # ---------------------------------------------------------------------------
@@ -207,14 +267,10 @@ if __name__ == '__main__':
             query = generate_search_query(title, tags)
             print(f"  query: {query}")
 
-            photo = search_pexels(query)
-            if not photo:
-                broad = ' '.join(query.split()[:2])
-                print(f"  no results — retrying: {broad}")
-                photo = search_pexels(broad)
+            photo = fetch_photo(query)
 
             if not photo:
-                print(f"  ✗ no Pexels results — skipping")
+                print(f"  ✗ no results (Pexels/Pixabay) — skipping")
                 failed += 1
                 continue
 

@@ -11,6 +11,7 @@ import {
 import { StorefrontImage } from '@/components/StorefrontImage';
 import { ContactButtons } from '@/components/ContactButtons';
 import { PriceBlock } from '@/components/product/PriceBlock';
+import { ReputationBadge } from '@/components/product/ReputationBadge';
 import { stripToText } from '@/lib/sanitize-html';
 import { isInStock } from '@/lib/utils';
 import type { PublicProduct } from '@/lib/types';
@@ -95,9 +96,12 @@ export function QuickView({
               </p>
             ) : null}
 
-            <DialogTitle className="text-2xl font-semibold leading-snug text-foreground">
-              {product.name}
-            </DialogTitle>
+            <div className="flex flex-wrap items-center gap-2">
+              <DialogTitle className="text-2xl font-semibold leading-snug text-foreground">
+                {product.name}
+              </DialogTitle>
+              <ReputationBadge tier={product.reputation_tier} />
+            </div>
 
             <div className="mt-3">
               <PriceBlock price={product.price} specialPrice={product.special_price} />

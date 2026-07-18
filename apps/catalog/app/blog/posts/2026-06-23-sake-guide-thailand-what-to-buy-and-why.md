@@ -147,6 +147,11 @@ Sake's umami richness and clean acidity make it extraordinary with food. The pai
 
 ---
 
+
+---
+
+*Keep reading: [Château Margaux in Bangkok](/blog/chateau-margaux-bangkok-guide) · [Bordeaux vs. Burgundy](/blog/bordeaux-vs-burgundy-which-french-red-should-you-buy) · all [Sake & Japanese](/blog/category/sake) stories.*
+
 ## FAQ
 
 ### What is the difference between Junmai and Daiginjo sake?

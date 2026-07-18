@@ -10,6 +10,7 @@ import { CriticScoreStrip } from '@/components/CriticScoreStrip';
 import { PriceBlock } from '@/components/product/PriceBlock';
 import fs from 'fs';
 import path from 'path';
+import { ReputationBadge, reputationBadgeLabel } from '@/components/product/ReputationBadge';
 import { getAllProducts, getProductBySku } from '@/lib/catalog-data';
 import { groupForProduct } from '@/lib/category-groups';
 import { precomputeRecommendations } from '@/lib/recommender';
@@ -19,7 +20,7 @@ import { getContactEnv } from '@/lib/contact-env';
 import { toTiers, toStructural } from '@/lib/taste-adapter';
 import { isInStock, parseFoodMatching, signatureDishes } from '@/lib/utils';
 import { sanitizeDescription } from '@/lib/sanitize-html';
-import type { Band } from '@/lib/types';
+import type { Band, PublicProduct } from '@/lib/types';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildProductSchema, buildBreadcrumbList, GROUP_SLUG } from '@/lib/seo/jsonld';
 import { ViewItemTracker } from '@/components/product/ViewItemTracker';
@@ -145,6 +146,29 @@ function AttrRow({ label, value }: { label: string; value?: string | number | nu
       <dt className="text-sm text-muted-foreground">{label}</dt>
       <dd className="text-right text-sm font-medium text-foreground">{value}</dd>
     </div>
+  );
+}
+
+/**
+ * ReputationNote — the PDP's reputation block. Only renders for iconic/
+ * premium tiers (same gate as the badge) AND only when reputation_summary
+ * has real copy — never shows the raw 0-100 composite score to shoppers
+ * (2026-07-09 expert review: a bare number reads as a fake precision claim
+ * a shopper can't sanity-check). reputation_summary backfills useful
+ * context on the ~40% of products with no description.
+ */
+function ReputationNote({ product }: { product: PublicProduct }) {
+  const label = reputationBadgeLabel(product.reputation_tier);
+  if (!label) return null;
+  return (
+    <section className="flex items-start gap-3 rounded-lg border border-border bg-card px-4 py-3">
+      <ReputationBadge tier={product.reputation_tier} />
+      {product.reputation_summary ? (
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          {product.reputation_summary}
+        </p>
+      ) : null}
+    </section>
   );
 }
 
@@ -351,6 +375,8 @@ export default function Page({ params }: { params: { sku: string } }) {
               />
             </div>
           </header>
+
+          <ReputationNote product={product} />
 
           {/* Description — ONLY when present (40% have none; don't show an empty block).
               Sanitized Magento HTML rendered for formatting; safe per sanitizeDescription. */}

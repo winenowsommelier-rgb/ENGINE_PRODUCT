@@ -34,7 +34,7 @@ When in doubt, bring one red and one white. It covers any menu, it signals gener
 
 <!-- product: WRW4771AB -->
 
-<!-- product: WWW2032AD -->
+<!-- product: WWW1106AD -->
 
 ## Budget Tiers
 
@@ -61,7 +61,7 @@ Step into this bracket when the occasion is a birthday, housewarming, or a host 
 
 <!-- product: WSP5728FR -->
 
-<!-- product: WRW2529AD -->
+<!-- product: WSP2529AD -->
 
 ### ฿2,000+ — When You Need to Make a Statement
 
@@ -94,6 +94,11 @@ If the roles are reversed and you're the one hosting, the calculus changes. You 
 A useful formula: one bottle per two guests for a seated dinner, plus one extra for the aperitif. Bangkok's warm evenings move through wine faster than you expect.
 
 ---
+
+
+---
+
+*Keep reading: [Burgundy Explained](/blog/burgundy-explained-cote-de-nuits-vs-cote-de-beaune) · [Best Rosé Wine in Bangkok Under ฿2,000](/blog/best-rose-wine-bangkok-under-2000) · all [Wine](/blog/category/wine) stories.*
 
 ## FAQ
 

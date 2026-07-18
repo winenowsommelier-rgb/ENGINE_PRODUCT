@@ -5,6 +5,9 @@ import { DRINK_SLUGS, PURPOSE_SLUGS, CATEGORY_META } from '@/lib/blog/categories
 import { HeroStrip } from '@/components/blog/HeroStrip';
 import { PostCard } from '@/components/blog/PostCard';
 
+// Re-check daily so future-dated posts appear automatically on their publish date.
+export const revalidate = 86400;
+
 // generateMetadata (not export const metadata) so we can use the featured post's coverImage for og:image.
 // getAllPosts is synchronous — no await.
 export function generateMetadata(): Metadata {

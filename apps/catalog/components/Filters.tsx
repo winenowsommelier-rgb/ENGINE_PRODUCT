@@ -84,7 +84,7 @@ interface FiltersProps {
 
 const SORT_OPTIONS: Array<{ id: string; label: string }> = [
   { id: 'recommended', label: 'Recommended' },
-  { id: 'reputation', label: 'Top Rated' },
+  { id: 'reputation', label: 'Most Renowned' },
   { id: 'name', label: 'Name A–Z' },
   { id: 'price-asc', label: 'Price: low → high' },
   { id: 'price-desc', label: 'Price: high → low' },

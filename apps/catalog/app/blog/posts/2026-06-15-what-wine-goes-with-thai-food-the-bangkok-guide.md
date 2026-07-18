@@ -83,9 +83,9 @@ A well-made dry Provence-style rosé is the closest thing to a universal pairing
 
 **Domaine L'Ostal Cazes Rosé** (Languedoc-Roussillon, ฿679) — Syrah and Grenache, pale salmon, vivid southern-France fruit, bright acidity. Great value for a table-wide pairing wine. Works with *pad thai*, *laab*, *spring rolls*, grilled pork skewers.
 
-<!-- product: WRS0035AB -->
+<!-- product: WRS0109BN -->
 
-**Whispering Angel** (Provence, ฿1,100 / sale ฿1,049, score 92) — the reference point for Provence rosé. Grenache, Cinsault, Syrah from sandy-limestone hillsides. Cold maceration, stainless steel, built for food. If your dinner is a spread — multiple dishes, multiple proteins — open this.
+**By Ott, Domaines Ott** (Provence, ฿1,100) — the entry cuvée of Provence's most prestigious rosé house. Grenache, Cinsault and Syrah, bone dry, saline and precise. If your dinner is a spread — multiple dishes, multiple proteins — open this.
 
 **The local option:** if you want to eat Thai and drink Thai, one bottle deserves attention.
 
@@ -152,6 +152,11 @@ Heavy, tannic reds (Cabernet Sauvignon, Syrah at full body, Barolo) — chilli a
 
 ---
 
+
+---
+
+*Keep reading: [Wine & Thai Spice: The Pairing Science](/blog/wine-thai-spice-pairing-science) · [The Best Wine to Drink With Seafood in Bangkok](/blog/best-wine-with-seafood-bangkok) · all [Pairings](/blog/category/pairings) stories.*
+
 ## FAQ
 
 ### What wine goes with Thai food?
@@ -167,7 +172,7 @@ Yes — dry Provence-style rosé is one of the most versatile pairings for a Tha
 You can, but choose carefully. Light Pinot Noir — served slightly chilled at 14–16°C — is the best red wine option for most Thai dishes. Avoid high-tannin reds like Cabernet Sauvignon, Shiraz, and Malbec, as chilli heat amplifies tannin into harsh bitterness. The lighter the red, the better it handles spice.
 
 ### What is the best wine under ฿1,500 to pair with Thai food in Bangkok?
-For under ฿1,500, the top picks are: Spy Valley Sauvignon Blanc (฿909, Marlborough) for versatility across most dishes; Heim Gewurztraminer Imperial (฿1,019 on sale) for spicy curries; Dr. Loosen Riesling Dry (฿765) for a leaner, drier style; and Whispering Angel Rosé (฿1,049 on sale) as the all-rounder for a group spread.
+For under ฿1,500, the top picks are: Spy Valley Sauvignon Blanc (฿909, Marlborough) for versatility across most dishes; Heim Gewurztraminer Imperial (฿1,019 on sale) for spicy curries; Dr. Loosen Riesling Dry (฿765) for a leaner, drier style; and By Ott Rosé (฿1,100) as the all-rounder for a group spread.
 
 ---
 

@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAllPostsForCategory } from '@/lib/blog/local-posts';
+
+export const revalidate = 86400;
 import {
   DRINK_SLUGS,
   PURPOSE_SLUGS,

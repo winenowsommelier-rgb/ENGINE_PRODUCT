@@ -126,6 +126,11 @@ If you encounter mezcal at a bar in Bangkok, order a flight of two or three — 
 
 ---
 
+
+---
+
+*Keep reading: [New Zealand Sauvignon Blanc — Why Bangkok Can't Stop Drinking It](/blog/new-zealand-sauvignon-blanc-marlborough-bangkok) · [Pinot Noir — A Bangkok Buyer's Guide](/blog/pinot-noir-buyers-guide-bangkok) · all [Spirits](/blog/category/spirits) stories.*
+
 ## FAQ
 
 ### What is the difference between tequila and mezcal in simple terms?

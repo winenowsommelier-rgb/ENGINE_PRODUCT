@@ -525,3 +525,37 @@ button.taste-note:focus-visible {
 .product-description em {
   font-style: italic;
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Catalog print documents (/catalogs/b2c, /catalogs/b2b) — CatalogToolbar tags
+ * <body> with this class so the site Header/Footer never leak into the
+ * printed PDF. Scoped to this class only; every other page's print output is
+ * unaffected.
+ * ──────────────────────────────────────────────────────────────────────────── */
+@media print {
+  body.catalog-print-doc > header,
+  body.catalog-print-doc > footer {
+    display: none !important;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Explore map (MapLibre) — soften the default popup chrome to match the brand.
+ * ──────────────────────────────────────────────────────────────────────────── */
+.maplibregl-popup-content {
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 18px -6px rgba(0, 0, 0, 0.28);
+  padding: 0.5rem 0.75rem;
+}
+.maplibregl-popup-tip {
+  border-top-color: #ffffff;
+}
+.maplibregl-ctrl-group {
+  border-radius: 9999px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.16);
+}
+/* Hover chips are informational — never intercept the next tap/click. */
+.atlas-hover-popup {
+  pointer-events: none;
+}

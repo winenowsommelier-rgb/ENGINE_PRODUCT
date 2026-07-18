@@ -71,9 +71,13 @@ Valpolicella is made from a blend of native grapes — primarily Corvina, Rondin
 
 Speri is one of Valpolicella's most respected family producers, with over a century of history in the zone. Their Classico DOC is the benchmark for what Valpolicella should taste like: transparent ruby, vivid fruit, food-friendly structure.
 
-<!-- product: WRW3412AD -->
+<!-- product: WRW0617AA -->
 
 **Amarone della Valpolicella** is the same zone's prestige wine — made from grapes that have been dried for months before fermentation, concentrating everything into a dense, powerful, expensive wine. Ripasso is the middle ground, a Valpolicella that has been re-fermented on Amarone pomace to add body.
+
+We stock the benchmark: **Bertani Amarone della Valpolicella Classico** — a perfect 100-point wine from the house that has defined traditional Amarone since 1857, around ฿7,100.
+
+<!-- product: WRW5807FU -->
 
 ## Abruzzo and the South — Value Country
 
@@ -82,7 +86,7 @@ Speri is one of Valpolicella's most respected family producers, with over a cent
 
 Montepulciano d'Abruzzo is one of Italy's most undervalued grapes: **deep colour, firm tannins, dark plum and earth**, with a natural robustness that makes it ideal for red meat and long pasta dishes. It's grown in Abruzzo on the Adriatic coast — a region that punches well above its reputation.
 
-<!-- product: WRW6893GW -->
+<!-- product: WRW0574AA -->
 
 ## Sicily — Italy's Fastest-Rising Region
 
@@ -122,6 +126,11 @@ Italian and Thai cuisines share high acidity, bold aromatics, and the central ro
 - **Sicilian Syrah with spiced lamb or beef**: Weight meets weight
 
 ---
+
+
+---
+
+*Keep reading: [Best Rosé Wine in Bangkok Under ฿2,000](/blog/best-rose-wine-bangkok-under-2000) · [What Wine to Bring to a Bangkok Dinner Party](/blog/wine-for-dinner-party-bangkok-hosts-guide) · all [Wine](/blog/category/wine) stories.*
 
 ## FAQ
 

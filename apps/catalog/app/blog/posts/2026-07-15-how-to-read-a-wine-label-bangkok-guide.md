@@ -48,9 +48,9 @@ Italy operates a three-tier system:
 - **DOC** (*Denominazione di Origine Controllata*): A defined appellation with specific rules on variety, yield, and method.
 - **DOCG** (*Denominazione di Origine Controllata e Garantita*): Italy's highest classification. The "G" stands for *garantita* — guaranteed. Production rules are the strictest, and wines are tasted by a panel before bottling. Chianti Classico DOCG, Barolo DOCG, Brunello di Montalcino DOCG.
 
-<!-- product: WRW5688FR -->
+<!-- product: WRW5951AH -->
 
-The Famiglia Castellani Chianti Colli Senesi carries the DOCG designation — the highest Italian quality tier. You're looking at a wine where every step of production, from permitted grape varieties (Sangiovese) to maximum yield per hectare, is legally mandated.
+The Piccini Collezione Oro Chianti Riserva carries the DOCG designation — the highest Italian quality tier. You're looking at a wine where every step of production, from permitted grape varieties (Sangiovese) to maximum yield per hectare, is legally mandated.
 
 **Spain: DO, DOCa**
 Spain uses *Denominación de Origen* (DO) and *Denominación de Origen Calificada* (DOCa) — with Rioja and Priorat holding DOCa status.
@@ -86,9 +86,9 @@ The Viu Manent Estate Collection Reserva is a Chilean wine — "Reserva" here fo
 
 New World producers solved the consumer confusion problem by doing the obvious thing: putting the grape on the front of the label. What you see is what you get.
 
-<!-- product: WWW2032AD -->
+<!-- product: WWW1106AD -->
 
-Villa Maria's Private Bin Sauvignon Blanc says exactly what it is: New Zealand, Marlborough region, Sauvignon Blanc grape. No decoding required. "Private Bin" is Villa Maria's own tiering name for their entry-level premium range.
+Matua's Marlborough Sauvignon Blanc says exactly what it is: New Zealand, Marlborough region, Sauvignon Blanc grape. No decoding required. "Private Bin" is Villa Maria's own tiering name for their entry-level premium range.
 
 <!-- product: WRW1985AH -->
 
@@ -125,6 +125,11 @@ In Thailand, all imported wine must carry a Thai-language label with specific in
 The Thai label is applied after import and tells you about the distribution chain, not about the wine itself. If the Thai label partially obscures part of the original back label, peel it gently — the original label underneath usually contains the winemaker's tasting notes and technical details.
 
 ---
+
+
+---
+
+*Keep reading: [How to Store Wine in Bangkok Heat](/blog/how-to-store-wine-in-bangkok-heat-guide) · all [Guides](/blog/category/guides) stories.*
 
 ## FAQ
 

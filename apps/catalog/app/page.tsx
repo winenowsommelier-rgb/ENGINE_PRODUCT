@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { TrustBar } from '@/components/TrustBar';
 import { ProductCard } from '@/components/ProductCard';
-import { resolveFeatured } from '@/lib/featured';
+import { resolveFeatured, resolveIcons } from '@/lib/featured';
 import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
 import { CATEGORY_GROUPS } from '@/lib/category-groups';
@@ -34,6 +34,7 @@ const CATEGORY_BLURB: Record<string, string> = {
 
 export default function Home() {
   const featured = resolveFeatured();
+  const icons = resolveIcons();
   // Global contact links (no product) for QuickView inside cards.
   const contactLinks = buildContactLinks(getContactEnv());
 
@@ -104,6 +105,42 @@ export default function Home() {
                 contactLinks={contactLinks}
               />
             ))}
+          </div>
+        </section>
+      ) : null}
+
+      {/* Icons — the ONLY data-driven (not hand-curated) rail; every SKU here
+          has genuine critic acclaim backing its "Iconic" tier (see
+          lib/featured.ts resolveIcons). Rendered only when >= 4 exist. */}
+      {icons.length > 0 ? (
+        <section className="border-t border-border">
+          <div className="container flex flex-col gap-8 py-16">
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+                  The Icons
+                </h2>
+                <p className="mt-1 text-base text-muted-foreground">
+                  Critically acclaimed, exceptionally rare — the most renowned bottles in the collection.
+                </p>
+              </div>
+              <Link
+                href="/shop?sort=reputation"
+                className="hidden shrink-0 text-base font-medium text-primary transition-colors hover:opacity-80 sm:inline-flex"
+              >
+                View all →
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
+              {icons.map((product) => (
+                <ProductCard
+                  key={product.sku}
+                  product={product}
+                  contactLinks={contactLinks}
+                />
+              ))}
+            </div>
           </div>
         </section>
       ) : null}
