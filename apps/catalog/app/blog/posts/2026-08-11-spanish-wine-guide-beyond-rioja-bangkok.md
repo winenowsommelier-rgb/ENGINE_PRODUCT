@@ -3,13 +3,12 @@ TITLE: Spanish Wine Beyond Rioja: What to Explore Next
 SLUG: spanish-wine-guide-beyond-rioja-bangkok
 DATE: 2026-07-01
 TAGS: deep-dive,spain,rioja,wine-guide
-COVER-IMAGE: https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
-COVER-CREDIT: Dmitry Zvolskiy via Pexels
-COVER-CREDIT-URL: https://www.pexels.com/photo/3171837/
+COVER-IMAGE: https://live.staticflickr.com/5761/22332955458_123734d513_b.jpg
+COVER-CREDIT: Martin Stone via Flickr (CC BY-SA)
+COVER-CREDIT-URL: https://www.flickr.com/photos/martinrstone/22332955458
 META-TITLE: Spanish Wine Guide Bangkok: Beyond Rioja
 META-DESC: Rioja is just the beginning. A Bangkok buyer's guide to Ribera del Duero, Albariño, Tempranillo, Priorat, and Spain's best-value bottles in THB.
 ---
-WNLQ9 Sommelier Team
 
 Spain plants more vineyard hectares than any country on earth — yet nine out of ten buyers at the wine shop reach straight for Rioja. What they're missing is one of the most diverse, characterful, and frankly underpriced wine landscapes in the world. This guide is your map.
 
@@ -80,7 +79,7 @@ The secret is the soil: *llicorella*, a black slate and quartz schist that shimm
 
 Production is tiny. The region covers just 1,800 hectares, and the best plots are worked by hand on near-vertical slopes. This is why Priorat commands high prices — not marketing, but the genuine scarcity of meticulous small-volume winemaking. Producers like Álvaro Palacios (whose L'Ermita is Spain's most collectable wine) and Clos Mogador set the benchmark. Expect to pay for it — but the experience justifies every baht.
 
-![Close-up of red wine being poured into a large-bowled glass, showcasing deep ruby color](https://images.pexels.com/photos/1407846/pexels-photo-1407846.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+![A bottle of Spanish red on the table, ready to pour](https://images.pexels.com/photos/1407846/pexels-photo-1407846.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
 Old-vine Garnacha poured in Priorat style: deep ruby, nearly opaque at the center, with purple-violet rim — the hallmark of concentrated mountain Grenache from llicorella slate soils.
 
@@ -134,7 +133,6 @@ The Rioja Benchmark (฿1,290)
 <!-- product: WRW4225AJ -->
 
 **Bodegas Muga Rioja Reserva DOC** (฿1,758, on sale) is the wine this guide was built around. Muga is one of Rioja's most storied traditional houses, still gravity-filtering, still fining with egg whites, still aging in wood cooperaged in-house. The Reserva sees 24 months in a mix of French and American oak followed by further bottle aging before release. The result is textbook Rioja at its finest: cedar, dried cherry, leather, and violets, with tannins that are present but polished. If you drink one bottle from this list, make it this one.
-
 
 ---
 

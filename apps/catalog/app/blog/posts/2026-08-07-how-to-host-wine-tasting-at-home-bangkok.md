@@ -107,8 +107,6 @@ Serve your reds slightly cooler than you normally would. Bangkok's ambient tempe
 
 ---
 
-![Six wine glasses lined up on a white cloth, each holding a different wine for a comparative tasting session](https://images.pexels.com/photos/3407777/pexels-photo-3407777.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-
 A simple white tablecloth under the glasses lets you see the colour differences between wines at a glance — one of the most immediately revealing parts of any comparative tasting.
 
 ---
@@ -142,7 +140,6 @@ Open the Bordeaux at least 30 minutes before it is served, or decant it briefly.
 <!-- product: WSP2474AC -->
 
 ---
-
 
 ---
 

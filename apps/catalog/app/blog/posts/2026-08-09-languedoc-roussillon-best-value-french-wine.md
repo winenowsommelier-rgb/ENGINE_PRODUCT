@@ -3,9 +3,9 @@ TITLE: Languedoc-Roussillon: France's Best-Value Wine Region
 SLUG: languedoc-roussillon-best-value-french-wine
 DATE: 2026-06-30
 TAGS: deep-dive,france,languedoc,value
-COVER-IMAGE: https://images.pexels.com/photos/5947052/pexels-photo-5947052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
-COVER-CREDIT: Maria Orlova via Pexels
-COVER-CREDIT-URL: https://www.pexels.com/photo/5947052/
+COVER-IMAGE: https://live.staticflickr.com/89/237773342_ee270203bd_b.jpg
+COVER-CREDIT: Salvatore Freni via Flickr (CC BY)
+COVER-CREDIT-URL: https://www.flickr.com/photos/17878642@N00/237773342
 META-TITLE: Languedoc Wine Guide: France's Best Value Region
 META-DESC: Languedoc-Roussillon is France's largest wine region and its best-kept secret. Here's why Bangkok buyers should pay attention — and which bottles to start with.
 ---
@@ -63,8 +63,6 @@ The quality ceiling has risen dramatically over the past decade. Producers who s
 
 For the Bangkok wine buyer, the Pays d'Oc tier is especially practical: the wines are accessible in style, clearly labelled by grape, and hold up well to the full spectrum of Thai cuisine — from light seafood dishes to richly spiced meat preparations. They offer genuine French provenance without demanding that your guests already know their Minervois from their Montpeyroux.
 
-![A glass of deep red wine against a sunlit vineyard backdrop in the south of France](https://images.pexels.com/photos/4021983/pexels-photo-4021983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
-
 The warm, generous character of Languedoc reds comes from Mediterranean sunshine combined with old-vine concentration — a combination that makes them compelling at almost any price point.
 
 ---
@@ -91,7 +89,6 @@ These six wines are our starting point for anyone building a Languedoc cellar in
 
 **Grange Mazan Cabernet Syrah Pays d'Oc IGP** is a textbook example of what the Pays d'Oc classification was designed to produce: a Southern French take on a classic blend, with dark fruit from the Cabernet and peppery spice from the Syrah, all held together by the warmth of the Mediterranean sun. At ฿590, it is arguably the most versatile food wine in this list — comfortable alongside a beef stir-fry or a slow-braised pork dish.
 
-<!-- product: WRW5907FJ -->
 <!-- product: WRW5907FJ -->
 
 The **Reserve St Martin Cabernet Sauvignon** (฿659) comes from one of the Languedoc's most respected négociant houses. This is a no-nonsense Cab: dark plum, cedar, and a touch of tobacco leaf, with tannins that are present but not aggressive. It sits comfortably alongside any occasion where you would normally reach for a mid-range Bordeaux — at a price Bordeaux cannot match.
@@ -125,7 +122,6 @@ The **Reserve St Martin Chardonnay** (฿659) is a case study in what the Pays d
 If you are new to Languedoc, start with the Grange Mazan Cabernet Syrah — it is the most versatile of the six and gives you a clear taste of the region's southern-French identity at the lowest entry point. Once you are hooked (and you will be), move to the Bertrand Naturalys Syrah for the full picture.
 
 ---
-
 
 ---
 

@@ -3,9 +3,9 @@ TITLE: Orange Wine: What Is It, and Should You Try It in Bangkok?
 SLUG: orange-wine-what-is-it-bangkok
 DATE: 2026-06-26
 TAGS: deep-dive,natural-wine,orange-wine,white-wine
-COVER-IMAGE: https://images.pexels.com/photos/3407777/pexels-photo-3407777.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
-COVER-CREDIT: Elle Hughes via Pexels
-COVER-CREDIT-URL: https://www.pexels.com/photo/3407777/
+COVER-IMAGE: https://live.staticflickr.com/1655/23842089944_8d4dd0e51a_b.jpg
+COVER-CREDIT: James Fischer via Flickr (CC BY)
+COVER-CREDIT-URL: https://www.flickr.com/photos/jamesfischer/23842089944
 META-TITLE: Orange Wine Bangkok: What Is It and Where to Buy It
 META-DESC: Orange wine explained — what it is, how it's made, why it tastes that way, and the best bottles to try in Bangkok right now.
 ---
@@ -87,7 +87,6 @@ Biodynamic farming, organic certification, and a natural winemaking philosophy f
 **Gérard Bertrand Naturalys Syrah** — ฿775 (sale)
 
 Organic from Languedoc's Gérard Bertrand, who has championed natural-approach winemaking at scale. The Naturalys range is a gateway to low-intervention winemaking for those not quite ready to commit to the full skin-contact deep end. Honest fruit, light touch, and the best value of this selection.
-
 
 ---
 

@@ -3,9 +3,9 @@ TITLE: Sake Food Pairing: What Japanese Sake Goes With in Bangkok
 SLUG: sake-food-pairing-guide-bangkok
 DATE: 2026-07-05
 TAGS: pairing,sake,japanese,food
-COVER-IMAGE: https://images.pexels.com/photos/1407846/pexels-photo-1407846.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
-COVER-CREDIT: Pixabay via Pexels
-COVER-CREDIT-URL: https://www.pexels.com/photo/1407846/
+COVER-IMAGE: https://live.staticflickr.com/8152/7326900818_09a480d5a1_b.jpg
+COVER-CREDIT: Davide Gorla via Flickr (CC BY)
+COVER-CREDIT-URL: https://www.flickr.com/photos/davidegorla/7326900818
 META-TITLE: Sake Food Pairing Guide: Sushi, Thai Food and Beyond in Bangkok
 META-DESC: Sake isn't just for sushi. A Bangkok guide to pairing Japanese sake with Thai food, grilled seafood, raw fish, and more — dish by dish, sake by sake.
 ---
@@ -96,7 +96,8 @@ Thai dishes built on fruit — green mango, tamarind, pomelo — carry a sweet-s
 
 Fruity Ginjo / Daiginjo
 
-![A selection of sake cups and bottles alongside sashimi and small Japanese dishes on a dark table](https://images.pexels.com/photos/4021983/pexels-photo-4021983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+![Sake bottles on display in a Japanese izakaya](https://live.staticflickr.com/8587/16189584845_2502b828dd_b.jpg)
+*Photo: avrene via Flickr (CC BY)*
 
 Sake's low tannin and amino acid profile make it uniquely suited to the nuanced flavours of Japanese omakase and Thai set menus alike.
 
@@ -179,7 +180,6 @@ SKU: LSK0013AR
 ฿700
 
 <!-- product: LSK0013AR -->
-
 
 ---
 
