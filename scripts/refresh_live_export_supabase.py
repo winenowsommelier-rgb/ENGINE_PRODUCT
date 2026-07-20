@@ -39,6 +39,24 @@ DEFAULT_OUT = REPO_ROOT / "data" / "live_products_export.json"
 # category_group absent, breaking the retail catalog's category picker.
 from data.lib.taxonomy.sku_taxonomy import resolve as resolve_category
 
+# P4: regenerate flavor_tags_canonical on every refresh, same as
+# refresh_live_export.py (SQLite path) — see that script's P4 comment.
+# Guarded: unlike category_group above, flavor_tags_canonical is an
+# enhancement, not load-bearing, so a temporarily-unavailable vocab must not
+# block the nightly sync. (This is what actually broke 2026-07-17: this
+# script never had the derivation step at all, so every nightly run since
+# shipped flavor_tags_canonical empty on all rows — silent for 3+ days
+# because, unlike category_group, there was no verification check below to
+# catch it. Fixed by porting the derivation AND adding that check.)
+try:
+    from data.lib.enrichment.shared.flavor_canonicalizer import canonicalize_tag
+    from data.lib.enrichment.shared.vocab_loader import VocabLoader
+    _CANON_AVAILABLE = True
+except Exception:  # noqa: BLE001 — never let an optional import block a refresh
+    _CANON_AVAILABLE = False
+
+DEFAULT_VOCAB = REPO_ROOT / "data" / "lib" / "enrichment" / "shared" / "taste_vocab.yml"
+
 # Must stay in sync with scripts/refresh_live_export.py EXPORT_COLS.
 # consign is intentionally excluded — internal only, must never reach the browser.
 EXPORT_COLS = [
@@ -130,6 +148,29 @@ def add_category_taxonomy(rows: list[dict]) -> list[dict]:
     return rows
 
 
+def add_flavor_canonical(rows: list[dict]) -> list[dict]:
+    """Derive flavor_tags_canonical from (already-decoded) flavor_tags on
+    every refresh, same as refresh_live_export.py (SQLite path, P4). Always
+    sets the field (empty list if no/unmappable tags or vocab unavailable)
+    so it can't silently drift stale or silently disappear."""
+    vocab = None
+    if _CANON_AVAILABLE and DEFAULT_VOCAB.exists():
+        try:
+            vocab = VocabLoader.from_path(DEFAULT_VOCAB)
+        except Exception as e:  # noqa: BLE001
+            print(f"WARN: taste vocab failed to load, skipping "
+                  f"flavor_tags_canonical: {e}", file=sys.stderr)
+    for r in rows:
+        canonical: list[str] = []
+        if vocab is not None:
+            for raw in (r.get("flavor_tags") or []):
+                for note in canonicalize_tag(raw, vocab):
+                    if note not in canonical:
+                        canonical.append(note)
+        r["flavor_tags_canonical"] = canonical
+    return rows
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--out", type=Path, default=DEFAULT_OUT)
@@ -139,6 +180,7 @@ def main(argv: list[str] | None = None) -> int:
     rows = fetch_all_products()
     rows = decode_json_cols(rows)
     rows = add_category_taxonomy(rows)
+    rows = add_flavor_canonical(rows)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(rows, ensure_ascii=False, default=str), encoding="utf-8")
@@ -152,6 +194,13 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  category_group set: {has_category}/{len(rows)}  ← required by /catalogs/retail")
     if has_category == 0 and rows:
         print("ERROR: no row has category_group set — taxonomy backfill failed silently", file=sys.stderr)
+        return 1
+    has_flavors = sum(1 for r in rows if r.get("flavor_tags"))
+    has_canon = sum(1 for r in rows if r.get("flavor_tags_canonical"))
+    print(f"  flavor_tags_canonical set: {has_canon}/{len(rows)}  ← required by finder flavor chips")
+    if has_flavors > 0 and has_canon == 0:
+        print("ERROR: rows have flavor_tags but 0 have flavor_tags_canonical — "
+              "canonicalization failed silently (taste vocab missing/broken?)", file=sys.stderr)
         return 1
     return 0
 

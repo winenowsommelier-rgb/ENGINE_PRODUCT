@@ -24,7 +24,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install gspread google-auth
+        run: pip install -r requirements.txt gspread google-auth
 
       - name: Run price sync (Sheets → Supabase)
         id: sync
