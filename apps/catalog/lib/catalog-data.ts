@@ -37,6 +37,9 @@ export const PUBLIC_FIELDS = [
   // summary copy). Internal-only fields (reputation_override, reputation_computed_at)
   // are deliberately absent from this list.
   'reputation_tier','reputation_composite','reputation_confidence','reputation_summary',
+  // Curation dossier content — already gated to 'sourced'/'pairing-theory' confidence
+  // by scripts/refresh_products_dossier.py before it reaches the export, so safe as-is.
+  'curation_dossier',
 ] as const;
 
 // Drift guard: every PUBLIC_FIELDS key must be a known PublicProduct key.

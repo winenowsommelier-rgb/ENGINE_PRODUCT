@@ -5,7 +5,7 @@ import { StorefrontImage } from '@/components/StorefrontImage';
 import { ContactButtons } from '@/components/ContactButtons';
 import { ProductCard } from '@/components/ProductCard';
 import { TasteWheel } from '@/components/product/TasteWheel';
-import { StructuralGauges } from '@/components/product/StructuralGauges';
+import { CompactGauges } from '@/components/product/CompactGauges';
 import { CriticScoreStrip } from '@/components/CriticScoreStrip';
 import { PriceBlock } from '@/components/product/PriceBlock';
 import { ReputationBadge, reputationBadgeLabel } from '@/components/product/ReputationBadge';
@@ -130,6 +130,55 @@ function ReputationNote({ product }: { product: PublicProduct }) {
         <p className="text-sm leading-relaxed text-muted-foreground">
           {product.reputation_summary}
         </p>
+      ) : null}
+    </section>
+  );
+}
+
+/**
+ * CurationDossier — expert-reference content (Phase 1 canary, ~10 wine_keys
+ * only as of 2026-07-18). Already gated to 'sourced'/'pairing-theory'
+ * confidence server-side (scripts/refresh_products_dossier.py), so anything
+ * present here is safe to render as-is — no further filtering needed.
+ * Renders nothing when curation_dossier is absent (the overwhelming majority
+ * of products, until Phase 2 scales generation to the full wine_key set).
+ */
+function CurationDossier({ product }: { product: PublicProduct }) {
+  const dossier = product.curation_dossier;
+  if (!dossier) return null;
+  const { style_summary, expert_note, producer_history, signature_pairings } = dossier;
+  if (!style_summary && !expert_note && !producer_history && !signature_pairings?.length) return null;
+
+  return (
+    <section className="flex flex-col gap-4 rounded-lg border border-border bg-card px-4 py-4">
+      <h2 className="text-base font-semibold text-foreground">From our sommelier team</h2>
+      {style_summary ? (
+        <p className="text-base font-medium leading-relaxed text-foreground">{style_summary}</p>
+      ) : null}
+      {expert_note ? (
+        <p className="text-sm leading-relaxed text-muted-foreground">{expert_note}</p>
+      ) : null}
+      {producer_history ? (
+        <div>
+          <h3 className="mb-1 text-sm font-semibold text-foreground">Producer history</h3>
+          <p className="text-sm leading-relaxed text-muted-foreground">{producer_history}</p>
+        </div>
+      ) : null}
+      {signature_pairings?.length ? (
+        <div>
+          <h3 className="mb-2 text-sm font-semibold text-foreground">Signature pairings</h3>
+          <ul className="flex flex-col gap-2">
+            {signature_pairings.map((p) => (
+              <li key={p.dish} className="text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">
+                  {p.dish}
+                  {p.dish_local ? ` (${p.dish_local})` : ''}
+                </span>{' '}
+                — {p.reason}
+              </li>
+            ))}
+          </ul>
+        </div>
       ) : null}
     </section>
   );
@@ -331,6 +380,8 @@ export default function Page({ params }: { params: { sku: string } }) {
 
           <ReputationNote product={product} />
 
+          <CurationDossier product={product} />
+
           {/* Description — ONLY when present (40% have none; don't show an empty block).
               Sanitized Magento HTML rendered for formatting; safe per sanitizeDescription. */}
           {description ? (
@@ -365,7 +416,7 @@ export default function Page({ params }: { params: { sku: string } }) {
           {(tiers || hasStructural) ? (
             <section className="flex flex-col gap-8">
               <h2 className="text-base font-semibold text-foreground">Taste profile</h2>
-              {hasStructural ? <StructuralGauges structural={structural} /> : null}
+              {hasStructural ? <CompactGauges structural={structural} size="md" /> : null}
               {tiers ? <TasteWheel tiers={tiers} varietalLabel={product.variety || product.name} /> : null}
             </section>
           ) : null}
@@ -392,7 +443,13 @@ export default function Page({ params }: { params: { sku: string } }) {
           </h2>
           <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
             {recs.map((p) => (
-              <ProductCard key={p.sku} product={p} contactLinks={buildContactLinks(getContactEnv(), { name: p.name, sku: p.sku })} />
+              <ProductCard
+                key={p.sku}
+                product={p}
+                contactLinks={buildContactLinks(getContactEnv(), { name: p.name, sku: p.sku })}
+                showDetails
+                structural={toStructural(p)}
+              />
             ))}
           </div>
         </section>

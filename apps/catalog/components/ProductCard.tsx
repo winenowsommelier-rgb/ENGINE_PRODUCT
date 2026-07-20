@@ -7,8 +7,9 @@ import { StorefrontImage } from '@/components/StorefrontImage';
 import { CriticScoreStrip } from '@/components/CriticScoreStrip';
 import { ReputationBadge } from '@/components/product/ReputationBadge';
 import { QuickView } from '@/components/QuickView';
+import { CompactGauges } from '@/components/product/CompactGauges';
 import { formatPrice, resolveSale } from '@/lib/price-tiers';
-import { cn, isInStock } from '@/lib/utils';
+import { formatVintage, cn, isInStock } from '@/lib/utils';
 import type { PublicProduct } from '@/lib/types';
 import type { ContactLinks } from '@/lib/contact';
 
@@ -37,9 +38,41 @@ interface ProductCardProps {
    * contact buttons. Pages wire this in (Tasks 10/11).
    */
   contactLinks?: ContactLinks;
+  /**
+   * Opt-in: render a compact "Details" (origin/variety/vintage) + "Taste
+   * profile" (structural gauges) block under the price. OFF by default —
+   * ProductCard is shared across shop/homepage/finder/blog grids, and this
+   * adds real card height, so only the product detail page's "You might also
+   * like" rail turns it on.
+   *
+   * `structural` is computed SERVER-SIDE by the caller via
+   * lib/taste-adapter.ts:toStructural() and passed in as a plain prop —
+   * ProductCard is a client component and toStructural's dependency chain
+   * (category-groups.ts) touches Node's `fs`, so it cannot be imported here.
+   */
+  showDetails?: boolean;
+  structural?: Record<string, string>;
 }
 
-export function ProductCard({ product, contactLinks }: ProductCardProps) {
+/** Key attributes for the compact card details block, in display order. */
+function compactAttrRows(p: PublicProduct): Array<{ label: string; value: string }> {
+  const vintage = formatVintage(p.vintage);
+  const rows: Array<{ label: string; value: string | undefined | number }> = [
+    { label: 'Origin', value: [p.country, p.region].filter(Boolean).join(', ') || undefined },
+    { label: 'Variety', value: p.variety },
+    { label: 'Vintage', value: vintage.display },
+  ];
+  return rows
+    .filter((r) => r.value !== undefined && r.value !== null && String(r.value).trim() !== '')
+    .map((r) => ({ label: r.label, value: String(r.value) }));
+}
+
+export function ProductCard({
+  product,
+  contactLinks,
+  showDetails = false,
+  structural: structuralProp,
+}: ProductCardProps) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const subtitle = product.brand || product.region;
   const inStock = isInStock(product.is_in_stock);
@@ -48,6 +81,10 @@ export function ProductCard({ product, contactLinks }: ProductCardProps) {
   // Sale price (only when a genuine special_price < price); recomputed from the
   // prices so a stale source percent can never render a fake discount.
   const sale = resolveSale(product.price, product.special_price);
+
+  // Compact Details + Taste profile — only computed when showDetails is on.
+  const detailRows = showDetails ? compactAttrRows(product) : [];
+  const structural = showDetails ? structuralProp ?? {} : {};
 
   const openQuickView = (e: React.MouseEvent) => {
     // Inside the card <Link>; don't navigate when opening the modal.
@@ -58,11 +95,11 @@ export function ProductCard({ product, contactLinks }: ProductCardProps) {
 
   return (
     <>
-      <div className="group relative">
+      <div className="group relative h-full">
         <Link
           href={`/product/${product.sku}`}
           className={cn(
-            'block rounded-xl border border-stone-100 bg-white transition-all',
+            'flex h-full flex-col rounded-xl border border-stone-100 bg-white transition-all',
             'hover:-translate-y-0.5 hover:border-stone-200 hover:shadow-md',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
           )}
@@ -120,8 +157,11 @@ export function ProductCard({ product, contactLinks }: ProductCardProps) {
             </button>
           </div>
 
-          {/* Text block */}
-          <div className="px-3 pb-3 pt-3">
+          {/* Text block — flex column so the details/gauges block (mt-auto) pins to
+              the bottom of the card regardless of how much the title/subtitle wrap,
+              keeping every card in a row the same visual rhythm at equal height
+              (parent .group is h-full, Link is flex flex-col h-full). */}
+          <div className="flex flex-1 flex-col px-3 pb-3 pt-3">
             <h3 className="line-clamp-2 text-lg font-medium leading-snug text-foreground">
               {product.name}
             </h3>
@@ -150,6 +190,22 @@ export function ProductCard({ product, contactLinks }: ProductCardProps) {
                 {formatPrice(product.price)}
               </p>
             )}
+
+            {(detailRows.length > 0 || Object.keys(structural).length > 0) ? (
+              <div className="mt-auto flex flex-col gap-3 border-t border-stone-100 pt-3">
+                {detailRows.length > 0 ? (
+                  <dl className="flex flex-col gap-1.5">
+                    {detailRows.map((row) => (
+                      <div key={row.label} className="flex justify-between gap-3 text-xs leading-relaxed">
+                        <dt className="shrink-0 text-muted-foreground">{row.label}</dt>
+                        <dd className="truncate text-right font-medium text-foreground">{row.value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                ) : null}
+                {Object.keys(structural).length > 0 ? <CompactGauges structural={structural} /> : null}
+              </div>
+            ) : null}
           </div>
         </Link>
       </div>

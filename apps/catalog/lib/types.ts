@@ -102,4 +102,22 @@ export interface PublicProduct {
   reputation_composite?: number;
   reputation_confidence?: number;
   reputation_summary?: string;
+  // Curation dossier — expert-reference content, gated to 'sourced'/'pairing-theory'
+  // confidence only by scripts/refresh_products_dossier.py before it ever reaches
+  // products.curation_dossier, so every field present here is safe to render as-is.
+  // Absent (not present) for the ~988 wine_keys not yet generated (Phase 1 canary only).
+  curation_dossier?: {
+    style_summary?: string;
+    expert_note?: string;
+    producer_history?: string;
+    signature_pairings?: Array<{
+      dish: string;
+      dish_local: string | null;
+      cuisine: string;
+      course: string;
+      heat_level_ok: number;
+      reason: string;
+      confidence: string;
+    }>;
+  };
 }
