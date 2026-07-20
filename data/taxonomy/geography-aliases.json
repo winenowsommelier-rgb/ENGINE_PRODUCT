@@ -1,1 +1,51 @@
-{"schema_version":1,"country":[{"alias":"United States","canonical":"USA"}],"region":[],"subregion":[]}
+{
+  "schema_version": 1,
+  "country": [
+    {
+      "alias": "United States",
+      "canonical": "USA"
+    }
+  ],
+  "region": [
+    {
+      "alias": "Curicó Valley",
+      "canonical": "Curico Valley",
+      "country": "Chile"
+    },
+    {
+      "alias": "Napa",
+      "canonical": "Napa Valley",
+      "country": "USA"
+    },
+    {
+      "alias": "Sonoma",
+      "canonical": "Sonoma County",
+      "country": "USA"
+    },
+    {
+      "alias": "Southeastern Australia",
+      "canonical": "South Eastern Australia",
+      "country": "Australia"
+    }
+  ],
+  "subregion": [
+    {
+      "alias": "Niigata",
+      "canonical": "Niigata Prefecture",
+      "country": "Japan",
+      "region": "Niigata"
+    },
+    {
+      "alias": "Nagano",
+      "canonical": "Nagano Prefecture",
+      "country": "Japan",
+      "region": "Nagano"
+    },
+    {
+      "alias": "Kumamoto",
+      "canonical": "Kumamoto Prefecture",
+      "country": "Japan",
+      "region": "Kumamoto"
+    }
+  ]
+}

@@ -157,12 +157,6 @@
       "subregion_type": "subregion"
     },
     {
-      "id": 27,
-      "region_id": 10,
-      "name": "Cahors",
-      "subregion_type": "subregion"
-    },
-    {
       "id": 28,
       "region_id": 10,
       "name": "Madiran",
@@ -349,18 +343,6 @@
       "subregion_type": "subregion"
     },
     {
-      "id": 59,
-      "region_id": 31,
-      "name": "Napa Valley",
-      "subregion_type": "subregion"
-    },
-    {
-      "id": 60,
-      "region_id": 31,
-      "name": "Sonoma County",
-      "subregion_type": "subregion"
-    },
-    {
       "id": 61,
       "region_id": 31,
       "name": "Central Coast",
@@ -463,12 +445,6 @@
       "subregion_type": "subregion"
     },
     {
-      "id": 78,
-      "region_id": 40,
-      "name": "Eden Valley",
-      "subregion_type": "subregion"
-    },
-    {
       "id": 79,
       "region_id": 40,
       "name": "McLaren Vale",
@@ -566,13 +542,13 @@
     },
     {
       "id": 95,
-      "region_id": 47,
+      "region_id": 90,
       "name": "Paarl Mountain",
       "subregion_type": "subregion"
     },
     {
       "id": 96,
-      "region_id": 47,
+      "region_id": 90,
       "name": "Simonsberg-Paarl",
       "subregion_type": "subregion"
     },
@@ -712,12 +688,6 @@
       "id": 119,
       "region_id": 63,
       "name": "Southern Highlands",
-      "subregion_type": "subzone"
-    },
-    {
-      "id": 120,
-      "region_id": 64,
-      "name": "Ayrshire",
       "subregion_type": "subzone"
     },
     {
@@ -1147,12 +1117,6 @@
       "subregion_type": "subregion"
     },
     {
-      "id": 195,
-      "region_id": 31,
-      "name": "Alexander Valley",
-      "subregion_type": "subregion"
-    },
-    {
       "id": 196,
       "region_id": 31,
       "name": "Northern Interior",
@@ -1171,26 +1135,8 @@
       "subregion_type": "subregion"
     },
     {
-      "id": 199,
-      "region_id": 85,
-      "name": "Eden Valley",
-      "subregion_type": "subregion"
-    },
-    {
-      "id": 200,
-      "region_id": 40,
-      "name": "Riverland",
-      "subregion_type": "subregion"
-    },
-    {
-      "id": 201,
-      "region_id": 40,
-      "name": "Mount Benson",
-      "subregion_type": "subregion"
-    },
-    {
       "id": 202,
-      "region_id": 85,
+      "region_id": 40,
       "name": "Roennfeldt Road",
       "subregion_type": "subregion"
     },
@@ -1459,12 +1405,6 @@
       "subregion_type": "subregion"
     },
     {
-      "id": 247,
-      "region_id": 31,
-      "name": "Lodi",
-      "subregion_type": "subregion"
-    },
-    {
       "id": 248,
       "region_id": 99,
       "name": "Taurasi",
@@ -1486,12 +1426,6 @@
       "id": 251,
       "region_id": 99,
       "name": "Fiano di Avellino",
-      "subregion_type": "subregion"
-    },
-    {
-      "id": 252,
-      "region_id": 95,
-      "name": "Grampians",
       "subregion_type": "subregion"
     },
     {
@@ -1690,6 +1624,162 @@
       "id": 292,
       "region_id": 31,
       "name": "Knights Valley",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 293,
+      "region_id": 173,
+      "name": "Niigata Prefecture",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 294,
+      "region_id": 155,
+      "name": "Nagano Prefecture",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 295,
+      "region_id": 59,
+      "name": "Kobe",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 296,
+      "region_id": 155,
+      "name": "Matsumoto",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 297,
+      "region_id": 175,
+      "name": "Fushimi",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 298,
+      "region_id": 174,
+      "name": "Kumamoto Prefecture",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 299,
+      "region_id": 174,
+      "name": "Aso",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 300,
+      "region_id": 155,
+      "name": "Komoro",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 301,
+      "region_id": 178,
+      "name": "Iwakuni",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 302,
+      "region_id": 59,
+      "name": "Nada",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 303,
+      "region_id": 176,
+      "name": "Kanazawa",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 304,
+      "region_id": 3,
+      "name": "Épernay",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 305,
+      "region_id": 3,
+      "name": "Reims",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 306,
+      "region_id": 3,
+      "name": "Mareuil-sur-Ay",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 307,
+      "region_id": 2,
+      "name": "Bourgogne",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 308,
+      "region_id": 60,
+      "name": "Tequila",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 309,
+      "region_id": 61,
+      "name": "Dufftown",
+      "subregion_type": "subzone"
+    },
+    {
+      "id": 310,
+      "region_id": 63,
+      "name": "Tain",
+      "subregion_type": "subzone"
+    },
+    {
+      "id": 311,
+      "region_id": 200,
+      "name": "Oakville",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 312,
+      "region_id": 200,
+      "name": "Rutherford",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 313,
+      "region_id": 200,
+      "name": "Howell Mountain",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 314,
+      "region_id": 200,
+      "name": "St. Helena",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 315,
+      "region_id": 200,
+      "name": "Stags Leap District",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 316,
+      "region_id": 201,
+      "name": "Russian River Valley",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 317,
+      "region_id": 201,
+      "name": "Dry Creek Valley",
+      "subregion_type": "subregion"
+    },
+    {
+      "id": 318,
+      "region_id": 201,
+      "name": "Sonoma",
       "subregion_type": "subregion"
     }
   ]
