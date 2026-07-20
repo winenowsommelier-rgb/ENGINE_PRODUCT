@@ -42,16 +42,12 @@ export function RecsCarousel({ items }: RecsCarouselProps) {
             key={product.sku}
             className="snap-start shrink-0 w-[calc(50%-8px)] sm:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)]"
           >
-            {label ? (
-              <span className="mb-2 inline-flex items-center rounded-full border border-border bg-background px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-                {label}
-              </span>
-            ) : null}
             <ProductCard
               product={product}
               contactLinks={contactLinks}
               showDetails
               structural={structural}
+              bandLabel={label ?? undefined}
             />
           </div>
         );
