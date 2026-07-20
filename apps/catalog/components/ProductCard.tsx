@@ -52,6 +52,12 @@ interface ProductCardProps {
    */
   showDetails?: boolean;
   structural?: Record<string, string>;
+  /**
+   * Optional recommendation-reason pill (e.g. "Similar style", "Step up ↑"),
+   * rendered top-left over the image, above the stock-status badge. Only the
+   * PDP "You might also like" rail (RecsCarousel) passes this.
+   */
+  bandLabel?: string;
 }
 
 /** Key attributes for the compact card details block, in display order. */
@@ -72,6 +78,7 @@ export function ProductCard({
   contactLinks,
   showDetails = false,
   structural: structuralProp,
+  bandLabel,
 }: ProductCardProps) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const subtitle = product.brand || product.region;
@@ -112,24 +119,39 @@ export function ProductCard({
               className="rounded-lg"
             />
 
-            {/* Stock status badges — top-left. Priority: Archive > Check availability > Express. */}
-            {isArchived ? (
-              <span className="absolute left-2 top-2 rounded-full bg-muted/90 px-2.5 py-1 text-xs font-medium text-muted-foreground shadow-sm ring-1 ring-border">
-                Archive
-              </span>
-            ) : !inStock ? (
-              <span className="absolute left-2 top-2 rounded-full bg-background/90 px-2.5 py-1 text-xs font-medium text-muted-foreground shadow-sm ring-1 ring-border">
-                Check availability
-              </span>
-            ) : hasExpressDelivery ? (
-              <span className="absolute left-2 top-2 rounded-full bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
-                Express Delivery
-              </span>
-            ) : null}
+            {/* Top-left overlay stack: recommendation-reason band, then stock status.
+                Both are optional and stack vertically when both are present so neither
+                is ever cropped or overlapped. */}
+            <div className="absolute left-2 top-2 flex flex-col items-start gap-1.5">
+              {bandLabel ? (
+                <span className="inline-flex items-center rounded-full border border-border bg-background/95 px-2.5 py-1 text-xs font-medium text-muted-foreground shadow-sm">
+                  {bandLabel}
+                </span>
+              ) : null}
+              {/* Stock status badge. Priority: Archive > Check availability > Express. */}
+              {isArchived ? (
+                <span className="rounded-full bg-muted/90 px-2.5 py-1 text-xs font-medium text-muted-foreground shadow-sm ring-1 ring-border">
+                  Archive
+                </span>
+              ) : !inStock ? (
+                <span className="rounded-full bg-background/90 px-2.5 py-1 text-xs font-medium text-muted-foreground shadow-sm ring-1 ring-border">
+                  Check availability
+                </span>
+              ) : hasExpressDelivery ? (
+                <span className="rounded-full bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
+                  Express Delivery
+                </span>
+              ) : null}
+            </div>
 
             {/* Reputation tier — bottom-left, iconic/premium only. Renders nothing for
                 established/everyday/unrated (too noisy) or when no data. */}
             <ReputationBadge tier={product.reputation_tier} className="absolute bottom-14 left-2" />
+
+            {/* SKU — bottom-left of image, above the item name. */}
+            <span className="absolute bottom-2 left-2 rounded-full bg-background/90 px-2.5 py-1 text-[11px] font-medium tracking-wide text-muted-foreground shadow-sm ring-1 ring-border">
+              {product.sku}
+            </span>
 
             {/* Critic score — compact pill, top-right. Renders nothing for
                 unscored products (helper-gated), so no empty overlay. */}
