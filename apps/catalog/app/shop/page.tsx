@@ -182,89 +182,99 @@ export default function ShopPage({
           </p>
         </header>
 
-        <Suspense fallback={<div className="min-h-[88px]" aria-hidden="true" />}>
-          <Filters
-            countries={countries}
-            groupOptions={facets.groups}
-            countryOptions={facets.countries}
-            initialParams={currentParams}
-            availableSubCategories={facets.subCategories}
-            availableRegions={facets.regions}
-            availableSubRegions={facets.subRegions}
-            designationOptions={facets.designations}
-            grapeOptions={grapeOptions}
-            flavorOptions={flavorOptions}
-            bodyOptions={BODY_SCALE}
-            acidityOptions={ACIDITY_SCALE}
-            tanninOptions={TANNIN_SCALE}
-          />
-        </Suspense>
+        {/* lg+: filters become a sticky left rail beside the grid instead of
+            stacking full-width above it — same content, more dynamic reading
+            order, shorter page. Below lg it reverts to the original full-width
+            stack (handled inside <Filters>/<FilterAccordion> already). */}
+        <div className="flex flex-col gap-5 sm:gap-6 lg:grid lg:grid-cols-[280px_1fr] lg:items-start lg:gap-10">
+          <div className="lg:sticky lg:top-24 lg:z-10 lg:max-h-[calc(100dvh-6.5rem)] lg:overflow-y-auto lg:overscroll-contain lg:pb-8 lg:pr-1 lg:[scrollbar-width:thin]">
+            <Suspense fallback={<div className="min-h-[88px]" aria-hidden="true" />}>
+              <Filters
+                countries={countries}
+                groupOptions={facets.groups}
+                countryOptions={facets.countries}
+                initialParams={currentParams}
+                availableSubCategories={facets.subCategories}
+                availableRegions={facets.regions}
+                availableSubRegions={facets.subRegions}
+                designationOptions={facets.designations}
+                grapeOptions={grapeOptions}
+                flavorOptions={flavorOptions}
+                bodyOptions={BODY_SCALE}
+                acidityOptions={ACIDITY_SCALE}
+                tanninOptions={TANNIN_SCALE}
+              />
+            </Suspense>
+          </div>
 
-        <DrillBreadcrumb params={currentParams} pathname="/shop" />
+          <div className="flex min-w-0 flex-col gap-5 sm:gap-6">
+            <DrillBreadcrumb params={currentParams} pathname="/shop" />
 
-        {/* Quiet fallback into the finder quiz for browsers facing too much choice. */}
-        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-lg border border-border bg-secondary/40 px-4 py-3">
-          <p className="text-base text-muted-foreground">
-            Too many options? Let us help you choose.
-          </p>
-          <Link
-            href="/finder"
-            className="inline-flex min-h-[44px] items-center text-base font-medium text-primary transition-colors hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            Find Your Match →
-          </Link>
-        </div>
-
-        {total > 0 ? (
-          <p
-            className="text-base text-muted-foreground"
-            aria-live="polite"
-            role="status"
-          >
-            Showing{' '}
-            <span className="font-medium text-foreground">
-              {first}–{last}
-            </span>{' '}
-            of <span className="font-medium text-foreground">{total}</span>
-          </p>
-        ) : null}
-
-        {total === 0 ? (
-          <EmptyState />
-        ) : (
-          <>
-            <ViewItemListTracker
-              listName={activeGroup || 'Shop'}
-              items={pageItems.slice(0, 50).map((p, i) => ({
-                item_id: p.sku,
-                item_name: p.name,
-                item_category: activeGroup || undefined,
-                item_category2: p.category_type ?? undefined,
-                price: p.price ? Math.round(p.price) : undefined,
-                currency: 'THB',
-                index: i,
-                item_list_name: activeGroup || 'Shop',
-              }))}
-            />
-            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
-              {pageItems.map((product) => (
-                <ProductCard
-                  key={product.sku}
-                  product={product}
-                  contactLinks={links}
-                />
-              ))}
+            {/* Quiet fallback into the finder quiz for browsers facing too much choice. */}
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-lg border border-border bg-secondary/40 px-4 py-3">
+              <p className="text-base text-muted-foreground">
+                Too many options? Let us help you choose.
+              </p>
+              <Link
+                href="/finder"
+                className="inline-flex min-h-[44px] items-center text-base font-medium text-primary transition-colors hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Find Your Match →
+              </Link>
             </div>
 
-            {totalPages > 1 ? (
-              <Pagination
-                currentParams={currentParams}
-                page={page}
-                totalPages={totalPages}
-              />
+            {total > 0 ? (
+              <p
+                className="text-base text-muted-foreground"
+                aria-live="polite"
+                role="status"
+              >
+                Showing{' '}
+                <span className="font-medium text-foreground">
+                  {first}–{last}
+                </span>{' '}
+                of <span className="font-medium text-foreground">{total}</span>
+              </p>
             ) : null}
-          </>
-        )}
+
+            {total === 0 ? (
+              <EmptyState />
+            ) : (
+              <>
+                <ViewItemListTracker
+                  listName={activeGroup || 'Shop'}
+                  items={pageItems.slice(0, 50).map((p, i) => ({
+                    item_id: p.sku,
+                    item_name: p.name,
+                    item_category: activeGroup || undefined,
+                    item_category2: p.category_type ?? undefined,
+                    price: p.price ? Math.round(p.price) : undefined,
+                    currency: 'THB',
+                    index: i,
+                    item_list_name: activeGroup || 'Shop',
+                  }))}
+                />
+                <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-5 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+                  {pageItems.map((product) => (
+                    <ProductCard
+                      key={product.sku}
+                      product={product}
+                      contactLinks={links}
+                    />
+                  ))}
+                </div>
+
+                {totalPages > 1 ? (
+                  <Pagination
+                    currentParams={currentParams}
+                    page={page}
+                    totalPages={totalPages}
+                  />
+                ) : null}
+              </>
+            )}
+          </div>
+        </div>
       </main>
     </>
   );

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Check, ChevronDown, Plus, SlidersHorizontal, X } from 'lucide-react';
+import { Check, ChevronDown, Package, Plus, SlidersHorizontal, Star, X, type LucideIcon } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -11,6 +11,15 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from '@/components/ui/command';
 // Import the const from the PURE (no-fs) constants module: this is a client component,
 // and lib/category-groups → lib/sku-taxonomy imports `fs`, which cannot resolve in the
 // browser bundle. category-constants holds the same canonical CATEGORY_GROUPS.
@@ -198,26 +207,26 @@ function ChipRow({
 }
 
 /**
- * ChipRail — a horizontally-scrolling rail of single-select chips, each showing
- * its SKU count. Used for the whole geography strand (Country / Region /
+ * ChipRail — single-select facet picker for geography (Country / Region /
  * Sub-region) plus Grape/Flavor. Options arrive count-DESC so the highest-stock
- * entries lead the rail.
+ * entries lead.
  *
- * Responsive height: the rail is ONE row when there are few chips and only packs
- * into TWO rows once the list is long enough that two rows is the more compact
- * shape. We don't force two rows on a 3-chip list (that left an empty second
- * row and looked broken). `ROW2_THRESHOLD` is the count at/above which two rows
- * start to pay off; below it the single row reads cleaner. Long lists still
- * slide right (overflow-x-auto) rather than wrapping into a tall wall.
+ * Browsing a long list (Country runs ~70) by sliding a horizontal rail sideways
+ * is a bad pattern once it goes past a screenful — you can't scan it. Instead:
+ * the top `topN` options render as ordinary WRAPPING chips (fast path for the
+ * common cases, matches ChipRow's look), and everything else lives behind a
+ * "More …" button that opens a searchable Command popover (type-to-filter,
+ * same primitive as the rest of the app's comboboxes). If the active selection
+ * falls outside the top N, it's pinned into the visible row so the current
+ * filter is never hidden inside the popover.
  */
-const ROW2_THRESHOLD = 7;
-
 function ChipRail({
   options,
   active,
   ariaLabel,
   onSelect,
   iconFor,
+  topN = 8,
 }: {
   /** Either counted facets (geo) or plain string options (grape/flavor). */
   options: FacetOption[] | string[];
@@ -226,64 +235,148 @@ function ChipRail({
   onSelect: (value: string | null) => void;
   /** Optional emoji prefix for each chip (e.g. flag/category icon). '' = none. */
   iconFor?: (value: string) => string;
+  /** How many high-count options show as inline chips before the rest fold into "More". */
+  topN?: number;
 }) {
+  const [searchOpen, setSearchOpen] = useState(false);
   const items = options.map((o) =>
     typeof o === 'string' ? { value: o, count: undefined } : o,
   );
-  // Few chips → single row; many → two rows (then scroll). Driven by count so
-  // it's deterministic SSR-safe (no measuring the DOM).
-  const twoRows = items.length >= ROW2_THRESHOLD;
-  return (
-    <div
-      className={cn(
-        'flex snap-x gap-2 overflow-x-auto pb-2',
-        // Grid columns advance to the right; row count adapts to the list size
-        // so short lists stay a single tidy row instead of a half-empty 2-row.
-        'grid grid-flow-col auto-cols-max',
-        twoRows ? 'grid-rows-2' : 'grid-rows-1',
-        // Slim, unobtrusive scrollbar; momentum scroll on touch.
-        '[scrollbar-width:thin] [-webkit-overflow-scrolling:touch]',
-      )}
-      role="group"
-      aria-label={ariaLabel}
-    >
-      {items.map((opt) => {
-        const isActive = active === opt.value;
-        const icon = iconFor?.(opt.value) ?? '';
-        return (
-          <button
+
+  if (items.length <= topN) {
+    // Short enough to just show everything — no "More" needed.
+    return (
+      <div className="flex flex-wrap gap-2" role="group" aria-label={ariaLabel}>
+        {items.map((opt) => (
+          <RailChip
             key={opt.value}
-            type="button"
-            onClick={() => onSelect(isActive ? null : opt.value)}
-            aria-pressed={isActive}
-            className={cn(
-              'inline-flex min-h-[44px] snap-start items-center gap-2 whitespace-nowrap rounded-full border px-4 text-base transition-colors',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-              isActive
-                ? 'border-primary bg-primary text-primary-foreground'
-                : 'border-border bg-background text-foreground hover:border-primary hover:text-primary',
-            )}
-          >
-            {icon ? (
-              <span aria-hidden="true">{icon}</span>
-            ) : null}
-            {opt.value}
-            {opt.count !== undefined ? (
-              <span
-                className={cn(
-                  'rounded-full px-1.5 text-sm tabular-nums',
-                  isActive
-                    ? 'bg-primary-foreground/20 text-primary-foreground'
-                    : 'bg-muted text-muted-foreground',
-                )}
-              >
-                {opt.count}
-              </span>
-            ) : null}
-          </button>
-        );
-      })}
+            opt={opt}
+            isActive={active === opt.value}
+            icon={iconFor?.(opt.value)}
+            onSelect={onSelect}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  const topItems = items.slice(0, topN);
+  const restItems = items.slice(topN);
+  // Keep the active selection visible even if it's in the long tail, so the
+  // current filter is never hidden behind "More …".
+  const activeInRest = active && restItems.some((o) => o.value === active);
+  const visible = activeInRest
+    ? [...topItems, restItems.find((o) => o.value === active)!]
+    : topItems;
+  const overflowCount = activeInRest ? restItems.length - 1 : restItems.length;
+
+  return (
+    <div className="flex flex-wrap items-center gap-2" role="group" aria-label={ariaLabel}>
+      {visible.map((opt) => (
+        <RailChip
+          key={opt.value}
+          opt={opt}
+          isActive={active === opt.value}
+          icon={iconFor?.(opt.value)}
+          onSelect={onSelect}
+        />
+      ))}
+
+      {overflowCount > 0 ? (
+        <Popover open={searchOpen} onOpenChange={setSearchOpen}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className={cn(
+                'inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-dashed border-border px-4 text-base text-muted-foreground transition-colors',
+                'hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              )}
+            >
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              More {ariaLabel.toLowerCase()} ({overflowCount})
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-72 p-0" align="start">
+            <Command>
+              <CommandInput placeholder={`Search ${ariaLabel.toLowerCase()}…`} />
+              <CommandList>
+                <CommandEmpty>No matches.</CommandEmpty>
+                <CommandGroup>
+                  {items.map((opt) => {
+                    const isActive = active === opt.value;
+                    return (
+                      <CommandItem
+                        key={opt.value}
+                        value={opt.value}
+                        onSelect={() => {
+                          onSelect(isActive ? null : opt.value);
+                          setSearchOpen(false);
+                        }}
+                        className="justify-between"
+                      >
+                        <span className="flex items-center gap-2">
+                          {iconFor?.(opt.value) ? (
+                            <span aria-hidden="true">{iconFor(opt.value)}</span>
+                          ) : null}
+                          {opt.value}
+                          {isActive ? <Check className="h-3.5 w-3.5 text-primary" aria-hidden="true" /> : null}
+                        </span>
+                        {opt.count !== undefined ? (
+                          <span className="text-xs tabular-nums text-muted-foreground">{opt.count}</span>
+                        ) : null}
+                      </CommandItem>
+                    );
+                  })}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      ) : null}
     </div>
+  );
+}
+
+/** Single pill used by both the inline row and (visually) the popover list in ChipRail. */
+function RailChip({
+  opt,
+  isActive,
+  icon,
+  onSelect,
+}: {
+  opt: { value: string; count?: number };
+  isActive: boolean;
+  icon?: string;
+  onSelect: (value: string | null) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(isActive ? null : opt.value)}
+      aria-pressed={isActive}
+      className={cn(
+        'inline-flex min-h-[44px] items-center gap-2 whitespace-nowrap rounded-full border px-4 text-base transition-colors',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        isActive
+          ? 'border-primary bg-primary text-primary-foreground'
+          : 'border-border bg-background text-foreground hover:border-primary hover:text-primary',
+      )}
+    >
+      {icon ? <span aria-hidden="true">{icon}</span> : null}
+      {opt.value}
+      {opt.count !== undefined ? (
+        <span
+          className={cn(
+            'rounded-full px-1.5 text-sm tabular-nums',
+            isActive
+              ? 'bg-primary-foreground/20 text-primary-foreground'
+              : 'bg-muted text-muted-foreground',
+          )}
+        >
+          {opt.count}
+        </span>
+      ) : null}
+    </button>
   );
 }
 
@@ -401,13 +494,13 @@ function Chip({
 function QuickToggle({
   active,
   onChange,
-  icon,
+  icon: Icon,
   children,
 }: {
   active: boolean;
   onChange: (next: boolean) => void;
-  /** Emoji prefix (e.g. 📦 / ⭐) that reads the toggle at a glance. */
-  icon?: string;
+  /** Lucide icon component that reads the toggle at a glance. */
+  icon?: LucideIcon;
   children: React.ReactNode;
 }) {
   return (
@@ -424,11 +517,7 @@ function QuickToggle({
           : 'border-border bg-background text-muted-foreground hover:border-primary/60 hover:text-foreground',
       )}
     >
-      {icon ? (
-        <span className="text-base leading-none" aria-hidden="true">
-          {icon}
-        </span>
-      ) : null}
+      {Icon ? <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden /> : null}
       {children}
       <Check
         className={cn('h-3.5 w-3.5 shrink-0 transition-opacity', active ? 'opacity-100' : 'opacity-0')}
@@ -607,19 +696,19 @@ export function Filters({
           </button>
         </div>
 
-        {/* Row 2 — quick-filter toggle pills with emoji, plus Clear at the end. */}
+        {/* Row 2 — quick-filter toggle pills, plus Clear at the end. */}
         <div className="flex flex-wrap items-center gap-2 border-t border-border/50 pt-2.5">
           <QuickToggle
             active={inStockOnly}
             onChange={(next) => apply({ inStock: next ? '1' : null })}
-            icon="📦"
+            icon={Package}
           >
             In stock
           </QuickToggle>
           <QuickToggle
             active={hasScoreOnly}
             onChange={(next) => apply({ hasScore: next ? '1' : null })}
-            icon="⭐"
+            icon={Star}
           >
             Critic-scored
           </QuickToggle>
@@ -753,8 +842,7 @@ export function Filters({
         </ChipRow>
       </FilterAccordion>
 
-      {/* Origin — Country › Region › Sub-region, the long region list now lives
-          behind one collapsed header and a Show-all cap. */}
+      {/* Origin — Country › Region › Sub-region. */}
       <FilterAccordion
         label="Origin"
         defaultOpen={Boolean(activeCountry)}
@@ -764,8 +852,9 @@ export function Filters({
           ) : null
         }
       >
-        {/* Country — horizontal sliding chip rail with SKU counts (falls back
-            to a dropdown only if upstream didn't supply counts). */}
+        {/* Country — top-8 wrapping chips + searchable "More" popover for the
+            other ~60 (falls back to a plain dropdown only if upstream didn't
+            supply counts). */}
         <div className="flex flex-col gap-2">
           <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
             Country
@@ -777,6 +866,7 @@ export function Filters({
               active={activeCountry}
               onSelect={(value) => apply(clearDescendants('country', value))}
               iconFor={countryEmoji}
+              topN={8}
             />
           ) : (
             <DropdownMenu>
@@ -878,7 +968,7 @@ export function Filters({
         }
       >
         <div className="flex flex-col gap-4">
-          {/* Grape: count-less 2-row slide rail (high-cardinality, capped seed). */}
+          {/* Grape: count-less, high-cardinality seed list — top-N chips + searchable "More". */}
           {grapeOptions.length > 0 ? (
             <div className="flex flex-col gap-2">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -893,7 +983,7 @@ export function Filters({
             </div>
           ) : null}
 
-          {/* Flavor: count-less 2-row slide rail. */}
+          {/* Flavor: count-less seed list — top-N chips + searchable "More". */}
           {flavorOptions.length > 0 ? (
             <div className="flex flex-col gap-2">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
