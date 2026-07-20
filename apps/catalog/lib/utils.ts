@@ -34,6 +34,26 @@ export function isInStock(value: unknown): boolean {
 }
 
 /**
+ * Format the raw `vintage` string for display and flag whether the
+ * "may change" disclaimer should be shown alongside it.
+ *
+ * Data-shape note — vintage is a STRING at runtime that can carry a bracketed
+ * suffix, e.g. "2016 [**VINTAGE MAY CHANGE]" (see lib/types.ts). Shoppers
+ * should never see that literal bracket text; instead we show "2016 **" and
+ * render a short caption near it so they know to confirm with staff before
+ * ordering.
+ */
+export function formatVintage(vintage: string | undefined | null): {
+  display: string;
+  mayChange: boolean;
+} {
+  const raw = (vintage ?? '').trim();
+  const mayChange = /\[\*\*VINTAGE MAY CHANGE\]/i.test(raw);
+  const display = raw.replace(/\[\*\*VINTAGE MAY CHANGE\]/i, '**').replace(/\s+/g, ' ').trim();
+  return { display, mayChange };
+}
+
+/**
  * Parse a `food_matching` string into clean chip items.
  *
  * Data-shape note — the canonical separator is the pipe '|' (migrated

@@ -16,7 +16,7 @@ import { FEATURED_SKUS } from '@/lib/featured';
 import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
 import { toTiers, toStructural } from '@/lib/taste-adapter';
-import { isInStock, parseFoodMatching, signatureDishes } from '@/lib/utils';
+import { formatVintage, isInStock, parseFoodMatching, signatureDishes } from '@/lib/utils';
 import { sanitizeDescription } from '@/lib/sanitize-html';
 import type { PublicProduct } from '@/lib/types';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -215,6 +215,7 @@ export default function Page({ params }: { params: { sku: string } }) {
   // text, so this is the XSS boundary before dangerouslySetInnerHTML. Only render
   // the block when sanitized output is non-empty (40% of products have none).
   const description = sanitizeDescription(product.full_description || product.desc_en_short);
+  const vintage = formatVintage(product.vintage);
 
   // Taste viz inputs (rendered only when present).
   const tiers = toTiers(product.taste_profile);
@@ -348,11 +349,16 @@ export default function Page({ params }: { params: { sku: string } }) {
               <AttrRow label="Region" value={product.region} />
               <AttrRow label="Subregion" value={product.subregion} />
               <AttrRow label="Variety" value={product.variety} />
-              <AttrRow label="Vintage" value={product.vintage} />
+              <AttrRow label="Vintage" value={vintage.display} />
               <AttrRow label="Bottle size" value={product.bottle_size} />
               {/* Body / Acidity / Tannin intentionally omitted here — shown as gauges
                   in the Taste profile section below to avoid duplication. */}
             </dl>
+            {vintage.mayChange ? (
+              <p className="text-xs text-muted-foreground">
+                ** Vintage may change — please confirm with our team before ordering.
+              </p>
+            ) : null}
           </section>
 
           {/* Taste visualisations — only when data is present. */}
