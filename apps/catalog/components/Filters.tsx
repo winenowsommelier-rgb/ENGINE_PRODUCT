@@ -634,12 +634,12 @@ export function Filters({
     <section aria-label="Product filters" className="flex flex-col gap-2.5">
       {/* ── Refine toolbar: always-visible, result-agnostic controls, stacked
           as TWO rows so it reads cleanly at any width.
-            Row 1 (primary controls): Refine · Sort · …Clear · Hide/Show filters
+            Row 1 (primary controls): Refine · Sort
             Row 2 (quick toggles):    📦 In stock · ⭐ Critic-scored
           Sizing is tightened (text-sm, 36px visual) while tap targets stay
           comfortable. ── */}
       <div className="flex flex-col gap-2.5 rounded-xl border border-border bg-card px-3 py-2.5 sm:px-4">
-        {/* Row 1 — Refine label + Sort, with view controls trailing (ml-auto). */}
+        {/* Row 1 — Refine label + Sort. */}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <span className="mr-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/80">
             Refine
@@ -672,28 +672,6 @@ export function Filters({
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* Hide / show the whole filter-section stack — trailing on wide
-              rows (ml-auto), sits beside Sort. */}
-          <button
-            type="button"
-            onClick={() => setFiltersOpen((o) => !o)}
-            aria-expanded={filtersOpen}
-            aria-controls="filter-sections"
-            className={cn(
-              'ml-auto inline-flex h-9 items-center gap-1.5 rounded-full border bg-background px-3.5 text-sm font-medium transition-colors',
-              'text-foreground hover:border-primary/60 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
-              !filtersOpen && activeFilterCount > 0 ? 'border-primary/40' : 'border-border',
-            )}
-          >
-            <SlidersHorizontal className="h-4 w-4 opacity-80" aria-hidden="true" />
-            {filtersOpen ? 'Hide filters' : 'Show filters'}
-            {!filtersOpen && activeFilterCount > 0 ? (
-              <span className="ml-0.5 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold tabular-nums text-primary-foreground">
-                {activeFilterCount}
-              </span>
-            ) : null}
-          </button>
         </div>
 
         {/* Row 2 — quick-filter toggle pills, plus Clear at the end. */}
@@ -730,6 +708,33 @@ export function Filters({
           ) : null}
         </div>
       </div>
+
+      {/* Hide / show the whole filter-section stack — pulled out of the
+          Refine card so it reads as its own "expand the sections below"
+          control rather than living among the toolbar buttons. */}
+      <button
+        type="button"
+        onClick={() => setFiltersOpen((o) => !o)}
+        aria-expanded={filtersOpen}
+        aria-controls="filter-sections"
+        className={cn(
+          'inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-full border bg-background px-3.5 text-sm font-medium transition-colors',
+          'text-foreground hover:border-primary/60 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+          !filtersOpen && activeFilterCount > 0 ? 'border-primary/40' : 'border-border',
+        )}
+      >
+        <SlidersHorizontal className="h-4 w-4 opacity-80" aria-hidden="true" />
+        {filtersOpen ? 'Hide filters' : 'Show filters'}
+        {!filtersOpen && activeFilterCount > 0 ? (
+          <span className="ml-0.5 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold tabular-nums text-primary-foreground">
+            {activeFilterCount}
+          </span>
+        ) : null}
+        <ChevronDown
+          className={cn('h-4 w-4 opacity-70 transition-transform', filtersOpen && 'rotate-180')}
+          aria-hidden="true"
+        />
+      </button>
 
       {/* ── Accordion sections. Each collapses to a 52px header that reads back
           its active selection; "smart auto-open" expands only the sections that
