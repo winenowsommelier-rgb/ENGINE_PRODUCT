@@ -14,6 +14,8 @@ interface RecItem {
   product: PublicProduct;
   band: Band;
   contactLinks: ContactLinks;
+  /** Server-computed via lib/taste-adapter.ts:toStructural(product) — see ProductCard. */
+  structural?: Record<string, string>;
 }
 
 interface RecsCarouselProps {
@@ -33,7 +35,7 @@ export function RecsCarousel({ items }: RecsCarouselProps) {
       className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden"
       style={{ scrollbarWidth: 'none' }}
     >
-      {items.map(({ product, band, contactLinks }) => {
+      {items.map(({ product, band, contactLinks, structural }) => {
         const label = BAND_LABEL[band];
         return (
           <div
@@ -45,7 +47,12 @@ export function RecsCarousel({ items }: RecsCarouselProps) {
                 {label}
               </span>
             ) : null}
-            <ProductCard product={product} contactLinks={contactLinks} />
+            <ProductCard
+              product={product}
+              contactLinks={contactLinks}
+              showDetails
+              structural={structural}
+            />
           </div>
         );
       })}

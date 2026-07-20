@@ -3,17 +3,14 @@ TITLE: Wine Under ฿1,000 in Bangkok: The Best Bottles You're Ignoring
 SLUG: best-wine-under-1000-baht-bangkok
 DATE: 2026-07-07
 TAGS: curated,value,budget,red-wine,white-wine
-COVER-IMAGE: https://images.pexels.com/photos/5947052/pexels-photo-5947052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
-COVER-CREDIT: Maria Orlova via Pexels
-COVER-CREDIT-URL: https://www.pexels.com/photo/5947052/
+COVER-IMAGE: https://live.staticflickr.com/2527/4144527067_34f546525d_b.jpg
+COVER-CREDIT: gfairchild via Flickr (CC BY)
+COVER-CREDIT-URL: https://www.flickr.com/photos/gfairchild/4144527067
 META-TITLE: Best Wine Under ฿1,000 in Bangkok: Smart Picks 2026
 META-DESC: The best wines under ฿1,000 in Bangkok — reds, whites, and rosé that over-deliver at the price. A curated sommelier list, not a supermarket ranking.
 ---
-![Wine glasses at a Bangkok table](https://images.pexels.com/photos/5947052/pexels-photo-5947052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
 Curated  ·  Value  ·  Bangkok
-
-WNLQ9 Sommelier Team
 
 There are more than 1,300 wines under ฿1,000 available in Bangkok right now.
 Most of them are noise. This list is the edit — eight bottles that over-deliver
@@ -88,7 +85,7 @@ about origin or variety, put it back. That language is marketing, not winemaking
 
 ---
 
-![Bottles of red wine arranged on a wooden surface, labels facing forward](https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+![Raising a glass — everyday bottles are made for sharing](https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 *A selection of value reds across Chile, Argentina, and southern France — the three regions that consistently over-deliver at the ฿400–700 mark.*
 
 ## Eight bottles worth your attention
@@ -215,8 +212,6 @@ people walk past on the way to the bottles with the fancier labels."
 This list will rotate as new stock arrives. But the principles don't change: Chile,
 Argentina, southern France, southern Italy, and the Mosel for whites. These are
 the regions that earn your trust at this price — and that keep it.
-
-
 
 ---
 

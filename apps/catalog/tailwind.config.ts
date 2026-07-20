@@ -80,6 +80,27 @@ const config: Config = {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            // Hashnode image captions render as <figcaption>/<em> directly under
+            // <img>; default prose size (~16px) reads oversized next to the photo.
+            figcaption: {
+              fontSize: '0.8125rem',
+              lineHeight: '1.4',
+              color: 'hsl(var(--muted-foreground))',
+            },
+            'img + em': {
+              display: 'block',
+              fontSize: '0.8125rem',
+              lineHeight: '1.4',
+              color: 'hsl(var(--muted-foreground))',
+              fontStyle: 'normal',
+              marginTop: '0.5rem',
+            },
+          },
+        },
+      },
     },
   },
   plugins: [tailwindcssAnimate, tailwindcssTypography],

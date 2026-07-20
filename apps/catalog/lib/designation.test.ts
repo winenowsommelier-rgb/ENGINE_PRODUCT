@@ -47,4 +47,15 @@ describe('designationForProduct', () => {
     expect(designationForProduct(p(''))).toBeUndefined();
     expect(designationForProduct({ sku: 'X' } as any)).toBeUndefined();
   });
+  it('matches DOC/DOCG/IGT/AOC regardless of case (masterfile writes "Doc"/"Docg" too)', () => {
+    expect(designationForProduct(p('Pieropan Soave Classico La Rocca Doc'))).toBe('DOC');
+    expect(designationForProduct(p('Montelvini Asolo Prosecco Superiore Docg Extra Dry'))).toBe('DOCG');
+    expect(designationForProduct(p('Masseto Toscana Igt 2021'))).toBe('IGT');
+    expect(designationForProduct(p('Ronan by Clinet Bordeaux Aoc Red'))).toBe('AOC');
+  });
+  it('matches new designation terms: Crianza, Classico, Superiore', () => {
+    expect(designationForProduct(p('El Coto Rioja Crianza'))).toBe('Crianza');
+    expect(designationForProduct(p('Carpineto Chianti Classico'))).toBe('Classico');
+    expect(designationForProduct(p('Roccolo Grassi Valpolicella Superiore'))).toBe('Superiore');
+  });
 });

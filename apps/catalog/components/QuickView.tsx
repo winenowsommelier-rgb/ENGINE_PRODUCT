@@ -13,7 +13,7 @@ import { ContactButtons } from '@/components/ContactButtons';
 import { PriceBlock } from '@/components/product/PriceBlock';
 import { ReputationBadge } from '@/components/product/ReputationBadge';
 import { stripToText } from '@/lib/sanitize-html';
-import { isInStock } from '@/lib/utils';
+import { formatVintage, isInStock } from '@/lib/utils';
 import type { PublicProduct } from '@/lib/types';
 import type { ContactLinks } from '@/lib/contact';
 
@@ -50,11 +50,12 @@ interface QuickViewProps {
 
 /** Key attributes to surface, in display order. Nulls are skipped at render. */
 function attributeRows(p: PublicProduct): Array<{ label: string; value: string }> {
+  const vintage = formatVintage(p.vintage);
   const rows: Array<{ label: string; value: string | undefined | number }> = [
     { label: 'Country', value: p.country },
     { label: 'Region', value: p.region },
     { label: 'Grape', value: p.variety },
-    { label: 'Vintage', value: p.vintage },
+    { label: 'Vintage', value: vintage.display },
     { label: 'Size', value: p.bottle_size },
   ];
   return rows
@@ -70,6 +71,7 @@ export function QuickView({
 }: QuickViewProps) {
   const subtitle = product.brand || product.region;
   const attributes = attributeRows(product);
+  const vintageMayChange = formatVintage(product.vintage).mayChange;
   const inStock = isInStock(product.is_in_stock);
   // desc_en_short is plain prose today (0/5,786 contain tags), but strip any tags
   // to text so the modal can never show raw <p>/<strong> markup, and render it as a
@@ -122,6 +124,12 @@ export function QuickView({
                   </div>
                 ))}
               </dl>
+            ) : null}
+
+            {vintageMayChange ? (
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                ** Vintage may change — please confirm with our team before ordering.
+              </p>
             ) : null}
 
             {shortDesc ? (

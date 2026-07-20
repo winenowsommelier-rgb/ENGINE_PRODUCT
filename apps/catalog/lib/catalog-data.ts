@@ -41,6 +41,9 @@ export const PUBLIC_FIELDS = [
   // mezcal/rum/whisky/sparkling). Shopper-facing style labels, no margin/internal
   // signal. Consumed by category-scorer.ts (Task 11) via scoreCandidateDetailed.
   'gin_style','agave_aging','rum_style','peat_level','production_method',
+  // Curation dossier content — already gated to 'sourced'/'pairing-theory' confidence
+  // by scripts/refresh_products_dossier.py before it reaches the export, so safe as-is.
+  'curation_dossier',
 ] as const;
 
 // Drift guard: every PUBLIC_FIELDS key must be a known PublicProduct key.

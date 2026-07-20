@@ -5,7 +5,7 @@ import { StorefrontImage } from '@/components/StorefrontImage';
 import { ContactButtons } from '@/components/ContactButtons';
 import { RecsCarousel } from '@/components/RecsCarousel';
 import { TasteWheel } from '@/components/product/TasteWheel';
-import { StructuralGauges } from '@/components/product/StructuralGauges';
+import { CompactGauges } from '@/components/product/CompactGauges';
 import { CriticScoreStrip } from '@/components/CriticScoreStrip';
 import { PriceBlock } from '@/components/product/PriceBlock';
 import fs from 'fs';
@@ -18,7 +18,7 @@ import { FEATURED_SKUS } from '@/lib/featured';
 import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
 import { toTiers, toStructural } from '@/lib/taste-adapter';
-import { isInStock, parseFoodMatching, signatureDishes } from '@/lib/utils';
+import { formatVintage, isInStock, parseFoodMatching, signatureDishes } from '@/lib/utils';
 import { sanitizeDescription } from '@/lib/sanitize-html';
 import type { Band, PublicProduct } from '@/lib/types';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -173,6 +173,55 @@ function ReputationNote({ product }: { product: PublicProduct }) {
 }
 
 /**
+ * CurationDossier — expert-reference content (Phase 1 canary, ~10 wine_keys
+ * only as of 2026-07-18). Already gated to 'sourced'/'pairing-theory'
+ * confidence server-side (scripts/refresh_products_dossier.py), so anything
+ * present here is safe to render as-is — no further filtering needed.
+ * Renders nothing when curation_dossier is absent (the overwhelming majority
+ * of products, until Phase 2 scales generation to the full wine_key set).
+ */
+function CurationDossier({ product }: { product: PublicProduct }) {
+  const dossier = product.curation_dossier;
+  if (!dossier) return null;
+  const { style_summary, expert_note, producer_history, signature_pairings } = dossier;
+  if (!style_summary && !expert_note && !producer_history && !signature_pairings?.length) return null;
+
+  return (
+    <section className="flex flex-col gap-4 rounded-lg border border-border bg-card px-4 py-4">
+      <h2 className="text-base font-semibold text-foreground">From our sommelier team</h2>
+      {style_summary ? (
+        <p className="text-base font-medium leading-relaxed text-foreground">{style_summary}</p>
+      ) : null}
+      {expert_note ? (
+        <p className="text-sm leading-relaxed text-muted-foreground">{expert_note}</p>
+      ) : null}
+      {producer_history ? (
+        <div>
+          <h3 className="mb-1 text-sm font-semibold text-foreground">Producer history</h3>
+          <p className="text-sm leading-relaxed text-muted-foreground">{producer_history}</p>
+        </div>
+      ) : null}
+      {signature_pairings?.length ? (
+        <div>
+          <h3 className="mb-2 text-sm font-semibold text-foreground">Signature pairings</h3>
+          <ul className="flex flex-col gap-2">
+            {signature_pairings.map((p) => (
+              <li key={p.dish} className="text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">
+                  {p.dish}
+                  {p.dish_local ? ` (${p.dish_local})` : ''}
+                </span>{' '}
+                — {p.reason}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+/**
  * "Pairs well with" — clean category chips, plus a few aspirational signature
  * dishes pulled from food_matching_detail when the product has genuinely
  * elaborate suggestions (e.g. "Dry-aged Wagyu ribeye with bone marrow butter").
@@ -252,6 +301,7 @@ export default function Page({ params }: { params: { sku: string } }) {
   // text, so this is the XSS boundary before dangerouslySetInnerHTML. Only render
   // the block when sanitized output is non-empty (40% of products have none).
   const description = sanitizeDescription(product.full_description || product.desc_en_short);
+  const vintage = formatVintage(product.vintage);
 
   // Taste viz inputs (rendered only when present).
   const tiers = toTiers(product.taste_profile);
@@ -272,7 +322,12 @@ export default function Page({ params }: { params: { sku: string } }) {
     .map(({ sku, band }) => {
       const p = getProductBySku(sku);
       return p
-        ? { product: p, band, contactLinks: buildContactLinks(contactEnv, { name: p.name, sku: p.sku }) }
+        ? {
+            product: p,
+            band,
+            contactLinks: buildContactLinks(contactEnv, { name: p.name, sku: p.sku }),
+            structural: toStructural(p),
+          }
         : null;
     })
     .filter((r): r is NonNullable<typeof r> => Boolean(r));
@@ -378,6 +433,8 @@ export default function Page({ params }: { params: { sku: string } }) {
 
           <ReputationNote product={product} />
 
+          <CurationDossier product={product} />
+
           {/* Description — ONLY when present (40% have none; don't show an empty block).
               Sanitized Magento HTML rendered for formatting; safe per sanitizeDescription. */}
           {description ? (
@@ -396,18 +453,23 @@ export default function Page({ params }: { params: { sku: string } }) {
               <AttrRow label="Region" value={product.region} />
               <AttrRow label="Subregion" value={product.subregion} />
               <AttrRow label="Variety" value={product.variety} />
-              <AttrRow label="Vintage" value={product.vintage} />
+              <AttrRow label="Vintage" value={vintage.display} />
               <AttrRow label="Bottle size" value={product.bottle_size} />
               {/* Body / Acidity / Tannin intentionally omitted here — shown as gauges
                   in the Taste profile section below to avoid duplication. */}
             </dl>
+            {vintage.mayChange ? (
+              <p className="text-xs text-muted-foreground">
+                ** Vintage may change — please confirm with our team before ordering.
+              </p>
+            ) : null}
           </section>
 
           {/* Taste visualisations — only when data is present. */}
           {(tiers || hasStructural) ? (
             <section className="flex flex-col gap-8">
               <h2 className="text-base font-semibold text-foreground">Taste profile</h2>
-              {hasStructural ? <StructuralGauges structural={structural} /> : null}
+              {hasStructural ? <CompactGauges structural={structural} size="md" /> : null}
               {tiers ? <TasteWheel tiers={tiers} varietalLabel={product.variety || product.name} /> : null}
             </section>
           ) : null}

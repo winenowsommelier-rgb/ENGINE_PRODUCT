@@ -73,3 +73,27 @@ describe('featured frontmatter field', () => {
     expect(posts[0].featured).toBe(false);
   });
 });
+
+describe('briefFromMarkdown', () => {
+  // Regression guard: Aug-2026 drip posts opened with a markdown image, and the
+  // old brief fallback leaked raw "![alt](url)" text into category-page cards.
+  it('strips a leading markdown image instead of leaking it into the brief', async () => {
+    const { briefFromMarkdown } = await import('./local-posts');
+    const brief = briefFromMarkdown(
+      '![Riesling grapes](https://example.com/x.jpg)\n\nGUIDE  ·  WHITE WINE\n\nGerman wine has one of the most complex label systems in the world — and most buyers give up before they understand it.'
+    );
+    expect(brief).not.toContain('![');
+    expect(brief).not.toContain('example.com');
+    expect(brief).toMatch(/^German wine has/);
+  });
+
+  it('strips product-embed comments, headings, and emphasis markers', async () => {
+    const { briefFromMarkdown } = await import('./local-posts');
+    const brief = briefFromMarkdown(
+      '## Heading\n\n<!-- product: WWW5371AB -->\n\nThis is the **first** real paragraph of prose, long enough to survive the label-line filter easily.'
+    );
+    expect(brief).not.toContain('#');
+    expect(brief).not.toContain('product:');
+    expect(brief).toMatch(/^This is the first real paragraph/);
+  });
+});

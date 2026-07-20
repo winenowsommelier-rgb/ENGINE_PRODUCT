@@ -37,6 +37,26 @@ function slugFromFilename(filename: string): string {
   return filename.replace(/\.md$/, '');
 }
 
+// First ~200 chars of real prose: no images, embeds, headings, or markdown syntax.
+export function briefFromMarkdown(markdown: string): string {
+  return markdown
+    .replace(/<!--[\s\S]*?-->/g, '') // product-embed comments
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '') // images
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1') // links → keep label
+    .replace(/^#+\s[^\n]*$/gm, '') // headings
+    .replace(/^\|.*\|\s*$/gm, '') // table rows
+    .replace(/^-{3,}\s*$/gm, '') // hr
+    .replace(/[*_`>]/g, '') // emphasis/quote markers
+    .split('\n')
+    .map((l) => l.trim())
+    // Drop short label-like lines (bylines, "GUIDE · GERMANY", "Ripeness") — keep sentences.
+    .filter((l) => l.length > 60 || /[.!?]$/.test(l))
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .slice(0, 200)
+    .trim();
+}
+
 function tagsFromString(raw: string | undefined): { name: string; slug: string }[] {
   if (!raw) return [];
   return raw.split(',').map((t) => {
@@ -74,7 +94,7 @@ function readPostFile(filename: string): BlogPost | null {
     featured: data['FEATURED'] === 'true',
     title,
     slug,
-    brief: (data.BRIEF as string | undefined) ?? markdown.replace(/#+\s[^\n]+\n*/g, '').slice(0, 200).trim(),
+    brief: (data.BRIEF as string | undefined) ?? briefFromMarkdown(markdown),
     content: { html, markdown },
     coverImage: data['COVER-IMAGE'] ? { url: data['COVER-IMAGE'] as string } : null,
     tags: tagsFromString(data.TAGS as string | undefined),

@@ -108,6 +108,24 @@ export interface PublicProduct {
   rum_style?: 'white_unaged' | 'gold_light' | 'dark_aged' | 'spiced' | 'overproof' | 'pot_still_funk';
   peat_level?: 'none' | 'light' | 'medium' | 'heavy';
   production_method?: 'traditional_method' | 'tank_method' | 'ancestral_method';
+  // Curation dossier — expert-reference content, gated to 'sourced'/'pairing-theory'
+  // confidence only by scripts/refresh_products_dossier.py before it ever reaches
+  // products.curation_dossier, so every field present here is safe to render as-is.
+  // Absent (not present) for the ~988 wine_keys not yet generated (Phase 1 canary only).
+  curation_dossier?: {
+    style_summary?: string;
+    expert_note?: string;
+    producer_history?: string;
+    signature_pairings?: Array<{
+      dish: string;
+      dish_local: string | null;
+      cuisine: string;
+      course: string;
+      heat_level_ok: number;
+      reason: string;
+      confidence: string;
+    }>;
+  };
 }
 
 /** Intent band assigned to each recommendation relative to the subject's price. */

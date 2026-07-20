@@ -3,8 +3,8 @@ TITLE: Rum in Bangkok: A Guide to What's Worth Buying
 SLUG: rum-guide-bangkok
 DATE: 2026-06-27
 TAGS: guide,rum,spirits,bangkok
-COVER-IMAGE: https://images.pexels.com/photos/4021983/pexels-photo-4021983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
-COVER-CREDIT: A backlit line of rum bottles behind a dim bar — the range of colour, from water-white to dark mahogany, is the first clue to how each was aged.
+COVER-IMAGE: https://live.staticflickr.com/2115/2077303338_ce5eb4ac38_b.jpg
+COVER-CREDIT: rick via Flickr (CC BY)
 META-TITLE: Rum Bangkok Guide: Best Bottles to Buy in Thailand
 META-DESC: White, dark, aged, agricole — the complete Bangkok rum guide. What to buy, how to drink it, and which bottles are actually worth the baht.
 ---
@@ -32,8 +32,6 @@ Dark rum is where the molasses character gets loud. These are typically column-d
 <!-- product: LRM0143CP --> **Dead Man's Fingers Spiced Rum** — ฿749
 
 Vanilla, coconut, and warm spice. The easiest entry point in the category — excellent with ginger beer and a squeeze of lime.
-
-![A row of rum bottles on a backlit bar shelf, labels glowing amber and gold](https://images.pexels.com/photos/3407777/pexels-photo-3407777.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
 *The range of rum — from clear unaged white to deep mahogany solera — represents one of the most geographically diverse categories in spirits.*
 
@@ -118,8 +116,6 @@ Solera is a fractional blending system borrowed from the Sherry and Cognac tradi
 ---
 
 The bottle you open tonight doesn't need to be the most expensive one on the shelf. It just needs to be cold, honest, and well-made — and rum, more often than most categories, delivers all three at once.
-
-
 
 ---
 
