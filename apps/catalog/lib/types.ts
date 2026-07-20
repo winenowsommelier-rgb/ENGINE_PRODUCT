@@ -102,6 +102,12 @@ export interface PublicProduct {
   reputation_composite?: number;
   reputation_confidence?: number;
   reputation_summary?: string;
+  // Phase 2 — spirits classification fields (manually assigned)
+  gin_style?: 'juniper_forward' | 'contemporary_citrus' | 'contemporary_floral' | 'contemporary_fruit' | 'spiced' | 'aged_barrel';
+  agave_aging?: 'blanco' | 'reposado' | 'anejo' | 'extra_anejo';
+  rum_style?: 'white_unaged' | 'gold_light' | 'dark_aged' | 'spiced' | 'overproof' | 'pot_still_funk';
+  peat_level?: 'none' | 'light' | 'medium' | 'heavy';
+  production_method?: 'traditional_method' | 'tank_method' | 'ancestral_method';
   // Curation dossier — expert-reference content, gated to 'sourced'/'pairing-theory'
   // confidence only by scripts/refresh_products_dossier.py before it ever reaches
   // products.curation_dossier, so every field present here is safe to render as-is.
@@ -121,3 +127,14 @@ export interface PublicProduct {
     }>;
   };
 }
+
+/** Intent band assigned to each recommendation relative to the subject's price. */
+export type Band = 'similar' | 'step-up' | 'great-alternative';
+
+/** A single recommendation result with band tag and score detail. */
+export type RecommendationResult = {
+  product: PublicProduct;
+  band: Band;
+  score: number;
+  scoreBreakdown: Record<string, number>;
+};

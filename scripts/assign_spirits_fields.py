@@ -1,0 +1,442 @@
+#!/usr/bin/env python3
+"""
+Assign gin_style / agave_aging / rum_style / peat_level / production_method
+from product name patterns. Safe to re-run (only writes when pattern matches
+and field is currently NULL).
+
+Run in canary mode first: python3 scripts/assign_spirits_fields.py --canary --db <path>
+Full run:                  python3 scripts/assign_spirits_fields.py --db <path>
+
+NOTE: Always pass --db explicitly when running from a git worktree; the
+default path resolves relative to the script and can point at the wrong
+DB (e.g. a stray 0-byte auto-created file in a worktree checkout).
+
+DATA-QUALITY WARNING (peat_level): any peated whisky whose brand is missing
+from PEAT_RULES falls through to the 'none' fallback, which gets WRITTEN AS
+FACT — the recommendation engine will then actively pair it with genuinely
+unpeated whiskies (+3 score boost). This is the same failure class as the
+country-from-brand incident (19/24 wrong, PR #48 -> reverted #50). The canary
+review for this script MUST cross-reference the full distinct whisky product
+list against known peated producers before the full run — see Task 10 plan.
+"""
+from __future__ import annotations
+
+import argparse
+import re
+import sqlite3
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_DB = ROOT / "data" / "db" / "products.db"
+
+# category_type is NOT a stored column on products.db — it is derived from the
+# SKU prefix at read-time (see data/lib/taxonomy/sku_taxonomy.py resolve()).
+# The plan's literal script assumed `SELECT ... category_type FROM products`,
+# which does not exist and would crash immediately (verified against main's
+# real DB: PRAGMA table_info(products) has no category_type column). Rule 12
+# requires routing on category_type (not raw classification), so this script
+# computes it via the canonical resolver instead of reading a non-existent
+# column — same pattern refresh_live_export.py uses.
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from data.lib.taxonomy.sku_taxonomy import resolve as _resolve_taxonomy  # noqa: E402
+
+# ── Gin style ──────────────────────────────────────────────────────────────
+# DATA-QUALITY WARNING: this is the same brand-inference failure class as
+# PEAT_RULES (see warning below) and the reverted country-from-brand incident
+# (19/24 wrong, PR #48 -> #50). Before this fix, ANY gin with no specific
+# keyword hit the bare fallback ('juniper_forward', None), which WRITES A
+# GUESSED VALUE AS FACT. That fallback bucket contained well-known non-juniper
+# gins asserted as juniper-forward — e.g. Tanqueray No. TEN (citrus-forward:
+# grapefruit/lime/chamomile is its signature, not juniper) and every Hendrick's
+# expression (rose + cucumber floral infusion is the entire brand identity).
+# Mitigations applied 2026-07-10:
+#   (a) explicit brand+expression regexes below for products whose flavor
+#       profile is well known but not stated in the product name;
+#   (b) keyword coverage widened (rosa/sloe/quince/genever etc.) so more
+#       products resolve on real name signal instead of falling through;
+#   (c) the bare fallback now writes NULL, not a guessed value — matchField()
+#       in category-scorer.ts already treats NULL as "no signal" (verified),
+#       so an unmatched gin gets no scoring bonus/penalty instead of a false
+#       juniper_forward claim.
+# Tanqueray No. TEN: citrus-forward premium gin — fresh grapefruit, lime, and
+# chamomile are its stated signature botanicals, not a juniper-led profile.
+# Only the "No. TEN"/"No Ten" expression — "Tanqueray Flor de Sevilla"
+# (orange-forward, already caught by the citrus rule below) is handled by
+# the generic citrus rule further down.
+_GIN_TANQUERAY_NO_TEN = r'\btanqueray\s*no\.?\s*ten\b'
+# Plain "Tanqueray Gin" (no "London Dry" in this catalog's product name) IS
+# the brand's flagship London Dry expression — juniper-forward is its
+# universally known profile. Scoped narrowly (word "gin" immediately after
+# "tanqueray", nothing else) so it doesn't swallow No. TEN or Flor de
+# Sevilla, which are checked first anyway.
+_GIN_TANQUERAY_FLAGSHIP = r'\btanqueray\s+gin\b'
+GIN_RULES = [
+    ('contemporary_citrus',   _GIN_TANQUERAY_NO_TEN),
+    # Hendrick's: the brand's entire identity across its core range is rose +
+    # cucumber floral infusion (original), with named-flower expressions
+    # (Flora, Neptunia, Grand Cabaret) extending the floral theme rather than
+    # departing from it — a bare "Hendrick's Gin" with no other keyword match
+    # must resolve floral, not the juniper default.
+    ('contemporary_floral',   r"\bhendrick'?s\b"),
+    ('aged_barrel',           r'\b(aged|barrel[- ]aged|cask)\b'),
+    ('spiced',                r'\b(spiced|pepper|chilli|ginger)\b'),
+    ('contemporary_floral',   r'\b(floral|rose|rosa|elderflower|lavender|hibiscus|jasmine|sakura|violet)\b'),
+    ('contemporary_fruit',    r'\b(berry|bramble|strawberry|raspberry|rhubarb|mango|pineapple|passion\s?fruit|quince|sloe|apple|peach|pear|plum|watermelon|banana)\b'),
+    ('contemporary_citrus',   r'\b(citrus|lemon|lime|grapefruit|orange|yuzu|bergamot|arancia|limone|sevilla)\b'),
+    ('juniper_forward',       r'\b(london dry|classic|traditional|juniper|old tom|genever|jenever)\b'),
+    ('juniper_forward',       _GIN_TANQUERAY_FLAGSHIP),
+    (None,                     None),  # fallback — SEE WARNING ABOVE — was ('juniper_forward', None); genuinely unmatched gins now get NULL, not a guess
+]
+
+# ── Agave aging ────────────────────────────────────────────────────────────
+# DATA-QUALITY WARNING: same brand-inference failure class (see GIN_RULES /
+# PEAT_RULES warnings). Before this fix, ANY tequila/mezcal with no specific
+# keyword hit the bare fallback ('blanco', None) — writing a guessed aging
+# tier as fact. Confirmed wrong: Don Julio 1942 (one of the most famous
+# AÑEJO tequilas in the world — 3+ years aged in American oak, explicitly
+# marketed as añejo, not blanco) was asserted 'blanco'. Clase Azul "Tequila
+# Gold" was also asserted 'blanco'; "Gold"-labeled tequilas are conventionally
+# joven/reposado-tier (young spirit blended with reposado/añejo or coloring —
+# NOT an unaged blanco), so a bare 'gold' keyword now maps to 'reposado' as
+# the closer of the two conservative buckets this script supports (this
+# script's value set doesn't have a distinct 'joven' bucket; reposado is the
+# lesser-wrong choice vs. asserting unaged blanco on a product literally
+# marketed as aged/gold-colored).
+# Mitigations: (a) explicit brand+expression correction for Don Julio 1942;
+# (b) 'gold'/'joven' keyword coverage added; (c) bare fallback now writes
+# NULL instead of a guessed 'blanco'.
+# Don Julio 1942: flagship añejo expression (per Don Julio's own
+# positioning), aged a minimum of 2.5 years — one of the best-known añejo
+# tequilas in the category. "1942" is the expression name, not a vintage
+# year, but the catalog rows for it (LTQ0240BU, LTQ0203BU) carry no other
+# aging qualifier, so this brand-specific correction is needed.
+_AGAVE_BRAND_CORRECTIONS = r'\bdon\s*julio\s*1942\b'
+AGAVE_RULES = [
+    ('anejo',       _AGAVE_BRAND_CORRECTIONS),
+    ('extra_anejo', r'\bextra\s+a[ñn]ejo\b'),
+    ('anejo',       r'\ba[ñn]ejo\b'),
+    ('reposado',    r'\b(reposado|resposado|gold|joven)\b'),  # 'resposado' = observed catalog typo (Código 1530); 'gold'/'joven' see warning above
+    ('blanco',      r'\b(blanco|silver|plata|cristalino|platino|platinum)\b'),
+    (None,          None),  # fallback — SEE WARNING ABOVE — was ('blanco', None); genuinely unmatched agave spirits now get NULL, not a guess
+]
+
+# ── Rum style ──────────────────────────────────────────────────────────────
+# DATA-QUALITY WARNING: same brand-inference failure class (see GIN_RULES /
+# AGAVE_RULES / PEAT_RULES warnings). Before this fix, ANY rum with no
+# specific keyword hit the bare fallback ('gold_light', None) — writing a
+# guessed style as fact on 121/195 (62%) of rum rows. Two distinct bugs
+# combined to inflate that bucket:
+#   1. Word-boundary bug: \bxo\b requires the bare word "xo" and does not
+#      match "X.O" (periods, no internal space) — same class as the already-
+#      fixed "Smokehead" vs \bsmoke\b bug in PEAT_RULES. Bumbu X.O Rum
+#      (LRM0241BU) fell through to 'gold_light' though X.O ("Extra Old") is
+#      an aging designation, not a style descriptor. Fixed: \bx\.?o\.?\b
+#      matches "XO", "X.O", "X.O.".
+#   2. Missing aging-language coverage: many aged/reserve rums carry their
+#      signal only in words like "Reserve"/"Reserva"/"Old"/"Years"/
+#      "Centenario"/"Solera"/"Extra Old"/"Selection" rather than the literal
+#      word "aged" — e.g. Appleton Estate 12/21/30 Years Old, Diplomatico
+#      Reserva Exclusiva, Mount Gay Extra Old, Havana Club 7 Years, Flor de
+#      Caña Centenario range. These are all dark/aged rums by definition (age
+#      statements + Spanish "Ron" aging terminology) and should resolve
+#      dark_aged, not the generic gold_light default.
+# Mitigations: (a) XO regex fixed; (b) aging-language keyword coverage
+# widened (year counts, reserve/reserva, centenario, solera, extra old,
+# selection/especial); (c) bare fallback now writes NULL instead of a
+# guessed 'gold_light' — genuinely ambiguous rums (no age statement, no color
+# word, e.g. a bare "Brand Rum" with no other descriptor) now get NULL.
+RUM_RULES = [
+    ('pot_still_funk', r'\b(pot still|funky|hogo|overproof funk)\b'),
+    ('overproof',      r'\b(overproof|151|navy strength)\b'),
+    ('spiced',         r'\b(spiced|captain|flavou?red)\b'),
+    # 'black'/'negra'/'negro' added: "Black Rum"/"Carta Negra" ("black label"
+    # in Spanish, Bacardi's dark-rum tier) is a real named dark-rum style —
+    # direct signal, not inference. Checked AFTER 'spiced' above, so "Black
+    # Spiced Rum" products (Kraken, Blackheart, The Colonist, etc.) still
+    # correctly resolve 'spiced' first and are not reclassified here.
+    ('dark_aged',      r'\b(dark|aged|a[ñn]ejo|x\.?o\.?|vsop|vso|solera|vintage|mahogany'
+                        r'|reserve|reserva|centenario|extra\s+old|extra\s+seco'
+                        r'|selection|especial|\d+\s*years?\b|\d+\s*yo\b|gran\s+reserva'
+                        r'|black|negra|negro)\b'),
+    ('white_unaged',   r'\b(white|silver|blanco|carta blanca|light|agricole blanc)\b'),
+    # 'gold'/'golden'/'carta oro' as an EXPLICIT keyword match (not a guess):
+    # "Gold Rum" / "Carta Oro" ("gold label" in Spanish) is a real, named rum
+    # style — lightly aged/colored, between white and dark — so a product
+    # whose own name says "Gold" is direct signal, not inference. This is
+    # checked after dark_aged (an age-statement like "12 Years" still wins —
+    # e.g. Havana Club would resolve dark_aged before reaching here) and after
+    # white_unaged, and before the bare fallback.
+    ('gold_light',     r'\b(gold|golden|carta oro)\b'),
+    (None,              None),  # fallback — SEE WARNING ABOVE — was ('gold_light', None); genuinely unmatched rums now get NULL, not a guess
+]
+
+# ── Peat level ─────────────────────────────────────────────────────────────
+# DATA-QUALITY WARNING on the 'none' fallback: any peated whisky whose brand is
+# missing from these lists gets peat_level='none' WRITTEN AS FACT, and the
+# engine will then actively pair it with unpeated drams (+3). This is the
+# brand-inference failure class (country-from-brand: 19/24 wrong, PR #48->#50).
+# Mitigations: (a) brand lists below include the known peated distilleries in
+# the catalog — extended during canary review (see commit history / task
+# report for the specific additions and why); (b) canary MUST eyeball every
+# distinct whisky brand that falls through to 'none'; (c) when in doubt for a
+# Scotch single malt, prefer leaving NULL (engine treats NULL as "no signal, no
+# penalty") over asserting 'none'.
+# EXPLICIT_UNPEATED: checked BEFORE any brand-name fallback match. Several
+# brands below (Bruichladdich, Yoichi) sell both peated and explicitly
+# unpeated/non-peated expressions from the SAME distillery/brand name — a bare
+# brand-name match would assert 'medium'/'heavy' peat on a bottle whose own
+# name says otherwise (e.g. "Bruichladdich The Classic Laddie UNPEATED",
+# "Nikka YOICHI ... Non-Peated"). This is the exact brand-inference failure
+# class the module docstring warns about, just triggered by a brand fallback
+# instead of a missing brand. When the name explicitly disclaims peat, that
+# wins over any brand match.
+_EXPLICIT_UNPEATED = re.compile(r'\b(unpeated|non[- ]peated)\b', re.IGNORECASE)
+
+PEAT_RULES = [
+    ('heavy', r'\b(heavily peated|supernova|octomore|ardbeg|laphroaig|lagavulin|caol\s*ila|port charlotte|kilchoman|ledaig|longrow|smokehead)\b'),
+    ('medium', r'\b(peat\w*|smok\w*|bowmore|highland park|benromach|springbank|talisker|ardmore|croftengea|yoichi|bruichladdich)\b'),
+    ('light', r'\b(lightly peated|subtle smoke|bunnahabhain|jura|hakushu)\b'),
+    # REGION SIGNAL (2026-07-09, Task 10 review fix): "Islay" is overwhelmingly
+    # the peated-whisky region of Scotland. This is checked AFTER every
+    # brand-specific rule above (so a more specific brand/keyword match — e.g.
+    # Bowmore, Kilchoman, "peaty" — still wins) and after the
+    # _EXPLICIT_UNPEATED override in match_rules() (checked before this whole
+    # list, so "... Unpeated Islay ..." still resolves to 'none' correctly).
+    # 'medium' is the deliberately conservative default: Islay peat intensity
+    # spans light (some Bunnahabhain/Bruichladdich core range — already caught
+    # by brand rules or the Unpeated override before reaching here) to extreme
+    # (Octomore — already caught by the 'heavy' brand rule above), so a bare
+    # Islay name with no more specific signal should not default to 'none'
+    # (false claim of "definitely unpeated" — the exact bug this rule fixes)
+    # nor overclaim 'heavy'. Found via reviewer re-scan: Johnnie Walker Black
+    # Label Islay Origin (LWH0625BU), Douglas Laing's Double Barrel Islay &
+    # Highland (LWH1162EQ — blended malt combining Islay peated malt +
+    # Highland malt BY DEFINITION), Macleod's 8 Year Old Islay Single Malt
+    # (LWH0392AH) were all wrongly 'none' before this rule.
+    ('medium', r'\bislay\b'),
+    ('none',  None),  # fallback for whisky — see warning above
+]
+# CANARY REVIEW ADDITIONS (2026-07-09, Task 10): cross-referenced the full
+# 867-row Whisky catalog (is_in_stock IS NOT NULL — the script's actual
+# processing scope; NOTE: the original Task 10 report mislabeled this as
+# "in-stock" when true in-stock count is 429/867 — a reporting-scope error,
+# not a processing bug, but it's likely why these gaps were initially missed)
+# against known peated producers before the full run. Found and fixed regex
+# gaps that would have written peat_level='none' as fact on genuinely peated
+# products — the exact failure shape this warning is about:
+#   1. 'smokehead' added explicitly: \bsmoke\b requires "smoke" as a standalone
+#      word and does not match "Smokehead" (one token, no space) — 3 SKUs
+#      (LWH0396AH, LWH0397AH, LWH0712AH) would have been mis-tagged 'none' for
+#      a brand whose entire identity is heavy Islay peat.
+#   2. 'peat' / 'smoke' widened to 'peat\w*' / 'smok\w*' (matches peaty, peated,
+#      smoky, smoked, smokier, etc.) — \bpeat\b did not match "Peaty" in
+#      Tomintoul's "With a Peaty Tang" (LWH0573BT), a specifically peated
+#      expression from an otherwise-unpeated distillery's core range.
+#   3. (independent reviewer re-scan, same day) bare 'islay' region signal
+#      added as a 'medium' rule above — the regex had brand names but no
+#      region signal, so Islay-named products from brands not in the list
+#      (Johnnie Walker, Douglas Laing blends, Macleod's) fell through to
+#      'none'. See rule comment above for the 3 confirmed SKUs. Checked
+#      Orkney (Highland Park territory) and Campbeltown (Springbank/Longrow
+#      territory) region words too — both brands are already covered by
+#      existing rules and no whisky row in the catalog has either word in its
+#      name with peat_level='none', so no additional region rule was needed
+#      for those two.
+# Verified no other known peated distillery (Ardmore, Benromach, Springbank/
+# Longrow, Bruichladdich, Bowmore, Highland Park, Talisker, Jura,
+# Bunnahabhain, Hakushu, Yoichi, Kilchoman, Port Charlotte, Octomore, Ledaig,
+# Ardbeg, Laphroaig, Lagavulin, Caol Ila) was missing from the catalog's 867
+# whisky rows. Confirmed correct non-matches: Arran / GlenAllachie /
+# Glendronach / Cotswolds core ranges / Lohin McKinnon core range are
+# genuinely unpeated distilleries — 'none' is correct for them. Bruichladdich
+# "The Classic Laddie Unpeated Islay Single Malt" (LWH0315CN, LWH0543CN)
+# correctly resolves to 'none' via the _EXPLICIT_UNPEATED override, which is
+# checked before any PEAT_RULES entry including the new Islay rule.
+
+# ── Production method (sparkling) ──────────────────────────────────────────
+PRODUCTION_RULES = [
+    ('traditional_method', r'\b(m[eé]thode? traditionelle?|m[eé]thode? champenoise|cap classique|cava|crémant|cremant|english sparkling|sekt b\.?a\.?)\b'),
+    ('ancestral_method',   r'\b(p[eé]tillant naturel|pet nat|ancestral)\b'),
+    ('tank_method',        r'\b(prosecco|asti|charmat|tank method|cuve close)\b'),
+    ('traditional_method', None),  # fallback — assume traditional if we don't know
+]
+
+# ── Known mis-taxonomied SKUs (exclude entirely) ─────────────────────────────
+# These SKUs resolve to a spirits category_type via sku_taxonomy.resolve()
+# (Rule 12 routing) but are NOT actually the spirits product that implies —
+# they are event listings / bundles / other junk rows accidentally sharing a
+# spirits SKU prefix. Writing spirits-classification data (e.g. peat_level) to
+# them asserts a false fact about a non-existent product attribute.
+#
+# LWF0018HC — "ISLAY FC @Blue Moon Siam Paragon": an event listing (football
+# club fixture at a venue), not a whisky bottle. Its SKU prefix resolves to
+# category_type='Whisky', and its name contains "ISLAY", so it wrongly matches
+# the Islay region rule in PEAT_RULES ('medium'). This is a SKU-taxonomy bug
+# tracked as a separate out-of-scope data-quality issue — do NOT write
+# spirits classification data to it here. Currently the DB already holds the
+# (also wrong, but non-NULL) legacy value peat_level='none' for this row, so
+# the `WHERE col IS NULL` guard in main() happens to skip it today — but that
+# is protection-by-accident: a future "reset column to NULL and recompute"
+# migration (this codebase has precedent for that pattern) would silently
+# re-introduce the wrong 'medium' classification on a re-run. This exclusion
+# is the real, code-level guard: skipped unconditionally, regardless of NULL
+# state.
+_KNOWN_MISTAXONOMIED_SKUS = {'LWF0018HC'}
+
+CATEGORY_RULES = {
+    'Gin':     ('gin_style',         GIN_RULES),
+    'Tequila': ('agave_aging',       AGAVE_RULES),
+    'Mezcal':  ('agave_aging',       AGAVE_RULES),
+    'Rum':     ('rum_style',         RUM_RULES),
+    'Whisky':  ('peat_level',        PEAT_RULES),
+    # Sparkling applied by category_type below
+}
+
+SPARKLING_TYPES = {'Champagne', 'Sparkling Wine', 'Crémant', 'Cava', 'Prosecco'}
+
+
+def match_rules(name: str, rules: list) -> str | None:
+    name_lower = name.lower()
+    # Explicit "unpeated"/"non-peated" in the name overrides any brand-name
+    # fallback match in PEAT_RULES (e.g. Bruichladdich Classic Laddie, Nikka
+    # Yoichi Non-Peated) — the name's own claim beats an inferred brand
+    # default. Only applies to peat rules (identified by the 'none' fallback
+    # value, unique to PEAT_RULES among the rule sets in this script).
+    if rules is PEAT_RULES and _EXPLICIT_UNPEATED.search(name_lower):
+        return 'none'
+    for value, pattern in rules:
+        if pattern is None:
+            return value   # fallback
+        if re.search(pattern, name_lower, re.IGNORECASE):
+            return value
+    return None
+
+
+def resolve_column_and_rules(category_type: str | None, sku: str | None = None):
+    """Rule 12: route on category_type (derived from SKU prefix via
+    sku_taxonomy.resolve()) ONLY — never fall back to raw Magento
+    classification (it is a stale TYPE duplicate with a 1,509-row junk
+    bucket). A row without a resolvable category_type is skipped rather than
+    guessed.
+
+    Known mis-taxonomied SKUs (see _KNOWN_MISTAXONOMIED_SKUS) are excluded
+    unconditionally here, before any rule matching — this is a hard skip,
+    not dependent on the caller's NULL-guard, so a future column reset can't
+    silently re-introduce a wrong classification on these rows."""
+    if sku in _KNOWN_MISTAXONOMIED_SKUS:
+        return None, None
+    cat = category_type or ''
+    if 'Gin' in cat:
+        return 'gin_style', GIN_RULES
+    if 'Tequila' in cat or 'Mezcal' in cat:
+        return 'agave_aging', AGAVE_RULES
+    if 'Rum' in cat:
+        return 'rum_style', RUM_RULES
+    if 'Whisky' in cat or 'Whiskey' in cat:
+        return 'peat_level', PEAT_RULES
+    if any(t in cat for t in SPARKLING_TYPES):
+        return 'production_method', PRODUCTION_RULES
+    return None, None
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--db', type=Path, default=DEFAULT_DB)
+    ap.add_argument('--canary', action='store_true')
+    args = ap.parse_args(argv)
+
+    if not args.db.exists():
+        print(f"ERROR: db not found: {args.db}", file=sys.stderr)
+        return 1
+
+    # Guard against the worktree/stray-empty-DB trap: sqlite3.connect() will
+    # silently auto-create an empty SQLite file if the path doesn't already
+    # exist as a real DB, and a 0-byte file would pass the .exists() check
+    # above. Refuse to run unless the products table actually exists AND has
+    # rows. (CLAUDE.md Rule 1; same guard as scripts/migrate_spirits_fields.py.)
+    probe = sqlite3.connect(args.db)
+    try:
+        has_table = probe.execute(
+            "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='products'"
+        ).fetchone()[0]
+        row_count = (
+            probe.execute("SELECT count(*) FROM products").fetchone()[0]
+            if has_table else 0
+        )
+    finally:
+        probe.close()
+    if not has_table or row_count == 0:
+        print(
+            f"ERROR: {args.db} has no populated products table "
+            f"(has_table={bool(has_table)}, rows={row_count}). Refusing to run "
+            f"— pass --db with the real database path. This guards the worktree/"
+            f"empty-DB trap (CLAUDE.md Rule 1).",
+            file=sys.stderr,
+        )
+        return 1
+
+    # Print the resolved target on every run (Rule 9: know which data source
+    # you're reading/writing).
+    print(f'Target DB: {args.db} ({row_count} rows)')
+
+    conn = sqlite3.connect(args.db)
+    cur = conn.cursor()
+    raw_rows = cur.execute(
+        'SELECT sku, name FROM products WHERE is_in_stock IS NOT NULL'
+    ).fetchall()
+
+    # Derive category_type per row via the canonical SKU-prefix resolver
+    # (Rule 12) — category_type is not a stored column, see note above.
+    rows = []
+    for sku, name in raw_rows:
+        category_type = _resolve_taxonomy({'sku': sku, 'name': name})['type']
+        rows.append((sku, name, category_type))
+
+    if args.canary:
+        sample = {}
+        for cat in list(CATEGORY_RULES.keys()) + ['Sparkling']:
+            cat_rows = [r for r in rows if cat in (r[2] or '')]
+            sample[cat] = cat_rows[:10]
+        rows = [r for sub in sample.values() for r in sub]
+        print(f'CANARY MODE — {len(rows)} rows across categories')
+
+    updates = []
+    for sku, name, category_type in rows:
+        col, rules = resolve_column_and_rules(category_type, sku)
+        if col is None:
+            continue
+        value = match_rules(name or '', rules)
+        if value:
+            updates.append((value, sku, col))
+
+    print(f'Matched {len(updates)} products')
+
+    # CANARY WRITES TOO (feedback: a dry-run is not a canary — the canary must
+    # exercise the SAME code path as production: real UPDATEs against the real
+    # DB, verified in the export/UI afterwards). The only difference is the row
+    # sample. The pre-run DB backup is the rollback.
+    name_by_sku = {r[0]: r[1] for r in rows}
+    written = 0
+    for value, sku, col in updates:
+        cur.execute(f'UPDATE products SET {col}=? WHERE sku=? AND {col} IS NULL', (value, sku))
+        written += cur.rowcount
+    conn.commit()
+
+    if args.canary:
+        for value, sku, col in updates[:30]:
+            print(f'  {sku} | {col}={value} | {(name_by_sku.get(sku) or "")[:60]}')
+        print(f'-- Canary WROTE {written} rows (matched {len(updates)}).')
+        print('-- Verify with the coverage query + refresh_live_export.py + UI,')
+        print('-- then re-run without --canary. Rollback = restore the backup.')
+    else:
+        # Report ACTUAL written rows (rowcount), not matches: the `AND col IS
+        # NULL` guard means matched != written on re-runs.
+        print(f'Wrote {written} rows ({len(updates)} matched). Run refresh_live_export.py next.')
+    conn.close()
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

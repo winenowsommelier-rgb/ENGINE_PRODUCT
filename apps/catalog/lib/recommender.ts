@@ -3,13 +3,16 @@
  *
  * Scores other products against a given product and returns the best matches.
  *
- * BI-SWAP SEAM
- * ------------
- * This is a *rule-based* placeholder for real co-purchase intelligence. When BI
- * co-purchase data becomes available, it plugs in via the `coPurchaseStrategy`
- * seam in `getRecommendations` (see the FUTURE comment there) WITHOUT any change
- * to the UI: callers keep calling getRecommendations / precomputeRecommendations
- * and keep receiving PublicProduct[] / Map<sku, sku[]>.
+ * BI CO-PURCHASE SIGNAL (implemented 2026-07-13)
+ * ------------------------------------------------
+ * Real BI "bought in the same order" data (data/bi-product-affinities.json,
+ * co_order_affinities only — see lib/co-purchase.ts) is wired in as one more
+ * additive signal inside scoreCandidateDetailed, not a separate
+ * override/replace path. See
+ * docs/superpowers/specs/2026-07-11-co-purchase-wiring-design.md for the full
+ * design and the decisions behind it (esp. why co_customer_affinities is
+ * deliberately unused, and the known feedback-loop risk that is not yet
+ * mitigated).
  *
  * PERFORMANCE
  * -----------
@@ -20,12 +23,14 @@
  * scores against a small bucket instead of the whole catalog. See its docblock.
  */
 
-import type { PublicProduct } from '@/lib/types';
+import type { PublicProduct, Band, RecommendationResult } from '@/lib/types';
 import { isInStock, parseFoodMatching } from '@/lib/utils';
-import { typeForProduct } from '@/lib/category-groups';
+import { typeForProduct, groupForProduct, type CategoryGroup } from '@/lib/category-groups';
+import { categorySignalPoints, regionWeightOverride } from '@/lib/category-scorer';
+import { getCoPurchaseBonus, buildBaseSkuMap } from '@/lib/co-purchase';
 
 const MAX_RECS = 4;
-const PRICE_BAND = 0.4; // +/-40%
+const MAX_RECS_EXTENDED = 8;
 
 // Variety alias clusters — exact-match on variety misses obvious affinities like
 // Syrah/Shiraz or Pinot Noir/Burgundy. Two varieties in the same cluster score
@@ -50,6 +55,32 @@ for (let i = 0; i < VARIETY_ALIASES.length; i++) {
   }
 }
 
+/** Tiered price band — returns lo/hi inclusive range considered "similar". */
+function similarRange(price: number): { lo: number; hi: number } {
+  if (price < 1000)  return { lo: Math.max(0, price - 250), hi: price + 250 };
+  if (price < 5000)  return { lo: price * 0.80,             hi: price * 1.20 };
+  if (price < 15000) return { lo: price * 0.85,             hi: price * 1.15 };
+  return                    { lo: price * 0.90,             hi: price * 1.10 };
+}
+
+/**
+ * Assign an intent band to a candidate relative to the subject's price.
+ * Returns 'similar' when either price is missing/zero — safest default for display.
+ */
+export function priceBand(
+  subjectPrice: number | undefined | null,
+  candidatePrice: number | undefined | null,
+): Band {
+  if (
+    typeof subjectPrice !== 'number' || subjectPrice <= 0 ||
+    typeof candidatePrice !== 'number' || candidatePrice <= 0
+  ) return 'similar';
+  const { lo, hi } = similarRange(subjectPrice);
+  if (candidatePrice >= lo && candidatePrice <= hi) return 'similar';
+  if (candidatePrice > hi) return 'step-up';
+  return 'great-alternative';
+}
+
 function varietiesMatch(a: string | undefined | null, b: string | undefined | null): boolean {
   if (!a || !b) return false;
   const al = a.toLowerCase(), bl = b.toLowerCase();
@@ -66,6 +97,125 @@ function foodSet(food: string | undefined | null): Set<string> {
   return new Set(parseFoodMatching(food).map((s) => s.toLowerCase()));
 }
 
+// Sweetness/smokiness band ordering for "within 1 step" matching.
+// VOCAB VERIFIED against products.db 2026-07-09 (Rule 3 — don't trust assumed
+// constants): sweetness = Dry(1254)/Sweet(321)/Off-Dry(120)/Medium-Sweet(80).
+// There is NO 'Semi-Sweet' in the data. smokiness = none(1899)/heavy(71) and is
+// stored LOWERCASE — compare case-insensitively or the signal silently never
+// fires ('light'/'medium' kept in the scale for future enrichment).
+const SWEETNESS_BANDS = ['dry', 'off-dry', 'medium-sweet', 'sweet'];
+const SMOKINESS_BANDS = ['none', 'light', 'medium', 'heavy'];
+
+function withinOneBand(bands: string[], a: string | undefined | null, b: string | undefined | null): boolean {
+  if (!a || !b) return false;
+  const ai = bands.indexOf(a.toLowerCase()), bi = bands.indexOf(b.toLowerCase());
+  return ai !== -1 && bi !== -1 && Math.abs(ai - bi) <= 1;
+}
+
+/**
+ * Score a candidate against the current product, returning both the numeric
+ * score and a per-signal breakdown (used by staff API and getRecommendationsWithBands).
+ *
+ * Pre-split food set for `product` can be passed to avoid re-splitting it on
+ * every candidate (hot path during precompute).
+ */
+export function scoreCandidateDetailed(
+  product: PublicProduct,
+  candidate: PublicProduct,
+  productFoods?: Set<string>,
+  baseSkuMap?: Map<string, string[]>,
+): { score: number; breakdown: Record<string, number> } {
+  const breakdown: Record<string, number> = {};
+  const add = (key: string, pts: number) => { if (pts > 0) breakdown[key] = (breakdown[key] ?? 0) + pts; };
+
+  // Region — check for category-specific override (e.g. gin suppresses region:
+  // "London Dry" gin is made in many countries, so region is a weak/misleading
+  // signal for gin specifically). Falls back to the default weight (+3).
+  const regionWeight = regionWeightOverride(product) ?? 3;
+  if (regionWeight > 0 && product.region && candidate.region && product.region === candidate.region) {
+    add('region', regionWeight);
+  }
+  if (product.subregion && candidate.subregion && product.subregion === candidate.subregion) add('subregion', 2);
+  if (varietiesMatch(product.variety, candidate.variety)) add('variety', 2);
+  if (product.country && candidate.country && product.country === candidate.country) add('country', 1);
+
+  const a = productFoods ?? foodSet(product.food_matching);
+  const b = foodSet(candidate.food_matching);
+  let foodPts = 0;
+  for (const item of b) { if (a.has(item)) foodPts += 1; }
+  if (foodPts > 0) add('food', foodPts);
+
+  // Same canonical TYPE (category_type), not raw classification: a whisky mislabeled
+  // "Wine product" must score with other whiskies, not with wine. typeForProduct prefers
+  // the backfilled category_type, else resolves from the SKU.
+  const pt = typeForProduct(product);
+  const ct = typeForProduct(candidate);
+  if (pt && ct && pt !== 'Unknown' && pt === ct) add('category_type', 1);
+
+  if (typeof product.price === 'number' && product.price > 0 &&
+      typeof candidate.price === 'number' && candidate.price > 0) {
+    const { lo, hi } = similarRange(product.price);
+    if (candidate.price >= lo && candidate.price <= hi) add('price', 1);
+  }
+
+  // Taste tiebreakers — body/acidity/tannin always; sweetness/smokiness conditional.
+  if (product.body && candidate.body && product.body === candidate.body) add('body', 1.5);
+  if (product.acidity && candidate.acidity && product.acidity === candidate.acidity) add('acidity', 1.5);
+  if (product.tannin && candidate.tannin && product.tannin === candidate.tannin) add('tannin', 1.5);
+
+  const grp = groupForProduct(product);
+  if (grp === 'Wine' || grp === 'Liqueur') {
+    if (withinOneBand(SWEETNESS_BANDS, product.sweetness, candidate.sweetness)) add('sweetness', 0.5);
+  }
+  if (grp === 'Whisky' || grp === 'Spirits' || grp === 'Sake & Asian') {
+    if (withinOneBand(SMOKINESS_BANDS, product.smokiness, candidate.smokiness)) add('smokiness', 0.5);
+  }
+
+  // Category-specific signals (Phase 2: gin_style, agave_aging, rum_style,
+  // peat_level, production_method) — see category-scorer.ts. Attributed to
+  // the specific field it matched on (e.g. 'gin_style', 'peat_level') so the
+  // breakdown stays explainable, matching every other signal in this function.
+  const catSignal = categorySignalPoints(product, candidate);
+  if (catSignal) add(catSignal.field, catSignal.points);
+
+  // Popularity tiebreaker — the FIRST real behavioral (non-attribute) signal
+  // in this scorer. popularity_tier (0|1|2) is a p75-cutoff bucket derived at
+  // load time (catalog-data.ts) from popularity_score, which is itself a
+  // 365-day sales-velocity blend synced from BI order data
+  // (data/sync_popularity_from_bi.py). +1 when BOTH sides are tier 2 (top
+  // quartile by demand) — a small, bounded nudge, not a dominant signal:
+  // two demonstrably popular products are a LIGHTLY better mutual
+  // recommendation than two arbitrary ones, but shared demand alone doesn't
+  // make two products "alike" the way shared region/variety/taste do, so this
+  // sits below every attribute signal (region +3 down to sweetness +0.5).
+  // Only tier 2 counts (not >=1) to avoid rewarding the median product.
+  //
+  // DELIBERATELY NOT using reputation_tier here: a 2026-07-09 3-lens review
+  // (see memory project_reputation_v1_expert_review) found the 'iconic' tier
+  // materially miscalibrated — 181/199 iconic products have no real acclaim
+  // signal backing them, driven by a percentile tie-breaking bug affecting
+  // the 91% of SKUs with zero/near-zero demand. Scoring on reputation_tier
+  // would let the recommender confidently amplify a known-wrong "iconic"
+  // label. Revisit once that data fix lands (tracked, not yet shipped).
+  if (product.popularity_tier === 2 && candidate.popularity_tier === 2) {
+    add('popularity', 1);
+  }
+
+  // Co-purchase (real BI "bought in the same order" data) — see
+  // docs/superpowers/specs/2026-07-11-co-purchase-wiring-design.md. Only
+  // active when a baseSkuMap is provided (both call chains build one; tests
+  // that omit it simply get 0 co-purchase bonus, same as a subject with no
+  // BI record). Placed above popularity: two SPECIFIC products bought
+  // together is stronger evidence than both merely being popular in general.
+  if (baseSkuMap) {
+    const coPurchasePts = getCoPurchaseBonus(product.sku, candidate.sku, baseSkuMap);
+    if (coPurchasePts > 0) add('co_purchase', coPurchasePts);
+  }
+
+  const score = Object.values(breakdown).reduce((s, v) => s + v, 0);
+  return { score, breakdown };
+}
+
 /**
  * Score a candidate against the current product per spec §6.
  * Higher = more similar. Returns 0 for "nothing in common".
@@ -77,34 +227,9 @@ export function scoreCandidate(
   product: PublicProduct,
   candidate: PublicProduct,
   productFoods?: Set<string>,
+  baseSkuMap?: Map<string, string[]>,
 ): number {
-  let score = 0;
-
-  if (product.region && candidate.region && product.region === candidate.region) score += 3;
-  if (product.subregion && candidate.subregion && product.subregion === candidate.subregion) score += 2;
-  if (varietiesMatch(product.variety, candidate.variety)) score += 2;
-  if (product.country && candidate.country && product.country === candidate.country) score += 1;
-
-  const a = productFoods ?? foodSet(product.food_matching);
-  const b = foodSet(candidate.food_matching);
-  for (const item of b) {
-    if (a.has(item)) score += 1; // +1 per shared food item
-  }
-
-  // Same canonical TYPE (category_type), not raw classification: a whisky mislabeled
-  // "Wine product" must score with other whiskies, not with wine. typeForProduct prefers
-  // the backfilled category_type, else resolves from the SKU.
-  const pt = typeForProduct(product);
-  const ct = typeForProduct(candidate);
-  if (pt && ct && pt !== 'Unknown' && pt === ct) score += 1;
-
-  if (typeof product.price === 'number' && typeof candidate.price === 'number' && product.price > 0) {
-    const lo = product.price * (1 - PRICE_BAND);
-    const hi = product.price * (1 + PRICE_BAND);
-    if (candidate.price >= lo && candidate.price <= hi) score += 1;
-  }
-
-  return score;
+  return scoreCandidateDetailed(product, candidate, productFoods, baseSkuMap).score;
 }
 
 /**
@@ -132,6 +257,20 @@ function isEligible(product: PublicProduct, candidate: PublicProduct): boolean {
   if (candidate.sku === product.sku) return false; // not self
   if (!isInStock(candidate.is_in_stock)) return false; // out-of-stock excluded (handles raw "0" too)
   if (candidate.custom_stock_status === 'CATALOG') return false; // archived/discontinued — never recommend
+
+  // Suppress cross-category group recommendations (Wine ↔ Spirits, etc.): no amount
+  // of shared region/food/price signal makes a Wine->Whisky "you might also like"
+  // sensible. Skipped entirely (not suppressed) when either side resolves to
+  // 'Unknown' so synthetic/malformed fixtures without real SKUs/category_group
+  // aren't wrongly suppressed.
+  const subjectGroup = groupForProduct(product);
+  const candidateGroup = groupForProduct(candidate);
+  if (
+    subjectGroup !== 'Unknown' &&
+    candidateGroup !== 'Unknown' &&
+    subjectGroup !== candidateGroup
+  ) return false;
+
   return true;
 }
 
@@ -143,11 +282,12 @@ function rankAgainst(
   product: PublicProduct,
   candidates: readonly PublicProduct[],
   productFoods: Set<string>,
+  baseSkuMap?: Map<string, string[]>,
 ): PublicProduct[] {
   const scored: Array<{ p: PublicProduct; score: number }> = [];
   for (const c of candidates) {
     if (!isEligible(product, c)) continue;
-    const score = scoreCandidate(product, c, productFoods);
+    const score = scoreCandidate(product, c, productFoods, baseSkuMap);
     if (score > 0) scored.push({ p: c, score });
   }
   scored.sort((x, y) => (y.score - x.score) || (x.p.sku < y.p.sku ? -1 : x.p.sku > y.p.sku ? 1 : 0));
@@ -163,9 +303,6 @@ function rankAgainst(
  * product is a candidate. This is the authoritative, exact rule-based ranking.
  * `precomputeRecommendations` is a region-bucketed APPROXIMATION of this function
  * (see its docblock) and may return a different top-4 for the same product.
- *
- * FUTURE: if a coPurchaseStrategy provides real BI data for product.sku, use it
- * first; fall back to the rule-based scoring below.
  */
 export function getRecommendations(
   product: PublicProduct,
@@ -179,13 +316,133 @@ export function getRecommendations(
     seen.add(p.sku);
     candidates.push(p);
   }
-  return rankAgainst(product, candidates, foodSet(product.food_matching));
+  const baseSkuMap = buildBaseSkuMap(all);
+  return rankAgainst(product, candidates, foodSet(product.food_matching), baseSkuMap);
+}
+
+/**
+ * Canonical slot preference order for 8 positions.
+ * Odd positions (1,3,5,7 = index 0,2,4,6) → 'similar'
+ * Even positions (2,4,6,8 = index 1,3,5,7) → 'step-up'
+ */
+const SLOT_PREFERENCE: Band[] = [
+  'similar', 'step-up', 'similar', 'step-up',
+  'similar', 'step-up', 'similar', 'step-up',
+];
+
+/**
+ * Return up to 8 products "recommended together" with `product`, each tagged
+ * with an intent band ('similar' / 'step-up' / 'great-alternative') relative to
+ * the subject's price. Slots follow a canonical alternating preference order
+ * (odd slots prefer 'similar', even slots prefer 'step-up'); when a preferred
+ * band's pool is empty, the slot falls back to whatever band has candidates left
+ * (adjacency of the same band across slots is allowed in that case — see tests).
+ *
+ * 'great-alternative' (>20%+ cheaper) is EXCLUDED from slot-filling unless
+ * `opts.includeGreatAlternative` is true — the default in-stock product page only
+ * shows 'similar' and 'step-up'; a future OOS-alternative or B2B view can opt in.
+ *
+ * Excludes self and out-of-stock, dedupes by sku, cross-category suppressed via
+ * isEligible (same as getRecommendations), and only returns positive-scored
+ * matches — no zero-score padding, so fewer than 8 results is expected and correct
+ * when the pool doesn't have enough eligible candidates.
+ */
+export function getRecommendationsWithBands(
+  product: PublicProduct,
+  all: readonly PublicProduct[],
+  // B2B: PublicProduct has NO b2b_price — it is deliberately excluded from
+  // live_products_export.json ("must never leave the server", see
+  // refresh_live_export.py). Callers that want B2B banding INJECT a sku→price
+  // map (staff API loads it from data/b2b_products_export.json server-side).
+  // A `b2bMode` flag reading (product as any).b2b_price would silently no-op.
+  opts: {
+    includeGreatAlternative?: boolean;
+    b2bPrices?: ReadonlyMap<string, number>;
+    baseSkuMap?: Map<string, string[]>;
+  } = {},
+): RecommendationResult[] {
+  const { includeGreatAlternative = false, b2bPrices } = opts;
+
+  // Dedupe candidates.
+  const seen = new Set<string>();
+  const candidates: PublicProduct[] = [];
+  for (const p of all) {
+    if (seen.has(p.sku)) continue;
+    seen.add(p.sku);
+    candidates.push(p);
+  }
+
+  const productFoods = foodSet(product.food_matching);
+  // Callers with a hot-path Map<sku, sku[]> already built (e.g.
+  // precomputeRecommendations, which builds it ONCE against the full pool
+  // instead of rebuilding it per-product) can pass it in directly; standalone
+  // callers fall back to building it from `all` as before.
+  const baseSkuMap = opts.baseSkuMap ?? buildBaseSkuMap(all);
+
+  // Score all eligible candidates and assign bands.
+  type Scored = { result: RecommendationResult };
+  const similar: Scored[] = [], stepUp: Scored[] = [], greatAlt: Scored[] = [];
+
+  // Band prices: injected B2B price when available for that SKU, else retail.
+  const priceOf = (p: PublicProduct) => b2bPrices?.get(p.sku) ?? p.price;
+  const subjectPrice = priceOf(product);
+
+  for (const c of candidates) {
+    if (!isEligible(product, c)) continue;
+    const { score, breakdown } = scoreCandidateDetailed(product, c, productFoods, baseSkuMap);
+    if (score <= 0) continue;
+
+    const band = priceBand(subjectPrice, priceOf(c));
+
+    const result: RecommendationResult = { product: c, band, score, scoreBreakdown: breakdown };
+    if (band === 'similar') similar.push({ result });
+    else if (band === 'step-up') stepUp.push({ result });
+    else if (includeGreatAlternative) greatAlt.push({ result });
+  }
+
+  // Sort each pool by score desc, SKU asc for determinism.
+  const sort = (arr: Scored[]) =>
+    arr.sort((a, b) =>
+      (b.result.score - a.result.score) ||
+      (a.result.product.sku < b.result.product.sku ? -1 : 1)
+    );
+  sort(similar); sort(stepUp); sort(greatAlt);
+
+  // Fill slots using canonical slot preference. When preferred band exhausts,
+  // fall back to any remaining candidates.
+  const pools: Record<Band, Scored[]> = {
+    'similar': similar,
+    'step-up': stepUp,
+    'great-alternative': greatAlt,
+  };
+  const pop = (band: Band): RecommendationResult | null => {
+    const arr = pools[band];
+    return arr.length > 0 ? arr.shift()!.result : null;
+  };
+  const popAny = (): RecommendationResult | null => {
+    for (const band of ['similar', 'step-up', 'great-alternative'] as Band[]) {
+      const r = pop(band);
+      if (r) return r;
+    }
+    return null;
+  };
+
+  const output: RecommendationResult[] = [];
+  for (let i = 0; i < MAX_RECS_EXTENDED; i++) {
+    const preferred = SLOT_PREFERENCE[i];
+    const result = pop(preferred) ?? popAny();
+    if (!result) break;
+    output.push(result);
+  }
+
+  return output;
 }
 
 /**
  * Precompute recommendations for EVERY product (in-stock OR out-of-stock),
- * returning a lightweight Map<sku, sku[]> (<=4 rec skus each). Pages resolve skus
- * via getProductBySku, so we store skus only — not full product objects.
+ * returning a lightweight Map<sku, {sku,band}[]> (<=8 rec entries each). Pages
+ * resolve skus via getProductBySku, so we store skus (+ band tag) only — not full
+ * product objects.
  *
  * SUBJECTS vs CANDIDATES (the two invariants — keep them straight)
  * ---------------------------------------------------------------
@@ -201,7 +458,7 @@ export function getRecommendations(
  * APPROXIMATION OF getRecommendations (accepted tradeoff — DO NOT "fix" to parity)
  * -------------------------------------------------------------------------------
  * This is a region-bucketed APPROXIMATION of getRecommendations, used to keep the
- * ~11,436-page static build fast (avoids O(n^2)). It may return a DIFFERENT top-4
+ * ~11,436-page static build fast (avoids O(n^2)). It may return a DIFFERENT top-N
  * than getRecommendations when a product's highest-scoring match lies OUTSIDE its
  * region bucket (and the in-region bucket is already large enough that the
  * widening chain below never reaches that better cross-region candidate). This is
@@ -216,31 +473,55 @@ export function getRecommendations(
  * The dominant scoring signal is `region` (+3). We bucket the in-stock CANDIDATES
  * by region once. For each SUBJECT product (in-stock or not) we score it only
  * against its own region bucket of in-stock candidates. If that bucket is too small
- * to yield MAX_RECS results, we widen with a
+ * to yield MAX_RECS_EXTENDED results, we widen with a
  * fallback chain so a product in a tiny/unique region still gets neighbours:
  *   1. region bucket
  *   2. + category_type bucket  (e.g. "Red Wine", "Gin")
  *   3. + country bucket
- *   4. + a bounded global slice  (last resort; capped so we never re-scan all n)
+ *   4. + a bounded global slice, SAME category_group as the subject when known
+ *      (last resort; capped so we never re-scan all n)
  * Buckets are merged and de-duplicated per product, then ranked with the same
- * §6 scoring used by getRecommendations, so precomputed results agree with the
- * single-product path within each bucket.
+ * scoring used by getRecommendationsWithBands, so precomputed results agree with
+ * the single-product path within each bucket.
+ *
+ * GROUP-AWARE WIDENING (interaction with the cross-category suppression gate)
+ * -----------------------------------------------------------------------
+ * The `byCountry`/global buckets mix category groups (e.g. France = wines +
+ * cognacs + gins), but isEligible() suppresses cross-group candidates entirely.
+ * If widening only checked RAW pool size, a subject in a small group could "fill"
+ * its pool with candidates that ALL get suppressed later, yielding far fewer recs
+ * than the catalog actually has available for it. So each widening check counts
+ * only SAME-GROUP candidates (what suppression will actually keep) via
+ * `eligibleCount()`, and the last-resort global fallback is built PER GROUP
+ * (`globalFallbackByGroup`) so it still contains group-relevant candidates.
  *
  * Complexity: ~O(n * b) where b is the average bucket size, plus a small bounded
  * global fallback — far below O(n^2) for a catalog with many regions/categories.
  * Iterating `all` (not just `inStock`) for the outer SUBJECT loop only adds the
  * OOS products as extra keys; each still scores against its own small bucket, so
- * complexity stays ~O(n * b).
+ * complexity stays ~O(n * b). The same-group count used by the widening checks
+ * (`eligibleCount()`) is tracked INCREMENTALLY inside `merge()` — each candidate
+ * is classified by `groupForProduct()` exactly ONCE, when it is first added to the
+ * pool — rather than by re-filtering the accumulated pool from scratch on every
+ * widening decision. (An earlier version re-filtered the full pool up to 3x per
+ * subject via `pool.filter(...)`; at real-catalog bucket sizes — e.g. France
+ * 1,411 in-stock, Wine group 3,896 in-stock — that re-filter made the build hang
+ * and time out. Do NOT reintroduce a full re-filter here.)
  */
 export function precomputeRecommendations(
   all: readonly PublicProduct[],
-): Map<string, string[]> {
+): Map<string, { sku: string; band: Band }[]> {
   // In-stock CANDIDATES only (these are the only things we ever recommend). The
   // SUBJECT loop below iterates `all`, so OOS products still get recs computed FOR
   // them — just never recommended themselves. is_in_stock is a normalized boolean
   // post-load; isInStock() also handles a raw "0"/"1"/null product defensively
   // (see isEligible docblock).
   const inStock = all.filter((p) => isInStock(p.is_in_stock) && p.custom_stock_status !== 'CATALOG');
+
+  // Built once against the FULL pool (in-stock + out-of-stock), same
+  // convention as buildBaseSkuMap's own contract — matches how byRegion/
+  // byType/byCountry are pre-split once here rather than per-subject.
+  const baseSkuMap = buildBaseSkuMap(all);
 
   const byRegion = new Map<string, PublicProduct[]>();
   const byType = new Map<string, PublicProduct[]>();
@@ -262,14 +543,24 @@ export function precomputeRecommendations(
 
   // Bounded global fallback: a small fixed slice of in-stock products. Capped so
   // the fallback never degrades to a full O(n) scan per product.
-  const GLOBAL_FALLBACK_CAP = 50;
+  const GLOBAL_FALLBACK_CAP = 100;
   const globalFallback = inStock.slice(0, GLOBAL_FALLBACK_CAP);
 
-  // We want at least enough raw candidates to reliably surface MAX_RECS after
-  // eligibility/scoring filters; widen the bucket until we have a comfortable pool.
-  const MIN_POOL = MAX_RECS + 1;
+  // First GLOBAL_FALLBACK_CAP in-stock products PER GROUP, so the last-resort
+  // slice always contains candidates the suppression gate will actually keep.
+  const globalFallbackByGroup = new Map<CategoryGroup, PublicProduct[]>();
+  for (const p of inStock) {
+    const g = groupForProduct(p);
+    const arr = globalFallbackByGroup.get(g) ?? [];
+    if (arr.length < GLOBAL_FALLBACK_CAP) { arr.push(p); globalFallbackByGroup.set(g, arr); }
+  }
 
-  const result = new Map<string, string[]>();
+  // We want at least enough raw candidates to reliably surface MAX_RECS_EXTENDED
+  // after eligibility/scoring filters; widen the bucket until we have a
+  // comfortable pool.
+  const MIN_POOL = MAX_RECS_EXTENDED + 1;
+
+  const result = new Map<string, { sku: string; band: Band }[]>();
 
   // SUBJECTS: iterate ALL products (in-stock OR out-of-stock) so every product
   // page gets recommendations. Candidates remain in-stock-only (buckets above are
@@ -277,22 +568,41 @@ export function precomputeRecommendations(
   for (const product of all) {
     const pool: PublicProduct[] = [];
     const poolSeen = new Set<string>();
+
+    // Widening counts only same-group candidates (what suppression will keep).
+    // Tracked INCREMENTALLY as items are merged, rather than re-derived via a
+    // full re-filter of `pool` on every widening check (that re-filter is what
+    // caused the O(n * pool^2)-ish build timeout — see PERFORMANCE note below).
+    // Each item is checked against subjectGroup exactly ONCE, at merge time.
+    const subjectGroup = groupForProduct(product);
+    let sameGroupCount = 0;
     const merge = (arr: PublicProduct[] | undefined) => {
       if (!arr) return;
       for (const p of arr) {
         if (poolSeen.has(p.sku)) continue;
         poolSeen.add(p.sku);
         pool.push(p);
+        if (subjectGroup === 'Unknown' || groupForProduct(p) === subjectGroup) sameGroupCount++;
       }
     };
+    const eligibleCount = () => (subjectGroup === 'Unknown' ? pool.length : sameGroupCount);
 
-    merge(byRegion.get(product.region ?? ''));
-    if (pool.length < MIN_POOL) merge(byType.get(typeForProduct(product)));
-    if (pool.length < MIN_POOL) merge(byCountry.get(product.country ?? ''));
-    if (pool.length < MIN_POOL) merge(globalFallback);
+    // Gin & co.: region carries no signal (regionWeightOverride === 0), so
+    // region-bucket candidates are noise — pull from the TYPE bucket (all gins,
+    // any country) first instead, so the gin_style signal can actually surface
+    // cross-country matches. This check is O(1) per subject (no re-filter).
+    if (regionWeightOverride(product) !== 0) {
+      merge(byRegion.get(product.region ?? ''));
+    }
+    if (eligibleCount() < MIN_POOL) merge(byType.get(typeForProduct(product)));
+    if (eligibleCount() < MIN_POOL) merge(byCountry.get(product.country ?? ''));
+    if (eligibleCount() < MIN_POOL) merge(globalFallbackByGroup.get(subjectGroup) ?? globalFallback);
 
-    const recs = rankAgainst(product, pool, foodSet(product.food_matching));
-    result.set(product.sku, recs.map((r) => r.sku));
+    const recs = getRecommendationsWithBands(product, pool, {
+      includeGreatAlternative: !isInStock(product.is_in_stock),
+      baseSkuMap,
+    });
+    result.set(product.sku, recs.map((r) => ({ sku: r.product.sku, band: r.band })));
   }
 
   return result;

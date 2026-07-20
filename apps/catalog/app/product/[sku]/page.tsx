@@ -3,11 +3,13 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { StorefrontImage } from '@/components/StorefrontImage';
 import { ContactButtons } from '@/components/ContactButtons';
-import { ProductCard } from '@/components/ProductCard';
+import { RecsCarousel } from '@/components/RecsCarousel';
 import { TasteWheel } from '@/components/product/TasteWheel';
 import { CompactGauges } from '@/components/product/CompactGauges';
 import { CriticScoreStrip } from '@/components/CriticScoreStrip';
 import { PriceBlock } from '@/components/product/PriceBlock';
+import fs from 'fs';
+import path from 'path';
 import { ReputationBadge, reputationBadgeLabel } from '@/components/product/ReputationBadge';
 import { getAllProducts, getProductBySku } from '@/lib/catalog-data';
 import { groupForProduct } from '@/lib/category-groups';
@@ -18,7 +20,7 @@ import { getContactEnv } from '@/lib/contact-env';
 import { toTiers, toStructural } from '@/lib/taste-adapter';
 import { formatVintage, isInStock, parseFoodMatching, signatureDishes } from '@/lib/utils';
 import { sanitizeDescription } from '@/lib/sanitize-html';
-import type { PublicProduct } from '@/lib/types';
+import type { Band, PublicProduct } from '@/lib/types';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildProductSchema, buildBreadcrumbList, GROUP_SLUG } from '@/lib/seo/jsonld';
 import { ViewItemTracker } from '@/components/product/ViewItemTracker';
@@ -53,15 +55,50 @@ export const revalidate = 3600;
  * O(n^2). We store sku→sku[] and resolve to products per page via the cached
  * getProductBySku.
  *
+ * BUILD-TIME CACHE (Task 14 fix, 2026-07-18): Next's static build spreads page
+ * rendering across several `jest-worker` child processes, each a SEPARATE Node
+ * process with its own module cache — the module-level memoization below only
+ * dedupes WITHIN one worker, not across them. Every worker that renders at
+ * least one product page during `generateStaticParams`'s prerender slice was
+ * independently paying the full precompute cost (~10s solo, but 51-65s/worker
+ * under real multi-worker build contention — enough to blow past Next's 60s
+ * per-page static-generation timeout and fail the build). scripts/gen-recs-cache.mjs
+ * now runs precomputeRecommendations ONCE at prebuild and writes the result to
+ * data/recs-cache.json (same pattern as gen-search-index.mjs). We read that
+ * file first; if it's missing (e.g. local `next dev` without running
+ * `prebuild`, or an on-demand ISR render for a SKU outside the prerendered
+ * slice after the cache format changes), we fall back to a live
+ * precomputeRecommendations() call — same graceful-degradation shape as
+ * co-purchase.ts's BI file loader.
+ *
  * LAZY + MEMOIZED (ISR): with on-demand page generation this module is imported
  * inside the request that first renders an un-prerendered SKU. We therefore do NOT
  * compute RECS eagerly at module top-level (that would run the full precompute on
  * every cold start, even for a single page). Instead we compute it on the FIRST
  * getRecsForSku() call and cache it for the instance lifetime.
  */
-let _recs: Map<string, string[]> | null = null;
-function getRecsForSku(sku: string): string[] {
-  if (_recs === null) _recs = precomputeRecommendations(getAllProducts());
+let _recs: Map<string, { sku: string; band: Band }[]> | null = null;
+
+function loadRecsCache(): Map<string, { sku: string; band: Band }[]> | null {
+  const candidates = [
+    path.join(process.cwd(), 'data', 'recs-cache.json'),
+    path.join(process.cwd(), 'apps', 'catalog', 'data', 'recs-cache.json'),
+  ];
+  const file = candidates.find((p) => fs.existsSync(p));
+  if (!file) return null;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(file, 'utf8')) as Record<
+      string,
+      { sku: string; band: Band }[]
+    >;
+    return new Map(Object.entries(parsed));
+  } catch {
+    return null;
+  }
+}
+
+function getRecsForSku(sku: string): { sku: string; band: Band }[] {
+  if (_recs === null) _recs = loadRecsCache() ?? precomputeRecommendations(getAllProducts());
   return _recs.get(sku) ?? [];
 }
 
@@ -274,10 +311,26 @@ export default function Page({ params }: { params: { sku: string } }) {
   // Per-product contact deep-links (pre-fills "I'm interested in [name] — [sku]").
   const links = buildContactLinks(getContactEnv(), { name: product.name, sku: product.sku });
 
-  // Recommendations: resolve precomputed skus → products (cached lookups).
-  const recs: PublicProduct[] = getRecsForSku(product.sku)
-    .map((sku) => getProductBySku(sku))
-    .filter((p): p is PublicProduct => Boolean(p));
+  const isProductOos = !isInStock(product.is_in_stock);
+
+  // Recommendations: resolve precomputed skus → products (cached lookups). Contact
+  // links are precomputed HERE, server-side, because RecsCarousel is a Client
+  // Component and cannot receive buildContactLinks/getContactEnv as function props.
+  const contactEnv = getContactEnv();
+  const recEntries = getRecsForSku(product.sku);
+  const recs = recEntries
+    .map(({ sku, band }) => {
+      const p = getProductBySku(sku);
+      return p
+        ? {
+            product: p,
+            band,
+            contactLinks: buildContactLinks(contactEnv, { name: p.name, sku: p.sku }),
+            structural: toStructural(p),
+          }
+        : null;
+    })
+    .filter((r): r is NonNullable<typeof r> => Boolean(r));
 
   const priceValue = product.price ? Math.round(product.price) : undefined;
 
@@ -439,19 +492,9 @@ export default function Page({ params }: { params: { sku: string } }) {
       {recs.length > 0 ? (
         <section className="flex flex-col gap-6 border-t border-border pt-10">
           <h2 className="text-2xl font-semibold tracking-tight text-foreground">
-            You might also like
+            {isProductOos ? 'Available now — similar style' : 'You might also like'}
           </h2>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
-            {recs.map((p) => (
-              <ProductCard
-                key={p.sku}
-                product={p}
-                contactLinks={buildContactLinks(getContactEnv(), { name: p.name, sku: p.sku })}
-                showDetails
-                structural={toStructural(p)}
-              />
-            ))}
-          </div>
+          <RecsCarousel items={recs} />
         </section>
       ) : null}
       <JsonLd data={buildProductSchema(product)} />

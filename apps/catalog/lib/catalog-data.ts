@@ -37,6 +37,10 @@ export const PUBLIC_FIELDS = [
   // summary copy). Internal-only fields (reputation_override, reputation_computed_at)
   // are deliberately absent from this list.
   'reputation_tier','reputation_composite','reputation_confidence','reputation_summary',
+  // Phase 2 (Task 9/10) — category-specific classification fields (gin/tequila/
+  // mezcal/rum/whisky/sparkling). Shopper-facing style labels, no margin/internal
+  // signal. Consumed by category-scorer.ts (Task 11) via scoreCandidateDetailed.
+  'gin_style','agave_aging','rum_style','peat_level','production_method',
   // Curation dossier content — already gated to 'sourced'/'pairing-theory' confidence
   // by scripts/refresh_products_dossier.py before it reaches the export, so safe as-is.
   'curation_dossier',
