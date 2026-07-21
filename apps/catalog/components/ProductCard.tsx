@@ -60,8 +60,8 @@ interface ProductCardProps {
   bandLabel?: string;
   /**
    * Optional honest match-band label ("Great match" / "Strong match" / "Good
-   * match" — spec §11.9). Overlaid top-right on the image, stacked above the
-   * critic score pill when both are present. Finder result grid only.
+   * match" — spec §11.9). Overlaid top-left on the image, above the
+   * recommendation-reason/stock-status stack. Finder result grid only.
    */
   matchBand?: string;
 }
@@ -126,10 +126,15 @@ export function ProductCard({
               className="rounded-lg"
             />
 
-            {/* Top-left overlay stack: recommendation-reason band, then stock status.
-                Both are optional and stack vertically when both are present so neither
-                is ever cropped or overlapped. */}
+            {/* Top-left overlay stack: honest match-band, then recommendation-reason
+                band, then stock status. All optional and stack vertically when
+                more than one is present so nothing is ever cropped or overlapped. */}
             <div className="absolute left-2 top-2 flex flex-col items-start gap-1.5">
+              {matchBand ? (
+                <span className="inline-flex items-center rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground shadow-sm ring-1 ring-primary/20">
+                  {matchBand}
+                </span>
+              ) : null}
               {bandLabel ? (
                 <span className="inline-flex items-center rounded-full border border-border bg-background/95 px-2.5 py-1 text-xs font-medium text-muted-foreground shadow-sm">
                   {bandLabel}
@@ -160,16 +165,9 @@ export function ProductCard({
               {product.sku}
             </span>
 
-            {/* Match band + critic score — stacked top-right. Match band (finder
-                result grid only) sits above the critic score pill so neither
-                overlay collides; critic score renders nothing for unscored
-                products, so no empty gap when it's absent. */}
-            <div className="absolute right-2 top-2 flex flex-col items-end gap-1">
-              {matchBand ? (
-                <span className="inline-flex items-center rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground shadow-sm ring-1 ring-primary/20">
-                  {matchBand}
-                </span>
-              ) : null}
+            {/* Critic score — compact pill, top-right. Renders nothing for
+                unscored products (helper-gated), so no empty overlay. */}
+            <div className="absolute right-2 top-2">
               <CriticScoreStrip
                 variant="compact"
                 scoreMax={product.score_max}
