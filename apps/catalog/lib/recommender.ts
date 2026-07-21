@@ -63,22 +63,53 @@ function similarRange(price: number): { lo: number; hi: number } {
   return                    { lo: price * 0.90,             hi: price * 1.10 };
 }
 
+// Ceiling on how far above the subject's price a candidate can be and still
+// read as a natural "step up" rather than an unrelated, jarring price jump.
+// 1.35x is a common ecommerce upsell ceiling (Amazon/Shopify-style upsell
+// widgets typically cap 20-50% above the anchor item) — enough to feel like a
+// meaningful upgrade without breaking the shopper's sense that this is still
+// "the same kind of purchase". Anything priced above this is NOT tagged
+// step-up (see priceBand) — a candidate over the ceiling only surfaces if it
+// scores well enough to win a fallback slot on its other merits, never
+// mislabeled as a modest step up.
+const STEP_UP_CEILING = 1.35;
+
+/**
+ * The step-up ceiling as an absolute price, guaranteed to sit ABOVE
+ * similarRange's `hi` so a non-empty step-up window always exists.
+ *
+ * Budget items (<~฿800) use an ABSOLUTE ±250 similar band (similarRange), not
+ * a percentage one — so `hi` can already exceed subjectPrice * 1.35 (e.g.
+ * ฿200 -> hi=450, but 1.35x is only ฿270). Without this guard, step-up would
+ * silently never fire for cheap products. We take whichever is larger: the
+ * flat 1.35x ceiling, or hi bumped up 15% — so there's always some room above
+ * "similar" for a step-up candidate to land in.
+ */
+function stepUpCeiling(subjectPrice: number, hi: number): number {
+  return Math.max(subjectPrice * STEP_UP_CEILING, hi * 1.15);
+}
+
 /**
  * Assign an intent band to a candidate relative to the subject's price.
  * Returns 'similar' when either price is missing/zero — safest default for display.
+ * Returns null when the candidate is priced ABOVE the step-up ceiling
+ * (stepUpCeiling): too big a jump to read as a natural "step up", and not a
+ * "great alternative" either (it isn't cheaper) — so it is excluded from
+ * price-band display entirely rather than mislabeled into either band.
  */
 export function priceBand(
   subjectPrice: number | undefined | null,
   candidatePrice: number | undefined | null,
-): Band {
+): Band | null {
   if (
     typeof subjectPrice !== 'number' || subjectPrice <= 0 ||
     typeof candidatePrice !== 'number' || candidatePrice <= 0
   ) return 'similar';
   const { lo, hi } = similarRange(subjectPrice);
   if (candidatePrice >= lo && candidatePrice <= hi) return 'similar';
-  if (candidatePrice > hi) return 'step-up';
-  return 'great-alternative';
+  if (candidatePrice < lo) return 'great-alternative';
+  if (candidatePrice <= stepUpCeiling(subjectPrice, hi)) return 'step-up';
+  return null;
 }
 
 function varietiesMatch(a: string | undefined | null, b: string | undefined | null): boolean {
@@ -393,6 +424,7 @@ export function getRecommendationsWithBands(
     if (score <= 0) continue;
 
     const band = priceBand(subjectPrice, priceOf(c));
+    if (band === null) continue; // priced too far above the step-up ceiling — exclude, don't mislabel
 
     const result: RecommendationResult = { product: c, band, score, scoreBreakdown: breakdown };
     if (band === 'similar') similar.push({ result });
