@@ -358,38 +358,46 @@ describe('priceBand', () => {
   it('returns similar when candidate price is null', () => {
     expect(priceBand(1619, null)).toBe('similar');
   });
-  it('budget tier: lo clamped to 0 (not negative)', () => {
+  it('budget tier: lo clamped to 0 (not negative); step-up is unreachable below ~฿500', () => {
     // Price 200, band is ±250 absolute → lo = max(0,-50) = 0, hi = 450.
-    // stepUpCeiling = max(200*1.35, 450*1.15) = max(270, 517.5) = 517.5
-    expect(priceBand(200, 1)).toBe('similar');    // any positive price is >= 0
-    expect(priceBand(200, 480)).toBe('step-up');  // 480 > hi(450), <= ceiling(517.5)
-    expect(priceBand(200, 520)).toBe(null);       // > ceiling(517.5)
+    // floor = 200*1.5 = 300, ceiling = 200*1.6 = 320 — both BELOW hi(450), so
+    // the [floor, ceiling] window sits entirely inside/below the similar band's
+    // hi and is unreachable: any candidate above hi is automatically also above
+    // ceiling(320), so it can only ever land in 'similar' or null, never 'step-up'.
+    // This is an accepted consequence of the 1.5x/1.6x floor/ceiling for very
+    // cheap products, not a bug — see recommender.ts priceBand.
+    expect(priceBand(200, 1)).toBe('similar');   // any positive price is >= 0
+    expect(priceBand(200, 480)).toBe(null);      // above hi(450) and above ceiling(320) — no step-up possible here
+    expect(priceBand(200, 520)).toBe(null);      // above hi(450) and above ceiling(320)
   });
-  it('mid tier (1000-5000): ±20%', () => {
+  it('mid tier (1000-5000): similar band unaffected by step-up change', () => {
     expect(priceBand(1619, 1900)).toBe('similar');      // within 20%
-    expect(priceBand(1619, 2100)).toBe('step-up');      // >20% above, within ceiling (2234.22)
+    expect(priceBand(1619, 2100)).toBe(null);           // above hi(1942.8), below floor(2428.5) — dead zone
     expect(priceBand(1619, 800)).toBe('great-alternative'); // >20% below
   });
-  it('high tier (5000-15000): ±15%', () => {
+  it('high tier (5000-15000): similar band unaffected by step-up change', () => {
     expect(priceBand(8000, 9000)).toBe('similar');
-    expect(priceBand(8000, 9300)).toBe('step-up');
+    expect(priceBand(8000, 9300)).toBe(null); // above hi(9200), below floor(12000) — dead zone
   });
-  it('premium tier (15000+): ±10%', () => {
+  it('premium tier (15000+): similar band unaffected by step-up change', () => {
     expect(priceBand(20000, 21999)).toBe('similar');
-    expect(priceBand(20000, 22001)).toBe('step-up');
+    expect(priceBand(20000, 22001)).toBe(null); // above hi(22000), below floor(30000) — dead zone
     expect(priceBand(20000, 17000)).toBe('great-alternative');
   });
-  // stepUpCeiling caps how far above the subject's price a candidate can be
-  // and still read as a natural "step up" rather than an unrelated, jarring
-  // price jump. Beyond it, a candidate is excluded (null) rather than
-  // mislabeled as step-up or great-alternative. See recommender.ts priceBand.
-  describe('step-up ceiling', () => {
-    it('just above hi and within the ceiling is step-up', () => {
-      // subject 1000: hi=1200 (mid tier, ±20%), ceiling=max(1350, 1380)=1380
-      expect(priceBand(1000, 1350)).toBe('step-up');
+  // Step-up is now an explicit price tier: [subjectPrice*1.5, subjectPrice*1.6].
+  // Anything priced between the similar band's `hi` and the 1.5x floor is a
+  // deliberate dead zone (excluded, not mislabeled). See recommender.ts priceBand.
+  describe('step-up floor and ceiling', () => {
+    it('just below the floor is excluded (dead zone), not step-up', () => {
+      expect(priceBand(1000, 1499)).toBe(null); // < floor(1500)
+    });
+    it('at or above the floor and within the ceiling is step-up', () => {
+      expect(priceBand(1000, 1500)).toBe('step-up'); // == floor
+      expect(priceBand(1000, 1550)).toBe('step-up');
+      expect(priceBand(1000, 1600)).toBe('step-up'); // == ceiling
     });
     it('beyond the ceiling is excluded (null), not step-up', () => {
-      expect(priceBand(1000, 1381)).toBe(null); // just over ceiling(1380)
+      expect(priceBand(1000, 1601)).toBe(null); // just over ceiling(1600)
       expect(priceBand(1000, 1800)).toBe(null);
     });
     it('a large price jump (real-world example: 3818 -> 10208, ~2.67x) is excluded', () => {
