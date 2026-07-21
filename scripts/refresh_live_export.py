@@ -97,10 +97,15 @@ EXPORT_COLS = [
     "reputation_composite",
     "reputation_confidence",
     "reputation_summary",
+    # Curation dossier — expert-reference content (style/expert note/producer
+    # history/pairings). Populated via scripts/refresh_products_dossier.py,
+    # which already gates out anything below 'sourced'/'pairing-theory'
+    # confidence, so whatever lands here is safe to expose as-is.
+    "curation_dossier",
 ]
 
 # Columns that contain JSON-encoded text and should be decoded for export.
-JSON_COLS = {"flavor_tags", "taste_profile", "production_style"}
+JSON_COLS = {"flavor_tags", "taste_profile", "production_style", "curation_dossier"}
 
 
 def main(argv: list[str] | None = None) -> int:

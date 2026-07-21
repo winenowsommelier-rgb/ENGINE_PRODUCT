@@ -78,6 +78,30 @@ def test_cli_writes_to_local_sqlite(tmp_path, monkeypatch):
     assert n == 1
 
 
+def test_select_skus_falls_back_to_taxonomy_when_classification_is_junk():
+    """RULE 12 regression guard: raw classification='Wine product' (masterfile junk
+    bucket) or accent-mismatched 'Rose Wine' must not silently drop an in-scope
+    SKU from enrichment. SKU-taxonomy type_for() is the fallback source of truth.
+    Found 2026-07-18: 4/5 of a canary sample were invisible to select_skus because
+    of this exact gap (products.json 8 days stale + classification junk compounded)."""
+    from data.enrich_wines import select_skus
+
+    products = [
+        # Accent mismatch: classification says "Rose Wine" (no accent), schema
+        # key is "Rosé Wine" — taxonomy type_for() resolves the accented form.
+        {"sku": "WRS0075AC", "classification": "Rose Wine", "brand": "B", "popularity_score": 0},
+        # Junk bucket, but SKU prefix taxonomy-resolves to an in-scope spirit.
+        {"sku": "LTQ0134AD", "classification": "Wine product", "brand": "B", "popularity_score": 0},
+        # Junk bucket AND taxonomy says non-beverage — correctly stays excluded.
+        {"sku": "NNA0161AA", "classification": "Wine product", "brand": "B", "popularity_score": 0},
+    ]
+    selected_skus = {p["sku"] for p in select_skus(products, "popularity", None, 50,
+                                                     sku_filter=None, only_needs=False)}
+    assert "WRS0075AC" in selected_skus
+    assert "LTQ0134AD" in selected_skus
+    assert "NNA0161AA" not in selected_skus
+
+
 def _stub_high_conf_response():
     """Helper — returns a GenerationResult with canonical vocab values that pass validation."""
     import json
