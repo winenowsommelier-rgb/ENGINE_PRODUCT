@@ -156,13 +156,16 @@ describe('precomputeRecommendations', () => {
   // below was added. Pin the fix here so it can't silently regress again.
   it('widens further when price-band exclusions hollow out an already-large raw bucket', () => {
     // Subject P, price 1000: similar range 800-1200 (mid tier ±20%), step-up
-    // ceiling = max(1000*1.35, 1200*1.15) = 1380 (see priceBand tests).
+    // window is [1000*1.5, 1000*1.6] = [1500, 1600] (see priceBand tests).
+    // 5000 sits far above both the similar range and the step-up window either
+    // way, so this test's "excluded by price" scenario holds regardless of the
+    // exact step-up bounds — updated here only to keep the comment accurate.
     const P = { ...base, sku:'P', region:'Bordeaux', variety:'Merlot',
       country:'France', classification:'Red Wine', food_matching:'Beef', price:1000 };
 
     // Nine same-region candidates — enough to satisfy the RAW same-group count
     // (MIN_POOL = 9) so the old eligibleCount()-based check stopped widening
-    // here. Every one is priced at 5000, far beyond the 1380 ceiling: each
+    // here. Every one is priced at 5000, far beyond the step-up window: each
     // scores positively (shares region +3, variety +2, country +1 = 6) but
     // priceBand(1000, 5000) returns null, so NONE of them survive banding.
     const overCeiling = ['R1','R2','R3','R4','R5','R6','R7','R8','R9'].map((sku) => ({
