@@ -582,13 +582,13 @@ describe('getRecommendationsWithBands', () => {
     expect(results[0]?.band).toBe('similar');
   });
   it('alternates similar/step-up while BOTH pools have candidates', () => {
-    // Subject 1600: similar range is 1280-1920; step-up ceiling is
-    // max(1600*1.35, 1920*1.15) = 2208. 5 similar (within ±20% of 1600) + 5
-    // step-up (>20% above, still within the 2208 ceiling) — both pools deep
-    // enough that the canonical slot order is never forced into fallback.
+    // Subject 1600: similar range is 1280-1920 (±20%, mid tier). Step-up window
+    // is now [1600*1.5, 1600*1.6] = [2400, 2560] — 5 similar (within ±20% of
+    // 1600) + 5 step-up (within the new floor/ceiling) — both pools deep enough
+    // that the canonical slot order is never forced into fallback.
     const subject = mkProduct('S', 1600);
     const similar = Array.from({ length: 5 }, (_, i) => mkProduct(`SIM${i}`, 1500 + i * 20));
-    const stepUp = Array.from({ length: 5 }, (_, i) => mkProduct(`UP${i}`, 1950 + i * 40));
+    const stepUp = Array.from({ length: 5 }, (_, i) => mkProduct(`UP${i}`, 2410 + i * 30));
     const results = getRecommendationsWithBands(subject, [subject, ...similar, ...stepUp]);
     expect(results.map(r => r.band)).toEqual([
       'similar', 'step-up', 'similar', 'step-up',
@@ -599,10 +599,10 @@ describe('getRecommendationsWithBands', () => {
   // exhausts — the fallback (popAny) intentionally fills remaining slots from
   // whatever band is left rather than returning fewer items. Pin that too:
   it('falls back to remaining band when preferred band exhausts (adjacency allowed)', () => {
-    // Ceiling for subject 1600 is 2208 (see above) — all candidates here stay
-    // within it so they band as step-up rather than being excluded (null).
+    // Step-up window for subject 1600 is [2400, 2560] — all candidates here
+    // stay within it so they band as step-up rather than being excluded (null).
     const subject = mkProduct('S', 1600);
-    const stepUpOnly = Array.from({ length: 10 }, (_, i) => mkProduct(`UP${i}`, 1950 + i * 20));
+    const stepUpOnly = Array.from({ length: 10 }, (_, i) => mkProduct(`UP${i}`, 2405 + i * 15));
     const results = getRecommendationsWithBands(subject, [subject, ...stepUpOnly]);
     expect(results.length).toBe(8);
     expect(results.every(r => r.band === 'step-up')).toBe(true);
