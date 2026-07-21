@@ -307,13 +307,15 @@ describe('priceBand', () => {
     expect(priceBand(1619, null)).toBe('similar');
   });
   it('budget tier: lo clamped to 0 (not negative)', () => {
-    // Price 200, band is ±250 absolute → lo = max(0,-50) = 0
-    expect(priceBand(200, 1)).toBe('similar');   // any positive price is >= 0
-    expect(priceBand(200, 451)).toBe('step-up'); // 451 > 200+250
+    // Price 200, band is ±250 absolute → lo = max(0,-50) = 0, hi = 450.
+    // stepUpCeiling = max(200*1.35, 450*1.15) = max(270, 517.5) = 517.5
+    expect(priceBand(200, 1)).toBe('similar');    // any positive price is >= 0
+    expect(priceBand(200, 480)).toBe('step-up');  // 480 > hi(450), <= ceiling(517.5)
+    expect(priceBand(200, 520)).toBe(null);       // > ceiling(517.5)
   });
   it('mid tier (1000-5000): ±20%', () => {
     expect(priceBand(1619, 1900)).toBe('similar');      // within 20%
-    expect(priceBand(1619, 3500)).toBe('step-up');      // >20% above
+    expect(priceBand(1619, 2100)).toBe('step-up');      // >20% above, within ceiling (2234.22)
     expect(priceBand(1619, 800)).toBe('great-alternative'); // >20% below
   });
   it('high tier (5000-15000): ±15%', () => {
@@ -324,6 +326,23 @@ describe('priceBand', () => {
     expect(priceBand(20000, 21999)).toBe('similar');
     expect(priceBand(20000, 22001)).toBe('step-up');
     expect(priceBand(20000, 17000)).toBe('great-alternative');
+  });
+  // stepUpCeiling caps how far above the subject's price a candidate can be
+  // and still read as a natural "step up" rather than an unrelated, jarring
+  // price jump. Beyond it, a candidate is excluded (null) rather than
+  // mislabeled as step-up or great-alternative. See recommender.ts priceBand.
+  describe('step-up ceiling', () => {
+    it('just above hi and within the ceiling is step-up', () => {
+      // subject 1000: hi=1200 (mid tier, ±20%), ceiling=max(1350, 1380)=1380
+      expect(priceBand(1000, 1350)).toBe('step-up');
+    });
+    it('beyond the ceiling is excluded (null), not step-up', () => {
+      expect(priceBand(1000, 1381)).toBe(null); // just over ceiling(1380)
+      expect(priceBand(1000, 1800)).toBe(null);
+    });
+    it('a large price jump (real-world example: 3818 -> 10208, ~2.67x) is excluded', () => {
+      expect(priceBand(3818, 10208)).toBe(null);
+    });
   });
 });
 
@@ -503,11 +522,13 @@ describe('getRecommendationsWithBands', () => {
     expect(results[0]?.band).toBe('similar');
   });
   it('alternates similar/step-up while BOTH pools have candidates', () => {
-    // 5 similar (within ±20% of 1600) + 5 step-up (>20% above) — both pools deep
+    // Subject 1600: similar range is 1280-1920; step-up ceiling is
+    // max(1600*1.35, 1920*1.15) = 2208. 5 similar (within ±20% of 1600) + 5
+    // step-up (>20% above, still within the 2208 ceiling) — both pools deep
     // enough that the canonical slot order is never forced into fallback.
     const subject = mkProduct('S', 1600);
     const similar = Array.from({ length: 5 }, (_, i) => mkProduct(`SIM${i}`, 1500 + i * 20));
-    const stepUp = Array.from({ length: 5 }, (_, i) => mkProduct(`UP${i}`, 2500 + i * 100));
+    const stepUp = Array.from({ length: 5 }, (_, i) => mkProduct(`UP${i}`, 1950 + i * 40));
     const results = getRecommendationsWithBands(subject, [subject, ...similar, ...stepUp]);
     expect(results.map(r => r.band)).toEqual([
       'similar', 'step-up', 'similar', 'step-up',
@@ -518,8 +539,10 @@ describe('getRecommendationsWithBands', () => {
   // exhausts — the fallback (popAny) intentionally fills remaining slots from
   // whatever band is left rather than returning fewer items. Pin that too:
   it('falls back to remaining band when preferred band exhausts (adjacency allowed)', () => {
+    // Ceiling for subject 1600 is 2208 (see above) — all candidates here stay
+    // within it so they band as step-up rather than being excluded (null).
     const subject = mkProduct('S', 1600);
-    const stepUpOnly = Array.from({ length: 10 }, (_, i) => mkProduct(`UP${i}`, 2500 + i * 100));
+    const stepUpOnly = Array.from({ length: 10 }, (_, i) => mkProduct(`UP${i}`, 1950 + i * 20));
     const results = getRecommendationsWithBands(subject, [subject, ...stepUpOnly]);
     expect(results.length).toBe(8);
     expect(results.every(r => r.band === 'step-up')).toBe(true);

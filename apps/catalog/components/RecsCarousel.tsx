@@ -9,6 +9,7 @@ import { ProductCard } from '@/components/ProductCard';
 import type { PublicProduct } from '@/lib/types';
 import type { Band } from '@/lib/types';
 import type { ContactLinks } from '@/lib/contact';
+import { resolveSale } from '@/lib/price-tiers';
 
 interface RecItem {
   product: PublicProduct;
@@ -28,14 +29,46 @@ const BAND_LABEL: Record<Band, string | null> = {
   'great-alternative': 'Great alternative',
 };
 
+/**
+ * The price a shopper actually SEES on the card: special_price when a genuine
+ * sale is active (same resolveSale check ProductCard itself uses for its
+ * strikethrough price), else the regular price. Sorting on product.price
+ * alone would order by the regular price while the card visibly shows the
+ * discounted one — e.g. a ฿4,500 item on sale for ฿3,200 must sort next to
+ * other ~฿3,200 items, not next to ฿4,500 ones.
+ */
+function displayPrice(p: PublicProduct): number | undefined {
+  const sale = resolveSale(p.price, p.special_price);
+  return sale ? sale.special : (p.price ?? undefined);
+}
+
+/**
+ * Display order is price ascending, left to right — separate from SELECTION,
+ * which stays governed by getRecommendationsWithBands' similar/step-up slot
+ * preference (that logic decides WHICH 8 products qualify; this only decides
+ * the order they're laid out in once chosen). Items with no price (rare —
+ * PublicProduct.price is optional) sort last so a missing price can't land an
+ * item out of place in the low-to-high scan.
+ */
+function byPriceAscending(items: RecItem[]): RecItem[] {
+  return [...items].sort((a, b) => {
+    const pa = displayPrice(a.product), pb = displayPrice(b.product);
+    if (typeof pa !== 'number' && typeof pb !== 'number') return 0;
+    if (typeof pa !== 'number') return 1;
+    if (typeof pb !== 'number') return -1;
+    return pa - pb;
+  });
+}
+
 export function RecsCarousel({ items }: RecsCarouselProps) {
   if (items.length === 0) return null;
+  const ordered = byPriceAscending(items);
   return (
     <div
       className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden"
       style={{ scrollbarWidth: 'none' }}
     >
-      {items.map(({ product, band, contactLinks, structural }) => {
+      {ordered.map(({ product, band, contactLinks, structural }) => {
         const label = BAND_LABEL[band];
         return (
           <div
