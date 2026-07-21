@@ -235,14 +235,10 @@ export function StyleResult({
             const band = bandBySku?.[product.sku];
             return (
               <div key={product.sku} className="flex flex-col gap-2">
-                {band ? (
-                  <span className="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                    {band}
-                  </span>
-                ) : null}
                 <ProductCard
                   product={product}
                   contactLinks={contactLinksBySku?.[product.sku]}
+                  matchBand={band}
                 />
               </div>
             );

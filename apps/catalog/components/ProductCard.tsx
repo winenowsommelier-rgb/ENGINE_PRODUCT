@@ -58,6 +58,12 @@ interface ProductCardProps {
    * PDP "You might also like" rail (RecsCarousel) passes this.
    */
   bandLabel?: string;
+  /**
+   * Optional honest match-band label ("Great match" / "Strong match" / "Good
+   * match" — spec §11.9). Overlaid top-right on the image, stacked above the
+   * critic score pill when both are present. Finder result grid only.
+   */
+  matchBand?: string;
 }
 
 /** Key attributes for the compact card details block, in display order. */
@@ -79,6 +85,7 @@ export function ProductCard({
   showDetails = false,
   structural: structuralProp,
   bandLabel,
+  matchBand,
 }: ProductCardProps) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const subtitle = product.brand || product.region;
@@ -153,9 +160,16 @@ export function ProductCard({
               {product.sku}
             </span>
 
-            {/* Critic score — compact pill, top-right. Renders nothing for
-                unscored products (helper-gated), so no empty overlay. */}
-            <div className="absolute right-2 top-2">
+            {/* Match band + critic score — stacked top-right. Match band (finder
+                result grid only) sits above the critic score pill so neither
+                overlay collides; critic score renders nothing for unscored
+                products, so no empty gap when it's absent. */}
+            <div className="absolute right-2 top-2 flex flex-col items-end gap-1">
+              {matchBand ? (
+                <span className="inline-flex items-center rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground shadow-sm ring-1 ring-primary/20">
+                  {matchBand}
+                </span>
+              ) : null}
               <CriticScoreStrip
                 variant="compact"
                 scoreMax={product.score_max}
