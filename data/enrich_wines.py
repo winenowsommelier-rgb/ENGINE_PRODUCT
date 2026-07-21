@@ -88,6 +88,33 @@ def _needs_enrichment(p: dict) -> bool:
     return False
 
 
+# Raw `classification` is the Magento product TYPE field — CLAUDE.md RULE 12:
+# it's frequently blank or the junk bucket "Wine product" (masterfile artifact),
+# which silently drops real in-scope SKUs from every enrichment run (found
+# 2026-07-18: 4/5 of a canary sample had classification="Wine product" and were
+# invisible to select_skus). SKU-taxonomy type_for() is the canonical fallback —
+# never trust raw classification alone for scope decisions.
+_TAXONOMY_TYPE_TO_CLASSIFICATION = {
+    "Red Wine": "Red Wine", "White Wine": "White Wine", "Rosé Wine": "Rosé Wine",
+    "Sparkling & Champagne": "Sparkling Wine", "Sweet/Dessert": "Dessert Wine",
+    "Orange Wine": "Orange Wine",
+    "Whisky": "Whisky", "Brandy": "Brandy", "Gin": "Gin", "Vodka": "Vodka",
+    "Tequila": "Tequila", "Sake / Shochu": "Sake/Shochu", "Liqueur": "Liqueur",
+    "Beer": "Beer", "Ready-to-Drink": "Ready to Drink",
+}
+
+
+def _effective_classification(p: dict) -> str:
+    """Raw classification if already in-scope, else the SKU-taxonomy fallback."""
+    from data.lib.enrichment.wine.schemas import CATEGORY_TO_STRUCTURE
+    from data.lib.taxonomy.sku_taxonomy import type_for
+    raw = p.get("classification") or ""
+    if raw in CATEGORY_TO_STRUCTURE:
+        return raw
+    mapped = _TAXONOMY_TYPE_TO_CLASSIFICATION.get(type_for(p.get("sku", "")))
+    return mapped or raw
+
+
 def select_skus(
     products: list[dict], priority: str, tier: list[int] | None, limit: int,
     sku_filter: list[str] | None, only_needs: bool = True,
@@ -97,7 +124,7 @@ def select_skus(
     # in CATEGORY_TO_STRUCTURE (Cigar, Mineral Water, Accessories, …) are skipped.
     from data.lib.enrichment.wine.schemas import CATEGORY_TO_STRUCTURE
     in_scope = set(CATEGORY_TO_STRUCTURE.keys())
-    wines = [p for p in products if p.get("classification") in in_scope]
+    wines = [p for p in products if _effective_classification(p) in in_scope]
     if sku_filter:
         sf = set(sku_filter)
         return [p for p in wines if p.get("sku") in sf][:limit]
@@ -256,7 +283,7 @@ def main(argv: list[str] | None = None) -> int:
         evidence = collector.collect_evidence(sku, sku_row)
         with db_lock:
             stats["by_tier"][evidence.quality_tier] += 1
-        classification = sku_row.get("classification")
+        classification = _effective_classification(sku_row)
         system, user, prompt_hash = pr.build_prompt(
             evidence, food_tax, vocab=vocab, classification=classification
         )
@@ -453,9 +480,15 @@ def main(argv: list[str] | None = None) -> int:
                 with db_lock:
                     print(f"WARN: csv route failed for {sku}: {e}", file=sys.stderr)
 
-        decision = "DIRECT WRITE" if final_conf >= args.write_threshold else "CSV ONLY"
+        # router.route() ALWAYS writes descriptive fields to SQLite regardless of
+        # final_conf (see local_router.py — the write_threshold gate that used to
+        # silently drop sub-threshold payloads was removed 2026-05-27). This label
+        # reflects the confidence tier stamped on the row, not a write/no-write
+        # decision — a prior version of this line said "CSV ONLY" here even though
+        # the row WAS written, which reads as hundreds of failures on a bulk run.
+        conf_tier = "HIGH CONF" if final_conf >= args.write_threshold else "LOW CONF"
         with db_lock:
-            print(f"[{idx}/{len(selected)}] {sku}  tier={evidence.quality_tier}  ai_conf={ai_conf:.2f}  final={final_conf:.2f}  → {decision}  (THB {cost_thb:.4f})")
+            print(f"[{idx}/{len(selected)}] {sku}  tier={evidence.quality_tier}  ai_conf={ai_conf:.2f}  final={final_conf:.2f}  → WRITTEN ({conf_tier})  (THB {cost_thb:.4f})")
 
     if args.workers <= 1:
         for i, sku_row in enumerate(selected, start=1):
