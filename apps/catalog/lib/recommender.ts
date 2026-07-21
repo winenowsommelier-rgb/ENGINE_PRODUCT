@@ -630,10 +630,44 @@ export function precomputeRecommendations(
     if (eligibleCount() < MIN_POOL) merge(byCountry.get(product.country ?? ''));
     if (eligibleCount() < MIN_POOL) merge(globalFallbackByGroup.get(subjectGroup) ?? globalFallback);
 
-    const recs = getRecommendationsWithBands(product, pool, {
+    let recs = getRecommendationsWithBands(product, pool, {
       includeGreatAlternative: !isInStock(product.is_in_stock),
       baseSkuMap,
     });
+
+    // POST-BAND WIDENING (fixes a real regression — see recommender.test.ts
+    // "widens further when price-band exclusions hollow out an early-exhausted
+    // bucket"): eligibleCount() above only counts RAW same-group candidates,
+    // before getRecommendationsWithBands' priceBand ceiling can exclude a
+    // candidate entirely (priced too far above the subject to read as a
+    // natural "step up" — see priceBand's `return null` case). A region
+    // bucket can satisfy MIN_POOL on raw count alone while every one of those
+    // candidates is priced outside the ceiling, silently starving the rail
+    // even though the type/country/global tiers below contain valid in-range
+    // matches. If banding actually produced fewer than MAX_RECS_EXTENDED
+    // results, merge the remaining widening tiers (each a no-op if already
+    // merged/exhausted) and re-band once more — bounded to the same 4 fixed
+    // tiers as above, so this cannot regress the O(n * b) build-time
+    // guarantee those tiers exist to preserve.
+    //
+    // MUST compare against MAX_RECS_EXTENDED (8), NOT MIN_POOL (9):
+    // getRecommendationsWithBands never returns more than MAX_RECS_EXTENDED
+    // results by construction (see its docblock), so `recs.length < MIN_POOL`
+    // is true for virtually every subject regardless of pool quality — that
+    // off-by-one turned this into an unconditional second pass over the whole
+    // catalog (7s -> 82s measured locally, an 11x slowdown). Comparing against
+    // MAX_RECS_EXTENDED only retries subjects that are ACTUALLY short.
+    if (recs.length < MAX_RECS_EXTENDED) {
+      merge(byRegion.get(product.region ?? ''));
+      merge(byType.get(typeForProduct(product)));
+      merge(byCountry.get(product.country ?? ''));
+      merge(globalFallbackByGroup.get(subjectGroup) ?? globalFallback);
+      recs = getRecommendationsWithBands(product, pool, {
+        includeGreatAlternative: !isInStock(product.is_in_stock),
+        baseSkuMap,
+      });
+    }
+
     result.set(product.sku, recs.map((r) => ({ sku: r.product.sku, band: r.band })));
   }
 
