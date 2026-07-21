@@ -29,13 +29,13 @@ ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / "data" / "db" / "products.db"
 CURATED = ROOT / "data" / "data mastefile WNLQ9" / \
     "DATA_ Master_Product_Data_Enable SKU 2026FEB -  image url .csv"
-NEWCSV = Path("/Users/admin/Downloads/export_path_images_all_media_no_null_20260708.csv")
+DEFAULT_NEWCSV = Path("/Users/admin/Downloads/export_path_images_all_media_no_null_20260708.csv")
 
 
-def load_new() -> dict:
+def load_new(newcsv: Path) -> dict:
     """sku(upper) -> base_image_url. Skips blank urls."""
     m = {}
-    with open(NEWCSV, encoding="utf-8-sig") as f:
+    with open(newcsv, encoding="utf-8-sig") as f:
         for row in csv.DictReader(f):
             sku = (row.get("sku") or "").strip().upper()
             url = (row.get("base_image_url") or "").strip()
@@ -49,9 +49,11 @@ def main() -> int:
     ap.add_argument("--apply", action="store_true", help="write changes (default dry-run)")
     ap.add_argument("--limit", type=int, default=0, help="canary: only first N eligible SKUs")
     ap.add_argument("--only", default="", help="comma-separated SKUs to restrict to")
+    ap.add_argument("--csv", default=str(DEFAULT_NEWCSV),
+                    help="path to the new Magento image-export CSV (sku,websites,base_image_url)")
     args = ap.parse_args()
 
-    new = load_new()
+    new = load_new(Path(args.csv))
     con = sqlite3.connect(DB)
     con.row_factory = sqlite3.Row
     db = {}
