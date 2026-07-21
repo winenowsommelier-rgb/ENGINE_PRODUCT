@@ -87,9 +87,15 @@ describe('precomputeRecommendations', () => {
     // in-region pool reaches >= MIN_POOL (MAX_RECS_EXTENDED + 1 = 9 incl. P) and
     // the classification/country/global widening chain is NOT triggered. These
     // share ONLY region with P (+3) and nothing else, so each scores exactly 3.
+    // Price is set WITHIN P's step-up ceiling (subject 1000 -> ceiling 1380, see
+    // priceBand tests) — NOT an arbitrary huge value — so all 9 survive price-band
+    // banding and the post-band widening retry (see "widens further..." test
+    // above) has no reason to fire. An out-of-ceiling price here would make this
+    // bucket band-empty too, triggering that retry and defeating the very
+    // approximation this test exists to pin (see 2026-07-21 regression).
     const inRegion = ['R1','R2','R3','R4','R5','R6','R7','R8','R9'].map((sku) => ({
       ...base, sku, region:'Bordeaux', variety:'none', country:'none',
-      classification:'none', food_matching:'', price:999999, is_in_stock:true,
+      classification:'none', food_matching:'', price:1100, is_in_stock:true,
     }));
 
     // A cross-region candidate that WOULD outscore the in-region items in a full
@@ -136,6 +142,52 @@ describe('precomputeRecommendations', () => {
     expect(recsForT).not.toContain('T'); // never self
     expect(recsForT).not.toContain('OOS'); // never out-of-stock
     expect(recsForT.every((sku) => inStockSkus.has(sku))).toBe(true); // only valid in-stock skus
+  });
+
+  // REGRESSION (found by automated review on PR #75, fixed same-day): widening
+  // stops as soon as the RAW same-group candidate count reaches MIN_POOL — but
+  // priceBand's step-up ceiling (see priceBand tests below) can exclude a
+  // candidate from banded output ENTIRELY (returns null) after that raw count
+  // was already judged "enough". A region bucket that's raw-large but entirely
+  // priced outside the ceiling therefore starved the rail even though the
+  // type/country/global tiers contained valid in-range matches — on the real
+  // catalog this dropped 157 products to ZERO recs (up from 69 pre-ceiling) and
+  // another 500 to 1-3 recs (up from 186), before the post-band widening retry
+  // below was added. Pin the fix here so it can't silently regress again.
+  it('widens further when price-band exclusions hollow out an already-large raw bucket', () => {
+    // Subject P, price 1000: similar range 800-1200 (mid tier ±20%), step-up
+    // ceiling = max(1000*1.35, 1200*1.15) = 1380 (see priceBand tests).
+    const P = { ...base, sku:'P', region:'Bordeaux', variety:'Merlot',
+      country:'France', classification:'Red Wine', food_matching:'Beef', price:1000 };
+
+    // Nine same-region candidates — enough to satisfy the RAW same-group count
+    // (MIN_POOL = 9) so the old eligibleCount()-based check stopped widening
+    // here. Every one is priced at 5000, far beyond the 1380 ceiling: each
+    // scores positively (shares region +3, variety +2, country +1 = 6) but
+    // priceBand(1000, 5000) returns null, so NONE of them survive banding.
+    const overCeiling = ['R1','R2','R3','R4','R5','R6','R7','R8','R9'].map((sku) => ({
+      ...base, sku, region:'Bordeaux', variety:'Merlot', country:'France',
+      classification:'Red Wine', food_matching:'Beef', price:5000, is_in_stock:true,
+    }));
+
+    // Valid in-range neighbours that only the country/global widening tiers
+    // would surface (different region, so NOT in P's region bucket) — these
+    // are what the fix must reach via the post-band widening retry.
+    const inRange = ['V1','V2','V3'].map((sku) => ({
+      ...base, sku, region:'Other', variety:'Merlot', country:'France',
+      classification:'Red Wine', food_matching:'Beef', price:1050, is_in_stock:true,
+    }));
+
+    const map = precomputeRecommendations([P, ...overCeiling, ...inRange]);
+    const recsForP = skus(map, 'P');
+
+    // The over-ceiling region-bucket candidates must never appear (they score
+    // positively but are excluded by the price-band ceiling).
+    expect(recsForP.some((sku) => sku.startsWith('R'))).toBe(false);
+    // The in-range candidates from the widened pool MUST surface — this is
+    // the actual regression: without the fix, recsForP is empty here.
+    expect(recsForP.length).toBeGreaterThan(0);
+    expect(recsForP.every((sku) => sku.startsWith('V'))).toBe(true);
   });
 
   // SUBJECT vs CANDIDATE invariant (the OOS-recs bug this fix closes):
