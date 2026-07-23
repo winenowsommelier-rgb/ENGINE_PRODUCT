@@ -594,6 +594,76 @@ describe('cross-category suppression', () => {
     const recs = getRecommendations(redDry, [redDry, redSweet]);
     expect(recs.find(r => r.sku === 'RED-SWEET')).toBeDefined();
   });
+
+  // REGRESSION (bug found 2026-07-22, Sake & Asian audit, Gap 1): Sake & Asian
+  // has no category-scorer.ts override, so its 4 real category_type values
+  // (Sake / Shochu, Umeshu, Shochu, Makgeolli) mixed freely on shared region/
+  // country/price/food signal alone. Proven: 145/419 (34.6%) in-stock Sake &
+  // Asian subjects had a cross-category_type candidate leak into their rail,
+  // e.g. a dry Sake/Shochu product recommending a sweet Umeshu plum liqueur
+  // (~10-15% ABV) — a substitute-confusion mismatch, same class as red<->white
+  // wine. isEligible() now hard-gates cross-category_type WITHIN Sake & Asian,
+  // mirroring the WINE_COLOR_TYPES gate.
+  const sakeShochu1 = { ...base, sku: 'SAKE-1', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', is_in_stock: true };
+  const sakeShochu2 = { ...base, sku: 'SAKE-2', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', is_in_stock: true };
+  const umeshu = { ...base, sku: 'UMESHU-1', category_group: 'Sake & Asian', category_type: 'Umeshu', is_in_stock: true };
+  const shochuType = { ...base, sku: 'SHOCHU-1', category_group: 'Sake & Asian', category_type: 'Shochu', is_in_stock: true };
+  const makgeolli = { ...base, sku: 'MAKGEOLLI-1', category_group: 'Sake & Asian', category_type: 'Makgeolli', is_in_stock: true };
+
+  it('Sake / Shochu subject never returns an Umeshu, Shochu, or Makgeolli candidate', () => {
+    const recs = getRecommendations(sakeShochu1, [sakeShochu1, umeshu, shochuType, makgeolli]);
+    expect(recs.find(r => r.sku === 'UMESHU-1')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'SHOCHU-1')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'MAKGEOLLI-1')).toBeUndefined();
+  });
+  it('Umeshu subject never returns a Sake / Shochu candidate', () => {
+    const recs = getRecommendations(umeshu, [umeshu, sakeShochu1]);
+    expect(recs.find(r => r.sku === 'SAKE-1')).toBeUndefined();
+  });
+  it('same category_type (Sake / Shochu <-> Sake / Shochu) is NOT blocked by the gate', () => {
+    const recs = getRecommendations(sakeShochu1, [sakeShochu1, sakeShochu2]);
+    expect(recs.find(r => r.sku === 'SAKE-2')).toBeDefined();
+  });
+
+  // REGRESSION (bug found 2026-07-22, Sake & Asian audit, Gap 2): sake brewing
+  // class (Junmai = pure rice/koji, vs non-Junmai Daiginjo/Ginjo = added
+  // distilled alcohol) is only readable from the structured `variety` field
+  // (NEVER free-text `name` matching — see CLAUDE.md Rule 12 convention).
+  // smokiness, the only generic Sake & Asian signal, is 0% populated, so
+  // there's no working disambiguation. Proven: 8/39 (20.5%) in-stock
+  // Junmai-variety subjects had a non-Junmai Daiginjo/Ginjo candidate leak
+  // into their rail, e.g. LSK0119AB Dassai Junmai Daiginjou (variety="Junmai
+  // Daiginjo") recommending LSK0008AR Kamotsuru Tokusei Gold Daiginjo
+  // (variety="Daiginjo", no "Junmai") — a different brewing style. isEligible()
+  // now hard-gates Junmai-class (variety matches /junmai/i, case-insensitive)
+  // vs non-Junmai WITHIN Sake & Asian, only when variety is populated on BOTH
+  // sides (never excludes on missing data, mirroring the other 3 gates).
+  const junmaiDaiginjo = { ...base, sku: 'JUNMAI-DAIGINJO', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', variety: 'Junmai Daiginjo', is_in_stock: true };
+  const daiginjoOnly = { ...base, sku: 'DAIGINJO-ONLY', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', variety: 'Daiginjo', is_in_stock: true };
+  const junmaiPlain = { ...base, sku: 'JUNMAI-PLAIN', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', variety: 'Junmai', is_in_stock: true };
+  const junmaiGinjo = { ...base, sku: 'JUNMAI-GINJO', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', variety: 'Junmai Ginjo', is_in_stock: true };
+  const noVarietySake = { ...base, sku: 'NO-VARIETY-SAKE', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', variety: undefined, is_in_stock: true };
+
+  it('Junmai Daiginjo subject never returns a plain Daiginjo (non-Junmai) candidate', () => {
+    const recs = getRecommendations(junmaiDaiginjo, [junmaiDaiginjo, daiginjoOnly]);
+    expect(recs.find(r => r.sku === 'DAIGINJO-ONLY')).toBeUndefined();
+  });
+  it('plain Daiginjo (non-Junmai) subject never returns a Junmai Daiginjo candidate', () => {
+    const recs = getRecommendations(daiginjoOnly, [daiginjoOnly, junmaiDaiginjo]);
+    expect(recs.find(r => r.sku === 'JUNMAI-DAIGINJO')).toBeUndefined();
+  });
+  it('Junmai subject STILL CAN return a Junmai Ginjo candidate (both Junmai-class, not gated against each other)', () => {
+    const recs = getRecommendations(junmaiPlain, [junmaiPlain, junmaiGinjo]);
+    expect(recs.find(r => r.sku === 'JUNMAI-GINJO')).toBeDefined();
+  });
+  it('gate does not fire when the candidate has no variety populated (falls through, does not exclude on missing data)', () => {
+    const recs = getRecommendations(junmaiDaiginjo, [junmaiDaiginjo, noVarietySake]);
+    expect(recs.find(r => r.sku === 'NO-VARIETY-SAKE')).toBeDefined();
+  });
+  it('gate does not fire when the subject has no variety populated (falls through, does not exclude on missing data)', () => {
+    const recs = getRecommendations(noVarietySake, [noVarietySake, daiginjoOnly]);
+    expect(recs.find(r => r.sku === 'DAIGINJO-ONLY')).toBeDefined();
+  });
 });
 
 const mkProduct = (sku: string, price: number, overrides: any = {}) => ({
@@ -900,6 +970,109 @@ describe('White Wine sweetness purity (real catalog, end-to-end invariant)', () 
         const candSweet = typeof cand?.sweetness === 'string' ? cand.sweetness.toLowerCase() : '';
         if (cand && cand.category_type === 'White Wine' && candSweet === 'sweet') {
           leaks.push(`${subject.sku} (Dry) -> ${r.sku} (${cand.sweetness})`);
+        }
+      }
+    }
+
+    expect(leaks).toEqual([]);
+  });
+});
+
+// END-TO-END INVARIANT (CLAUDE.md Rule 6): Sake & Asian has no
+// category-scorer.ts override, so its 4 real category_type values mixed
+// freely on shared region/country/price/food signal alone. Proven: 145/419
+// (34.6%) in-stock Sake & Asian subjects had a cross-category_type candidate
+// leak into their rail (e.g. dry Sake/Shochu recommending sweet Umeshu plum
+// liqueur). This test pins that leak count at 0 post-fix. Run against the
+// REAL catalog, not fixtures, since the leak only showed up at real-data
+// scale.
+describe('Sake & Asian category_type purity (real catalog, end-to-end invariant)', () => {
+  it('no in-stock Sake & Asian product has a cross-category_type candidate in its precomputed "you might also like" rail', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    // precomputeRecommendations expects is_in_stock pre-normalized to a real
+    // boolean (post toPublicProduct load), unlike the raw export's "0"/"1"/null.
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    const sakeAsianSkus = normalized.filter(
+      (p) => p.category_group === 'Sake & Asian' && p.is_in_stock
+    );
+    expect(sakeAsianSkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
+
+    // Same bucketed path the real build uses (gen-recs-cache.mjs) — fast AND
+    // representative of what actually ships, rather than a naive full-pool
+    // scan per subject.
+    const precomputed = precomputeRecommendations(normalized as any);
+
+    const leaks: string[] = [];
+
+    for (const subject of sakeAsianSkus) {
+      const recs = precomputed.get(subject.sku) ?? [];
+      for (const r of recs) {
+        const cand = bySku.get(r.sku);
+        if (
+          cand &&
+          cand.category_group === 'Sake & Asian' &&
+          cand.category_type !== subject.category_type
+        ) {
+          leaks.push(`${subject.sku} (${subject.category_type}) -> ${r.sku} (${cand.category_type})`);
+        }
+      }
+    }
+
+    expect(leaks).toEqual([]);
+  });
+});
+
+// END-TO-END INVARIANT (CLAUDE.md Rule 6): sake brewing class (Junmai vs
+// non-Junmai Daiginjo/Ginjo) is only readable from the structured `variety`
+// field, and smokiness (Sake & Asian's only generic taste signal) is 0%
+// populated for this group, so there was no working disambiguation. Proven:
+// 8/39 (20.5%) in-stock Junmai-variety subjects had a non-Junmai Daiginjo/
+// Ginjo candidate leak into their rail (e.g. LSK0119AB Dassai Junmai
+// Daiginjou -> LSK0008AR Kamotsuru Tokusei Gold Daiginjo). This test pins
+// that leak count at 0 post-fix. Run against the REAL catalog, not fixtures,
+// since the leak only showed up at real-data scale.
+describe('Sake & Asian Junmai purity (real catalog, end-to-end invariant)', () => {
+  it('no in-stock Junmai-variety Sake & Asian product has a non-Junmai-variety candidate in its precomputed "you might also like" rail', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    // precomputeRecommendations expects is_in_stock pre-normalized to a real
+    // boolean (post toPublicProduct load), unlike the raw export's "0"/"1"/null.
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    const isJunmai = (v: any) => typeof v === 'string' && /junmai/i.test(v);
+    const junmaiSkus = normalized.filter(
+      (p) => p.category_group === 'Sake & Asian' && isJunmai(p.variety) && p.is_in_stock
+    );
+    expect(junmaiSkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
+
+    // Same bucketed path the real build uses (gen-recs-cache.mjs) — fast AND
+    // representative of what actually ships, rather than a naive full-pool
+    // scan per subject.
+    const precomputed = precomputeRecommendations(normalized as any);
+
+    const leaks: string[] = [];
+
+    for (const subject of junmaiSkus) {
+      const recs = precomputed.get(subject.sku) ?? [];
+      for (const r of recs) {
+        const cand = bySku.get(r.sku);
+        if (
+          cand &&
+          cand.category_group === 'Sake & Asian' &&
+          typeof cand.variety === 'string' && cand.variety.trim() !== '' &&
+          !isJunmai(cand.variety)
+        ) {
+          leaks.push(`${subject.sku} (${subject.variety}) -> ${r.sku} (${cand.variety})`);
         }
       }
     }
