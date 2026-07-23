@@ -939,31 +939,61 @@ this is the regression guard for the future.
 Change both functions' `PublicProduct[]` parameter types (e.g. `topProducts: PublicProduct[]`) to accept `PublicProductDisplay[]` instead, importing from
 `@/lib/price-access`. This is a type-only change if Step 2's tests already pass.
 
-- [ ] **Step 4: Wire `includePrice` into `explore-map/[region]/page.tsx`**
+- [ ] **Step 4: Wire `includePrice` into `explore-map/[region]/page.tsx` —
+  TWO separate functions, not one**
 
-Add near the top of the page component:
+**Read the file fully first — `priceMin` and the JSON-LD-feeding `top5` live
+in TWO DIFFERENT exported functions with no shared scope**
+(`generateMetadata()` at the top of the file, and the default-exported page
+component further down, conventionally `RegionPage`). A fix that only touches
+the page component will miss `generateMetadata()`'s leak entirely — this is
+exactly the kind of gap that looks fixed but isn't, so treat these as two
+separate edits:
+
+**4a. Inside `generateMetadata({ params })`:** this function currently
+computes `regionProducts`, `prices`, and `priceMin` (confirm exact line
+numbers by reading the file — do not assume they match any earlier line
+citation, since the file may have changed), and interpolates
+`priceMin ? `. Prices from ฿${priceMin.toLocaleString()}` : ''` directly into
+the `desc` string used for both the meta description AND the Open Graph
+description. Next.js allows `generateMetadata` to call `headers()`/async code
+just like a page component — add:
 
 ```typescript
 import { headers } from 'next/headers';
 import { getViewerAccess } from '@/lib/auth';
-import { redactPriceIfUnauthorized } from '@/lib/price-access';
 
-const userAgent = headers().get('user-agent');
-const { includePrice } = await getViewerAccess(userAgent);
+export async function generateMetadata({ params }: { params: { region: string } }): Promise<Metadata> {
+  // ...existing setup unchanged...
+  const { includePrice } = await getViewerAccess(headers().get('user-agent'));
+  const priceMin = includePrice && prices.length ? Math.min(...prices) : null;
+  // ...rest unchanged; priceMin's existing `priceMin ? ... : ''` conditional
+  // in the desc string now naturally omits the price fragment when includePrice is false...
+}
 ```
 
-Redact `regionProducts` (or wherever `top5` is derived from) BEFORE computing
-`priceMin` for the visible-copy string — actually, the correct fix is the
-opposite: compute `priceMin` only when `includePrice` is true, and omit the
-"Prices from ฿X" sentence fragment entirely when `includePrice` is false
-(follow the existing `priceMin ? ... : ''` conditional pattern at line ~34,
-just also gate it on `includePrice`). Then pass `top5.map(p =>
-redactPriceIfUnauthorized(p, includePrice))` into `buildCollectionPage()`
-instead of the raw `top5`.
+Note `generateMetadata`'s signature must become `async` (it may already be
+synchronous today — check and update the return type to `Promise<Metadata>`
+accordingly).
+
+**4b. Inside the default-exported page component (`RegionPage` or similar):**
+this is a SEPARATE function/scope from `generateMetadata` — it independently
+computes `top5` (or whatever variable feeds `buildCollectionPage()`) and must
+independently call `getViewerAccess()` again (calling it twice, once per
+function, is normal and cheap — it's a single cookie/header read, not an
+expensive operation):
+
+```typescript
+const { includePrice } = await getViewerAccess(headers().get('user-agent'));
+```
+
+Then pass `top5.map(p => redactPriceIfUnauthorized(p, includePrice))` into
+`buildCollectionPage()` instead of the raw `top5`.
 
 This page's rendering mode must also become dynamic (`force-dynamic`) for the
-same reason as the product/shop pages — check its current mode first (research
-did not confirm this) and add the export if it's currently static.
+same reason as the product/shop pages — check its current mode first (it has
+`generateStaticParams`, confirm whether it also has a `dynamic` export) and
+add `force-dynamic` if it's currently static.
 
 - [ ] **Step 5: Wire `includePrice` into `shop/[group]/page.tsx`**
 
@@ -1317,9 +1347,20 @@ import { getViewerAccess } from '@/lib/auth';
 const userAgent = headers().get('user-agent');
 const { includePrice } = await getViewerAccess(userAgent);
 if (!includePrice) {
-  redirect('/login?redirect=' + encodeURIComponent('/catalogs/retail/full')); // adjust path per page
+  // Build the redirect target from THIS request's actual path, not a
+  // hardcoded string — /catalogs/retail/full has no params, but
+  // /catalogs/retail/[group]/page.tsx must interpolate its own `params.group`
+  // (e.g. `/catalogs/retail/${params.group}`) so the user returns to the
+  // right group after logging in, not always to /full.
+  redirect('/login?redirect=' + encodeURIComponent(currentPath));
 }
 ```
+
+Where `currentPath` is the page's own actual route: for `full/page.tsx` this
+is the literal string `/catalogs/retail/full`; for `[group]/page.tsx` and
+`page.tsx` it must be built from that page's own `params`/route (e.g.
+`` `/catalogs/retail/${params.group}` `` for the group variant) — do not copy
+the same literal string into all three files.
 
 Unlike the product/shop pages (which omit price but still render), these
 pages exist ONLY to show price — so the correct gate is a hard redirect to
