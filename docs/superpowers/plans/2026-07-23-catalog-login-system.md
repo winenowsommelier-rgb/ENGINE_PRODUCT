@@ -43,10 +43,36 @@ during planning found:
 
 Instead: `getAllProducts()`/`getProductBySku()` are untouched. A new
 `PublicProductDisplay` type and a new `redactPriceIfUnauthorized()` function are
-added, and applied ONLY where price is rendered (3 call sites: product detail
-page, shop page → `ProductCard`, and the JSON-LD builder). This keeps the diff
-minimal, keeps the security boundary in one auditable function, and avoids
-touching any code path that was never a leak risk.
+added, and applied ONLY where price is rendered. This keeps the diff minimal,
+keeps the security boundary in one auditable function, and avoids touching any
+code path that was never a leak risk.
+
+**Correction after plan review (verified against actual source, not assumed):**
+the price-rendering surface is **larger than 3 call sites**. A full sweep found
+these additional real leaks, none of which the original plan draft addressed:
+
+- **`apps/catalog/app/catalogs/retail/full/page.tsx`** and
+  **`apps/catalog/app/catalogs/retail/[group]/page.tsx`** — dedicated printable
+  retail price-list pages. `robots: { index: false, follow: false }` (SEO-hidden)
+  but **zero auth check**. Renders every SKU's price in a plain table via
+  `CatalogDocument.tsx` / `lib/catalog-print.ts`. This is a live, complete,
+  unauthenticated price-list leak today and directly contradicts this project's
+  goal — see Task 9.5 below.
+- **`apps/catalog/app/explore-map/[region]/page.tsx`** — computes
+  `priceMin = Math.min(...regionProducts.map(p => p.price))` (line ~26-27) and
+  interpolates it directly into visible page copy ("Prices from ฿X"), and feeds
+  `top5` into `buildCollectionPage()` (`lib/seo/jsonld.ts`), which conditionally
+  embeds `offers.price` per item into `CollectionPage` JSON-LD. See Task 7.5.
+- **`apps/catalog/app/shop/[group]/page.tsx`** — sorts by price (line ~67) and
+  feeds `top20` into `buildItemList()` (`lib/seo/jsonld.ts`), which also embeds
+  `offers.price` per item into `ItemList` JSON-LD. See Task 7.5.
+- **`apps/catalog/components/RecsCarousel.tsx`** — has its own
+  `PublicProduct`-typed `RecItem` interface and its own `displayPrice()` helper
+  (used to sort recommendation cards price-ascending), and renders `ProductCard`
+  internally. Redacting products *before* handing them to `RecsCarousel` would
+  break its price-based sort (a redacted item has no price to sort by). This
+  needs its own type-widening task and a sequencing fix (sort first, redact
+  after). See Task 9.6.
 
 ---
 
@@ -64,15 +90,27 @@ touching any code path that was never a leak risk.
 - `apps/catalog/lib/__tests__/price-access.test.ts`
 
 **Modified files:**
-- `apps/catalog/middleware.ts` — add session refresh, extend matcher
+- `apps/catalog/middleware.ts` — add session refresh, extend matcher (incl. `/catalogs/:path*` if Task 9.5 chooses the standard login gate)
 - `apps/catalog/components/ProductCard.tsx` — accept `PublicProductDisplay`, add conditional price rendering
 - `apps/catalog/components/product/PriceBlock.tsx` — no rendering logic change needed (already null-safe), but its prop types are re-examined in Task 6 so callers can pass `undefined` cleanly
-- `apps/catalog/lib/seo/jsonld.ts` — `buildProductSchema()` param type widens to accept `PublicProductDisplay`, conditional `offers` block
-- `apps/catalog/app/product/[sku]/page.tsx` — compute `includePrice`, pass redacted values to `PriceBlock`/`buildProductSchema`
+- `apps/catalog/components/RecsCarousel.tsx` — widen `RecItem.product` to `PublicProductDisplay`, redact per-item AFTER its internal price-sort (Task 9.6)
+- `apps/catalog/lib/seo/jsonld.ts` — `buildProductSchema()`, `buildCollectionPage()`, `buildItemList()` param types widen to accept `PublicProductDisplay`, conditional `offers` blocks (Tasks 7, 7.5)
+- `apps/catalog/app/product/[sku]/page.tsx` — compute `includePrice`, pass redacted values to `PriceBlock`/`buildProductSchema`, pass `includePrice` to `RecsCarousel`
 - `apps/catalog/app/shop/page.tsx` — compute `includePrice`, redact products before passing to `ProductCard`
-- `apps/catalog/app/page.tsx` — becomes dynamic if it renders `ProductCard` (verify in Task 9)
+- `apps/catalog/app/shop/[group]/page.tsx` — compute `includePrice`, redact sorted `top20` before `buildItemList()` (Task 7.5)
+- `apps/catalog/app/explore-map/[region]/page.tsx` — compute `includePrice`, gate visible "Prices from ฿X" copy and redact `top5` before `buildCollectionPage()` (Task 7.5)
+- `apps/catalog/app/catalogs/retail/full/page.tsx`, `[group]/page.tsx`, `page.tsx` — gate entirely behind login (or an internal-access mechanism, pending user decision) — was a complete unauthenticated price-list leak (Task 9.5, CRITICAL)
+- `apps/catalog/app/page.tsx` — becomes dynamic if it renders `ProductCard` (verify in Task 11)
 - `apps/catalog/package.json` — add `@supabase/ssr`
 - `apps/catalog/.env.example` — document new/reused env vars
+
+**Note on scope:** the original plan draft described this as touching "3 call
+sites" for price redaction (`ProductCard`, `PriceBlock`, the JSON-LD builder).
+Plan review found this undercounted the actual price-rendering surface — see
+"Correction after plan review" above. The full set is now: `ProductCard`,
+`PriceBlock`, `RecsCarousel`, `buildProductSchema`, `buildCollectionPage`,
+`buildItemList`, plus the retail print-catalog pages as a distinct
+whole-page gate rather than field-level redaction.
 
 ---
 
@@ -678,6 +716,18 @@ Expected: no new type errors. `ProductCard`'s callers currently pass
 version), this should compile without changes at call sites. If TypeScript
 complains at a specific call site, note it — do not paper over with `as any`.
 
+Also check `compactAttrRows(p: PublicProduct)` (`ProductCard.tsx:70`, called
+at line ~100) — its widened caller now passes `PublicProductDisplay`. Its
+actual field reads (country/region/variety/vintage etc.) are already optional
+on `PublicProduct` today, so this is expected to be a non-issue, but confirm
+via this same `tsc --noEmit` run rather than assuming; widen its signature to
+`PublicProductDisplay` too if the compiler flags it.
+
+Note: `RecsCarousel.tsx` (a separate Client Component that also renders
+`ProductCard` internally) has its OWN `PublicProduct`-typed prop interface —
+that is handled separately in Task 9.6, not here, since it also needs a
+redaction-sequencing fix (sort before redact) beyond a simple type widen.
+
 - [ ] **Step 7: Commit**
 
 ```bash
@@ -819,6 +869,131 @@ git commit -m "fix(catalog): buildProductSchema omits offers block when price is
 
 ---
 
+## Task 7.5: Fix the remaining JSON-LD / visible-copy price leaks (`explore-map`, `shop/[group]`)
+
+**Files:**
+- Modify: `apps/catalog/lib/seo/jsonld.ts` (`buildCollectionPage`, `buildItemList`)
+- Modify: `apps/catalog/app/explore-map/[region]/page.tsx`
+- Modify: `apps/catalog/app/shop/[group]/page.tsx`
+- Test: extend `apps/catalog/lib/seo/__tests__/jsonld.test.ts`
+
+Found during plan review: `buildProductSchema` (Task 7) is not the only JSON-LD
+function that embeds price. `buildCollectionPage` and `buildItemList` (both in
+`lib/seo/jsonld.ts`) also conditionally embed `offers.price` per item, fed by
+`explore-map/[region]/page.tsx` and `shop/[group]/page.tsx` respectively.
+Neither page currently computes `includePrice` at all. `explore-map/[region]`
+additionally interpolates a `priceMin` value directly into visible page copy
+("Prices from ฿X"), which is a leak even before JSON-LD is considered.
+
+- [ ] **Step 1: Write failing tests for `buildCollectionPage` and `buildItemList`**
+
+Add to `apps/catalog/lib/seo/__tests__/jsonld.test.ts`:
+
+```typescript
+import { buildCollectionPage, buildItemList } from '../jsonld';
+
+function makeDisplayProduct(overrides: Partial<PublicProductDisplay> = {}): PublicProductDisplay {
+  return { sku: 'TEST-1', name: 'Test Wine', price: 1000, ...overrides } as PublicProductDisplay;
+}
+
+describe('buildCollectionPage price handling', () => {
+  it('omits offers for items with redacted (undefined) price', () => {
+    const schema = buildCollectionPage(
+      'Region', 'region-slug', 'Country', 10,
+      [makeDisplayProduct({ price: undefined })],
+      'desc',
+    ) as any;
+    expect(schema.hasPart[0].offers).toBeUndefined();
+  });
+});
+
+describe('buildItemList price handling', () => {
+  it('omits offers for items with redacted (undefined) price', () => {
+    const schema = buildItemList(
+      [makeDisplayProduct({ price: undefined })],
+      'Group', 'group-slug', 10,
+    ) as any;
+    // Inspect whatever key buildItemList uses per-item (check actual field name
+    // in the real implementation — likely itemListElement[].item.offers or similar)
+    expect(JSON.stringify(schema)).not.toMatch(/"offers"/);
+  });
+});
+```
+
+Adjust the exact assertion shape to match `buildItemList`'s real output
+structure — read the function fully first (it wasn't reproduced in detail
+here; confirm its exact per-item shape before writing the assertion).
+
+- [ ] **Step 2: Run tests to verify they fail (or already pass by luck)**
+
+Run: `cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/apps/catalog" && npx vitest run lib/seo/__tests__/jsonld.test.ts`
+
+Both functions already conditionally check `p.price` truthiness (`...(p.price ? {...} : {})`), so passing `price: undefined` may ALREADY produce the
+right output today — if so, these tests will pass immediately, confirming the
+functions themselves need no code change; only their callers need updating
+(Step 3). Do not skip writing the test just because it might already pass —
+this is the regression guard for the future.
+
+- [ ] **Step 3: Update `buildCollectionPage`/`buildItemList` param types**
+
+Change both functions' `PublicProduct[]` parameter types (e.g. `topProducts: PublicProduct[]`) to accept `PublicProductDisplay[]` instead, importing from
+`@/lib/price-access`. This is a type-only change if Step 2's tests already pass.
+
+- [ ] **Step 4: Wire `includePrice` into `explore-map/[region]/page.tsx`**
+
+Add near the top of the page component:
+
+```typescript
+import { headers } from 'next/headers';
+import { getViewerAccess } from '@/lib/auth';
+import { redactPriceIfUnauthorized } from '@/lib/price-access';
+
+const userAgent = headers().get('user-agent');
+const { includePrice } = await getViewerAccess(userAgent);
+```
+
+Redact `regionProducts` (or wherever `top5` is derived from) BEFORE computing
+`priceMin` for the visible-copy string — actually, the correct fix is the
+opposite: compute `priceMin` only when `includePrice` is true, and omit the
+"Prices from ฿X" sentence fragment entirely when `includePrice` is false
+(follow the existing `priceMin ? ... : ''` conditional pattern at line ~34,
+just also gate it on `includePrice`). Then pass `top5.map(p =>
+redactPriceIfUnauthorized(p, includePrice))` into `buildCollectionPage()`
+instead of the raw `top5`.
+
+This page's rendering mode must also become dynamic (`force-dynamic`) for the
+same reason as the product/shop pages — check its current mode first (research
+did not confirm this) and add the export if it's currently static.
+
+- [ ] **Step 5: Wire `includePrice` into `shop/[group]/page.tsx`**
+
+Same pattern: compute `includePrice`, then pass
+`top20.map(p => redactPriceIfUnauthorized(p, includePrice))` into
+`buildItemList()` instead of the raw `top20`. Note this page's sort
+(`(b.price ?? 0) - (a.price ?? 0)`) must happen BEFORE redaction (sort on the
+real price, then redact the sorted result) — same sequencing concern as
+Task 9.6's `RecsCarousel` fix below. Check this page's current rendering mode
+too and add `force-dynamic` if needed.
+
+- [ ] **Step 6: Run tests, then manual verification**
+
+Run: `cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/apps/catalog" && npx vitest run lib/seo/__tests__/jsonld.test.ts`
+
+Then manually visit an `/explore-map/[region]` page and a `/shop/[group]` page
+logged out; view-source and confirm no price appears in either visible copy or
+JSON-LD `<script>` tags.
+
+- [ ] **Step 7: Commit**
+
+```bash
+cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT"
+git add apps/catalog/lib/seo/jsonld.ts apps/catalog/lib/seo/__tests__/ \
+  apps/catalog/app/explore-map/\[region\]/page.tsx apps/catalog/app/shop/\[group\]/page.tsx
+git commit -m "fix(catalog): gate price in explore-map and shop/[group] JSON-LD + visible copy"
+```
+
+---
+
 ## Task 8: Extend `middleware.ts` for session refresh
 
 **Files:**
@@ -954,16 +1129,42 @@ git commit -m "feat(catalog): add Supabase session refresh to middleware, extend
 - [ ] **Step 1: Verify current rendering mode and recs-cache read path**
 
 Read `apps/catalog/app/product/[sku]/page.tsx` in full first. Confirm
-`getRecsForSku()` (defined near the top of the file) reads `data/recs-cache.json`
-from disk via `loadRecsCache()`, and only falls back to
-`precomputeRecommendations(getAllProducts())` if that file is missing. Run:
+`getRecsForSku()` (defined near the top of the file) reads a `recs-cache.json`
+file from disk via `loadRecsCache()`, and only falls back to
+`precomputeRecommendations(getAllProducts())` if that file is missing or fails
+to parse.
 
-`ls -la "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/data/recs-cache.json"`
+**Correction:** the file does NOT live at repo-root `data/recs-cache.json` —
+`loadRecsCache()` actually probes multiple candidate paths (check its exact
+logic in the file), and the real file on disk today is at
+`apps/catalog/data/recs-cache.json` (confirmed present, ~3.4MB). Check the
+correct path directly rather than assuming repo-root:
 
-Expected: file exists. If it does NOT exist, STOP and flag to the user before
-proceeding — switching this page to dynamic rendering without the cache file
-present would trigger the expensive precompute path on every request, which is
-exactly the failure mode the build-worker-precompute incident was about.
+`ls -la "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/apps/catalog/data/recs-cache.json"`
+
+Expected: file exists.
+
+Existence alone doesn't prove the file is valid — `loadRecsCache()` catches
+parse errors and silently falls through to the expensive live-precompute path
+on ANY failure (missing file, malformed JSON, wrong shape), which is exactly
+the failure mode being guarded against. Run a stronger check that actually
+parses it and confirms it's non-empty:
+
+```bash
+cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/apps/catalog" && node -e "
+const fs = require('fs');
+const data = JSON.parse(fs.readFileSync('data/recs-cache.json', 'utf8'));
+const keys = Object.keys(data);
+console.log('parsed OK, ' + keys.length + ' sku entries, sample:', keys[0], data[keys[0]]);
+if (keys.length === 0) { console.error('EMPTY CACHE — would trigger live precompute'); process.exit(1); }
+"
+```
+
+Expected: prints a sku count > 0 and a sample entry, exits 0. If this fails or
+prints an empty count, STOP and flag to the user before proceeding — switching
+this page to dynamic rendering with a missing/empty/malformed cache would
+trigger the expensive precompute path on every request, which is exactly the
+failure mode the build-worker-precompute incident was about.
 
 - [ ] **Step 2: Add `force-dynamic` and compute `includePrice`**
 
@@ -1032,18 +1233,17 @@ missed:
 const priceValue = product.price ? Math.round(product.price) : undefined;
 ```
 
-- [ ] **Step 4: Update the recs loop to also redact**
+- [ ] **Step 4: `RecsCarousel` redaction — do NOT redact here**
 
-The `recs` array (current lines ~320-333) maps `getRecsForSku()` entries to
-full `PublicProduct` objects via `getProductBySku(sku)`, and these get passed
-to `RecsCarousel` — check whether `RecsCarousel` renders price (grep it). If it
-does, redact there too:
-
-Run: `grep -n "price\|ProductCard" "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/apps/catalog/components/RecsCarousel.tsx"`
-
-If `RecsCarousel` renders `ProductCard` internally or shows price directly,
-apply `redactPriceIfUnauthorized(p, includePrice)` when building the `recs`
-array (current line ~326, where `product: p` is set).
+**Leave the `recs` array (current lines ~320-333) unchanged — pass full,
+unredacted `PublicProduct` objects into it, exactly as today.**
+`RecsCarousel.tsx` sorts recommendation cards by real price internally
+(`byPriceAscending`); redacting before that sort would break card ordering for
+logged-out users. The actual `RecsCarousel` fix — widening its prop type and
+redacting AFTER its internal sort, immediately before render — is handled
+separately in **Task 9.6**, which also updates this page's `<RecsCarousel>`
+call site to pass `includePrice`. Do this task's Step 1-3 first, then jump to
+Task 9.6 before returning to Step 5 below.
 
 - [ ] **Step 5: Manual test**
 
@@ -1068,6 +1268,220 @@ dynamic).
 cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT"
 git add apps/catalog/app/product/\[sku\]/page.tsx
 git commit -m "feat(catalog): gate price on product detail page behind includePrice"
+```
+
+---
+
+## Task 9.5: Gate the retail print-catalog pages (CRITICAL — found in plan review)
+
+**Files:**
+- Modify: `apps/catalog/app/catalogs/retail/full/page.tsx`
+- Modify: `apps/catalog/app/catalogs/retail/[group]/page.tsx`
+- Modify: `apps/catalog/app/catalogs/retail/page.tsx`
+
+Found during plan review: these pages render a **complete printable retail
+price list** (every in-stock SKU's price, in a plain HTML table via
+`CatalogDocument.tsx` / `lib/catalog-print.ts`) with **no auth check
+whatsoever** today. They are `robots: { index: false, follow: false }`
+(hidden from search engines) but that provides zero protection against a
+logged-out human visitor who navigates there directly — this is a live,
+complete price-list leak that directly contradicts the project's stated goal
+("logged-out users cannot see product price... anywhere in the catalog").
+This is not an edge case; it's the single largest price surface in the app,
+larger than any individual product/shop page.
+
+**Before writing code, resolve one open question with the user:** should
+these pages require full login (same `includePrice` gate as everywhere else),
+or are they intentionally an internal/staff tool that should be gated
+differently (e.g. a separate internal auth mechanism, matching the pattern
+already used by the B2B catalog worktree's `B2B_AUTH_SECRET` shared-key gate
+mentioned in the design spec's research) — since a *complete* exportable price
+list is a different risk profile (bulk scrape-and-resell) than a per-product
+page view. Do not assume; ask.
+
+- [ ] **Step 1: Confirm scope decision with the user**
+
+Present the finding and the B2B-shared-key-gate precedent as an option
+alongside the standard `includePrice` login gate. Get an explicit decision
+before proceeding.
+
+- [ ] **Step 2a: If gating via the standard login/`includePrice` mechanism**
+
+Add near the top of each of the 3 page components:
+
+```typescript
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { getViewerAccess } from '@/lib/auth';
+
+const userAgent = headers().get('user-agent');
+const { includePrice } = await getViewerAccess(userAgent);
+if (!includePrice) {
+  redirect('/login?redirect=' + encodeURIComponent('/catalogs/retail/full')); // adjust path per page
+}
+```
+
+Unlike the product/shop pages (which omit price but still render), these
+pages exist ONLY to show price — so the correct gate is a hard redirect to
+`/login`, not a partial render with prices stripped from an otherwise-empty
+table.
+
+- [ ] **Step 2b: If gating via a separate internal-access mechanism**
+
+Follow whatever pattern the user specifies (e.g. adapt the `.worktrees/b2b-catalog`
+`lib/auth.ts` HMAC-signed-cookie pattern found during spec research). Write
+this as its own sub-plan once the decision is made — do not improvise a new
+auth mechanism inline here.
+
+- [ ] **Step 3: Verify the route also gets covered by `middleware.ts`'s session
+  refresh if using the standard login gate**
+
+If 2a was chosen, add `/catalogs/:path*` to the `matcher` array in
+`apps/catalog/middleware.ts` (Task 8) so session cookies refresh correctly on
+this route too.
+
+- [ ] **Step 4: Manual test**
+
+Visit `/catalogs/retail/full` logged out — confirm redirect to `/login` (2a)
+or the chosen internal-access gate (2b) fires, with NO price table rendered
+at any point, even momentarily.
+
+- [ ] **Step 5: Commit**
+
+```bash
+cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT"
+git add apps/catalog/app/catalogs/retail/
+git commit -m "fix(catalog): gate retail print-catalog pages — was a complete unauthenticated price-list leak"
+```
+
+---
+
+## Task 9.6: Fix `RecsCarousel.tsx`'s own `PublicProduct` typing + redaction sequencing
+
+**Files:**
+- Modify: `apps/catalog/components/RecsCarousel.tsx`
+- Modify: `apps/catalog/app/product/[sku]/page.tsx` (sequencing fix)
+
+Found during plan review: `RecsCarousel.tsx` has its own `RecItem` interface
+typed `product: PublicProduct` (not `PublicProductDisplay`), and its own
+`displayPrice()`/`byPriceAscending()` helpers that sort recommendation cards
+by price. Two problems:
+
+1. Task 9 Step 4 tells the implementer to redact products before building the
+   `recs` array passed into `RecsCarousel`, but `RecsCarousel`'s prop type
+   still expects full `PublicProduct` — a redacted `PublicProductDisplay`
+   object is not assignable to it, so this will not compile as originally
+   written.
+2. `byPriceAscending()` sorts using each item's real price. If redaction
+   happens BEFORE the array reaches `RecsCarousel`, every item loses its price
+   and the sort degrades to an arbitrary/insertion-order tiebreak — the
+   "step-up"/"similar" card ordering breaks for logged-out users even though
+   they were never supposed to see the sort order change, only the price
+   labels.
+
+**Fix: sort first (on real, unredacted price), redact second, right before
+render — not before sorting.**
+
+- [ ] **Step 1: Widen `RecsCarousel`'s prop type**
+
+In `apps/catalog/components/RecsCarousel.tsx`, change:
+
+```typescript
+import type { PublicProduct } from '@/lib/types';
+// ...
+interface RecItem {
+  product: PublicProduct;
+  // ...
+}
+```
+
+to:
+
+```typescript
+import type { PublicProductDisplay } from '@/lib/price-access';
+// ...
+interface RecItem {
+  product: PublicProductDisplay;
+  // ...
+}
+```
+
+Update `displayPrice(p: PublicProduct)` and `byPriceAscending`'s internal
+usage to accept `PublicProductDisplay` too (`resolveSale` already tolerates
+`undefined` inputs per Task 7's verification, so no logic change needed there
+— type signature only).
+
+- [ ] **Step 2: Fix the sequencing in `app/product/[sku]/page.tsx`**
+
+Re-examine Task 9's `recs` array construction (the `.map(...)` building
+`{ product: p, band, contactLinks, ... }`). The array is built directly from
+`getRecsForSku()` output, which is ALREADY in a fixed band order (similar/
+step-up/great-alternative), not yet price-sorted — `RecsCarousel` does its own
+`byPriceAscending` sort internally at render time using real prices. So the
+correct fix is simpler than re-ordering pipeline stages: pass the FULL
+(unredacted) `PublicProduct` into the `recs` array as today, and apply
+`redactPriceIfUnauthorized` only inside `RecsCarousel` itself, immediately
+before each card is rendered — AFTER `byPriceAscending` has already sorted
+using the real prices.
+
+In `apps/catalog/components/RecsCarousel.tsx`, update the render loop:
+
+```tsx
+// Before (current):
+{ordered.map(({ product, band, contactLinks, structural }) => {
+  // ...
+  <ProductCard product={product} .../>
+
+// After:
+{ordered.map(({ product, band, contactLinks, structural }) => {
+  const displayProduct = redactPriceIfUnauthorized(product, includePrice);
+  // ...
+  <ProductCard product={displayProduct} .../>
+```
+
+This requires threading `includePrice: boolean` into `RecsCarouselProps` as a
+new required prop, set by the page from the same `getViewerAccess()` call
+already added in Task 9. Since `byPriceAscending` sorts `ordered` from the
+full-price `items` BEFORE this per-item redaction line runs, sort order is
+preserved for all viewers while only the rendered price differs.
+
+Revert Task 9 Step 4's original instruction (which redacted before building
+the `recs` array) — that approach is superseded by this task.
+
+- [ ] **Step 3: Update `RecsCarouselProps` and its caller**
+
+```typescript
+interface RecsCarouselProps {
+  items: RecItem[];
+  includePrice: boolean;
+}
+```
+
+Update `apps/catalog/app/product/[sku]/page.tsx`'s `<RecsCarousel items={recs} />` call site to `<RecsCarousel items={recs} includePrice={includePrice} />`.
+
+- [ ] **Step 4: Run full type check**
+
+Run: `cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/apps/catalog" && npx tsc --noEmit 2>&1 | head -60`
+
+Expected: no new errors. If `compactAttrRows` or other `ProductCard`-internal
+helpers complain about the widened `PublicProductDisplay` type, widen their
+signatures too (their actual field usage — country/region/variety/vintage —
+is already optional on `PublicProduct`, so this is expected to be a type
+compatibility non-issue, but verify rather than assume).
+
+- [ ] **Step 5: Manual test**
+
+Visit a product page logged out with recommendations present. Confirm: no
+price/placeholder shown on any recommendation card, AND the card ORDER looks
+sensible (not randomly shuffled) — compare visually against the same page
+logged in, where the order should be identical, just with prices shown.
+
+- [ ] **Step 6: Commit**
+
+```bash
+cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT"
+git add apps/catalog/components/RecsCarousel.tsx apps/catalog/app/product/\[sku\]/page.tsx
+git commit -m "fix(catalog): RecsCarousel accepts PublicProductDisplay, redacts after price-sort not before"
 ```
 
 ---
@@ -1623,10 +2037,20 @@ Run: `cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/apps/catalog" && npm run dev`
 
 - [ ] **Step 2: Logged-out walkthrough**
 
-- Visit `/`, `/shop`, and 2-3 `/product/[sku]` pages in an incognito window.
-- Confirm: no price, no `'—'` placeholder, no layout gap, anywhere.
-- View page source on a product page — confirm no price string in the raw
-  HTML (including inside `<script type="application/ld+json">`).
+- Visit `/`, `/shop`, `/shop/[group]` (e.g. `/shop/wine`), `/explore-map/[region]`,
+  and 2-3 `/product/[sku]` pages (including at least one with recommendations
+  showing) in an incognito window.
+- Confirm: no price, no `'—'` placeholder, no layout gap, anywhere — including
+  recommendation carousel cards, and no "Prices from ฿X" text on the
+  explore-map region page.
+- View page source on a product page, a shop/[group] page, and an
+  explore-map/[region] page — confirm no price string in the raw HTML on any
+  of them (including inside every `<script type="application/ld+json">` block —
+  there are multiple JSON-LD blocks per page, check all of them, not just the
+  first).
+- Visit `/catalogs/retail/full` directly by URL — confirm it redirects to
+  `/login` (or the chosen internal-access gate from Task 9.5) and does not
+  render any price table, even momentarily before a redirect.
 
 - [ ] **Step 3: Registration + email confirmation walkthrough**
 
