@@ -201,6 +201,27 @@ run, or cache deleted), ALL files are treated as changed → full upload. We do 
 consult Drive to seed the cache; a full re-upload is safe and idempotent (overwrites
 by filename via the existing `files().update` path).
 
+**Stale-file cleanup (auto-prune — so the user never deletes files manually):** because
+this project (a) reorganizes the flat KB folder into `live/`/`catalog/`/`slim/`/
+`notebooklm/` subfolders and (b) renames the category files (`wines_red_*` →
+`wine_red_*`), the old files would otherwise linger as orphans. The orchestrator
+reconciles each folder against the manifest: `files on Drive (via list_drive_files) −
+files in this run's manifest for that folder = stale`. Stale files are moved to Drive
+trash via `files().delete()` (which trashes, not hard-purges — 30-day recoverable). The
+existing client already has `list_drive_files` and the full `drive` scope; the only
+net-new call is `files().delete()`.
+
+Two mandatory safety rails (Rule 10 — verify before the destructive step):
+- **Prune is opt-in and report-first.** Without `--prune`, the run prints
+  `STALE (would delete): …` per folder and touches nothing. The user eyeballs the list,
+  then enables `--prune`. The 03:00 cron uses `--prune` only after the first watched run.
+- **Abort-on-anomaly.** If pruning would remove >40% of a folder's existing files, or
+  the generated manifest for that folder is empty, the script refuses to prune that
+  folder and warns loudly (guards a half-built manifest from trashing the folder).
+
+The old flat-root files are stale-by-definition under the new subfolder manifest, so the
+first `--prune` run clears the entire old layout in one sweep — no manual hunting.
+
 **Verification (Rule 1 / Rule 6 — no "done" without proof):** after the push the
 script prints an explicit per-file table (uploaded / unchanged / bytes / rows), then
 performs a **Drive re-fetch check** — resolves the uploaded `MANIFEST.json` file ID via
@@ -288,7 +309,7 @@ launchd, `com.wnlq9.daily-sync`). One line changes. The 03:00 job already runs
 - **Refactor of `export_ai_knowledge_base.py` / `_slim.py`**: expose `generate(items, out_dir)` that **groups by `category_group`/`category_type` (Rule 12), with an `Unknown` catch-all so no SKU is dropped**; keep `__main__` behavior (full list → legacy `docs/ai-knowledge-base*` dir).
 - New live-CSV writer (`inventory_live.csv`, `pricing_promotions_live.csv`) + thin `products_all_archive.jsonl` writer.
 - Shared-artifact handling: orchestrator generates `product_index_compact.tsv` once and copies into tiers; copies hand-maintained `system_prompt.md`/`.txt` into `slim/`/`notebooklm/` (no cross-generator output-dir reads).
-- Extension of the Drive layer: tiered-subfolder upload, hash-gated skipping, and a **new `files().get_media()` download helper** for the re-fetch verification.
+- Extension of the Drive layer: tiered-subfolder upload, hash-gated skipping, a **new `files().get_media()` download helper** for the re-fetch verification, and **auto-prune** (stale-file reconciliation via `files().delete()`, `--prune` opt-in + report-first + abort-on-anomaly per §6).
 - `product_url` added to the export allowlist in `refresh_live_export.py` (empty-tolerant).
 - Tests per §9.
 - One-line edit to `scripts/scheduled_sync.sh`.
@@ -304,5 +325,6 @@ launchd, `com.wnlq9.daily-sync`). One line changes. The 03:00 job already runs
 - A second consecutive run with no DB change uploads only `live/` + `MANIFEST.json` (catalog/slim/notebooklm skipped by hash).
 - Drive re-fetch check passes (manifest in-stock count == generated count); script exits 0 only then.
 - `product_url` column present in export + CSVs (empty until source supplied), no crash on empty.
+- Without `--prune`: stale old files (flat-root + `wines_red_*`) are reported, not deleted. With `--prune`: they are trashed; abort-on-anomaly refuses if >40% of a folder would be removed.
 - $0 API spend.
 ```
