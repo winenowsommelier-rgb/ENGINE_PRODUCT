@@ -32,6 +32,16 @@ import { getCoPurchaseBonus, buildBaseSkuMap } from '@/lib/co-purchase';
 const MAX_RECS = 4;
 const MAX_RECS_EXTENDED = 8;
 
+// The 4 canonical wine colors/styles (mirrors lib/finder/category-map.ts's
+// CATEGORY_MAP) — mutually exclusive for recommendation purposes, same as the
+// Finder's hard category filter. Niche wine types outside this set (Wine Set,
+// Orange Wine, Sweet/Dessert, Fortified — too little catalog depth for their
+// own strict bucket) are intentionally excluded from the gate so their pools
+// don't starve.
+const WINE_COLOR_TYPES = new Set([
+  'red wine', 'white wine', 'rosé wine', 'sparkling & champagne',
+]);
+
 // Variety alias clusters — exact-match on variety misses obvious affinities like
 // Syrah/Shiraz or Pinot Noir/Burgundy. Two varieties in the same cluster score
 // the same +2 as an exact match. Normalise to lowercase for comparison.
@@ -301,6 +311,24 @@ function isEligible(product: PublicProduct, candidate: PublicProduct): boolean {
     candidateGroup !== 'Unknown' &&
     subjectGroup !== candidateGroup
   ) return false;
+
+  // Suppress cross-color/style recommendations WITHIN Wine (Red <-> White <->
+  // Rosé <-> Sparkling & Champagne): shared region/country/price/food isn't
+  // enough to make a Sauvignon Blanc a sensible "you might also like" for a
+  // Cabernet shopper. Mirrors the Finder's own hard category filter
+  // (finderPrefilter/CATEGORY_MAP) so the whole site is consistent about what
+  // counts as "the same kind of wine". Gate only applies when BOTH sides fall
+  // in the 4 canonical color buckets — niche types (Wine Set, Orange Wine,
+  // Sweet/Dessert, Fortified) stay ungated, same as before.
+  if (subjectGroup === 'Wine' && candidateGroup === 'Wine') {
+    const subjectType = typeForProduct(product).trim().toLowerCase();
+    const candidateType = typeForProduct(candidate).trim().toLowerCase();
+    if (
+      WINE_COLOR_TYPES.has(subjectType) &&
+      WINE_COLOR_TYPES.has(candidateType) &&
+      subjectType !== candidateType
+    ) return false;
+  }
 
   return true;
 }

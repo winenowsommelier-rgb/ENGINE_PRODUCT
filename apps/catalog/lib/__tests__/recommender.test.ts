@@ -475,15 +475,14 @@ describe('cross-category suppression', () => {
   const whisky = { ...base, sku: 'WHISK', category_group: 'Whisky', category_type: 'Whisky', is_in_stock: true };
   const gin = { ...base, sku: 'GIN', category_group: 'Spirits', category_type: 'Gin', is_in_stock: true };
   const vodka = { ...base, sku: 'VODKA', category_group: 'Spirits', category_type: 'Vodka', is_in_stock: true };
-  const rose = { ...base, sku: 'ROSE', category_group: 'Wine', category_type: 'Rose Wine', is_in_stock: true };
+  const rose = { ...base, sku: 'ROSE', category_group: 'Wine', category_type: 'Rosé Wine', is_in_stock: true };
+  const white = { ...base, sku: 'WHITE', category_group: 'Wine', category_type: 'White Wine', is_in_stock: true };
+  const sparkling = { ...base, sku: 'SPARK', category_group: 'Wine', category_type: 'Sparkling & Champagne', is_in_stock: true };
+  const wineSet = { ...base, sku: 'WSET', category_group: 'Wine', category_type: 'Wine Set', is_in_stock: true };
 
   it('Wine subject never returns Whisky candidate', () => {
     const recs = getRecommendations(wine, [wine, whisky, rose]);
     expect(recs.find(r => r.sku === 'WHISK')).toBeUndefined();
-  });
-  it('Wine subject returns same-group Rosé candidate', () => {
-    const recs = getRecommendations(wine, [wine, whisky, rose]);
-    expect(recs.find(r => r.sku === 'ROSE')).toBeDefined();
   });
   it('Gin subject returns same-group Vodka candidate', () => {
     const recs = getRecommendations(gin, [gin, vodka, wine]);
@@ -492,6 +491,33 @@ describe('cross-category suppression', () => {
   it('Gin subject never returns Wine candidate', () => {
     const recs = getRecommendations(gin, [gin, vodka, wine]);
     expect(recs.find(r => r.sku === 'WINE')).toBeUndefined();
+  });
+
+  // REGRESSION (bug found 2026-07-22): "you might also like" only suppressed
+  // cross-category_group (Wine<->Spirits) but treated wine COLOR/style as a
+  // soft +1 score nudge, not a gate. Proven against the live catalog: 92/2,439
+  // in-stock Red Wines had >=1 non-red Wine-group item in their rail (e.g. a
+  // Penfolds Pinot Noir recommending a Grosset Riesling) whenever region/
+  // country/price/food/body/acidity/tannin signals outweighed the +1. Mirrors
+  // finderPrefilter's CATEGORY_MAP (lib/finder/category-map.ts), which already
+  // hard-gates these same 4 canonical types for the Finder. This test used to
+  // assert the OPPOSITE (a red wine subject returning a rosé candidate) — that
+  // was pinning the bug, not the desired behavior (CLAUDE.md Rule 5).
+  it('Red Wine subject never returns Rosé/White/Sparkling candidates', () => {
+    const recs = getRecommendations(wine, [wine, rose, white, sparkling]);
+    expect(recs.find(r => r.sku === 'ROSE')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'WHITE')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'SPARK')).toBeUndefined();
+  });
+  it('Rosé subject never returns Red Wine candidate', () => {
+    const recs = getRecommendations(rose, [rose, wine]);
+    expect(recs.find(r => r.sku === 'WINE')).toBeUndefined();
+  });
+  it('non-color wine type (Wine Set) is not suppressed by the color gate', () => {
+    // Niche types outside the 4 canonical colors stay permissive — not enough
+    // catalog depth to justify their own strict bucket (would starve the rail).
+    const recs = getRecommendations(wine, [wine, wineSet]);
+    expect(recs.find(r => r.sku === 'WSET')).toBeDefined();
   });
 });
 
@@ -658,5 +684,50 @@ describe('co-purchase integration (real BI data)', () => {
     // Either the twin scored 0 and was dropped entirely (not in recs), or it
     // ranked below the real co-order partner. Both prove the bonus worked.
     expect(twinIdx === -1 || twinIdx > partnerIdx).toBe(true);
+  });
+});
+
+// END-TO-END INVARIANT (CLAUDE.md Rule 6): if a shopper is looking at a Red
+// Wine, "you might also like" must never contain a White/Rosé/Sparkling &
+// Champagne wine. Bug found 2026-07-22 (team report: finder cat=red flow led
+// to non-red results on the product page rail, not the finder grid itself —
+// see the 'cross-category suppression' describe block above for the unit-level
+// fix). Run against the REAL catalog, not fixtures, since the leak only showed
+// up at real-data scale (region/country/price signals winning over the old +1
+// category_type nudge).
+describe('wine color purity (real catalog, end-to-end invariant)', () => {
+  it('no in-stock Red Wine has a White/Rosé/Sparkling & Champagne product in its precomputed "you might also like" rail', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    // precomputeRecommendations expects is_in_stock pre-normalized to a real
+    // boolean (post toPublicProduct load), unlike the raw export's "0"/"1"/null.
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    const redSkus = normalized.filter((p) => p.category_type === 'Red Wine' && p.is_in_stock);
+    expect(redSkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
+
+    // Same bucketed path the real build uses (gen-recs-cache.mjs) — fast AND
+    // representative of what actually ships, rather than a naive full-pool
+    // scan per subject.
+    const precomputed = precomputeRecommendations(normalized as any);
+
+    const OTHER_WINE_COLORS = new Set(['White Wine', 'Rosé Wine', 'Sparkling & Champagne']);
+    const leaks: string[] = [];
+
+    for (const subject of redSkus) {
+      const recs = precomputed.get(subject.sku) ?? [];
+      for (const r of recs) {
+        const cand = bySku.get(r.sku);
+        if (cand && OTHER_WINE_COLORS.has(cand.category_type)) {
+          leaks.push(`${subject.sku} (Red Wine) -> ${r.sku} (${cand.category_type})`);
+        }
+      }
+    }
+
+    expect(leaks).toEqual([]);
   });
 });
