@@ -549,6 +549,51 @@ describe('cross-category suppression', () => {
     const recs = getRecommendations(whiskyMedium, [whiskyMedium, whiskyLight]);
     expect(recs.find(r => r.sku === 'WHISK-LIGHT')).toBeDefined();
   });
+
+  // REGRESSION (bug found 2026-07-22, wine sweetness audit): sweetness is
+  // severely underpopulated for Red Wine (0.2%) and Rosé Wine (0%) but
+  // reasonably well-populated for White Wine (65.4%). Where data exists (White
+  // Wine), the generic +0.5 within-1-band sweetness signal proved too weak to
+  // stop a dry<->sweet leak: 12/467 (2.6%) in-stock Dry White Wine subjects
+  // had >=1 Sweet White Wine candidate leak into their rail, e.g.
+  // WWW2006AB Nik Weis Urban Riesling (Dry) recommending WWW5371AB Nollen
+  // Erben Mosel Riesling Spätlese (Sweet). WWW1974DJ Chateau Reynon Blanc
+  // Cadillac (a sweet Bordeaux dessert wine) was a repeat offender in 6/12
+  // leaked slots. isEligible() now hard-gates sweetness EXTREMES (2+ bands
+  // apart on SWEETNESS_BANDS) within White Wine specifically — Red/Rosé Wine
+  // are a pure data-coverage gap and are intentionally NOT gated (no data to
+  // gate on).
+  const whiteDry = { ...base, sku: 'WHITE-DRY', category_group: 'Wine', category_type: 'White Wine', sweetness: 'Dry', is_in_stock: true };
+  const whiteOffDry = { ...base, sku: 'WHITE-OFFDRY', category_group: 'Wine', category_type: 'White Wine', sweetness: 'Off-Dry', is_in_stock: true };
+  const whiteMediumSweet = { ...base, sku: 'WHITE-MEDSWEET', category_group: 'Wine', category_type: 'White Wine', sweetness: 'Medium-Sweet', is_in_stock: true };
+  const whiteSweet = { ...base, sku: 'WHITE-SWEET', category_group: 'Wine', category_type: 'White Wine', sweetness: 'Sweet', is_in_stock: true };
+  const redDry = { ...base, sku: 'RED-DRY', category_group: 'Wine', category_type: 'Red Wine', sweetness: 'Dry', is_in_stock: true };
+  const redSweet = { ...base, sku: 'RED-SWEET', category_group: 'Wine', category_type: 'Red Wine', sweetness: 'Sweet', is_in_stock: true };
+
+  it('Dry White Wine subject never returns a Sweet White Wine candidate', () => {
+    const recs = getRecommendations(whiteDry, [whiteDry, whiteSweet]);
+    expect(recs.find(r => r.sku === 'WHITE-SWEET')).toBeUndefined();
+  });
+  it('Sweet White Wine subject never returns a Dry White Wine candidate', () => {
+    const recs = getRecommendations(whiteSweet, [whiteSweet, whiteDry]);
+    expect(recs.find(r => r.sku === 'WHITE-DRY')).toBeUndefined();
+  });
+  it('Dry White Wine subject never returns a Medium-Sweet White Wine candidate (2 bands apart)', () => {
+    const recs = getRecommendations(whiteDry, [whiteDry, whiteMediumSweet]);
+    expect(recs.find(r => r.sku === 'WHITE-MEDSWEET')).toBeUndefined();
+  });
+  it('Off-Dry White Wine subject never returns a Sweet White Wine candidate (2 bands apart)', () => {
+    const recs = getRecommendations(whiteOffDry, [whiteOffDry, whiteSweet]);
+    expect(recs.find(r => r.sku === 'WHITE-SWEET')).toBeUndefined();
+  });
+  it('Dry White Wine subject STILL CAN return an Off-Dry White Wine candidate (only extremes gated)', () => {
+    const recs = getRecommendations(whiteDry, [whiteDry, whiteOffDry]);
+    expect(recs.find(r => r.sku === 'WHITE-OFFDRY')).toBeDefined();
+  });
+  it('Dry Red Wine subject STILL CAN return a Sweet Red Wine candidate (gate scoped to White Wine only — no data to gate on for Red)', () => {
+    const recs = getRecommendations(redDry, [redDry, redSweet]);
+    expect(recs.find(r => r.sku === 'RED-SWEET')).toBeDefined();
+  });
 });
 
 const mkProduct = (sku: string, price: number, overrides: any = {}) => ({
@@ -804,6 +849,57 @@ describe('whisky smokiness purity (real catalog, end-to-end invariant)', () => {
         const candSmoke = typeof cand?.smokiness === 'string' ? cand.smokiness.toLowerCase() : '';
         if (cand && cand.category_group === 'Whisky' && NONE_OR_LIGHT.has(candSmoke)) {
           leaks.push(`${subject.sku} (heavy) -> ${r.sku} (${cand.smokiness})`);
+        }
+      }
+    }
+
+    expect(leaks).toEqual([]);
+  });
+});
+
+// END-TO-END INVARIANT (CLAUDE.md Rule 6): sweetness is severely underpopulated
+// for Red Wine (0.2%) and Rosé Wine (0%) — a pure data-coverage gap, NOT fixed
+// here — but reasonably well-populated for White Wine (65.4%), where the
+// generic +0.5 within-1-band nudge proved too weak. Proven: 12/467 (2.6%)
+// in-stock Dry White Wine subjects had >=1 Sweet White Wine candidate leak
+// into their rail (e.g. WWW2006AB Nik Weis Urban Riesling -> WWW5371AB Nollen
+// Erben Mosel Riesling Spätlese). This test pins that leak count at 0 post-fix.
+// Run against the REAL catalog, not fixtures, since the leak only showed up at
+// real-data scale.
+describe('White Wine sweetness purity (real catalog, end-to-end invariant)', () => {
+  it('no in-stock Dry White Wine has a Sweet White Wine candidate in its precomputed "you might also like" rail', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    // precomputeRecommendations expects is_in_stock pre-normalized to a real
+    // boolean (post toPublicProduct load), unlike the raw export's "0"/"1"/null.
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    const drySkus = normalized.filter(
+      (p) => p.category_type === 'White Wine' &&
+        typeof p.sweetness === 'string' &&
+        p.sweetness.toLowerCase() === 'dry' &&
+        p.is_in_stock
+    );
+    expect(drySkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
+
+    // Same bucketed path the real build uses (gen-recs-cache.mjs) — fast AND
+    // representative of what actually ships, rather than a naive full-pool
+    // scan per subject.
+    const precomputed = precomputeRecommendations(normalized as any);
+
+    const leaks: string[] = [];
+
+    for (const subject of drySkus) {
+      const recs = precomputed.get(subject.sku) ?? [];
+      for (const r of recs) {
+        const cand = bySku.get(r.sku);
+        const candSweet = typeof cand?.sweetness === 'string' ? cand.sweetness.toLowerCase() : '';
+        if (cand && cand.category_type === 'White Wine' && candSweet === 'sweet') {
+          leaks.push(`${subject.sku} (Dry) -> ${r.sku} (${cand.sweetness})`);
         }
       }
     }

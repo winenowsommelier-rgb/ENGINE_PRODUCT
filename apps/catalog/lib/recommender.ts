@@ -57,6 +57,15 @@ const WINE_COLOR_TYPES = new Set([
 const SMOKINESS_EXTREME_HEAVY = 'heavy';
 const SMOKINESS_EXTREME_NONE_OR_LIGHT = new Set(['none', 'light']);
 
+// Minimum SWEETNESS_BANDS index distance that counts as an "extreme" mismatch
+// (see gate below, mirrors the WINE_COLOR_TYPES/SMOKINESS_EXTREME pattern):
+// 2+ bands apart on ['dry','off-dry','medium-sweet','sweet'] catches dry<->
+// medium-sweet, dry<->sweet, and off-dry<->sweet — the true extremes — while
+// leaving adjacent pairs (dry<->off-dry, off-dry<->medium-sweet,
+// medium-sweet<->sweet) as a soft nudge, same "extremes only" philosophy as
+// the whisky smokiness fix.
+const SWEETNESS_EXTREME_MIN_DISTANCE = 2;
+
 // Variety alias clusters — exact-match on variety misses obvious affinities like
 // Syrah/Shiraz or Pinot Noir/Burgundy. Two varieties in the same cluster score
 // the same +2 as an exact match. Normalise to lowercase for comparison.
@@ -166,6 +175,23 @@ function withinOneBand(bands: string[], a: string | undefined | null, b: string 
   if (!a || !b) return false;
   const ai = bands.indexOf(a.toLowerCase()), bi = bands.indexOf(b.toLowerCase());
   return ai !== -1 && bi !== -1 && Math.abs(ai - bi) <= 1;
+}
+
+/**
+ * Complementary check to withinOneBand: true when both values resolve to a
+ * known band AND are at least `minDistance` indices apart. Used by the White
+ * Wine sweetness extremes gate in isEligible() below — same case-insensitive
+ * comparison convention as withinOneBand.
+ */
+function bandDistanceAtLeast(
+  bands: string[],
+  a: string | undefined | null,
+  b: string | undefined | null,
+  minDistance: number,
+): boolean {
+  if (!a || !b) return false;
+  const ai = bands.indexOf(a.toLowerCase()), bi = bands.indexOf(b.toLowerCase());
+  return ai !== -1 && bi !== -1 && Math.abs(ai - bi) >= minDistance;
 }
 
 /**
@@ -358,6 +384,29 @@ function isEligible(product: PublicProduct, candidate: PublicProduct): boolean {
       (subjectSmoke === SMOKINESS_EXTREME_HEAVY && SMOKINESS_EXTREME_NONE_OR_LIGHT.has(candidateSmoke)) ||
       (candidateSmoke === SMOKINESS_EXTREME_HEAVY && SMOKINESS_EXTREME_NONE_OR_LIGHT.has(subjectSmoke));
     if (isExtremeMismatch) return false;
+  }
+
+  // Suppress dry <-> sweet sweetness EXTREMES WITHIN White Wine specifically:
+  // sweetness is severely underpopulated for Red Wine (0.2%) and Rosé Wine
+  // (0%) — a pure data-coverage gap, NOT gated here since there's no data to
+  // gate on — but reasonably well-populated for White Wine (65.4%), where the
+  // generic +0.5 within-1-band nudge (SWEETNESS_BANDS/withinOneBand above)
+  // proved too weak: 12/467 (2.6%) in-stock Dry White Wine subjects leaked
+  // >=1 Sweet White Wine candidate into their rail, e.g. WWW2006AB Nik Weis
+  // Urban Riesling (Dry) recommending WWW5371AB Nollen Erben Mosel Riesling
+  // Spätlese (Sweet). WWW1974DJ Chateau Reynon Blanc Cadillac (a sweet
+  // Bordeaux dessert wine) was a repeat offender in 6/12 leaked slots. Only
+  // the extremes (2+ bands apart — see SWEETNESS_EXTREME_MIN_DISTANCE) are
+  // gated, and only when BOTH sides have sweetness populated, mirroring the
+  // "extremes only, safe on missing data" convention of the other two gates.
+  if (
+    subjectGroup === 'Wine' && candidateGroup === 'Wine' &&
+    typeForProduct(product).trim().toLowerCase() === 'white wine' &&
+    typeForProduct(candidate).trim().toLowerCase() === 'white wine'
+  ) {
+    if (bandDistanceAtLeast(SWEETNESS_BANDS, product.sweetness, candidate.sweetness, SWEETNESS_EXTREME_MIN_DISTANCE)) {
+      return false;
+    }
   }
 
   return true;
