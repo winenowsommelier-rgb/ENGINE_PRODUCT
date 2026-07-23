@@ -92,7 +92,7 @@ Given 100% of the known 189-row gap has description text, this residual is expec
 
 ### 4.4 Recommender wiring — `category-scorer.ts`
 
-Add `VODKA_TYPES`, `BRANDY_TYPES`, `COGNAC_TYPES` (or a combined `BRANDY_COGNAC_TYPES` if `typeForProduct()` doesn't distinguish them — needs verification at implementation time), `GRAPPA_TYPES` sets, each routed through `categorySignalPoints()` to `matchField(product, candidate, '<field>', 3)` — identical pattern to the existing Gin/Rum/Agave/Whisky buckets. No change to `matchField()` itself, no change to point values, no change to `isEligible()` (this is an additive signal, not a gate — consistent with how the existing category overrides work, and gating is explicitly out of scope per the audit spec's non-goals).
+Confirmed against the live export: `typeForProduct()` already distinguishes Cognac and Armagnac from general Brandy as separate `category_type` values on real data (`LBD`-prefix rows: `Brandy`=142, `Cognac`=37, `Armagnac`=4) — this is not a hypothetical, it's backfilled today. Add `VODKA_TYPES = {'Vodka'}`, `BRANDY_TYPES = {'Brandy'}`, `COGNAC_TYPES = {'Cognac', 'Armagnac'}`, `GRAPPA_TYPES = {'Grappa'}` sets, each routed through `categorySignalPoints()` to `matchField(product, candidate, '<field>', 3)` — identical pattern to the existing Gin/Rum/Agave/Whisky buckets. No change to `matchField()` itself, no change to point values, no change to `isEligible()` (this is an additive signal, not a gate — consistent with how the existing category overrides work, and gating is explicitly out of scope per the audit spec's non-goals).
 
 ---
 
@@ -112,7 +112,7 @@ Add `VODKA_TYPES`, `BRANDY_TYPES`, `COGNAC_TYPES` (or a combined `BRANDY_COGNAC_
 
 ## 6. Testing
 
-- Unit tests for each new/extended rule set in a `assign_spirits_fields`-adjacent test file (if one exists) or new `tests/test_assign_spirits_fields.py` — cover: name-match (unchanged existing cases), description-fallback-match (new), no-match-stays-null (new), and the specific brand-inference traps already documented in the script's comments (Hendrick's, Tanqueray No. TEN, Don Julio 1942) to guard against regression.
+- Unit tests in the existing `tests/test_assign_spirits_fields.py` — cover: name-match (unchanged existing cases), description-fallback-match (new), no-match-stays-null (new), and the specific brand-inference traps already documented in the script's comments (Hendrick's, Tanqueray No. TEN, Don Julio 1942) to guard against regression.
 - `category-scorer.test.ts`: new cases for Vodka/Brandy/Cognac/Grappa mirroring the existing Gin/Rum/Agave/Whisky test cases.
 - End-to-end DB invariant check per Rule 6: if a row's regex/LLM pass produced a value, the DB column is non-NULL for that SKU (direct SQL query, not cache/log count).
 - Cost report (if LLM fallback runs) includes all 4 lines required by Rule 4: total spend, API call count, rows with the field populated, per-row cost.
@@ -121,5 +121,4 @@ Add `VODKA_TYPES`, `BRANDY_TYPES`, `COGNAC_TYPES` (or a combined `BRANDY_COGNAC_
 
 ## 7. Open Questions
 
-- Does `typeForProduct()` distinguish Cognac from general Brandy today, or do both currently resolve to the same `category_type`? If they collapse to one type, `cognac_class` and `brandy_class` may need to merge into a single column/scoring bucket — to be confirmed by reading `category-groups.ts`/`sku_taxonomy.py` at implementation time before the migration step.
 - Grappa's expected fill rate is genuinely unknown until the description-mining pass runs — this spec accepts a low/zero fill rate as a valid outcome rather than pre-committing to a target.
