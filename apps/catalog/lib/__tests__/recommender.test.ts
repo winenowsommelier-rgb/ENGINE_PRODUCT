@@ -664,6 +664,46 @@ describe('cross-category suppression', () => {
     const recs = getRecommendations(noVarietySake, [noVarietySake, daiginjoOnly]);
     expect(recs.find(r => r.sku === 'DAIGINJO-ONLY')).toBeDefined();
   });
+
+  // REGRESSION (bug found 2026-07-22, Beer & RTD audit): Beer & RTD has no
+  // category-scorer.ts override and no generic disambiguating signal, so its
+  // 2 real category_type values (Beer, Ready-to-Drink pre-mixed cocktails)
+  // mixed freely on shared region/country/price/food signal alone. Proven:
+  // 8/16 (50%) in-stock Beer & RTD subjects had a cross-category_type
+  // candidate leak into their rail — 100% systematic (every Beer subject
+  // recommended all 5 RTD products and vice versa, given the tiny 3-vs-5
+  // pool at the time of the audit), e.g. LBE0995CH Moose Indie Summer Cider
+  // (Beer) recommending LRD0016DG Signature Cocktail The Lychee Martini,
+  // LRD0017DG Sunset Aperitivo, LRD0018DG Raspberry Espresso Martini,
+  // LRD0019DG Rose & White Pepper Negroni, and LRD0020DG Coconut & Pineapple
+  // Daiquiri (all Ready-to-Drink) — cider and pre-mixed cocktails are not
+  // substitutes a shopper would consider interchangeable. isEligible() now
+  // hard-gates cross-category_type WITHIN Beer & RTD, mirroring the
+  // SAKE_ASIAN_TYPES gate (same "N mutually exclusive category_type values
+  // within one group" pattern, here N=2).
+  const beer1 = { ...base, sku: 'BEER-1', category_group: 'Beer & RTD', category_type: 'Beer', is_in_stock: true };
+  const beer2 = { ...base, sku: 'BEER-2', category_group: 'Beer & RTD', category_type: 'Beer', is_in_stock: true };
+  const rtd1 = { ...base, sku: 'RTD-1', category_group: 'Beer & RTD', category_type: 'Ready-to-Drink', is_in_stock: true };
+  const rtd2 = { ...base, sku: 'RTD-2', category_group: 'Beer & RTD', category_type: 'Ready-to-Drink', is_in_stock: true };
+
+  it('Beer subject never returns a Ready-to-Drink candidate', () => {
+    const recs = getRecommendations(beer1, [beer1, rtd1, rtd2]);
+    expect(recs.find(r => r.sku === 'RTD-1')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'RTD-2')).toBeUndefined();
+  });
+  it('Ready-to-Drink subject never returns a Beer candidate', () => {
+    const recs = getRecommendations(rtd1, [rtd1, beer1, beer2]);
+    expect(recs.find(r => r.sku === 'BEER-1')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'BEER-2')).toBeUndefined();
+  });
+  it('same category_type (Beer <-> Beer) is NOT blocked by the gate', () => {
+    const recs = getRecommendations(beer1, [beer1, beer2]);
+    expect(recs.find(r => r.sku === 'BEER-2')).toBeDefined();
+  });
+  it('same category_type (Ready-to-Drink <-> Ready-to-Drink) is NOT blocked by the gate', () => {
+    const recs = getRecommendations(rtd1, [rtd1, rtd2]);
+    expect(recs.find(r => r.sku === 'RTD-2')).toBeDefined();
+  });
 });
 
 const mkProduct = (sku: string, price: number, overrides: any = {}) => ({
@@ -1073,6 +1113,57 @@ describe('Sake & Asian Junmai purity (real catalog, end-to-end invariant)', () =
           !isJunmai(cand.variety)
         ) {
           leaks.push(`${subject.sku} (${subject.variety}) -> ${r.sku} (${cand.variety})`);
+        }
+      }
+    }
+
+    expect(leaks).toEqual([]);
+  });
+});
+
+// END-TO-END INVARIANT (CLAUDE.md Rule 6): Beer & RTD has no
+// category-scorer.ts override and no generic disambiguating signal, so its 2
+// real category_type values (Beer, Ready-to-Drink) mixed freely on shared
+// region/country/price/food signal alone. Proven: 8/16 (50%) in-stock Beer &
+// RTD subjects had a cross-category_type candidate leak into their rail
+// (100% systematic given the tiny pool — e.g. LBE0995CH Moose Indie Summer
+// Cider recommending all 5 Ready-to-Drink cocktails). This test pins that
+// leak count at 0 post-fix. Run against the REAL catalog, not fixtures,
+// since the leak only showed up at real-data scale.
+describe('Beer & RTD category_type purity (real catalog, end-to-end invariant)', () => {
+  it('no in-stock Beer & RTD product has a cross-category_type candidate in its precomputed "you might also like" rail', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    // precomputeRecommendations expects is_in_stock pre-normalized to a real
+    // boolean (post toPublicProduct load), unlike the raw export's "0"/"1"/null.
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    const beerRtdSkus = normalized.filter(
+      (p) => p.category_group === 'Beer & RTD' && p.is_in_stock
+    );
+    expect(beerRtdSkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
+
+    // Same bucketed path the real build uses (gen-recs-cache.mjs) — fast AND
+    // representative of what actually ships, rather than a naive full-pool
+    // scan per subject.
+    const precomputed = precomputeRecommendations(normalized as any);
+
+    const leaks: string[] = [];
+
+    for (const subject of beerRtdSkus) {
+      const recs = precomputed.get(subject.sku) ?? [];
+      for (const r of recs) {
+        const cand = bySku.get(r.sku);
+        if (
+          cand &&
+          cand.category_group === 'Beer & RTD' &&
+          cand.category_type !== subject.category_type
+        ) {
+          leaks.push(`${subject.sku} (${subject.category_type}) -> ${r.sku} (${cand.category_type})`);
         }
       }
     }

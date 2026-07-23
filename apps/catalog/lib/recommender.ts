@@ -69,6 +69,23 @@ const SAKE_ASIAN_TYPES = new Set([
   'sake / shochu', 'umeshu', 'shochu', 'makgeolli',
 ]);
 
+// The 2 real category_type values within Beer & RTD (mirrors SAKE_ASIAN_TYPES —
+// mutually exclusive for recommendation purposes). Beer & RTD has no
+// category-scorer.ts override and no generic disambiguating signal, so these
+// mixed freely on shared region/country/price/food alone — proven to leak in
+// 8/16 (50%) in-stock Beer & RTD subjects, 100% systematic (every Beer
+// subject recommended all 5 Ready-to-Drink cocktails and vice versa, given
+// the tiny pool), e.g. LBE0995CH Moose Indie Summer Cider (Beer)
+// recommending LRD0016DG Signature Cocktail The Lychee Martini, LRD0017DG
+// Sunset Aperitivo, LRD0018DG Raspberry Espresso Martini, LRD0019DG Rose &
+// White Pepper Negroni, and LRD0020DG Coconut & Pineapple Daiquiri
+// (Ready-to-Drink) — cider and pre-mixed cocktails are not substitutes a
+// shopper would consider interchangeable. Lowercased, matching this file's
+// typeForProduct(...).trim().toLowerCase() convention.
+const BEER_RTD_TYPES = new Set([
+  'beer', 'ready-to-drink',
+]);
+
 /**
  * True if a sake/shochu variety string denotes the Junmai brewing class
  * (pure rice/koji, no added distilled alcohol) — i.e. contains "Junmai"
@@ -479,6 +496,23 @@ function isEligible(product: PublicProduct, candidate: PublicProduct): boolean {
       typeof subjectVariety === 'string' && subjectVariety.trim() !== '' &&
       typeof candidateVariety === 'string' && candidateVariety.trim() !== '' &&
       isJunmaiClass(subjectVariety) !== isJunmaiClass(candidateVariety)
+    ) return false;
+  }
+
+  // Suppress cross-category_type recommendations WITHIN Beer & RTD (Beer <->
+  // Ready-to-Drink): see BEER_RTD_TYPES above for the proof (8/16, 50% of
+  // in-stock Beer & RTD subjects leaked a cross-type candidate, 100%
+  // systematic given the tiny pool). Beer & RTD has no category-scorer.ts
+  // override, so nothing else in the scorer disambiguates these. Mirrors
+  // SAKE_ASIAN_TYPES: gate only applies when BOTH sides fall in the 2 real
+  // category_type values for this group.
+  if (subjectGroup === 'Beer & RTD' && candidateGroup === 'Beer & RTD') {
+    const subjectType = typeForProduct(product).trim().toLowerCase();
+    const candidateType = typeForProduct(candidate).trim().toLowerCase();
+    if (
+      BEER_RTD_TYPES.has(subjectType) &&
+      BEER_RTD_TYPES.has(candidateType) &&
+      subjectType !== candidateType
     ) return false;
   }
 
