@@ -15,13 +15,33 @@ see prices exactly as today.
 
 ## Why this shape
 
-- No auth exists in `apps/catalog` today — no NextAuth/Clerk/session code, no
-  `/login` route, no user table. This is a net-new build, not a retrofit.
+- No auth exists in `apps/catalog` specifically today — no NextAuth/Clerk/
+  session code, no `/login` route, no user table, in that workspace. This
+  is net-new for the catalog app, but **not** net-new for Supabase in this
+  monorepo (see below) — the login/register/callback routes and the
+  `includePrice` gating logic are new; the Supabase client relationship
+  is not.
 - Per project Rule 11 (build on skeletons, not from scratch), this uses
-  **Supabase Auth** rather than hand-rolled sessions. The repo already has
-  Supabase precedent (root `.env` has `SUPABASE_DB_URL`, consumed by the
-  Python/BI-sync side), so this extends an existing vendor relationship
-  rather than introducing a new one.
+  **Supabase Auth** rather than hand-rolled sessions. The **root**
+  `package.json` already depends on `@supabase/supabase-js` (`^2.108.1`)
+  and it is already used in production at `app/api/sync-analytics/route.ts`
+  (a working `createClient()` pattern against `sync_log`/`gsc_pages`/
+  `content_signals` tables, service-role key). Root `.env.example`/
+  `.env.local` already define `NEXT_PUBLIC_SUPABASE_URL`,
+  `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, and
+  `SUPABASE_DB_URL`. **Open decision, must be resolved before implementation:**
+  is catalog Auth added to this *same* Supabase project (reusing
+  `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and
+  copying the `createClient()` pattern from `sync-analytics/route.ts` rather
+  than inventing a new one), or a *separate* project? Reusing the same
+  project is the default recommendation — it avoids a second Supabase
+  account/billing surface — but enabling Auth on a project already used
+  for service-role BI writes should be a stated, deliberate choice, and the
+  new `lib/supabase/client.ts` should explicitly reuse the existing
+  `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` env var name rather than
+  introducing a differently-named `ANON_KEY` variable (the more common
+  name in most `@supabase/ssr` docs/examples, which an implementer copying
+  a tutorial verbatim might default to).
 - **Price is not currently gated at all.** `PUBLIC_FIELDS` in
   `apps/catalog/lib/catalog-data.ts` includes `price`, `special_price`, and
   `sp_discount_pct` for every request. `toPublicProduct()` (the single
@@ -48,13 +68,36 @@ see prices exactly as today.
 
 ### Rendering mode change
 
-Pages that display price — homepage (`app/page.tsx`), shop/category/search
-(`app/shop/page.tsx`), product detail (`app/product/[sku]/page.tsx`) — move
-from static generation to **dynamic rendering** (`force-dynamic` or
-equivalent, driven by reading the session cookie via `next/headers`). This
-is a deliberate, user-approved trade-off: no CDN edge caching for these
-routes, slightly higher TTFB, in exchange for the gate being real (price
-server-side omitted per-request) rather than a client-side illusion.
+Pages that display price need per-request access to the session cookie.
+Verified current state per page (this was previously described inaccurately
+as uniform "static generation" — corrected here):
+
+- **`app/shop/page.tsx`** — already `export const dynamic = 'force-dynamic'`
+  (existing, for filter-freshness reasons unrelated to auth). **No rendering
+  change needed here** — it already re-runs per request, so adding a
+  `getSession()` call and threading `includePrice` through is additive only.
+- **`app/page.tsx`** (homepage) — currently plain static generation. Needs
+  to become dynamic (`force-dynamic`) so it can check the session per
+  request. This is a real trade-off: loses CDN edge caching for the
+  homepage, slightly higher TTFB. User-approved.
+- **`app/product/[sku]/page.tsx`** — currently **ISR**, not plain SSG:
+  `dynamicParams = true` with `revalidate = 3600` (hourly). This page also
+  depends on `getRecsForSku()`, which reads a **prebuild-generated**
+  `data/recs-cache.json` file — a pattern that exists specifically because
+  per-page recommender precompute previously blew past Next's 60s
+  static-generation timeout under multi-worker contention (see project
+  memory: build-worker-precompute gotcha). Switching this page to
+  `force-dynamic` removes the hourly ISR cache and the `generateStaticParams`
+  prerender slice, meaning every request now runs live — including the
+  `getRecsForSku()` call. **This is expected to remain safe** because
+  `getRecsForSku()` reads the already-built `recs-cache.json` from disk at
+  request time (cheap file read, not a recompute), and the only new
+  per-request cost this design adds is a session-cookie check (`getSession()`),
+  which is trivial by comparison. This assumption must be explicitly verified
+  during implementation (confirm `recs-cache.json` is read, not regenerated,
+  under `force-dynamic`) before shipping, given this exact page previously
+  caused a build-breaking incident from underestimated per-request/per-worker
+  cost.
 
 ### New files
 
@@ -72,8 +115,8 @@ server-side omitted per-request) rather than a client-side illusion.
 | Path | Change |
 |---|---|
 | `apps/catalog/lib/catalog-data.ts` | `toPublicProduct()` gains an `includePrice: boolean` param. `price`, `special_price`, `sp_discount_pct` are only copied onto the returned object when `true`. `getAllProducts()` / `getProductBySku()` accept and thread through an `includePrice` option. |
-| `apps/catalog/middleware.ts` | `matcher` extended to also run on `/`, `/product/:path*`, `/shop/:path*` for session-cookie refresh (Supabase SSR needs middleware to refresh expiring tokens). **Existing bot-vs-browser UA rewrite logic for `/shop/:group*` is preserved as-is** — this is additive, not a replacement. |
-| `apps/catalog/components/ProductCard.tsx` | No new gating logic needed beyond what exists: if `product.price` is `undefined`, the existing `resolveSale()` call returns falsy and the price block already renders nothing. Verify this holds for the detail-page price rendering too. |
+| `apps/catalog/middleware.ts` | `matcher` extended to also run on `/`, `/product/:path*`, `/shop/:path*` for session-cookie refresh, using `@supabase/ssr`'s documented `updateSession()` middleware pattern. **Existing bot-vs-browser UA rewrite logic for `/shop/:group*` is preserved as-is** (verified: current matcher is `['/shop/:group*']` only, doesn't touch `/`, bare `/shop`, or `/product/*` today) — this is additive, not a replacement. **Must verify before implementation**: `middleware.ts` currently avoids importing from `lib/` specifically to stay Edge-runtime-compatible (see its own header comment); confirm `@supabase/ssr`'s middleware/server client works under Next's Edge middleware runtime before wiring it in, since Supabase's server auth helpers have historically had Node-only code paths. |
+| `apps/catalog/components/ProductCard.tsx` | **Requires a real code change — verified, not assumed.** `resolveSale()` correctly returns `null` when `price`/`specialPrice` are `undefined`, so the *sale* branch (lines ~207-221) is already safe. But the *non-sale* branch (lines ~222-226) unconditionally renders `formatPrice(product.price)`, and `formatPrice(undefined)` returns the string `'—'` — **not nothing**. With `includePrice: false`, every logged-out product card that isn't on sale would render a visible `'—'` placeholder, directly violating the "no placeholder" UX requirement below. Fix: wrap the non-sale price paragraph in `{product.price !== undefined && (...)}`. The product-detail page's own price-rendering block (`app/product/[sku]/page.tsx`) needs the same audit and same fix pattern. |
 
 ## Data flow (per request to a price-bearing page)
 
@@ -120,7 +163,10 @@ was a deliberate choice: simplicity over conversion-nudge copy for phase 1.
   gate (`getSession().isConfirmed === false` ⇒ `includePrice = false`).
   No grace period.
 - Google OAuth users are confirmed automatically on first login (Google
-  already verified the email) — no confirmation step for that path.
+  already verified the email) — no confirmation step for that path. (This
+  is Supabase's documented default behavior for OAuth identity providers;
+  confirm against current Supabase Auth docs at implementation time in case
+  this has changed.)
 - Unconfirmed login attempts show: "Please confirm your email — check your
   inbox" with a "Resend confirmation email" action (Supabase's built-in
   resend API).
@@ -134,6 +180,17 @@ configured as Supabase's custom SMTP under Auth → SMTP Settings. Requires
 verifying a sending subdomain (e.g. `mail.wnlq9.shop`) via DNS records —
 one-time setup, no code. Email template (subject/body/branding) is
 customized in the Supabase dashboard, not in application code.
+**Dependency to track:** until the Resend domain is DNS-verified, Supabase
+falls back to its shared SMTP, which is rate-limited to a handful of
+emails/hour — fine for development, but registration must not be opened to
+real users until DNS verification is confirmed complete.
+
+Deployment note: `apps/catalog` deploys as its own Vercel project
+(`wnlq9-catalog`, distinct Root Directory from the repo root's other env
+consumers — see project memory on catalog Vercel deploy). Whichever
+Supabase project/keys are chosen above must be added to **that** Vercel
+project's env config specifically; it is not inherited from the root app's
+environment automatically.
 
 ## Error handling
 
@@ -148,9 +205,19 @@ customized in the Supabase dashboard, not in application code.
   logged-out (price re-hides). No hard error surfaced.
 - **Crawler UA spoofing:** explicitly out of scope for phase 1 (see
   Crawler exception above).
-- **Direct API/devtools inspection:** not applicable as an attack surface —
-  since price is absent from the server-rendered payload for logged-out
-  users, there is no JSON containing it to inspect.
+- **Direct API/devtools inspection (RSC payload):** since `toPublicProduct()`
+  never puts `price` on the object when `includePrice` is false, there is no
+  serialized RSC payload chunk containing a price value — a real, structural
+  guarantee, not an illusion.
+- **JSON-LD / structured data leak (separate surface, must not be conflated
+  with the RSC-payload guarantee above):** `schema.org` Product/Offer
+  structured data is server-rendered directly into raw HTML `<script
+  type="application/ld+json">` tags, not delivered via the RSC payload. If
+  the JSON-LD builder's `includePrice` branch has any bug (e.g. forgets to
+  omit `offers.price`, or a derived field elsewhere in that payload leaks a
+  price-derived value), that leaks into visible page source — a real gap the
+  RSC-payload argument doesn't cover. This must be independently tested (see
+  Testing, below), not assumed safe by analogy to the RSC case.
 
 ## Testing
 
@@ -159,8 +226,12 @@ customized in the Supabase dashboard, not in application code.
   the actual security-boundary regression guard.
 - Unit test: `toPublicProduct({ includePrice: true })` — assert price fields
   are present and unchanged from current behavior.
-- Integration test: unauthenticated request to `/product/[sku]` — assert
-  rendered HTML/RSC payload contains no price value anywhere.
+- Integration test: unauthenticated request to `/product/[sku]` — assert the
+  **full rendered HTML response body** (not just the RSC payload) contains no
+  price value anywhere, including inside JSON-LD `<script>` tags, meta tags,
+  or any other server-rendered microdata. Also explicitly assert no literal
+  `'—'` (em-dash placeholder) artifact is left behind in the price DOM
+  location, per the `formatPrice(undefined)` bug identified above.
 - Integration test: mocked confirmed session — assert price renders as it
   does today (no regression for logged-in users).
 - Manual browser walkthrough (project Rule 7, required for any UI change):
