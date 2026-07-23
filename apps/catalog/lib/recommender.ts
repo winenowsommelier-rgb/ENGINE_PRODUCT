@@ -42,6 +42,21 @@ const WINE_COLOR_TYPES = new Set([
   'red wine', 'white wine', 'rosé wine', 'sparkling & champagne',
 ]);
 
+// The smokiness EXTREMES that must never be recommended against each other
+// within Whisky. peat_level (the intended dominant +3 whisky signal — see
+// categorySignalPoints in category-scorer.ts) is 0% populated in the live
+// catalog, so whisky peat/smoke matching falls entirely to the generic
+// smokiness +0.5 within-1-band nudge (SMOKINESS_BANDS/withinOneBand below) —
+// proven to leak in 17/17 (100%) heavy-smokiness whisky subjects, e.g.
+// Laphroaig 10 Years (LWH0024AA, heavy) recommending Old Pulteney 18 Year
+// (LWH0473ES, none), and Bowmore 15 Years (heavy) recommending Bruichladdich
+// "Unpeated" Islay Single Malt (none) — the candidate's own name says
+// "Unpeated". Only the extremes are gated (mirrors WINE_COLOR_TYPES): a soft
+// nudge is fine for mild/medium adjacency, but heavy-vs-none/light is a
+// genuine, proven mismatch a shopper would notice.
+const SMOKINESS_EXTREME_HEAVY = 'heavy';
+const SMOKINESS_EXTREME_NONE_OR_LIGHT = new Set(['none', 'light']);
+
 // Variety alias clusters — exact-match on variety misses obvious affinities like
 // Syrah/Shiraz or Pinot Noir/Burgundy. Two varieties in the same cluster score
 // the same +2 as an exact match. Normalise to lowercase for comparison.
@@ -328,6 +343,21 @@ function isEligible(product: PublicProduct, candidate: PublicProduct): boolean {
       WINE_COLOR_TYPES.has(candidateType) &&
       subjectType !== candidateType
     ) return false;
+  }
+
+  // Suppress heavy <-> none/light smokiness recommendations WITHIN Whisky: see
+  // SMOKINESS_EXTREME_HEAVY/SMOKINESS_EXTREME_NONE_OR_LIGHT above for the
+  // proof (17/17 heavy-smokiness whisky subjects leaked a none/light
+  // candidate). Case-insensitive, matching this file's existing smokiness
+  // comparison convention (withinOneBand/SMOKINESS_BANDS). Only the extremes
+  // are gated — mild/medium pairs are intentionally left as a soft nudge.
+  if (subjectGroup === 'Whisky' && candidateGroup === 'Whisky') {
+    const subjectSmoke = (product.smokiness ?? '').toLowerCase();
+    const candidateSmoke = (candidate.smokiness ?? '').toLowerCase();
+    const isExtremeMismatch =
+      (subjectSmoke === SMOKINESS_EXTREME_HEAVY && SMOKINESS_EXTREME_NONE_OR_LIGHT.has(candidateSmoke)) ||
+      (candidateSmoke === SMOKINESS_EXTREME_HEAVY && SMOKINESS_EXTREME_NONE_OR_LIGHT.has(subjectSmoke));
+    if (isExtremeMismatch) return false;
   }
 
   return true;

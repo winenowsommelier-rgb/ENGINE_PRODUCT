@@ -519,6 +519,36 @@ describe('cross-category suppression', () => {
     const recs = getRecommendations(wine, [wine, wineSet]);
     expect(recs.find(r => r.sku === 'WSET')).toBeDefined();
   });
+
+  // REGRESSION (bug found 2026-07-22, whisky smokiness audit): peat_level (the
+  // intended dominant +3 whisky signal) is 0% populated in the live catalog, so
+  // whisky peat/smoke matching fell entirely to the generic smokiness +0.5
+  // within-1-band nudge — proven to leak in 17/17 (100%) heavy-smokiness whisky
+  // subjects, e.g. Laphroaig 10 Years (LWH0024AA, heavy) recommending Old
+  // Pulteney 18 Year (LWH0473ES, none), and Bowmore 15 Years (heavy)
+  // recommending Bruichladdich "Unpeated" Islay Single Malt (none). isEligible()
+  // now hard-gates the heavy<->none/light smokiness EXTREMES within Whisky,
+  // mirroring the WINE_COLOR_TYPES gate. Only the extremes are gated — mild/
+  // medium stays a soft nudge, since only the extremes were proven to be a
+  // genuine mismatch.
+  const whiskyHeavy = { ...base, sku: 'WHISK-HEAVY', category_group: 'Whisky', category_type: 'Whisky', smokiness: 'heavy', is_in_stock: true };
+  const whiskyNone = { ...base, sku: 'WHISK-NONE', category_group: 'Whisky', category_type: 'Whisky', smokiness: 'none', is_in_stock: true };
+  const whiskyLight = { ...base, sku: 'WHISK-LIGHT', category_group: 'Whisky', category_type: 'Whisky', smokiness: 'light', is_in_stock: true };
+  const whiskyMedium = { ...base, sku: 'WHISK-MEDIUM', category_group: 'Whisky', category_type: 'Whisky', smokiness: 'medium', is_in_stock: true };
+
+  it('heavy-smokiness Whisky subject never returns a none/light-smokiness candidate', () => {
+    const recs = getRecommendations(whiskyHeavy, [whiskyHeavy, whiskyNone, whiskyLight]);
+    expect(recs.find(r => r.sku === 'WHISK-NONE')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'WHISK-LIGHT')).toBeUndefined();
+  });
+  it('none/light-smokiness Whisky subject never returns a heavy-smokiness candidate', () => {
+    const recs = getRecommendations(whiskyNone, [whiskyNone, whiskyHeavy]);
+    expect(recs.find(r => r.sku === 'WHISK-HEAVY')).toBeUndefined();
+  });
+  it('medium-smokiness Whisky subject STILL CAN return a light-smokiness candidate (only extremes gated)', () => {
+    const recs = getRecommendations(whiskyMedium, [whiskyMedium, whiskyLight]);
+    expect(recs.find(r => r.sku === 'WHISK-LIGHT')).toBeDefined();
+  });
 });
 
 const mkProduct = (sku: string, price: number, overrides: any = {}) => ({
@@ -724,6 +754,56 @@ describe('wine color purity (real catalog, end-to-end invariant)', () => {
         const cand = bySku.get(r.sku);
         if (cand && OTHER_WINE_COLORS.has(cand.category_type)) {
           leaks.push(`${subject.sku} (Red Wine) -> ${r.sku} (${cand.category_type})`);
+        }
+      }
+    }
+
+    expect(leaks).toEqual([]);
+  });
+});
+
+// END-TO-END INVARIANT (CLAUDE.md Rule 6): peat_level is 0% populated in the
+// live catalog, so whisky peat/smoke matching falls entirely to the generic
+// smokiness +0.5 nudge. Proven: 17/17 (100%) in-stock heavy-smokiness whisky
+// subjects had >=1 none/light-smokiness candidate leak into their rail (e.g.
+// LWH0024AA Laphroaig 10 Years -> LWH0473ES Old Pulteney 18 Year). This test
+// pins that leak count at 0 post-fix. Run against the REAL catalog, not
+// fixtures, since the leak only showed up at real-data scale.
+describe('whisky smokiness purity (real catalog, end-to-end invariant)', () => {
+  it('no in-stock heavy-smokiness Whisky has a none/light-smokiness candidate in its precomputed "you might also like" rail', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    // precomputeRecommendations expects is_in_stock pre-normalized to a real
+    // boolean (post toPublicProduct load), unlike the raw export's "0"/"1"/null.
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    const heavySkus = normalized.filter(
+      (p) => p.category_group === 'Whisky' &&
+        typeof p.smokiness === 'string' &&
+        p.smokiness.toLowerCase() === 'heavy' &&
+        p.is_in_stock
+    );
+    expect(heavySkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
+
+    // Same bucketed path the real build uses (gen-recs-cache.mjs) — fast AND
+    // representative of what actually ships, rather than a naive full-pool
+    // scan per subject.
+    const precomputed = precomputeRecommendations(normalized as any);
+
+    const NONE_OR_LIGHT = new Set(['none', 'light']);
+    const leaks: string[] = [];
+
+    for (const subject of heavySkus) {
+      const recs = precomputed.get(subject.sku) ?? [];
+      for (const r of recs) {
+        const cand = bySku.get(r.sku);
+        const candSmoke = typeof cand?.smokiness === 'string' ? cand.smokiness.toLowerCase() : '';
+        if (cand && cand.category_group === 'Whisky' && NONE_OR_LIGHT.has(candSmoke)) {
+          leaks.push(`${subject.sku} (heavy) -> ${r.sku} (${cand.smokiness})`);
         }
       }
     }
