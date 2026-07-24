@@ -76,6 +76,10 @@ def main(argv=None) -> int:
             con.execute(f"ALTER TABLE products ADD COLUMN {col} {coltype}")
             print(f"  {col}: added ({coltype})")
         con.commit()
+    except Exception as e:
+        con.rollback()
+        print(f"ERROR — rolled back: {e}", file=sys.stderr)
+        return 1
     finally:
         con.close()
 
