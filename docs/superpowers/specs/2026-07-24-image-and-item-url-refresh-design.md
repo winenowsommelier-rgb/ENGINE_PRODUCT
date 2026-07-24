@@ -32,7 +32,29 @@ Confirmed via direct inspection (2026-07-24):
   maintain independent `EXPORT_COLS` allowlists that must be kept in sync
   (comment in the Supabase variant says so explicitly) — a column missing
   from `EXPORT_COLS` is silently dropped from the export (see
-  `project_export_cols_allowlist` memory).
+  `project_export_cols_allowlist` memory). **Pre-existing gap, out of
+  scope for this design:** the two lists are already out of sync today —
+  the Supabase variant is missing several columns the SQLite export has
+  (`gin_style`, `reputation_*`, `curation_dossier`, etc). This design adds
+  the two new columns to both lists but does not reconcile the
+  pre-existing drift. Flagging so it isn't mistaken for something this
+  change introduced.
+- **New CSV completeness, checked directly:** 0 of 17,682 rows have a
+  blank `base_image_url` (vs. 22/12,146 blank in the old masterfile CSV).
+  The new CSV does not carry the same "blank means intentionally no
+  image" convention the old one did.
+- **Coverage gap:** 141 SKUs currently in `products.db` are absent from
+  the new CSV entirely (not just blank — not present as a row at all).
+  48 of those 141 currently have a populated `image_url`. Under the
+  existing "SKU absent from masterfile → leave untouched" rule, these 141
+  stay on whatever `image_url`/etc. they have today. So this is **not a
+  strict replacement** of the old source for every SKU — it's the
+  primary source, with a ~141-SKU residual gap. Worth surfacing to the
+  user before implementation, not silently absorbed.
+- 4 SKU values in the new CSV carry suffixes (e.g. `-200ml`, color
+  variants) that won't match any `products.db.sku` — harmless (they just
+  fall into "SKU not in DB" and get skipped), but noted so it isn't
+  mistaken for a bug during implementation.
 
 ## Goals
 
@@ -93,13 +115,33 @@ CSV" shape:
 
 - Point `IMGCSV` at the new file, update column names read
   (`base_image_url`, `item_url`, `websites` instead of `image`).
-- Keep existing `image_url` reconciliation behavior: if the new CSV has no
-  image for a SKU, blank it in the DB (per established behavior, same as
-  today) — this CSV also has a blank-image convention to preserve.
-- Add `magento_item_url` reconciliation: set if different from CSV value
-  (no special blank-out semantics needed beyond "match the CSV", since
-  this is a new field, not a bug fix for a known-bad prior value).
-- Add `websites` reconciliation: same "set if different" logic.
+- Keep the existing `image_url` blank-out code path (SKU present in CSV
+  with an empty `base_image_url` → blank the DB value) **guarded but
+  effectively dormant for this CSV**: 0/17,682 rows have a blank
+  `base_image_url` today, so this path won't fire on the current data.
+  It stays in the code (not deleted) because a future refresh of this
+  same CSV could legitimately carry a blank for a delisted SKU, and Rule
+  3 says don't assume a threshold/behavior is right without checking —
+  here it's kept because it's directly analogous to the existing
+  masterfile behavior, not because it's proven necessary for this file.
+  Add a one-line log call-out if the blank-out path fires 0 times on a
+  given run, so a future maintainer doesn't mistake "dormant" for
+  "broken."
+- SKUs present in `products.db` but absent from the new CSV (141 today,
+  48 with a currently-populated `image_url`) are left untouched, same as
+  today's "no_master" behavior — logged distinctly from "reconciled" and
+  "blanked" counts so the ~141-SKU residual gap is visible on every run,
+  not just discovered once during spec review.
+- Add `magento_item_url` reconciliation: for a SKU present in the CSV,
+  set `magento_item_url` to the CSV's `item_url` value if different from
+  the current DB value — including setting it to `''`/NULL if the CSV
+  value is blank for that SKU (unlike `image_url`, there is no prior
+  "known-good" value being protected here, so mirror the CSV exactly).
+  SKU not present in the CSV at all → leave the DB value untouched (same
+  no-master rule as image_url).
+- Add `websites` reconciliation: identical semantics to
+  `magento_item_url` above (mirror CSV value including blanks; leave
+  untouched if SKU absent from CSV).
 - Extend the printed dry-run summary to report per-field change counts
   (image_url changed / magento_item_url changed / websites changed) so a
   dry-run clearly shows the blast radius of each field before `--apply`.
@@ -122,34 +164,71 @@ actually populate.
 1. Run migration, then `PRAGMA table_info(products)` to confirm both new
    columns exist.
 2. Run reconcile script in dry-run mode; inspect the printed per-field
-   change counts and a sample of diffs.
+   change counts (reconciled / blanked / left-untouched-no-master) and a
+   sample of diffs for each of the three fields.
 3. Run with `--apply`; script's own post-write verification loop confirms
-   the write landed for a sample of changed rows.
-4. Direct SQL count query: `SELECT COUNT(*) FROM products WHERE
-   magento_item_url IS NOT NULL AND magento_item_url != ''` (and same for
-   `websites`, and for how many `image_url` values changed) — this is the
-   "verify paid work landed" muscle even though this run is free, because
-   it's still a bulk write to the payment-path table.
-5. Run `scripts/refresh_live_export.py`, then `jq` / grep
-   `data/live_products_export.json` to confirm a sample SKU shows the new
-   fields populated in the actual UI-facing file — not just in the DB.
+   the write landed for a sample of changed rows, across all three
+   fields.
+4. Direct SQL count queries against `products.db` (not just log lines —
+   Rule 1):
+   - `SELECT COUNT(*) FROM products WHERE magento_item_url IS NOT NULL
+     AND magento_item_url != ''`
+   - `SELECT COUNT(*) FROM products WHERE websites IS NOT NULL AND
+     websites != ''`
+   - `SELECT COUNT(*) FROM products WHERE image_url IS NOT NULL AND
+     image_url != ''` (before/after comparison)
+   - These three counts must be reported to the user alongside the
+     dry-run diff counts — the two should be consistent (e.g. populated
+     count ≈ CSV rows matched minus blanks minus left-untouched).
+5. Run `scripts/refresh_live_export.py` AND
+   `scripts/refresh_live_export_supabase.py` (both consume EXPORT_COLS,
+   both must be updated). For each, run a **count query against the
+   output**, not a spot-check of one sample SKU:
+   - `jq '[.[] | select(.magento_item_url != null and .magento_item_url
+     != "")] | length' data/live_products_export.json`
+   - Same for `websites`.
+   - Compare these counts against the Step 4 DB counts — they must match
+     (modulo any products filtered out of the export for unrelated
+     reasons, e.g. out-of-stock exclusions already documented for other
+     fields). A mismatch here is exactly the Rule 1/Rule 9 failure mode
+     this project has hit before (category_group missing entirely,
+     flavor_tags_canonical empty for days) and must be investigated
+     before declaring the run complete.
 
 ## Testing
 
-- Extend or add a small test alongside
-  `tests/test_image_url_invariants.py` (existing guard for the image bug)
-  to also assert: if the reconcile source CSV has a non-blank
-  `magento_item_url`/`websites` for a SKU, the DB row has it populated
-  after reconciliation. This is the Rule 6 end-to-end invariant test,
-  scoped to this new pipeline.
+- Extend `tests/test_image_url_invariants.py` in place (do not repoint it
+  away from its current purpose — it guards the cross-SKU borrowed-image
+  regression) to additionally cover the new CSV path:
+  - Positive case: if the reconcile source CSV has a non-blank
+    `magento_item_url`/`websites` for a SKU, the DB row has it populated
+    after reconciliation (Rule 6 end-to-end invariant).
+  - Negative/regression case for the carried-over blank-out path: since
+    this behavior is dormant on the real CSV (0 blanks today) but still
+    load-bearing code, add a small synthetic-CSV-fixture test that feeds
+    a row with a blank `base_image_url` for a SKU that currently has a
+    populated `image_url`, and asserts the DB value gets blanked. This is
+    the only way to prove the carried-over logic still works, since the
+    real data never exercises it.
+  - Explicitly assert the "SKU not in CSV → left untouched" behavior for
+    all three fields (image_url, magento_item_url, websites) with a
+    fixture SKU absent from the CSV.
 
 ## Open questions / risks
 
-- The new CSV may contain SKUs not present in `products.db` (new products
-  not yet onboarded) — these are skipped (left alone), consistent with
-  existing `reconcile_image_urls.py` behavior for CSV-only rows in the
-  other direction is not symmetric; only DB→CSV matching for update is in
-  scope, not inserting new products from this CSV. Confirm this is
-  acceptable before implementation (expectation: yes, since onboarding new
-  products is an entirely separate pipeline per
-  `project_new_product_onboarding` memory).
+- The new CSV contains SKUs not present in `products.db` (new products not
+  yet onboarded) — these CSV-only rows are ignored; this design only
+  updates existing `products.db` rows, it does not insert new products.
+  Onboarding new products is a separate pipeline
+  (`project_new_product_onboarding` memory) and out of scope here.
+- Conversely, 141 `products.db` SKUs are absent from the new CSV (48 with
+  a currently-populated `image_url`) — confirmed by direct inspection.
+  These are left untouched by this reconciliation, meaning the new CSV
+  functions as the *primary* source of truth going forward, not a
+  complete drop-in replacement for every existing SKU. Surface this
+  count to the user as part of the dry-run report so it's a visible,
+  known gap rather than a silent one.
+- The new CSV's blank-out convention for `image_url` doesn't fire on
+  current data (0/17,682 blanks) — see Reconciliation Script section for
+  why the code path is kept anyway and how it's tested despite being
+  dormant.
