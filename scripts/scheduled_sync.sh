@@ -32,12 +32,14 @@ else
   log "ERROR: Live export refresh failed"
 fi
 
-# Step 3: Sync AI knowledge base files to Google Drive
-log "Step 3: Syncing AI knowledge base to Google Drive"
-if "$PYTHON" scripts/sync_ai_knowledge_base_to_drive.py >> "$LOG" 2>&1; then
-  log "Drive sync OK"
+# Step 3: Build & sync the Drive export bundle (in-stock, tiered, manifest, verify).
+# Prune is intentionally OFF until the first watched run is confirmed; then add
+# --prune here to auto-trash stale files (see drive-export-v2 spec sec 6).
+log "Step 3: Building & syncing Drive export bundle"
+if "$PYTHON" scripts/export_drive_bundle.py >> "$LOG" 2>&1; then
+  log "Drive bundle sync OK"
 else
-  log "ERROR: Drive sync failed"
+  log "ERROR: Drive bundle sync failed"
 fi
 
 log "=== Scheduled sync complete ==="

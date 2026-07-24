@@ -67,7 +67,7 @@ EXPORT_COLS = [
     "special_price", "sp_discount_pct",
     "desc_en_short", "full_description",
     "taste_profile",
-    "color", "image_url",
+    "color", "image_url", "product_url",
     "validation_status", "enrichment_confidence", "enrichment_quality_grade",
     "enrichment_source", "enrichment_note", "enriched_at", "enriched_by",
     # NOTE: the granular popularity columns were renamed *_90d -> *_window (the
