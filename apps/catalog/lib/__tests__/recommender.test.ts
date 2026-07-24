@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { getRecommendations, getRecommendationsWithBands, precomputeRecommendations, priceBand, scoreCandidateDetailed, parseBottleMl, sizesComparable } from '@/lib/recommender';
 import { buildBaseSkuMap } from '@/lib/co-purchase';
 import type { Band } from '@/lib/types';
@@ -821,19 +821,33 @@ describe('wine color purity (real catalog, end-to-end invariant)', () => {
 // the REAL catalog, not fixtures, since size-band violations only surface at
 // real-data scale.
 describe('bottle-size purity (real catalog, end-to-end invariant)', () => {
-  it('no in-stock product has an out-of-size-band candidate in its precomputed "you might also like" rail', () => {
+  // Hoisted so precomputeRecommendations() runs exactly ONCE for this whole
+  // describe block instead of once per test — the full ~11,436-row catalog
+  // precompute takes 14-26s, so duplicating it across both tests below added
+  // ~40s of redundant work to the suite (see 'wine color purity' block above
+  // for the established once-per-block pattern this mirrors).
+  let normalized: any[];
+  let bySku: Map<string, any>;
+  let precomputed: Map<string, any[]>;
+
+  beforeAll(() => {
     const exportPathFile = findRealFile('data/live_products_export.json');
     const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
     const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
 
     const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
-    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+    normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+    bySku = new Map(normalized.map((p) => [p.sku, p]));
 
-    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    // Same bucketed path the real build uses (gen-recs-cache.mjs) — fast AND
+    // representative of what actually ships, rather than a naive full-pool
+    // scan per subject.
+    precomputed = precomputeRecommendations(normalized as any);
+  });
+
+  it('no in-stock product has an out-of-size-band candidate in its precomputed "you might also like" rail', () => {
     const inStockSkus = normalized.filter((p) => p.is_in_stock);
     expect(inStockSkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
-
-    const precomputed = precomputeRecommendations(normalized as any);
 
     const leaks: string[] = [];
     for (const subject of inStockSkus) {
@@ -856,16 +870,13 @@ describe('bottle-size purity (real catalog, end-to-end invariant)', () => {
   });
 
   it('the specific Dassai/Hakutsuru bug is fixed', () => {
-    const exportPathFile = findRealFile('data/live_products_export.json');
-    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
-    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
-    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
-    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
-
     const dassai = normalized.find((p) => p.sku === 'LSK0119AB');
-    if (!dassai || !dassai.is_in_stock) return; // sku may have gone out of stock/renumbered since the bug report; not this test's concern
+    // Drift guard: if this fails, the fixture SKUs have been discontinued or
+    // renumbered since the bug report and this test needs updating — fail
+    // LOUDLY rather than silently returning with zero assertions executed.
+    expect(dassai).toBeTruthy();
+    expect(dassai.is_in_stock).toBe(true);
 
-    const precomputed = precomputeRecommendations(normalized as any);
     const recs = (precomputed.get('LSK0119AB') ?? []).map((r) => r.sku);
     expect(recs).not.toContain('LSK0445FS');
     expect(recs).not.toContain('LSK0446FS');
