@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { describe, it, expect } from 'vitest';
-import { getRecommendations, getRecommendationsWithBands, precomputeRecommendations, priceBand, scoreCandidateDetailed } from '@/lib/recommender';
+import { getRecommendations, getRecommendationsWithBands, precomputeRecommendations, priceBand, scoreCandidateDetailed, parseBottleMl } from '@/lib/recommender';
 import { buildBaseSkuMap } from '@/lib/co-purchase';
 import type { Band } from '@/lib/types';
 
@@ -343,6 +343,32 @@ describe('priceBand', () => {
     it('a large price jump (real-world example: 3818 -> 10208, ~2.67x) is excluded', () => {
       expect(priceBand(3818, 10208)).toBe(null);
     });
+  });
+});
+
+describe('parseBottleMl', () => {
+  it('parses plain ml', () => {
+    expect(parseBottleMl('750 ml')).toBe(750);
+  });
+  it('parses ml with no space', () => {
+    expect(parseBottleMl('720ml')).toBe(720);
+  });
+  it('parses liters with parenthetical', () => {
+    expect(parseBottleMl('1800 ml (1.8 L)')).toBe(1800);
+  });
+  it('parses a bare liter value with no ml prefix', () => {
+    expect(parseBottleMl('1.8 L')).toBe(1800);
+  });
+  it('parses a bare liter integer', () => {
+    expect(parseBottleMl('3 L')).toBe(3000);
+  });
+  it('returns null for missing/empty input', () => {
+    expect(parseBottleMl(undefined)).toBeNull();
+    expect(parseBottleMl(null)).toBeNull();
+    expect(parseBottleMl('')).toBeNull();
+  });
+  it('returns null for unparseable input', () => {
+    expect(parseBottleMl('N/A')).toBeNull();
   });
 });
 

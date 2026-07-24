@@ -122,6 +122,28 @@ export function priceBand(
   return null;
 }
 
+/**
+ * Parse a `bottle_size` string (e.g. "750 ml", "720ml", "1800 ml (1.8 L)",
+ * "1.8 L") into milliliters. Handles the ~41 distinct values found catalog-wide
+ * (data/live_products_export.json, surveyed 2026-07-24) — all are a plain
+ * number followed by "ml" or "l" (case-insensitive, optional space), with an
+ * optional parenthetical restating the same value in liters, which this
+ * regex ignores by matching the FIRST unit token in the string. The empty
+ * string is one of the 41 values (~9.8% of the catalog) and is handled by the
+ * initial falsy check below, same as null/undefined.
+ * Returns null for missing or unparseable input — callers must treat null as
+ * "unknown," never as a size of zero.
+ */
+export function parseBottleMl(raw: string | undefined | null): number | null {
+  if (!raw) return null;
+  const s = raw.toLowerCase();
+  const mlMatch = s.match(/(\d+(?:\.\d+)?)\s*ml/);
+  if (mlMatch) return parseFloat(mlMatch[1]);
+  const lMatch = s.match(/(\d+(?:\.\d+)?)\s*l\b/);
+  if (lMatch) return parseFloat(lMatch[1]) * 1000;
+  return null;
+}
+
 function varietiesMatch(a: string | undefined | null, b: string | undefined | null): boolean {
   if (!a || !b) return false;
   const al = a.toLowerCase(), bl = b.toLowerCase();
