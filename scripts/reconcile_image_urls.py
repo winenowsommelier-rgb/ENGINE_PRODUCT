@@ -26,7 +26,9 @@ image_url's leave-alone-if-blank convention.
 For ALL THREE fields: a SKU present in products.db but ABSENT from the CSV
 entirely is left untouched (no_master rule) — this CSV does not cover every
 existing SKU (141 known gaps as of 2026-07-24, 48 of which currently have a
-populated image_url).
+populated image_url). Separately, a SKU whose CSV row is ragged/misaligned
+(see load_master()'s ragged-row detection) is also left untouched — 14 such
+SKUs as of 2026-07-24 — reported as its own count, distinct from no_master.
 
 This script is idempotent. Run with --apply to write; default is dry-run.
 After --apply you MUST run scripts/refresh_live_export.py (Rule 9).

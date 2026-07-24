@@ -183,10 +183,12 @@ def test_sku_absent_from_csv_left_untouched():
     con.close()
     missing = [s for s in all_skus if (s or "").strip().upper() not in master]
     assert missing, (
-        "expected some products.db SKUs to be absent from the source CSV "
-        "(141 known as of 2026-07-24) — if this is now 0, the CSV coverage "
-        "gap disclosed in the design spec has closed; update this test's "
-        "expectations accordingly rather than deleting it"
+        "expected some products.db SKUs to be absent from _master() — either "
+        "genuinely absent from the CSV (141 known as of 2026-07-24) or "
+        "excluded as a ragged/misaligned row (14 known as of 2026-07-24, "
+        "155 combined) — if this is now 0, the CSV coverage gap disclosed "
+        "in the design spec has closed; update this test's expectations "
+        "accordingly rather than deleting it"
     )
 
 
