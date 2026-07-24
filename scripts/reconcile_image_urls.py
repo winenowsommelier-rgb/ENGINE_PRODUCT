@@ -75,15 +75,27 @@ def load_master() -> tuple[dict, list]:
             sku = (row.get("sku") or "").strip().upper()
             if not sku:
                 continue
-            # Ragged-row guard: as of 2026-07-24, 14 rows have an unquoted
+            # Ragged-row guard (symmetric — catches both directions of a
+            # shifted row): as of 2026-07-24, 14 rows have an unquoted
             # comma inside item_name (e.g. "Monemvasia, Laloudi"), which
             # shifts websites/base_image_url/item_url one column to the
-            # right for those rows. DictReader surfaces this as an extra
-            # unmapped field under the None key. Skip these entirely
-            # (fold into no_master) rather than guess at realignment —
-            # writing shifted values would silently corrupt the wrong
-            # fields for these SKUs.
-            if row.get(None) is not None:
+            # right for those rows. DictReader surfaces EXTRA fields
+            # (more raw columns than headers) as an unmapped list under
+            # the None key. The mirror case — FEWER raw columns than
+            # headers, e.g. a dropped trailing comma — makes DictReader
+            # pad the missing trailing mapped values with None (not ""),
+            # which is otherwise indistinguishable from a legitimately
+            # blank cell once naively coerced via `.strip()`. Checking
+            # `is None` on the raw mapped values (before any .strip())
+            # catches that case: a genuinely blank CSV cell parses as ""
+            # from an actual comma-comma, never None. Skip both cases
+            # entirely (fold into no_master) rather than guess at
+            # realignment — writing shifted values would silently
+            # corrupt the wrong fields for these SKUs.
+            too_few = any(
+                row.get(csv_col) is None for csv_col in CSV_COL_FOR_FIELD.values()
+            )
+            if row.get(None) is not None or too_few:
                 ragged_skus.append(sku)
                 print(f"SKIPPED (ragged/misaligned CSV row): {sku}")
                 continue
