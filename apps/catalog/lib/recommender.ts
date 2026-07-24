@@ -375,6 +375,17 @@ function isEligible(product: PublicProduct, candidate: PublicProduct): boolean {
     ) return false;
   }
 
+  // Suppress cross-size-format recommendations: no amount of shared region/
+  // variety/price makes a 190ml novelty can a sensible "you might also like"
+  // for a 720ml premium bottle (found via a 720ml Dassai Junmai Daiginjo
+  // recommending 190ml Hakutsuru "Purupuru Sparkling Jelly Sake" cans, both
+  // Sake/Shochu category_type). Applies across ALL category groups, not just
+  // Sake -- a 2026-07-24 catalog sweep found the same shape of leak in whisky
+  // mini-bar bottles, oversized vodka bottles, and Champagne minis. See
+  // sizesComparable's docblock for the band-width rationale and the accepted
+  // Sake 720ml<->1.8L tradeoff.
+  if (!sizesComparable(product.bottle_size, candidate.bottle_size)) return false;
+
   return true;
 }
 

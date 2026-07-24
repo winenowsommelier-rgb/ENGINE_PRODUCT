@@ -579,6 +579,27 @@ describe('cross-category suppression', () => {
   });
 });
 
+describe('bottle-size eligibility gate', () => {
+  const bottle720 = { ...base, sku: 'B720', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', bottle_size: '720 ml', is_in_stock: true };
+  const jellyCan190 = { ...base, sku: 'JELLY190', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', bottle_size: '190 ml', is_in_stock: true };
+  const bottle750standard = { ...base, sku: 'W750', category_group: 'Wine', category_type: 'Red Wine', bottle_size: '750 ml', is_in_stock: true };
+  const magnum1500 = { ...base, sku: 'W1500', category_group: 'Wine', category_type: 'Red Wine', bottle_size: '1500 ml (1.5 L)', is_in_stock: true };
+  const noSizeData = { ...base, sku: 'NOSIZE', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', bottle_size: undefined, is_in_stock: true };
+
+  it('a 720ml sake subject never returns a 190ml novelty-can candidate (Dassai/Hakutsuru regression)', () => {
+    const recs = getRecommendations(bottle720, [bottle720, jellyCan190]);
+    expect(recs.find(r => r.sku === 'JELLY190')).toBeUndefined();
+  });
+  it('a 750ml wine subject still returns a 1500ml magnum candidate (legitimate step-up preserved)', () => {
+    const recs = getRecommendations(bottle750standard, [bottle750standard, magnum1500]);
+    expect(recs.find(r => r.sku === 'W1500')).toBeDefined();
+  });
+  it('does not block a candidate with missing bottle_size data', () => {
+    const recs = getRecommendations(bottle720, [bottle720, noSizeData]);
+    expect(recs.find(r => r.sku === 'NOSIZE')).toBeDefined();
+  });
+});
+
 const mkProduct = (sku: string, price: number, overrides: any = {}) => ({
   ...base, sku, name: sku, price, is_in_stock: true, ...overrides,
 });
