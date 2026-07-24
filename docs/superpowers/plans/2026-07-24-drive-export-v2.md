@@ -243,11 +243,11 @@ This is the heart of the Rule-12 fix. It maps each record to exactly one output 
 2. If `category_group == 'Wine'`, sub-split:
    - `category_type` in Red-Wine set → `wine_red_france` / `wine_red_italy` / `wine_red_world` by `country`.
    - `category_type` in White-Wine set → `wine_white_france` / `wine_white_world` by `country`.
-   - `category_type` in Sparkling/Champagne set → `wine_sparkling`.
-   - everything else under Wine (Rosé, Dessert/Sweet, Fortified, Orange, Wine Set) → `wine_other`.
+   - `category_type` in Sparkling set → `wine_sparkling`. **The canonical value is the single string `'Sparkling & Champagne'`** (verified 448 in-stock / 930 catalog-wide; `'Sparkling Wine'` and `'Champagne'` occur 0 times — do NOT use them).
+   - everything else under Wine (`'Rosé Wine'`, `'Sweet/Dessert'`, `'Fortified'`, `'Orange Wine'`, `'Wine Set'`) → `wine_other`.
 3. Otherwise map `category_group` → one of: `whisky`, `spirits`, `liqueur`, `sake_asian`, `beer_rtd`, `non_alcoholic`, `accessories`, `cigars`.
 
-> **IMPORTANT — verify the real `category_type` / `category_group` string values before hardcoding sets.** The exact strings come from `data.lib.taxonomy.sku_taxonomy`. Step 1 below dumps them so your sets match reality (e.g. is it `'Sake & Asian'` or `'Sake/Asian'`? `'Beer & RTD'`?). Do NOT guess.
+> **IMPORTANT — verify the real `category_type` / `category_group` string values before hardcoding sets.** The exact strings come from `data.lib.taxonomy.sku_taxonomy`. Step 1 below dumps them so your sets match reality (e.g. is it `'Sake & Asian'` or `'Sake/Asian'`? `'Beer & RTD'`?). The sparkling/other-wine strings above were verified against the live export — but re-confirm in Step 1, and **the actual dumped string always wins over any literal in this plan (including the test literals below)**. A wrong wine `category_type` string does NOT drop the SKU (it falls to `wine_other`), so the zero-drop invariant test will NOT catch it — the ONLY guard is matching these strings exactly. Do NOT guess.
 
 - [ ] **Step 1: Discover the exact group/type strings (read-only, informs the code)**
 
@@ -299,11 +299,11 @@ def test_white_wine_country_split():
 
 
 def test_sparkling_and_other_wine():
-    # Use the REAL category_type strings from Step 1 for sparkling/champagne.
-    assert file_for({'category_group': 'Wine', 'category_type': 'Sparkling Wine'}) == 'wine_sparkling'
-    assert file_for({'category_group': 'Wine', 'category_type': 'Champagne'}) == 'wine_sparkling'
+    # Canonical value is the SINGLE string 'Sparkling & Champagne' (verified).
+    assert file_for({'category_group': 'Wine', 'category_type': 'Sparkling & Champagne'}) == 'wine_sparkling'
     # Anything else under Wine -> wine_other
     assert file_for({'category_group': 'Wine', 'category_type': 'Rosé Wine'}) == 'wine_other'
+    assert file_for({'category_group': 'Wine', 'category_type': 'Sweet/Dessert'}) == 'wine_other'
 
 
 def test_non_wine_groups_map_to_single_files():
@@ -349,9 +349,12 @@ from __future__ import annotations
 # --- category_type sets within the Wine group (use REAL strings from Step 1) ---
 RED_WINE_TYPES = {'Red Wine'}
 WHITE_WINE_TYPES = {'White Wine'}
-SPARKLING_TYPES = {'Sparkling Wine', 'Champagne'}
-# Everything else under Wine (Rosé, Dessert/Sweet, Fortified, Orange, Wine Set)
-# falls through to 'wine_other' — no explicit set needed.
+# Verified canonical value is the SINGLE string 'Sparkling & Champagne'
+# (448 in-stock). NOT 'Sparkling Wine'/'Champagne' — those never occur. Confirm
+# in Step 1 and use whatever the dump shows.
+SPARKLING_TYPES = {'Sparkling & Champagne'}
+# Everything else under Wine ('Rosé Wine', 'Sweet/Dessert', 'Fortified',
+# 'Orange Wine', 'Wine Set') falls through to 'wine_other' — no explicit set needed.
 
 # --- non-Wine category_group -> single file stem (use REAL group strings) ---
 GROUP_TO_STEM = {
@@ -710,8 +713,11 @@ import hashlib
 import json
 import os
 
+# Spec sec 11: a no-change run uploads only live/ + MANIFEST.json. README is
+# hash-gated (it changes only when the counts/date it embeds change, which is
+# when catalog changes anyway), so it is NOT in the always-upload set.
 ALWAYS_UPLOAD_PREFIXES = ('live/',)
-ALWAYS_UPLOAD_EXACT = ('MANIFEST.json', 'README.md')
+ALWAYS_UPLOAD_EXACT = ('MANIFEST.json',)
 
 
 def sha256_file(path: str) -> str:
@@ -853,11 +859,14 @@ Create `scripts/lib/drive_bundle/readme.py`:
 from __future__ import annotations
 
 
-def render_readme(total_in_stock: int, total_all: int, generated_at: str) -> str:
+def render_readme(total_in_stock: int, total_all: int) -> str:
+    # NOTE: deliberately does NOT embed a per-run timestamp — that would change
+    # the README's hash every run and defeat its hash-gate. Freshness lives in
+    # MANIFEST.json (generated_at). README content changes only when counts do.
     return f"""# WN/LIQ9 AI Data Sources
 
-Generated: {generated_at}
 In-stock SKUs: {total_in_stock:,}  |  Total catalogued: {total_all:,}
+See MANIFEST.json for generation time and per-file freshness.
 
 ## How to use these files
 
@@ -882,7 +891,7 @@ facts, so prices can update daily without re-uploading the heavy detail files.
 
 Run:
 ```bash
-.venv/bin/python3 -c "from scripts.lib.drive_bundle.readme import render_readme; print(render_readme(6206, 11934, '2026-07-24T03:00:00+07:00')[:120])"
+.venv/bin/python3 -c "from scripts.lib.drive_bundle.readme import render_readme; print(render_readme(6206, 11934)[:120])"
 ```
 Expected: prints the first lines of the README. (Run from repo root.)
 
@@ -977,11 +986,11 @@ def main():
     generate(items, OUT)   # full unfiltered list -> legacy dir
     print('Done.')
 ```
-   (You may keep the human-readable `product_index.md` writer if you wish, but it is not required by the bundle; if kept, call it from `main()` only, not from `generate()`.)
+   **Drop the human-readable `product_index.md` writer** (lines ~104-149). It buckets/orders by raw `classification` + `bev_order` — a Rule-12 smell we do not want to carry forward, and the bundle does not use it (the compact TSV is the index). Removing it also deletes the last `classification`-based grouping in this file. If a future need for a human index arises, rebuild it on `category_type`. After this task, `grep -n "classification" scripts/export_ai_knowledge_base.py` should show only the `KEEP`-list membership / per-record passthrough, never a grouping or ordering branch.
 
 - [ ] **Step 4: Ensure `clean()` preserves the routing fields**
 
-Add `'category_group'`, `'category_type'` to the `KEEP` list (line 15-24) if absent, and confirm `'country'` is present (it is not in the current `KEEP` — ADD it). Without these three fields surviving `clean()`, `group_records` sees `unknown`/`world` for everything. This is the single most likely bug — double-check it.
+Add `'category_group'` and `'category_type'` to the `KEEP` list (line 15-24) — they are absent. `'country'` is ALREADY in `KEEP` (line 17), so leave it. Without `category_group`/`category_type` surviving `clean()`, `group_records` sees `unknown` for everything and the country sub-split breaks. This is the single most likely bug — double-check the two group fields are added.
 
 - [ ] **Step 5: Run test to verify it passes**
 
@@ -1291,7 +1300,7 @@ git commit -m "feat(drive-bundle): orchestrator local build + manifest + --dry-r
 
 - [ ] **Step 5: Add the Drive push (hash-gated), re-fetch verify, and prune**
 
-Extend `main()` (only when NOT `--dry-run`): `service = get_drive_service()`; ensure subfolders `live/catalog/slim/notebooklm` exist (`get_or_create_subfolder`); for each manifest file, `M.should_upload(...)` decides upload vs skip; `MANIFEST.json` + `README.md` + `live/*` always upload. Print a per-file table: `UPLOAD/skip  path  rows  bytes`.
+Extend `main()` (only when NOT `--dry-run`): `service = get_drive_service()`; ensure subfolders `live/catalog/slim/notebooklm` exist (`get_or_create_subfolder`); for each manifest file, `M.should_upload(...)` decides upload vs skip (`MANIFEST.json` + `live/*` always upload; `README.md` is hash-gated like the static tiers). Print a per-file table: `UPLOAD/skip  path  rows  bytes`.
 
 Then **re-fetch verify** (Rule 1/6): re-list the root, find the uploaded `MANIFEST.json` id, `download_file(service, id)`, parse, assert `total_skus_in_stock == len(instock)` and file count matches — with up to 3 retries + short `time.sleep` backoff for read-after-write lag. On mismatch after retries → print FAIL, `release_lock()`, `sys.exit(1)`.
 
@@ -1371,6 +1380,18 @@ def test_every_instock_sku_in_live_and_exactly_one_file_per_tier(tmp_path):
         dupes = {s: f for s, f in placement.items() if len(f) > 1}
         assert not dropped, f"{out.name}: {len(dropped)} in-stock SKUs in ZERO files: {list(dropped)[:5]}"
         assert not dupes, f"{out.name}: SKUs in >1 file: {list(dupes.items())[:5]}"
+
+
+def test_sparkling_file_is_not_empty(tmp_path):
+    # Guards the mis-file class of bug the zero-drop test can't catch: a wrong
+    # sparkling category_type string routes SKUs to wine_other, leaving
+    # products_wine_sparkling.json empty. Spec sizes it at ~448 in-stock.
+    instock = _load_instock()
+    gen_catalog(instock, str(tmp_path))
+    spark = tmp_path / 'products_wine_sparkling.json'
+    assert spark.exists(), "no sparkling file — category_type string mismatch?"
+    assert len(json.load(open(spark))['products']) > 100, \
+        "sparkling file suspiciously small — check SPARKLING_TYPES matches real category_type"
 ```
 
 - [ ] **Step 2: Run it**
