@@ -51,10 +51,11 @@ Confirmed via direct inspection (2026-07-24):
   strict replacement** of the old source for every SKU — it's the
   primary source, with a ~141-SKU residual gap. Worth surfacing to the
   user before implementation, not silently absorbed.
-- 4 SKU values in the new CSV carry suffixes (e.g. `-200ml`, color
-  variants) that won't match any `products.db.sku` — harmless (they just
-  fall into "SKU not in DB" and get skipped), but noted so it isn't
-  mistaken for a bug during implementation.
+- 154 SKU values in the new CSV carry suffixes (case-pack markers like
+  `-24P`/`-12P`/`-6`, size variants like `-200ml`) that won't match any
+  `products.db.sku` directly — harmless (they just fall into "SKU not in
+  DB" and get skipped, same bucket as any other unmatched CSV row), but
+  noted so the count isn't mistaken for a bug during implementation.
 
 ## Goals
 
