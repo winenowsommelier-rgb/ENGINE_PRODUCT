@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { describe, it, expect } from 'vitest';
-import { getRecommendations, getRecommendationsWithBands, precomputeRecommendations, priceBand, scoreCandidateDetailed, parseBottleMl } from '@/lib/recommender';
+import { getRecommendations, getRecommendationsWithBands, precomputeRecommendations, priceBand, scoreCandidateDetailed, parseBottleMl, sizesComparable } from '@/lib/recommender';
 import { buildBaseSkuMap } from '@/lib/co-purchase';
 import type { Band } from '@/lib/types';
 
@@ -369,6 +369,38 @@ describe('parseBottleMl', () => {
   });
   it('returns null for unparseable input', () => {
     expect(parseBottleMl('N/A')).toBeNull();
+  });
+});
+
+describe('sizesComparable', () => {
+  it('allows equal sizes', () => {
+    expect(sizesComparable('750 ml', '750 ml')).toBe(true);
+  });
+  it('allows a 2x step-up (magnum)', () => {
+    expect(sizesComparable('750 ml', '1500 ml (1.5 L)')).toBe(true);
+  });
+  it('allows a 0.5x step-down', () => {
+    expect(sizesComparable('1500 ml (1.5 L)', '750 ml')).toBe(true);
+  });
+  it('blocks a novelty-can-sized candidate against a standard bottle (the Dassai/Hakutsuru bug)', () => {
+    expect(sizesComparable('720 ml', '190 ml')).toBe(false);
+  });
+  it('blocks a mini-bar bottle against a standard bottle', () => {
+    expect(sizesComparable('700 ml', '200 ml')).toBe(false);
+  });
+  it('blocks a large-format bottle against a standard bottle', () => {
+    expect(sizesComparable('700 ml', '4500 ml (4.5 L)')).toBe(false);
+  });
+  it('blocks Sake 1.8L against Sake 720ml (accepted tradeoff, ratio 2.5x)', () => {
+    expect(sizesComparable('1800 ml (1.8 L)', '720 ml')).toBe(false);
+  });
+  it('does not gate when either side is missing bottle_size (fail-open)', () => {
+    expect(sizesComparable(undefined, '190 ml')).toBe(true);
+    expect(sizesComparable('720 ml', null)).toBe(true);
+    expect(sizesComparable(undefined, undefined)).toBe(true);
+  });
+  it('does not gate when either side is unparseable (fail-open)', () => {
+    expect(sizesComparable('N/A', '190 ml')).toBe(true);
   });
 });
 

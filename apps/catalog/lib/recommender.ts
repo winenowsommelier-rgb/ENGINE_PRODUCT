@@ -144,6 +144,29 @@ export function parseBottleMl(raw: string | undefined | null): number | null {
   return null;
 }
 
+// Comparable-size band: candidate must be within 0.5x-2x of the subject's
+// bottle_size to be eligible. Mirrors the existing wine-color hard-gate
+// pattern in isEligible() (see WINE_COLOR_TYPES) -- physical format is
+// treated as a hard eligibility gate, not a soft scoring signal, because no
+// amount of shared region/variety/price makes a 190ml novelty can a sensible
+// "you might also like" for a 720ml premium bottle (see the Dassai/Hakutsuru
+// bug this closes). Missing/unparseable size on EITHER side fails open (never
+// blocks) -- ~9.8% of the catalog has an empty bottle_size string and must
+// not be silently excluded from every rail.
+//
+// BAND WIDTH: 0.5x-2x was chosen to keep the classic 750ml->1500ml magnum
+// step-up (exactly 2.0x) while blocking every real leak found in the
+// 2026-07-24 audit (all >=3.5x). KNOWN, ACCEPTED TRADEOFF: this also blocks
+// the common 720ml<->1.8L Sake pairing (ratio 2.5x, just outside the band) --
+// a deliberate decision, not a gap to "fix" by widening the band.
+export function sizesComparable(a: string | undefined | null, b: string | undefined | null): boolean {
+  const mlA = parseBottleMl(a);
+  const mlB = parseBottleMl(b);
+  if (mlA == null || mlB == null || mlA <= 0 || mlB <= 0) return true;
+  const ratio = mlA / mlB;
+  return ratio >= 0.5 && ratio <= 2;
+}
+
 function varietiesMatch(a: string | undefined | null, b: string | undefined | null): boolean {
   if (!a || !b) return false;
   const al = a.toLowerCase(), bl = b.toLowerCase();
