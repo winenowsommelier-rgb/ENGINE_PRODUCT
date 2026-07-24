@@ -102,6 +102,10 @@ EXPORT_COLS = [
     # which already gates out anything below 'sourced'/'pairing-theory'
     # confidence, so whatever lands here is safe to expose as-is.
     "curation_dossier",
+    # Live storefront product-page URL and per-SKU site placement — sourced
+    # from data/data mastefile WNLQ9/winenow-base-images-20260724.csv via
+    # scripts/reconcile_image_urls.py. websites is a raw string, not parsed.
+    "magento_item_url", "websites",
 ]
 
 # Columns that contain JSON-encoded text and should be decoded for export.

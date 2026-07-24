@@ -85,6 +85,10 @@ EXPORT_COLS = [
     "score_max", "score_summary",
     # Timestamps
     "created_at", "updated_at",
+    # Live storefront product-page URL and per-SKU site placement — sourced
+    # from data/data mastefile WNLQ9/winenow-base-images-20260724.csv via
+    # scripts/reconcile_image_urls.py. websites is a raw string, not parsed.
+    "magento_item_url", "websites",
 ]
 
 # JSON-encoded text columns — decode so the export contains real objects.
