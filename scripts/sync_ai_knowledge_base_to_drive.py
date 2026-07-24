@@ -80,7 +80,8 @@ def list_drive_files(service, folder_id):
     page_token = None
     while True:
         resp = service.files().list(
-            q=f"'{folder_id}' in parents and trashed=false",
+            # exclude subfolders so prune_folder never trashes a subfolder (only files)
+            q=f"'{folder_id}' in parents and trashed=false and mimeType != 'application/vnd.google-apps.folder'",
             fields='nextPageToken, files(id, name)',
             pageToken=page_token,
         ).execute()
@@ -90,6 +91,55 @@ def list_drive_files(service, folder_id):
         if not page_token:
             break
     return existing
+
+
+def download_file(service, file_id):
+    """Download a Drive file's bytes by ID (for re-fetch verification)."""
+    from googleapiclient.http import MediaIoBaseDownload
+    import io
+    request = service.files().get_media(fileId=file_id)
+    buf = io.BytesIO()
+    downloader = MediaIoBaseDownload(buf, request)
+    done = False
+    while not done:
+        _, done = downloader.next_chunk()
+    return buf.getvalue()
+
+
+def prune_folder(service, folder_id, keep_filenames, label,
+                 do_prune=False, abort_fraction=0.40):
+    """Trash files in folder_id that are NOT in keep_filenames.
+
+    Safety rails (spec sec 6):
+      - do_prune=False -> report-only: prints STALE (would delete) and touches nothing.
+      - abort-on-anomaly: if keep set is empty, or stale would exceed abort_fraction
+        of existing files, refuse to prune this folder and warn.
+    Returns list of stale filenames (reported or trashed).
+    """
+    existing = list_drive_files(service, folder_id)  # {name: id}
+    stale = [name for name in existing if name not in keep_filenames]
+    if not stale:
+        print(f"  [{label}] no stale files")
+        return []
+
+    if not keep_filenames:
+        print(f"  [{label}] REFUSING to prune: manifest for this folder is EMPTY")
+        return stale
+    frac = len(stale) / max(len(existing), 1)
+    if frac > abort_fraction:
+        print(f"  [{label}] REFUSING to prune: {len(stale)}/{len(existing)} "
+              f"({frac:.0%}) exceeds {abort_fraction:.0%} guard")
+        return stale
+
+    if not do_prune:
+        for name in sorted(stale):
+            print(f"  [{label}] STALE (would delete): {name}")
+        return stale
+
+    for name in sorted(stale):
+        service.files().delete(fileId=existing[name]).execute()  # trashes (30-day recoverable)
+        print(f"  [{label}] TRASHED: {name}")
+    return stale
 
 
 def upload_file(service, local_path, folder_id, existing, dry_run=False):
