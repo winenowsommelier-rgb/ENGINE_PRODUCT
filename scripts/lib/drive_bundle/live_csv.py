@@ -1,8 +1,9 @@
 """Daily live commercial feeds: inventory + pricing/promotions.
 
-Flat CSVs, cheap to diff and push. Columns are fixed (spec sec 4). product_url
-is emitted empty until the user supplies real URLs (auto-populates then). There
-is NO promo-validity column — the DB has no such field (do not invent one).
+Flat CSVs, cheap to diff and push. Columns are fixed (spec sec 4).
+magento_product_url is emitted empty until the source column is populated
+(auto-populates then). There is NO promo-validity column — the DB has no such
+field (do not invent one).
 """
 from __future__ import annotations
 
@@ -11,10 +12,10 @@ import os
 
 INVENTORY_COLS = [
     'sku', 'name', 'is_in_stock', 'custom_stock_status', 'wn_stock',
-    'category_group', 'category_type', 'product_url',
+    'category_group', 'category_type', 'magento_product_url',
 ]
 PRICING_COLS = [
-    'sku', 'price', 'special_price', 'sp_discount_pct', 'currency', 'product_url',
+    'sku', 'price', 'special_price', 'sp_discount_pct', 'currency', 'magento_product_url',
 ]
 
 
