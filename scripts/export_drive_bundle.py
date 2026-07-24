@@ -307,10 +307,14 @@ def main():
             print("ABORT: re-fetch verification failed; NOT saving manifest.")
             return 1   # finally: release_lock() runs
 
-        stale = prune_all(service, manifest, folder_ids, do_prune=args.prune)
-
-        # Persist the manifest ONLY after a verified-successful push.
+        # Persist the manifest the moment the push is verified — BEFORE prune.
+        # The cache reflects "what we successfully pushed and verified"; that is
+        # true now, independent of prune. If prune_all raises, the lock still
+        # releases (finally) and the cache is already saved, so the next run
+        # won't wastefully re-upload all files.
         M.save_last_manifest(LAST_MANIFEST, manifest)
+
+        stale = prune_all(service, manifest, folder_ids, do_prune=args.prune)
 
         print("=" * 60)
         print("Drive push complete + verified.")
