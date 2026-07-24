@@ -810,3 +810,65 @@ describe('wine color purity (real catalog, end-to-end invariant)', () => {
     expect(leaks).toEqual([]);
   });
 });
+
+// END-TO-END INVARIANT (CLAUDE.md Rule 6): if a shopper is looking at a
+// standard-format product, "you might also like" must never contain a
+// wildly different bottle size (novelty cans, mini-bars, huge formats).
+// Bug found via design review (Tasks 1-3): SKU LSK0119AB (Dassai Junmai
+// Daiginjo, 720ml, in stock) was recommending LSK0445FS/LSK0446FS/LSK0447FS
+// (Hakutsuru "Purupuru Sparkling Jelly Sake" novelty cans, 190ml) — verified
+// directly against data/live_products_export.json during design. Run against
+// the REAL catalog, not fixtures, since size-band violations only surface at
+// real-data scale.
+describe('bottle-size purity (real catalog, end-to-end invariant)', () => {
+  it('no in-stock product has an out-of-size-band candidate in its precomputed "you might also like" rail', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    const inStockSkus = normalized.filter((p) => p.is_in_stock);
+    expect(inStockSkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
+
+    const precomputed = precomputeRecommendations(normalized as any);
+
+    const leaks: string[] = [];
+    for (const subject of inStockSkus) {
+      const subjectMl = parseBottleMl(subject.bottle_size);
+      if (subjectMl == null) continue; // fail-open subjects have nothing to violate
+      const recs = precomputed.get(subject.sku) ?? [];
+      for (const r of recs) {
+        const cand = bySku.get(r.sku);
+        if (!cand) continue;
+        const candMl = parseBottleMl(cand.bottle_size);
+        if (candMl == null) continue; // fail-open candidates never a violation
+        const ratio = subjectMl / candMl;
+        if (ratio < 0.5 || ratio > 2) {
+          leaks.push(`${subject.sku} (${subject.bottle_size}) -> ${r.sku} (${cand.bottle_size}, ratio ${ratio.toFixed(2)})`);
+        }
+      }
+    }
+
+    expect(leaks).toEqual([]);
+  });
+
+  it('the specific Dassai/Hakutsuru bug is fixed', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const dassai = normalized.find((p) => p.sku === 'LSK0119AB');
+    if (!dassai || !dassai.is_in_stock) return; // sku may have gone out of stock/renumbered since the bug report; not this test's concern
+
+    const precomputed = precomputeRecommendations(normalized as any);
+    const recs = (precomputed.get('LSK0119AB') ?? []).map((r) => r.sku);
+    expect(recs).not.toContain('LSK0445FS');
+    expect(recs).not.toContain('LSK0446FS');
+    expect(recs).not.toContain('LSK0447FS');
+  });
+});
