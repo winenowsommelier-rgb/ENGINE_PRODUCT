@@ -32,6 +32,16 @@ import { getCoPurchaseBonus, buildBaseSkuMap } from '@/lib/co-purchase';
 const MAX_RECS = 4;
 const MAX_RECS_EXTENDED = 8;
 
+// The 4 canonical wine colors/styles (mirrors lib/finder/category-map.ts's
+// CATEGORY_MAP) — mutually exclusive for recommendation purposes, same as the
+// Finder's hard category filter. Niche wine types outside this set (Wine Set,
+// Orange Wine, Sweet/Dessert, Fortified — too little catalog depth for their
+// own strict bucket) are intentionally excluded from the gate so their pools
+// don't starve.
+const WINE_COLOR_TYPES = new Set([
+  'red wine', 'white wine', 'rosé wine', 'sparkling & champagne',
+]);
+
 // Variety alias clusters — exact-match on variety misses obvious affinities like
 // Syrah/Shiraz or Pinot Noir/Burgundy. Two varieties in the same cluster score
 // the same +2 as an exact match. Normalise to lowercase for comparison.
@@ -110,6 +120,51 @@ export function priceBand(
   if (candidatePrice < lo) return 'great-alternative';
   if (candidatePrice <= stepUpCeiling(subjectPrice, hi)) return 'step-up';
   return null;
+}
+
+/**
+ * Parse a `bottle_size` string (e.g. "750 ml", "720ml", "1800 ml (1.8 L)",
+ * "1.8 L") into milliliters. Handles the ~41 distinct values found catalog-wide
+ * (data/live_products_export.json, surveyed 2026-07-24) — all are a plain
+ * number followed by "ml" or "l" (case-insensitive, optional space), with an
+ * optional parenthetical restating the same value in liters, which this
+ * regex ignores by matching the FIRST unit token in the string. The empty
+ * string is one of the 41 values (~9.8% of the catalog) and is handled by the
+ * initial falsy check below, same as null/undefined.
+ * Returns null for missing or unparseable input — callers must treat null as
+ * "unknown," never as a size of zero.
+ */
+export function parseBottleMl(raw: string | undefined | null): number | null {
+  if (!raw) return null;
+  const s = raw.toLowerCase();
+  const mlMatch = s.match(/(\d+(?:\.\d+)?)\s*ml/);
+  if (mlMatch) return parseFloat(mlMatch[1]);
+  const lMatch = s.match(/(\d+(?:\.\d+)?)\s*l\b/);
+  if (lMatch) return parseFloat(lMatch[1]) * 1000;
+  return null;
+}
+
+// Comparable-size band: candidate must be within 0.5x-2x of the subject's
+// bottle_size to be eligible. Mirrors the existing wine-color hard-gate
+// pattern in isEligible() (see WINE_COLOR_TYPES) -- physical format is
+// treated as a hard eligibility gate, not a soft scoring signal, because no
+// amount of shared region/variety/price makes a 190ml novelty can a sensible
+// "you might also like" for a 720ml premium bottle (see the Dassai/Hakutsuru
+// bug this closes). Missing/unparseable size on EITHER side fails open (never
+// blocks) -- ~9.8% of the catalog has an empty bottle_size string and must
+// not be silently excluded from every rail.
+//
+// BAND WIDTH: 0.5x-2x was chosen to keep the classic 750ml->1500ml magnum
+// step-up (exactly 2.0x) while blocking every real leak found in the
+// 2026-07-24 audit (all >=3.5x). KNOWN, ACCEPTED TRADEOFF: this also blocks
+// the common 720ml<->1.8L Sake pairing (ratio 2.5x, just outside the band) --
+// a deliberate decision, not a gap to "fix" by widening the band.
+export function sizesComparable(a: string | undefined | null, b: string | undefined | null): boolean {
+  const mlA = parseBottleMl(a);
+  const mlB = parseBottleMl(b);
+  if (mlA == null || mlB == null || mlA <= 0 || mlB <= 0) return true;
+  const ratio = mlA / mlB;
+  return ratio >= 0.5 && ratio <= 2;
 }
 
 function varietiesMatch(a: string | undefined | null, b: string | undefined | null): boolean {
@@ -301,6 +356,35 @@ function isEligible(product: PublicProduct, candidate: PublicProduct): boolean {
     candidateGroup !== 'Unknown' &&
     subjectGroup !== candidateGroup
   ) return false;
+
+  // Suppress cross-color/style recommendations WITHIN Wine (Red <-> White <->
+  // Rosé <-> Sparkling & Champagne): shared region/country/price/food isn't
+  // enough to make a Sauvignon Blanc a sensible "you might also like" for a
+  // Cabernet shopper. Mirrors the Finder's own hard category filter
+  // (finderPrefilter/CATEGORY_MAP) so the whole site is consistent about what
+  // counts as "the same kind of wine". Gate only applies when BOTH sides fall
+  // in the 4 canonical color buckets — niche types (Wine Set, Orange Wine,
+  // Sweet/Dessert, Fortified) stay ungated, same as before.
+  if (subjectGroup === 'Wine' && candidateGroup === 'Wine') {
+    const subjectType = typeForProduct(product).trim().toLowerCase();
+    const candidateType = typeForProduct(candidate).trim().toLowerCase();
+    if (
+      WINE_COLOR_TYPES.has(subjectType) &&
+      WINE_COLOR_TYPES.has(candidateType) &&
+      subjectType !== candidateType
+    ) return false;
+  }
+
+  // Suppress cross-size-format recommendations: no amount of shared region/
+  // variety/price makes a 190ml novelty can a sensible "you might also like"
+  // for a 720ml premium bottle (found via a 720ml Dassai Junmai Daiginjo
+  // recommending 190ml Hakutsuru "Purupuru Sparkling Jelly Sake" cans, both
+  // Sake/Shochu category_type). Applies across ALL category groups, not just
+  // Sake -- a 2026-07-24 catalog sweep found the same shape of leak in whisky
+  // mini-bar bottles, oversized vodka bottles, and Champagne minis. See
+  // sizesComparable's docblock for the band-width rationale and the accepted
+  // Sake 720ml<->1.8L tradeoff.
+  if (!sizesComparable(product.bottle_size, candidate.bottle_size)) return false;
 
   return true;
 }

@@ -135,7 +135,7 @@ def _run_invariant_3_orphan_guard(dossier_conn, products_db_path: Path):
             )
 
     product_skus = {r[0] for r in products_conn.execute("SELECT sku FROM products")}
-    overlay_skus = [r[0] for (r,) in overlay_rows]
+    overlay_skus = [r for (r,) in overlay_rows]
     orphan_skus = [s for s in overlay_skus if s not in product_skus]
     assert not orphan_skus, f"{len(orphan_skus)} overlay SKUs absent from products: {orphan_skus[:10]}"
 
