@@ -11,7 +11,7 @@ import os
 ARCHIVE_COLS = [
     'sku', 'name', 'brand', 'category_group', 'category_type',
     'country', 'region', 'vintage', 'price', 'is_in_stock',
-    'custom_stock_status', 'product_url',
+    'custom_stock_status', 'magento_product_url',
 ]
 
 
