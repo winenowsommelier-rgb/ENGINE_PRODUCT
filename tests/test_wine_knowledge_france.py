@@ -233,3 +233,56 @@ def test_rhone_idempotent(rhone_db):
     rhone.load(rhone_db); rhone.load(rhone_db)
     n = rhone_db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='grown_in'").fetchone()[0]
     assert n == 4
+
+
+# ── Live-DB invariants (skip if the git-ignored DB is absent, e.g. in a worktree) ──
+from pathlib import Path
+from scripts.wine_knowledge import vocab as _vocab
+
+_LIVE_DB = Path(__file__).resolve().parent.parent / "data" / "taxonomy.db"
+
+
+@pytest.fixture(scope="module")
+def live():
+    if not _LIVE_DB.exists():
+        pytest.skip(f"live taxonomy.db not present: {_LIVE_DB}")
+    c = sqlite3.connect(_LIVE_DB)
+    yield c
+    c.close()
+
+
+def _has_col(conn, table, col):
+    return any(r[1] == col for r in conn.execute(f"PRAGMA table_info({table})"))
+
+
+def test_live_france_no_null_citations(live):
+    """After the France load, no validated context may have a NULL/empty citation."""
+    if not _has_col(live, "taxonomy_contexts", "source_citation"):
+        pytest.skip("migration not applied to live db")
+    bad = live.execute(
+        "SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' "
+        "AND (source_citation IS NULL OR source_citation='')").fetchone()[0]
+    assert bad == 0, f"{bad} validated contexts missing source_citation"
+
+
+def test_live_all_relationships_use_vocabulary(live):
+    unknown = [r[0] for r in live.execute(
+        "SELECT DISTINCT relationship FROM taxonomy_relationships").fetchall()
+        if r[0] not in _vocab.RELATIONSHIP_VERBS]
+    assert not unknown, f"unknown relationship verbs: {unknown}"
+
+
+def test_live_bordeaux_burgundy_no_longer_legacy(live):
+    """Bordeaux/Burgundy region contexts must carry a real (non-legacy) citation
+    after the France load overwrote their legacy-marked seeds."""
+    if not _has_col(live, "taxonomy_contexts", "source_citation"):
+        pytest.skip("migration not applied to live db")
+    for name in ("Bordeaux", "Burgundy"):
+        row = live.execute(
+            "SELECT tc.source_citation FROM taxonomy_contexts tc "
+            "JOIN taxonomy_entities te ON te.id=tc.entity_id "
+            "WHERE te.entity_type='region' AND te.name=? AND tc.scope_id='wine'",
+            (name,)).fetchone()
+        if row is not None:  # only assert if France load has run against live
+            assert row[0] and not row[0].startswith("legacy:"), \
+                f"{name} still legacy-cited: {row[0]!r}"
