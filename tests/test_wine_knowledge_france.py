@@ -164,3 +164,72 @@ def test_burgundy_is_idempotent(burgundy_db):
     burgundy.load(burgundy_db); burgundy.load(burgundy_db)
     n = burgundy_db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='outranks'").fetchone()[0]
     assert n == 3
+
+
+from scripts.wine_knowledge.france import champagne, rhone
+
+
+@pytest.fixture
+def champagne_db(tmp_path):
+    c = sqlite3.connect(tmp_path / "taxonomy.db")
+    c.executescript(_DDL); c.commit(); schema.migrate(c)
+    fr = ingest.upsert_entity(c, "country", "France", "france")
+    ingest.upsert_entity(c, "region", "Champagne", "champagne", parent_id=fr)
+    for name, slug in [("Chardonnay", "chardonnay"), ("Pinot Noir", "pinot-noir")]:
+        ingest.upsert_entity(c, "grape_variety", name, slug)
+    c.commit(); yield c; c.close()
+
+
+@pytest.fixture
+def rhone_db(tmp_path):
+    c = sqlite3.connect(tmp_path / "taxonomy.db")
+    c.executescript(_DDL); c.commit(); schema.migrate(c)
+    fr = ingest.upsert_entity(c, "country", "France", "france")
+    ingest.upsert_entity(c, "region", "Rhône", "rhone", parent_id=fr)
+    ingest.upsert_entity(c, "region", "Rhône Valley", "rhone-valley", parent_id=fr)  # duplicate
+    for name, slug in [("Syrah", "syrah"), ("Grenache", "grenache"),
+                       ("Viognier", "viognier"), ("Mourvèdre", "mourvedre")]:
+        ingest.upsert_entity(c, "grape_variety", name, slug)
+    c.commit(); yield c; c.close()
+
+
+def test_champagne_region_context_real_citation(champagne_db):
+    champagne.load(champagne_db)
+    rid = _helpers.find_region(champagne_db, "Champagne")
+    row = champagne_db.execute("SELECT status, source_citation FROM taxonomy_contexts WHERE entity_id=? AND scope_id='wine'", (rid,)).fetchone()
+    assert row[0] == "validated" and row[1] and not row[1].startswith("legacy:")
+
+
+def test_champagne_links_grapes(champagne_db):
+    champagne.load(champagne_db)
+    n = champagne_db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='grown_in'").fetchone()[0]
+    assert n >= 2
+
+
+def test_champagne_idempotent(champagne_db):
+    champagne.load(champagne_db); champagne.load(champagne_db)
+    n = champagne_db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='grown_in'").fetchone()[0]
+    assert n == 2
+
+
+def test_rhone_targets_canonical_region(rhone_db):
+    rhone.load(rhone_db)
+    # canonical Rhône (lower id) got the context, not a third entity created
+    rid = _helpers.find_region(rhone_db, "Rhône")
+    row = rhone_db.execute("SELECT status, source_citation FROM taxonomy_contexts WHERE entity_id=? AND scope_id='wine'", (rid,)).fetchone()
+    assert row and row[0] == "validated" and not row[1].startswith("legacy:")
+    # still exactly 2 region entities named like Rhône (no third created)
+    n_regions = rhone_db.execute("SELECT COUNT(*) FROM taxonomy_entities WHERE entity_type='region' AND name LIKE 'Rh%'").fetchone()[0]
+    assert n_regions == 2
+
+
+def test_rhone_links_four_grapes(rhone_db):
+    rhone.load(rhone_db)
+    n = rhone_db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='grown_in'").fetchone()[0]
+    assert n >= 4
+
+
+def test_rhone_idempotent(rhone_db):
+    rhone.load(rhone_db); rhone.load(rhone_db)
+    n = rhone_db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='grown_in'").fetchone()[0]
+    assert n == 4
