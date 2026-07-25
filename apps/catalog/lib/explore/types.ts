@@ -14,6 +14,13 @@ export interface PriceRange {
   max: number | null;
 }
 
+export interface RegionKnowledge {
+  grapes?: string[];
+  tiers?: string[];
+  attributes?: Record<string, string | string[]>;
+  citation?: string;
+}
+
 export interface MapRegion {
   name: string;          // canonical region NAME (handoff value; never a slug)
   slug: string;          // URL slug for /explore-map/[region]
@@ -32,6 +39,7 @@ export interface MapRegion {
   // text list in the drawer, not map pins).
   description?: string;
   subregions?: { name: string; description?: string }[];
+  knowledge?: RegionKnowledge;
 }
 
 export interface MapCountry {
