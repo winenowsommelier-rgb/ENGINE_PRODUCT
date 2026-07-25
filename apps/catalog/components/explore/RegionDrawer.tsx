@@ -80,16 +80,14 @@ function KnowledgeSection({ knowledge }: { knowledge: NonNullable<MapRegion['kno
               <path d="M5 7.5 10 12.5 15 7.5" />
             </svg>
           </button>
-          {open && (
-            <dl id={panelId} className="mt-2 grid grid-cols-[auto,1fr] gap-x-3 gap-y-1.5 text-sm">
-              {detailRows.map(([key, value]) => (
-                <div key={key} className="contents">
-                  <dt className="capitalize text-muted-foreground">{key.replace(/_/g, ' ')}</dt>
-                  <dd className="text-foreground">{value}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
+          <dl id={panelId} hidden={!open} className="mt-2 grid grid-cols-[auto,1fr] gap-x-3 gap-y-1.5 text-sm">
+            {detailRows.map(([key, value]) => (
+              <div key={key} className="contents">
+                <dt className="capitalize text-muted-foreground">{key.replace(/_/g, ' ')}</dt>
+                <dd className="text-foreground">{value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       )}
     </div>
