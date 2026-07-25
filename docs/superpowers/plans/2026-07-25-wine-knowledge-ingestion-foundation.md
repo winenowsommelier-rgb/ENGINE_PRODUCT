@@ -900,7 +900,7 @@ nullcite=c.execute(\"SELECT COUNT(*) FROM taxonomy_contexts WHERE status='valida
 print(f'grapes={n} validated_grape_contexts={ctx} grape_without_real_citation={badgrape} any_null_citation={nullcite}')
 assert n>=25 and ctx>=25 and badgrape==0 and nullcite==0"
 ```
-Expected: `grapes=N validated_contexts=N validated_without_citation=0` with N≥25.
+Expected: `grapes=N validated_grape_contexts=N grape_without_real_citation=0 any_null_citation=0` with N≥25.
 
 - [ ] **Step 5: Run the full invariant suite against the now-populated live DB**
 
