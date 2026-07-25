@@ -141,7 +141,15 @@ existing self-referential `parent_id` so an appellation can nest under another
 (Burgundy: climat → village → region). Burgundy and Champagne are the explicit
 **stress-test cases** — validate the ingestion pattern on them before
 generalizing to other countries. A Grand Cru climat may carry its own
-classification_tier relationship that outranks its parent village.
+classification_tier relationship, and may `outranks` its parent village (§4.5).
+
+**Authoring rule for hierarchy (single source of truth):** geographic nesting is
+authored **via `parent_id` only**. The `sub_appellation_of` relationship in §4.5
+is a *derived convenience edge* for graph queries that traverse
+`taxonomy_relationships` uniformly — if written at all, it MUST mirror `parent_id`
+exactly and is generated from it, never authored independently. When they would
+disagree, `parent_id` wins. This prevents two ingestion sessions from recording
+the same hierarchy in different places.
 
 ### 4.5 Controlled relationship vocabulary (fix #7)
 
@@ -155,7 +163,8 @@ constraint, so direction is fixed here and MUST be followed verbatim:
 - `grown_in` — grape_variety → region/appellation
 - `produces_style` — region/appellation → style
 - `exhibits_style` — grape_variety **or** classification_tier → style
-- `sub_appellation_of` — appellation → appellation/region (recursive nesting)
+- `sub_appellation_of` — appellation → appellation/region. **Redundant with
+  `parent_id`; see the authoring rule below.**
 - `classified_under` — appellation/region → classification_tier
 - `outranks` — classification_tier → classification_tier (Grand Cru climat
   outranks its parent village; §4.4)
