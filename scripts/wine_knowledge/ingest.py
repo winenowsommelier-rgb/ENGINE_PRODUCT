@@ -52,3 +52,35 @@ def upsert_context(conn, entity_id: int, scope_id: str, *, short: str,
          source_citation, confidence))
     conn.commit()
     return cur.lastrowid
+
+
+def _entity_type(conn, entity_id: int) -> str:
+    row = conn.execute("SELECT entity_type FROM taxonomy_entities WHERE id=?",
+                       (entity_id,)).fetchone()
+    if not row:
+        raise ValueError(f"no entity id={entity_id}")
+    return row[0]
+
+
+def add_relationship(conn, from_id: int, to_id: int, relationship: str,
+                     scope_id: Optional[str] = "wine", metadata: str = "{}") -> int:
+    if relationship not in vocab.RELATIONSHIP_VERBS:
+        raise ValueError(f"unknown relationship verb: {relationship!r}")
+    allowed_from, allowed_to = vocab.DIRECTION[relationship]
+    ft, tt = _entity_type(conn, from_id), _entity_type(conn, to_id)
+    if ft not in allowed_from or tt not in allowed_to:
+        raise ValueError(
+            f"wrong direction for {relationship}: {ft}->{tt}, "
+            f"expected {allowed_from}->{allowed_to}")
+    cur = conn.execute(
+        "INSERT OR IGNORE INTO taxonomy_relationships "
+        "(from_entity_id,to_entity_id,relationship,scope_id,metadata) "
+        "VALUES (?,?,?,?,?)", (from_id, to_id, relationship, scope_id, metadata))
+    conn.commit()
+    if cur.lastrowid:
+        return cur.lastrowid
+    row = conn.execute(
+        "SELECT id FROM taxonomy_relationships WHERE from_entity_id=? AND "
+        "to_entity_id=? AND relationship=? AND scope_id IS ?",
+        (from_id, to_id, relationship, scope_id)).fetchone()
+    return row[0]

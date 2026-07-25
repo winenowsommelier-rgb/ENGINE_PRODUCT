@@ -78,3 +78,28 @@ def test_every_verb_has_a_canonical_direction():
         assert verb in vocab.DIRECTION
         frm, to = vocab.DIRECTION[verb]
         assert frm and to
+
+
+def test_add_relationship_rejects_unknown_verb(db):
+    schema.migrate(db)
+    g = ingest.upsert_entity(db, "grape_variety", "Nebbiolo", "nebbiolo")
+    r = ingest.upsert_entity(db, "region", "Piedmont", "piedmont")
+    with pytest.raises(ValueError, match="verb"):
+        ingest.add_relationship(db, g, r, "is_grown_in")  # ad-hoc synonym
+
+
+def test_add_relationship_rejects_wrong_direction(db):
+    schema.migrate(db)
+    g = ingest.upsert_entity(db, "grape_variety", "Nebbiolo", "nebbiolo")
+    r = ingest.upsert_entity(db, "region", "Piedmont", "piedmont")
+    # grown_in must be grape_variety -> region, not region -> grape_variety
+    with pytest.raises(ValueError, match="direction"):
+        ingest.add_relationship(db, r, g, "grown_in")
+
+
+def test_add_relationship_happy_path(db):
+    schema.migrate(db)
+    g = ingest.upsert_entity(db, "grape_variety", "Nebbiolo", "nebbiolo")
+    r = ingest.upsert_entity(db, "region", "Piedmont", "piedmont")
+    rid = ingest.add_relationship(db, g, r, "grown_in")
+    assert rid > 0
