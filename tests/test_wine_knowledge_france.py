@@ -76,3 +76,51 @@ def test_link_grape_is_idempotent(db):
     _helpers.link_grape(db, "cabernet-sauvignon", rid)
     n = db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='grown_in'").fetchone()[0]
     assert n == 1
+
+
+from scripts.wine_knowledge.france import bordeaux
+
+
+@pytest.fixture
+def bordeaux_db(tmp_path):
+    c = sqlite3.connect(tmp_path / "taxonomy.db")
+    c.executescript(_DDL); c.commit(); schema.migrate(c)
+    fr = ingest.upsert_entity(c, "country", "France", "france")
+    ingest.upsert_entity(c, "region", "Bordeaux", "bordeaux", parent_id=fr)
+    for name, slug in [("Cabernet Sauvignon", "cabernet-sauvignon"),
+                       ("Merlot", "merlot"), ("Cabernet Franc", "cabernet-franc"),
+                       ("Sauvignon Blanc", "sauvignon-blanc"), ("Sémillon", "semillon")]:
+        ingest.upsert_entity(c, "grape_variety", name, slug)
+    c.commit(); yield c; c.close()
+
+
+def test_bordeaux_loads_region_context_with_real_citation(bordeaux_db):
+    bordeaux.load(bordeaux_db)
+    rid = _helpers.find_region(bordeaux_db, "Bordeaux")
+    row = bordeaux_db.execute(
+        "SELECT status, source_citation FROM taxonomy_contexts WHERE entity_id=? AND scope_id='wine'", (rid,)).fetchone()
+    assert row[0] == "validated"
+    assert row[1] and not row[1].startswith("legacy:")
+
+
+def test_bordeaux_creates_1855_classification_tier(bordeaux_db):
+    bordeaux.load(bordeaux_db)
+    n = bordeaux_db.execute("SELECT COUNT(*) FROM taxonomy_entities WHERE entity_type='classification_tier'").fetchone()[0]
+    assert n >= 1
+    rel = bordeaux_db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='classified_under'").fetchone()[0]
+    assert rel >= 1
+
+
+def test_bordeaux_links_grapes(bordeaux_db):
+    bordeaux.load(bordeaux_db)
+    n = bordeaux_db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='grown_in'").fetchone()[0]
+    assert n >= 4
+
+
+def test_bordeaux_is_idempotent(bordeaux_db):
+    bordeaux.load(bordeaux_db)
+    tiers = bordeaux_db.execute("SELECT COUNT(*) FROM taxonomy_entities WHERE entity_type='classification_tier'").fetchone()[0]
+    grown = bordeaux_db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='grown_in'").fetchone()[0]
+    bordeaux.load(bordeaux_db)
+    assert tiers == bordeaux_db.execute("SELECT COUNT(*) FROM taxonomy_entities WHERE entity_type='classification_tier'").fetchone()[0]
+    assert grown == bordeaux_db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='grown_in'").fetchone()[0]
