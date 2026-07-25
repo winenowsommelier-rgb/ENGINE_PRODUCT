@@ -114,7 +114,7 @@ def test_region_without_context_absent(db):
 
 - [ ] **Step 2: Run to verify fail.** `cd "/Users/admin/WNLQ9 PIE/ENGINE_PRODUCT/.worktrees/wine-knowledge-pr" && python3 -m pytest tests/test_export_taxonomy_knowledge.py -v` → FAIL (no module).
 
-- [ ] **Step 3: Implement `scripts/export_taxonomy_knowledge.py`.** A `build(conn) -> dict` that: selects region/subregion/country entities with a wine context (`description_short`/`description_en`); for each region also gathers `grown_in` grape display-names (sorted), `classified_under` tier names, and parsed `attributes` JSON into a `knowledge` block. Only include the `knowledge` key when there is at least one of grapes/tiers/attributes. Preserve the existing `{short, full}` fields for subregions/countries. A `__main__` writes `data/taxonomy_descriptions_export.json` (pretty JSON), with `WNLQ9_TAXONOMY_DB` env override (mirror the other runners).
+- [ ] **Step 3: Implement `scripts/export_taxonomy_knowledge.py`.** A `build(conn) -> dict` that: selects region/subregion/country entities that have a **`scope_id='wine'`** context (filter on wine explicitly — a region may also have a draft `spirits` context with empty attributes, e.g. Bordeaux; the export must read the WINE context's `description_short`/`description_en`/`attributes`, never the draft). For each region also gathers `grown_in` grape display-names (sorted), `classified_under` tier names, and parsed `attributes` JSON into a `knowledge` block. Only include the `knowledge` key when there is at least one of grapes/tiers/attributes. Preserve the existing `{short, full}` fields for subregions/countries. A `__main__` writes `data/taxonomy_descriptions_export.json` (pretty JSON), with `WNLQ9_TAXONOMY_DB` env override (mirror the other runners).
 
 - [ ] **Step 4: Run to verify pass.** `python3 -m pytest tests/test_export_taxonomy_knowledge.py -v` → 4 passed.
 
@@ -134,11 +134,10 @@ git commit -m "feat: export enriched taxonomy knowledge (grapes/tiers/attributes
 - Modify: `apps/catalog/scripts/gen-explore-map-data.mjs`
 - Test: extend `apps/catalog/lib/__tests__/explore-map-gen.test.ts`
 
-- [ ] **Step 1: Write the failing test** (extend `explore-map-gen.test.ts`). Feed the aggregate/merge path a region whose export entry has a `knowledge` block; assert the output region has `region.knowledge.grapes` etc. AND assert the peek objects still have EXACTLY the 4 allowlisted fields (margin-safety invariant unchanged). If the merge helper isn't separately exported, assert via the same seam the existing description test uses.
+**IMPORTANT — how the generator actually loads descriptions (verified):** `loadDescriptions()` (line ~169) FLATTENS each export entry to a string via `regionDesc.set(k, v.full)` (line ~179) and returns only `{regionDesc, subDesc, subsByRegion}`. At the merge site (~line 294) only that string Map is in scope — there is NO export-entry object there, so `v.knowledge` is already discarded upstream. Threading knowledge therefore requires editing `loadDescriptions` to build+return a SECOND map, then reading it at the merge site. There is also no unit-test seam for the description-merge path today (`explore-map-gen.test.ts` only exercises the exported `aggregate(rows,…)` row path, not `loadDescriptions`, which reads files off disk). So make the merge a small PURE exported helper and unit-test that directly.
 
-- [ ] **Step 2: Run to verify fail.**
-
-- [ ] **Step 3: Implement.** In `types.ts` add:
+- [ ] **Step 1: Implement the type + a pure exported merge helper, and write a fail-first test for the helper.**
+  In `types.ts` add:
 
 ```ts
 export interface RegionKnowledge {
@@ -148,14 +147,52 @@ export interface RegionKnowledge {
   citation?: string;
 }
 ```
-and `knowledge?: RegionKnowledge;` on `MapRegion`. In `gen-explore-map-data.mjs`, where `region.description` is attached from the export (~line 294), also attach `r.knowledge` from the export entry's `knowledge` block IF present — copying only the allowlisted keys (`grapes`, `tiers`, `attributes`, `citation`), never spreading the whole object (same discipline as peeks).
+  and `knowledge?: RegionKnowledge;` on `MapRegion`.
+  In `gen-explore-map-data.mjs`, add and EXPORT a pure helper (so it is unit-testable without file IO):
 
-- [ ] **Step 4: Run to verify pass.** `cd apps/catalog && npm test -- explore-map-gen` → pass; also run the invariant test `npm test -- explore-map.invariant` → pass (margin-safety intact).
+```js
+/** Copy ONLY allowlisted knowledge keys onto a region (never spread the raw object). */
+export function mergeKnowledge(region, knowledge) {
+  if (!knowledge) return region;
+  const k = {};
+  if (Array.isArray(knowledge.grapes) && knowledge.grapes.length) k.grapes = knowledge.grapes;
+  if (Array.isArray(knowledge.tiers) && knowledge.tiers.length) k.tiers = knowledge.tiers;
+  if (knowledge.attributes && typeof knowledge.attributes === 'object') k.attributes = knowledge.attributes;
+  if (typeof knowledge.citation === 'string') k.citation = knowledge.citation;
+  if (Object.keys(k).length) region.knowledge = k;
+  return region;
+}
+```
+  Add a fail-first test in `apps/catalog/lib/__tests__/explore-map-gen.test.ts` importing `mergeKnowledge`:
+
+```ts
+import { mergeKnowledge } from '@/scripts/gen-explore-map-data.mjs'; // same alias the existing aggregate import uses
+it('mergeKnowledge attaches only allowlisted keys, skips empties', () => {
+  const r = mergeKnowledge({ name: 'Bordeaux' },
+    { grapes: ['Merlot'], tiers: [], attributes: { climate: 'maritime' }, citation: 'x', bogus: 1 });
+  expect(r.knowledge).toEqual({ grapes: ['Merlot'], attributes: { climate: 'maritime' }, citation: 'x' });
+  expect(r.knowledge.bogus).toBeUndefined();      // not spread
+  expect(r.knowledge.tiers).toBeUndefined();      // empty array dropped
+});
+it('mergeKnowledge no-ops when knowledge is undefined', () => {
+  expect(mergeKnowledge({ name: 'X' }, undefined).knowledge).toBeUndefined();
+});
+```
+
+- [ ] **Step 2: Run to verify fail.** `cd apps/catalog && npm test -- explore-map-gen` → the 2 new tests FAIL (no `mergeKnowledge` export), existing `aggregate` tests still pass.
+
+- [ ] **Step 3: Wire the helper into `loadDescriptions` + the merge site.** In `loadDescriptions()`: add `const regionKnowledge = new Map();`, populate it in the region loop `regionKnowledge.set(k, v.knowledge)` right beside `regionDesc.set(k, v.full)` (line ~179), and add `regionKnowledge` to the returned object. At the merge site (~line 294), after `if (desc) r.description = desc;`, call `mergeKnowledge(r, regionKnowledge.get(key));`. (List `loadDescriptions` as an edited function.)
+
+- [ ] **Step 4: Run to verify pass.** `cd apps/catalog && npm test -- explore-map-gen` → all pass; also run `npm test -- explore-map.invariant` → pass (peek allowlist / margin-safety untouched — the merge only ADDS a `knowledge` object built by the allowlisting helper, never touches peeks).
 
 - [ ] **Step 5: Commit.**
 ```bash
 git add apps/catalog/lib/explore/types.ts apps/catalog/scripts/gen-explore-map-data.mjs apps/catalog/lib/__tests__/explore-map-gen.test.ts
-git commit -m "feat: thread region knowledge (grapes/tiers/attributes) through map-data generator"
+git commit -m "feat: thread region knowledge through map-data generator via mergeKnowledge helper
+
+Add exported pure mergeKnowledge(region, knowledge) allowlisting helper; thread a
+regionKnowledge map through loadDescriptions and apply at the region merge site.
+Peek allowlist / margin-safety untouched."
 ```
 
 ---
