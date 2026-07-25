@@ -124,3 +124,43 @@ def test_bordeaux_is_idempotent(bordeaux_db):
     bordeaux.load(bordeaux_db)
     assert tiers == bordeaux_db.execute("SELECT COUNT(*) FROM taxonomy_entities WHERE entity_type='classification_tier'").fetchone()[0]
     assert grown == bordeaux_db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='grown_in'").fetchone()[0]
+
+
+from scripts.wine_knowledge.france import burgundy
+
+
+@pytest.fixture
+def burgundy_db(tmp_path):
+    c = sqlite3.connect(tmp_path / "taxonomy.db")
+    c.executescript(_DDL); c.commit(); schema.migrate(c)
+    fr = ingest.upsert_entity(c, "country", "France", "france")
+    ingest.upsert_entity(c, "region", "Burgundy", "burgundy", parent_id=fr)
+    for name, slug in [("Pinot Noir", "pinot-noir"), ("Chardonnay", "chardonnay"), ("Gamay", "gamay")]:
+        ingest.upsert_entity(c, "grape_variety", name, slug)
+    c.commit(); yield c; c.close()
+
+
+def test_burgundy_creates_four_tier_ladder(burgundy_db):
+    burgundy.load(burgundy_db)
+    tiers = {r[0] for r in burgundy_db.execute("SELECT name FROM taxonomy_entities WHERE entity_type='classification_tier'")}
+    assert {"Burgundy Grand Cru", "Burgundy Premier Cru", "Burgundy Village", "Burgundy Regional"} <= tiers
+
+
+def test_burgundy_outranks_chain_uses_the_verb(burgundy_db):
+    burgundy.load(burgundy_db)
+    n = burgundy_db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='outranks'").fetchone()[0]
+    assert n >= 3
+
+
+def test_burgundy_outranks_is_tier_to_tier(burgundy_db):
+    burgundy.load(burgundy_db)
+    rows = burgundy_db.execute('''SELECT ef.entity_type, et.entity_type FROM taxonomy_relationships r
+        JOIN taxonomy_entities ef ON ef.id=r.from_entity_id JOIN taxonomy_entities et ON et.id=r.to_entity_id
+        WHERE r.relationship='outranks' ''').fetchall()
+    assert rows and all(f == "classification_tier" and t == "classification_tier" for f, t in rows)
+
+
+def test_burgundy_is_idempotent(burgundy_db):
+    burgundy.load(burgundy_db); burgundy.load(burgundy_db)
+    n = burgundy_db.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='outranks'").fetchone()[0]
+    assert n == 3
