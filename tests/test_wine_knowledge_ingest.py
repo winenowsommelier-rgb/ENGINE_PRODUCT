@@ -103,3 +103,17 @@ def test_add_relationship_happy_path(db):
     r = ingest.upsert_entity(db, "region", "Piedmont", "piedmont")
     rid = ingest.add_relationship(db, g, r, "grown_in")
     assert rid > 0
+
+
+def test_add_relationship_is_idempotent(db):
+    schema.migrate(db)
+    g = ingest.upsert_entity(db, "grape_variety", "Nebbiolo", "nebbiolo")
+    r = ingest.upsert_entity(db, "region", "Piedmont", "piedmont")
+    rid1 = ingest.add_relationship(db, g, r, "grown_in")
+    rid2 = ingest.add_relationship(db, g, r, "grown_in")  # duplicate edge
+    assert rid1 == rid2  # exercises the INSERT OR IGNORE + re-select branch
+    # and only one row actually exists
+    n = db.execute(
+        "SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='grown_in'"
+    ).fetchone()[0]
+    assert n == 1
