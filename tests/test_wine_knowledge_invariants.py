@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from scripts.wine_knowledge import schema
+from scripts.wine_knowledge import vocab as _vocab
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -77,3 +78,39 @@ def test_migration_backfills_legacy_validated_citations(db):
         "SELECT source_citation FROM taxonomy_contexts WHERE entity_id=?",
         (eid,)).fetchone()[0]
     assert cite == schema.LEGACY_CITATION  # marked, not left NULL, not faked
+
+
+LIVE_DB = REPO_ROOT / "data" / "taxonomy.db"
+
+
+@pytest.fixture(scope="module")
+def live():
+    if not LIVE_DB.exists():
+        pytest.skip(f"live taxonomy.db not present: {LIVE_DB}")
+    c = sqlite3.connect(LIVE_DB)
+    yield c
+    c.close()
+
+
+def _has_col(conn, table, col):
+    return any(r[1] == col for r in conn.execute(f"PRAGMA table_info({table})"))
+
+
+def test_validated_contexts_have_citation(live):
+    """INVARIANT (Rule 6 adapted): a validated context with no source_citation
+    means we can't audit where the claim came from. Since extraction is
+    in-session (no paid API), this is our only provenance guard."""
+    if not _has_col(live, "taxonomy_contexts", "source_citation"):
+        pytest.skip("migration not yet applied to live db")
+    bad = live.execute(
+        "SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' "
+        "AND (source_citation IS NULL OR source_citation='')").fetchone()[0]
+    assert bad == 0, f"{bad} validated contexts missing source_citation"
+
+
+def test_all_relationships_use_controlled_vocabulary(live):
+    """INVARIANT (§4.5/§8): no ad-hoc relationship verbs."""
+    rows = live.execute(
+        "SELECT DISTINCT relationship FROM taxonomy_relationships").fetchall()
+    unknown = [r[0] for r in rows if r[0] not in _vocab.RELATIONSHIP_VERBS]
+    assert not unknown, f"unknown relationship verbs in live db: {unknown}"
