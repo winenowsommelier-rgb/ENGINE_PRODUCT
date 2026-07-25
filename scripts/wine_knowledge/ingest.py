@@ -84,3 +84,45 @@ def add_relationship(conn, from_id: int, to_id: int, relationship: str,
         "to_entity_id=? AND relationship=? AND scope_id IS ?",
         (from_id, to_id, relationship, scope_id)).fetchone()
     return row[0]
+
+
+def upsert_benchmark(conn, context_id: int, dimension_id: str, *,
+                     typical: float, low: Optional[float] = None,
+                     high: Optional[float] = None,
+                     confidence: Optional[str] = None,
+                     source_citation: Optional[str] = None) -> int:
+    # benchmarks derived from narrative prose are always sourced (§4.2/§8).
+    if not source_citation:
+        raise ValueError("benchmark requires a non-null source_citation")
+    existing = conn.execute(
+        "SELECT id FROM taxonomy_benchmarks WHERE context_id=? AND dimension_id=?",
+        (context_id, dimension_id)).fetchone()
+    if existing:
+        conn.execute(
+            "UPDATE taxonomy_benchmarks SET typical_value=?, range_low=?, "
+            "range_high=?, confidence=?, source_citation=? WHERE id=?",
+            (typical, low, high, confidence, source_citation, existing[0]))
+        conn.commit()
+        return existing[0]
+    cur = conn.execute(
+        "INSERT INTO taxonomy_benchmarks (context_id,dimension_id,typical_value,"
+        "range_low,range_high,confidence,source_citation) VALUES (?,?,?,?,?,?,?)",
+        (context_id, dimension_id, typical, low, high, confidence, source_citation))
+    conn.commit()
+    return cur.lastrowid
+
+
+def add_pairing_rule(conn, *, wine_dimension: str, wine_op: str,
+                     wine_value: float, food_attribute: str, food_value: str,
+                     score: float, rationale: str, source_citation: str,
+                     confidence: Optional[str] = None) -> int:
+    if not source_citation:
+        raise ValueError("pairing rule requires a source_citation")
+    cur = conn.execute(
+        "INSERT INTO pairing_rules (wine_dimension,wine_op,wine_value,"
+        "food_attribute,food_value,score,rationale,source_citation,confidence) "
+        "VALUES (?,?,?,?,?,?,?,?,?)",
+        (wine_dimension, wine_op, wine_value, food_attribute, food_value,
+         score, rationale, source_citation, confidence))
+    conn.commit()
+    return cur.lastrowid

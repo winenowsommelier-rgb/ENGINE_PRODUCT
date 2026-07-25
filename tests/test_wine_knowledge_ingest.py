@@ -117,3 +117,40 @@ def test_add_relationship_is_idempotent(db):
         "SELECT COUNT(*) FROM taxonomy_relationships WHERE relationship='grown_in'"
     ).fetchone()[0]
     assert n == 1
+
+
+from scripts.wine_knowledge import pairing_schema
+
+
+def test_benchmark_is_range_with_confidence(db):
+    schema.migrate(db)
+    eid = ingest.upsert_entity(db, "region", "Barolo", "barolo")
+    cid = ingest.upsert_context(db, eid, "wine", short="x", full="y",
+                                status="validated",
+                                source_citation="Wine Bible 2e, Italy/Piedmont")
+    bid = ingest.upsert_benchmark(db, cid, "wine.body", typical=4.0,
+                                  low=3.5, high=5.0, confidence="medium",
+                                  source_citation="Wine Bible 2e, Italy/Piedmont")
+    assert bid > 0
+
+
+def test_validated_benchmark_requires_citation(db):
+    schema.migrate(db)
+    eid = ingest.upsert_entity(db, "region", "Barolo", "barolo")
+    cid = ingest.upsert_context(db, eid, "wine", short="x", full="y", status="draft")
+    with pytest.raises(ValueError, match="source_citation"):
+        ingest.upsert_benchmark(db, cid, "wine.body", typical=4.0,
+                                confidence="medium", source_citation=None)
+
+
+def test_pairing_rules_table_created(db):
+    pairing_schema.migrate(db)
+    cols = {r[1] for r in db.execute("PRAGMA table_info(pairing_rules)")}
+    assert {"wine_dimension", "food_attribute", "score", "rationale",
+            "source_citation"} <= cols
+
+
+def test_collections_table_created(db):
+    pairing_schema.migrate(db)
+    cols = {r[1] for r in db.execute("PRAGMA table_info(collections)")}
+    assert {"slug", "name", "filter_definition", "description"} <= cols
