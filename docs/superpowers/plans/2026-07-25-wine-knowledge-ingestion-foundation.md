@@ -186,6 +186,22 @@ def test_migration_is_idempotent(db):
     schema.migrate(db)
     schema.migrate(db)  # must not raise "duplicate column"
     assert "source_citation" in _cols(db, "taxonomy_contexts")
+
+
+def test_migration_backfills_legacy_validated_citations(db):
+    # A validated context with no citation existed BEFORE the citation regime.
+    eid = db.execute(
+        "INSERT INTO taxonomy_entities (entity_type,name,slug) "
+        "VALUES ('region','Legacy','legacy')").lastrowid
+    db.execute(
+        "INSERT INTO taxonomy_contexts (entity_id,scope_id,status) "
+        "VALUES (?, 'wine', 'validated')", (eid,))
+    db.commit()
+    schema.migrate(db)
+    cite = db.execute(
+        "SELECT source_citation FROM taxonomy_contexts WHERE entity_id=?",
+        (eid,)).fetchone()[0]
+    assert cite == schema.LEGACY_CITATION  # marked, not left NULL, not faked
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -219,10 +235,23 @@ def _add_column_if_missing(conn, table, col, decl):
         conn.execute(f"ALTER TABLE {table} ADD COLUMN {col} {decl}")
 
 
+# Legacy validated contexts predate the citation regime (153 rows from the
+# explore-map effort — 93 wine / 52 spirits / 4 sake / 4 accessories). We do
+# NOT retroactively pretend they came from a book; we mark them honestly so the
+# citation invariant can enforce "no NULL citation on validated rows" without
+# either failing on legacy data or silently exempting it.
+LEGACY_CITATION = "legacy:pre-wine-knowledge (uncited explore-map seed)"
+
+
 def migrate(conn: sqlite3.Connection) -> None:
     for table in ("taxonomy_contexts", "taxonomy_benchmarks"):
         _add_column_if_missing(conn, table, "source_citation", "TEXT")
         _add_column_if_missing(conn, table, "confidence", "TEXT")
+    # Backfill legacy validated contexts with the explicit legacy marker.
+    conn.execute(
+        "UPDATE taxonomy_contexts SET source_citation=? "
+        "WHERE status='validated' AND (source_citation IS NULL OR source_citation='')",
+        (LEGACY_CITATION,))
     conn.commit()
 ```
 
@@ -248,18 +277,51 @@ git commit -m "feat: idempotent migration adding source_citation to taxonomy con
 
 - [ ] **Step 1: Write the failing test**
 
+Define a local `db` fixture in this test file by inlining the same
+`CREATE TABLE` script from Task 2 (do NOT import the fixture across modules —
+cross-module pytest fixture reuse relies on private internals and is fragile).
+Keeping each test file's fixture self-contained is worth the small duplication.
+
 ```python
 # append to tests/test_wine_knowledge_ingest.py
 import sqlite3
 import pytest
 from scripts.wine_knowledge import ingest, schema
 
+_FIXTURE_DDL = """
+  CREATE TABLE scopes (id TEXT PRIMARY KEY, label TEXT);
+  INSERT INTO scopes VALUES ('wine','Wine');
+  CREATE TABLE taxonomy_entities (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, entity_type TEXT NOT NULL,
+    name TEXT NOT NULL, slug TEXT NOT NULL, parent_id INTEGER,
+    sort_order INTEGER NOT NULL DEFAULT 0, UNIQUE(entity_type, slug));
+  CREATE TABLE taxonomy_contexts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, entity_id INTEGER NOT NULL,
+    scope_id TEXT NOT NULL, description_short TEXT, description_en TEXT,
+    attributes TEXT DEFAULT '{}', status TEXT NOT NULL DEFAULT 'draft',
+    UNIQUE(entity_id, scope_id));
+  CREATE TABLE taxonomy_benchmarks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, context_id INTEGER NOT NULL,
+    dimension_id TEXT NOT NULL, typical_value REAL NOT NULL,
+    range_low REAL, range_high REAL, UNIQUE(context_id, dimension_id));
+  CREATE TABLE character_dimensions (
+    id TEXT PRIMARY KEY, scope_id TEXT NOT NULL, dimension_key TEXT NOT NULL);
+  INSERT INTO character_dimensions VALUES ('wine.body','wine','body');
+  CREATE TABLE taxonomy_relationships (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, from_entity_id INTEGER NOT NULL,
+    to_entity_id INTEGER NOT NULL, relationship TEXT NOT NULL,
+    scope_id TEXT, metadata TEXT DEFAULT '{}',
+    UNIQUE(from_entity_id, to_entity_id, relationship, scope_id));
+"""
+
 
 @pytest.fixture
 def db(tmp_path):
-    # same fixture shape as test_wine_knowledge_invariants.py's db
-    from tests.test_wine_knowledge_invariants import db as _db  # reuse
-    yield from _db.__wrapped__(tmp_path)  # if fixture reuse is awkward, inline the CREATE script instead
+    c = sqlite3.connect(tmp_path / "taxonomy.db")
+    c.executescript(_FIXTURE_DDL)
+    c.commit()
+    yield c
+    c.close()
 
 
 def test_upsert_entity_is_idempotent(db):
@@ -284,8 +346,6 @@ def test_draft_context_allows_missing_citation(db):
                                 status="draft", source_citation=None)
     assert cid > 0
 ```
-
-> **Note for implementer:** if cross-module fixture reuse is fiddly, inline the same `CREATE TABLE` script from Task 2 into a local fixture here. DRY across test files is less important than each test file running standalone.
 
 - [ ] **Step 2: Run test to verify it fails**
 
@@ -650,10 +710,17 @@ def test_all_relationships_use_controlled_vocabulary(live):
     assert not unknown, f"unknown relationship verbs in live db: {unknown}"
 ```
 
-- [ ] **Step 2: Run test to verify it fails or skips cleanly**
+- [ ] **Step 2: Run test to verify current live-DB state**
 
 Run: `cd "$(git rev-parse --show-toplevel)" && python3 -m pytest tests/test_wine_knowledge_invariants.py -k "live or citation or vocabulary" -v`
-Expected: the citation test SKIPs (migration not applied to live db yet); the vocabulary test PASSES (relationships table is empty today). This is the correct pre-migration state.
+Expected (BEFORE the Task 7 migration runs): the citation test SKIPs — the
+`source_citation` column does not exist on the live DB yet, so `_has_col` is
+False and the test skips. The vocabulary test PASSES (relationships table is
+empty today). AFTER Task 7 migration runs, the citation test will actively PASS
+because the migration backfills the 153 legacy validated rows with
+`schema.LEGACY_CITATION` (so none are NULL). This is the correct behavior — the
+invariant enforces "no validated row has a NULL/empty citation," and legacy rows
+satisfy it via the honest legacy marker, not by exemption.
 
 - [ ] **Step 3: (no implementation needed — invariants only)**
 
@@ -825,9 +892,13 @@ cd "$(git rev-parse --show-toplevel)" && python3 -c "
 import sqlite3; c=sqlite3.connect('data/taxonomy.db')
 n=c.execute(\"SELECT COUNT(*) FROM taxonomy_entities WHERE entity_type='grape_variety'\").fetchone()[0]
 ctx=c.execute(\"SELECT COUNT(*) FROM taxonomy_contexts tc JOIN taxonomy_entities te ON te.id=tc.entity_id WHERE te.entity_type='grape_variety' AND tc.status='validated'\").fetchone()[0]
-nocite=c.execute(\"SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' AND (source_citation IS NULL OR source_citation='')\").fetchone()[0]
-print(f'grapes={n} validated_contexts={ctx} validated_without_citation={nocite}')
-assert n>=25 and ctx>=25 and nocite==0"
+# NEW grape contexts must carry a REAL (non-legacy) citation. Legacy explore-map
+# rows are marked schema.LEGACY_CITATION and are excluded from this check.
+badgrape=c.execute(\"SELECT COUNT(*) FROM taxonomy_contexts tc JOIN taxonomy_entities te ON te.id=tc.entity_id WHERE te.entity_type='grape_variety' AND tc.status='validated' AND (tc.source_citation IS NULL OR tc.source_citation='' OR tc.source_citation LIKE 'legacy:%')\").fetchone()[0]
+# And no validated row anywhere may have a NULL/empty citation (legacy backfilled).
+nullcite=c.execute(\"SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' AND (source_citation IS NULL OR source_citation='')\").fetchone()[0]
+print(f'grapes={n} validated_grape_contexts={ctx} grape_without_real_citation={badgrape} any_null_citation={nullcite}')
+assert n>=25 and ctx>=25 and badgrape==0 and nullcite==0"
 ```
 Expected: `grapes=N validated_contexts=N validated_without_citation=0` with N≥25.
 
