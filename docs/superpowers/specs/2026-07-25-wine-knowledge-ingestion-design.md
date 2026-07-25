@@ -32,8 +32,8 @@ not apply; however, an adapted verification discipline does (§8).
 `data/taxonomy.db` already models the shape we need. Confirmed DDL facts that
 the fixes below rely on:
 
-- `taxonomy_entities` — `entity_type` currently only:
-  country(51)/region(99)/subregion(80)/appellation(81)/brand(612).
+- `taxonomy_entities` — `entity_type` currently: country(51)/region(99)/
+  subregion(80)/appellation(81)/**brand(612)**.
   **`parent_id` is already self-referential** (`REFERENCES taxonomy_entities(id)`),
   so recursive nesting (Burgundy climats) needs no schema change.
   `UNIQUE(entity_type, slug)`.
@@ -83,10 +83,17 @@ Classification/quality tier is a **separate axis** from geography and from style
 — exactly the "designation" concept CLAUDE.md Rule 12 flags as structurally
 missing on the product side. Model it as a new `entity_type='classification_tier'`
 node (e.g. "Bordeaux 1855 First Growth", "Burgundy Grand Cru", "DOCG",
-"Champagne Grand Cru village"), linked to the appellation/region it governs via
-`taxonomy_relationships` (`classified_under`). This keeps "how legally/quality
-tiered" cleanly separate from "what it tastes like" (benchmarks) and "what shape
-it is" (style).
+"Champagne Grand Cru village"). The governing appellation/region links **to** the
+tier via `classified_under`, in the canonical direction fixed in §4.5
+(`from = appellation/region`, `to = classification_tier`). This keeps "how
+legally/quality tiered" cleanly separate from "what it tastes like" (benchmarks)
+and "what shape it is" (style).
+
+Where one tier node **outranks** another within a nested hierarchy (e.g. a
+Burgundy Grand Cru climat outranking its parent village — §4.4), that ordering is
+expressed by the `outranks` relationship (§4.5), not by prose. Rank need not be a
+separate scalar this round; the directed `outranks` edge is sufficient for UI
+ordering.
 
 This is the schema-side twin of the products.db `designation` gap; it does not
 attempt to backfill products this round.
@@ -117,6 +124,16 @@ auditable when there is no paid-API consistency check.
   Where "style" == the appellation (Chablis, Barolo), the UI drills to the
   **appellation** directly; no pass-through style node is created.
 
+  **Note:** the third bullet ("quality-tier-driven styles that span
+  appellations") is a reviewer-judgment heuristic, not a mechanical test — the
+  ingesting session decides case-by-case, defaulting to NOT creating a style node
+  when in doubt (bias toward appellation drill-down).
+
+Linkages involving these nodes use the controlled vocabulary in §4.5:
+`grown_in` (grape → region/appellation), `produces_style` (region/appellation →
+style), and `exhibits_style` (grape_variety → style, e.g. Nebbiolo → Barolo
+style; also used for classification_tier → style where a tier defines a style).
+
 ### 4.4 Recursive appellation nesting (fix #4)
 
 Do **not** assume a fixed country→region→subregion→appellation depth. Use the
@@ -130,14 +147,25 @@ classification_tier relationship that outranks its parent village.
 
 Define the allowed `relationship` values **before any writes** (documented in the
 spec; enforced by a small reference constant used by the ingestion scripts, and
-optionally a CHECK constraint):
+optionally a CHECK constraint). Each row is written in the canonical direction
+shown (`from_entity_id` → `to_entity_id`); the wrong direction is not
+self-correcting under the table's `UNIQUE(from,to,relationship,scope_id)`
+constraint, so direction is fixed here and MUST be followed verbatim:
 
 - `grown_in` — grape_variety → region/appellation
 - `produces_style` — region/appellation → style
-- `sub_appellation_of` — appellation → appellation/region (recursive)
+- `exhibits_style` — grape_variety **or** classification_tier → style
+- `sub_appellation_of` — appellation → appellation/region (recursive nesting)
 - `classified_under` — appellation/region → classification_tier
+- `outranks` — classification_tier → classification_tier (Grand Cru climat
+  outranks its parent village; §4.4)
 
-No session invents ad-hoc synonyms (`is_grown_in`, `sourced_from`).
+This closes every entity linkage the spec relies on: geography↔geography
+(`sub_appellation_of`), geography↔tier (`classified_under`), tier↔tier
+(`outranks`), grape↔geography (`grown_in`), geography↔style (`produces_style`),
+and grape/tier↔style (`exhibits_style`). Any linkage not in this set is out of
+scope this round and no prose elsewhere may imply one. No session invents ad-hoc
+synonyms (`is_grown_in`, `sourced_from`).
 
 ### 4.6 Content deepening (existing tables)
 
@@ -181,6 +209,12 @@ Reuse the shipped MapLibre explore-map drawer (PR #66). Add `grape_variety`,
 existing country→region→subregion→appellation drill-down. Drawer shows
 `description_short`; "learn more" expands to `description_en` + attributes +
 benchmarks. No new standalone pages this round.
+
+**Deliberate asymmetry (grape browse-yes / filter-no):** a user CAN click a
+`grape_variety` node here and read its knowledge, but CANNOT build a Collection
+filtered by grape variety (§7) — because `products.variety` is free-text and has
+no clean join to the grape node yet. This split is intentional, not a bug; it is
+resolved only if/when products.db variety normalization happens (out of scope).
 
 ## 7. Layer 3 — Collections (minimal slice, fix #5)
 
