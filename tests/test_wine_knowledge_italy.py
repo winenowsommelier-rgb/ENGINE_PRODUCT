@@ -93,3 +93,33 @@ def test_grapes_load_is_idempotent(conn):
     n = conn.execute("SELECT COUNT(*) FROM taxonomy_entities "
                      "WHERE slug='primitivo'").fetchone()[0]
     assert n == 1
+
+
+def test_tiers_create_docg_outranks_doc(conn):
+    from scripts.wine_knowledge.italy import tiers
+    tiers.load(conn)
+    docg = conn.execute("SELECT id FROM taxonomy_entities "
+        "WHERE entity_type='classification_tier' AND slug='italy-docg'").fetchone()
+    doc = conn.execute("SELECT id FROM taxonomy_entities "
+        "WHERE entity_type='classification_tier' AND slug='italy-doc'").fetchone()
+    assert docg and doc
+    edge = conn.execute(
+        "SELECT COUNT(*) FROM taxonomy_relationships WHERE from_entity_id=? "
+        "AND to_entity_id=? AND relationship='outranks'",
+        (docg[0], doc[0])).fetchone()[0]
+    assert edge == 1
+
+
+def test_tiers_load_is_idempotent(conn):
+    from scripts.wine_knowledge.italy import tiers
+    tiers.load(conn); tiers.load(conn)
+    n = conn.execute("SELECT COUNT(*) FROM taxonomy_entities "
+                     "WHERE entity_type='classification_tier' "
+                     "AND slug IN ('italy-docg','italy-doc')").fetchone()[0]
+    assert n == 2
+    edges = conn.execute("SELECT COUNT(*) FROM taxonomy_relationships "
+                         "WHERE relationship='outranks'").fetchone()[0]
+    assert edges == 1
+    bad = conn.execute("SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' "
+                       "AND (source_citation IS NULL OR source_citation='')").fetchone()[0]
+    assert bad == 0
