@@ -1,0 +1,59 @@
+[
+  {
+    "slug": "barolo-barbaresco",
+    "name": "Barolo & Barbaresco",
+    "description": "Nebbiolo-driven reds from Piedmont, Italy.",
+    "filter": {
+      "country": "Italy",
+      "region": "Piedmont",
+      "class": "Red Wine"
+    }
+  },
+  {
+    "slug": "bordeaux-reds",
+    "name": "Bordeaux Reds",
+    "description": "Structured red blends from Bordeaux, France.",
+    "filter": {
+      "country": "France",
+      "region": "Bordeaux",
+      "class": "Red Wine"
+    }
+  },
+  {
+    "slug": "champagne",
+    "name": "Champagne",
+    "description": "Sparkling wines from the Champagne region of France.",
+    "filter": {
+      "country": "France",
+      "region": "Champagne"
+    }
+  },
+  {
+    "slug": "full-bodied-reds",
+    "name": "Full-Bodied Reds",
+    "description": "Bold, full-bodied red wines.",
+    "filter": {
+      "class": "Red Wine",
+      "body": "Full"
+    }
+  },
+  {
+    "slug": "high-acid-whites",
+    "name": "High-Acid White Wines",
+    "description": "Crisp, high-acidity white wines.",
+    "filter": {
+      "class": "White Wine",
+      "acidity": "High"
+    }
+  },
+  {
+    "slug": "tuscan-reds",
+    "name": "Tuscan Reds",
+    "description": "Sangiovese-led reds from Tuscany, Italy.",
+    "filter": {
+      "country": "Italy",
+      "region": "Tuscany",
+      "class": "Red Wine"
+    }
+  }
+]
