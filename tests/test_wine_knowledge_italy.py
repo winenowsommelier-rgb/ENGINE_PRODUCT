@@ -144,3 +144,22 @@ def test_piedmont_context_grapes_and_tier(conn):
     bad = conn.execute("SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' "
         "AND (source_citation IS NULL OR source_citation='')").fetchone()[0]
     assert bad == 0
+
+
+def test_super_tuscan_style_and_relationships(conn):
+    from scripts.wine_knowledge.italy import grapes, tiers, tuscany
+    grapes.load(conn); tiers.load(conn); tuscany.load(conn)
+    st = conn.execute("SELECT id FROM taxonomy_entities "
+        "WHERE entity_type='style' AND slug='super-tuscan'").fetchone()
+    assert st, "Super Tuscan style entity must exist"
+    tus = conn.execute("SELECT id FROM taxonomy_entities WHERE slug='tuscany'").fetchone()[0]
+    produces = conn.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE from_entity_id=? "
+        "AND to_entity_id=? AND relationship='produces_style'", (tus, st[0])).fetchone()[0]
+    assert produces == 1
+    sang = conn.execute("SELECT id FROM taxonomy_entities WHERE slug='sangiovese'").fetchone()[0]
+    exhibits = conn.execute("SELECT COUNT(*) FROM taxonomy_relationships WHERE from_entity_id=? "
+        "AND to_entity_id=? AND relationship='exhibits_style'", (sang, st[0])).fetchone()[0]
+    assert exhibits == 1
+    bad = conn.execute("SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' "
+        "AND (source_citation IS NULL OR source_citation='')").fetchone()[0]
+    assert bad == 0
