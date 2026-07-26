@@ -1,0 +1,72 @@
+from __future__ import annotations
+import sqlite3
+import pytest
+from scripts.wine_knowledge import schema, ingest
+from scripts.wine_knowledge.italy import _helpers
+
+# _DDL copied verbatim from tests/test_wine_knowledge_france.py, extended with
+# wine.acidity + wine.tannin character_dimensions rows (harmless; the benchmarks
+# table has no FK to character_dimensions). This is the shared base fixture that
+# ALL later Italy tasks reuse.
+_DDL = """
+  CREATE TABLE scopes (id TEXT PRIMARY KEY, label TEXT);
+  INSERT INTO scopes VALUES ('wine','Wine');
+  CREATE TABLE taxonomy_entities (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, entity_type TEXT NOT NULL,
+    name TEXT NOT NULL, slug TEXT NOT NULL, parent_id INTEGER,
+    sort_order INTEGER NOT NULL DEFAULT 0, UNIQUE(entity_type, slug));
+  CREATE TABLE taxonomy_contexts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, entity_id INTEGER NOT NULL,
+    scope_id TEXT NOT NULL, description_short TEXT, description_en TEXT,
+    attributes TEXT DEFAULT '{}', status TEXT NOT NULL DEFAULT 'draft',
+    UNIQUE(entity_id, scope_id));
+  CREATE TABLE taxonomy_benchmarks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, context_id INTEGER NOT NULL,
+    dimension_id TEXT NOT NULL, typical_value REAL NOT NULL,
+    range_low REAL, range_high REAL, UNIQUE(context_id, dimension_id));
+  CREATE TABLE character_dimensions (
+    id TEXT PRIMARY KEY, scope_id TEXT NOT NULL, dimension_key TEXT NOT NULL);
+  INSERT INTO character_dimensions VALUES ('wine.body','wine','body');
+  INSERT INTO character_dimensions VALUES ('wine.acidity','wine','acidity');
+  INSERT INTO character_dimensions VALUES ('wine.tannin','wine','tannin');
+  CREATE TABLE taxonomy_relationships (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, from_entity_id INTEGER NOT NULL,
+    to_entity_id INTEGER NOT NULL, relationship TEXT NOT NULL,
+    scope_id TEXT, metadata TEXT DEFAULT '{}',
+    UNIQUE(from_entity_id, to_entity_id, relationship, scope_id));
+"""
+
+
+@pytest.fixture
+def conn(tmp_path):
+    c = sqlite3.connect(tmp_path / "taxonomy.db")
+    c.executescript(_DDL)
+    c.commit()
+    schema.migrate(c)
+    it = ingest.upsert_entity(c, "country", "Italy", "italy")
+    ingest.upsert_entity(c, "region", "Piedmont", "piedmont", parent_id=it)
+    ingest.upsert_entity(c, "region", "Tuscany", "tuscany", parent_id=it)
+    ingest.upsert_entity(c, "region", "Veneto", "veneto", parent_id=it)
+    ingest.upsert_entity(c, "grape_variety", "Nebbiolo", "nebbiolo")
+    ingest.upsert_entity(c, "grape_variety", "Sangiovese", "sangiovese")
+    ingest.upsert_entity(c, "grape_variety", "Barbera", "barbera")
+    ingest.upsert_entity(c, "grape_variety", "Cabernet Sauvignon", "cabernet-sauvignon")
+    ingest.upsert_entity(c, "grape_variety", "Pinot Gris", "pinot-gris")
+    c.commit()
+    yield c
+    c.close()
+
+
+def test_find_region_resolves_existing(conn):
+    assert _helpers.find_region(conn, "Piedmont") > 0
+
+
+def test_find_region_raises_on_missing(conn):
+    with pytest.raises(ValueError):
+        _helpers.find_region(conn, "Nowhere")
+
+
+def test_find_grape_resolves_and_raises(conn):
+    assert _helpers.find_grape(conn, "nebbiolo") > 0
+    with pytest.raises(ValueError):
+        _helpers.find_grape(conn, "no-such-grape")
