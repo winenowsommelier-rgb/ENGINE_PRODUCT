@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { aggregate, isInStockRaw } from '@/scripts/gen-explore-map-data.mjs';
+import { aggregate, isInStockRaw, mergeKnowledge } from '@/scripts/gen-explore-map-data.mjs';
 
 const rows = [
   { sku: 'WIN1', name: 'A', region: 'Bordeaux', country: 'France', category_group: 'Wine', is_in_stock: '1', price: 1000, image_url: 'a.jpg' },
@@ -41,5 +41,18 @@ describe('aggregate', () => {
       expect(peek).not.toHaveProperty('margin_pct');
       expect(peek).not.toHaveProperty('cost_price');
     }
+  });
+});
+
+describe('mergeKnowledge', () => {
+  it('attaches only allowlisted keys, skips empties and bogus', () => {
+    const r = mergeKnowledge({ name: 'Bordeaux' },
+      { grapes: ['Merlot'], tiers: [], attributes: { climate: 'maritime' }, citation: 'x', bogus: 1 });
+    expect(r.knowledge).toEqual({ grapes: ['Merlot'], attributes: { climate: 'maritime' }, citation: 'x' });
+    expect(r.knowledge.tiers).toBeUndefined();       // empty array dropped
+    expect(r.knowledge.bogus).toBeUndefined();       // not spread
+  });
+  it('no-ops when knowledge is undefined', () => {
+    expect(mergeKnowledge({ name: 'X' }, undefined).knowledge).toBeUndefined();
   });
 });
