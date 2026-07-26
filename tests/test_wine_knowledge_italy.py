@@ -163,3 +163,18 @@ def test_super_tuscan_style_and_relationships(conn):
     bad = conn.execute("SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' "
         "AND (source_citation IS NULL OR source_citation='')").fetchone()[0]
     assert bad == 0
+
+
+def test_veneto_context_and_grapes(conn):
+    from scripts.wine_knowledge.italy import grapes, tiers, veneto
+    grapes.load(conn); tiers.load(conn); veneto.load(conn)
+    vid = conn.execute("SELECT id FROM taxonomy_entities WHERE slug='veneto'").fetchone()[0]
+    ctx = conn.execute("SELECT status, source_citation FROM taxonomy_contexts "
+        "WHERE entity_id=? AND scope_id='wine'", (vid,)).fetchone()
+    assert ctx[0]=='validated' and ctx[1]
+    grown = conn.execute("SELECT COUNT(*) FROM taxonomy_relationships "
+        "WHERE to_entity_id=? AND relationship='grown_in'", (vid,)).fetchone()[0]
+    assert grown >= 2
+    bad = conn.execute("SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' "
+        "AND (source_citation IS NULL OR source_citation='')").fetchone()[0]
+    assert bad == 0
