@@ -70,3 +70,26 @@ def test_find_grape_resolves_and_raises(conn):
     assert _helpers.find_grape(conn, "nebbiolo") > 0
     with pytest.raises(ValueError):
         _helpers.find_grape(conn, "no-such-grape")
+
+
+def test_grapes_load_creates_entities_with_cited_contexts(conn):
+    from scripts.wine_knowledge.italy import grapes
+    grapes.load(conn)
+    n = conn.execute(
+        "SELECT COUNT(*) FROM taxonomy_entities WHERE entity_type='grape_variety' "
+        "AND slug IN ('primitivo','corvina','garganega','aglianico',"
+        "'montepulciano-grape','vermentino','dolcetto','glera','nero-d-avola',"
+        "'verdicchio')").fetchone()[0]
+    assert n == 10
+    bad = conn.execute(
+        "SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' "
+        "AND (source_citation IS NULL OR source_citation='')").fetchone()[0]
+    assert bad == 0
+
+
+def test_grapes_load_is_idempotent(conn):
+    from scripts.wine_knowledge.italy import grapes
+    grapes.load(conn); grapes.load(conn)
+    n = conn.execute("SELECT COUNT(*) FROM taxonomy_entities "
+                     "WHERE slug='primitivo'").fetchone()[0]
+    assert n == 1
