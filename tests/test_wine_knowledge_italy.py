@@ -178,3 +178,27 @@ def test_veneto_context_and_grapes(conn):
     bad = conn.execute("SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' "
         "AND (source_citation IS NULL OR source_citation='')").fetchone()[0]
     assert bad == 0
+
+
+def test_south_islands_contexts_and_flagship_grapes(conn):
+    from scripts.wine_knowledge import ingest
+    from scripts.wine_knowledge.italy import grapes, south_islands
+    grapes.load(conn)
+    for name, slug in [("Campania","campania"),("Puglia","puglia"),("Sicily","sicily"),
+                       ("Sardinia","sardinia"),("Abruzzo","abruzzo"),("Marche","marche"),
+                       ("Friuli-Venezia Giulia","friuli-venezia-giulia")]:
+        ingest.upsert_entity(conn, "region", name, slug)
+    south_islands.load(conn)
+    # each region has a validated cited context
+    for slug in ["campania","puglia","sicily","sardinia","abruzzo","marche","friuli-venezia-giulia"]:
+        rid = conn.execute("SELECT id FROM taxonomy_entities WHERE slug=?", (slug,)).fetchone()[0]
+        ctx = conn.execute("SELECT status, source_citation FROM taxonomy_contexts "
+            "WHERE entity_id=? AND scope_id='wine'", (rid,)).fetchone()
+        assert ctx and ctx[0]=='validated' and ctx[1], f"missing/uncited context for {slug}"
+    # at least the flagship grown_in links exist (>=6; friuli uses pinot-gris)
+    total_grown = conn.execute("SELECT COUNT(*) FROM taxonomy_relationships "
+        "WHERE relationship='grown_in'").fetchone()[0]
+    assert total_grown >= 6
+    bad = conn.execute("SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' "
+        "AND (source_citation IS NULL OR source_citation='')").fetchone()[0]
+    assert bad == 0
