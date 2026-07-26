@@ -123,3 +123,24 @@ def test_tiers_load_is_idempotent(conn):
     bad = conn.execute("SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' "
                        "AND (source_citation IS NULL OR source_citation='')").fetchone()[0]
     assert bad == 0
+
+
+def test_piedmont_context_grapes_and_tier(conn):
+    from scripts.wine_knowledge.italy import grapes, tiers, piedmont
+    grapes.load(conn); tiers.load(conn); piedmont.load(conn)
+    rid = conn.execute("SELECT id FROM taxonomy_entities WHERE slug='piedmont'").fetchone()[0]
+    ctx = conn.execute("SELECT status, source_citation FROM taxonomy_contexts "
+        "WHERE entity_id=? AND scope_id='wine'", (rid,)).fetchone()
+    assert ctx[0]=='validated' and ctx[1]
+    grown = conn.execute("SELECT COUNT(*) FROM taxonomy_relationships "
+        "WHERE to_entity_id=? AND relationship='grown_in'", (rid,)).fetchone()[0]
+    assert grown >= 2
+    docg = conn.execute("SELECT id FROM taxonomy_entities WHERE slug='italy-docg'").fetchone()[0]
+    classified = conn.execute("SELECT COUNT(*) FROM taxonomy_relationships "
+        "WHERE from_entity_id=? AND to_entity_id=? AND relationship='classified_under'",
+        (rid, docg)).fetchone()[0]
+    assert classified == 1
+    # citation invariant holds across the whole DB
+    bad = conn.execute("SELECT COUNT(*) FROM taxonomy_contexts WHERE status='validated' "
+        "AND (source_citation IS NULL OR source_citation='')").fetchone()[0]
+    assert bad == 0
