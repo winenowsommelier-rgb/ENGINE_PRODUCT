@@ -13,7 +13,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { getAllProducts } from '@/lib/catalog-data';
 import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
-import { applyShopQuery, type ShopParams } from '@/lib/shop-query';
+import { applyShopQuery, normalizeShopParams, type ShopParams } from '@/lib/shop-query';
 import { buildQuery } from '@/lib/build-query';
 import { cn } from '@/lib/utils';
 import { ViewItemListTracker } from '@/components/ViewItemListTracker';
@@ -46,9 +46,14 @@ const SORT_OPTIONS: Array<{ value: string; label: string }> = [
 /**
  * Build the ShopParams for a collection request. The collection's own filter is
  * fixed; only `sort` and `page` are read off the URL and merged on top.
+ *
+ * The fixed filter is run through normalizeShopParams first — the same
+ * canonicalization (region aliasing, subregion pruning) the /shop route applies —
+ * so a collection's count and contents always match the equivalent /shop query,
+ * even if a future collection seeds a region alias or a subregion.
  */
 function mergedParams(def: CollectionDef, searchParams?: ShopParams): ShopParams {
-  const merged: ShopParams = { ...collectionToShopParams(def) };
+  const merged: ShopParams = { ...normalizeShopParams(collectionToShopParams(def)) };
   const sort = firstStr(searchParams?.sort);
   const page = firstStr(searchParams?.page);
   if (sort) merged.sort = sort;
