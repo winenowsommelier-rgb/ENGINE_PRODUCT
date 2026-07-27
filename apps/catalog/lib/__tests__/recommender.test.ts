@@ -538,15 +538,14 @@ describe('cross-category suppression', () => {
   const whisky = { ...base, sku: 'WHISK', category_group: 'Whisky', category_type: 'Whisky', is_in_stock: true };
   const gin = { ...base, sku: 'GIN', category_group: 'Spirits', category_type: 'Gin', is_in_stock: true };
   const vodka = { ...base, sku: 'VODKA', category_group: 'Spirits', category_type: 'Vodka', is_in_stock: true };
-  const rose = { ...base, sku: 'ROSE', category_group: 'Wine', category_type: 'Rose Wine', is_in_stock: true };
+  const rose = { ...base, sku: 'ROSE', category_group: 'Wine', category_type: 'Rosé Wine', is_in_stock: true };
+  const white = { ...base, sku: 'WHITE', category_group: 'Wine', category_type: 'White Wine', is_in_stock: true };
+  const sparkling = { ...base, sku: 'SPARK', category_group: 'Wine', category_type: 'Sparkling & Champagne', is_in_stock: true };
+  const wineSet = { ...base, sku: 'WSET', category_group: 'Wine', category_type: 'Wine Set', is_in_stock: true };
 
   it('Wine subject never returns Whisky candidate', () => {
     const recs = getRecommendations(wine, [wine, whisky, rose]);
     expect(recs.find(r => r.sku === 'WHISK')).toBeUndefined();
-  });
-  it('Wine subject returns same-group Rosé candidate', () => {
-    const recs = getRecommendations(wine, [wine, whisky, rose]);
-    expect(recs.find(r => r.sku === 'ROSE')).toBeDefined();
   });
   it('Gin subject returns same-group Vodka candidate', () => {
     const recs = getRecommendations(gin, [gin, vodka, wine]);
@@ -555,6 +554,218 @@ describe('cross-category suppression', () => {
   it('Gin subject never returns Wine candidate', () => {
     const recs = getRecommendations(gin, [gin, vodka, wine]);
     expect(recs.find(r => r.sku === 'WINE')).toBeUndefined();
+  });
+
+  // REGRESSION (bug found 2026-07-22): "you might also like" only suppressed
+  // cross-category_group (Wine<->Spirits) but treated wine COLOR/style as a
+  // soft +1 score nudge, not a gate. Proven against the live catalog: 92/2,439
+  // in-stock Red Wines had >=1 non-red Wine-group item in their rail (e.g. a
+  // Penfolds Pinot Noir recommending a Grosset Riesling) whenever region/
+  // country/price/food/body/acidity/tannin signals outweighed the +1. Mirrors
+  // finderPrefilter's CATEGORY_MAP (lib/finder/category-map.ts), which already
+  // hard-gates these same 4 canonical types for the Finder. This test used to
+  // assert the OPPOSITE (a red wine subject returning a rosé candidate) — that
+  // was pinning the bug, not the desired behavior (CLAUDE.md Rule 5).
+  it('Red Wine subject never returns Rosé/White/Sparkling candidates', () => {
+    const recs = getRecommendations(wine, [wine, rose, white, sparkling]);
+    expect(recs.find(r => r.sku === 'ROSE')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'WHITE')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'SPARK')).toBeUndefined();
+  });
+  it('Rosé subject never returns Red Wine candidate', () => {
+    const recs = getRecommendations(rose, [rose, wine]);
+    expect(recs.find(r => r.sku === 'WINE')).toBeUndefined();
+  });
+  it('non-color wine type (Wine Set) is not suppressed by the color gate', () => {
+    // Niche types outside the 4 canonical colors stay permissive — not enough
+    // catalog depth to justify their own strict bucket (would starve the rail).
+    const recs = getRecommendations(wine, [wine, wineSet]);
+    expect(recs.find(r => r.sku === 'WSET')).toBeDefined();
+  });
+
+  // REGRESSION (bug found 2026-07-22, whisky smokiness audit): peat_level (the
+  // intended dominant +3 whisky signal) is 0% populated in the live catalog, so
+  // whisky peat/smoke matching fell entirely to the generic smokiness +0.5
+  // within-1-band nudge — proven to leak in 17/17 (100%) heavy-smokiness whisky
+  // subjects, e.g. Laphroaig 10 Years (LWH0024AA, heavy) recommending Old
+  // Pulteney 18 Year (LWH0473ES, none), and Bowmore 15 Years (heavy)
+  // recommending Bruichladdich "Unpeated" Islay Single Malt (none). isEligible()
+  // now hard-gates the heavy<->none/light smokiness EXTREMES within Whisky,
+  // mirroring the WINE_COLOR_TYPES gate. Only the extremes are gated — mild/
+  // medium stays a soft nudge, since only the extremes were proven to be a
+  // genuine mismatch.
+  const whiskyHeavy = { ...base, sku: 'WHISK-HEAVY', category_group: 'Whisky', category_type: 'Whisky', smokiness: 'heavy', is_in_stock: true };
+  const whiskyNone = { ...base, sku: 'WHISK-NONE', category_group: 'Whisky', category_type: 'Whisky', smokiness: 'none', is_in_stock: true };
+  const whiskyLight = { ...base, sku: 'WHISK-LIGHT', category_group: 'Whisky', category_type: 'Whisky', smokiness: 'light', is_in_stock: true };
+  const whiskyMedium = { ...base, sku: 'WHISK-MEDIUM', category_group: 'Whisky', category_type: 'Whisky', smokiness: 'medium', is_in_stock: true };
+
+  it('heavy-smokiness Whisky subject never returns a none/light-smokiness candidate', () => {
+    const recs = getRecommendations(whiskyHeavy, [whiskyHeavy, whiskyNone, whiskyLight]);
+    expect(recs.find(r => r.sku === 'WHISK-NONE')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'WHISK-LIGHT')).toBeUndefined();
+  });
+  it('none/light-smokiness Whisky subject never returns a heavy-smokiness candidate', () => {
+    const recs = getRecommendations(whiskyNone, [whiskyNone, whiskyHeavy]);
+    expect(recs.find(r => r.sku === 'WHISK-HEAVY')).toBeUndefined();
+  });
+  it('medium-smokiness Whisky subject STILL CAN return a light-smokiness candidate (only extremes gated)', () => {
+    const recs = getRecommendations(whiskyMedium, [whiskyMedium, whiskyLight]);
+    expect(recs.find(r => r.sku === 'WHISK-LIGHT')).toBeDefined();
+  });
+
+  // REGRESSION (bug found 2026-07-22, wine sweetness audit): sweetness is
+  // severely underpopulated for Red Wine (0.2%) and Rosé Wine (0%) but
+  // reasonably well-populated for White Wine (65.4%). Where data exists (White
+  // Wine), the generic +0.5 within-1-band sweetness signal proved too weak to
+  // stop a dry<->sweet leak: 12/467 (2.6%) in-stock Dry White Wine subjects
+  // had >=1 Sweet White Wine candidate leak into their rail, e.g.
+  // WWW2006AB Nik Weis Urban Riesling (Dry) recommending WWW5371AB Nollen
+  // Erben Mosel Riesling Spätlese (Sweet). WWW1974DJ Chateau Reynon Blanc
+  // Cadillac (a sweet Bordeaux dessert wine) was a repeat offender in 6/12
+  // leaked slots. isEligible() now hard-gates sweetness EXTREMES (2+ bands
+  // apart on SWEETNESS_BANDS) within White Wine specifically — Red/Rosé Wine
+  // are a pure data-coverage gap and are intentionally NOT gated (no data to
+  // gate on).
+  const whiteDry = { ...base, sku: 'WHITE-DRY', category_group: 'Wine', category_type: 'White Wine', sweetness: 'Dry', is_in_stock: true };
+  const whiteOffDry = { ...base, sku: 'WHITE-OFFDRY', category_group: 'Wine', category_type: 'White Wine', sweetness: 'Off-Dry', is_in_stock: true };
+  const whiteMediumSweet = { ...base, sku: 'WHITE-MEDSWEET', category_group: 'Wine', category_type: 'White Wine', sweetness: 'Medium-Sweet', is_in_stock: true };
+  const whiteSweet = { ...base, sku: 'WHITE-SWEET', category_group: 'Wine', category_type: 'White Wine', sweetness: 'Sweet', is_in_stock: true };
+  const redDry = { ...base, sku: 'RED-DRY', category_group: 'Wine', category_type: 'Red Wine', sweetness: 'Dry', is_in_stock: true };
+  const redSweet = { ...base, sku: 'RED-SWEET', category_group: 'Wine', category_type: 'Red Wine', sweetness: 'Sweet', is_in_stock: true };
+
+  it('Dry White Wine subject never returns a Sweet White Wine candidate', () => {
+    const recs = getRecommendations(whiteDry, [whiteDry, whiteSweet]);
+    expect(recs.find(r => r.sku === 'WHITE-SWEET')).toBeUndefined();
+  });
+  it('Sweet White Wine subject never returns a Dry White Wine candidate', () => {
+    const recs = getRecommendations(whiteSweet, [whiteSweet, whiteDry]);
+    expect(recs.find(r => r.sku === 'WHITE-DRY')).toBeUndefined();
+  });
+  it('Dry White Wine subject never returns a Medium-Sweet White Wine candidate (2 bands apart)', () => {
+    const recs = getRecommendations(whiteDry, [whiteDry, whiteMediumSweet]);
+    expect(recs.find(r => r.sku === 'WHITE-MEDSWEET')).toBeUndefined();
+  });
+  it('Off-Dry White Wine subject never returns a Sweet White Wine candidate (2 bands apart)', () => {
+    const recs = getRecommendations(whiteOffDry, [whiteOffDry, whiteSweet]);
+    expect(recs.find(r => r.sku === 'WHITE-SWEET')).toBeUndefined();
+  });
+  it('Dry White Wine subject STILL CAN return an Off-Dry White Wine candidate (only extremes gated)', () => {
+    const recs = getRecommendations(whiteDry, [whiteDry, whiteOffDry]);
+    expect(recs.find(r => r.sku === 'WHITE-OFFDRY')).toBeDefined();
+  });
+  it('Dry Red Wine subject STILL CAN return a Sweet Red Wine candidate (gate scoped to White Wine only — no data to gate on for Red)', () => {
+    const recs = getRecommendations(redDry, [redDry, redSweet]);
+    expect(recs.find(r => r.sku === 'RED-SWEET')).toBeDefined();
+  });
+
+  // REGRESSION (bug found 2026-07-22, Sake & Asian audit, Gap 1): Sake & Asian
+  // has no category-scorer.ts override, so its 4 real category_type values
+  // (Sake / Shochu, Umeshu, Shochu, Makgeolli) mixed freely on shared region/
+  // country/price/food signal alone. Proven: 145/419 (34.6%) in-stock Sake &
+  // Asian subjects had a cross-category_type candidate leak into their rail,
+  // e.g. a dry Sake/Shochu product recommending a sweet Umeshu plum liqueur
+  // (~10-15% ABV) — a substitute-confusion mismatch, same class as red<->white
+  // wine. isEligible() now hard-gates cross-category_type WITHIN Sake & Asian,
+  // mirroring the WINE_COLOR_TYPES gate.
+  const sakeShochu1 = { ...base, sku: 'SAKE-1', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', is_in_stock: true };
+  const sakeShochu2 = { ...base, sku: 'SAKE-2', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', is_in_stock: true };
+  const umeshu = { ...base, sku: 'UMESHU-1', category_group: 'Sake & Asian', category_type: 'Umeshu', is_in_stock: true };
+  const shochuType = { ...base, sku: 'SHOCHU-1', category_group: 'Sake & Asian', category_type: 'Shochu', is_in_stock: true };
+  const makgeolli = { ...base, sku: 'MAKGEOLLI-1', category_group: 'Sake & Asian', category_type: 'Makgeolli', is_in_stock: true };
+
+  it('Sake / Shochu subject never returns an Umeshu, Shochu, or Makgeolli candidate', () => {
+    const recs = getRecommendations(sakeShochu1, [sakeShochu1, umeshu, shochuType, makgeolli]);
+    expect(recs.find(r => r.sku === 'UMESHU-1')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'SHOCHU-1')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'MAKGEOLLI-1')).toBeUndefined();
+  });
+  it('Umeshu subject never returns a Sake / Shochu candidate', () => {
+    const recs = getRecommendations(umeshu, [umeshu, sakeShochu1]);
+    expect(recs.find(r => r.sku === 'SAKE-1')).toBeUndefined();
+  });
+  it('same category_type (Sake / Shochu <-> Sake / Shochu) is NOT blocked by the gate', () => {
+    const recs = getRecommendations(sakeShochu1, [sakeShochu1, sakeShochu2]);
+    expect(recs.find(r => r.sku === 'SAKE-2')).toBeDefined();
+  });
+
+  // REGRESSION (bug found 2026-07-22, Sake & Asian audit, Gap 2): sake brewing
+  // class (Junmai = pure rice/koji, vs non-Junmai Daiginjo/Ginjo = added
+  // distilled alcohol) is only readable from the structured `variety` field
+  // (NEVER free-text `name` matching — see CLAUDE.md Rule 12 convention).
+  // smokiness, the only generic Sake & Asian signal, is 0% populated, so
+  // there's no working disambiguation. Proven: 8/39 (20.5%) in-stock
+  // Junmai-variety subjects had a non-Junmai Daiginjo/Ginjo candidate leak
+  // into their rail, e.g. LSK0119AB Dassai Junmai Daiginjou (variety="Junmai
+  // Daiginjo") recommending LSK0008AR Kamotsuru Tokusei Gold Daiginjo
+  // (variety="Daiginjo", no "Junmai") — a different brewing style. isEligible()
+  // now hard-gates Junmai-class (variety matches /junmai/i, case-insensitive)
+  // vs non-Junmai WITHIN Sake & Asian, only when variety is populated on BOTH
+  // sides (never excludes on missing data, mirroring the other 3 gates).
+  const junmaiDaiginjo = { ...base, sku: 'JUNMAI-DAIGINJO', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', variety: 'Junmai Daiginjo', is_in_stock: true };
+  const daiginjoOnly = { ...base, sku: 'DAIGINJO-ONLY', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', variety: 'Daiginjo', is_in_stock: true };
+  const junmaiPlain = { ...base, sku: 'JUNMAI-PLAIN', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', variety: 'Junmai', is_in_stock: true };
+  const junmaiGinjo = { ...base, sku: 'JUNMAI-GINJO', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', variety: 'Junmai Ginjo', is_in_stock: true };
+  const noVarietySake = { ...base, sku: 'NO-VARIETY-SAKE', category_group: 'Sake & Asian', category_type: 'Sake / Shochu', variety: undefined, is_in_stock: true };
+
+  it('Junmai Daiginjo subject never returns a plain Daiginjo (non-Junmai) candidate', () => {
+    const recs = getRecommendations(junmaiDaiginjo, [junmaiDaiginjo, daiginjoOnly]);
+    expect(recs.find(r => r.sku === 'DAIGINJO-ONLY')).toBeUndefined();
+  });
+  it('plain Daiginjo (non-Junmai) subject never returns a Junmai Daiginjo candidate', () => {
+    const recs = getRecommendations(daiginjoOnly, [daiginjoOnly, junmaiDaiginjo]);
+    expect(recs.find(r => r.sku === 'JUNMAI-DAIGINJO')).toBeUndefined();
+  });
+  it('Junmai subject STILL CAN return a Junmai Ginjo candidate (both Junmai-class, not gated against each other)', () => {
+    const recs = getRecommendations(junmaiPlain, [junmaiPlain, junmaiGinjo]);
+    expect(recs.find(r => r.sku === 'JUNMAI-GINJO')).toBeDefined();
+  });
+  it('gate does not fire when the candidate has no variety populated (falls through, does not exclude on missing data)', () => {
+    const recs = getRecommendations(junmaiDaiginjo, [junmaiDaiginjo, noVarietySake]);
+    expect(recs.find(r => r.sku === 'NO-VARIETY-SAKE')).toBeDefined();
+  });
+  it('gate does not fire when the subject has no variety populated (falls through, does not exclude on missing data)', () => {
+    const recs = getRecommendations(noVarietySake, [noVarietySake, daiginjoOnly]);
+    expect(recs.find(r => r.sku === 'DAIGINJO-ONLY')).toBeDefined();
+  });
+
+  // REGRESSION (bug found 2026-07-22, Beer & RTD audit): Beer & RTD has no
+  // category-scorer.ts override and no generic disambiguating signal, so its
+  // 2 real category_type values (Beer, Ready-to-Drink pre-mixed cocktails)
+  // mixed freely on shared region/country/price/food signal alone. Proven:
+  // 8/16 (50%) in-stock Beer & RTD subjects had a cross-category_type
+  // candidate leak into their rail — 100% systematic (every Beer subject
+  // recommended all 5 RTD products and vice versa, given the tiny 3-vs-5
+  // pool at the time of the audit), e.g. LBE0995CH Moose Indie Summer Cider
+  // (Beer) recommending LRD0016DG Signature Cocktail The Lychee Martini,
+  // LRD0017DG Sunset Aperitivo, LRD0018DG Raspberry Espresso Martini,
+  // LRD0019DG Rose & White Pepper Negroni, and LRD0020DG Coconut & Pineapple
+  // Daiquiri (all Ready-to-Drink) — cider and pre-mixed cocktails are not
+  // substitutes a shopper would consider interchangeable. isEligible() now
+  // hard-gates cross-category_type WITHIN Beer & RTD, mirroring the
+  // SAKE_ASIAN_TYPES gate (same "N mutually exclusive category_type values
+  // within one group" pattern, here N=2).
+  const beer1 = { ...base, sku: 'BEER-1', category_group: 'Beer & RTD', category_type: 'Beer', is_in_stock: true };
+  const beer2 = { ...base, sku: 'BEER-2', category_group: 'Beer & RTD', category_type: 'Beer', is_in_stock: true };
+  const rtd1 = { ...base, sku: 'RTD-1', category_group: 'Beer & RTD', category_type: 'Ready-to-Drink', is_in_stock: true };
+  const rtd2 = { ...base, sku: 'RTD-2', category_group: 'Beer & RTD', category_type: 'Ready-to-Drink', is_in_stock: true };
+
+  it('Beer subject never returns a Ready-to-Drink candidate', () => {
+    const recs = getRecommendations(beer1, [beer1, rtd1, rtd2]);
+    expect(recs.find(r => r.sku === 'RTD-1')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'RTD-2')).toBeUndefined();
+  });
+  it('Ready-to-Drink subject never returns a Beer candidate', () => {
+    const recs = getRecommendations(rtd1, [rtd1, beer1, beer2]);
+    expect(recs.find(r => r.sku === 'BEER-1')).toBeUndefined();
+    expect(recs.find(r => r.sku === 'BEER-2')).toBeUndefined();
+  });
+  it('same category_type (Beer <-> Beer) is NOT blocked by the gate', () => {
+    const recs = getRecommendations(beer1, [beer1, beer2]);
+    expect(recs.find(r => r.sku === 'BEER-2')).toBeDefined();
+  });
+  it('same category_type (Ready-to-Drink <-> Ready-to-Drink) is NOT blocked by the gate', () => {
+    const recs = getRecommendations(rtd1, [rtd1, rtd2]);
+    expect(recs.find(r => r.sku === 'RTD-2')).toBeDefined();
   });
 });
 
@@ -721,5 +932,305 @@ describe('co-purchase integration (real BI data)', () => {
     // Either the twin scored 0 and was dropped entirely (not in recs), or it
     // ranked below the real co-order partner. Both prove the bonus worked.
     expect(twinIdx === -1 || twinIdx > partnerIdx).toBe(true);
+  });
+});
+
+// END-TO-END INVARIANT (CLAUDE.md Rule 6): if a shopper is looking at a Red
+// Wine, "you might also like" must never contain a White/Rosé/Sparkling &
+// Champagne wine. Bug found 2026-07-22 (team report: finder cat=red flow led
+// to non-red results on the product page rail, not the finder grid itself —
+// see the 'cross-category suppression' describe block above for the unit-level
+// fix). Run against the REAL catalog, not fixtures, since the leak only showed
+// up at real-data scale (region/country/price signals winning over the old +1
+// category_type nudge).
+describe('wine color purity (real catalog, end-to-end invariant)', () => {
+  it('no in-stock Red Wine has a White/Rosé/Sparkling & Champagne product in its precomputed "you might also like" rail', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    // precomputeRecommendations expects is_in_stock pre-normalized to a real
+    // boolean (post toPublicProduct load), unlike the raw export's "0"/"1"/null.
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    const redSkus = normalized.filter((p) => p.category_type === 'Red Wine' && p.is_in_stock);
+    expect(redSkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
+
+    // Same bucketed path the real build uses (gen-recs-cache.mjs) — fast AND
+    // representative of what actually ships, rather than a naive full-pool
+    // scan per subject.
+    const precomputed = precomputeRecommendations(normalized as any);
+
+    const OTHER_WINE_COLORS = new Set(['White Wine', 'Rosé Wine', 'Sparkling & Champagne']);
+    const leaks: string[] = [];
+
+    for (const subject of redSkus) {
+      const recs = precomputed.get(subject.sku) ?? [];
+      for (const r of recs) {
+        const cand = bySku.get(r.sku);
+        if (cand && OTHER_WINE_COLORS.has(cand.category_type)) {
+          leaks.push(`${subject.sku} (Red Wine) -> ${r.sku} (${cand.category_type})`);
+        }
+      }
+    }
+
+    expect(leaks).toEqual([]);
+  });
+});
+
+// END-TO-END INVARIANT (CLAUDE.md Rule 6): peat_level is 0% populated in the
+// live catalog, so whisky peat/smoke matching falls entirely to the generic
+// smokiness +0.5 nudge. Proven: 17/17 (100%) in-stock heavy-smokiness whisky
+// subjects had >=1 none/light-smokiness candidate leak into their rail (e.g.
+// LWH0024AA Laphroaig 10 Years -> LWH0473ES Old Pulteney 18 Year). This test
+// pins that leak count at 0 post-fix. Run against the REAL catalog, not
+// fixtures, since the leak only showed up at real-data scale.
+describe('whisky smokiness purity (real catalog, end-to-end invariant)', () => {
+  it('no in-stock heavy-smokiness Whisky has a none/light-smokiness candidate in its precomputed "you might also like" rail', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    // precomputeRecommendations expects is_in_stock pre-normalized to a real
+    // boolean (post toPublicProduct load), unlike the raw export's "0"/"1"/null.
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    const heavySkus = normalized.filter(
+      (p) => p.category_group === 'Whisky' &&
+        typeof p.smokiness === 'string' &&
+        p.smokiness.toLowerCase() === 'heavy' &&
+        p.is_in_stock
+    );
+    expect(heavySkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
+
+    // Same bucketed path the real build uses (gen-recs-cache.mjs) — fast AND
+    // representative of what actually ships, rather than a naive full-pool
+    // scan per subject.
+    const precomputed = precomputeRecommendations(normalized as any);
+
+    const NONE_OR_LIGHT = new Set(['none', 'light']);
+    const leaks: string[] = [];
+
+    for (const subject of heavySkus) {
+      const recs = precomputed.get(subject.sku) ?? [];
+      for (const r of recs) {
+        const cand = bySku.get(r.sku);
+        const candSmoke = typeof cand?.smokiness === 'string' ? cand.smokiness.toLowerCase() : '';
+        if (cand && cand.category_group === 'Whisky' && NONE_OR_LIGHT.has(candSmoke)) {
+          leaks.push(`${subject.sku} (heavy) -> ${r.sku} (${cand.smokiness})`);
+        }
+      }
+    }
+
+    expect(leaks).toEqual([]);
+  });
+});
+
+// END-TO-END INVARIANT (CLAUDE.md Rule 6): sweetness is severely underpopulated
+// for Red Wine (0.2%) and Rosé Wine (0%) — a pure data-coverage gap, NOT fixed
+// here — but reasonably well-populated for White Wine (65.4%), where the
+// generic +0.5 within-1-band nudge proved too weak. Proven: 12/467 (2.6%)
+// in-stock Dry White Wine subjects had >=1 Sweet White Wine candidate leak
+// into their rail (e.g. WWW2006AB Nik Weis Urban Riesling -> WWW5371AB Nollen
+// Erben Mosel Riesling Spätlese). This test pins that leak count at 0 post-fix.
+// Run against the REAL catalog, not fixtures, since the leak only showed up at
+// real-data scale.
+describe('White Wine sweetness purity (real catalog, end-to-end invariant)', () => {
+  it('no in-stock Dry White Wine has a Sweet White Wine candidate in its precomputed "you might also like" rail', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    // precomputeRecommendations expects is_in_stock pre-normalized to a real
+    // boolean (post toPublicProduct load), unlike the raw export's "0"/"1"/null.
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    const drySkus = normalized.filter(
+      (p) => p.category_type === 'White Wine' &&
+        typeof p.sweetness === 'string' &&
+        p.sweetness.toLowerCase() === 'dry' &&
+        p.is_in_stock
+    );
+    expect(drySkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
+
+    // Same bucketed path the real build uses (gen-recs-cache.mjs) — fast AND
+    // representative of what actually ships, rather than a naive full-pool
+    // scan per subject.
+    const precomputed = precomputeRecommendations(normalized as any);
+
+    const leaks: string[] = [];
+
+    for (const subject of drySkus) {
+      const recs = precomputed.get(subject.sku) ?? [];
+      for (const r of recs) {
+        const cand = bySku.get(r.sku);
+        const candSweet = typeof cand?.sweetness === 'string' ? cand.sweetness.toLowerCase() : '';
+        if (cand && cand.category_type === 'White Wine' && candSweet === 'sweet') {
+          leaks.push(`${subject.sku} (Dry) -> ${r.sku} (${cand.sweetness})`);
+        }
+      }
+    }
+
+    expect(leaks).toEqual([]);
+  });
+});
+
+// END-TO-END INVARIANT (CLAUDE.md Rule 6): Sake & Asian has no
+// category-scorer.ts override, so its 4 real category_type values mixed
+// freely on shared region/country/price/food signal alone. Proven: 145/419
+// (34.6%) in-stock Sake & Asian subjects had a cross-category_type candidate
+// leak into their rail (e.g. dry Sake/Shochu recommending sweet Umeshu plum
+// liqueur). This test pins that leak count at 0 post-fix. Run against the
+// REAL catalog, not fixtures, since the leak only showed up at real-data
+// scale.
+describe('Sake & Asian category_type purity (real catalog, end-to-end invariant)', () => {
+  it('no in-stock Sake & Asian product has a cross-category_type candidate in its precomputed "you might also like" rail', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    // precomputeRecommendations expects is_in_stock pre-normalized to a real
+    // boolean (post toPublicProduct load), unlike the raw export's "0"/"1"/null.
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    const sakeAsianSkus = normalized.filter(
+      (p) => p.category_group === 'Sake & Asian' && p.is_in_stock
+    );
+    expect(sakeAsianSkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
+
+    // Same bucketed path the real build uses (gen-recs-cache.mjs) — fast AND
+    // representative of what actually ships, rather than a naive full-pool
+    // scan per subject.
+    const precomputed = precomputeRecommendations(normalized as any);
+
+    const leaks: string[] = [];
+
+    for (const subject of sakeAsianSkus) {
+      const recs = precomputed.get(subject.sku) ?? [];
+      for (const r of recs) {
+        const cand = bySku.get(r.sku);
+        if (
+          cand &&
+          cand.category_group === 'Sake & Asian' &&
+          cand.category_type !== subject.category_type
+        ) {
+          leaks.push(`${subject.sku} (${subject.category_type}) -> ${r.sku} (${cand.category_type})`);
+        }
+      }
+    }
+
+    expect(leaks).toEqual([]);
+  });
+});
+
+// END-TO-END INVARIANT (CLAUDE.md Rule 6): sake brewing class (Junmai vs
+// non-Junmai Daiginjo/Ginjo) is only readable from the structured `variety`
+// field, and smokiness (Sake & Asian's only generic taste signal) is 0%
+// populated for this group, so there was no working disambiguation. Proven:
+// 8/39 (20.5%) in-stock Junmai-variety subjects had a non-Junmai Daiginjo/
+// Ginjo candidate leak into their rail (e.g. LSK0119AB Dassai Junmai
+// Daiginjou -> LSK0008AR Kamotsuru Tokusei Gold Daiginjo). This test pins
+// that leak count at 0 post-fix. Run against the REAL catalog, not fixtures,
+// since the leak only showed up at real-data scale.
+describe('Sake & Asian Junmai purity (real catalog, end-to-end invariant)', () => {
+  it('no in-stock Junmai-variety Sake & Asian product has a non-Junmai-variety candidate in its precomputed "you might also like" rail', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    // precomputeRecommendations expects is_in_stock pre-normalized to a real
+    // boolean (post toPublicProduct load), unlike the raw export's "0"/"1"/null.
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    const isJunmai = (v: any) => typeof v === 'string' && /junmai/i.test(v);
+    const junmaiSkus = normalized.filter(
+      (p) => p.category_group === 'Sake & Asian' && isJunmai(p.variety) && p.is_in_stock
+    );
+    expect(junmaiSkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
+
+    // Same bucketed path the real build uses (gen-recs-cache.mjs) — fast AND
+    // representative of what actually ships, rather than a naive full-pool
+    // scan per subject.
+    const precomputed = precomputeRecommendations(normalized as any);
+
+    const leaks: string[] = [];
+
+    for (const subject of junmaiSkus) {
+      const recs = precomputed.get(subject.sku) ?? [];
+      for (const r of recs) {
+        const cand = bySku.get(r.sku);
+        if (
+          cand &&
+          cand.category_group === 'Sake & Asian' &&
+          typeof cand.variety === 'string' && cand.variety.trim() !== '' &&
+          !isJunmai(cand.variety)
+        ) {
+          leaks.push(`${subject.sku} (${subject.variety}) -> ${r.sku} (${cand.variety})`);
+        }
+      }
+    }
+
+    expect(leaks).toEqual([]);
+  });
+});
+
+// END-TO-END INVARIANT (CLAUDE.md Rule 6): Beer & RTD has no
+// category-scorer.ts override and no generic disambiguating signal, so its 2
+// real category_type values (Beer, Ready-to-Drink) mixed freely on shared
+// region/country/price/food signal alone. Proven: 8/16 (50%) in-stock Beer &
+// RTD subjects had a cross-category_type candidate leak into their rail
+// (100% systematic given the tiny pool — e.g. LBE0995CH Moose Indie Summer
+// Cider recommending all 5 Ready-to-Drink cocktails). This test pins that
+// leak count at 0 post-fix. Run against the REAL catalog, not fixtures,
+// since the leak only showed up at real-data scale.
+describe('Beer & RTD category_type purity (real catalog, end-to-end invariant)', () => {
+  it('no in-stock Beer & RTD product has a cross-category_type candidate in its precomputed "you might also like" rail', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    // precomputeRecommendations expects is_in_stock pre-normalized to a real
+    // boolean (post toPublicProduct load), unlike the raw export's "0"/"1"/null.
+    const isInStockRaw = (v: any) => v === 1 || v === '1' || v === true;
+    const normalized = liveRows.map((p) => ({ ...p, is_in_stock: isInStockRaw(p.is_in_stock) }));
+
+    const bySku = new Map(normalized.map((p) => [p.sku, p]));
+    const beerRtdSkus = normalized.filter(
+      (p) => p.category_group === 'Beer & RTD' && p.is_in_stock
+    );
+    expect(beerRtdSkus.length).toBeGreaterThan(0); // sanity: fixture drift guard
+
+    // Same bucketed path the real build uses (gen-recs-cache.mjs) — fast AND
+    // representative of what actually ships, rather than a naive full-pool
+    // scan per subject.
+    const precomputed = precomputeRecommendations(normalized as any);
+
+    const leaks: string[] = [];
+
+    for (const subject of beerRtdSkus) {
+      const recs = precomputed.get(subject.sku) ?? [];
+      for (const r of recs) {
+        const cand = bySku.get(r.sku);
+        if (
+          cand &&
+          cand.category_group === 'Beer & RTD' &&
+          cand.category_type !== subject.category_type
+        ) {
+          leaks.push(`${subject.sku} (${subject.category_type}) -> ${r.sku} (${cand.category_type})`);
+        }
+      }
+    }
+
+    expect(leaks).toEqual([]);
   });
 });

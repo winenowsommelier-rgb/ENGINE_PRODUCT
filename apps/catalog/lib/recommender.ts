@@ -32,6 +32,85 @@ import { getCoPurchaseBonus, buildBaseSkuMap } from '@/lib/co-purchase';
 const MAX_RECS = 4;
 const MAX_RECS_EXTENDED = 8;
 
+// The 4 canonical wine colors/styles (mirrors lib/finder/category-map.ts's
+// CATEGORY_MAP) — mutually exclusive for recommendation purposes, same as the
+// Finder's hard category filter. Niche wine types outside this set (Wine Set,
+// Orange Wine, Sweet/Dessert, Fortified — too little catalog depth for their
+// own strict bucket) are intentionally excluded from the gate so their pools
+// don't starve.
+const WINE_COLOR_TYPES = new Set([
+  'red wine', 'white wine', 'rosé wine', 'sparkling & champagne',
+]);
+
+// The smokiness EXTREMES that must never be recommended against each other
+// within Whisky. peat_level (the intended dominant +3 whisky signal — see
+// categorySignalPoints in category-scorer.ts) is 0% populated in the live
+// catalog, so whisky peat/smoke matching falls entirely to the generic
+// smokiness +0.5 within-1-band nudge (SMOKINESS_BANDS/withinOneBand below) —
+// proven to leak in 17/17 (100%) heavy-smokiness whisky subjects, e.g.
+// Laphroaig 10 Years (LWH0024AA, heavy) recommending Old Pulteney 18 Year
+// (LWH0473ES, none), and Bowmore 15 Years (heavy) recommending Bruichladdich
+// "Unpeated" Islay Single Malt (none) — the candidate's own name says
+// "Unpeated". Only the extremes are gated (mirrors WINE_COLOR_TYPES): a soft
+// nudge is fine for mild/medium adjacency, but heavy-vs-none/light is a
+// genuine, proven mismatch a shopper would notice.
+const SMOKINESS_EXTREME_HEAVY = 'heavy';
+const SMOKINESS_EXTREME_NONE_OR_LIGHT = new Set(['none', 'light']);
+
+// The 4 real category_type values within Sake & Asian (mirrors WINE_COLOR_TYPES —
+// mutually exclusive for recommendation purposes). Sake & Asian has no
+// category-scorer.ts override, so these mixed freely on shared region/country/
+// price/food alone — proven to leak in 145/419 (34.6%) in-stock Sake & Asian
+// subjects, e.g. a dry Sake/Shochu product recommending a sweet Umeshu plum
+// liqueur (~10-15% ABV) — a substitute-confusion mismatch, same class as the
+// red<->white wine leak WINE_COLOR_TYPES fixes. Lowercased, matching this
+// file's typeForProduct(...).trim().toLowerCase() convention.
+const SAKE_ASIAN_TYPES = new Set([
+  'sake / shochu', 'umeshu', 'shochu', 'makgeolli',
+]);
+
+// The 2 real category_type values within Beer & RTD (mirrors SAKE_ASIAN_TYPES —
+// mutually exclusive for recommendation purposes). Beer & RTD has no
+// category-scorer.ts override and no generic disambiguating signal, so these
+// mixed freely on shared region/country/price/food alone — proven to leak in
+// 8/16 (50%) in-stock Beer & RTD subjects, 100% systematic (every Beer
+// subject recommended all 5 Ready-to-Drink cocktails and vice versa, given
+// the tiny pool), e.g. LBE0995CH Moose Indie Summer Cider (Beer)
+// recommending LRD0016DG Signature Cocktail The Lychee Martini, LRD0017DG
+// Sunset Aperitivo, LRD0018DG Raspberry Espresso Martini, LRD0019DG Rose &
+// White Pepper Negroni, and LRD0020DG Coconut & Pineapple Daiquiri
+// (Ready-to-Drink) — cider and pre-mixed cocktails are not substitutes a
+// shopper would consider interchangeable. Lowercased, matching this file's
+// typeForProduct(...).trim().toLowerCase() convention.
+const BEER_RTD_TYPES = new Set([
+  'beer', 'ready-to-drink',
+]);
+
+/**
+ * True if a sake/shochu variety string denotes the Junmai brewing class
+ * (pure rice/koji, no added distilled alcohol) — i.e. contains "Junmai"
+ * case-insensitively, regardless of the fuller variety string ("Junmai
+ * Daiginjo" still counts as Junmai class: Junmai describes the brewing
+ * method, Daiginjo/Ginjo describe the rice-polish ratio — not mutually
+ * exclusive dimensions). A bare "Daiginjo"/"Ginjo" with NO "Junmai" token is
+ * a DIFFERENT (non-Junmai, alcohol-added) class. Returns false for
+ * undefined/null/empty — callers must check populated-on-both-sides
+ * separately before gating (see isEligible), since "not Junmai-class" and
+ * "no data" are different states and must not be conflated for gating.
+ */
+function isJunmaiClass(variety: string | undefined | null): boolean {
+  return typeof variety === 'string' && /junmai/i.test(variety);
+}
+
+// Minimum SWEETNESS_BANDS index distance that counts as an "extreme" mismatch
+// (see gate below, mirrors the WINE_COLOR_TYPES/SMOKINESS_EXTREME pattern):
+// 2+ bands apart on ['dry','off-dry','medium-sweet','sweet'] catches dry<->
+// medium-sweet, dry<->sweet, and off-dry<->sweet — the true extremes — while
+// leaving adjacent pairs (dry<->off-dry, off-dry<->medium-sweet,
+// medium-sweet<->sweet) as a soft nudge, same "extremes only" philosophy as
+// the whisky smokiness fix.
+const SWEETNESS_EXTREME_MIN_DISTANCE = 2;
+
 // Variety alias clusters — exact-match on variety misses obvious affinities like
 // Syrah/Shiraz or Pinot Noir/Burgundy. Two varieties in the same cluster score
 // the same +2 as an exact match. Normalise to lowercase for comparison.
@@ -128,6 +207,23 @@ function withinOneBand(bands: string[], a: string | undefined | null, b: string 
   if (!a || !b) return false;
   const ai = bands.indexOf(a.toLowerCase()), bi = bands.indexOf(b.toLowerCase());
   return ai !== -1 && bi !== -1 && Math.abs(ai - bi) <= 1;
+}
+
+/**
+ * Complementary check to withinOneBand: true when both values resolve to a
+ * known band AND are at least `minDistance` indices apart. Used by the White
+ * Wine sweetness extremes gate in isEligible() below — same case-insensitive
+ * comparison convention as withinOneBand.
+ */
+function bandDistanceAtLeast(
+  bands: string[],
+  a: string | undefined | null,
+  b: string | undefined | null,
+  minDistance: number,
+): boolean {
+  if (!a || !b) return false;
+  const ai = bands.indexOf(a.toLowerCase()), bi = bands.indexOf(b.toLowerCase());
+  return ai !== -1 && bi !== -1 && Math.abs(ai - bi) >= minDistance;
 }
 
 /**
@@ -288,6 +384,124 @@ function isEligible(product: PublicProduct, candidate: PublicProduct): boolean {
     candidateGroup !== 'Unknown' &&
     subjectGroup !== candidateGroup
   ) return false;
+
+  // Suppress cross-color/style recommendations WITHIN Wine (Red <-> White <->
+  // Rosé <-> Sparkling & Champagne): shared region/country/price/food isn't
+  // enough to make a Sauvignon Blanc a sensible "you might also like" for a
+  // Cabernet shopper. Mirrors the Finder's own hard category filter
+  // (finderPrefilter/CATEGORY_MAP) so the whole site is consistent about what
+  // counts as "the same kind of wine". Gate only applies when BOTH sides fall
+  // in the 4 canonical color buckets — niche types (Wine Set, Orange Wine,
+  // Sweet/Dessert, Fortified) stay ungated, same as before.
+  if (subjectGroup === 'Wine' && candidateGroup === 'Wine') {
+    const subjectType = typeForProduct(product).trim().toLowerCase();
+    const candidateType = typeForProduct(candidate).trim().toLowerCase();
+    if (
+      WINE_COLOR_TYPES.has(subjectType) &&
+      WINE_COLOR_TYPES.has(candidateType) &&
+      subjectType !== candidateType
+    ) return false;
+  }
+
+  // Suppress heavy <-> none/light smokiness recommendations WITHIN Whisky: see
+  // SMOKINESS_EXTREME_HEAVY/SMOKINESS_EXTREME_NONE_OR_LIGHT above for the
+  // proof (17/17 heavy-smokiness whisky subjects leaked a none/light
+  // candidate). Case-insensitive, matching this file's existing smokiness
+  // comparison convention (withinOneBand/SMOKINESS_BANDS). Only the extremes
+  // are gated — mild/medium pairs are intentionally left as a soft nudge.
+  if (subjectGroup === 'Whisky' && candidateGroup === 'Whisky') {
+    const subjectSmoke = (product.smokiness ?? '').toLowerCase();
+    const candidateSmoke = (candidate.smokiness ?? '').toLowerCase();
+    const isExtremeMismatch =
+      (subjectSmoke === SMOKINESS_EXTREME_HEAVY && SMOKINESS_EXTREME_NONE_OR_LIGHT.has(candidateSmoke)) ||
+      (candidateSmoke === SMOKINESS_EXTREME_HEAVY && SMOKINESS_EXTREME_NONE_OR_LIGHT.has(subjectSmoke));
+    if (isExtremeMismatch) return false;
+  }
+
+  // Suppress dry <-> sweet sweetness EXTREMES WITHIN White Wine specifically:
+  // sweetness is severely underpopulated for Red Wine (0.2%) and Rosé Wine
+  // (0%) — a pure data-coverage gap, NOT gated here since there's no data to
+  // gate on — but reasonably well-populated for White Wine (65.4%), where the
+  // generic +0.5 within-1-band nudge (SWEETNESS_BANDS/withinOneBand above)
+  // proved too weak: 12/467 (2.6%) in-stock Dry White Wine subjects leaked
+  // >=1 Sweet White Wine candidate into their rail, e.g. WWW2006AB Nik Weis
+  // Urban Riesling (Dry) recommending WWW5371AB Nollen Erben Mosel Riesling
+  // Spätlese (Sweet). WWW1974DJ Chateau Reynon Blanc Cadillac (a sweet
+  // Bordeaux dessert wine) was a repeat offender in 6/12 leaked slots. Only
+  // the extremes (2+ bands apart — see SWEETNESS_EXTREME_MIN_DISTANCE) are
+  // gated, and only when BOTH sides have sweetness populated, mirroring the
+  // "extremes only, safe on missing data" convention of the other two gates.
+  if (
+    subjectGroup === 'Wine' && candidateGroup === 'Wine' &&
+    typeForProduct(product).trim().toLowerCase() === 'white wine' &&
+    typeForProduct(candidate).trim().toLowerCase() === 'white wine'
+  ) {
+    if (bandDistanceAtLeast(SWEETNESS_BANDS, product.sweetness, candidate.sweetness, SWEETNESS_EXTREME_MIN_DISTANCE)) {
+      return false;
+    }
+  }
+
+  // Suppress cross-category_type recommendations WITHIN Sake & Asian (Sake /
+  // Shochu <-> Umeshu <-> Shochu <-> Makgeolli): see SAKE_ASIAN_TYPES above for
+  // the proof (145/419, 34.6% of in-stock Sake & Asian subjects leaked a
+  // cross-type candidate — e.g. sweet Umeshu plum liqueur recommended
+  // alongside dry Sake/Shochu). Sake & Asian has no category-scorer.ts
+  // override, so nothing else in the scorer disambiguates these. Mirrors
+  // WINE_COLOR_TYPES: gate only applies when BOTH sides fall in the 4 real
+  // category_type values for this group.
+  if (subjectGroup === 'Sake & Asian' && candidateGroup === 'Sake & Asian') {
+    const subjectType = typeForProduct(product).trim().toLowerCase();
+    const candidateType = typeForProduct(candidate).trim().toLowerCase();
+    if (
+      SAKE_ASIAN_TYPES.has(subjectType) &&
+      SAKE_ASIAN_TYPES.has(candidateType) &&
+      subjectType !== candidateType
+    ) return false;
+  }
+
+  // Suppress Junmai <-> non-Junmai (Daiginjo/Ginjo with no "Junmai" token)
+  // recommendations WITHIN Sake & Asian: see isJunmaiClass above for the class
+  // definition and SAKE_ASIAN_TYPES block above for the proof context. Sake
+  // brewing class is only readable from the structured `variety` field (NEVER
+  // free-text `name` matching — CLAUDE.md Rule 12 convention), and smokiness
+  // (this group's only generic taste signal) is 0% populated for Sake &
+  // Asian, so there's no working disambiguation without this gate. Proven:
+  // 8/39 (20.5%) in-stock Junmai-variety subjects leaked a non-Junmai
+  // Daiginjo/Ginjo candidate, e.g. LSK0119AB Dassai Junmai Daiginjou
+  // recommending LSK0008AR Kamotsuru Tokusei Gold Daiginjo (variety=
+  // "Daiginjo", no "Junmai"). Fires ONLY when variety is populated on BOTH
+  // sides (mirrors the "extremes only, safe on missing data" convention of
+  // the other gates) — a missing variety must fall through, not be assumed
+  // non-Junmai. Naturally scoped to Sake / Shochu in practice: the
+  // SAKE_ASIAN_TYPES gate above already separates Umeshu/Shochu/Makgeolli
+  // out, and those types don't carry Junmai/Daiginjo variety values in the
+  // live catalog, so this is a no-op for them either way.
+  if (subjectGroup === 'Sake & Asian' && candidateGroup === 'Sake & Asian') {
+    const subjectVariety = product.variety;
+    const candidateVariety = candidate.variety;
+    if (
+      typeof subjectVariety === 'string' && subjectVariety.trim() !== '' &&
+      typeof candidateVariety === 'string' && candidateVariety.trim() !== '' &&
+      isJunmaiClass(subjectVariety) !== isJunmaiClass(candidateVariety)
+    ) return false;
+  }
+
+  // Suppress cross-category_type recommendations WITHIN Beer & RTD (Beer <->
+  // Ready-to-Drink): see BEER_RTD_TYPES above for the proof (8/16, 50% of
+  // in-stock Beer & RTD subjects leaked a cross-type candidate, 100%
+  // systematic given the tiny pool). Beer & RTD has no category-scorer.ts
+  // override, so nothing else in the scorer disambiguates these. Mirrors
+  // SAKE_ASIAN_TYPES: gate only applies when BOTH sides fall in the 2 real
+  // category_type values for this group.
+  if (subjectGroup === 'Beer & RTD' && candidateGroup === 'Beer & RTD') {
+    const subjectType = typeForProduct(product).trim().toLowerCase();
+    const candidateType = typeForProduct(candidate).trim().toLowerCase();
+    if (
+      BEER_RTD_TYPES.has(subjectType) &&
+      BEER_RTD_TYPES.has(candidateType) &&
+      subjectType !== candidateType
+    ) return false;
+  }
 
   return true;
 }
