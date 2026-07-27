@@ -34,12 +34,21 @@ export interface MapRegion {
   priceRange: PriceRange;
   peeks: MapPeek[];      // up to ~6 in-stock thumbnails
   // Sommelier description (from data/taxonomy.db, backfilled by Sonnet). Optional:
-  // omitted cleanly when a region has none. `subregions` lists the names + blurbs
-  // of this region's subregions (taxonomy has no subregion coords, so they are a
-  // text list in the drawer, not map pins).
+  // omitted cleanly when a region has none.
   description?: string;
+  /** Names + blurbs of this region's subregions, for the drawer's text list. (Subregions
+   *  that HAVE coords in the taxonomy — 81 of them, plus 81 appellations — also become
+   *  their own pins; this list is the drawer copy, not the pin source.) */
   subregions?: { name: string; description?: string }[];
   knowledge?: RegionKnowledge;
+  /** Rows resolving to THIS node exactly (excludes descendants). Optional until the generator populates it. */
+  ownTotal?: number;
+  /** ownTotal + every descendant. DERIVED by subtree sum — never incremented per-row. */
+  inclusiveTotal?: number;
+  /** Which taxonomy level this pin sits at — drives the /shop hand-off shape. Absent = region. */
+  pinLevel?: 'region' | 'subregion' | 'appellation';
+  /** Parent node NAME (a region, for a subregion pin). Absent at top level. */
+  parentName?: string;
 }
 
 export interface MapCountry {

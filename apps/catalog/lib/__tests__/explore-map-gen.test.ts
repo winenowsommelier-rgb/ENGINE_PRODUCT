@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { aggregate, isInStockRaw, mergeKnowledge } from '@/scripts/gen-explore-map-data.mjs';
 import { makeGeoResolver } from '../geo-resolve';
+import { shopHref } from '../explore/map-data';
 
 const rows = [
   { sku: 'WIN1', name: 'A', region: 'Bordeaux', country: 'France', category_group: 'Wine', is_in_stock: '1', price: 1000, image_url: 'a.jpg' },
@@ -129,5 +130,57 @@ describe('4-level aggregation — ownTotal vs inclusiveTotal', () => {
     const out = aggregate(ROWS);
     expect(out.byRegion).toBeInstanceOf(Map);
     expect(out.byCountry).toBeInstanceOf(Map);
+  });
+});
+
+describe('shopHref — per-level hand-off', () => {
+  const base = { slug: 's', lat: 0, lng: 0, total: 1,
+    countsByGroup: {}, priceRange: { min: null, max: null }, peeks: [] };
+
+  it('region pin emits country + region', () => {
+    const href = shopHref({ ...base, name: 'California', country: 'USA', pinLevel: 'region' } as any, 'all');
+    expect(href).toContain('country=USA');
+    expect(href).toContain('region=California');
+    expect(href).not.toContain('subregion=');
+    expect(href).not.toContain('appellation=');
+  });
+
+  it('subregion pin emits parent region AND subregion', () => {
+    const href = shopHref({
+      ...base, name: 'Napa Valley', country: 'USA', pinLevel: 'subregion', parentName: 'California',
+    } as any, 'all');
+    expect(href).toContain('region=California');
+    expect(href).toContain('subregion=Napa+Valley');
+  });
+
+  it('appellation pin emits appellation only', () => {
+    const href = shopHref({
+      ...base, name: 'Barolo', country: 'Italy', pinLevel: 'appellation', parentName: 'Piedmont',
+    } as any, 'all');
+    expect(href).toContain('appellation=Barolo');
+    expect(href).not.toContain('region=');
+    expect(href).not.toContain('subregion=');
+  });
+
+  it('a pin with NO pinLevel is treated as a region (back-compat)', () => {
+    const href = shopHref({ ...base, name: 'Tuscany', country: 'Italy' } as any, 'all');
+    expect(href).toContain('region=Tuscany');
+    expect(href).not.toContain('subregion=');
+  });
+
+  it('lens group is still applied at every level', () => {
+    const href = shopHref({
+      ...base, name: 'Napa Valley', country: 'USA', pinLevel: 'subregion', parentName: 'California',
+    } as any, 'wine');
+    expect(href).toContain('group=Wine');
+    expect(href).toContain('bev=1');
+  });
+
+  it('a subregion pin with NO parentName does not emit an empty region', () => {
+    const href = shopHref({
+      ...base, name: 'Orphan Sub', country: 'USA', pinLevel: 'subregion',
+    } as any, 'all');
+    expect(href).not.toMatch(/region=(&|$)/);
+    expect(href).toContain('subregion=Orphan+Sub');
   });
 });
