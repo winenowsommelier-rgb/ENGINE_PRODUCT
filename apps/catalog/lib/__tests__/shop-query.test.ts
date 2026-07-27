@@ -482,3 +482,24 @@ describe('bev=1 opt-in filter (beverages only)', () => {
     expect(matchesFilters(fridge, { region: 'Champagne' })).toBe(true);
   });
 });
+
+describe('appellation filter', () => {
+  const P = (over: Partial<PublicProduct>) => ({
+    sku: 'X', name: 'n', country: 'Italy', region: 'Piedmont', ...over,
+  }) as PublicProduct;
+
+  it('filters on appellation (exact, case-insensitive)', () => {
+    const rows = [P({ sku: 'A', appellation: 'Barolo' }), P({ sku: 'B', appellation: 'Chianti' })];
+    expect(applyShopQuery(rows, { appellation: 'barolo' }).total).toBe(1);
+  });
+
+  it('a row with no appellation is excluded when the filter is set', () => {
+    const rows = [P({ sku: 'A', appellation: 'Barolo' }), P({ sku: 'B' })];
+    expect(applyShopQuery(rows, { appellation: 'Barolo' }).total).toBe(1);
+  });
+
+  it('no appellation param returns everything', () => {
+    const rows = [P({ sku: 'A', appellation: 'Barolo' }), P({ sku: 'B' })];
+    expect(applyShopQuery(rows, {}).total).toBe(2);
+  });
+});

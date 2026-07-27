@@ -28,6 +28,12 @@
  *               and they always emit exact canonical values; the free-text region input
  *               was removed. Exact match makes the chip count == grid total everywhere.
  *   subregion → exact (case-insensitive) match on subregion (same rationale as region)
+ *   appellation → exact (case-insensitive) match on appellation, the 4th and deepest
+ *               geography level (e.g. "Barolo", "Chablis", "Saint-Emilion"). Same
+ *               exact-match rationale as region/subregion: the drill chips and the
+ *               explore-map appellation pins are the only writers, and they emit
+ *               canonical values, so pin count == grid total. A product with no
+ *               appellation never matches an active appellation filter.
  *   designation → exact (ci) match on the derived designation (lib/designation.ts:
  *               most-specific single tag parsed from name, e.g. "Grand Cru","DOCG").
  *   grape     → case-insensitive substring match on variety
@@ -189,6 +195,9 @@ export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
 
   const subregion = norm(firstParam(params.subregion));
   if (subregion && norm(p.subregion) !== subregion) return false;
+
+  const appellation = norm(firstParam(params.appellation));
+  if (appellation && norm(p.appellation) !== appellation) return false;
 
   const designation = norm(firstParam(params.designation));
   if (designation && norm(designationForProduct(p)) !== designation) return false;
