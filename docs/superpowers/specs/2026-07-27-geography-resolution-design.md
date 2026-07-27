@@ -502,3 +502,149 @@ than the map-invisibility risk that ordering A-before-B removes.
 | Guessed coordinates | Every coordinate carries a source; no estimation |
 | `Bourgogne` misrouted by rule | Excluded from rules; human decision |
 | Stale 0%-data assumptions elsewhere | A6 fixes the product page; shop-links tracked in §6 |
+
+---
+
+## 9. ADDENDUM (2026-07-27) — full data + structure audit
+
+Added after a request to resolve **all** issues across regions / subregions /
+appellations / designation, at both structure and database level. Every figure below is
+measured against `products.db` (11,934 rows) and `data/taxonomy/explore-taxonomy.json`.
+
+### 9.1 Field health
+
+| Field | Populated | Distinct | Verdict |
+|---|---|---|---|
+| `country` | 11,904 (99.7%) | 69 | healthy |
+| `region` | 10,532 (88.3%) | 390 | mostly healthy |
+| `subregion` | 6,511 (54.6%) | 864 | **grab-bag — root cause** |
+| `appellation` | 956 (8.0%) | 52 | under-used, invisible in UI |
+| `designation` | 3,015 (25.3%) | 21 | **clean — no data work needed** |
+| `wine_classification` | 0 | 0 | dead column |
+
+**`designation` needs no data work.** All 21 values are inside the closed 22-label
+vocabulary in `lib/designation.ts`; there is no free text. The only outstanding item is
+the UI label rename (§9.6).
+
+### 9.2 `subregion` is four concepts in one column
+
+Where its 864 distinct values actually sit in the taxonomy:
+
+| Classified as | Rows | Share |
+|---|---|---|
+| not in taxonomy at all | 2,578 | 39.6% |
+| appellation *or* subregion (ambiguous) | 1,052 | 16.2% |
+| subregion | 1,010 | 15.5% |
+| **region** | 893 | 13.7% |
+| appellation | 623 | 9.6% |
+| appellation *or* region (ambiguous) | 308 | 4.7% |
+
+The column means "geography more specific than region" — not "subregion". This, not the
+map code alone, is why the hierarchy collapsed.
+
+### 9.3 Defect inventory (measured, corrected)
+
+| Defect | Rows | Note |
+|---|---|---|
+| subregion value unknown to taxonomy | **2,578** | Italy 594, Japan 530, France 456, Scotland 175, USA 131 |
+| `region` == `country` | 360 | redundant |
+| `subregion` == `region` | 165 | redundant |
+| non-place values (style / legal tier) | **108** | far smaller than earlier drafts claimed |
+| subregion with no region (orphan) | 22 | |
+| region with no country | 7 | |
+| swapped region/subregion | **1** | earlier drafts materially overstated this |
+
+Two corrections to earlier drafts of this spec: swapped fields and non-place values were
+described as significant cleanup. Measured, they are **1 row** and **108 rows**. The real
+problem is the taxonomy gap.
+
+### 9.4 The taxonomy file is stale and self-inconsistent
+
+`_meta.generated` = 2026-05-06 against **11,387** products; there are now 11,934.
+`_meta.counts.regions` says **126**; the file contains **300**. It has been hand-edited
+since generation, so `build_explore_taxonomy.py` would not reproduce it.
+
+It also already contains a `nonGeographicEntries` list naming "Multi-Appellation
+California", "Multi-Regional", "Others region", "South Eastern Australia" — this problem
+was catalogued in May and never acted on.
+
+Orphaned entries (present in taxonomy, used by zero products): regions 26/300,
+subregions 21/81, appellations 36/81.
+
+### 9.5 KEY FINDING — the product rows are right; the taxonomy is wrong
+
+1,205 rows have a `subregion` value the taxonomy classifies as a top-level `region`.
+**1,038 of them (86%) are correct as they stand:**
+
+```
+region='Central Valley'  subregion='Colchagua Valley'   140 rows   ✓ correct
+region='South Australia' subregion='Barossa Valley'     125 rows   ✓ correct
+region='California'      subregion='Sonoma County'       71 rows   ✓ correct
+```
+
+Colchagua *is* inside Chile's Central Valley; Barossa *is* inside South Australia.
+**Migrating these rows would destroy a real hierarchy level and re-create the exact
+flattening this project exists to fix.**
+
+**Resolution: fix the TAXONOMY, leave the product rows untouched.** Reclassify the
+affected entries from `regions` to `subregions` with a correct `parentSlug`. Zero DB
+writes for these 1,038 rows.
+
+**Auto-reclassify — 24 entries / 775 rows.** Single unambiguous parent, ≥5 rows, no
+reciprocal conflict:
+
+Colchagua Valley→Central Valley, Barossa Valley→South Australia, Maipo Valley→Central
+Valley, Sonoma County→California, McLaren Vale→South Australia, Margaret
+River→Western Australia, Yarra Valley→Victoria, Coonawarra→South Australia, Casablanca
+Valley→Aconcagua, Cachapoal Valley→Central Valley, Paarl→Western Cape, Adelaide
+Hills→South Australia, Åhus→Skåne, Aconcagua Valley→Aconcagua, Paso Robles→California,
+Grampians→Victoria, Lodi→California, Clare Valley→South Australia, Eden Valley→South
+Australia, Murray Darling→Victoria, Great Southern→Western Australia,
+Languedoc→Languedoc-Roussillon, Lowlands→Lowland, Willamette Valley→Oregon.
+
+**Manual review — 58 entries / 263 rows.** Held back because a blanket rule would encode
+garbage. Three failure modes found:
+
+- **Reciprocal pairs** (each claims the other as parent — one direction is bad product
+  data): `Hokkaido`↔`Yoichi`, `Piedmont`↔`Turin`, `Alto Adige`↔`Trentino-Alto Adige`,
+  `Louisiana`↔`New Orleans`, `Jalisco`↔`Tequila`, `Highland`↔`Highlands`
+- **Multiple conflicting parents**: `Sauternes` (5 different parents), `Rueda` (5),
+  `Rías Baixas` (3)
+- **Outright wrong country**: `Cognac→Charente` filed under **China**;
+  `London→England` under **Netherlands**; `Denmark→Copenhagen` under **USA**
+
+These are product-data defects surfaced by the audit, not taxonomy defects. They need
+per-entry human judgement and are **out of scope for Phase A**.
+
+### 9.6 Authorised work
+
+**Structure (taxonomy file) — no DB risk:**
+- S1. Reclassify the 24 auto entries `regions` → `subregions` with correct `parentSlug`
+- S2. Expand the taxonomy for Italy / Japan / France / Scotland / Spain (~1,856 of the
+  2,578 unknown rows), each entry classified, parented, coordinated, and **sourced**
+- S3. Correct `_meta` so it matches the file's actual contents
+
+**Database (`products.db`) — Rule 10 applies: backup → canary → verify → export refresh:**
+- D1. Clear `region` where `region == country` (360 rows)
+- D2. Clear `subregion` where `subregion == region` (165 rows)
+- D3. Non-places (108): `Vin de France` / `Tre Venezie` → clear;
+  `Bordeaux Supérieur` → `appellation`; `Valpolicella Ripasso` / `Rosso di Montalcino`
+  → flag only (no valid destination — `production_style` is a closed vocabulary)
+- D4. Orphans (29): backfill parent from taxonomy where derivable, else clear the child
+
+**Explicitly NOT authorised:**
+- Moving the 1,038 correct rows (§9.5) — would destroy hierarchy
+- Any write to `designation` (clean) or `production_style` (closed vocabulary)
+- The 58 manual-review entries (§9.5) — separate, human-judgement work
+
+**Sequencing:** S1-S3 are read-only and must land **before** Phase A's coordinate work,
+because they change what the resolver can resolve. D1-D4 follow Phase A as a separate
+reviewed migration.
+
+### 9.7 Deferred — UI label rename
+
+`components/Filters.tsx:947-955` labels the `designation` facet "Classification". User
+decision 2026-07-27: rename the visible label to **"Designation"** so UI and code agree.
+Three lines. **Not** the Magento `classification` column (different field, 74 scripts,
+Rule 12 says stop using it rather than rename it). Update CLAUDE.md Rule 12 and the
+memory note in the same commit or the guidance goes stale.
