@@ -6,7 +6,7 @@ import { regionMatchesFilter } from '../geo-aliases';
 describe('facet count consistent with grid total (context-aware invariant)', () => {
   const all = getAllProducts();
 
-  it('every region facet under group=Wine: count subset of grid, and grid >= count', () => {
+  it('every region facet under group=Wine: chip count === grid total (exact)', () => {
     // Input set for regionsFor = everything active EXCEPT region/subregion → here just group=Wine.
     const wine = all.filter((p) => matchesFilters(p, { group: 'Wine' }));
     const regions = regionsFor('', wine);
