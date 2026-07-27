@@ -5,6 +5,9 @@ the catalog can consume. The shop-query engine only recognizes clean-join
 filter keys; any other key in a stored filter_definition is DROPPED here (with a
 stderr warning — Rule 2: never silently swallow a skipped key). The key is
 `class` (category_type), NOT `category`; `grape`/`variety` are BLOCKED by §7.
+`designation` IS allowed — it's the derived product classification tier (Grand
+Cru / DOCG / XO / Single Malt …) the shop engine filters on via
+designationForProduct (the "Classification" control in the Taste & more menu).
 """
 from __future__ import annotations
 
@@ -17,7 +20,7 @@ from pathlib import Path
 DEFAULT_DB = Path(__file__).resolve().parent.parent / "data" / "taxonomy.db"
 OUTPUT_PATH = Path(__file__).resolve().parent.parent / "data" / "collections_export.json"
 
-ALLOWED_KEYS = {"country", "region", "subregion", "class", "body", "acidity", "tannin", "price"}
+ALLOWED_KEYS = {"country", "region", "subregion", "class", "designation", "body", "acidity", "tannin", "price"}
 
 
 def build(conn: sqlite3.Connection) -> list[dict]:

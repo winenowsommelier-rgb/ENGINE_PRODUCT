@@ -25,6 +25,78 @@ import sqlite3
 # Spirits 50-59) so the exporter's (sort_order, slug) ordering yields the intended
 # category sequence on the landing page.
 COLLECTIONS = [
+    # --- Icons & Classifications (cross-category classification tiers, sort FIRST) ---
+    # Curated by the master-sommelier lens: evocative names that still keep the
+    # classification visible for the knowledgeable buyer. Each filters on
+    # `designation` — the derived product classification tier the shop engine
+    # matches via designationForProduct (apps/catalog/lib/designation.ts), i.e. the
+    # "Classification" control in the Taste & more menu. sort_order 0-7 so the
+    # section renders ABOVE the category sections (Wine starts at 10). Every entry
+    # re-verified >0 via the REAL applyShopQuery engine before commit.
+    {
+        "slug": "grand-cru",
+        "name": "The Grand Crus",
+        "group": "Icons & Classifications",
+        "sort_order": 0,
+        "description": "The summit of the vineyard hierarchy — the singular Grand Cru sites of Burgundy, Champagne and Alsace.",
+        "filter": {"designation": "Grand Cru"},
+    },
+    {
+        "slug": "premier-cru",
+        "name": "Premier Cru — One Step from the Summit",
+        "group": "Icons & Classifications",
+        "sort_order": 1,
+        "description": "The connoisseur's tier: Burgundy's celebrated 1er Cru vineyards — poise and pedigree without the Grand Cru price.",
+        "filter": {"designation": "Premier Cru"},
+    },
+    {
+        "slug": "italian-docg",
+        "name": "DOCG — Italy's Guaranteed Greats",
+        "group": "Icons & Classifications",
+        "sort_order": 2,
+        "description": "Italy's highest, guaranteed appellation — Barolo, Brunello, Chianti Classico and the rest of the elite.",
+        "filter": {"designation": "DOCG", "country": "Italy"},
+    },
+    {
+        "slug": "igt-super-tuscan",
+        "name": "The Super Tuscan Spirit (IGT)",
+        "group": "Icons & Classifications",
+        "sort_order": 3,
+        "description": "The rebels who broke the rules — Bordeaux blends and bold reds that outgrew the old appellations.",
+        "filter": {"designation": "IGT", "country": "Italy"},
+    },
+    {
+        "slug": "single-malt-scotch",
+        "name": "Single Malt, Single Origin",
+        "group": "Icons & Classifications",
+        "sort_order": 4,
+        "description": "One distillery, one malt — the purest expression of place in whisky.",
+        "filter": {"designation": "Single Malt", "class": "Whisky"},
+    },
+    {
+        "slug": "xo-cognac-brandy",
+        "name": "XO & Beyond — The Old Souls",
+        "group": "Icons & Classifications",
+        "sort_order": 5,
+        "description": "Extra-old cognac and brandy, patiently aged for depth, spice and silk.",
+        "filter": {"designation": "XO"},
+    },
+    {
+        "slug": "gran-reserva",
+        "name": "Gran Reserva — Time in the Bottle",
+        "group": "Icons & Classifications",
+        "sort_order": 6,
+        "description": "Spain's most patient reds — years in oak and bottle before release, led by Rioja.",
+        "filter": {"designation": "Gran Reserva"},
+    },
+    {
+        "slug": "brut-champagne-sparkling",
+        "name": "The Fine Bubble — Brut Champagne & Sparkling",
+        "group": "Icons & Classifications",
+        "sort_order": 7,
+        "description": "The benchmark dry style — crisp, celebratory and endlessly food-friendly.",
+        "filter": {"designation": "Brut", "class": "Sparkling & Champagne"},
+    },
     # --- Wine (existing 6) ---
     {
         "slug": "bordeaux-reds",
@@ -191,7 +263,12 @@ _UPSERT = (
 
 
 def seed(conn: sqlite3.Connection) -> None:
-    """Upsert every collection in COLLECTIONS. Idempotent (keyed on slug).
+    """Make the collections table AUTHORITATIVE from COLLECTIONS.
+
+    Upserts every collection (idempotent, keyed on slug) AND prunes any row whose
+    slug is no longer in COLLECTIONS — so removing/renaming a collection here
+    removes it from the live DB (and therefore the export) instead of leaving a
+    stale row that would silently reappear in the UI.
 
     Requires collections_schema.migrate() to have added the category_group /
     sort_order columns first.
@@ -208,4 +285,10 @@ def seed(conn: sqlite3.Connection) -> None:
                 c.get("sort_order", 999),
             ),
         )
+    # Prune rows no longer in the source list (authoritative seed).
+    keep = [c["slug"] for c in COLLECTIONS]
+    placeholders = ",".join("?" for _ in keep)
+    conn.execute(
+        f"DELETE FROM collections WHERE slug NOT IN ({placeholders})", keep
+    )
     conn.commit()

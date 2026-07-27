@@ -1,5 +1,89 @@
 [
   {
+    "slug": "grand-cru",
+    "name": "The Grand Crus",
+    "description": "The summit of the vineyard hierarchy — the singular Grand Cru sites of Burgundy, Champagne and Alsace.",
+    "group": "Icons & Classifications",
+    "sortOrder": 0,
+    "filter": {
+      "designation": "Grand Cru"
+    }
+  },
+  {
+    "slug": "premier-cru",
+    "name": "Premier Cru — One Step from the Summit",
+    "description": "The connoisseur's tier: Burgundy's celebrated 1er Cru vineyards — poise and pedigree without the Grand Cru price.",
+    "group": "Icons & Classifications",
+    "sortOrder": 1,
+    "filter": {
+      "designation": "Premier Cru"
+    }
+  },
+  {
+    "slug": "italian-docg",
+    "name": "DOCG — Italy's Guaranteed Greats",
+    "description": "Italy's highest, guaranteed appellation — Barolo, Brunello, Chianti Classico and the rest of the elite.",
+    "group": "Icons & Classifications",
+    "sortOrder": 2,
+    "filter": {
+      "designation": "DOCG",
+      "country": "Italy"
+    }
+  },
+  {
+    "slug": "igt-super-tuscan",
+    "name": "The Super Tuscan Spirit (IGT)",
+    "description": "The rebels who broke the rules — Bordeaux blends and bold reds that outgrew the old appellations.",
+    "group": "Icons & Classifications",
+    "sortOrder": 3,
+    "filter": {
+      "designation": "IGT",
+      "country": "Italy"
+    }
+  },
+  {
+    "slug": "single-malt-scotch",
+    "name": "Single Malt, Single Origin",
+    "description": "One distillery, one malt — the purest expression of place in whisky.",
+    "group": "Icons & Classifications",
+    "sortOrder": 4,
+    "filter": {
+      "designation": "Single Malt",
+      "class": "Whisky"
+    }
+  },
+  {
+    "slug": "xo-cognac-brandy",
+    "name": "XO & Beyond — The Old Souls",
+    "description": "Extra-old cognac and brandy, patiently aged for depth, spice and silk.",
+    "group": "Icons & Classifications",
+    "sortOrder": 5,
+    "filter": {
+      "designation": "XO"
+    }
+  },
+  {
+    "slug": "gran-reserva",
+    "name": "Gran Reserva — Time in the Bottle",
+    "description": "Spain's most patient reds — years in oak and bottle before release, led by Rioja.",
+    "group": "Icons & Classifications",
+    "sortOrder": 6,
+    "filter": {
+      "designation": "Gran Reserva"
+    }
+  },
+  {
+    "slug": "brut-champagne-sparkling",
+    "name": "The Fine Bubble — Brut Champagne & Sparkling",
+    "description": "The benchmark dry style — crisp, celebratory and endlessly food-friendly.",
+    "group": "Icons & Classifications",
+    "sortOrder": 7,
+    "filter": {
+      "designation": "Brut",
+      "class": "Sparkling & Champagne"
+    }
+  },
+  {
     "slug": "bordeaux-reds",
     "name": "Bordeaux Reds",
     "description": "Structured red blends from Bordeaux, France.",
