@@ -1,19 +1,22 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { ArrowRight } from 'lucide-react';
 import { getAllProducts } from '@/lib/catalog-data';
 import { applyShopQuery } from '@/lib/shop-query';
-import { getCollections, collectionToShopParams } from '@/lib/collections';
+import { collectionToShopParams, getGroupsWithCollections } from '@/lib/collections';
+import { groupToSlug } from '@/lib/collection-groups';
+import { CollectionCard } from '@/components/CollectionCard';
 
 /**
- * Collections index — a directory of curated, fixed-filter views over the
- * catalog. Each card's count is the live total from the SAME pure
- * applyShopQuery() engine the listing page uses, so the count on the card and
- * the count on the collection page can never diverge.
+ * Collections index — a CATEGORY-SPLIT editorial landing over the curated,
+ * fixed-filter views. One section per group (Wine / Whisky / Sake & Asian /
+ * Spirits …), already in export (sort) order via getGroupsWithCollections().
  *
- * Simple server component: no searchParams, no client state. Safe to render
- * statically, but left as a plain server component so counts always reflect the
- * current export.
+ * Each card's count is the live total from the SAME pure applyShopQuery() engine
+ * the listing page uses, so the count on the card and the count on the collection
+ * page can never diverge.
+ *
+ * Simple server component: no searchParams, no client state. The URL carries no
+ * filter — the group sections and their cards come only from the seed data.
  */
 
 export const metadata: Metadata = {
@@ -32,11 +35,15 @@ export const metadata: Metadata = {
 
 export default function CollectionsIndexPage() {
   const products = getAllProducts();
-  const cols = getCollections();
+  const groups = getGroupsWithCollections();
 
-  const cards = cols.map((col) => ({
-    ...col,
-    count: applyShopQuery(products, collectionToShopParams(col)).total,
+  // Precompute each collection's live count once (products loaded once above).
+  const sections = groups.map(({ group, collections }) => ({
+    group,
+    collections: collections.map((col) => ({
+      col,
+      count: applyShopQuery(products, collectionToShopParams(col)).total,
+    })),
   }));
 
   return (
@@ -51,38 +58,34 @@ export default function CollectionsIndexPage() {
         </p>
       </header>
 
-      {cards.length === 0 ? (
+      {sections.length === 0 ? (
         <p className="text-base text-muted-foreground">
           No collections available yet — check back soon.
         </p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
-          {cards.map((col) => (
-            <Link
-              key={col.slug}
-              href={`/collections/${col.slug}`}
-              className="group flex min-h-[44px] flex-col gap-3 rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:p-6"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <h2 className="text-xl font-semibold tracking-tight text-foreground transition-colors group-hover:text-primary">
-                  {col.name}
-                </h2>
-                <ArrowRight
-                  className="mt-1 h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
-                  aria-hidden="true"
-                />
-              </div>
-              {col.description ? (
-                <p className="line-clamp-3 text-base text-muted-foreground">
-                  {col.description}
-                </p>
+        sections.map(({ group, collections }) => (
+          <section key={group} className="flex flex-col gap-4 sm:gap-5">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+                {group}
+              </h2>
+              {collections.length > 3 ? (
+                <Link
+                  href={`/collections/category/${groupToSlug(group)}`}
+                  className="inline-flex min-h-[44px] shrink-0 items-center rounded-md px-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  See all →
+                </Link>
               ) : null}
-              <p className="mt-auto text-sm font-medium text-muted-foreground">
-                {col.count} {col.count === 1 ? 'bottle' : 'bottles'}
-              </p>
-            </Link>
-          ))}
-        </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+              {collections.map(({ col, count }) => (
+                <CollectionCard key={col.slug} collection={col} count={count} />
+              ))}
+            </div>
+          </section>
+        ))
       )}
     </main>
   );
