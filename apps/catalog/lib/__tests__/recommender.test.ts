@@ -87,9 +87,15 @@ describe('precomputeRecommendations', () => {
     // in-region pool reaches >= MIN_POOL (MAX_RECS_EXTENDED + 1 = 9 incl. P) and
     // the classification/country/global widening chain is NOT triggered. These
     // share ONLY region with P (+3) and nothing else, so each scores exactly 3.
+    // Price is set WITHIN P's step-up ceiling (subject 1000 -> ceiling 1380, see
+    // priceBand tests) — NOT an arbitrary huge value — so all 9 survive price-band
+    // banding and the post-band widening retry (see "widens further..." test
+    // above) has no reason to fire. An out-of-ceiling price here would make this
+    // bucket band-empty too, triggering that retry and defeating the very
+    // approximation this test exists to pin (see 2026-07-21 regression).
     const inRegion = ['R1','R2','R3','R4','R5','R6','R7','R8','R9'].map((sku) => ({
       ...base, sku, region:'Bordeaux', variety:'none', country:'none',
-      classification:'none', food_matching:'', price:999999, is_in_stock:true,
+      classification:'none', food_matching:'', price:1100, is_in_stock:true,
     }));
 
     // A cross-region candidate that WOULD outscore the in-region items in a full
@@ -136,6 +142,55 @@ describe('precomputeRecommendations', () => {
     expect(recsForT).not.toContain('T'); // never self
     expect(recsForT).not.toContain('OOS'); // never out-of-stock
     expect(recsForT.every((sku) => inStockSkus.has(sku))).toBe(true); // only valid in-stock skus
+  });
+
+  // REGRESSION (found by automated review on PR #75, fixed same-day): widening
+  // stops as soon as the RAW same-group candidate count reaches MIN_POOL — but
+  // priceBand's step-up ceiling (see priceBand tests below) can exclude a
+  // candidate from banded output ENTIRELY (returns null) after that raw count
+  // was already judged "enough". A region bucket that's raw-large but entirely
+  // priced outside the ceiling therefore starved the rail even though the
+  // type/country/global tiers contained valid in-range matches — on the real
+  // catalog this dropped 157 products to ZERO recs (up from 69 pre-ceiling) and
+  // another 500 to 1-3 recs (up from 186), before the post-band widening retry
+  // below was added. Pin the fix here so it can't silently regress again.
+  it('widens further when price-band exclusions hollow out an already-large raw bucket', () => {
+    // Subject P, price 1000: similar range 800-1200 (mid tier ±20%), step-up
+    // window is [1000*1.5, 1000*1.6] = [1500, 1600] (see priceBand tests).
+    // 5000 sits far above both the similar range and the step-up window either
+    // way, so this test's "excluded by price" scenario holds regardless of the
+    // exact step-up bounds — updated here only to keep the comment accurate.
+    const P = { ...base, sku:'P', region:'Bordeaux', variety:'Merlot',
+      country:'France', classification:'Red Wine', food_matching:'Beef', price:1000 };
+
+    // Nine same-region candidates — enough to satisfy the RAW same-group count
+    // (MIN_POOL = 9) so the old eligibleCount()-based check stopped widening
+    // here. Every one is priced at 5000, far beyond the step-up window: each
+    // scores positively (shares region +3, variety +2, country +1 = 6) but
+    // priceBand(1000, 5000) returns null, so NONE of them survive banding.
+    const overCeiling = ['R1','R2','R3','R4','R5','R6','R7','R8','R9'].map((sku) => ({
+      ...base, sku, region:'Bordeaux', variety:'Merlot', country:'France',
+      classification:'Red Wine', food_matching:'Beef', price:5000, is_in_stock:true,
+    }));
+
+    // Valid in-range neighbours that only the country/global widening tiers
+    // would surface (different region, so NOT in P's region bucket) — these
+    // are what the fix must reach via the post-band widening retry.
+    const inRange = ['V1','V2','V3'].map((sku) => ({
+      ...base, sku, region:'Other', variety:'Merlot', country:'France',
+      classification:'Red Wine', food_matching:'Beef', price:1050, is_in_stock:true,
+    }));
+
+    const map = precomputeRecommendations([P, ...overCeiling, ...inRange]);
+    const recsForP = skus(map, 'P');
+
+    // The over-ceiling region-bucket candidates must never appear (they score
+    // positively but are excluded by the price-band ceiling).
+    expect(recsForP.some((sku) => sku.startsWith('R'))).toBe(false);
+    // The in-range candidates from the widened pool MUST surface — this is
+    // the actual regression: without the fix, recsForP is empty here.
+    expect(recsForP.length).toBeGreaterThan(0);
+    expect(recsForP.every((sku) => sku.startsWith('V'))).toBe(true);
   });
 
   // SUBJECT vs CANDIDATE invariant (the OOS-recs bug this fix closes):
@@ -306,38 +361,46 @@ describe('priceBand', () => {
   it('returns similar when candidate price is null', () => {
     expect(priceBand(1619, null)).toBe('similar');
   });
-  it('budget tier: lo clamped to 0 (not negative)', () => {
+  it('budget tier: lo clamped to 0 (not negative); step-up is unreachable below ~฿500', () => {
     // Price 200, band is ±250 absolute → lo = max(0,-50) = 0, hi = 450.
-    // stepUpCeiling = max(200*1.35, 450*1.15) = max(270, 517.5) = 517.5
-    expect(priceBand(200, 1)).toBe('similar');    // any positive price is >= 0
-    expect(priceBand(200, 480)).toBe('step-up');  // 480 > hi(450), <= ceiling(517.5)
-    expect(priceBand(200, 520)).toBe(null);       // > ceiling(517.5)
+    // floor = 200*1.5 = 300, ceiling = 200*1.6 = 320 — both BELOW hi(450), so
+    // the [floor, ceiling] window sits entirely inside/below the similar band's
+    // hi and is unreachable: any candidate above hi is automatically also above
+    // ceiling(320), so it can only ever land in 'similar' or null, never 'step-up'.
+    // This is an accepted consequence of the 1.5x/1.6x floor/ceiling for very
+    // cheap products, not a bug — see recommender.ts priceBand.
+    expect(priceBand(200, 1)).toBe('similar');   // any positive price is >= 0
+    expect(priceBand(200, 480)).toBe(null);      // above hi(450) and above ceiling(320) — no step-up possible here
+    expect(priceBand(200, 520)).toBe(null);      // above hi(450) and above ceiling(320)
   });
-  it('mid tier (1000-5000): ±20%', () => {
+  it('mid tier (1000-5000): similar band unaffected by step-up change', () => {
     expect(priceBand(1619, 1900)).toBe('similar');      // within 20%
-    expect(priceBand(1619, 2100)).toBe('step-up');      // >20% above, within ceiling (2234.22)
+    expect(priceBand(1619, 2100)).toBe(null);           // above hi(1942.8), below floor(2428.5) — dead zone
     expect(priceBand(1619, 800)).toBe('great-alternative'); // >20% below
   });
-  it('high tier (5000-15000): ±15%', () => {
+  it('high tier (5000-15000): similar band unaffected by step-up change', () => {
     expect(priceBand(8000, 9000)).toBe('similar');
-    expect(priceBand(8000, 9300)).toBe('step-up');
+    expect(priceBand(8000, 9300)).toBe(null); // above hi(9200), below floor(12000) — dead zone
   });
-  it('premium tier (15000+): ±10%', () => {
+  it('premium tier (15000+): similar band unaffected by step-up change', () => {
     expect(priceBand(20000, 21999)).toBe('similar');
-    expect(priceBand(20000, 22001)).toBe('step-up');
+    expect(priceBand(20000, 22001)).toBe(null); // above hi(22000), below floor(30000) — dead zone
     expect(priceBand(20000, 17000)).toBe('great-alternative');
   });
-  // stepUpCeiling caps how far above the subject's price a candidate can be
-  // and still read as a natural "step up" rather than an unrelated, jarring
-  // price jump. Beyond it, a candidate is excluded (null) rather than
-  // mislabeled as step-up or great-alternative. See recommender.ts priceBand.
-  describe('step-up ceiling', () => {
-    it('just above hi and within the ceiling is step-up', () => {
-      // subject 1000: hi=1200 (mid tier, ±20%), ceiling=max(1350, 1380)=1380
-      expect(priceBand(1000, 1350)).toBe('step-up');
+  // Step-up is now an explicit price tier: [subjectPrice*1.5, subjectPrice*1.6].
+  // Anything priced between the similar band's `hi` and the 1.5x floor is a
+  // deliberate dead zone (excluded, not mislabeled). See recommender.ts priceBand.
+  describe('step-up floor and ceiling', () => {
+    it('just below the floor is excluded (dead zone), not step-up', () => {
+      expect(priceBand(1000, 1499)).toBe(null); // < floor(1500)
+    });
+    it('at or above the floor and within the ceiling is step-up', () => {
+      expect(priceBand(1000, 1500)).toBe('step-up'); // == floor
+      expect(priceBand(1000, 1550)).toBe('step-up');
+      expect(priceBand(1000, 1600)).toBe('step-up'); // == ceiling
     });
     it('beyond the ceiling is excluded (null), not step-up', () => {
-      expect(priceBand(1000, 1381)).toBe(null); // just over ceiling(1380)
+      expect(priceBand(1000, 1601)).toBe(null); // just over ceiling(1600)
       expect(priceBand(1000, 1800)).toBe(null);
     });
     it('a large price jump (real-world example: 3818 -> 10208, ~2.67x) is excluded', () => {
@@ -733,13 +796,13 @@ describe('getRecommendationsWithBands', () => {
     expect(results[0]?.band).toBe('similar');
   });
   it('alternates similar/step-up while BOTH pools have candidates', () => {
-    // Subject 1600: similar range is 1280-1920; step-up ceiling is
-    // max(1600*1.35, 1920*1.15) = 2208. 5 similar (within ±20% of 1600) + 5
-    // step-up (>20% above, still within the 2208 ceiling) — both pools deep
-    // enough that the canonical slot order is never forced into fallback.
+    // Subject 1600: similar range is 1280-1920 (±20%, mid tier). Step-up window
+    // is now [1600*1.5, 1600*1.6] = [2400, 2560] — 5 similar (within ±20% of
+    // 1600) + 5 step-up (within the new floor/ceiling) — both pools deep enough
+    // that the canonical slot order is never forced into fallback.
     const subject = mkProduct('S', 1600);
     const similar = Array.from({ length: 5 }, (_, i) => mkProduct(`SIM${i}`, 1500 + i * 20));
-    const stepUp = Array.from({ length: 5 }, (_, i) => mkProduct(`UP${i}`, 1950 + i * 40));
+    const stepUp = Array.from({ length: 5 }, (_, i) => mkProduct(`UP${i}`, 2410 + i * 30));
     const results = getRecommendationsWithBands(subject, [subject, ...similar, ...stepUp]);
     expect(results.map(r => r.band)).toEqual([
       'similar', 'step-up', 'similar', 'step-up',
@@ -750,10 +813,10 @@ describe('getRecommendationsWithBands', () => {
   // exhausts — the fallback (popAny) intentionally fills remaining slots from
   // whatever band is left rather than returning fewer items. Pin that too:
   it('falls back to remaining band when preferred band exhausts (adjacency allowed)', () => {
-    // Ceiling for subject 1600 is 2208 (see above) — all candidates here stay
-    // within it so they band as step-up rather than being excluded (null).
+    // Step-up window for subject 1600 is [2400, 2560] — all candidates here
+    // stay within it so they band as step-up rather than being excluded (null).
     const subject = mkProduct('S', 1600);
-    const stepUpOnly = Array.from({ length: 10 }, (_, i) => mkProduct(`UP${i}`, 1950 + i * 20));
+    const stepUpOnly = Array.from({ length: 10 }, (_, i) => mkProduct(`UP${i}`, 2405 + i * 15));
     const results = getRecommendationsWithBands(subject, [subject, ...stepUpOnly]);
     expect(results.length).toBe(8);
     expect(results.every(r => r.band === 'step-up')).toBe(true);

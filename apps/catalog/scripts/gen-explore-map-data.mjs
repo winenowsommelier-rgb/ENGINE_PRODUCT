@@ -111,6 +111,18 @@ export function aggregate(rows, { excludeGroups = EXCLUDE_GROUPS } = {}) {
   return { byRegion, byCountry, byRegionCountry };
 }
 
+/** Copy ONLY allowlisted knowledge keys onto a region (never spread the raw object). */
+export function mergeKnowledge(region, knowledge) {
+  if (!knowledge) return region;
+  const k = {};
+  if (Array.isArray(knowledge.grapes) && knowledge.grapes.length) k.grapes = knowledge.grapes;
+  if (Array.isArray(knowledge.tiers) && knowledge.tiers.length) k.tiers = knowledge.tiers;
+  if (knowledge.attributes && typeof knowledge.attributes === 'object') k.attributes = knowledge.attributes;
+  if (typeof knowledge.citation === 'string') k.citation = knowledge.citation;
+  if (Object.keys(k).length) region.knowledge = k;
+  return region;
+}
+
 // Unambiguous composite-key delimiter for "country<SEP>region" buckets — a NUL
 // byte cannot appear in a country or region name, so split/rejoin is exact even
 // when names contain spaces (e.g. "South Africa", "Napa Valley").
@@ -169,6 +181,7 @@ const SUPPLEMENT_DESCRIPTIONS = {
 function loadDescriptions() {
   // region/subregion/country name(lower) -> full text; plus parent-region -> [subregion names]
   const regionDesc = new Map(), subDesc = new Map();
+  const regionKnowledge = new Map(); // region name (lower) -> knowledge block (grapes/tiers/attributes/citation)
   const subsByRegion = new Map(); // parent region (lower) -> Set of subregion names (original case)
   const c = [
     path.join(process.cwd(), 'data', 'taxonomy_descriptions_export.json'),
@@ -176,7 +189,7 @@ function loadDescriptions() {
   ].find((p) => p && fs.existsSync(p));
   if (c) {
     const t = JSON.parse(fs.readFileSync(c, 'utf8'));
-    for (const [k, v] of Object.entries(t.regions ?? {})) regionDesc.set(k, v.full);
+    for (const [k, v] of Object.entries(t.regions ?? {})) { regionDesc.set(k, v.full); regionKnowledge.set(k, v.knowledge); }
     for (const [k, v] of Object.entries(t.subregions ?? {})) subDesc.set(k, v.full);
   }
   for (const [k, full] of Object.entries(SUPPLEMENT_DESCRIPTIONS)) {
@@ -199,7 +212,7 @@ function loadDescriptions() {
       subsByRegion.get(pk).add(s.name);
     }
   }
-  return { regionDesc, subDesc, subsByRegion };
+  return { regionDesc, subDesc, regionKnowledge, subsByRegion };
 }
 
 // Hand-authored centroid supplement, inlined (the .mjs can't import the TS module).
@@ -237,7 +250,7 @@ function main() {
   const rows = Array.isArray(raw) ? raw : (raw?.products ?? []);
   const { byRegion, byCountry, byRegionCountry } = aggregate(rows);
   const coords = loadTaxonomyCoords();
-  const { regionDesc, subDesc, subsByRegion } = loadDescriptions();
+  const { regionDesc, subDesc, regionKnowledge, subsByRegion } = loadDescriptions();
 
   // Pin each region NAME to its DOMINANT country (the country with the most
   // in-stock-beverage rows for that region), deterministic tie-break by country
@@ -292,6 +305,7 @@ function main() {
     const key = r.name.toLowerCase();
     const desc = regionDesc.get(key);
     if (desc) r.description = desc;
+    mergeKnowledge(r, regionKnowledge.get(key));
     const subNames = subsByRegion.get(key);
     if (subNames && subNames.size > 0) {
       r.subregions = [...subNames].sort().map((sn) => {

@@ -67,7 +67,7 @@ EXPORT_COLS = [
     "special_price", "sp_discount_pct",
     "desc_en_short", "full_description",
     "taste_profile",
-    "color", "image_url",
+    "color", "image_url", "magento_product_url",
     "validation_status", "enrichment_confidence", "enrichment_quality_grade",
     "enrichment_source", "enrichment_note", "enriched_at", "enriched_by",
     # NOTE: the granular popularity columns were renamed *_90d -> *_window (the
@@ -102,6 +102,10 @@ EXPORT_COLS = [
     # which already gates out anything below 'sourced'/'pairing-theory'
     # confidence, so whatever lands here is safe to expose as-is.
     "curation_dossier",
+    # Live storefront product-page URL and per-SKU site placement — sourced
+    # from data/data mastefile WNLQ9/winenow-base-images-20260724.csv via
+    # scripts/reconcile_image_urls.py. websites is a raw string, not parsed.
+    "magento_item_url", "websites",
 ]
 
 # Columns that contain JSON-encoded text and should be decoded for export.

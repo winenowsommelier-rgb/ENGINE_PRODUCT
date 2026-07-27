@@ -259,6 +259,14 @@ Expected: all tests PASS. (If any other test file references `priceBand` step-up
 Run: `cd "apps/catalog" && npm run build`
 Expected: build succeeds. This regenerates nothing in `data/recs-cache.json` automatically — see Task 5.
 
+- [ ] **Step 3b: Measure pool-starvation impact against the full catalog (added post-review — see PR #78)**
+
+**Context:** a same-day PR (#78, "fix(recs): retry widening when price-band ceiling hollows out the pool") already had to add a widening-retry to `precomputeRecommendations` because the current `priceBand` step-up ceiling was starving recommendation pools for some subjects (0-rec subjects: 69→157 before the fix, back to 35 after). This plan's floor/ceiling change (10pp window instead of ~20pp, plus full step-up exclusion below ~฿500) will likely increase how often that widening-retry has to kick in. The user has explicitly accepted this risk and asked to monitor rather than pre-emptively change the floor/ceiling — this step is where that monitoring happens.
+
+Run the actual precompute against the full catalog and count how many subjects end up with fewer than `MAX_RECS_EXTENDED` (8) recommendations, and how many end up with 0-3, comparable to the numbers PR #78's commit message reports (0-rec: 35, 1-3 rec: 78, post-fix). The exact invocation depends on how `precomputeRecommendations`/`gen-recs-cache.mjs` expose this — check `scripts/gen-recs-cache.mjs` for a `--stats` flag or similar; if none exists, a one-off script that imports `precomputeRecommendations` and tallies `result` sizes is acceptable (write to the scratchpad, not committed).
+
+Expected: report the 0-rec and 1-3-rec subject counts. If they are dramatically worse than PR #78's post-fix baseline (35 / 78) — e.g. 3-5x higher — flag this to the user before proceeding to Task 5, since it may mean the 1.5x/1.6x window is starving pools more than anticipated even with the existing widening-retry. If counts are comparable or only modestly higher, proceed to Task 5 and report the numbers as part of the final summary.
+
 - [ ] **Step 4: Commit if any additional fixture fixes were needed**
 
 ```bash

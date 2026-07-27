@@ -142,39 +142,24 @@ function similarRange(price: number): { lo: number; hi: number } {
   return                    { lo: price * 0.90,             hi: price * 1.10 };
 }
 
-// Ceiling on how far above the subject's price a candidate can be and still
-// read as a natural "step up" rather than an unrelated, jarring price jump.
-// 1.35x is a common ecommerce upsell ceiling (Amazon/Shopify-style upsell
-// widgets typically cap 20-50% above the anchor item) — enough to feel like a
-// meaningful upgrade without breaking the shopper's sense that this is still
-// "the same kind of purchase". Anything priced above this is NOT tagged
-// step-up (see priceBand) — a candidate over the ceiling only surfaces if it
-// scores well enough to win a fallback slot on its other merits, never
-// mislabeled as a modest step up.
-const STEP_UP_CEILING = 1.35;
-
-/**
- * The step-up ceiling as an absolute price, guaranteed to sit ABOVE
- * similarRange's `hi` so a non-empty step-up window always exists.
- *
- * Budget items (<~฿800) use an ABSOLUTE ±250 similar band (similarRange), not
- * a percentage one — so `hi` can already exceed subjectPrice * 1.35 (e.g.
- * ฿200 -> hi=450, but 1.35x is only ฿270). Without this guard, step-up would
- * silently never fire for cheap products. We take whichever is larger: the
- * flat 1.35x ceiling, or hi bumped up 15% — so there's always some room above
- * "similar" for a step-up candidate to land in.
- */
-function stepUpCeiling(subjectPrice: number, hi: number): number {
-  return Math.max(subjectPrice * STEP_UP_CEILING, hi * 1.15);
-}
+// Step-up is a deliberate, meaningfully-higher price tier — NOT "just above the
+// similar band". A candidate must be at least 50% pricier than the subject to
+// read as a genuine upsell, capped at 60% so it doesn't feel like an unrelated
+// jump. Candidates priced between the similar band's `hi` and this floor (e.g.
+// +16% to +49%) are intentionally excluded from price-band display (see
+// priceBand) rather than folded into either band — a deliberate gap, not a bug.
+const STEP_UP_MIN_RATIO = 1.5;
+const STEP_UP_MAX_RATIO = 1.6;
 
 /**
  * Assign an intent band to a candidate relative to the subject's price.
  * Returns 'similar' when either price is missing/zero — safest default for display.
- * Returns null when the candidate is priced ABOVE the step-up ceiling
- * (stepUpCeiling): too big a jump to read as a natural "step up", and not a
- * "great alternative" either (it isn't cheaper) — so it is excluded from
- * price-band display entirely rather than mislabeled into either band.
+ * Returns 'step-up' only when the candidate is priced within an explicit tier
+ * above the subject: [subjectPrice * STEP_UP_MIN_RATIO, subjectPrice * STEP_UP_MAX_RATIO].
+ * Returns null (excluded from price-band display, not mislabeled) in TWO cases:
+ * candidate is above the similar band's `hi` but below the step-up floor (a
+ * deliberate dead zone — see STEP_UP_MIN_RATIO), or candidate is above the
+ * step-up ceiling (too big a jump to read as a natural upsell).
  */
 export function priceBand(
   subjectPrice: number | undefined | null,
@@ -187,7 +172,9 @@ export function priceBand(
   const { lo, hi } = similarRange(subjectPrice);
   if (candidatePrice >= lo && candidatePrice <= hi) return 'similar';
   if (candidatePrice < lo) return 'great-alternative';
-  if (candidatePrice <= stepUpCeiling(subjectPrice, hi)) return 'step-up';
+  const stepUpFloor = subjectPrice * STEP_UP_MIN_RATIO;
+  const stepUpCeiling = subjectPrice * STEP_UP_MAX_RATIO;
+  if (candidatePrice >= stepUpFloor && candidatePrice <= stepUpCeiling) return 'step-up';
   return null;
 }
 
@@ -844,10 +831,44 @@ export function precomputeRecommendations(
     if (eligibleCount() < MIN_POOL) merge(byCountry.get(product.country ?? ''));
     if (eligibleCount() < MIN_POOL) merge(globalFallbackByGroup.get(subjectGroup) ?? globalFallback);
 
-    const recs = getRecommendationsWithBands(product, pool, {
+    let recs = getRecommendationsWithBands(product, pool, {
       includeGreatAlternative: !isInStock(product.is_in_stock),
       baseSkuMap,
     });
+
+    // POST-BAND WIDENING (fixes a real regression — see recommender.test.ts
+    // "widens further when price-band exclusions hollow out an early-exhausted
+    // bucket"): eligibleCount() above only counts RAW same-group candidates,
+    // before getRecommendationsWithBands' priceBand ceiling can exclude a
+    // candidate entirely (priced too far above the subject to read as a
+    // natural "step up" — see priceBand's `return null` case). A region
+    // bucket can satisfy MIN_POOL on raw count alone while every one of those
+    // candidates is priced outside the ceiling, silently starving the rail
+    // even though the type/country/global tiers below contain valid in-range
+    // matches. If banding actually produced fewer than MAX_RECS_EXTENDED
+    // results, merge the remaining widening tiers (each a no-op if already
+    // merged/exhausted) and re-band once more — bounded to the same 4 fixed
+    // tiers as above, so this cannot regress the O(n * b) build-time
+    // guarantee those tiers exist to preserve.
+    //
+    // MUST compare against MAX_RECS_EXTENDED (8), NOT MIN_POOL (9):
+    // getRecommendationsWithBands never returns more than MAX_RECS_EXTENDED
+    // results by construction (see its docblock), so `recs.length < MIN_POOL`
+    // is true for virtually every subject regardless of pool quality — that
+    // off-by-one turned this into an unconditional second pass over the whole
+    // catalog (7s -> 82s measured locally, an 11x slowdown). Comparing against
+    // MAX_RECS_EXTENDED only retries subjects that are ACTUALLY short.
+    if (recs.length < MAX_RECS_EXTENDED) {
+      merge(byRegion.get(product.region ?? ''));
+      merge(byType.get(typeForProduct(product)));
+      merge(byCountry.get(product.country ?? ''));
+      merge(globalFallbackByGroup.get(subjectGroup) ?? globalFallback);
+      recs = getRecommendationsWithBands(product, pool, {
+        includeGreatAlternative: !isInStock(product.is_in_stock),
+        baseSkuMap,
+      });
+    }
+
     result.set(product.sku, recs.map((r) => ({ sku: r.product.sku, band: r.band })));
   }
 

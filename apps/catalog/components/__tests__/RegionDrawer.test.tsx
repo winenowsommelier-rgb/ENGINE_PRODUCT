@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 // Mock next/image (repo convention — real next/image rejects relative src in jsdom).
 vi.mock('next/image', () => ({
@@ -32,5 +32,35 @@ describe('RegionDrawer', () => {
   it('peek links to the product page', () => {
     render(<RegionDrawer region={region} lens="all" onClose={() => {}} />);
     expect(screen.getByRole('link', { name: /ch\. test/i })).toHaveAttribute('href', '/product/WIN1');
+  });
+
+  const knowledgeRegion: MapRegion = {
+    ...region,
+    knowledge: {
+      grapes: ['Cabernet Sauvignon', 'Merlot'],
+      tiers: ['Bordeaux 1855 First Growth'],
+      attributes: { climate: 'maritime', key_grapes: ['merlot'] },
+    },
+  };
+
+  it('renders key grapes and classification when knowledge present', () => {
+    render(<RegionDrawer region={knowledgeRegion} lens="wine" onClose={() => {}} />);
+    expect(screen.getByText('Merlot')).toBeInTheDocument();
+    expect(screen.getByText(/1855 First Growth/)).toBeInTheDocument();
+  });
+
+  it('Learn more toggle expands terroir detail (string attrs only)', () => {
+    render(<RegionDrawer region={knowledgeRegion} lens="wine" onClose={() => {}} />);
+    const toggle = screen.getByRole('button', { name: /learn more/i });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByText(/maritime/i)).toBeInTheDocument();
+  });
+
+  it('renders normally with no knowledge (no crash, no toggle)', () => {
+    render(<RegionDrawer region={region} lens="wine" onClose={() => {}} />);
+    expect(screen.getByText('Bordeaux')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /learn more/i })).toBeNull();
   });
 });
