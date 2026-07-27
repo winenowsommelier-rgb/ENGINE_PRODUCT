@@ -68,7 +68,7 @@ function toPeek(r) {
  * map total. The isInStockRaw helper is kept (exported + tested) for the peek
  * ordering / future use, but is NOT a filter here. [count == grid, all-stock axis]
  */
-export function aggregate(rows, { excludeGroups = EXCLUDE_GROUPS } = {}) {
+export function aggregate(rows, { excludeGroups = EXCLUDE_GROUPS, resolver = null } = {}) {
   const excluded = new Set(excludeGroups);
   const byRegion = new Map();
   const byCountry = new Map();
@@ -96,6 +96,51 @@ export function aggregate(rows, { excludeGroups = EXCLUDE_GROUPS } = {}) {
     if (agg.peeks.length < PEEK_LIMIT && r.image_url) agg.peeks.push(toPeek(r));
   };
 
+  // ---- 4-level hierarchy (opt-in: only when a resolver is supplied) ----------
+  // nodes: nodeKey(country, pinName) -> node. A row lands in EXACTLY ONE node and
+  // increments only that node's `ownTotal`. `inclusiveTotal` is NOT touched here —
+  // it is DERIVED after the loop by a single subtree fold, which is what makes
+  // ancestor double-counting structurally impossible rather than merely avoided.
+  const nodes = new Map();
+  // Diagnostic counter of geography VALUES that found no taxonomy entry, keyed by
+  // the raw value. Note this is deliberately independent of whether the ROW
+  // resolved: a row whose subregion is unknown still resolves (the resolver falls
+  // back to its region field), yet the unknown subregion name is exactly what a
+  // taxonomy-gap report needs to surface. So we record the miss even on a row-level
+  // hit — the counter measures missing taxonomy entries, not dropped rows. No row
+  // is ever dropped, so this can never be read as a loss count.
+  const unresolved = new Map();
+  const noteUnresolved = (name) => {
+    const k = String(name ?? '').trim();
+    if (!k) return;
+    unresolved.set(k, (unresolved.get(k) ?? 0) + 1);
+  };
+
+  // Mirrors bump() (price range / peeks / countsByGroup) but increments ownTotal
+  // and NEVER inclusiveTotal.
+  const bumpNode = (key, r, group, meta) => {
+    let n = nodes.get(key);
+    if (!n) {
+      n = {
+        key, name: meta.name, country: meta.country, level: meta.level,
+        parentKey: meta.parentKey, parentName: meta.parentName,
+        latitude: meta.latitude ?? null, longitude: meta.longitude ?? null,
+        slug: meta.slug ?? slugify(meta.name),
+        ownTotal: 0, inclusiveTotal: 0,
+        countsByGroup: {}, priceRange: { min: null, max: null }, peeks: [],
+      };
+      nodes.set(key, n);
+    }
+    n.ownTotal += 1;
+    n.countsByGroup[group] = (n.countsByGroup[group] ?? 0) + 1;
+    if (typeof r.price === 'number') {
+      if (n.priceRange.min === null || r.price < n.priceRange.min) n.priceRange.min = r.price;
+      if (n.priceRange.max === null || r.price > n.priceRange.max) n.priceRange.max = r.price;
+    }
+    if (n.peeks.length < PEEK_LIMIT && r.image_url) n.peeks.push(toPeek(r));
+    return n;
+  };
+
   for (const r of rows) {
     if (!r || typeof r.sku !== 'string' || !r.sku) continue;
     const group = r.category_group || 'Unknown';
@@ -107,8 +152,85 @@ export function aggregate(rows, { excludeGroups = EXCLUDE_GROUPS } = {}) {
     if (country) bump(byCountry, country, r, group);
     if (region) bump(byRegion, region, r, group);
     if (region && country) bump(byRegionCountry, country + RC_SEP + region, r, group);
+
+    // --- 4-level node bucketing (skipped entirely when no resolver: back-compat) ---
+    if (!resolver) continue;
+    const hit = resolver({ country, region: r.region, subregion: r.subregion });
+    // Record a taxonomy GAP whenever the row's most specific geography value did
+    // not itself produce the pin. This is independent of whether the ROW resolved:
+    // a row with an unknown subregion still resolves via its region field, but the
+    // unknown subregion is precisely the missing taxonomy entry worth reporting.
+    // Comparing against hit.pinName (not just hit === null) is what catches it.
+    const finest = String(r.subregion ?? '').trim() || String(r.region ?? '').trim();
+    if (finest && (!hit || normGeoName(hit.pinName) !== normGeoName(finest))) {
+      noteUnresolved(finest);
+    }
+    if (hit) {
+      // A REGION-level pin's parent is the COUNTRY, which is not a node in this map
+      // (countries live in byCountry). Treat it as a root: parentName ''.
+      const parentName = hit.pinLevel === 'region' ? '' : hit.parentName;
+      const ownKey = nodeKey(country, hit.pinName);
+      let parentKey = parentName ? nodeKey(country, parentName) : null;
+      // SELF-PARENT GUARD (verified live: France|Beaujolais, 52 rows). Rows can
+      // carry the SAME value in region and subregion ('Beaujolais'/'Beaujolais').
+      // The resolver pins at subregion level and takes parentName from the ROW's
+      // region field, so parentKey comes out equal to the node's own key. The fold
+      // would then add the node's inclusiveTotal into ITSELF — 52 silently became
+      // 104, with no crash and no dangling key to notice. Root it instead.
+      if (parentKey === ownKey) parentKey = null;
+      bumpNode(ownKey, r, group, {
+        name: hit.pinName, country, level: hit.pinLevel,
+        parentKey, parentName: parentKey ? parentName : '',
+        latitude: hit.latitude, longitude: hit.longitude, slug: hit.slug,
+      });
+      // MISSING-PARENT POLICY: materialize the parent as a real node with
+      // ownTotal 0 rather than nulling the child's parentKey.
+      //
+      // Why this way round: the post-loop fold adds each node's inclusiveTotal into
+      // its parent. If the parent is absent and we instead null the parentKey, the
+      // whole child branch DETACHES — the parent region's inclusiveTotal silently
+      // omits it, and the map under-reports with no error. Materializing a
+      // zero-ownTotal placeholder keeps the fold total-preserving: the parent's
+      // inclusiveTotal correctly equals the sum of its children even when the
+      // parent itself has no rows of its own (a childless-parent branch IS counted).
+      // ownTotal stays 0 so Σ ownTotal still equals the row count exactly.
+      if (parentKey && !nodes.has(parentKey)) {
+        nodes.set(parentKey, {
+          key: parentKey, name: parentName, country,
+          // A parent named by a subregion/appellation hit is a region in practice;
+          // depth only orders the fold, and region(1) is above both child levels.
+          level: 'region', parentKey: null, parentName: '',
+          latitude: null, longitude: null, slug: slugify(parentName),
+          ownTotal: 0, inclusiveTotal: 0,
+          countsByGroup: {}, priceRange: { min: null, max: null }, peeks: [],
+        });
+      }
+    } else {
+      // MISS: roll the row up to its region, else its country. NEVER drop it.
+      // (the unresolved gap was already recorded above, for hits and misses alike)
+      const rollupName = region || country;
+      if (!rollupName) continue; // no geography at all — cannot pin it anywhere
+      bumpNode(nodeKey(country, rollupName), r, group, {
+        name: rollupName, country, level: region ? 'region' : 'country',
+        parentKey: null, parentName: '',
+      });
+    }
   }
-  return { byRegion, byCountry, byRegionCountry };
+
+  // --- DERIVE inclusiveTotal (never incremented per-row) -----------------------
+  for (const n of nodes.values()) n.inclusiveTotal = n.ownTotal;
+  const deepestFirst = [...nodes.values()]
+    .sort((a, b) => (LEVEL_DEPTH[b.level] ?? 0) - (LEVEL_DEPTH[a.level] ?? 0));
+  for (const n of deepestFirst) {
+    // Belt-and-braces: `parentKey === key` is guarded at insert time, but a
+    // self-fold is silent (no crash, no dangling key) and doubles a real count, so
+    // refuse it here too rather than trust one site.
+    if (!n.parentKey || n.parentKey === n.key) continue;
+    const parent = nodes.get(n.parentKey);
+    if (parent) parent.inclusiveTotal += n.inclusiveTotal;
+  }
+
+  return { byRegion, byCountry, byRegionCountry, nodes, unresolved };
 }
 
 /** Copy ONLY allowlisted knowledge keys onto a region (never spread the raw object). */
@@ -127,6 +249,12 @@ export function mergeKnowledge(region, knowledge) {
 // byte cannot appear in a country or region name, so split/rejoin is exact even
 // when names contain spaces (e.g. "South Africa", "Napa Valley").
 const RC_SEP = String.fromCharCode(0);
+
+/** Node key = country + NUL + pin name. NUL cannot appear in a real name. */
+function nodeKey(country, name) { return `${country ?? ''}${RC_SEP}${name}`; }
+
+/** Deepest-first, so a child is folded into its parent before the parent is read. */
+const LEVEL_DEPTH = { appellation: 3, subregion: 2, region: 1, country: 0 };
 
 const CURATE_CAP = 22;
 const CURATE_MIN_DEPTH = 30;
