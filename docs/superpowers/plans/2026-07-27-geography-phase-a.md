@@ -246,12 +246,27 @@ keeps working; regionMatchesFilter gains ancestor matching."
 
 ---
 
-### Task 2: Rewrite the anti-test that locks in the collapse
+### Task 2: Rewrite the anti-tests that lock in the collapse
 
-`shop-query.test.ts:148-159` asserts `{region:'Napa Valley', subregion:'Oakville'}` normalizes to `{region:'California'}` — dropping Oakville entirely. That test encodes the bug. Rule 5: rewrite it.
+**SCOPE CORRECTION (found during Task 1 execution).** This plan originally named ONE
+anti-test. There are **three** tests encoding the pre-split behaviour:
+
+1. `shop-query.test.ts:148-159` — "canonicalizes region aliases and clears stale
+   subregion": asserts `{region:'Napa Valley', subregion:'Oakville'}` → `{region:'California'}`,
+   dropping Oakville entirely.
+2. `facets.test.ts:71-78` — "regionsFor canonicalizes known region aliases": asserts
+   `regionsFor('USA', …)` returns `California`, not `Napa Valley`.
+3. `facets.invariant.test.ts:22-23` — **already fixed during Task 1**, because it was not
+   an anti-test but a live contradiction: lines 21 and 23 demanded 604 and 603 from the
+   same variable once ancestor matching existed. See the Task 1 commits.
+
+**Also note:** `facets.test.ts:76-78` asserts Scotland `Highlands → Highland` but sits
+AFTER the failing USA assertion inside the same `it` block, so it never executes. Split
+that `it` in two so the Scotland path is actually exercised.
 
 **Files:**
 - Modify: `apps/catalog/lib/__tests__/shop-query.test.ts:148-159`
+- Modify: `apps/catalog/lib/__tests__/facets.test.ts:71-78` (split the `it`)
 
 - [ ] **Step 1: Run the suite to see the expected failure**
 
