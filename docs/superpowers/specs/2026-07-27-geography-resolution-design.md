@@ -699,3 +699,67 @@ against `main`'s taxonomy; some entries may already be fixed by `be36591`.
 **Process lesson.** Analysis was run in a different checkout from the one the work
 executes in. Measure in the worktree, or confirm the analysed file matches what the
 branch actually contains.
+
+---
+
+## 11. Task 5 findings — a real double-count, and corrected expectations
+
+### 11.1 The `region == subregion` self-parent double-count (FIXED)
+
+Real-data verification during Task 5 caught a bug **no unit test with clean fixtures
+would find**. When a row carries the same value in both `region` and `subregion`
+(e.g. `region='Beaujolais', subregion='Beaujolais'`), the resolver pins at subregion
+level and takes `parentName` from the row's region field — so the node became **its own
+parent**. The subtree fold then added the node into itself, silently turning 52 into 104.
+
+No crash. No dangling key. Just a wrong number — precisely the failure mode §9 warned
+this task was most exposed to.
+
+**Scope is wider than the one case found:** **165 rows** have `region == subregion` —
+Speyside 55, Islay 31, Cognac 27, Beaujolais 14, Campbeltown 5, Ribera del Duero 5,
+Schiedam 4, Yamazaki 4, and others. Every one would have double-counted.
+
+Fixed at insert time (`gen-explore-map-data.mjs:180`) plus a belt-and-braces check in the
+fold (`:228`). Verified: 0 cycles of any length, 0 dangling parents, 0 subtree mismatches.
+
+**Note this is the same 165 rows §9.3 listed as merely "redundant".** They are not
+cosmetic — they cause a counting bug. D2 (clear `subregion` where it equals `region`)
+is therefore more valuable than the audit implied.
+
+### 11.2 Corrected expectations — the plan's estimates were wrong, the code is right
+
+Two figures in the Task 5 brief did not match reality. Both were investigated rather than
+assumed, and the implementation is correct in both cases:
+
+**California `ownTotal` = 191, not ~134.** It is 134 blank-subregion rows **plus 57 rows
+whose subregion has no taxonomy entry** (Carneros 15, Alameda County 8, Livermore Valley 6,
+SF Bay Area 5, Adelaida District 5, …), which correctly fall back to California rather
+than being dropped. 134 + 57 = 191.
+
+**California `inclusiveTotal` = 534, not ~605.** Sonoma County (71), Paso Robles (8) and
+Lodi (7) pin at **region** level, so they are *siblings* of California, not children —
+the deliberate behaviour §A2's regions-fallback exists to produce. 534 + 71 + 8 + 7 = 620,
+which reconciles with the 619 `region='California'` rows plus one cross-region Napa row.
+
+**Implication for §A3's invariant table:** a region-level pin's `/shop` hand-off must be
+checked against the total that its query actually reproduces. Because region-classified
+values in the subregion field become siblings rather than children, `inclusiveTotal` for a
+parent region does NOT equal the `?region=<parent>` grid. Task 8 must verify this
+empirically per level rather than assuming the §A3 table.
+
+### 11.3 `unresolved` semantics
+
+The counter records **geography values with no taxonomy entry**, independent of whether
+the row itself resolved (a row can fall back to its region and still contribute its
+unknown subregion to the gap report). It is a **taxonomy-gap report, never a lost-row
+count**. A consumer reading it as "rows that failed" would be wrong.
+
+870 distinct values. Top entries include country/city names sitting in the region field —
+Scotland 67, London 49, England 43, Tequila 43 — which are data-quality defects (§9.3),
+not missing taxonomy entries.
+
+### 11.4 Row accounting
+
+Σ `ownTotal` = 10,776 against 10,778 eligible rows. The delta is exactly **2 rows that
+have no country, region OR subregion** — nowhere to pin them. No row lost, none
+double-counted.
