@@ -1306,3 +1306,69 @@ describe('popularity signal reaches the precompute pipeline', () => {
     expect(src).not.toMatch(/popularity_score\s*:/);
   });
 });
+
+// `variety` is a mixed-domain enum, not free text, and ~33% of in-stock wine
+// carries a comma-joined BLEND. The original varietiesMatch() lowercased and
+// compared WHOLE STRINGS, so 'Cabernet Sauvignon, Merlot' scored ZERO against
+// 'Merlot, Cabernet Sauvignon' (same wine, different order), and no blend could
+// ever reach the VARIETY_ALIASES clusters — Shiraz/Syrah never fired on a blend.
+describe('variety blend matching', () => {
+  const v = (variety: string) => ({
+    sku: 'X', name: 'X', region: 'Bordeaux', country: 'France',
+    category_group: 'Wine', category_type: 'Red Wine', price: 1000,
+    is_in_stock: true, variety,
+  }) as any;
+  const pts = (a: string, b: string) =>
+    scoreCandidateDetailed({ ...v(a), sku: 'A' }, { ...v(b), sku: 'B' }).breakdown.variety;
+
+  it('exact single-variety match still scores +2 (unchanged)', () => {
+    expect(pts('Merlot', 'Merlot')).toBe(2);
+  });
+
+  it('REGRESSION: identical blend in a DIFFERENT ORDER scores +2, not 0', () => {
+    // The headline bug — same wine, reordered, previously scored nothing.
+    expect(pts('Cabernet Sauvignon, Merlot', 'Merlot, Cabernet Sauvignon')).toBe(2);
+  });
+
+  it('partial blend overlap scores +1, strictly less than an exact match', () => {
+    // Deliberately graded: on the live catalogue 18.8% of same-region pairs are
+    // identical but a further 20.7% partially overlap. Paying partials the full
+    // +2 would roughly double how often the signal fires and let "shares one of
+    // four grapes" outrank a true varietal match.
+    const partial = pts('Cabernet Sauvignon, Merlot', 'Merlot, Syrah');
+    expect(partial).toBe(1);
+    expect(partial).toBeLessThan(pts('Merlot', 'Merlot'));
+  });
+
+  it('no shared grape scores nothing', () => {
+    expect(pts('Cabernet Sauvignon, Merlot', 'Chardonnay, Viognier')).toBeUndefined();
+  });
+
+  it('REGRESSION: alias clusters now fire INSIDE a blend', () => {
+    // Shiraz===Syrah is an existing VARIETY_ALIASES cluster, but the old
+    // whole-string lookup could never reach it from within a blend.
+    expect(pts('Shiraz, Cabernet Sauvignon', 'Syrah, Cabernet Sauvignon')).toBe(2);
+    expect(pts('Grenache, Syrah', 'Garnacha, Shiraz')).toBe(2);
+  });
+
+  it('single variety matching one component of a blend scores partial', () => {
+    expect(pts('Merlot', 'Cabernet Sauvignon, Merlot')).toBe(1);
+  });
+
+  it('non-grape enum values keep working and do not cross-match', () => {
+    // 'variety' also carries Single Malt / Junmai / Cane-Molasses etc.
+    expect(pts('Single Malt', 'Single Malt')).toBe(2);
+    expect(pts('Junmai Ginjo', 'Junmai Ginjo')).toBe(2);
+    expect(pts('Single Malt', 'Blended')).toBeUndefined();
+  });
+
+  it('empty / missing variety never scores', () => {
+    expect(pts('', 'Merlot')).toBeUndefined();
+    expect(pts('Merlot', '')).toBeUndefined();
+    expect(pts('  ,  ', 'Merlot')).toBeUndefined();
+  });
+
+  it('whitespace and case differences do not defeat a match', () => {
+    expect(pts('  MERLOT , cabernet sauvignon ', 'Cabernet Sauvignon,Merlot')).toBe(2);
+  });
+});
