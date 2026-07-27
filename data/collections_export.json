@@ -85,22 +85,34 @@
   },
   {
     "slug": "bordeaux-reds",
-    "name": "Bordeaux Reds",
-    "description": "Structured red blends from Bordeaux, France.",
+    "name": "Cellar-Worthy Bordeaux",
+    "description": "The structured, age-worthy Left Bank blends — full-bodied Cabernet and Merlot built to keep.",
     "group": "Wine",
     "sortOrder": 10,
     "filter": {
       "country": "France",
       "region": "Bordeaux",
-      "class": "Red Wine"
+      "class": "Red Wine",
+      "body": "Full"
+    }
+  },
+  {
+    "slug": "burgundy-finest",
+    "name": "Burgundy's Finest — Grand & Premier Cru",
+    "description": "The classified heart of Burgundy: Grand and Premier Cru Pinot Noir and Chardonnay from its greatest vineyards.",
+    "group": "Wine",
+    "sortOrder": 11,
+    "filter": {
+      "region": "Burgundy",
+      "designation": "Grand Cru"
     }
   },
   {
     "slug": "barolo-barbaresco",
-    "name": "Barolo & Barbaresco",
-    "description": "Nebbiolo-driven reds from Piedmont, Italy.",
+    "name": "Barolo & Barbaresco — The King of Nebbiolo",
+    "description": "Piedmont's noble reds — tar, roses and iron-willed structure from Italy's most age-worthy grape.",
     "group": "Wine",
-    "sortOrder": 11,
+    "sortOrder": 12,
     "filter": {
       "country": "Italy",
       "region": "Piedmont",
@@ -109,73 +121,66 @@
   },
   {
     "slug": "tuscan-reds",
-    "name": "Tuscan Reds",
-    "description": "Sangiovese-led reds from Tuscany, Italy.",
-    "group": "Wine",
-    "sortOrder": 12,
-    "filter": {
-      "country": "Italy",
-      "region": "Tuscany",
-      "class": "Red Wine"
-    }
-  },
-  {
-    "slug": "full-bodied-reds",
-    "name": "Full-Bodied Reds",
-    "description": "Bold, full-bodied red wines.",
+    "name": "Tuscan Icons — DOCG Sangiovese",
+    "description": "Brunello, Chianti Classico and the guaranteed greats — Tuscany's Sangiovese at its benchmark best.",
     "group": "Wine",
     "sortOrder": 13,
     "filter": {
+      "country": "Italy",
+      "region": "Tuscany",
+      "class": "Red Wine",
+      "designation": "DOCG"
+    }
+  },
+  {
+    "slug": "barossa-bold",
+    "name": "Barossa Bold — Australian Reds",
+    "description": "Sun-soaked, full-throttle Shiraz and Cabernet — Australia's answer to power and plush fruit.",
+    "group": "Wine",
+    "sortOrder": 14,
+    "filter": {
+      "country": "Australia",
+      "class": "Red Wine",
+      "body": "Full"
+    }
+  },
+  {
+    "slug": "new-world-reds",
+    "name": "New World Power — American Reds",
+    "description": "Napa and beyond — ripe, full-bodied Cabernet and Zinfandel with New World generosity.",
+    "group": "Wine",
+    "sortOrder": 15,
+    "filter": {
+      "country": "USA",
       "class": "Red Wine",
       "body": "Full"
     }
   },
   {
     "slug": "high-acid-whites",
-    "name": "High-Acid White Wines",
-    "description": "Crisp, high-acidity white wines.",
+    "name": "Crisp & Mineral — High-Acid Whites",
+    "description": "Zippy, cut-glass whites — the food-friendly, mineral-driven bottles that wake up the palate.",
     "group": "Wine",
-    "sortOrder": 14,
+    "sortOrder": 16,
     "filter": {
       "class": "White Wine",
       "acidity": "High"
     }
   },
   {
-    "slug": "champagne",
-    "name": "Champagne",
-    "description": "Sparkling wines from the Champagne region of France.",
-    "group": "Wine",
-    "sortOrder": 15,
-    "filter": {
-      "country": "France",
-      "region": "Champagne"
-    }
-  },
-  {
     "slug": "rose-wine",
-    "name": "Rosé Wine",
-    "description": "Dry and fruit-forward rosé from around the world.",
+    "name": "Rosé, All Day",
+    "description": "Dry, fruit-forward and endlessly easy — rosé for the terrace and the table.",
     "group": "Wine",
-    "sortOrder": 20,
+    "sortOrder": 17,
     "filter": {
       "class": "Rosé Wine"
     }
   },
   {
-    "slug": "sparkling-champagne",
-    "name": "Sparkling & Champagne",
-    "description": "Champagne, prosecco, cava and sparkling wines.",
-    "group": "Wine",
-    "sortOrder": 21,
-    "filter": {
-      "class": "Sparkling & Champagne"
-    }
-  },
-  {
     "slug": "islay-single-malts",
-    "name": "Islay Single Malts",
-    "description": "Peaty, maritime single malts from Islay, Scotland.",
+    "name": "Islay — The Peated Souls",
+    "description": "Smoke, brine and sea-spray — the unmistakable peated whiskies of Islay.",
     "group": "Whisky",
     "sortOrder": 30,
     "filter": {
@@ -184,42 +189,64 @@
     }
   },
   {
-    "slug": "japanese-whisky",
-    "name": "Japanese Whisky",
-    "description": "Refined single malts and blends from Japan.",
+    "slug": "speyside-whisky",
+    "name": "Speyside — Elegant & Fruit-Driven",
+    "description": "Honey, orchard fruit and sherried richness — the refined heartland of Scotch.",
     "group": "Whisky",
     "sortOrder": 31,
-    "filter": {
-      "class": "Whisky",
-      "country": "Japan"
-    }
-  },
-  {
-    "slug": "speyside-whisky",
-    "name": "Speyside Whisky",
-    "description": "Elegant, fruit-driven malts from Speyside, Scotland.",
-    "group": "Whisky",
-    "sortOrder": 32,
     "filter": {
       "class": "Whisky",
       "region": "Speyside"
     }
   },
   {
-    "slug": "american-whiskey",
-    "name": "American Whiskey",
-    "description": "Bourbon and rye from the United States.",
+    "slug": "highland-whisky",
+    "name": "The Highland Range",
+    "description": "From heather-honey softness to coastal heft — the sweeping style of the Highlands.",
+    "group": "Whisky",
+    "sortOrder": 32,
+    "filter": {
+      "class": "Whisky",
+      "region": "Highland"
+    }
+  },
+  {
+    "slug": "japanese-whisky",
+    "name": "Japanese Whisky — Precision & Poise",
+    "description": "Delicate, exacting and beautifully balanced — Japan's celebrated single malts and blends.",
     "group": "Whisky",
     "sortOrder": 33,
+    "filter": {
+      "class": "Whisky",
+      "country": "Japan"
+    }
+  },
+  {
+    "slug": "american-whiskey",
+    "name": "Bourbon & American Whiskey",
+    "description": "Sweet corn, char and vanilla — bourbon and rye with all-American swagger.",
+    "group": "Whisky",
+    "sortOrder": 34,
     "filter": {
       "class": "Whisky",
       "country": "USA"
     }
   },
   {
+    "slug": "world-whisky",
+    "name": "Irish & the New Guard",
+    "description": "Smooth, triple-distilled Irish whiskey — the approachable, easy-drinking style.",
+    "group": "Whisky",
+    "sortOrder": 35,
+    "filter": {
+      "class": "Whisky",
+      "country": "Ireland"
+    }
+  },
+  {
     "slug": "sake-shochu",
-    "name": "Sake & Shochu",
-    "description": "Premium Japanese sake and shochu.",
+    "name": "Junmai & Premium Sake",
+    "description": "Pure-rice sake and refined brews — the warm, rice-driven soul of Japan.",
     "group": "Sake & Asian",
     "sortOrder": 40,
     "filter": {
@@ -228,8 +255,8 @@
   },
   {
     "slug": "umeshu",
-    "name": "Umeshu",
-    "description": "Japanese plum liqueurs, sweet and aromatic.",
+    "name": "Umeshu — Japan's Plum Liqueur",
+    "description": "Sweet, aromatic and utterly moreish — the Japanese plum liqueur to sip over ice.",
     "group": "Sake & Asian",
     "sortOrder": 41,
     "filter": {
@@ -237,9 +264,19 @@
     }
   },
   {
+    "slug": "shochu",
+    "name": "Shochu — The Everyday Spirit",
+    "description": "Japan's versatile distilled spirit — clean, earthy and endlessly mixable.",
+    "group": "Sake & Asian",
+    "sortOrder": 42,
+    "filter": {
+      "class": "Shochu"
+    }
+  },
+  {
     "slug": "craft-gin",
-    "name": "Craft Gin",
-    "description": "Botanical-led gins from craft distillers.",
+    "name": "The Botanical Garden — Craft Gin",
+    "description": "Juniper, citrus and wild botanicals — expressive gins from craft distillers.",
     "group": "Spirits",
     "sortOrder": 50,
     "filter": {
@@ -248,8 +285,8 @@
   },
   {
     "slug": "aged-rum",
-    "name": "Aged Rum",
-    "description": "Sipping and mixing rums from across the tropics.",
+    "name": "Rum — Sun, Cane & Time",
+    "description": "From bright mixers to barrel-aged sippers — the tropics in a glass.",
     "group": "Spirits",
     "sortOrder": 51,
     "filter": {
@@ -258,8 +295,8 @@
   },
   {
     "slug": "tequila",
-    "name": "Tequila",
-    "description": "Blanco, reposado and añejo agave spirits.",
+    "name": "Agave Spirits — Tequila",
+    "description": "Blanco, reposado and añejo — the smoke, pepper and sweetness of the agave.",
     "group": "Spirits",
     "sortOrder": 52,
     "filter": {
@@ -267,11 +304,21 @@
     }
   },
   {
-    "slug": "cognac-brandy",
-    "name": "Cognac & Brandy",
-    "description": "Grape brandies for after dinner.",
+    "slug": "vodka",
+    "name": "Clean & Crystalline — Vodka",
+    "description": "Silky, neutral and versatile — the backbone of the modern bar.",
     "group": "Spirits",
     "sortOrder": 53,
+    "filter": {
+      "class": "Vodka"
+    }
+  },
+  {
+    "slug": "cognac-brandy",
+    "name": "After Dinner — Cognac & Brandy",
+    "description": "Grape brandies for the end of the night — warmth, spice and silk.",
+    "group": "Spirits",
+    "sortOrder": 54,
     "filter": {
       "class": "Brandy"
     }
