@@ -746,6 +746,47 @@ function main() {
       priceRange: n.priceRange, peeks: n.peeks,
     });
   }
+  // SLUG COLLISIONS. `slug` is the identity key for /explore-map/[region], the map
+  // click handler, and the chip active-state — but it was derived from the NAME
+  // alone. That was safe at 94 region-level pins; adding subregion pins introduced
+  // 6 same-name-different-country pairs (Highland Scotland/Mexico, Cognac
+  // France/China, Kentucky USA/Taiwan, Sauternes France/Scotland, Douro
+  // Portugal/Spain, Islands Scotland/Japan). Left alone, `.find(x => x.slug === …)`
+  // returns first-wins, so the loser's detail page is unreachable and React sees a
+  // duplicate key in the all-regions list.
+  //
+  // Keep the FIRST pin (highest ownTotal — regions are pushed in node order, so
+  // sort the tie deterministically by country to stay stable across runs) on the
+  // bare slug so existing URLs and SEO canonicals for the 178 non-colliding pins
+  // do not move, and qualify only the subsequent ones with their country.
+  const bySlug = new Map();
+  for (const r of regions) {
+    if (!bySlug.has(r.slug)) bySlug.set(r.slug, []);
+    bySlug.get(r.slug).push(r);
+  }
+  let disambiguated = 0;
+  for (const [, group] of bySlug) {
+    if (group.length < 2) continue;
+    // Deterministic winner: most products, then country name — never insertion order.
+    group.sort((a, b) => b.total - a.total || a.country.localeCompare(b.country));
+    for (const r of group.slice(1)) {
+      r.slug = `${r.slug}-${slugify(r.country)}`;
+      disambiguated += 1;
+    }
+  }
+  if (disambiguated > 0) {
+    console.warn(`gen-explore-map-data: disambiguated ${disambiguated} colliding region slug(s) by country`);
+  }
+  const stillColliding = new Set();
+  const seenSlugs = new Set();
+  for (const r of regions) {
+    if (seenSlugs.has(r.slug)) stillColliding.add(r.slug);
+    seenSlugs.add(r.slug);
+  }
+  if (stillColliding.size > 0) {
+    throw new Error(`gen-explore-map-data: unresolved slug collisions: ${[...stillColliding].join(', ')}`);
+  }
+
   const curated = curate(regions);
   const curatedNames = new Set(curated.map((r) => r.name));
 
