@@ -45,7 +45,10 @@ export interface GeoRow {
 export function normGeoName(value: string | null | undefined): string {
   return String(value ?? '')
     .normalize('NFKD')
-    .replace(/[̀-ͯ]/g, '')
+    // Combining diacritical marks (U+0300-U+036F), written ESCAPED on purpose: the
+    // literal characters are invisible in editors and silently corrupt on copy-paste,
+    // and this function is hand-mirrored into scripts/gen-explore-map-data.mjs.
+    .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9]+/g, ' ')

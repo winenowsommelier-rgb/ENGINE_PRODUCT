@@ -99,3 +99,36 @@ describe('makeGeoResolver', () => {
     expect(n).toMatchObject({ pinName: 'Châteauneuf-du-Pape', pinLevel: 'appellation' });
   });
 });
+
+import { normGeoName as mjsNorm, makeGeoResolver as mjsMake } from
+  '../../scripts/gen-explore-map-data.mjs';
+
+describe('parity — .mjs mirror matches the TS resolver', () => {
+  // gen-explore-map-data.mjs runs at prebuild, BEFORE tsc, so it cannot import TS.
+  // It hand-copies the resolver; this test is the only thing preventing drift.
+  // Accented probes are deliberate: normGeoName's combining-marks regex is the
+  // most corruption-prone line in the mirror.
+  const probes = [
+    'Châteauneuf-du-Pape', 'Penedès', 'Napa Valley', 'CENTRAL  VALLEY',
+    'Côtes du Rhône', 'Rioja Alavesa', '', '   ',
+  ];
+
+  it('normGeoName agrees on every probe', () => {
+    for (const p of probes) expect(mjsNorm(p)).toBe(normGeoName(p));
+  });
+
+  it('resolveGeoNode agrees on every probe row', () => {
+    const rows = [
+      { country: 'USA', region: 'California', subregion: 'Napa Valley' },
+      { country: 'USA', region: 'California', subregion: 'Sonoma County' },
+      { country: 'Italy', region: 'Piedmont', subregion: 'Barolo' },
+      { country: 'USA', region: 'California', subregion: '' },
+      { country: 'Chile', region: 'Central Valley', subregion: 'Colchagua Valley' },
+      { country: 'France', region: '', subregion: 'Chateauneuf-du-Pape' },
+      { country: 'Nowhere', region: 'Nope', subregion: 'Nada Land' },
+    ];
+    const ts = makeGeoResolver(TAXONOMY);
+    const mjs = mjsMake(TAXONOMY);
+    for (const r of rows) expect(mjs(r)).toEqual(ts(r));
+  });
+});
