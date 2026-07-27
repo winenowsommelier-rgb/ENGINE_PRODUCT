@@ -648,3 +648,54 @@ decision 2026-07-27: rename the visible label to **"Designation"** so UI and cod
 Three lines. **Not** the Magento `classification` column (different field, 74 scripts,
 Rule 12 says stop using it rather than rename it). Update CLAUDE.md Rule 12 and the
 memory note in the same commit or the guidance goes stale.
+
+---
+
+## 10. CORRECTION (2026-07-27) — measurements were taken against a STALE taxonomy
+
+Task 3's implementer reported a discrepancy that turned out to invalidate several
+figures in this document. Root cause identified and confirmed.
+
+**What happened.** All §1-§9 measurements were taken in the `feat/image-item-url-refresh`
+checkout, whose `data/taxonomy/explore-taxonomy.json` has **300 regions**, a `Napa` region,
+and `Napa Valley.parentSlug = 'napa'`. That file is **stale**. Commit `be36591`
+*"fix(taxonomy): collapse fake 'Napa' region into California; repair 6 failing tests (#92)"*
+landed on `main` and corrected it. The version on `main` — which this worktree uses — has
+**125 regions**, no `Napa` region, and `Napa Valley.parentSlug = 'california'`.
+
+Someone had already fixed the exact defect §9.5 independently rediscovered.
+
+**Corrected figures (measured on `main`'s taxonomy, 11,934 products):**
+
+| Figure | Stale claim (§2) | Actual on `main` |
+|---|---|---|
+| taxonomy regions | 300 | **125** |
+| subregion rows resolvable | 60.5% | **82.9%** (5,395 / 6,511) |
+| unresolved subregion rows | 2,558 | **1,116** |
+| `Napa Valley.parentSlug` | `napa` | `california` |
+| a `Napa` region exists | yes | **no** |
+
+pinLevel breakdown of the 5,395 resolved: region 2,604 · subregion 2,149 · appellation 642.
+
+The five motivating places all resolve correctly: Sonoma County → **region** (71 rows),
+Napa Valley → **subregion** (299), Barolo → **appellation** (99), Colchagua Valley →
+**region** (140), Barossa Valley → **region** (125).
+
+**What still holds.** The design is unaffected — every architectural decision survives:
+
+- The `regions`-fallback for a value in the `subregion` field is still load-bearing
+  (Sonoma County / Colchagua / Barossa are still region-classified).
+- Parent-from-the-row is still correct. The justification is the **0/81 appellation
+  `parentSlug` gap** plus cross-level name collisions — NOT the Napa example, which is
+  no longer valid on `main`.
+- §9.5's core finding stands: the product rows are right and the taxonomy was wrong.
+  `be36591` already fixed one instance of it.
+
+**What this changes for the remaining work.** The §9.6 taxonomy expansion (S2) is
+**smaller than scoped** — 1,116 unresolved rows, not 2,578. Re-measure per country before
+authoring entries. The 24-entry auto-reclassify list in §9.5 must also be re-derived
+against `main`'s taxonomy; some entries may already be fixed by `be36591`.
+
+**Process lesson.** Analysis was run in a different checkout from the one the work
+executes in. Measure in the worktree, or confirm the analysed file matches what the
+branch actually contains.
