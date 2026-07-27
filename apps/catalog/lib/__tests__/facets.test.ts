@@ -68,11 +68,22 @@ describe('regionsFor / subRegionsFor', () => {
       { value: 'Burgundy', count: 1 },
     ]);
   });
-  it('regionsFor canonicalizes known region aliases', () => {
+  it('regionsFor keeps sub-AVA regions as their own chips (no collapse to the parent)', () => {
+    // REGRESSION GUARD (2026-07-27): this previously asserted [California, Lodi],
+    // i.e. the Napa Valley fixture row was rewritten to its parent 'California'.
+    // That hierarchy collapse is why the explore map showed every USA wine as
+    // California. 'Napa Valley' is now its own chip. 'California' gets NO chip
+    // here: it is an ancestor with no products of its own in this set (the Lodi
+    // row carries California as a *subregion*, not a region), and regionsFor
+    // never invents a chip for an ancestor that holds no rows itself.
     expect(regionsFor('USA', set.filter((p) => p.country === 'USA'))).toEqual([
-      { value: 'California', count: 1 },
       { value: 'Lodi', count: 1 },
+      { value: 'Napa Valley', count: 1 },
     ]);
+  });
+  it('regionsFor still applies SPELLING aliases (Scotland Highlands -> Highland)', () => {
+    // Split out of the USA case above: it used to sit AFTER the (failing) USA
+    // assertion in the same it block, so this path was never actually executed.
     expect(regionsFor('Scotland', set.filter((p) => p.country === 'Scotland'))).toEqual([
       { value: 'Highland', count: 1 },
     ]);
