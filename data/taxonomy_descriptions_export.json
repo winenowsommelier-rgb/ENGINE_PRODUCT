@@ -288,53 +288,94 @@
       }
     },
     "south australia": {
-      "short": "Australia's wine engine room — home to Barossa, McLaren Vale, Clare Valley, and over half of national production.",
-      "full": "South Australia produces approximately 50% of Australia's wine and contains its most celebrated regions. The Barossa Valley is the epicentre of Australian Shiraz. McLaren Vale offers Mediterranean-influenced Grenache and Shiraz. Clare Valley produces some of Australia's finest Riesling. Adelaide Hills provides cool-climate Sauvignon Blanc, Chardonnay, and Pinot Noir. Coonawarra's terra rossa soils over limestone yield distinctive Cabernet Sauvignon. The Limestone Coast zone encompasses several emerging regions. South Australia is phylloxera-free — a critical advantage that protects its old-vine heritage. Penfolds, Henschke, and Wynns are iconic producers.",
+      "short": "The driest state on the driest continent and the source of more than half of all Australian wine — home to the Barossa, Clare Valley, McLaren Vale, Coonawarra, Eden Valley and Adelaide Hills.",
+      "full": "South Australia is the driest state in Australia — which is itself the driest continent — and more than half of all Australian wine is produced here, including many of the country's best cabernet sauvignons, shirazes, chardonnays, rieslings and sémillons. Its wine regions span out from the city of Adelaide, the top ones being Adelaide Hills, Barossa Valley, Eden Valley, Clare Valley, McLaren Vale and Coonawarra. These districts were founded by men whose names became synonymous with Australian wine — Hamilton, Seppelt, Penfold — and today a Who's Who of large Australian wine companies is based here, including Hardys, Penfolds, Peter Lehmann, Seppeltsfield, Wolf Blass, Wynns and Yalumba, alongside a hotbed of small and medium-size avant-garde producers such as Henschke, Jim Barry, Grosset, Torbreck, Shaw & Smith and Tim Adams. Note that 'South Australia' on a label is emphatically NOT the same as 'South Eastern Australia': South Australia is one of the five Australian states and contains the country's most famous wine regions, and its wines are among the most expensive in the country.",
       "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Chardonnay",
+          "Grenache",
+          "Riesling",
+          "Syrah",
+          "Sémillon"
+        ],
         "attributes": {
           "key_grapes": [
-            "Shiraz",
-            "Cabernet Sauvignon",
-            "Grenache",
-            "Riesling",
-            "Chardonnay",
-            "Mourvèdre"
+            "shiraz (syrah)",
+            "cabernet sauvignon",
+            "chardonnay",
+            "riesling",
+            "sémillon",
+            "grenache"
           ],
-          "climate": "Mediterranean to cool continental (varies by subregion)",
-          "soil": "Terra rossa, limestone, clay, sand, loam, alluvial"
+          "climate": "the driest state on the driest continent; regions range from cool-climate Adelaide Hills to warm Barossa floor",
+          "signature": "more than half of all Australian wine, including many of the country's best reds and rieslings",
+          "key_regions": [
+            "Adelaide Hills",
+            "Barossa Valley",
+            "Eden Valley",
+            "Clare Valley",
+            "McLaren Vale",
+            "Coonawarra"
+          ],
+          "label_note": "NOT the same as 'South Eastern Australia' — this is a single state and its wines are among the most expensive in the country"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, Australia/South Australia"
       }
     },
     "california": {
-      "short": "America's wine powerhouse — Napa Cabernet to Sonoma Pinot Noir.",
-      "full": "Over 80% of American wine. Paso Robles, Santa Barbara, Monterey, Lodi add diversity beyond Napa/Sonoma.",
+      "short": "Source of more than 90 percent of all US wine — a diverse, largely beneficent climate producing a profusion of styles from dozens of grape varieties, and one of the world's most technologically oriented wine regions.",
+      "full": "More than 90 percent of the wine made in the United States is made in California. The state's incredibly diverse yet largely beneficent climate and geography allow its wines to be made in a profusion of styles from dozens of different grape varieties, and while winemaking here has spanned four centuries, California is one of the most modern, technologically oriented wine regions in the world. Its industry began with the Spanish explorers and missionaries who moved north from Mexico in the mid-1700s and secured Alta (Upper) California with a string of missions, each a day's journey from the next; wine was needed for the Catholic mass and for the friars themselves. Difficulties along the supply route from Mexico led California's Franciscan fathers to plant their own vineyards, using cuttings of the Spanish grape listán prieto — known in Mexico as misión and later, in California, spelled 'mission' after the missions where it was planted. As the nineteenth century dawned settlers began planting small vineyards of their own, all initially based on the mission grape alone; by the 1830s commercial wineries had begun in Los Angeles, and a decade later in Sonoma and Napa counties.",
       "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Chardonnay",
+          "Merlot",
+          "Petite Sirah",
+          "Pinot Noir",
+          "Syrah",
+          "Zinfandel"
+        ],
+        "tiers": [
+          "American Viticultural Area"
+        ],
         "attributes": {
-          "key_grapes": [
-            "Cabernet Sauvignon",
-            "Pinot Noir",
-            "Chardonnay",
-            "Zinfandel"
-          ]
+          "climate": "incredibly diverse yet largely beneficent; Mediterranean in the coastal valleys",
+          "classification_system": "AVA (American Viticultural Area) — unranked",
+          "signature": "a profusion of styles from dozens of varieties; modern and technologically oriented",
+          "share_of_us_wine": "more than 90 percent",
+          "history": "Franciscan mission vineyards from the mid-1700s planted with the 'mission' grape (listán prieto)",
+          "style_note": "diversity is the defining trait — no single structural benchmark is asserted for the state as a whole"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, United States/California"
       }
     },
     "napa": {
-      "short": "America's most famous wine valley — Cabernet Sauvignon of power, concentration, and global acclaim.",
-      "full": "Napa Valley's 16 AVAs produce distinct Cabernet styles. The Stags Leap District won the 1976 Judgement of Paris. Napa's average bottle price is the highest of any major wine region globally.",
+      "short": "California's best-known wine region and the state's first AVA (1981) — a small, mountain-flanked valley of extraordinary soil diversity making its most polished, classy cabernet sauvignons.",
+      "full": "About 48 miles (77 kilometres) north of San Francisco, Napa Valley is California's best-known and most renowned wine region, even though it produces an astoundingly small share of the state's wine — just 4 percent. For almost a century and a half the valley has attracted a majority of the most ambitious, talented, driven and outspoken vintners in the United States: Inglenook was built by the Finnish sea captain Gustave Niebaum and sold a century later to Francis Ford Coppola; Opus One was founded by Robert Mondavi and Baron Philippe de Rothschild; and the first California wines to cost $100, $200 and more than $300 a bottle were all made here. Critics say Napa has an ego; what it really has is a gargantuan appetite for life and success, and you can taste it in the wines. While it is not the only California region to make great wine, Napa consistently makes a good share of the most polished, classy and complex wines in the state — especially the cabernet sauvignons. Named California's first AVA in 1981, the valley proper stretches in a banana shape from northwest to southeast, 30 miles (48 kilometres) long — similar to the length of Burgundy's Côte d'Or — and just 1 to 5 miles wide, beginning at San Pablo Bay and ending at the extinct volcano Mount St. Helena, flanked by the Vaca Mountains to the east and the Mayacamas to the west. The climate is quite Mediterranean, with dry, warm summers and wet, cool winters. Though it looks uniform to the untrained eye, ancient volcanic eruptions, the collision of the North American and Pacific plates, sedimentary soils from the old Pacific floor and the cyclical flooding of the Napa River have left an extraordinary diversity of soils: of the twelve soil orders scientists recognise worldwide, Napa has six, containing almost three dozen soil series and over a hundred variations. With more than four hundred wineries, most small and family owned, estates next door to one another often make wines that taste totally different. In addition to the Napa Valley AVA there are sixteen smaller AVAs within the valley. The name napa comes from the Wappo dialect and means 'plenty'.",
       "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Chardonnay",
+          "Merlot"
+        ],
+        "tiers": [
+          "American Viticultural Area"
+        ],
         "attributes": {
           "key_grapes": [
-            "Cabernet Sauvignon",
-            "Chardonnay",
-            "Merlot",
-            "Cabernet Franc"
+            "cabernet sauvignon",
+            "chardonnay",
+            "merlot"
           ],
-          "climate": "Mediterranean with fog"
+          "climate": "quite Mediterranean — dry, warm summers and wet, cool winters; flanked by the Vaca and Mayacamas ranges",
+          "soil": "6 of the world's 12 soil orders; ~3 dozen soil series and 100+ variations — volcanic, sedimentary and alluvial",
+          "classification_system": "California's first AVA (1981); 16 smaller AVAs nested within the valley",
+          "signature": "the most polished, classy and complex wines in the state, especially cabernet sauvignon",
+          "size": "30 miles long, 1-5 miles wide; just 4% of California's wine",
+          "wineries": "400+, most small and family owned"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, United States/California/Napa Valley"
       }
     },
     "tuscany": {
@@ -369,6 +410,24 @@
         "citation": "Wine Bible 2e, Italy/Tuscany"
       }
     },
+    "south eastern australia": {
+      "short": "Not a state and, in a sense, not a place — a legal blending designation covering grapes grown thousands of miles apart across three states. For these wines the producer's name is the guide to quality.",
+      "full": "South Eastern Australia is not a state and, in a sense, not a place: it is a legal designation meaning the wine in the bottle is a blend of wines made from grapes grown thousands of miles apart, often in three different states — New South Wales, Victoria and South Australia. To give a New World analogy, a wine labelled South Eastern Australia is the rough equivalent of a wine made from a blend of grapes grown in California, Oregon, Washington State and Texas and then called 'Western United States'. Not surprisingly, South Eastern Australia wines are often inexpensive wines meant for everyday drinking, in contrast to the wines of South Australia, which are among the most expensive in the country. For multiregional blends labelled this way the grapes will probably have come from disparate regions, possibly quite far apart, so THE MOST IMPORTANT GUIDE TO QUALITY IS THE PRODUCER'S NAME.",
+      "knowledge": {
+        "attributes": {
+          "designation_type": "multi-state blending designation, not a geographic wine region",
+          "covers": [
+            "New South Wales",
+            "Victoria",
+            "South Australia"
+          ],
+          "typical_style": "inexpensive, everyday-drinking blends",
+          "quality_guide": "the producer's name — terroir tells you nothing here",
+          "contrast": "distinct from 'South Australia', which IS a single state"
+        },
+        "citation": "Wine Bible 2e, Australia"
+      }
+    },
     "mendoza": {
       "short": "Argentina's wine capital at the foot of the Andes — the world's definitive Malbec region.",
       "full": "Mendoza produces over 70% of Argentine wine. Uco Valley subregions at 1,000-1,500m produce refined, mineral Malbec. Luján de Cuyo offers rounder wines. Beyond Malbec, excellent Cabernet Franc is emerging.",
@@ -386,38 +445,97 @@
         "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
       }
     },
-    "rioja": {
-      "short": "Spain's most recognised wine region, defined by Tempranillo and oak aging.",
-      "full": "Rioja divides into Alta, Alavesa, and Oriental. The aging classification — Joven, Crianza, Reserva, Gran Reserva — reflects mandatory minimum aging. Modern Rioja increasingly includes single-vineyard wines.",
+    "aconcagua valley": {
+      "short": "The warmish inland heart of the Aconcagua DO, home to Errázuriz — with the Valle Central, one of the two areas that make up Chile's historic wine centre.",
+      "full": "Aconcagua, which takes its name from the nearby Aconcagua River, is one of Chile's five Denominacions de Origen and includes the warmish Aconcagua Valley — home to Errázuriz, one of Chile's prominent wine producers — as well as the more coastal, cool districts of Casablanca Valley and San Antonio Valley. Along with the Valle Central, Aconcagua makes up Chile's historic wine centre, and these two areas are still where most of the country's best wine districts are found; a lion's share of all wine exported from Chile comes from them. In the early 1990s Errázuriz partnered with California's Robert Mondavi Winery to create Seña, a Bordeaux blend that cost a startlingly high $55 on its 1998 release. Rising up behind many of Chile's vineyards are the majestic Andes, the longest mountain chain in the world, whose peaks reach 22,000 feet and are exceeded in elevation only by the Himalayas; when the chain was formed, sedimentary rocks folded into ridges, creating many of the sheltered valleys in which Chile's vineyards lie.",
       "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Carmenère",
+          "Syrah"
+        ],
+        "tiers": [
+          "Chile DO"
+        ],
         "attributes": {
           "key_grapes": [
-            "Tempranillo",
-            "Garnacha",
-            "Graciano",
-            "Viura"
+            "cabernet sauvignon",
+            "carmenère",
+            "syrah"
           ],
-          "climate": "Continental-Mediterranean transitional"
+          "climate": "warmish inland valley, sheltered by Andean ridges",
+          "classification_system": "DO Aconcagua — one of Chile's five DOs",
+          "signature": "with the Valle Central, one of the two areas forming Chile's historic wine centre",
+          "landmark_wineries": [
+            "Errázuriz"
+          ],
+          "icon_wines": [
+            "Seña (Errázuriz / Robert Mondavi)"
+          ]
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, Chile"
+      }
+    },
+    "rioja": {
+      "short": "Spain's preeminent wine region for more than a century and the first to be awarded DOCa status (1991) — tempranillo-based reds defined by long aging in oak, along the Ebro River in the remote interior of northern Spain.",
+      "full": "For more than a century Rioja has been considered Spain's preeminent wine region. Its vineyards run for 75 miles (120 kilometres) along both banks of the Ebro River and cover more than 157,000 acres (63,500 hectares) in the remote interior of northern Spain, with craggy mountains standing in desolation behind them. Several small mountain ranges and the outlying ridges of the Cantabrian Mountains isolate the region from the moderating Atlantic and shield it from the harshest northern winds, so although Rioja lies only 60 miles from the Bay of Biscay it does NOT have a maritime climate. White and rosé are made here, but the region's fabled reputation rests almost exclusively on reds based primarily on tempranillo — an early-ripening variety whose name comes from temprano ('early'), traditionally blended with garnacha (French grenache), mazuelo (carignan) and graciano, though a growing number of Riojas are now entirely tempranillo. Rioja is often called Spain's Bordeaux, and the French ties are multiple: the region's signature long aging in oak barrels was inspired by Bordelais practice, adopted by Manuel Quintano in 1780 and taken up by the Marqués de Murrieta and Marqués de Riscal by the 1850s — who then imported American oak trees and coopered the barrels themselves. When oidium and phylloxera devastated French vineyards in the 1850s-60s, French négociants came to Rioja to buy, some stayed to found bodegas, and the vineyard area grew by 40,000 acres within a generation. Rioja wines are classified by an aging hierarchy — crianza, reserva and gran reserva — and depending on style tempranillo here is either powerfully structured, dark and earthy with leather and a certain peatiness (modern), or elegant and very earthy, closer to pinot noir than to cabernet (traditional). Rioja is among the world's most beautifully earthy wines, and its long-aged gran reservas remain among the best deals in the world.",
+      "knowledge": {
+        "grapes": [
+          "Grenache",
+          "Tempranillo"
+        ],
+        "tiers": [
+          "Spain DOCa"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "tempranillo",
+            "garnacha (grenache)",
+            "mazuelo (carignan)",
+            "graciano",
+            "viura"
+          ],
+          "climate": "continental, NOT maritime — Cantabrian ranges shield the region from the Atlantic and the harshest northern winds",
+          "classification_system": "DOCa (first in Spain, 1991); aging hierarchy of crianza / reserva / gran reserva",
+          "aging_hierarchy": [
+            "crianza",
+            "reserva",
+            "gran reserva"
+          ],
+          "signature": "tempranillo-based reds with long aging in oak barrels; modern style powerfully structured and earthy vs traditional style elegant, closer to pinot noir",
+          "size": "157,000+ acres (63,500 ha) over 75 miles along the Ebro",
+          "style_note": "the book contrasts two opposite house styles, so no single structural benchmark is asserted here"
+        },
+        "citation": "Wine Bible 2e, Spain/Rioja"
       }
     },
     "ribera del duero": {
-      "short": "Spain's other great Tempranillo region — powerful, structured reds from the high Castilian meseta.",
-      "full": "Ribera del Duero sits on the northern Castilian meseta at 700-1,000 metres elevation, where extreme continental conditions — freezing winters, scorching summers, and vast day-night temperature swings — produce Tempranillo (locally called Tinto Fino or Tinta del País) of extraordinary concentration and structure. Vega Sicilia, Spain's most legendary estate, has produced wines here since 1864. Pingus brought modern, high-extraction winemaking in the 1990s. Pesquera and Emilio Moro represent the region's more traditional style. The DO was only established in 1982, but has rapidly risen to rival Rioja in prestige.",
+      "short": "The poster image of conquistador Spain — rugged ocher mesas on a high plateau north of Madrid, making bold, concentrated, long-lived reds from tinto fino, the local clone group of tempranillo.",
+      "full": "A two-hour drive north of Madrid, Ribera del Duero lies in the province of Castilla y León — a severe, dramatic land of rough mesas and rocky plateaus stretching as far as the eye can see, with massive stone castles atop the highest ridges. On these high, dry, sunny plains the vineyards have a severity of their own: old vines, gnarled as if in agony, protrude from the rough ground, and the earth herself seems to cling to the muscular vines. The region is named for the Duero, the third largest river on the Iberian Peninsula, which crosses the great meseta (high plateau) of north central Spain. Ribera del Duero is almost exclusively a red wine region (simple rosés are made for local consumption). Its major grape is tinto fino, also called tinta del país — another name for tempranillo, though after centuries of adaptation the clones here differ markedly from Rioja's, and tinto fino's smaller berries and tougher skins, driven by the harsh climate, make wines that are often more powerful (if occasionally less polished) than Rioja. The best reds are bold, concentrated, ripe, mouthfilling and structured, packed with dark flavours of roasted coffee, cocoa, peat and black licorice, yet the very best are also lusciously refined and among the longest-lived of all Spanish reds. Three Ribera del Duero wines — Vega-Sicilia's Unico, Pingus and Pesquera — rank among the most outstanding reds anywhere in the world; Unico is the most legendary and expensive red wine in Spain. There are more than 250 wine estates in the region.",
       "knowledge": {
+        "grapes": [
+          "Tempranillo"
+        ],
+        "tiers": [
+          "Spain DO"
+        ],
         "attributes": {
           "key_grapes": [
-            "Tempranillo (Tinto Fino)",
-            "Cabernet Sauvignon",
-            "Merlot",
-            "Malbec",
-            "Albillo"
+            "tinto fino (tempranillo)",
+            "tinta del país"
           ],
-          "climate": "Extreme continental, high altitude",
-          "soil": "Limestone, clay, sand, chalky marl"
+          "climate": "harsh, dramatic high-plateau (meseta) climate; high, dry, sunny plains at altitude",
+          "soil": "rough, rocky ground of ocher mesas and plateaus",
+          "classification_system": "DO",
+          "signature": "bold, concentrated, mouthfilling reds — roasted coffee, cocoa, peat, black licorice; among Spain's longest-lived",
+          "landmark_wines": [
+            "Vega-Sicilia Unico",
+            "Pingus",
+            "Pesquera"
+          ],
+          "estates": "250+"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, Spain/Ribera del Duero"
       }
     },
     "burgundy": {
@@ -484,6 +602,44 @@
         "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
       }
     },
+    "central valley": {
+      "short": "Chile's historic wine centre — a broad, fertile expanse between the Andes and the Coastal Range, spanning the Maipo, Cachapoal, Colchagua, Curicó and Maule sub-valleys.",
+      "full": "Southwest of Chile's capital, Santiago, lies the large Valle Central — an expanse of fertile and fairly flat land between the Andes and the Coastal Range, the low-lying mountains just inland from the Pacific. It is Chile's most notable wine area, where a majority of the most important appellations are found, including the two most renowned, Maipo Valley and Colchagua Valley. The most fertile part of the valley — the centre, where the soils are deepest — grows an abundance of crops from wheat, corn and beans to nuts, fruits and sugar beets; it is in the LESS fertile, granitic soils, often hugging the hillsides, that wine grapes are grown. The region spans five distinct sub-valleys: Maipo, Cachapoal, Colchagua, Curicó and Maule (label readers note that Cachapoal and Colchagua are sometimes referred to together as the Rapel Valley), many separated by rivers that begin high in the Andes and flow to the Pacific. Soils in the top vineyards are often a well-drained, friable granite, becoming more fertile toward the deep centre where granitic stone is interspersed with loam, sand and clay; on the eastern side, below the Andes, many vineyards sit on alluvial fans. The easy availability of water — Andean snowmelt channelled through dikes and canals — is one of Chile's leading viticultural assets, but also a potential downfall: growers wanting huge crops of bland, cheap wine can simply flood the vineyards, while top producers use controlled drip irrigation or even water by hand. Along with Aconcagua, the Valle Central makes up Chile's historic wine centre, and a lion's share of all Chilean wine exports comes from these two areas.",
+      "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Carmenère",
+          "Chardonnay",
+          "Merlot",
+          "Sauvignon Blanc"
+        ],
+        "tiers": [
+          "Chile DO"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "cabernet sauvignon",
+            "carmenère",
+            "merlot",
+            "chardonnay",
+            "sauvignon blanc"
+          ],
+          "climate": "sheltered valley floor between the Andes and the Coastal Range; Andean snowmelt irrigation",
+          "soil": "well-drained friable granite on the hillsides; loam, sand and clay in the fertile centre; alluvial fans below the Andes",
+          "classification_system": "DO Valle Central",
+          "sub_valleys": [
+            "Maipo",
+            "Cachapoal",
+            "Colchagua",
+            "Curicó",
+            "Maule"
+          ],
+          "signature": "Chile's historic wine centre and the source of most of its important appellations",
+          "quality_note": "spans flood-irrigated bulk wine to icon wines — no single structural profile applies"
+        },
+        "citation": "Wine Bible 2e, Chile"
+      }
+    },
     "sonoma": {
       "short": "California's most diverse wine county — from foggy Pinot Noir coastline to warm inland Zinfandel valleys.",
       "full": "Sonoma County encompasses 18 AVAs and extraordinary diversity, from the fog-shrouded Sonoma Coast (world-class Pinot Noir and Chardonnay) to the warmer Alexander Valley and Dry Creek Valley (Cabernet Sauvignon and old-vine Zinfandel). Russian River Valley is one of America's finest Pinot Noir regions. Sonoma's identity has increasingly differentiated from neighbouring Napa — less corporate, more agricultural, with a strong sustainability ethic. Kistler, Williams Selyem, and Peter Michael are among the most sought-after producers. Sonoma County was the first wine region in the US to become 99% certified sustainable.",
@@ -503,6 +659,33 @@
         "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
       }
     },
+    "sonoma county": {
+      "short": "California's Provence — more than twice the size of Napa, a patchwork of sixteen viticultural areas governed by a pendulum climate of coastal fog and sunshine, warm days and cool nights.",
+      "full": "Directly north of San Francisco and bordering the Pacific Ocean, Sonoma County has 1 million acres (404,700 hectares) of land, making it more than twice as big as its next-door neighbour Napa Valley. That size makes the county a geographical patchwork quilt of valleys, mountains, riverbeds, plains and benchlands, and within this shifting landscape lie sixteen viticultural areas that can be quite different in their nuances of climate and soil. Historically and culturally Sonoma is rather different from Napa: vineyards were planted here as the nineteenth century dawned, well before Napa, and many vintners belong to old, established farming families. A kicked-back country style pervades much of the region — people drive dusty pickups and the talk is as likely to be about tractors as about wine sales in Tokyo — yet among the top producers there is as much cutting-edge winemaking as anywhere in California. The county is beautifully pastoral and is often called California's Provence, with vineyards alternating with apple orchards, vegetable farms, redwood forests, dairies, sheep ranches and aquaculture fisheries along the rugged coast. Climatically, what makes Sonoma Sonoma is its pendulum-like rhythm: soft white fog rises in massive banks off the coast and drifts inland, wrapping around mountains and filling the valleys with cool vapour, giving a daily ebb and flow — almost a yin and yang — of fog and sunshine. Areas closer to the coast (especially the Sonoma Coast AVA and parts of the Russian River Valley) are cooler and those farther inland warmer, but overall the warm days and cool nights are the classic scenario for grapes with the potential to mature evenly and fully.",
+      "knowledge": {
+        "grapes": [
+          "Chardonnay",
+          "Pinot Noir",
+          "Zinfandel"
+        ],
+        "tiers": [
+          "American Viticultural Area"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "chardonnay",
+            "pinot noir",
+            "zinfandel",
+            "cabernet sauvignon"
+          ],
+          "climate": "pendulum of coastal fog and sunshine — warm days, cool nights; cooler near the coast, warmer inland",
+          "classification_system": "AVA — sixteen viticultural areas within the county",
+          "signature": "even, full maturation from the daily fog/sun rhythm; 'California's Provence'",
+          "size": "1 million acres — more than twice the size of Napa Valley"
+        },
+        "citation": "Wine Bible 2e, United States/California/Sonoma County"
+      }
+    },
     "marlborough": {
       "short": "World capital of Sauvignon Blanc — explosive aromatics from New Zealand.",
       "full": "Marlborough produces 75%+ of NZ wine. Passionfruit, gooseberry, cut-grass Sauvignon Blanc with bracing acidity.",
@@ -515,6 +698,34 @@
           ]
         },
         "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+      }
+    },
+    "maule": {
+      "short": "The southernmost of the Valle Central's five sub-valleys, on granitic hillside soils — historically the heartland of Chile's old país vines.",
+      "full": "Maule is one of the five distinct sub-valleys of the Valle Central, alongside Maipo, Cachapoal, Colchagua and Curicó, many of them separated by rivers that begin high in the Andes and flow to the Pacific. As throughout the Valle Central, the best wine grapes grow not in the deep, fertile centre of the valley — where wheat, corn, beans, nuts, fruits and sugar beets flourish — but in the less fertile, well-drained granitic soils that hug the hillsides. Maule is closely associated with país, Chile's historic mass-production grape: brought from Spain in the sixteenth century as listán prieto and originally called criolla chica, it became so common by the nineteenth century that it was rechristened simply país ('country'), and it is still widely planted for jug wines. Approximately fifteen varieties of wine grapes are grown in Chile, but most wines are based on just five: cabernet sauvignon, chardonnay, merlot, sauvignon blanc and carmenère.",
+      "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Carmenère",
+          "Merlot",
+          "País"
+        ],
+        "tiers": [
+          "Chile DO"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "país",
+            "cabernet sauvignon",
+            "carmenère",
+            "merlot"
+          ],
+          "climate": "the cooler, southern end of the Valle Central",
+          "soil": "well-drained friable granite on the hillsides",
+          "classification_system": "DO — sub-valley of the Valle Central",
+          "signature": "historic heartland of país, Chile's oldest planted variety"
+        },
+        "citation": "Wine Bible 2e, Chile"
       }
     },
     "puglia": {
@@ -576,25 +787,84 @@
       }
     },
     "colchagua valley": {
-      "short": "Chile's premier red wine valley, known for Carménère and Cabernet Sauvignon.",
-      "full": "Colchagua Valley sits in Chile's Central Valley, sheltered by the Andes to the east. A warm, dry Mediterranean climate suits Carménère, Cabernet Sauvignon, and Syrah. Alluvial soils and significant diurnal range preserve acidity in ripe, structured reds."
-    },
-    "margaret river": {
-      "short": "Western Australia's premium wine region — world-class Cabernet Sauvignon and Chardonnay from maritime-influenced terroir.",
-      "full": "Margaret River produces only 3% of Australia's wine but accounts for over 20% of the premium segment. The region's maritime climate, moderated by the Indian Ocean, produces Cabernet Sauvignon and Bordeaux-style blends of remarkable elegance — often compared to the best of Pessac-Léognan. Chardonnay is equally impressive, with producers like Leeuwin Estate, Vasse Felix, and Cullen producing world-class examples. The region was only planted in the late 1960s following research by agronomist Dr. John Gladstones, yet it has rapidly established itself as one of Australia's finest wine regions.",
+      "short": "Fast becoming 'the Napa of Chile' — with Maipo, the source of most of the country's icon wines, above all from the tiny moon-shaped district of Apalta.",
+      "full": "Colchagua is fast becoming the Napa of Chile, especially the tiny district of Apalta — a small, moon-shaped internal valley hard up against the Coastal Range. This is where Neyen, Viña Montes's Alpha M and Lapostolle's Clos Apalta are sourced, and all three are among the most iconic of Chile's icon wines, each with dozens of international awards and high scores from critics. Colchagua is one of the five sub-valleys of the Valle Central and, with the Maipo Valley, one of the two most renowned; it is from these two districts that most of Chile's so-called icon wines are sourced. (Colchagua and neighbouring Cachapoal are sometimes referred to together as the Rapel Valley.) Chile's newer, high-priced icon cabernets and cabernet blends are polished wines with much more concentrated and complex flavours and firmer structure than the country's moderately priced bottlings.",
       "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Carmenère",
+          "Merlot",
+          "Syrah"
+        ],
+        "tiers": [
+          "Chile DO"
+        ],
         "attributes": {
           "key_grapes": [
-            "Cabernet Sauvignon",
-            "Chardonnay",
-            "Sauvignon Blanc",
-            "Semillon",
-            "Merlot"
+            "cabernet sauvignon",
+            "carmenère",
+            "syrah",
+            "merlot"
           ],
-          "climate": "Maritime Mediterranean",
-          "soil": "Gravel, loam, laterite (ironstone), granite"
+          "climate": "warm interior valley sheltered by the Coastal Range",
+          "classification_system": "DO — sub-valley of the Valle Central; sometimes grouped with Cachapoal as Rapel",
+          "signature": "'the Napa of Chile' — concentrated, complex icon cabernets with firm structure",
+          "key_district": "Apalta",
+          "icon_wines": [
+            "Neyen",
+            "Viña Montes Alpha M",
+            "Lapostolle Clos Apalta"
+          ]
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, Chile"
+      }
+    },
+    "clare valley": {
+      "short": "An elevated plateau famous for exquisite dry riesling — citrusy, with driving acidity preserved by extremely cold nights and limestone-laced soils.",
+      "full": "Clare Valley (which, like Eden Valley, is not a true valley but an elevated plateau) is known for exquisite rieslings, although it also makes very precise shirazes. Where Eden Valley's rieslings are more floral, exotic and medium-bodied, those of Clare Valley are more citrusy, with driving acidity. It is commonly assumed that the rieslings from these areas are picked early to achieve their dizzying crispness, but they are not: rather, the regions' extremely cold nights and water-holding, limestone-laced soils are credited with preserving riesling's backbone of inherent acidity. Clare Valley sits within South Australia, the state that produces more than half of all Australian wine.",
+      "knowledge": {
+        "grapes": [
+          "Riesling",
+          "Syrah"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "riesling",
+            "shiraz (syrah)"
+          ],
+          "climate": "elevated plateau with extremely cold nights",
+          "soil": "water-holding, limestone-laced",
+          "signature": "citrusy dry riesling with driving acidity — crispness from cold nights and soil, NOT from early picking",
+          "also_known_for": [
+            "very precise shiraz"
+          ]
+        },
+        "citation": "Wine Bible 2e, Australia/South Australia"
+      }
+    },
+    "margaret river": {
+      "short": "Australia's 'little Bordeaux' on the remote west coast, where the warm Indian and cold Southern Oceans collide — elegant, structured cabernet and lovely sémillon/sauvignon blanc blends.",
+      "full": "Three hours south of Perth, where the great warm Indian Ocean and the cold Southern Ocean collide, lies the most renowned and ambitious of all Western Australian districts: Margaret River. Originally known for its timber, it is one of the world's newer fine wine regions — vines were not planted until the late 1960s, more than a century after grapes were planted in the Napa Valley — and it remains extremely remote, best known to the wider world for its hypnotic giant waves. A key pioneer was David Hohnen, who learned winemaking in California and founded Cape Mentelle in 1970 (he later founded Cloudy Bay in Marlborough, New Zealand, in 1983). Given the region's maritime location and gravelly soils, Hohnen and other pioneers focused not on shiraz but on BORDEAUX varieties, and today Margaret River is considered something of a 'little Bordeaux' for the loveliness of its sémillon/sauvignon blanc blends and the structure and elegance of its cabernet sauvignons — especially from Cape Mentelle, Leeuwin Estate and Vasse Felix. Chardonnay too has an almost magical affinity for the region: Leeuwin Estate's Art Series Chardonnays are wines of depth that grow richer and more expansive with several years' age, and are among the best produced in all of Australia. Despite a nearly ideal sunny, ocean-cooled climate there is one huge problem: birds. Each row of vines must be netted as harvest approaches — before netting, three crops out of five were lost to the omnivorous silvereyes.",
+      "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Chardonnay",
+          "Sauvignon Blanc",
+          "Sémillon"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "cabernet sauvignon",
+            "sémillon",
+            "sauvignon blanc",
+            "chardonnay"
+          ],
+          "climate": "maritime and ocean-cooled, where the warm Indian Ocean meets the cold Southern Ocean",
+          "soil": "gravelly",
+          "signature": "'little Bordeaux' — elegant, structured cabernet and sémillon/sauvignon blanc blends; outstanding chardonnay",
+          "history": "one of the world's newest fine wine regions — first vines in the late 1960s"
+        },
+        "citation": "Wine Bible 2e, Australia/Western Australia"
       }
     },
     "sardinia": {
@@ -622,6 +892,62 @@
           "signature": "vermentino — dry, herb-scented white of rosemary/sage/lavender; cannonau the bold, spicy flagship red"
         },
         "citation": "Wine Bible 2e, Italy/Sicily & Sardinia"
+      }
+    },
+    "barossa valley": {
+      "short": "Australia's most renowned region — rich, sappy shiraz with a concentrated core of vivid berriness over wild lavender, spice and licorice, yet with superb structure, balance and precision.",
+      "full": "The Barossa Valley is the most famous wine region in Australia. The wide, fertile valley is made up of biscuit-coloured hills, and its small hamlets are full of old stone cottages. The Barossa — as it is simply known — was settled in the nineteenth century by Silesian immigrants (Silesia, today part of Poland, was then part of Germany, and German is still regularly spoken here), an insular community of hardworking, frugal farmers with a strong food culture of baked, pickled, preserved and smoked specialities, still evident in the hugely popular Barossa Farmer's Market and the annual dill gherkin and pickled onion championships. Great cabernet is made in the Barossa, along with fine grenaches and grenache blends and superb Australian fortified tawnies. But above all the Barossa is known for shiraz — rich, sappy shiraz with a concentrated core of vivid 'berriness' overlaid by wild lavender, spice, brambly and licorice notes. Yet for all their dramatic richness and bigness, the best Barossa shirazes also have a superb structure, balance and sense of precision.",
+      "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Grenache",
+          "Syrah"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "shiraz (syrah)",
+            "cabernet sauvignon",
+            "grenache"
+          ],
+          "climate": "warm; a wide, fertile valley of biscuit-coloured hills",
+          "signature": "rich, sappy shiraz — vivid berriness with wild lavender, spice, bramble and licorice, but structured and precise",
+          "history": "settled in the 19th century by Silesian immigrants; German is still regularly spoken",
+          "also_known_for": [
+            "grenache and grenache blends",
+            "fortified tawny",
+            "cabernet sauvignon"
+          ]
+        },
+        "citation": "Wine Bible 2e, Australia/South Australia"
+      }
+    },
+    "washington": {
+      "short": "The second-largest US wine state and a spiritual home of cabernet sauvignon and merlot — highly structured, deeply flavoured reds and inspired rieslings, grown in the arid east behind the Cascades.",
+      "full": "Most of the world's classic grapes grow in many places, but each has a spiritual home where it ascends beyond merely good; in the 1990s Washington State emerged, to most wine drinkers' surprise, as one of the great spiritual homes of cabernet sauvignon and merlot. The phenomenon was startling, since barely a dozen years earlier growers had pinned their hopes on gewürztraminer, chardonnay and other whites — which still make good wine there, but nothing like the top tier of cabernets and merlots. By the late 1990s two more grapes captured growers' imaginations: riesling and syrah. By the late 2000s Washington made the best riesling in the country and had become a hotbed of fantastic, rich, complex syrahs the equal of any grown in the United States. What one notices immediately about the greatest Washington cabernets and merlots, or blends of the two, is the CONCENTRATION of the wines — as if by some magical osmosis they had been infused with the primal, lush berryness of wild Northwest blackberries, boysenberries, raspberries and cherries. The state is the second-largest wine producer in the US after California, and is one of the few places in the country — or the world — where many vines grow on their own roots rather than phylloxera-tolerant rootstocks. Virtually all of its vineyards lie not in the rainy west near Seattle but in the arid, almost desert-like eastern part of the state: the massive Cascade range is so effective a rain shield that eastern and western Washington are about as similar in appearance as Montana and Vermont. There are thirteen AVAs, the three most prominent being the gigantic Columbia Valley and, within it, Yakima Valley and Walla Walla Valley.",
+      "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Merlot",
+          "Riesling",
+          "Syrah"
+        ],
+        "tiers": [
+          "American Viticultural Area"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "cabernet sauvignon",
+            "merlot",
+            "syrah",
+            "riesling"
+          ],
+          "climate": "arid, almost desert-like eastern Washington; the Cascade range acts as a rain shield against the wet west",
+          "classification_system": "AVA — thirteen in the state, most nested within the Columbia Valley",
+          "signature": "highly structured, deeply flavoured reds of striking concentration — wild Northwest berry character",
+          "viticulture_note": "one of the few places worldwide where many vines grow on their own roots, not grafted rootstock",
+          "rank": "second-largest wine-producing state in the US"
+        },
+        "citation": "Wine Bible 2e, United States/Washington State"
       }
     },
     "abruzzo": {
@@ -699,6 +1025,89 @@
         "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
       }
     },
+    "victoria": {
+      "short": "Mainland Australia's smallest and most southern wine state — 820+ producers across a dozen districts fanning out from Melbourne, from cool coastal pinot noir to Rutherglen's sweet muscats.",
+      "full": "Just as northern California's wine industry was jump-started by the gold rush of 1849, the discovery of gold in Victoria in 1851 paved the way for a fledgling wine industry; as the supply of gold dwindled, vintners were known to hire out-of-work miners to dig underground wine cellars. By the 1960s Victoria's wine industry was a shadow of its former self, but a new period of growth came with the Australian boom of the 1970s and 1980s. Of all mainland Australia's wine regions Victoria is the smallest and most southern, with more than 820 producers spread over more than a dozen small wine districts fanning out from Melbourne. Its districts vary considerably in climate, terrain and soil, thanks in part to the Great Dividing Range, which creates mountainous and hilly terrain over more than a third of the state. Several of the most renowned districts — the Yarra Valley, Geelong and Mornington Peninsula — lie very close to the sea and benefit from cool breezes off the Great Southern Ocean, and in these cool areas chardonnay and pinot noir thrive. Farther inland, in slightly warmer pockets like Beechworth, the chardonnays can again be stellar if richer. Victoria is also known for cabernet sauvignon and shiraz, and one of its specialities is the captivating sweet muscats and topaques of Rutherglen in the northeast — spellbinding and unctuous wines. Victoria has always been associated with sparkling wine too: Seppelt is in the Grampians, and in 1986 Moët & Chandon founded Chandon Australia in the Yarra Valley.",
+      "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Chardonnay",
+          "Muscat",
+          "Pinot Noir",
+          "Syrah"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "chardonnay",
+            "pinot noir",
+            "shiraz (syrah)",
+            "cabernet sauvignon",
+            "muscat"
+          ],
+          "climate": "varies considerably — cool maritime near the coast, warmer inland; Great Dividing Range creates hill country",
+          "signature": "cool-coastal chardonnay and pinot noir, plus Rutherglen's sweet muscats and topaques",
+          "producers": "820+ across more than a dozen districts",
+          "history": "jump-started by the 1851 Victorian gold rush"
+        },
+        "citation": "Wine Bible 2e, Australia/Victoria"
+      }
+    },
+    "catalunya": {
+      "short": "Catalonia — Spain's most dynamic province and, through the Penedès, the home of cava, the traditional-method sparkling wine produced here since the 1870s.",
+      "full": "Catalonia is arguably the most dynamic province in Spain and the epicentre of Spanish art, literature, philosophy, gastronomy, finance and culture — a province fervent about politics and religion where everyone speaks Catalan first and Spanish second, and which produced Miró, Dalí, Picasso, the architect Gaudí and the cellist Pablo Casals. That artistry and exuberance is evident in its wines. The province's principal wine region, the Penedès, is anchored by Barcelona, whose gastronomy and nightlife spill over and give it an edge many sleepy rural wine regions lack. Driving southwest out of the city, industrial sprawl gives way to pine- and orchard-covered hills and then a patchwork quilt of vineyards; from warm coastal land the vineyards climb to higher, cooler elevations inland. Though modest in surface area the Penedès spans two mountain chains and a valley, and so has a wide variety of climatic conditions and soil types. It is one of several Denominaciones de Origen within Catalonia but continues to be, along with Priorat, one of the most important. The Penedès is best known for cava — Spanish sparkling wine made by the traditional (Champagne) method, produced here since the 1870s — and in addition makes a wide variety of still wines, many of them simple and in a modern style. The terms reserva and gran reserva may also be used on cava.",
+      "knowledge": {
+        "grapes": [
+          "Grenache",
+          "Mourvèdre"
+        ],
+        "tiers": [
+          "Spain DO"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "macabeo (viura)",
+            "xarel·lo",
+            "parellada",
+            "garnacha (grenache)",
+            "monastrell (mourvèdre)"
+          ],
+          "climate": "Mediterranean coastal warming to cooler inland elevations; spans two mountain chains and a valley",
+          "classification_system": "DO (several DOs within Catalonia; Penedès and Priorat the most important)",
+          "signature": "cava — traditional-method sparkling wine made here since the 1870s — plus a wide range of still wines",
+          "key_wines": [
+            "Cava",
+            "Penedès still whites and reds"
+          ]
+        },
+        "citation": "Wine Bible 2e, Spain/Penedès"
+      }
+    },
+    "casablanca valley": {
+      "short": "Chile's cool, coastal, avant-garde white-wine district — planted with sauvignon blanc and chardonnay in the 1990s land rush, and the home of its zesty, bold sauvignons.",
+      "full": "Casablanca Valley is one of the more coastal, cool and avant-garde districts of the Aconcagua DO, alongside San Antonio Valley (and within San Antonio, the very upcoming zone of Leyda Valley). In the 1990s these regions experienced the wine equivalent of a mini gold rush, as investors swooped in, bought land and began planting sauvignon blanc and chardonnay. Chilean sauvignon blanc is decidedly the more exciting of the country's two main white grapes — zesty and bold at its best — while most Chilean chardonnay, extensively planted in the 1990s in response to seemingly bottomless demand for inexpensive chardonnay in the United States and Great Britain, remains bargain-priced and uncomplicated, with a few exceptions such as Lapostolle and Montes.",
+      "knowledge": {
+        "grapes": [
+          "Chardonnay",
+          "Pinot Noir",
+          "Sauvignon Blanc"
+        ],
+        "tiers": [
+          "Chile DO"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "sauvignon blanc",
+            "chardonnay",
+            "pinot noir"
+          ],
+          "climate": "cool and coastal — the Pacific-influenced end of the Aconcagua DO",
+          "classification_system": "DO — coastal district of Aconcagua",
+          "signature": "zesty, bold sauvignon blanc; Chile's avant-garde cool-climate white district",
+          "history": "planted during the 1990s coastal 'mini gold rush'"
+        },
+        "citation": "Wine Bible 2e, Chile"
+      }
+    },
     "mosel": {
       "short": "Germany's most dramatic wine landscape — steep slate slopes, Riesling of unmatched delicacy.",
       "full": "Steep slate vineyards along the Mosel River produce low-alcohol, high-acidity Riesling of crystalline purity.",
@@ -713,25 +1122,59 @@
       }
     },
     "maipo valley": {
-      "short": "Chile's benchmark Cabernet Sauvignon zone, centred on the Andes foothills near Santiago.",
-      "full": "Maipo Valley is Chile's reference point for Cabernet Sauvignon. Andean alluvial soils, low rainfall, and warm days with cool nights concentrate fruit while retaining acidity. Alto Maipo's granite subsoils produce the most structured, age-worthy examples."
-    },
-    "priorat": {
-      "short": "Spain's most dramatic wine region — old-vine Garnacha and Cariñena from steep licorella slate terraces.",
-      "full": "Priorat is one of only two DOCa (Denominación de Origen Calificada) regions in Spain, alongside Rioja. Abandoned in the late 19th century after phylloxera, it was revived in the 1980s by a group of pioneers (Álvaro Palacios, René Barbier, and others) who recognised the extraordinary potential of its ancient licorella (slate and quartz) soils. Old-vine Garnacha and Cariñena grown on precipitous terraces at low yields produce wines of searing intensity, mineral complexity, and remarkable concentration. L'Ermita by Álvaro Palacios is Spain's most expensive wine. Production is tiny — the entire DOCa produces less than some single Bordeaux châteaux.",
+      "short": "One of Chile's oldest wine regions, edged up against Santiago — headquarters of the great historic wineries and, with Colchagua, the source of most of the country's icon wines.",
+      "full": "Edged up against the city limits of Santiago, the Maipo Valley is one of Chile's oldest wine regions, and because of its proximity to the capital many wineries are headquartered there. This is where the huge wineries Concha y Toro and Cousiño-Macul are located, the latter with its massive, cavernous cellars and stately 125-acre (50-hectare) park, a dreamlike expanse of private gardens tended by fifteen full-time gardeners. Maipo is one of the five sub-valleys of the Valle Central and, with Colchagua, one of the two most renowned — it is from these two districts that most of Chile's so-called icon wines are sourced. It was in Maipo that the joint-venture team of Château Mouton-Rothschild and Concha y Toro debuted their Bordeaux-style blend Almaviva at $70 a bottle. Chile's high-priced icon cabernets and cabernet blends are polished wines with concentrated, complex flavours and firm structure.",
       "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Carmenère",
+          "Merlot"
+        ],
+        "tiers": [
+          "Chile DO"
+        ],
         "attributes": {
           "key_grapes": [
-            "Garnacha",
-            "Cariñena (Carignan)",
-            "Cabernet Sauvignon",
-            "Syrah",
-            "Merlot"
+            "cabernet sauvignon",
+            "carmenère",
+            "merlot"
           ],
-          "climate": "Mediterranean continental, extreme",
-          "soil": "Licorella (laminated slate and quartz)"
+          "climate": "warm valley beside Santiago, framed by the Andes",
+          "classification_system": "DO — sub-valley of the Valle Central",
+          "signature": "Chile's oldest wine region and, with Colchagua, the home of its icon cabernets",
+          "landmark_wineries": [
+            "Concha y Toro",
+            "Cousiño-Macul"
+          ],
+          "icon_wines": [
+            "Almaviva (Mouton-Rothschild / Concha y Toro)"
+          ]
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, Chile"
+      }
+    },
+    "priorat": {
+      "short": "A tiny, rugged Catalonian region of black slate (llicorella) whose low-yielding old garnacha and cariñena vines make some of the most intense, inky and powerful reds in Spain. Holds the top DOCa rank.",
+      "full": "Usually known by its Catalan name Priorat (rather than the Spanish Priorato), this is a tiny, isolated wine region just inland from Tarragona in Catalonia, on the Mediterranean coast. Barely heard of in the early 1990s, it emerged internationally late in that decade with a handful of exciting, highly sought-after wines, some of which upstaged even the most prestigious Riojas by costing four times as much. Priorat boasts the top classification, DOCa (Denominación de Origen Calificada). It is a 'new old' wine region: vines grew here for centuries before the Romans arrived to mine lead and silver, but the region was progressively abandoned in the 1800s, barely recovered after phylloxera, and by the 1970s its villages were populated mostly by the elderly — only to be reborn. The name dates from 1163, when Alfonso II of Aragón founded a Carthusian monastery, Scala Dei ('God's stairway'), on the spot where a villager was said to have seen angels ascending a stairway to heaven; priorato is Spanish for priory. The best wines are all red: massively structured, with considerable tannin that makes them ageworthy, thick and soft in texture, loaded with ripe blackberry, dense chocolate, lively licorice and mineral/rock flavours. That concentration comes from painfully low-yielding old vines — sometimes more than a century old — protruding gnarled and contorted from the poor, stony soil called llicorella ('licorice') for its blackish slate colour. The region's two native reds, garnacha and cariñena (grenache and carignan in France), are its main grapes.",
+      "knowledge": {
+        "grapes": [
+          "Grenache"
+        ],
+        "tiers": [
+          "Spain DOCa"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "garnacha (grenache)",
+            "cariñena (carignan)"
+          ],
+          "climate": "rugged, mountainous Mediterranean hinterland",
+          "soil": "llicorella — distinctive stony black slate",
+          "classification_system": "DOCa — the top Spanish classification",
+          "signature": "intense, inky, powerful reds from low-yielding century-old vines; blackberry, chocolate, licorice, mineral",
+          "history": "'new old' region — Roman-era vines, abandoned in the 1800s, reborn in the late 1990s"
+        },
+        "citation": "Wine Bible 2e, Spain/Priorat"
       }
     },
     "hawke's bay": {
@@ -773,41 +1216,146 @@
         "citation": "Wine Bible 2e, Italy (grape glossary: verdicchio/the Marche)"
       }
     },
-    "mclaren vale": {
-      "short": "South Australia's coastal wine region — old-vine Grenache, Shiraz, and innovative Mediterranean blends.",
-      "full": "McLaren Vale lies between the Mount Lofty Ranges and Gulf St Vincent, creating a warm but maritime-moderated climate. The region is celebrated for Shiraz but increasingly recognised for old-vine Grenache and GSM (Grenache-Shiraz-Mourvèdre) blends that express a distinctly Mediterranean character. d'Arenberg, Wirra Wirra, and Chapel Hill are established names, while a wave of younger winemakers champion low-intervention, single-vineyard wines. McLaren Vale was the first wine region in the world to map its soil types at a commercial vineyard scale, identifying 40+ distinct soil types across 75 square kilometres.",
+    "hunter": {
+      "short": "Australia's first wine area, warm and almost too humid for grapes — yet the home of an ace in the hole: sémillon as high in acid as wine gets, which ages into a honey pot of nutty, buttery fruit.",
+      "full": "The most famous wine district in New South Wales — Australia's second-leading wine state after South Australia — is the relatively small Hunter Valley, 75 miles (120 kilometres) north of Sydney. The Hunter was the FIRST wine area in Australia, with vineyards planted at the beginning of the nineteenth century by the country's earliest European settlers, who had moved inland after their first vines rotted in the heat and humidity of the coastal penal colony. Around 1960 Penfolds moved to an area slightly north of the original vineyards, creating the distinction between the Upper and Lower Hunter. The whole region is something of an anomaly: being one of the most northerly of Australia's wine districts it is closer to the equator, its weather influenced by warm ocean currents from the tropics, and it is very warm and almost too humid for grapes. Nonetheless, and almost against all odds, several top chardonnays and shirazes come from here. But the Hunter's ace in the hole is sémillon — a wine that starts out bracing, limey, white peppery and as high in acid as wine gets; drinking it is like being slapped. With age, five to ten years or more, something startling happens: the wine turns into a honey pot of rich, nutty, buttery fruit. Great examples come from Tyrrell's, McWilliam's, Mount Pleasant, Hart & Hunter, Thomas Wines and Brokenwood.",
       "knowledge": {
+        "grapes": [
+          "Chardonnay",
+          "Syrah",
+          "Sémillon"
+        ],
         "attributes": {
           "key_grapes": [
-            "Shiraz",
-            "Grenache",
-            "Cabernet Sauvignon",
-            "Mourvèdre",
-            "Vermentino",
-            "Fiano"
+            "sémillon",
+            "chardonnay",
+            "shiraz (syrah)"
           ],
-          "climate": "Mediterranean, maritime-moderated",
-          "soil": "Highly diverse — sand, clay, limestone, ironstone, loam"
+          "climate": "very warm and almost too humid for grapes — one of Australia's most northerly districts, warmed by tropical ocean currents",
+          "signature": "Hunter sémillon — bracing, limey and searingly high in acid young, turning nutty and honeyed after 5-10 years",
+          "history": "the first wine area in Australia, planted at the start of the 19th century",
+          "subregions": [
+            "Upper Hunter",
+            "Lower Hunter"
+          ]
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, Australia/New South Wales"
+      }
+    },
+    "coonawarra": {
+      "short": "A cigar-shaped strip of terra rossa over limestone with a maritime climate like Bordeaux's — one of the best places in Australia for structured cabernet sauvignon.",
+      "full": "Coonawarra — the name is Aboriginal for 'honeysuckle' — is considered, along with Western Australia's Margaret River, one of the best places in the country for structured cabernet sauvignons. The region, about 230 miles (370 kilometres) south of Adelaide, is a cigar-shaped strip just 7.5 miles (12 kilometres) long and 1.2 miles (1.9 kilometres) wide of terra rossa soil — porous reddish clay overlaying limestone. The climate, not surprisingly, is maritime, like that of Bordeaux.",
+      "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Syrah"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "cabernet sauvignon",
+            "shiraz (syrah)"
+          ],
+          "climate": "maritime, like that of Bordeaux",
+          "soil": "terra rossa — porous reddish clay over limestone",
+          "signature": "structured cabernet sauvignon; with Margaret River, one of the two best cabernet addresses in Australia",
+          "size": "a cigar-shaped strip 7.5 miles long and 1.2 miles wide",
+          "name_origin": "Aboriginal for 'honeysuckle'"
+        },
+        "citation": "Wine Bible 2e, Australia/South Australia"
+      }
+    },
+    "mclaren vale": {
+      "short": "Shiraz country on the Fleurieu Peninsula — powerful and ripe but sleek in structure, with a dramatic lift of spice, black olive, menthol and dark chocolate.",
+      "full": "In a blind tasting the shirazes from McLaren Vale always seem relatively easy to pick out: first for their powerful and ripe character but sleek structure, and second for their dramatic lift of spiciness, black olive, menthol and dark chocolate. Clarendon Hills' Astralis Shiraz and d'Arenberg's The Dead Arm Shiraz are perfect examples. The small region — a mix of hills and valleys with ironstone and loamy clay soils — lies just 22 miles (35 kilometres) south of Adelaide on the Fleurieu Peninsula, bounded on the northwest by the Onkaparinga River and on the west by Gulf St. Vincent, giving at least some of the vines a bit of cooling maritime influence, which may help account for the wine's structure and elegance. Grapes were first planted here in 1838 by John Reynell and Thomas Hardy, who started Seaview and the Hardy Wine Company respectively. Shiraz accounts for more than 50 percent of the wine made in McLaren Vale.",
+      "knowledge": {
+        "grapes": [
+          "Grenache",
+          "Syrah"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "shiraz (syrah)",
+            "grenache"
+          ],
+          "climate": "warm with a cooling maritime influence from Gulf St. Vincent",
+          "soil": "ironstone and loamy clay over a mix of hills and valleys",
+          "signature": "powerful, ripe yet sleek shiraz — spice, black olive, menthol, dark chocolate",
+          "shiraz_share": "more than 50 percent of the region's wine"
+        },
+        "citation": "Wine Bible 2e, Australia/South Australia"
+      }
+    },
+    "oregon": {
+      "short": "Pinot noir country — a cool, marginal, nerve-racking climate that is precisely the cradle of its success, giving wines of grace, focus and richness without heaviness.",
+      "full": "Growing grapes in Oregon is fraught with challenges: sunlight and heat can be in short supply so ripening is never a given, rain (about 40 inches/102 centimetres a year in the Willamette Valley) and frost threaten in spring and fall when grapes are most vulnerable, and weather patterns can be erratic — a stressful scenario for vines, which love constancy. And yet it is precisely the marginality of Oregon's climate, along with the state's unique geologic past, that forms the cradle of its success. Grapes here cannot burst into ripeness but must make their way slowly and methodically toward maturity and complexity. Each year is a gamble, but when the forces of nature align with skilled winemaking, Oregon wines of utter beauty, focus and finesse emerge. In the first decade of the twenty-first century Oregon turned the big corner: having long since given up California as a role model, and then France as well, its winemakers set out on their own course and forged a new way of working with the unique demands of their land, producing a mega-leap in quality — especially for the state's signature pinot noirs. If wines can be graceful AND luscious, if they can have richness without heaviness, then Oregon is the place to find them. Oregon also holds itself to stricter rules than federal law requires: its leading wine types — pinot noir, chardonnay and pinot gris — must contain at least 90 percent of the grape named on the label, against the US minimum of 75 percent (cabernet sauvignon, cabernet franc, merlot, syrah, sauvignon blanc and several others thought to benefit from blending are excepted and need only be 75 percent).",
+      "knowledge": {
+        "grapes": [
+          "Chardonnay",
+          "Pinot Gris",
+          "Pinot Noir"
+        ],
+        "tiers": [
+          "American Viticultural Area"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "pinot noir",
+            "chardonnay",
+            "pinot gris"
+          ],
+          "climate": "cool and marginal — limited heat, ~40 inches of rain a year, spring and fall frost risk; slow, methodical ripening",
+          "classification_system": "AVA; plus Oregon's stricter state 90% varietal-labelling rule (US law requires 75%)",
+          "signature": "pinot noir of grace, focus and finesse — richness without heaviness",
+          "labelling_rule": "pinot noir, chardonnay and pinot gris must be >=90% of the named grape"
+        },
+        "citation": "Wine Bible 2e, United States/Oregon"
+      }
+    },
+    "cachapoal valley": {
+      "short": "A Valle Central sub-valley neighbouring Colchagua — the two are sometimes labelled together as the Rapel Valley.",
+      "full": "Cachapoal is one of the five distinct sub-valleys within Chile's Valle Central, alongside Maipo, Colchagua, Curicó and Maule. Wine label readers should note that the Cachapoal and Colchagua valleys are sometimes referred to together as the Rapel Valley. As elsewhere in the Valle Central, the top vineyards sit on well-drained, friable granitic soils that hug the hillsides rather than in the deep, fertile centre of the valley, and on the eastern side, below the Andes, many vineyards lie on alluvial fans — rocky streambeds washed down the mountainsides by the force of water. Andean snowmelt, channelled through a system of dikes and canals, provides the region's irrigation.",
+      "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Carmenère",
+          "Merlot"
+        ],
+        "tiers": [
+          "Chile DO"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "cabernet sauvignon",
+            "carmenère",
+            "merlot"
+          ],
+          "climate": "sheltered Valle Central sub-valley below the Andes",
+          "soil": "friable granite on hillsides; alluvial fans on the eastern side below the Andes",
+          "classification_system": "DO — sub-valley of the Valle Central; grouped with Colchagua as the Rapel Valley"
+        },
+        "citation": "Wine Bible 2e, Chile"
       }
     },
     "rías baixas": {
-      "short": "Galicia's premier white wine region — crisp, aromatic Albariño from Atlantic-influenced granite terroir.",
-      "full": "Rías Baixas in northwest Spain's Galicia produces Spain's finest white wines from the Albariño grape. The Atlantic climate brings abundant rainfall, and vineyards are traditionally trained on pergolas (parras) to promote air circulation and prevent rot. The resulting wines are crisp, aromatic, and mineral, with stone fruit, citrus, and saline notes — perfect partners for Galicia's exceptional seafood. Val do Salnés is the most prized subzone, closest to the coast. Pazo de Señoráns, Martín Códax, and Do Ferreiro are benchmark producers. The DO was established in 1988.",
+      "short": "Spain's benchmark white region, on the fjord-like Atlantic estuaries of southern Galicia — albariño so light it is 'gossamer on the palate', poised between creaminess and crisp zestiness.",
+      "full": "When the small white wine region of Rías Baixas in far northwestern Spain came to prominence in the 1990s, a new era in Spanish white wine history was born. With the exception of fortified Sherry and sparkling cava, the Spanish wines that had commanded world attention were almost exclusively red. By the late 1980s and early 1990s modern technology — above all temperature-controlled stainless-steel tanks — reached virtually all of Spain's top white wine producers and quality skyrocketed, with Rías Baixas leading the way. The region sits on the Atlantic just above Portugal, in the southern part of Galicia, and takes its name from the Galician rías: sharp, fjord-like estuaries that slice like cobalt swords into the baixas, the lower part of southern Galicia. It is one of the world's most breathtaking and unusual-looking wine regions — easy to mistake for Ireland or Wales but for the eucalyptus forests covering the steep hills and deep ravines. The best wines are made principally from the white albariño grape, and albariño — not Rías Baixas — is the name by which they are commonly known and labelled, in complete contrast to other Spanish regions, where wines are named for the place rather than the grape. Albariño's flavour profile is unique: not as zaftig as chardonnay, nor as minerally as riesling, nor as wild and herbal as sauvignon blanc, ranging from zingy citrus-peach to almond-honeysuckle. In texture albariños are beautifully poised between light creaminess and crisp zestiness, and because most are neither fermented nor aged in wood the best of them are as light as gossamer on the palate.",
       "knowledge": {
+        "grapes": [
+          "Albariño"
+        ],
+        "tiers": [
+          "Spain DO"
+        ],
         "attributes": {
           "key_grapes": [
-            "Albariño",
-            "Treixadura",
-            "Loureiro",
-            "Godello",
-            "Caíño Blanco"
+            "albariño"
           ],
-          "climate": "Cool Atlantic maritime, high rainfall",
-          "soil": "Granite, decomposed granite (sand), alluvial"
+          "climate": "cool, wet Atlantic maritime; steep hills and deep ravines around fjord-like rías",
+          "classification_system": "DO",
+          "signature": "albariño — labelled by GRAPE, not region, uniquely for Spain; citrus-peach to almond-honeysuckle, rarely oaked",
+          "texture": "poised between light creaminess and crisp zestiness; 'as light as gossamer on the palate'"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, Spain/Rías Baixas"
       }
     },
     "central otago": {
@@ -825,6 +1373,32 @@
           "soil": "Schist, loess, alluvial gravel, mica"
         },
         "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+      }
+    },
+    "adelaide hills": {
+      "short": "A cool-climate region just east of Adelaide — one of Australia's largest and most diverse, growing everything from riesling and sauvignon blanc to shiraz and cabernet.",
+      "full": "A cool-climate region just east of the city of Adelaide, the Adelaide Hills is one of the largest geographical regions in Australia and one of the most diverse. A wide range of grape varieties — everything from riesling, sauvignon blanc and chardonnay to shiraz and cabernet sauvignon — grows here. Viticulture in the Adelaide Hills began in the 1840s, but a modern industry took hold only after the 1970s. It is one of the top regions of South Australia, the state that produces more than half of all Australian wine.",
+      "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Chardonnay",
+          "Riesling",
+          "Sauvignon Blanc",
+          "Syrah"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "sauvignon blanc",
+            "chardonnay",
+            "riesling",
+            "shiraz (syrah)",
+            "cabernet sauvignon"
+          ],
+          "climate": "cool-climate, just east of Adelaide",
+          "signature": "breadth — one of Australia's largest and most diverse regions, spanning crisp whites to full reds",
+          "history": "viticulture from the 1840s; modern industry post-1970s"
+        },
+        "citation": "Wine Bible 2e, Australia/South Australia"
       }
     },
     "sauternes": {
@@ -845,26 +1419,28 @@
       }
     },
     "willamette valley": {
-      "short": "Oregon's premier wine region, internationally acclaimed for cool-climate Pinot Noir on volcanic Jory soils.",
-      "full": "The Willamette Valley stretches 150 miles south from Portland through western Oregon, sheltered by the Coast Range and Cascades. Its cool, marine-influenced climate closely parallels Burgundy, making it one of the New World's finest Pinot Noir sources. The volcanic Jory soils — deep, red, basalt-derived clay — are particularly prized in sub-AVAs like Dundee Hills, Eola-Amity Hills, and Ribbon Ridge. Chardonnay and Pinot Gris also perform exceptionally. The region has grown from a handful of pioneers in the 1960s (David Lett, Dick Erath) to over 700 wineries. Key producers include Domaine Drouhin, Eyrie Vineyards, Bergstrom, and Beaux Freres.",
+      "short": "The group of small appellations in Oregon's northwest corner that produce most of the state's best wines — the heartland of its signature pinot noir.",
+      "full": "Most of Oregon's best wines come from a group of small appellations that make up the Willamette Valley, in the northwest corner of the state. It is here that Oregon's specialty — pinot noir, a delicate and temperamental grape considered by many to make the most sensual red wines in the world — reaches its fullest expression. The valley's relatively cool, marginal climate, with about 40 inches (102 centimetres) of rain a year and the risk of frost in spring and fall, is the major factor in the elegance that characterises Oregon's top wines: grapes cannot burst into ripeness but must make their way slowly and methodically toward maturity and complexity. Willamette Valley is one of the American Viticultural Areas named on US labels alongside Napa Valley, the Finger Lakes and Columbia Valley.",
       "knowledge": {
+        "grapes": [
+          "Chardonnay",
+          "Pinot Gris",
+          "Pinot Noir"
+        ],
+        "tiers": [
+          "American Viticultural Area"
+        ],
         "attributes": {
-          "climate": "Cool maritime, marine-influenced",
-          "soil": "Volcanic Jory, marine sedimentary, loess",
           "key_grapes": [
-            "Pinot Noir",
-            "Chardonnay",
-            "Pinot Gris"
+            "pinot noir",
+            "chardonnay",
+            "pinot gris"
           ],
-          "sub_avas": [
-            "Dundee Hills",
-            "Eola-Amity Hills",
-            "Ribbon Ridge",
-            "Chehalem Mountains",
-            "McMinnville"
-          ]
+          "climate": "relatively cool and marginal — ~40 inches of rain a year, spring and fall frost risk",
+          "classification_system": "AVA — a group of small nested appellations",
+          "signature": "Oregon's finest pinot noir; elegance born of a cool, marginal climate"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, United States/Oregon"
       }
     },
     "paso robles": {
@@ -959,20 +1535,53 @@
       }
     },
     "jerez": {
-      "short": "The Sherry Triangle in Andalusia, producing the world's most diverse range of fortified wines from Palomino and Pedro Ximenez.",
-      "full": "The Jerez-Xeres-Sherry Denominacion de Origen protects one of the world's most complex and underappreciated wine styles. Centred on Jerez de la Frontera, El Puerto de Santa Maria, and Sanlucar de Barrameda in Cadiz province, the region's brilliant white albariza chalk soils and warm Mediterranean climate produce fortified wines of extraordinary variety. Biological aging under flor yeast creates the bone-dry Fino and Manzanilla styles; oxidative aging yields the nutty Amontillado and rich Oloroso. Palo Cortado — a rare style combining Amontillado finesse with Oloroso body — is among the wine world's great treasures. Sun-dried Pedro Ximenez grapes produce viscously sweet dessert wines. The solera fractional-blending system ensures consistency across vintages.",
+      "short": "The Sherry region of Andalusia — a chalk-white coastal triangle in southwest Spain where one neutral grape, palomino, is turned into more radically different styles of wine than anywhere on earth.",
+      "full": "Jerez, in the province of Andalusia in southwest Spain, is the home of Sherry — the three words Jerez, Xérès and Sherry on every bottle reflect the Spanish region, the original Phoenician name and the English one. Sherry is one of the five great wine classics alongside Port, Madeira, Champagne and Tokaji, and is arguably the most misunderstood and underappreciated of them; far from being a little old lady's drink, it is the daily drink of southern Spanish men. As a fortified wine its alcoholic strength is raised to between 15 and 22 percent (a standard table wine is 12 to 15), and Sherries are additionally given slow, careful and systematic exposure to oxygen, the degree varying by style. Nowhere else in the world are so many radically different styles of wine made from the SAME grape variety — palomino, which is fairly neutral when harvested, exactly the quality the solera process of fractional blending requires. The vineyards spread in a triangle from an inland point north of Jerez de la Frontera to the maritime towns of Puerto de Santa María on the Bay of Cádiz and Sanlúcar de Barrameda on the Atlantic at the mouth of the Guadalquivir; the best sites lie in the heart of that triangle, the zone designated Jerez Superior. It is an eerie, barren moonscape of blinding whiteness along the Andalusian coast — the stark, chalky-white shores from which Columbus began his westward sail, meaning Sherry was very likely the first European wine drunk in America.",
       "knowledge": {
+        "grapes": [
+          "Palomino"
+        ],
+        "tiers": [
+          "Spain DO"
+        ],
         "attributes": {
-          "climate": "Hot Mediterranean with Atlantic sea breezes",
-          "soil": "Albariza (chalk), barros, arenas",
           "key_grapes": [
-            "Palomino Fino",
-            "Pedro Ximenez",
-            "Moscatel"
+            "palomino",
+            "pedro ximénez"
           ],
-          "classification": "DO Jerez-Xeres-Sherry, DO Manzanilla-Sanlucar de Barrameda"
+          "climate": "hot Andalusian coastal; Atlantic and Bay of Cádiz influence",
+          "soil": "blinding chalky-white (albariza) coastal soils",
+          "classification_system": "DO; best sites designated Jerez Superior",
+          "signature": "fortified to 15-22% and deliberately oxidised; the solera process of fractional blending yields many radically different styles from one neutral grape",
+          "wine_type": "fortified",
+          "towns": [
+            "Jerez de la Frontera",
+            "Puerto de Santa María",
+            "Sanlúcar de Barrameda"
+          ]
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, Spain/Jerez"
+      }
+    },
+    "yarra": {
+      "short": "One of Victoria's most renowned districts — close to the sea and cooled by breezes off the Great Southern Ocean, where chardonnay and pinot noir thrive.",
+      "full": "The Yarra Valley is one of the most renowned wine districts of Victoria, mainland Australia's smallest and most southern wine state. Along with Geelong and the Mornington Peninsula it lies very close to the sea and benefits from the cool breezes that sweep in off the Great Southern Ocean; in these cool areas chardonnay and pinot noir grapes thrive. Victoria's districts vary considerably in climate, terrain and soil thanks in part to the Great Dividing Range, and the Yarra sits at the cool end of that range. Producers such as Yarra Yering and Mount Mary make delicious red blends here, and in 1986 the French Champagne house Moët & Chandon founded Chandon Australia in the Yarra Valley, continuing Victoria's long association with sparkling wine.",
+      "knowledge": {
+        "grapes": [
+          "Chardonnay",
+          "Pinot Noir"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "chardonnay",
+            "pinot noir",
+            "cabernet sauvignon",
+            "shiraz (syrah)"
+          ],
+          "climate": "cool — close to the sea, swept by breezes off the Great Southern Ocean",
+          "signature": "cool-climate chardonnay and pinot noir; sparkling wine (Chandon Australia, founded 1986)"
+        },
+        "citation": "Wine Bible 2e, Australia/Victoria"
       }
     }
   },
