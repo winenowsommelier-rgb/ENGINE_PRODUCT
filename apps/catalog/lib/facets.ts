@@ -100,32 +100,41 @@ export function regionsFor(_country: string, products: PublicProduct[]): FacetOp
     canonicalRegionForCountry(p.country ?? _country, p.region);
 
   // Pass 1: which region names exist in their own right? Only these may be chips.
+  // `display` fixes one properly-cased label per normalized key, so case-variant
+  // source values (California / california) collapse into ONE chip. Keying the
+  // tally by the raw value instead would emit two chips whose URLs each return the
+  // combined total — the chip-vs-grid divergence again, by another route.
   const own = new Set<string>();
+  const display = new Map<string, string>();
   for (const p of products) {
     const v = canonical(p).trim();
-    if (v) own.add(normGeo(v));
+    if (!v) continue;
+    const key = normGeo(v);
+    own.add(key);
+    if (!display.has(key)) display.set(key, v); // first-seen wins, deterministically
   }
 
   // Pass 2: tally each product into its own region plus any ancestor already present.
+  // Everything is keyed by normGeo; the display label is re-attached at the end.
   const counts = new Map<string, number>();
   for (const p of products) {
     const v = canonical(p).trim();
     if (!v) continue;
-    const buckets = new Map<string, string>(); // normalized key -> display value
-    buckets.set(normGeo(v), v);
+    const buckets = new Set<string>([normGeo(v)]);
     for (const ancestor of regionAncestors(p.country ?? _country, p.region)) {
       const key = normGeo(ancestor);
       // Skip ancestors with no products of their own — do not invent chips.
-      if (!own.has(key) || buckets.has(key)) continue;
-      buckets.set(key, ancestor);
+      if (!own.has(key)) continue;
+      buckets.add(key); // Set dedupes: never count one product twice under one region
+      if (!display.has(key)) display.set(key, ancestor);
     }
-    for (const display of buckets.values()) {
-      counts.set(display, (counts.get(display) ?? 0) + 1);
+    for (const key of buckets) {
+      counts.set(key, (counts.get(key) ?? 0) + 1);
     }
   }
 
   return [...counts.entries()]
-    .map(([value, count]) => ({ value, count }))
+    .map(([key, count]) => ({ value: display.get(key) ?? key, count }))
     .sort(
       (a, b) =>
         b.count - a.count ||

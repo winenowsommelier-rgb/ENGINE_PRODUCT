@@ -72,22 +72,42 @@ export function isRegionLevelValueForCountry(
     || parentValuesForCountry(country).has(rawKey);
 }
 
+/**
+ * Walk a child->parent table upward from `start`, nearest first.
+ *
+ * Cycle-safe: a repeated name ends the walk, so each ancestor appears AT MOST ONCE
+ * and no region is ever reported as its own ancestor. A bare bounded loop is not
+ * enough — it stops the hang but still returns garbage (a->b, b->a yielded
+ * ['B','A','B','A','B','A','B','A']). The bound stays as a second guard.
+ *
+ * Exported for testing the cycle guard against a synthetic table; the real table is
+ * acyclic, so the guard is otherwise unreachable from production data.
+ */
+export function walkAncestors(
+  table: Record<string, string> | undefined,
+  start: string,
+): string[] {
+  const out: string[] = [];
+  const visited = new Set<string>([start]);
+  let cursor = start;
+  for (let i = 0; i < 8; i += 1) {
+    const parent = table?.[cursor];
+    if (!parent) break;
+    const parentKey = normGeo(parent);
+    if (visited.has(parentKey)) break; // cycle — stop before repeating a name
+    visited.add(parentKey);
+    out.push(parent);
+    cursor = parentKey;
+  }
+  return out;
+}
+
 /** The chain of ancestor names above a region, nearest first. Empty when top-level. */
 export function regionAncestors(
   country: string | null | undefined,
   region: string | null | undefined,
 ): string[] {
-  const countryKey = normGeo(country);
-  const out: string[] = [];
-  let cursor = normGeo(region);
-  // Bounded walk — the table is shallow, but guard against a future cycle.
-  for (let i = 0; i < 8; i += 1) {
-    const parent = HIERARCHY_PARENT[countryKey]?.[cursor];
-    if (!parent) break;
-    out.push(parent);
-    cursor = normGeo(parent);
-  }
-  return out;
+  return walkAncestors(HIERARCHY_PARENT[normGeo(country)], normGeo(region));
 }
 
 /**
