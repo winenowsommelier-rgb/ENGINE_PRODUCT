@@ -3,6 +3,7 @@ import path from 'path';
 import { describe, it, expect } from 'vitest';
 import { getRecommendations, getRecommendationsWithBands, precomputeRecommendations, priceBand, scoreCandidateDetailed } from '@/lib/recommender';
 import { buildBaseSkuMap } from '@/lib/co-purchase';
+import { popularityCutoffP75, popularityTier } from '@/lib/recommended-rank';
 import type { Band } from '@/lib/types';
 
 const base = { sku:'A', name:'A', region:'Bordeaux', variety:'Cabernet',
@@ -1232,5 +1233,76 @@ describe('Beer & RTD category_type purity (real catalog, end-to-end invariant)',
     }
 
     expect(leaks).toEqual([]);
+  });
+});
+
+// The popularity signal (+1 when BOTH sides are popularity_tier === 2) is scored
+// in scoreCandidateDetailed, but `popularity_tier` is NOT a field of the raw
+// export — it is DERIVED at load time in catalog-data.ts's load(), from the
+// client-forbidden `popularity_score`, via popularityCutoffP75/popularityTier.
+//
+// That derivation is a deliberate privacy chokepoint: the raw score must never
+// reach a client, only the coarse 0/1/2 bucket. But it also means any pipeline
+// feeding precomputeRecommendations WITHOUT that derivation scores every product
+// as tier `undefined`, so the popularity branch can never fire.
+//
+// scripts/gen-recs-cache.mjs — the ONLY producer of the recs-cache.json that
+// ships — spread raw export rows and coerced only is_in_stock. So in production
+// the popularity signal was silently dead: 0/11,934 rows carried popularity_tier
+// while 3,301 carried a real popularity_score.
+describe('popularity signal reaches the precompute pipeline', () => {
+  it('the raw export does NOT carry popularity_tier — it must be derived', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    const withTier = liveRows.filter(
+      (p) => p.popularity_tier !== undefined && p.popularity_tier !== null);
+    const withScore = liveRows.filter(
+      (p) => typeof p.popularity_score === 'number' && p.popularity_score > 0);
+
+    // Pins the premise: tier absent, score present. If a future export ships
+    // popularity_tier directly this fails, so the derivation — and the privacy
+    // question behind it — gets re-examined rather than silently bypassed.
+    expect(withTier.length).toBe(0);
+    expect(withScore.length).toBeGreaterThan(0);
+  });
+
+  it('deriving the tier makes the popularity signal actually fire', () => {
+    const exportPathFile = findRealFile('data/live_products_export.json');
+    const liveRaw = JSON.parse(fs.readFileSync(exportPathFile!, 'utf8'));
+    const liveRows: any[] = Array.isArray(liveRaw) ? liveRaw : (liveRaw.products ?? []);
+
+    const cutoff = popularityCutoffP75(liveRows);
+    const tier2 = liveRows
+      .map((p) => popularityTier(p.popularity_score, cutoff))
+      .filter((t) => t === 2).length;
+    // A real top-quartile population must exist, else the signal is pointless.
+    expect(tier2).toBeGreaterThan(0);
+
+    // ...and two tier-2 products must actually earn the +1, proving the branch
+    // is reachable once the field is populated.
+    const s: any = { sku:'A', name:'A', region:'Bordeaux', country:'France',
+      category_group:'Wine', category_type:'Red Wine', price:1000, is_in_stock:true };
+    const withPop = scoreCandidateDetailed(
+      { ...s, sku:'A', popularity_tier: 2 }, { ...s, sku:'B', popularity_tier: 2 });
+    const withoutPop = scoreCandidateDetailed(
+      { ...s, sku:'A' }, { ...s, sku:'B' });
+    expect(withPop.breakdown.popularity).toBe(1);
+    expect(withoutPop.breakdown.popularity).toBeUndefined();
+  });
+
+  it('REGRESSION: the shipped recs-cache pipeline must derive popularity_tier', () => {
+    // The actual bug. gen-recs-cache.mjs must not hand raw rows straight to
+    // precomputeRecommendations — that silently disables the signal in prod.
+    const genScript = findRealFile('apps/catalog/scripts/gen-recs-cache.mjs');
+    expect(genScript).toBeTruthy();
+    const src = fs.readFileSync(genScript!, 'utf8');
+
+    expect(src).toMatch(/popularityCutoffP75/);
+    expect(src).toMatch(/popularityTier/);
+    expect(src).toMatch(/popularity_tier/);
+    // ...and must NOT copy the client-forbidden raw score into the payload.
+    expect(src).not.toMatch(/popularity_score\s*:/);
   });
 });
