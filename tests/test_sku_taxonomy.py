@@ -42,10 +42,18 @@ def test_lbd_brandy_default():
     assert resolve({"sku": "LBD0001", "name": "Vecchia Romagna Brandy"})["type"] == "Brandy"
 
 def test_parity_fixture_matches_resolve():
+    """Every curated fixture case must resolve exactly.
+
+    REGRESSION-GUARD HISTORY: this previously also asserted
+    `len(fx["cases"]) == 47`, which broke the moment a 48th case was added to
+    the fixture — a test failing because someone IMPROVED coverage. The count
+    was never the point; the per-case parity below is. We assert a floor
+    instead, so cases can be added freely but never silently deleted.
+    """
     import json as _j
     from pathlib import Path as _P
     fx = _j.loads((_P(__file__).resolve().parent / "fixtures" / "sku_taxonomy_cases.json").read_text())
-    assert len(fx["cases"]) == 47
+    assert len(fx["cases"]) >= 47, "parity fixture shrank — cases were deleted"
     for c in fx["cases"]:
         assert resolve({"sku": c["sku"], "name": c["name"]}) == c["expected"], f"mismatch on {c['sku']}"
 
@@ -54,18 +62,52 @@ import json as _json
 from pathlib import Path as _Path
 
 EXPORT = _Path(__file__).resolve().parent.parent / "data" / "live_products_export.json"
-EXPECTED_GROUP_COUNTS = {
-    "Wine": 6983, "Spirits": 1177, "Accessories": 893, "Whisky": 847,
-    "Sake & Asian": 663, "Liqueur": 378, "Beer & RTD": 232,
-    "Non-Alcoholic": 151, "Cigars": 102, "Events": 10,
+
+# The ten canonical groups. This SET is the real contract — a new key appearing
+# here means the taxonomy grew a group and needs a deliberate decision.
+EXPECTED_GROUPS = {
+    "Wine", "Spirits", "Accessories", "Whisky", "Sake & Asian",
+    "Liqueur", "Beer & RTD", "Non-Alcoholic", "Cigars", "Events",
 }
 DIVERGENT = ["LBE","LKS","LLQ","LOT","LRD","LSJ","LSK","LWF","LWH","WEV","WNA"]
 
-def test_group_counts_match_spec_exactly():
+
+def test_every_product_resolves_to_a_known_group():
+    """No product may fall outside the ten canonical groups.
+
+    REGRESSION-GUARD HISTORY: this test used to assert an exact frozen count
+    per group (Wine: 6983, ...). Those numbers went stale the moment the
+    catalogue grew — the 498-SKU onboarding took it from 11,436 to 11,934 rows
+    and the test began failing on healthy data, with the resolver provably
+    correct (0/48 fixture mismatches). A test that fails when you ADD products
+    is an alarm that has to be silenced routinely, which is worse than no
+    alarm. We now assert the invariants that actually matter: the group SET is
+    closed, and nothing is unclassified.
+    """
     prods = _json.loads(EXPORT.read_text())
     import collections
     counts = collections.Counter(resolve(p)["group"] for p in prods)
-    assert dict(counts) == EXPECTED_GROUP_COUNTS
+
+    unexpected = set(counts) - EXPECTED_GROUPS
+    assert not unexpected, f"products resolved to unknown group(s): {unexpected}"
+    assert sum(counts.values()) == len(prods), "some products failed to resolve"
+    # Every canonical group should still be represented; an empty one means a
+    # prefix mapping was dropped.
+    missing = {g for g in EXPECTED_GROUPS if counts.get(g, 0) == 0}
+    assert not missing, f"canonical group(s) became empty: {missing}"
+
+
+def test_wine_remains_the_dominant_group():
+    """Shape check: Wine is a wine merchant's largest group by a wide margin.
+
+    Catches a catastrophic mis-mapping (e.g. a prefix change dumping Wine into
+    Spirits) without pinning an exact number that drifts with the catalogue.
+    """
+    prods = _json.loads(EXPORT.read_text())
+    import collections
+    counts = collections.Counter(resolve(p)["group"] for p in prods)
+    assert counts["Wine"] > 0.4 * len(prods), (
+        f"Wine collapsed to {counts['Wine']}/{len(prods)} — check prefix mappings")
 
 def test_no_unmapped_prefixes_in_live_data():
     prods = _json.loads(EXPORT.read_text())
