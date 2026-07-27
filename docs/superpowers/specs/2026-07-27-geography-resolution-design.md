@@ -763,3 +763,73 @@ not missing taxonomy entries.
 Σ `ownTotal` = 10,776 against 10,778 eligible rows. The delta is exactly **2 rows that
 have no country, region OR subregion** — nowhere to pin them. No row lost, none
 double-counted.
+
+---
+
+## 12. DESIGN CORRECTION (Task 8) — appellation pinning deferred; `total` redefined
+
+Task 8's empirical measurement disproved a core premise of §4. Recorded here because the
+spec asserted it repeatedly and would otherwise mislead the next reader.
+
+### 12.1 The error — pinning on one column, querying another
+
+§A2/§A3a specified that a row whose `subregion` value names an appellation should pin at
+**appellation level**, handing off to `/shop` as `?appellation=<name>`.
+
+**That cannot work.** The resolver pins based on the row's `region`/`subregion` value, but
+the hand-off queries the `appellation` COLUMN — which is populated on only
+**956 of 11,934 rows (8%)**. The two sets barely intersect:
+
+| Value | rows via `subregion` | rows via `appellation` |
+|---|---|---|
+| Brunello di Montalcino | 61 | **0** |
+| Amarone della Valpolicella | 61 | **0** |
+| Châteauneuf-du-Pape | 62 | **0** |
+| Barolo | 99 | 75 |
+
+All 24 appellation-level pins failed the invariant; most would have shipped **links to
+empty grids**. §A3a's claim that adding the `appellation` filter clause "unblocks
+4-level pinning" was wrong — the filter works fine, but nothing populates the column it
+reads.
+
+**Resolution: Phase A ships THREE levels** (country → region → subregion). Values that
+match only an appellation entry fall through to the region fallback or roll up. The
+`PinLevel` type keeps its `'appellation'` member and the `shop-query.ts` appellation
+filter stays — both are correct and independently useful; there is simply no pin feeding
+the filter until the column is populated (a Phase B concern).
+
+### 12.2 `total` redefined — computed from the hand-off, not derived from the tree
+
+§A3's table said a region pin compares against `inclusiveTotal`. **Also wrong**, for a
+second independent reason: `regionMatchesFilter` deliberately widens `?region=X` to
+include descendants via the ancestor table, while region-classified values sitting in the
+`subregion` column resolve as region-level *siblings* rather than children.
+
+Measured for California: `ownTotal`=191, `inclusiveTotal`=534, **grid=620**. No field of
+the tree equals the grid, and 88 of 379 region pins matched neither total.
+
+**New definition: `total` is the count the pin's own `/shop` hand-off returns.** The
+generator computes it by evaluating the same predicate `shopHref` produces. This makes the
+strict invariant true *by construction* at every level, and `total` becomes what the user
+actually sees when they click through.
+
+`ownTotal` and `inclusiveTotal` remain emitted — they are meaningful for the drawer and
+for the subtree-consistency test — but they are no longer what the invariant compares.
+
+### 12.3 Two further defects surfaced
+
+**Degenerate pins.** Nodes where `name == country` (`France/France`, `Italy/Italy`,
+`USA/USA`) can never produce a working link — `normalizeShopParams` strips those params.
+Suppressed at generation.
+
+**`ownTotal != total` is a data-quality signal.** Napa (own 300 / grid 299 — one row has
+`region='Napa Valley'` with a blank subregion) and Chablis (own 80 / grid 72 — 8 rows sit
+under `region='Beaujolais'`) are genuine row-tagging defects. Now surfaced as a build-time
+warning next to the gap report (Rule 2) rather than silently absorbed.
+
+### 12.4 Process note
+
+This error survived three adversarial spec reviews and five implementation tasks. It was
+caught only when an implementer ran the real predicate against the real export instead of
+reasoning about the schema. **Measuring the actual join is not the same as reading the
+column names** — a filter existing does not mean the column feeding it is populated.
