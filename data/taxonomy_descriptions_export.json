@@ -180,17 +180,22 @@
       }
     },
     "douro": {
-      "short": "Portugal's most dramatic region — birthplace of Port and celebrated unfortified reds.",
-      "full": "UNESCO site. Port from Touriga Nacional blends. Unfortified Douro reds offer structure and concentration at great value.",
+      "short": "The steep banks of the golden river in northeastern Portugal — birthplace of Port, and today also the source of serious dry reds built on touriga nacional.",
+      "full": "The Douro valley in northeastern Portugal is the home of Port. The ancient Romans prized the juicy red wines from the steep banks of the Douro River, but centuries passed before the British transformed them into Port — what the book calls Britain's early version of central heating. The famous Port firms were mostly begun by men with British names — Sandeman, Croft, Graham, Cockburn, Dow, Warre — and if Portugal is the mother of Port, Britain is certainly its father. By the seventeenth century wine was regularly being fortified with grape spirits simply to keep it stable on the voyage to England, at first only about 3 percent. Then the remarkable 1820 vintage produced wine that was naturally rich, ripe and sweet, and sales soared; the next year shippers added more brandy and added it sooner, arresting fermentation earlier to leave more sweetness. Over many decades the quantity of spirits was incrementally increased, producing a wine that is both sweet and substantially fortified. The name Port derives from the city of Oporto, a major port on the Atlantic at the mouth of the Douro — the golden river — and Portugal's second largest city after Lisbon; historically, barrels were floated down from the inland vineyards of the Upper Douro to Oporto in narrow, shallow-bottomed boats called barcos rabelos. Touriga nacional, probably native to the Dão, is the leading powerhouse grape in many Port blends and is also used in the dry wines of the Douro, bringing richness, depth, a commanding tannic structure, deep colour and fine aromas.",
       "knowledge": {
+        "grapes": [
+          "Touriga Nacional"
+        ],
         "attributes": {
           "key_grapes": [
-            "Touriga Nacional",
-            "Touriga Franca",
-            "Tinta Roriz"
-          ]
+            "touriga nacional"
+          ],
+          "climate": "hot, dry continental valley on steep river banks",
+          "signature": "Port — fortified and sweet — plus increasingly serious dry Douro reds",
+          "history": "fortification began as voyage stabilisation (~3% spirit); the 1820 vintage drove the modern sweet, fortified style",
+          "name_origin": "Oporto, at the mouth of the Douro ('golden river')"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, Portugal/Port"
       }
     },
     "veneto": {
@@ -429,20 +434,30 @@
       }
     },
     "mendoza": {
-      "short": "Argentina's wine capital at the foot of the Andes — the world's definitive Malbec region.",
-      "full": "Mendoza produces over 70% of Argentine wine. Uco Valley subregions at 1,000-1,500m produce refined, mineral Malbec. Luján de Cuyo offers rounder wines. Beyond Malbec, excellent Cabernet Franc is emerging.",
+      "short": "Argentina's leading wine province and the heartbeat of its industry — high-desert vineyards at 4,000 feet framed by the Andes, and the home of the vast majority of Argentine malbec.",
+      "full": "Mendoza is the name of Argentina's leading wine province and of its capital city, founded in 1561; both were named for Don García Hurtado de Mendoza, a sixteenth-century Chilean governor, from the era when Mendoza belonged to the Captaincy of Chile. Huddled in the high desert foothills of the Andes, the province covers more than 36 million acres — at over 57,000 square miles it is about the size of New York State — though less than 5 percent of its surface is planted with vines. Mendoza is more than the leading wine region: it is the heartbeat of the Argentine wine industry. Of roughly 1,400 wineries in Argentina, nearly 1,000 are in this one province, and a majority of all Argentine wine, including the vast majority of all malbec, is grown here. The region lies directly west of Buenos Aires, some 1,000 miles inland from the Atlantic; its vineyards, at 4,000 feet (1,200 metres) and more, are the highest in the country and are framed by the snowcapped Andes. The climate is extremely dry, with intense sunlight — what Mendozans call 'sunlight density' — but temperatures stay generally mild thanks to the elevation. The most important subregions lie south of Mendoza city along the Ruta 40 corridor, including Luján de Cuyo and the Uco Valley (itself made up of Tupungato, Tunuyán and San Carlos). Malbec, native to Cahors in southwest France where it is called côt, behaves quite differently here: where Cahors côt is extremely hard, sleek and tannic, Argentine malbec is usually remarkably soft, rich and palate-coating. In arid Argentina the variety thrived, and the country may now have the deepest DNA pool of malbec clones in the world.",
       "knowledge": {
+        "grapes": [
+          "Cabernet Sauvignon",
+          "Chardonnay",
+          "Malbec"
+        ],
         "attributes": {
           "key_grapes": [
-            "Malbec",
-            "Cabernet Sauvignon",
-            "Cabernet Franc",
-            "Bonarda",
-            "Torrontés"
+            "malbec",
+            "cabernet sauvignon",
+            "chardonnay"
           ],
-          "climate": "High-altitude continental desert"
+          "climate": "high-desert — extremely dry, intense 'sunlight density', mild temperatures thanks to altitude",
+          "elevation": "4,000 ft (1,200 m) and above — the highest in Argentina",
+          "signature": "soft, rich, palate-coating malbec — the opposite of Cahors' hard, sleek, tannic côt",
+          "subregions": [
+            "Luján de Cuyo",
+            "Uco Valley (Tupungato, Tunuyán, San Carlos)"
+          ],
+          "scale": "~1,000 of Argentina's ~1,400 wineries; <5% of the province is planted to vine"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, Argentina"
       }
     },
     "aconcagua valley": {
@@ -687,17 +702,48 @@
       }
     },
     "marlborough": {
-      "short": "World capital of Sauvignon Blanc — explosive aromatics from New Zealand.",
-      "full": "Marlborough produces 75%+ of NZ wine. Passionfruit, gooseberry, cut-grass Sauvignon Blanc with bracing acidity.",
+      "short": "The region whose sauvignon blanc put New Zealand on the world wine map — explosive yet taut wines evoking a whole spectrum of fresh greens over an exotic tropical backdrop.",
+      "full": "Marlborough is the heartland of the wine that made New Zealand famous. In the mid-1980s, almost against all odds, one wine rose to extraordinary fame — Cloudy Bay Sauvignon Blanc — and its first few vintages put the whole of New Zealand on the international wine map. It was the first time a single wine had ever had such impact, made more surprising because sauvignon blanc was then considered something of a second-string variety. Sauvignon blanc is now the leading variety in the country and the wine that dominates exports, and New Zealand sauvignon blancs have no parallel anywhere in the world: explosive yet taut, they evoke a spectrum of fresh greens — limes, wild herbs, watercress, gooseberries, green olives, green figs, green tea, green melons — over an exotic tropical backdrop hinting at mango, papaya or passion fruit. The combination makes for untamed, unleashed wines true to their name, sauvignon deriving from the French sauvage, 'wild'. Greenness is a double-edged sword, and for the top estates the key has been to harness sauvignon's freshness and zing while leaving out strident, raw, unripe flavours. Most are fermented in stainless steel so the green and tropical flavours are not bogged down by oak, and the best are dry — leaving residual sugar to mask unripe, vegetal wine is regarded as a cheap trick. Marlborough is also a significant source of the country's increasingly successful pinot noir.",
       "knowledge": {
+        "grapes": [
+          "Pinot Noir",
+          "Riesling",
+          "Sauvignon Blanc"
+        ],
         "attributes": {
           "key_grapes": [
-            "Sauvignon Blanc",
-            "Pinot Noir",
-            "Chardonnay"
-          ]
+            "sauvignon blanc",
+            "pinot noir",
+            "riesling"
+          ],
+          "climate": "cool maritime — no New Zealand vineyard is more than 80 miles from the sea; long, gentle growing season",
+          "signature": "explosive yet taut sauvignon blanc — fresh greens over an exotic tropical backdrop",
+          "winemaking": "mostly stainless steel to protect green/tropical flavours; top examples are dry",
+          "history": "Cloudy Bay Sauvignon Blanc (mid-1980s) put New Zealand on the international wine map"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, New Zealand"
+      }
+    },
+    "martinborough": {
+      "short": "A small North Island region at the southern tip of the Wairarapa, known with Marlborough and Central Otago for New Zealand's earthy, elegant pinot noir.",
+      "full": "Martinborough is a small but highly regarded New Zealand wine region and, with Marlborough and Central Otago, one of the addresses most associated with the country's earthy, elegant pinot noir. Pinot noir has proven hugely successful in New Zealand in a very short time — national plantings doubled between 2003 and 2013 — and winemakers at top estates such as Ata Rangi and Dry River began experimenting with pinot noir clones only in the late 1980s, so growers are still discovering the best sites and methods. Ata Rangi's Clive Paton was given cuttings of what became known as the Gumboot or Abel Clone, now behind some of the best pinot noirs in the country. As everywhere in New Zealand, the cool maritime climate — no vineyard is more than 80 miles from the sea — lets fruit ripen evenly and gently over a long season and preserves a good amount of natural acidity.",
+      "knowledge": {
+        "grapes": [
+          "Chardonnay",
+          "Pinot Noir",
+          "Sauvignon Blanc"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "pinot noir",
+            "sauvignon blanc",
+            "chardonnay"
+          ],
+          "climate": "cool maritime, at the southern tip of the North Island",
+          "signature": "earthy, elegant pinot noir",
+          "note": "home of Ata Rangi, where the Gumboot/Abel clone was first grown on"
+        },
+        "citation": "Wine Bible 2e, New Zealand"
       }
     },
     "maule": {
@@ -1007,6 +1053,26 @@
         "citation": "Wine Bible 2e, Italy/Friuli-Venezia Giulia"
       }
     },
+    "rheinhessen": {
+      "short": "A German wine region in the Rhine heartland — part of a country considered one of the world's top producers of elegant white wines.",
+      "full": "Rheinhessen is one of Germany's wine regions, lying in the Rhine heartland. Germany is considered one of the world's top producers of elegant white wines — its best rieslings have ravishing purity and concentration — and its vineyards lie at the northernmost extreme of where grapes can dependably ripen. The majority of fine German wines are dry or just a touch off-dry; the exceptions are the expensive late-harvest dessert wines (beerenauslesen, trockenbeerenauslesen and eisweins), which are crafted to be sweet. German wine is organised by a traditional hierarchy of six ascending ripeness levels, and since the turn of the twenty-first century by the modern, vineyard-based VDP system adopted by more than two hundred of the country's most prestigious estates. Acidity is the German constant: most German wines carry 6 to 8 grams per litre, against 5 to 6 for most Champagne.",
+      "knowledge": {
+        "grapes": [
+          "Riesling",
+          "Silvaner"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "riesling",
+            "silvaner"
+          ],
+          "climate": "northern European, in the Rhine heartland",
+          "classification_context": "traditional ripeness ladder (kabinett to TBA) plus the modern VDP system",
+          "national_context": "German wines typically carry 6-8 g/l acidity"
+        },
+        "citation": "Wine Bible 2e, Germany"
+      }
+    },
     "rhône valley": {
       "short": "Syrah-driven Northern Rhône and Grenache-dominated Southern Rhône — two wine worlds in one valley.",
       "full": "Northern Rhône: steep terraced Syrah at Côte-Rôtie, Hermitage, Cornas. Southern Rhône: Grenache blends at Châteauneuf-du-Pape, Gigondas. Côtes du Rhône provides everyday drinking of remarkable quality.",
@@ -1109,16 +1175,62 @@
       }
     },
     "mosel": {
-      "short": "Germany's most dramatic wine landscape — steep slate slopes, Riesling of unmatched delicacy.",
-      "full": "Steep slate vineyards along the Mosel River produce low-alcohol, high-acidity Riesling of crystalline purity.",
+      "short": "Where Germany's most ravishingly elegant wines are made — riesling of crystalline clarity from the steepest vineyards in Germany, on grey-blue slate above a snaking river gorge.",
+      "full": "The Mosel is where Germany's most ravishingly elegant wines are made. The region — some 21,700 acres (8,800 hectares) — is defined by the hauntingly beautiful and eerily still Mosel River, which cuts a deep, snakelike gorge through the land, entering Germany where the country converges with Luxembourg and France and winding about 145 miles northeast until it empties into the Rhine near Koblenz; the Saar and the Ruwer are its small tributaries. The Mosel's greatest grape is riesling, but that states the case too simply, for here riesling is turned into wines of such crystalline clarity they are like glittering sunlight on a subzero day. The reasons are several. The vineyards are the steepest in Germany and among the steepest in the world — the stretch from Zelting to Bernkastel is considered the longest run of near-vertical vineyards anywhere on the globe, and the steepest vineyard in the world, Calmont, has a 60- to 70-degree incline that makes it look like a vertical wall of vines gripping the slatey cliff. They are also among Germany's most northern. Steepness in a cold, northern region means the sun is in contact with the vines for limited, precious hours each day, and the total sunlight during the growing season is modest — in a good year the Mosel gets about a third of the sunlight hours that Provence does. So vineyards must be perfectly sited to maximise every ray, and the region's famous grey-blue slate holds heat well, helping riesling to ripen.",
       "knowledge": {
+        "grapes": [
+          "Riesling"
+        ],
         "attributes": {
           "key_grapes": [
-            "Riesling"
+            "riesling"
           ],
-          "climate": "Cool continental, river-moderated"
+          "climate": "cold and northern, with modest sunlight — about a third of Provence's growing-season hours in a good year",
+          "soil": "famous grey-blue slate, which holds heat and helps riesling ripen",
+          "signature": "riesling of crystalline clarity and ravishing elegance",
+          "topography": "the steepest vineyards in Germany and among the steepest in the world (Calmont: 60-70 degrees)",
+          "size": "21,700 acres (8,800 ha) along a 145-mile river gorge"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, Germany/The Mosel"
+      }
+    },
+    "rheingau": {
+      "short": "The region on which Germany's white-wine reputation was historically built — a continuous south-facing slope above the Rhine giving richer, rounder, more voluptuous riesling.",
+      "full": "Germany's reputation as the greatest white-wine producing nation in the world was historically based largely on the Rheingau. Today the supremacy of this very small region (7,744 acres/3,134 hectares) is challenged by wines from the Mosel and the Pfalz, yet the Rheingau has the longest history of quality winemaking of any region in Germany. It is a serene, aristocratic region — one long, virtually continuous horizontal slope, a rolling carpet of vines, with the densely forested Taunus Mountains rising behind. In a sense the mountains created the region: they abruptly halted the Rhine's northward flow and forced it west for 20 miles before it could resume, leaving a nearly ideal, immense south-facing bank backed by forests that block cold northern winds. The leading grape is riesling — the first record of riesling planted in Germany dates from 1435 at Schloss Johannisberg, a former Benedictine abbey in the Rheingau — and of all German regions the Rheingau has the highest percentage of riesling, nearly 80 percent of its acreage. The rieslings here are entirely different from Mosel rieslings: richer, rounder, earthier and more voluptuous. Absent are the Mosel's icicle-like sharpness and slate flavours, and in their place is a near perfect gripping expression of lip-smacking fruit; the best have amazing breadth, suggesting everything from violets and cassis to apricots and honey. Sun, soil and latitude make the difference — the Rheingau lies farther south than the Mosel, its south-facing bank rises gently from a river that acts as a giant sunlight reflector, and its soil is not solely slate but a vast mixture including loess, loam, limestone, marl, sand and quartzite.",
+      "knowledge": {
+        "grapes": [
+          "Riesling"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "riesling"
+          ],
+          "climate": "farther south than the Mosel; a south-facing bank sheltered by the forested Taunus Mountains",
+          "soil": "loess, loam, limestone, marl, sand and quartzite — not solely slate",
+          "signature": "richer, rounder, earthier, more voluptuous riesling than the Mosel's",
+          "history": "first record of riesling in Germany, 1435, at Schloss Johannisberg; longest quality-winemaking history",
+          "riesling_share": "nearly 80% of acreage — the highest in Germany"
+        },
+        "citation": "Wine Bible 2e, Germany/The Rheingau"
+      }
+    },
+    "pfalz": {
+      "short": "One of Germany's leading regions alongside the Mosel and Rheingau, and a source of many of the country's most delicious modern wines.",
+      "full": "The Pfalz is named by The Wine Bible, together with the Mosel, as one of the regions whose many delicious wines now challenge the historic supremacy of the Rheingau. Germany as a whole is considered one of the world's top producers of elegant white wines, its best rieslings having ravishing purity and concentration, and its vineyards lie at the northernmost extreme of where grapes can dependably ripen. The majority of fine German wines are dry or just a touch off-dry, the exceptions being the expensive late-harvest dessert wines — beerenauslesen, trockenbeerenauslesen and eisweins — which are crafted to be sweet. More than any other country Germany has benefited from climate change: in the 1960s and 1970s only two or three vintages a decade yielded ripe grapes, whereas virtually every vintage now does. Ripeness still proceeds incrementally, with few heat waves, which is an advantage because slowly ripened grapes develop more complex flavours. If anything has been a German constant it is acidity: where most Champagnes carry 5 to 6 grams per litre, German wines usually possess 6 to 8.",
+      "knowledge": {
+        "grapes": [
+          "Riesling",
+          "Silvaner"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "riesling"
+          ],
+          "climate": "northern European; German vineyards sit at the northernmost extreme of dependable ripening",
+          "signature": "one of the regions now challenging the Rheingau's historic supremacy",
+          "national_context": "German wines typically carry 6-8 g/l acidity vs 5-6 g/l for most Champagne"
+        },
+        "citation": "Wine Bible 2e, Germany"
       }
     },
     "maipo valley": {
@@ -1178,21 +1290,27 @@
       }
     },
     "hawke's bay": {
-      "short": "New Zealand's oldest wine region and its finest for Bordeaux-style reds, Syrah, and Chardonnay.",
-      "full": "Hawke's Bay on the North Island's east coast is New Zealand's warmest and driest major wine region, making it ideally suited to red varieties. The Gimblett Gravels subregion — an area of free-draining, heat-retaining river gravels — has established itself as New Zealand's premier Cabernet and Merlot terroir. Syrah from Hawke's Bay, particularly from Bridge Pa Triangle and Te Awanga, is increasingly recognised as world-class, combining Northern Rhône structure with New World fruit purity. Craggy Range, Te Mata (Coleraine), and Trinity Hill are leading producers. Chardonnay from Hawke's Bay is among New Zealand's best.",
+      "short": "A warmer North Island region in one of the coolest maritime wine countries of the New World — a long, gentle growing season yielding wines of pure, intense flavour.",
+      "full": "Hawke's Bay is one of New Zealand's established North Island wine regions. The factor that most influences New Zealand's grapes, and hence its wines, is the coolness of the climate: the country has some of the coolest maritime wine regions in the New World, and because of the long, narrow shape of the two main islands no vineyard is more than 80 miles (130 kilometres) from the sea. That cool, steady climate allows grapes to ripen evenly and gently over a long growing season, culminating in a harvest that can take place anytime from March to May. In the best circumstances the length of the growing season leads to elegant wines with wonderfully pure flavours — it is often said that New Zealand produce, grapes included, has an intensity of flavour rarely found elsewhere — and a cool climate also means the grapes carry a good amount of natural acidity, which for the best whites translates into a dazzling sense of crispness. New Zealand's wine industry remains tiny by global standards, accounting for less than 1 percent of world production.",
       "knowledge": {
+        "grapes": [
+          "Chardonnay",
+          "Merlot",
+          "Sauvignon Blanc",
+          "Syrah"
+        ],
         "attributes": {
           "key_grapes": [
-            "Merlot",
-            "Cabernet Sauvignon",
-            "Syrah",
-            "Chardonnay",
-            "Viognier"
+            "chardonnay",
+            "sauvignon blanc",
+            "merlot",
+            "cabernet sauvignon",
+            "syrah"
           ],
-          "climate": "Warm maritime, low rainfall",
-          "soil": "River gravels (Gimblett Gravels), alluvial, limestone"
+          "climate": "cool maritime, warmer than the South Island regions; no vineyard more than 80 miles from the sea",
+          "signature": "pure, intense flavours from a long, gentle growing season; naturally high acidity"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, New Zealand"
       }
     },
     "marche": {
@@ -1359,20 +1477,25 @@
       }
     },
     "central otago": {
-      "short": "The world's southernmost wine region — Pinot Noir of extraordinary intensity from New Zealand's dramatic mountain landscape.",
-      "full": "Central Otago in the South Island is the world's southernmost wine region (45th parallel) and the only major wine region in New Zealand with a continental rather than maritime climate. The combination of extreme UV levels, massive diurnal temperature variation (up to 20°C), and poor schist soils produces Pinot Noir of remarkable intensity, dark fruit concentration, and mineral drive. Bannockburn, Gibbston Valley, Bendigo, and Wanaka are key subregions, each with distinct character. The region is spectacularly beautiful, with vineyards set against mountains and lakes. Felton Road, Mt Difficulty, and Burn Cottage are benchmark producers.",
+      "short": "Home to the southernmost vineyards on earth and a leading source of New Zealand's earthy, elegant pinot noir.",
+      "full": "Central Otago lies at the far south of New Zealand's South Island, in a country whose vineyards are the southernmost in the world and the first on earth to see the sun each day, thanks to New Zealand's location close to the International Date Line. New Zealand is best known for its racy, vibrant sauvignon blancs and its earthy, elegant pinot noirs, and Central Otago is one of the country's most celebrated pinot noir addresses. Pinot noir has proven hugely successful here in a very short period — plantings doubled nationally in the decade between 2003 and 2013 — and because it is such a new phenomenon, growers and winemakers are still discovering the best sites and methods. Much of the quality traces to the so-called Gumboot (or Abel) Clone, smuggled in from France in a rain boot in the 1970s and now behind some of the country's finest pinot noirs. The coolness of the climate is the factor that most influences New Zealand's grapes: a cool, steady climate lets fruit ripen evenly and gently over a long growing season, culminating in a harvest that can fall anywhere from March to May, and gives the grapes a good amount of natural acidity.",
       "knowledge": {
+        "grapes": [
+          "Chardonnay",
+          "Pinot Noir",
+          "Riesling"
+        ],
         "attributes": {
           "key_grapes": [
-            "Pinot Noir",
-            "Pinot Gris",
-            "Riesling",
-            "Chardonnay"
+            "pinot noir",
+            "riesling",
+            "chardonnay"
           ],
-          "climate": "Continental, semi-arid, extreme diurnal variation",
-          "soil": "Schist, loess, alluvial gravel, mica"
+          "climate": "cool; the world's southernmost vineyards, with a long, gentle growing season and a March-May harvest",
+          "signature": "earthy, elegant pinot noir",
+          "note": "much NZ pinot quality traces to the Gumboot/Abel clone"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, New Zealand"
       }
     },
     "adelaide hills": {
@@ -1399,6 +1522,23 @@
           "history": "viticulture from the 1840s; modern industry post-1970s"
         },
         "citation": "Wine Bible 2e, Australia/South Australia"
+      }
+    },
+    "dão": {
+      "short": "A Portuguese wine region, probably the native home of touriga nacional — the powerhouse grape behind many Port blends and the dry reds of the Douro.",
+      "full": "The Dão is one of Portugal's established wine regions and is probably the native home of touriga nacional. That grape is today widely known as the leading powerhouse variety in many of the blends that make Port, and is also used in the dry wines of the Douro; its attributes include richness, depth, a commanding tannic structure, good deep colouring and good aromas. Portugal itself is the mother of Port, the fortified wine of the Douro valley, and maintains a large body of indigenous grape varieties alongside it.",
+      "knowledge": {
+        "grapes": [
+          "Touriga Nacional"
+        ],
+        "attributes": {
+          "key_grapes": [
+            "touriga nacional"
+          ],
+          "signature": "probable birthplace of touriga nacional",
+          "sourcing_note": "few in-stock SKUs — confirm specifics with the producer before describing a particular bottling"
+        },
+        "citation": "Wine Bible 2e, Portugal"
       }
     },
     "sauternes": {
@@ -1486,35 +1626,44 @@
       }
     },
     "wachau": {
-      "short": "UNESCO-listed Danube terrace vineyards producing Austria's most prestigious dry Riesling and Gruner Veltliner.",
-      "full": "The Wachau is a narrow, 33-kilometre stretch of the Danube valley west of Vienna, designated a UNESCO World Heritage cultural landscape. Its steep, terraced vineyards on primary rock (gneiss and granite) soils produce some of Austria's most intense and age-worthy dry white wines. The region operates its own unique quality classification — Steinfeder (lightest, up to 11% ABV), Federspiel (medium, 11.5-12.5%), and Smaragd (richest, 12.5%+) — administered by the Vinea Wachau association. Gruner Veltliner and Riesling dominate, with top sites like Achleiten, Kellerberg, and Loibenberg commanding premium prices. Leading producers include F.X. Pichler, Domane Wachau, Knoll, Hirtzberger, and Prager.",
+      "short": "Austria's top subregion, on terraced slopes above the Danube — the only place using the Vinea Wachau categories steinfeder, federspiel and smaragd, and a benchmark for riesling and grüner.",
+      "full": "The Wachau is the top subregion of Lower Austria, the country's most important wine region in terms of size and reputation for high quality; the word 'lower' refers to the lower part of the Danube, which flows through it. Austria's vineyards all lie in the distant, more exotic eastern half of this landlocked country, some 108,000 acres forming a crescent along the eastern border, worked by just over 20,000 growers and around 6,500 wineries. Vines have been planted on the Wachau's stark, rocky terraces since the thirteenth century. Austrian wines bear very little resemblance in flavour to German ones: Austria's dry whites are much fuller in body and bolder in character than Germany's filigreed dry whites, and the same is true of the reds. The Wachau is the only place in all of Austria where the three words steinfeder, federspiel and smaragd appear — categories created by the Vinea Wachau, an association of top Wachau producers, to set their dry white wines apart, and which must be listed on the label. Austria's modern industry was rebuilt from the ground up by small family estates after the 1985 diethylene-glycol scandal, which one winemaker called a cleansing thunderstorm; today top-quality wine is a virtual religion there, and Austria has the largest percentage of land under certified organic production of any EU country.",
       "knowledge": {
+        "grapes": [
+          "Grüner Veltliner",
+          "Riesling"
+        ],
         "attributes": {
-          "climate": "Continental with Pannonian influence, warm days, cool nights",
-          "soil": "Primary rock — gneiss, granite, loess terraces",
           "key_grapes": [
-            "Gruner Veltliner",
-            "Riesling"
+            "grüner veltliner",
+            "riesling"
           ],
-          "classification": "Steinfeder / Federspiel / Smaragd (Vinea Wachau)"
+          "climate": "continental Danube valley; rocky terraced slopes planted since the 13th century",
+          "classification_system": "Vinea Wachau categories — steinfeder, federspiel, smaragd (producer association, not law)",
+          "signature": "dry whites much fuller in body and bolder than Germany's filigreed dry whites",
+          "national_context": "industry rebuilt by small family estates after the 1985 scandal; largest share of certified organic land in the EU"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, Austria"
       }
     },
     "kamptal": {
-      "short": "Leading Austrian DAC wine region in the Kamp valley, excelling in Gruner Veltliner and Riesling on loess and primary rock soils.",
-      "full": "Kamptal takes its name from the Kamp river valley north of the Danube, centred around the town of Langenlois — Austria's largest wine-producing municipality. The region benefits from a convergence of two geological zones: warm loess soils on the eastern slopes (producing broader, fruit-driven wines) and cool primary rock (gneiss, schist) on the western terraces (yielding mineral, structured expressions). Kamptal was among the first Austrian regions to adopt the DAC (Districtus Austriae Controllatus) appellation system in 2008. Top vineyard sites include Heiligenstein (a celebrated Riesling cru), Lamm, and Kogelberg. Key producers are Schloss Gobelsburg, Brundlmayer, Hiedler, and Jurtschitsch.",
+      "short": "A wine region of Lower Austria, on the Kamp river north of the Danube — part of the country's most important wine area by size and quality reputation.",
+      "full": "Kamptal is one of the wine regions of Lower Austria, which is the country's most important wine region in terms of size and its reputation for high-quality wine, lying in the north along the Slovakian border and taking its name from the lower part of the Danube. Austria is a landlocked country bordered by the Czech Republic, the Slovak Republic, Germany, Hungary, Slovenia, Italy and Switzerland, and although its western cities such as Salzburg and Innsbruck are better known, the vineyards all lie in the eastern half: some 108,000 acres (43,700 hectares) forming a crescent along the eastern border, farmed by just over 20,000 growers, with approximately 6,500 wineries making and bottling wine. There are four main wine regions — Lower Austria and Burgenland, the two largest, plus Styria and Vienna — and the larger two contain several smaller regions within them. Austria's modern wine industry was rebuilt from the ground up by small family estates after the 1985 diethylene-glycol scandal collapsed the mass market for inferior wine, and the country now has the largest percentage of land under certified organic production of any European Union member.",
       "knowledge": {
+        "grapes": [
+          "Grüner Veltliner",
+          "Riesling"
+        ],
         "attributes": {
-          "climate": "Continental, Pannonian warmth with cool river influence",
-          "soil": "Loess, primary rock (gneiss, schist)",
           "key_grapes": [
-            "Gruner Veltliner",
-            "Riesling"
+            "grüner veltliner",
+            "riesling"
           ],
-          "designation": "Kamptal DAC (since 2008)"
+          "region_of": "Lower Austria",
+          "national_context": "108,000 acres of vineyard in a crescent along Austria's eastern border; 20,000+ growers, ~6,500 wineries; largest EU share of certified organic land",
+          "sourcing_note": "very few in-stock SKUs — this description covers regional geography only; confirm any specific bottling's character with the producer"
         },
-        "citation": "legacy:pre-wine-knowledge (uncited explore-map seed)"
+        "citation": "Wine Bible 2e, Austria"
       }
     },
     "tokaj": {
