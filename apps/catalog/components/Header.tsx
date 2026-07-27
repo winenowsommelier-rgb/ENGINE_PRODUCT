@@ -28,6 +28,7 @@ const NAV_LINKS = [
   { href: '/shop', label: 'Shop' },
   { href: '/finder', label: 'Find Your Match' },
   { href: '/explore-map', label: 'Explore by Map' },
+  { href: '/collections', label: 'Collections' },
   { href: '/blog', label: 'Journal' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
