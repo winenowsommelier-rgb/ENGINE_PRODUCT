@@ -15,7 +15,12 @@ import {
   accessoryCategoryForSku,
 } from './category-groups';
 import { designationForProduct, DESIGNATIONS } from './designation';
-import { canonicalRegionForCountry, isRegionLevelValueForCountry } from './geo-aliases';
+import {
+  canonicalRegionForCountry,
+  isRegionLevelValueForCountry,
+  normGeo,
+  regionAncestors,
+} from './geo-aliases';
 
 export interface FacetOption {
   value: string;
@@ -76,9 +81,56 @@ export function countriesFor(products: PublicProduct[]): FacetOption[] {
   return tally(products, (p) => p.country);
 }
 
-/** Distinct regions present (caller passes the country-filtered set). */
+/**
+ * Distinct regions present (caller passes the country-filtered set).
+ *
+ * A product is counted under its canonical region AND under each ANCESTOR of that
+ * region, because `regionMatchesFilter` resolves `?region=X` via the same ancestor
+ * walk. Counting only the exact value made the California chip read 603 while the
+ * grid it opened returned 604 (the one row stored at region='Napa Valley').
+ *
+ * Two constraints shape this:
+ *  - A product is never counted twice under the same region name (dedupe per product).
+ *  - An ancestor only gains a count if it is ALREADY a region in this set. We never
+ *    invent a chip for a region holding no products of its own — that would show a
+ *    chip the un-filtered facet rail would not otherwise offer.
+ */
 export function regionsFor(_country: string, products: PublicProduct[]): FacetOption[] {
-  return tally(products, (p) => canonicalRegionForCountry(p.country ?? _country, p.region));
+  const canonical = (p: PublicProduct) =>
+    canonicalRegionForCountry(p.country ?? _country, p.region);
+
+  // Pass 1: which region names exist in their own right? Only these may be chips.
+  const own = new Set<string>();
+  for (const p of products) {
+    const v = canonical(p).trim();
+    if (v) own.add(normGeo(v));
+  }
+
+  // Pass 2: tally each product into its own region plus any ancestor already present.
+  const counts = new Map<string, number>();
+  for (const p of products) {
+    const v = canonical(p).trim();
+    if (!v) continue;
+    const buckets = new Map<string, string>(); // normalized key -> display value
+    buckets.set(normGeo(v), v);
+    for (const ancestor of regionAncestors(p.country ?? _country, p.region)) {
+      const key = normGeo(ancestor);
+      // Skip ancestors with no products of their own — do not invent chips.
+      if (!own.has(key) || buckets.has(key)) continue;
+      buckets.set(key, ancestor);
+    }
+    for (const display of buckets.values()) {
+      counts.set(display, (counts.get(display) ?? 0) + 1);
+    }
+  }
+
+  return [...counts.entries()]
+    .map(([value, count]) => ({ value, count }))
+    .sort(
+      (a, b) =>
+        b.count - a.count ||
+        a.value.localeCompare(b.value, 'en', { sensitivity: 'base' }),
+    );
 }
 
 /** Distinct sub-regions present (caller passes the region-filtered set). */
