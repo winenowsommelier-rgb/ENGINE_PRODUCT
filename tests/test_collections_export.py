@@ -19,7 +19,7 @@ ALLOWED_KEYS = {"country","region","subregion","class","designation","body","aci
 # classification tiers). Keep this in sync with the seed's group values.
 CATEGORY_GROUPS = {"Wine","Whisky","Spirits","Sake & Asian","Liqueur",
                    "Beer & RTD","Non-Alcoholic","Cigars","Events","Accessories"}
-CURATION_GROUPS = {"Iconic & Classified"}
+CURATION_GROUPS = {"Icons & Classifications"}
 VALID_GROUPS = CATEGORY_GROUPS | CURATION_GROUPS
 
 
@@ -36,6 +36,24 @@ def test_seed_is_idempotent(conn):
     collections_seed.seed(conn); collections_seed.seed(conn)
     n = conn.execute("SELECT COUNT(*) FROM collections WHERE slug='bordeaux-reds'").fetchone()[0]
     assert n == 1
+
+
+def test_seed_prunes_removed_slugs(conn):
+    """seed() is authoritative: a stale row whose slug is no longer in
+    COLLECTIONS is deleted, so a removed/renamed collection can't linger in the
+    live DB (and thus the export/UF)."""
+    # a pre-existing row NOT in COLLECTIONS
+    conn.execute(
+        "INSERT INTO collections(slug,name,filter_definition,description,"
+        "category_group,sort_order) VALUES('retired-x','Retired','{}','','Wine',999)"
+    )
+    conn.commit()
+    collections_seed.seed(conn)
+    gone = conn.execute("SELECT COUNT(*) FROM collections WHERE slug='retired-x'").fetchone()[0]
+    assert gone == 0
+    # a real one survives
+    kept = conn.execute("SELECT COUNT(*) FROM collections WHERE slug='grand-cru'").fetchone()[0]
+    assert kept == 1
 
 
 def test_no_grape_or_variety_filters(conn):
@@ -72,7 +90,7 @@ def test_export_drops_disallowed_keys(conn):
 # --- group + sort_order (Tasks 2/3) ---
 
 def test_every_seed_has_a_valid_group():
-    assert len(collections_seed.COLLECTIONS) >= 28
+    assert len(collections_seed.COLLECTIONS) >= 26
     for c in collections_seed.COLLECTIONS:
         assert c.get("group") in VALID_GROUPS, f"{c['slug']} bad group {c.get('group')!r}"
 
@@ -89,8 +107,8 @@ def test_export_carries_group_and_sorts(conn):
     collections_seed.seed(conn)
     data = export_collections.build(conn)
     assert all("group" in c for c in data)
-    assert {c["group"] for c in data} >= {"Iconic & Classified", "Wine", "Whisky", "Sake & Asian", "Spirits"}
-    # sorted by (sort_order, slug): Iconic (0-9) before Wine (10+) before Spirits (50+)
+    assert {c["group"] for c in data} >= {"Icons & Classifications", "Wine", "Whisky", "Sake & Asian", "Spirits"}
+    # sorted by (sort_order, slug): Icons (0-7) before Wine (10+) before Spirits (50+)
     orders = [c.get("sortOrder", 999) for c in data]
     assert orders == sorted(orders)
 
@@ -98,12 +116,12 @@ def test_export_carries_group_and_sorts(conn):
 def test_iconic_classified_collections_are_designation_driven_and_first(conn):
     """The classification-tier collections use the `designation` filter key
     (Grand Cru/DOCG/XO/Single Malt…) and their group sorts ABOVE the category
-    sections so 'Iconic & Classified' renders first on the landing."""
+    sections so 'Icons & Classifications' renders first on the landing."""
     from scripts import export_collections
     collections_seed.seed(conn)
     data = export_collections.build(conn)
-    iconic = [c for c in data if c["group"] == "Iconic & Classified"]
-    assert len(iconic) >= 10
+    iconic = [c for c in data if c["group"] == "Icons & Classifications"]
+    assert len(iconic) >= 8
     # every iconic collection filters on designation
     assert all("designation" in c["filter"] for c in iconic), \
         [c["slug"] for c in iconic if "designation" not in c["filter"]]
@@ -111,7 +129,7 @@ def test_iconic_classified_collections_are_designation_driven_and_first(conn):
     for c in iconic:
         keys = set(c["filter"])
         assert not (keys & {"grape", "variety", "category"})
-    # Iconic sorts strictly before every non-Iconic collection (contiguous, first)
+    # Icons sorts strictly before every non-Icons collection (contiguous, first)
     iconic_max = max(c["sortOrder"] for c in iconic)
-    others_min = min((c["sortOrder"] for c in data if c["group"] != "Iconic & Classified"), default=999)
+    others_min = min((c["sortOrder"] for c in data if c["group"] != "Icons & Classifications"), default=999)
     assert iconic_max < others_min
