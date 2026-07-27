@@ -29,10 +29,11 @@ def build(conn: sqlite3.Connection) -> list[dict]:
     """
     out: list[dict] = []
     rows = conn.execute(
-        "SELECT slug, name, description, filter_definition FROM collections"
+        "SELECT slug, name, description, filter_definition, category_group, sort_order "
+        "FROM collections"
     ).fetchall()
 
-    for slug, name, description, fdef in rows:
+    for slug, name, description, fdef, group, sort_order in rows:
         try:
             parsed = json.loads(fdef) if fdef else {}
         except (ValueError, TypeError):
@@ -56,11 +57,14 @@ def build(conn: sqlite3.Connection) -> list[dict]:
                 "slug": slug,
                 "name": name,
                 "description": description or "",
+                "group": group or "",
+                "sortOrder": sort_order if sort_order is not None else 999,
                 "filter": allowed,
             }
         )
 
-    out.sort(key=lambda c: c["slug"])
+    # (sort_order, slug) → intended category sequence, stable within group.
+    out.sort(key=lambda c: (c["sortOrder"], c["slug"]))
     return out
 
 

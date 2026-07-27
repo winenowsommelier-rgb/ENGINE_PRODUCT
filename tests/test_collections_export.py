@@ -1,18 +1,21 @@
 from __future__ import annotations
 import json, sqlite3
 import pytest
-from scripts.wine_knowledge import pairing_schema, collections_seed
+from scripts.wine_knowledge import pairing_schema, collections_schema, collections_seed
 
 
 @pytest.fixture
 def conn():
     c = sqlite3.connect(":memory:")
-    pairing_schema.migrate(c)   # creates the collections table
+    pairing_schema.migrate(c)       # creates the base collections table
+    collections_schema.migrate(c)   # + category_group / sort_order columns
     yield c
     c.close()
 
 
 ALLOWED_KEYS = {"country","region","subregion","class","body","acidity","tannin","price"}
+VALID_GROUPS = {"Wine","Whisky","Spirits","Sake & Asian","Liqueur",
+                "Beer & RTD","Non-Alcoholic","Cigars","Events","Accessories"}
 
 
 def test_seed_inserts_collections_with_valid_json(conn):
@@ -59,3 +62,29 @@ def test_export_drops_disallowed_keys(conn):
     data = export_collections.build(conn)
     row = [c for c in data if c["slug"]=="x"][0]
     assert set(row["filter"].keys()) == {"region"}  # grape + category dropped
+
+
+# --- group + sort_order (Tasks 2/3) ---
+
+def test_every_seed_has_a_valid_group():
+    assert len(collections_seed.COLLECTIONS) >= 18
+    for c in collections_seed.COLLECTIONS:
+        assert c.get("group") in VALID_GROUPS, f"{c['slug']} bad group {c.get('group')!r}"
+
+
+def test_seed_writes_group_column(conn):
+    collections_seed.seed(conn)
+    rows = conn.execute("SELECT slug, category_group FROM collections").fetchall()
+    assert rows
+    assert all(g in VALID_GROUPS for _, g in rows)
+
+
+def test_export_carries_group_and_sorts(conn):
+    from scripts import export_collections
+    collections_seed.seed(conn)
+    data = export_collections.build(conn)
+    assert all("group" in c for c in data)
+    assert {c["group"] for c in data} >= {"Wine", "Whisky", "Sake & Asian", "Spirits"}
+    # sorted by (sort_order, slug): Wine (10-29) before Spirits (50-59)
+    orders = [c.get("sortOrder", 999) for c in data]
+    assert orders == sorted(orders)
