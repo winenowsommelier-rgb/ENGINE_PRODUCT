@@ -137,7 +137,10 @@ REGION_ALIASES = {
     "Loire valley": "Loire Valley",
     "Friuli": "Friuli-Venezia Giulia",
     # ── Name variants ──
-    "Napa Valley": "Napa",
+    # NOTE: "Napa Valley" is deliberately NOT aliased to "Napa". Napa is a fake
+    # region (see FAKE_REGION_PARENTS) that normalize_taxonomy_hierarchy
+    # collapses into California; Napa Valley is the real AVA and stays a
+    # SUBREGION. Re-adding the alias would recreate the duplicate-pin bug.
     "Yarra Valley": "Yarra",
     "Highlands": "Highland",
             "Hunter Valley": "Hunter",
@@ -416,6 +419,141 @@ def update_price_range(pr, price):
             pr["max"] = price
 
 
+# ---------------------------------------------------------------------------
+# Hierarchy normalisation
+#
+# Some entries in the taxonomy are "fake regions": a name that is really a
+# SUBREGION (an AVA, a commune) but was promoted to region level, sitting as a
+# sibling of the true region that contains it. The canonical case is USA:
+#
+#     region  California
+#     region  Napa            <-- fake; Napa is inside California
+#       sub     Napa Valley   <-- the real AVA, parented to the fake region
+#       sub     Rutherford
+#
+# This produces two pins for one place, splits the SKU counts between them, and
+# means the true region's drill-down is missing its own sub-appellations.
+#
+# FAKE_REGION_PARENTS declares those collapses explicitly rather than inferring
+# them. Inference is unsafe here: "Rioja" legitimately contains the subregions
+# "Rioja Alta" and "Rioja Alavesa", and a name-prefix heuristic would wrongly
+# dissolve the real Rioja region. Every entry below is a hand-verified case
+# where the region is NOT a real region in its own right.
+# ---------------------------------------------------------------------------
+FAKE_REGION_PARENTS = {
+    # fake region name -> the real region that should absorb it
+    "Napa": "California",
+}
+
+# Product data often carries a SUBREGION name in its `region` field (a bottle
+# labelled "Napa Valley" is a California wine from the Napa Valley AVA). After
+# a fake region is collapsed there is no region entry by that name any more, so
+# resolve_region must climb to the containing region instead of returning None
+# and dropping the product off the map entirely.
+#
+# This is populated from the taxonomy itself at normalisation time rather than
+# hand-listed, so it stays correct as subregions move.
+SUBREGION_TO_REGION: dict[str, str] = {}
+
+
+def normalize_taxonomy_hierarchy(tax):
+    """Collapse fake regions into their true parent region, IN PLACE.
+
+    For each entry in FAKE_REGION_PARENTS whose target region exists:
+      * every subregion of the fake region is re-parented to the true region
+      * the fake region entry is removed from tax["regions"]
+
+    Returns the set of removed (fake) region ids so callers can drop stale
+    references. Safe to call more than once — a second call is a no-op because
+    the fake region is already gone.
+    """
+    regions = tax.get("regions", [])
+    by_name = {r["name"]: r for r in regions}
+
+    removed_ids = set()
+    for fake_name, real_name in FAKE_REGION_PARENTS.items():
+        fake = by_name.get(fake_name)
+        real = by_name.get(real_name)
+        # Only collapse when BOTH exist; never invent the destination region.
+        if not fake or not real or fake["id"] == real["id"]:
+            continue
+
+        for sub in tax.get("subregions", []):
+            if sub.get("parent_id") == fake["id"]:
+                sub["parent_id"] = real["id"]
+                sub["parent_name"] = real["name"]
+                if "parent_slug" in sub or "parentSlug" in sub:
+                    sub["parent_slug"] = real.get("slug", slugify(real["name"]))
+                # Remember that this subregion was orphaned by a collapse, so
+                # resolve_region can still map product rows that carry its name
+                # in their `region` field.
+                sub["_collapsed_from"] = fake["name"]
+        removed_ids.add(fake["id"])
+
+    if removed_ids:
+        tax["regions"] = [r for r in regions if r["id"] not in removed_ids]
+
+    # Rebuild the name -> containing-region index used by resolve_region.
+    #
+    # TWO kinds of name must be redirected, and missing the first one silently
+    # drops products off the map:
+    #
+    #   1. The COLLAPSED REGION'S OWN NAME. Product rows overwhelmingly carry
+    #      region="Napa" (not "Napa Valley"), because that is how the source
+    #      data spells it. Once the Napa region entry is deleted those rows
+    #      resolve to nothing. They must fall through to California.
+    #   2. Subregion names orphaned by the collapse (region="Napa Valley"),
+    #      which likewise no longer match any region entry.
+    #
+    # Only names touched by a collapse are indexed — indexing every subregion
+    # would let any commune name silently stand in for its region.
+    live_regions = {r["id"]: r for r in tax["regions"]}
+    SUBREGION_TO_REGION.clear()
+    for fake_name, real_name in FAKE_REGION_PARENTS.items():
+        if fake_name in {r["name"] for r in regions} and real_name in by_name:
+            SUBREGION_TO_REGION[fake_name] = real_name
+    for sub in tax.get("subregions", []):
+        parent = live_regions.get(sub.get("parent_id"))
+        if parent and sub.get("_collapsed_from") is not None:
+            SUBREGION_TO_REGION[sub["name"]] = parent["name"]
+    return removed_ids
+
+
+def normalize_product_geography(product):
+    """Return (region_name, subregion_name) for a product, de-duplicated.
+
+    When a product carries the SAME place in both its region and subregion
+    fields (e.g. region="Napa Valley", subregion="Napa Valley"), emitting both
+    would draw two pins for one place and double-count the SKU. The region wins
+    and the subregion is blanked.
+    """
+    region = (product.get("region") or "").strip()
+    sub = (product.get("subregion") or "").strip()
+    if sub and region and sub.casefold() == region.casefold():
+        return region, ""
+    return region, sub
+
+
+def included_region_ids(tax, region_counts, sub_counts):
+    """Region ids that should be emitted to the explore map.
+
+    A region is included when it has products of its own, OR when it is the
+    parent of a subregion that does — a zero-count region must still be drawn
+    if its children hang off it, otherwise the drill-down loses its root.
+    Regions with no products and no populated children are dropped so the map
+    is not littered with empty pins.
+    """
+    included = {rid for rid, c in region_counts.items() if c.get("total", 0) > 0}
+
+    populated_subs = {sid for sid, c in sub_counts.items() if c.get("total", 0) > 0}
+    for sub in tax.get("subregions", []):
+        if sub["id"] in populated_subs and sub.get("parent_id") is not None:
+            included.add(sub["parent_id"])
+
+    live_region_ids = {r["id"] for r in tax.get("regions", [])}
+    return included & live_region_ids
+
+
 def build_lookups(tax):
     """Build name→entry lookups for matching products to taxonomy."""
     country_by_name = {}
@@ -453,6 +591,15 @@ def resolve_region(product_region, product_country, region_by_name, region_by_na
         if mapped is None:
             return None  # It's a subregion, not a region
         product_region = mapped
+
+    # A product may name a SUBREGION that was orphaned when its fake parent
+    # region was collapsed (e.g. region="Napa Valley" after Napa folded into
+    # California). Climb to the containing region so the row still lands on the
+    # map instead of being dropped.
+    if product_region not in region_by_name_only:
+        climbed = SUBREGION_TO_REGION.get(product_region)
+        if climbed:
+            product_region = climbed
 
     # Try exact match with country context
     if product_country:
@@ -493,13 +640,20 @@ def resolve_subregion(product_sub, product_region, sub_by_name, sub_by_name_only
     # Try name-only match
     if product_sub in sub_by_name_only:
         matches = sub_by_name_only[product_sub]
-        if len(matches) == 1:
-            return matches[0]
         if product_region:
+            # A region was supplied, so the subregion MUST belong to it. Never
+            # fall back to an arbitrary match: returning a subregion parented
+            # to a different region silently files the product under the wrong
+            # place (e.g. Rutherford resolving under California when it hangs
+            # off Napa). No parent match => no subregion.
             for m in matches:
                 if m.get("parent_name") == product_region:
                     return m
-        return matches[0]
+            return None
+        if len(matches) == 1:
+            return matches[0]
+        # Ambiguous name with no region context — refuse to guess.
+        return None
 
     return None
 
@@ -522,6 +676,13 @@ def main():
     inject_missing_countries(tax)
     inject_missing_regions(tax)
     inject_champagne_subregions(tax, champagne_rules)
+    # Collapse fake regions (e.g. "Napa", which is really an AVA inside
+    # California) AFTER the injections so anything they added is normalised
+    # too. Must run before build_lookups, which indexes by parent name.
+    collapsed = normalize_taxonomy_hierarchy(tax)
+    if collapsed:
+        print(f"  Normalized hierarchy: collapsed {len(collapsed)} fake region(s) "
+              f"-> {sorted(FAKE_REGION_PARENTS)}")
 
     # Use masterfile CSV (19K+ products) instead of products.json (4K subset)
     masterfile = DATA / "masterfile_all_tiers.csv"
@@ -574,8 +735,9 @@ def main():
         except (ValueError, TypeError):
             price = None
         country_name = normalize_country_name((p.get("country") or "").strip())
-        region_name = (p.get("region") or "").strip()
-        sub_name = (p.get("subregion") or "").strip()
+        # Drop a subregion that merely repeats the region, so one place does not
+        # get two pins and double-counted SKUs.
+        region_name, sub_name = normalize_product_geography(p)
         if should_handle_as_champagne(p, scope):
             inferred_subregion = infer_champagne_subregion(p, champagne_rules)
             if inferred_subregion:
@@ -654,6 +816,13 @@ def main():
         })
 
     # --- Regions ---
+    # NOTE: `included_region_ids(tax, region_counts, sub_counts)` is implemented
+    # and unit-tested but deliberately NOT applied here yet. On current data it
+    # would drop 200 of 300 regions (zero products AND no populated children),
+    # which is a much larger, separately-verifiable change than the fake-region
+    # collapse this pass is about — and it feeds both the explore map and the
+    # /shop region links. Enable it as its own change, with its own browser
+    # verification of the country drill-downs.
     out_regions = []
     for r in sorted(tax["regions"], key=lambda x: x["name"]):
         rid = r["id"]
