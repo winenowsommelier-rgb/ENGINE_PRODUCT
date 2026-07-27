@@ -20,6 +20,11 @@ export interface CollectionDef {
   slug: string;
   name: string;
   description: string;
+  /** One of the canonical CATEGORY_GROUPS (Wine/Whisky/…); '' if unset. Metadata,
+   *  NOT a filter key — it never reaches collectionToShopParams. */
+  group: string;
+  /** Global sort key from the exporter; lower sorts first. */
+  sortOrder: number;
   filter: Record<string, string>;
 }
 
@@ -63,7 +68,17 @@ export function getCollections(): CollectionDef[] {
     return _collections;
   }
   const raw = JSON.parse(fs.readFileSync(file, 'utf8'));
-  _collections = Array.isArray(raw) ? (raw as CollectionDef[]) : [];
+  const arr = Array.isArray(raw) ? (raw as Array<Partial<CollectionDef>>) : [];
+  // Normalize each entry so `group`/`sortOrder` are always present, even if an
+  // older export (pre category-split) omitted them.
+  _collections = arr.map((c) => ({
+    slug: String(c.slug ?? ''),
+    name: String(c.name ?? ''),
+    description: String(c.description ?? ''),
+    group: typeof c.group === 'string' ? c.group : '',
+    sortOrder: typeof c.sortOrder === 'number' ? c.sortOrder : 999,
+    filter: (c.filter && typeof c.filter === 'object' ? c.filter : {}) as Record<string, string>,
+  }));
   return _collections;
 }
 
@@ -82,4 +97,29 @@ export function collectionToShopParams(def: CollectionDef): ShopParams {
     if (ALLOWED_KEYS.has(k)) out[k] = v;
   }
   return out;
+}
+
+/** All collections in one group, already in export (sort) order. */
+export function getCollectionsByGroup(group: string): CollectionDef[] {
+  return getCollections().filter((c) => c.group === group);
+}
+
+/**
+ * Collections bucketed by group, preserving export order for BOTH the group
+ * sequence (first appearance in the sorted list) and the collections within
+ * each group. Collections with no group fall under 'Other'. The catalog index
+ * renders one section per returned entry, so empty groups never appear.
+ */
+export function getGroupsWithCollections(): Array<{ group: string; collections: CollectionDef[] }> {
+  const order: string[] = [];
+  const byGroup = new Map<string, CollectionDef[]>();
+  for (const c of getCollections()) {
+    const g = c.group || 'Other';
+    if (!byGroup.has(g)) {
+      byGroup.set(g, []);
+      order.push(g);
+    }
+    byGroup.get(g)!.push(c);
+  }
+  return order.map((g) => ({ group: g, collections: byGroup.get(g)! }));
 }
