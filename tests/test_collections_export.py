@@ -13,9 +13,14 @@ def conn():
     c.close()
 
 
-ALLOWED_KEYS = {"country","region","subregion","class","body","acidity","tannin","price"}
-VALID_GROUPS = {"Wine","Whisky","Spirits","Sake & Asian","Liqueur",
-                "Beer & RTD","Non-Alcoholic","Cigars","Events","Accessories"}
+ALLOWED_KEYS = {"country","region","subregion","class","designation","body","acidity","tannin","price"}
+# Collection groups = the 10 canonical CATEGORY_GROUPS PLUS curation-only
+# pseudo-groups (cross-category themes that aren't a product category, e.g.
+# classification tiers). Keep this in sync with the seed's group values.
+CATEGORY_GROUPS = {"Wine","Whisky","Spirits","Sake & Asian","Liqueur",
+                   "Beer & RTD","Non-Alcoholic","Cigars","Events","Accessories"}
+CURATION_GROUPS = {"Iconic & Classified"}
+VALID_GROUPS = CATEGORY_GROUPS | CURATION_GROUPS
 
 
 def test_seed_inserts_collections_with_valid_json(conn):
@@ -67,7 +72,7 @@ def test_export_drops_disallowed_keys(conn):
 # --- group + sort_order (Tasks 2/3) ---
 
 def test_every_seed_has_a_valid_group():
-    assert len(collections_seed.COLLECTIONS) >= 18
+    assert len(collections_seed.COLLECTIONS) >= 28
     for c in collections_seed.COLLECTIONS:
         assert c.get("group") in VALID_GROUPS, f"{c['slug']} bad group {c.get('group')!r}"
 
@@ -84,7 +89,29 @@ def test_export_carries_group_and_sorts(conn):
     collections_seed.seed(conn)
     data = export_collections.build(conn)
     assert all("group" in c for c in data)
-    assert {c["group"] for c in data} >= {"Wine", "Whisky", "Sake & Asian", "Spirits"}
-    # sorted by (sort_order, slug): Wine (10-29) before Spirits (50-59)
+    assert {c["group"] for c in data} >= {"Iconic & Classified", "Wine", "Whisky", "Sake & Asian", "Spirits"}
+    # sorted by (sort_order, slug): Iconic (0-9) before Wine (10+) before Spirits (50+)
     orders = [c.get("sortOrder", 999) for c in data]
     assert orders == sorted(orders)
+
+
+def test_iconic_classified_collections_are_designation_driven_and_first(conn):
+    """The classification-tier collections use the `designation` filter key
+    (Grand Cru/DOCG/XO/Single Malt…) and their group sorts ABOVE the category
+    sections so 'Iconic & Classified' renders first on the landing."""
+    from scripts import export_collections
+    collections_seed.seed(conn)
+    data = export_collections.build(conn)
+    iconic = [c for c in data if c["group"] == "Iconic & Classified"]
+    assert len(iconic) >= 10
+    # every iconic collection filters on designation
+    assert all("designation" in c["filter"] for c in iconic), \
+        [c["slug"] for c in iconic if "designation" not in c["filter"]]
+    # and NONE uses grape/variety/category (§7 + Rule 12 still hold)
+    for c in iconic:
+        keys = set(c["filter"])
+        assert not (keys & {"grape", "variety", "category"})
+    # Iconic sorts strictly before every non-Iconic collection (contiguous, first)
+    iconic_max = max(c["sortOrder"] for c in iconic)
+    others_min = min((c["sortOrder"] for c in data if c["group"] != "Iconic & Classified"), default=999)
+    assert iconic_max < others_min

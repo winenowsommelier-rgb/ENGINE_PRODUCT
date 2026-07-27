@@ -30,11 +30,13 @@ export interface CollectionDef {
 
 /**
  * The read-side allowlist — MUST mirror the Python exporter's allowlist.
- * `class` is the category_type key (NOT `category`); grape/variety are
- * deliberately absent (spec §7 BLOCKED).
+ * `class` is the category_type key (NOT `category`); `designation` is the derived
+ * classification tier (Grand Cru/DOCG/XO/Single Malt…) the shop engine filters on
+ * (the "Classification" control in Taste & more). grape/variety are deliberately
+ * absent (spec §7 BLOCKED — products.variety is free-text with no clean join).
  */
 const ALLOWED_KEYS = new Set([
-  'country', 'region', 'subregion', 'class', 'body', 'acidity', 'tannin', 'price',
+  'country', 'region', 'subregion', 'class', 'designation', 'body', 'acidity', 'tannin', 'price',
 ]);
 
 /**

@@ -1,5 +1,111 @@
 [
   {
+    "slug": "grand-cru",
+    "name": "Grand Cru",
+    "description": "The pinnacle vineyard classification — Grand Cru wines from Burgundy, Alsace and Champagne.",
+    "group": "Iconic & Classified",
+    "sortOrder": 0,
+    "filter": {
+      "designation": "Grand Cru"
+    }
+  },
+  {
+    "slug": "grand-cru-france",
+    "name": "Grand Cru France",
+    "description": "France's classified elite — Grand Cru bottlings from the historic French regions.",
+    "group": "Iconic & Classified",
+    "sortOrder": 1,
+    "filter": {
+      "designation": "Grand Cru",
+      "country": "France"
+    }
+  },
+  {
+    "slug": "premier-cru",
+    "name": "Premier Cru",
+    "description": "First-growth vineyards — the tier just below Grand Cru.",
+    "group": "Iconic & Classified",
+    "sortOrder": 2,
+    "filter": {
+      "designation": "Premier Cru"
+    }
+  },
+  {
+    "slug": "italian-docg",
+    "name": "Italian DOCG",
+    "description": "Italy's highest guaranteed appellation — DOCG wines.",
+    "group": "Iconic & Classified",
+    "sortOrder": 3,
+    "filter": {
+      "designation": "DOCG",
+      "country": "Italy"
+    }
+  },
+  {
+    "slug": "italian-doc",
+    "name": "Italian DOC",
+    "description": "The classic Italian appellation tier — DOC wines.",
+    "group": "Iconic & Classified",
+    "sortOrder": 4,
+    "filter": {
+      "designation": "DOC",
+      "country": "Italy"
+    }
+  },
+  {
+    "slug": "igt-super-tuscan",
+    "name": "IGT & Super Tuscan Territory",
+    "description": "The rebel tier — IGT wines, home of the Super Tuscans.",
+    "group": "Iconic & Classified",
+    "sortOrder": 5,
+    "filter": {
+      "designation": "IGT",
+      "country": "Italy"
+    }
+  },
+  {
+    "slug": "single-malt-scotch",
+    "name": "Single Malt Whisky",
+    "description": "Single-malt purity — one distillery, one malt.",
+    "group": "Iconic & Classified",
+    "sortOrder": 6,
+    "filter": {
+      "designation": "Single Malt",
+      "class": "Whisky"
+    }
+  },
+  {
+    "slug": "xo-cognac-brandy",
+    "name": "XO Cognac & Brandy",
+    "description": "Extra-old — the longest-aged grape brandies.",
+    "group": "Iconic & Classified",
+    "sortOrder": 7,
+    "filter": {
+      "designation": "XO"
+    }
+  },
+  {
+    "slug": "gran-reserva",
+    "name": "Gran Reserva",
+    "description": "The longest-aged Spanish reds — Gran Reserva Rioja and beyond.",
+    "group": "Iconic & Classified",
+    "sortOrder": 8,
+    "filter": {
+      "designation": "Gran Reserva"
+    }
+  },
+  {
+    "slug": "brut-champagne-sparkling",
+    "name": "Brut Champagne & Sparkling",
+    "description": "The benchmark dry-sparkling style — Brut Champagne and sparkling wines.",
+    "group": "Iconic & Classified",
+    "sortOrder": 9,
+    "filter": {
+      "designation": "Brut",
+      "class": "Sparkling & Champagne"
+    }
+  },
+  {
     "slug": "bordeaux-reds",
     "name": "Bordeaux Reds",
     "description": "Structured red blends from Bordeaux, France.",

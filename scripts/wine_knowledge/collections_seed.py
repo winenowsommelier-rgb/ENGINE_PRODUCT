@@ -25,6 +25,94 @@ import sqlite3
 # Spirits 50-59) so the exporter's (sort_order, slug) ordering yields the intended
 # category sequence on the landing page.
 COLLECTIONS = [
+    # --- Iconic & Classified (cross-category classification tiers, sort FIRST) ---
+    # These filter on `designation` — the derived product classification tier
+    # (Grand Cru/DOCG/XO/Single Malt…) the shop engine matches via
+    # designationForProduct (apps/catalog/lib/designation.ts), i.e. the
+    # "Classification" control in the Taste & more menu. sort_order 1-10 so the
+    # section renders ABOVE the category sections (Wine starts at 10). Counts
+    # noted are in-stock raw-field probes 2026-07-27; re-verified via the REAL
+    # applyShopQuery engine before commit.
+    {
+        "slug": "grand-cru",
+        "name": "Grand Cru",
+        "group": "Iconic & Classified",
+        "sort_order": 0,
+        "description": "The pinnacle vineyard classification — Grand Cru wines from Burgundy, Alsace and Champagne.",
+        "filter": {"designation": "Grand Cru"},
+    },
+    {
+        "slug": "grand-cru-france",
+        "name": "Grand Cru France",
+        "group": "Iconic & Classified",
+        "sort_order": 1,
+        "description": "France's classified elite — Grand Cru bottlings from the historic French regions.",
+        "filter": {"designation": "Grand Cru", "country": "France"},
+    },
+    {
+        "slug": "premier-cru",
+        "name": "Premier Cru",
+        "group": "Iconic & Classified",
+        "sort_order": 2,
+        "description": "First-growth vineyards — the tier just below Grand Cru.",
+        "filter": {"designation": "Premier Cru"},
+    },
+    {
+        "slug": "italian-docg",
+        "name": "Italian DOCG",
+        "group": "Iconic & Classified",
+        "sort_order": 3,
+        "description": "Italy's highest guaranteed appellation — DOCG wines.",
+        "filter": {"designation": "DOCG", "country": "Italy"},
+    },
+    {
+        "slug": "italian-doc",
+        "name": "Italian DOC",
+        "group": "Iconic & Classified",
+        "sort_order": 4,
+        "description": "The classic Italian appellation tier — DOC wines.",
+        "filter": {"designation": "DOC", "country": "Italy"},
+    },
+    {
+        "slug": "igt-super-tuscan",
+        "name": "IGT & Super Tuscan Territory",
+        "group": "Iconic & Classified",
+        "sort_order": 5,
+        "description": "The rebel tier — IGT wines, home of the Super Tuscans.",
+        "filter": {"designation": "IGT", "country": "Italy"},
+    },
+    {
+        "slug": "single-malt-scotch",
+        "name": "Single Malt Whisky",
+        "group": "Iconic & Classified",
+        "sort_order": 6,
+        "description": "Single-malt purity — one distillery, one malt.",
+        "filter": {"designation": "Single Malt", "class": "Whisky"},
+    },
+    {
+        "slug": "xo-cognac-brandy",
+        "name": "XO Cognac & Brandy",
+        "group": "Iconic & Classified",
+        "sort_order": 7,
+        "description": "Extra-old — the longest-aged grape brandies.",
+        "filter": {"designation": "XO"},
+    },
+    {
+        "slug": "gran-reserva",
+        "name": "Gran Reserva",
+        "group": "Iconic & Classified",
+        "sort_order": 8,
+        "description": "The longest-aged Spanish reds — Gran Reserva Rioja and beyond.",
+        "filter": {"designation": "Gran Reserva"},
+    },
+    {
+        "slug": "brut-champagne-sparkling",
+        "name": "Brut Champagne & Sparkling",
+        "group": "Iconic & Classified",
+        "sort_order": 9,
+        "description": "The benchmark dry-sparkling style — Brut Champagne and sparkling wines.",
+        "filter": {"designation": "Brut", "class": "Sparkling & Champagne"},
+    },
     # --- Wine (existing 6) ---
     {
         "slug": "bordeaux-reds",
