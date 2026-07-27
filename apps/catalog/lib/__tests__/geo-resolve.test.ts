@@ -47,26 +47,41 @@ describe('makeGeoResolver', () => {
     });
   });
 
-  it('pins at APPELLATION and inherits its parent FROM THE ROW', () => {
+  it('does NOT pin at appellation — it falls through to the row region (Phase A)', () => {
+    // REGRESSION GUARD (changed 2026-07-27; previously asserted pinLevel
+    // 'appellation'). That assertion locked in a bug: the resolver pinned using the
+    // row's SUBREGION value, but shopHref hands an appellation pin off as
+    // ?appellation=, which filters a column populated on just 956/11,934 rows (8%).
+    // All 24 appellation pins linked to a wrong or empty grid (Barolo own=99 ->
+    // grid=75; Brunello 61 -> 0; Haut-Médoc 32 -> 0). Appellation pinning is
+    // DEFERRED until that column is backfilled: 'Barolo' now falls through to the
+    // row's region, where the hand-off actually works.
     const n = resolve({ country: 'Italy', region: 'Piedmont', subregion: 'Barolo' });
+    expect(n).toMatchObject({ pinName: 'Piedmont', pinLevel: 'region' });
+  });
+
+  it('a REGION-classified value in the subregion field pins at SUBREGION level', () => {
+    // REGRESSION GUARD (changed 2026-07-27; previously asserted pinLevel 'region').
+    // Sonoma County is classified a REGION in the taxonomy but physically sits in
+    // the row's SUBREGION column. Pinning it at region level emitted
+    // ?region=Sonoma County, which filters the REGION column — where the value never
+    // appears — so all 71 rows linked to an EMPTY grid. Same for Barossa Valley
+    // (125 -> 0) and Colchagua Valley (140 -> 0). What decides the hand-off shape is
+    // which COLUMN the value occupies, not how the taxonomy classifies the place.
+    const n = resolve({ country: 'USA', region: 'California', subregion: 'Sonoma County' });
     expect(n).toMatchObject({
-      pinName: 'Barolo', pinLevel: 'appellation', parentName: 'Piedmont',
+      pinName: 'Sonoma County', pinLevel: 'subregion',
+      parentName: 'California', latitude: 38.4,
     });
   });
 
-  it('a REGION-classified value in the subregion field pins at REGION level', () => {
-    // Sonoma County is a REGION in the taxonomy but sits in the subregion field on
-    // 71 product rows, AND has a same-named appellation entry. Without the regions
-    // fallback it resolves to the appellation, a later invariant queries
-    // appellation='Sonoma County', and 0 of those 71 rows carry any appellation
-    // value -> hard build failure. This test is that guard.
-    const n = resolve({ country: 'USA', region: 'California', subregion: 'Sonoma County' });
-    expect(n).toMatchObject({ pinName: 'Sonoma County', pinLevel: 'region', latitude: 38.4 });
-  });
-
-  it('Colchagua Valley (region, no appellation twin) pins at REGION level', () => {
+  it('Colchagua Valley (region, no appellation twin) pins at SUBREGION level', () => {
+    // Same regression guard as above: 140 rows sit at region='Central Valley',
+    // subregion='Colchagua Valley'. The pin must carry that region as its parent.
     const n = resolve({ country: 'Chile', region: 'Central Valley', subregion: 'Colchagua Valley' });
-    expect(n).toMatchObject({ pinName: 'Colchagua Valley', pinLevel: 'region' });
+    expect(n).toMatchObject({
+      pinName: 'Colchagua Valley', pinLevel: 'subregion', parentName: 'Central Valley',
+    });
   });
 
   it('takes a subregion parent from the ROW, never from parentSlug', () => {
@@ -95,8 +110,19 @@ describe('makeGeoResolver', () => {
   });
 
   it('normalizes accents when matching', () => {
-    const n = resolve({ country: 'France', region: '', subregion: 'Chateauneuf-du-Pape' });
-    expect(n).toMatchObject({ pinName: 'Châteauneuf-du-Pape', pinLevel: 'appellation' });
+    // Retargeted 2026-07-27 from 'Chateauneuf-du-Pape' (an APPELLATION-only fixture
+    // entry, now unreachable — appellation pinning is deferred) onto a subregion, so
+    // this keeps testing accent folding rather than the deferred level.
+    const n = resolve({ country: 'Chile', region: 'Central Valley', subregion: 'Colchagua Válley' });
+    expect(n).toMatchObject({ pinName: 'Colchagua Valley', pinLevel: 'subregion' });
+  });
+
+  it('appellation-only values resolve to the ROW region, never to the appellation', () => {
+    // The taxonomy still HOLDS appellations (PinLevel keeps its 'appellation' member
+    // and shop-query keeps its appellation filter, both for a future phase) — they
+    // are simply never pinned while the column is 8% populated. With no usable
+    // region on the row there is nothing to fall back to, so this rolls up to country.
+    expect(resolve({ country: 'France', region: '', subregion: 'Chateauneuf-du-Pape' })).toBeNull();
   });
 });
 
@@ -124,6 +150,7 @@ describe('parity — .mjs mirror matches the TS resolver', () => {
       { country: 'Italy', region: 'Piedmont', subregion: 'Barolo' },
       { country: 'USA', region: 'California', subregion: '' },
       { country: 'Chile', region: 'Central Valley', subregion: 'Colchagua Valley' },
+      { country: 'Chile', region: 'Central Valley', subregion: 'Colchagua Válley' },
       { country: 'France', region: '', subregion: 'Chateauneuf-du-Pape' },
       { country: 'Nowhere', region: 'Nope', subregion: 'Nada Land' },
     ];

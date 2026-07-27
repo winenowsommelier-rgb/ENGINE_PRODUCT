@@ -18,16 +18,126 @@ const catalogRoot = path.join(__dirname, '..');
 const EXCLUDE_GROUPS = ['Accessories', 'Events', 'Cigars', 'Non-Alcoholic'];
 const PEEK_LIMIT = 6;
 
+// MIRROR of SPELLING_ALIASES in lib/geo-aliases.ts (mis-spelling -> canonical form,
+// same place at the same level).
 const REGION_ALIASES_BY_COUNTRY = {
-  usa: {
-    napa: 'California',
-    'napa valley': 'California',
-  },
   scotland: {
     highlands: 'Highland',
     lowlands: 'Lowland',
   },
 };
+
+// MIRROR of HIERARCHY_PARENT in lib/geo-aliases.ts (child -> parent NAME, per
+// country). A rollup link, NEVER a rewrite — keep it out of the alias table above.
+// `?region=California` matches a row at region='Napa Valley' through this chain,
+// which is exactly why the hand-off count exceeds a region's own row count.
+const HIERARCHY_PARENT_BY_COUNTRY = {
+  usa: {
+    napa: 'California',
+    'napa valley': 'California',
+  },
+};
+
+/** MIRROR of walkAncestors() in lib/geo-aliases.ts — cycle-safe, bounded at 8. */
+function walkAncestors(table, start) {
+  const out = [];
+  const visited = new Set([start]);
+  let cursor = start;
+  for (let i = 0; i < 8; i += 1) {
+    const parent = table?.[cursor];
+    if (!parent) break;
+    const parentKey = normGeo(parent);
+    if (visited.has(parentKey)) break;
+    visited.add(parentKey);
+    out.push(parent);
+    cursor = parentKey;
+  }
+  return out;
+}
+
+/** MIRROR of regionMatchesFilter() in lib/geo-aliases.ts. Direct match OR ancestor. */
+function regionMatchesFilter(productCountry, productRegion, filterRegion) {
+  const want = normGeo(filterRegion);
+  const own = normGeo(canonicalRegionForCountry(productCountry, productRegion));
+  if (own === want) return true;
+  const table = HIERARCHY_PARENT_BY_COUNTRY[normGeo(productCountry)];
+  return walkAncestors(table, normGeo(productRegion)).some((a) => normGeo(a) === want);
+}
+
+/** MIRROR of isRegionLevelValueForCountry() in lib/geo-aliases.ts (union of BOTH tables). */
+function isRegionLevelValueForCountry(country, value) {
+  const rawKey = normGeo(value);
+  if (!rawKey) return false;
+  const countryKey = normGeo(country);
+  if (countryKey && countryKey === rawKey) return true;
+  const spelling = new Set(Object.values(REGION_ALIASES_BY_COUNTRY[countryKey] ?? {}).map(normGeo));
+  const parents = new Set(Object.values(HIERARCHY_PARENT_BY_COUNTRY[countryKey] ?? {}).map(normGeo));
+  return spelling.has(rawKey) || parents.has(rawKey);
+}
+
+/**
+ * THE HAND-OFF COUNT. Mirrors normalizeShopParams() + matchesFilters()' geo clauses
+ * from lib/shop-query.ts for the {country, region, subregion} shape shopHref emits.
+ *
+ * This is what makes `total` true BY CONSTRUCTION: rather than deriving the pin's
+ * user-facing number from the node tree (which provably cannot match — /shop's
+ * region filter matches ANCESTORS, so `?region=California` returns 620 while the
+ * subtree holds 534 and the node itself 191), the generator runs the same predicate
+ * the click will run. Returns the count of `rows` a pin's own /shop link would show.
+ *
+ * The .mjs cannot import the TS module, so this is a hand-mirror; a probe in the
+ * invariant test asserts it agrees with the real applyShopQuery at every level.
+ */
+/**
+ * The spelling of `name` as it actually appears in the rows' region/subregion
+ * column for this country, or null when the column never carries it. Used to keep
+ * the /shop hand-off on the column's spelling rather than the taxonomy's (the two
+ * differ by diacritics for Curicó/Limarí Valley). Compared with normGeoName, which
+ * is accent-insensitive; returns the raw column value verbatim.
+ */
+function columnSpelling(rows, level, country, name) {
+  const want = normGeoName(name);
+  const wantCountry = normGeo(country);
+  const field = level === 'subregion' ? 'subregion' : 'region';
+  for (const r of rows) {
+    if (wantCountry && normGeo(r.country) !== wantCountry) continue;
+    const v = String(r[field] ?? '').trim();
+    if (v && normGeoName(v) === want) return v;
+  }
+  return null;
+}
+
+function handoffCount(rows, { country, region, subregion }) {
+  // --- normalizeShopParams(): region absent => subregion is DROPPED entirely -----
+  let qRegion = (region ?? '').trim();
+  let qSub = (subregion ?? '').trim();
+  if (!qRegion) {
+    qSub = '';
+  } else {
+    const canonical = canonicalRegionForCountry(country, qRegion);
+    if (!canonical) {
+      // region == country (or empty) — BOTH params are stripped, leaving country-only.
+      qRegion = '';
+      qSub = '';
+    } else if (canonical !== qRegion) {
+      qRegion = canonical;
+      qSub = '';
+    } else if (qSub && isRegionLevelValueForCountry(country, qSub)) {
+      qSub = '';
+    }
+  }
+
+  const wantCountry = normGeo(country);
+  const wantSub = normGeo(qSub);
+  let n = 0;
+  for (const r of rows) {
+    if (wantCountry && normGeo(r.country) !== wantCountry) continue;
+    if (qRegion && !regionMatchesFilter(r.country, r.region, qRegion)) continue;
+    if (wantSub && normGeo(r.subregion) !== wantSub) continue;
+    n += 1;
+  }
+  return n;
+}
 
 function normGeo(value) {
   return String(value ?? '').trim().toLowerCase();
@@ -273,13 +383,17 @@ function resolveExportPath() {
   return c;
 }
 
-function loadTaxonomyCoords() {
+function resolveTaxonomyPath() {
   const c = [
     path.join(process.cwd(), 'data', 'taxonomy', 'explore-taxonomy.json'),
     path.join(catalogRoot, '..', '..', 'data', 'taxonomy', 'explore-taxonomy.json'),
   ].find((p) => p && fs.existsSync(p));
   if (!c) throw new Error('gen-explore-map-data: explore-taxonomy.json not found');
-  const t = JSON.parse(fs.readFileSync(c, 'utf8'));
+  return c;
+}
+
+function loadTaxonomyCoords() {
+  const t = JSON.parse(fs.readFileSync(resolveTaxonomyPath(), 'utf8'));
   const region = new Map(), country = new Map();
   for (const r of t.regions ?? []) if (r.latitude) region.set(r.name.trim().toLowerCase(), { lat: r.latitude, lng: r.longitude, slug: r.slug });
   for (const c2 of t.countries ?? []) if (c2.latitude) country.set(c2.name.trim().toLowerCase(), { lat: c2.latitude, lng: c2.longitude, slug: c2.slug });
@@ -351,6 +465,40 @@ export const CENTROIDS = {
   'kyoto': { lat: 35.0, lng: 135.8 }, 'yamanashi': { lat: 35.7, lng: 138.6 },
   'napa valley': { lat: 38.5, lng: -122.3 }, 'languedoc-roussillon': { lat: 43.6, lng: 3.4 },
   'maule valley': { lat: -35.7, lng: -71.6 },
+
+  // --- Added 2026-07-27 from the gap report -----------------------------------
+  // ONLY genuine PLACES whose centroid is well established. Legal tiers, styles,
+  // countries and cities are deliberately NOT here (see the skip list below).
+  // The '<name> Prefecture' keys are the SAME places as the bare Japanese keys
+  // above; the export writes the long form, which never matched the short key.
+  'niigata prefecture': { lat: 37.9, lng: 139.0 },
+  'nagano prefecture': { lat: 36.2, lng: 138.0 },
+  'kumamoto prefecture': { lat: 32.8, lng: 130.7 },
+  'yamanashi prefecture': { lat: 35.7, lng: 138.6 },
+  'hyogo prefecture': { lat: 34.7, lng: 135.0 },
+  'kyoto prefecture': { lat: 35.0, lng: 135.8 },
+  // Penedès — Catalan DO south-west of Barcelona, the Cava heartland.
+  'penedes': { lat: 41.4, lng: 1.7 }, 'penedès': { lat: 41.4, lng: 1.7 },
+  // Yarra Valley — cool-climate Victorian region ~50km east of Melbourne.
+  'yarra valley': { lat: -37.7, lng: 145.5 },
+  // Collio — Friulian white-wine hills on the Slovenian border.
+  'collio': { lat: 45.95, lng: 13.5 },
+  // Tequila — the municipality in Jalisco, Mexico (a real town, not just the spirit).
+  'tequila': { lat: 20.88, lng: -103.84 },
+  //
+  // DELIBERATELY NOT ADDED (high in the gap report, but not map pins):
+  //   Scotland / England / Thailand   — COUNTRIES, not regions
+  //   London / Kobe / Turin / Angers  — CITIES
+  //   Bourgogne / Bordeaux Supérieur  — legal tiers / alternate spellings of an
+  //     / Rosso di Montalcino /         existing region, not distinct places
+  //     Valpolicella Ripasso
+  //   Caribbean / Other Scotland /    — non-specific buckets
+  //     Highlands / Strathspey
+  //   Barolo / Chianti Classico /     — APPELLATIONS: pinning deferred this phase
+  //     Brunello / Châteauneuf-du-      (the appellation column is 8% populated)
+  //     Pape / Salento / Haut-Médoc
+  //   Bavaria / Colli Orientali del   — real places, but no centroid I am confident
+  //     Friuli                          enough to commit; they stay in the gap report.
 };
 
 /**
@@ -409,7 +557,27 @@ export function makeGeoResolver(taxonomy) {
     const regionKey = normGeoName(region);
     const subKey = normGeoName(subregion);
 
-    // 1. The subregion field. Try subregions, THEN regions, THEN appellations.
+    // APPELLATION PINNING IS DEFERRED (Phase A). The appellation lookups that used
+    // to sit at the end of both branches are GONE ON PURPOSE — do not "restore" them.
+    //
+    // Measured 2026-07-27 against the live export: `appellation` is populated on only
+    // 956 / 11,934 rows (8%). The resolver pins a row using its region/SUBREGION
+    // value, but shopHref hands an appellation pin off as `?appellation=`, which
+    // filters a DIFFERENT, 8%-populated column. The two sets barely intersect, so
+    // every appellation pin linked to a wrong or empty grid — 0 of 24 reproduced
+    // their own total:
+    //   Barolo                 own=99 -> grid=75   (99 via subregion, 75 via appellation)
+    //   Chianti Classico       own=58 -> grid=35
+    //   Brunello di Montalcino own=61 -> grid=0
+    //   Haut-Médoc             own=32 -> grid=0
+    //   Châteauneuf-du-Pape    own=62 -> grid=0
+    // Falling through to the region/subregion fallbacks pins these on the columns
+    // that are actually populated. `PinLevel`'s 'appellation' member and the
+    // `appellation` filter in shop-query.ts are both KEPT: they are correct and
+    // independently useful, they simply have no pin feeding them until the column
+    // is backfilled.
+
+    // 1. The subregion field. Try subregions, THEN regions.
     //
     //    The `regions` fallback is LOAD-BEARING, not a nicety. Many values sitting in
     //    the subregion field are classified as REGIONS in the taxonomy:
@@ -419,29 +587,32 @@ export function makeGeoResolver(taxonomy) {
     //    Skipping regions here makes Sonoma's 71 rows resolve to the APPELLATION
     //    entry, so a later invariant queries `appellation=Sonoma County` — and 0 of
     //    those 71 rows have any appellation value. Hard build failure on exactly
-    //    the regions this work exists to fix. Appellations are tried LAST because
-    //    they are the parentless level (0/81 carry parentSlug).
+    //    the regions this work exists to fix.
     if (subKey) {
       const sub = byLevel.subregion.get(subKey);
       if (sub) return node('subregion', sub, region || (row.country ?? ''));
       const asRegion = byLevel.region.get(subKey);
-      // A region-classified value in the subregion field still pins at REGION level,
-      // so its /shop hand-off uses region= (where the invariant can actually find it).
-      if (asRegion) return node('region', asRegion, row.country ?? '');
-      const app = byLevel.appellation.get(subKey);
-      // Appellations carry NO parentSlug (0/81) — inherit the parent from the ROW.
-      if (app) return node('appellation', app, region || (row.country ?? ''));
+      // A region-CLASSIFIED value that physically sits in the row's SUBREGION column
+      // pins at SUBREGION level, carrying the row's own region as its parent.
+      //
+      // Pinning it at 'region' (what this did until 2026-07-27) emits `?region=<name>`,
+      // which filters the REGION column — where these values never appear. Every such
+      // pin linked to an empty grid while holding hundreds of rows:
+      //   Colchagua Valley 140 rows -> grid 0   (all at region='Central Valley')
+      //   Barossa Valley   125 rows -> grid 0   (all at region='South Australia')
+      //   Sonoma County     71 rows -> grid 0   (all at region='California')
+      // Emitting {region: <row's region>, subregion: <name>} recovers 140/125/71
+      // exactly. The taxonomy's CLASSIFICATION of the place is irrelevant here; what
+      // decides the hand-off shape is which COLUMN the value actually occupies.
+      if (asRegion) return node('subregion', asRegion, region || (row.country ?? ''));
     }
 
-    // 2. The region field. Regions first, so a region-field value never loses to a
-    //    same-named appellation.
+    // 2. The region field. Regions first, then subregions.
     if (regionKey) {
       const reg = byLevel.region.get(regionKey);
       if (reg) return node('region', reg, row.country ?? '');
       const sub = byLevel.subregion.get(regionKey);
       if (sub) return node('subregion', sub, row.country ?? '');
-      const app = byLevel.appellation.get(regionKey);
-      if (app) return node('appellation', app, row.country ?? '');
     }
 
     return null;
@@ -471,7 +642,12 @@ function curate(regions) {
 function main() {
   const raw = JSON.parse(fs.readFileSync(resolveExportPath(), 'utf8'));
   const rows = Array.isArray(raw) ? raw : (raw?.products ?? []);
-  const { byRegion, byCountry, byRegionCountry } = aggregate(rows);
+  // Build the 4-level resolver over the RAW taxonomy (all three coordinate arrays),
+  // then hand it to aggregate() so rows bucket into hierarchy nodes rather than
+  // collapsing onto their region field.
+  const taxonomyRaw = JSON.parse(fs.readFileSync(resolveTaxonomyPath(), 'utf8'));
+  const resolver = makeGeoResolver(taxonomyRaw);
+  const { byRegion, byCountry, byRegionCountry, nodes, unresolved } = aggregate(rows, { resolver });
   const coords = loadTaxonomyCoords();
   const { regionDesc, subDesc, regionKnowledge, subsByRegion } = loadDescriptions();
 
@@ -501,21 +677,73 @@ function main() {
     dominantCountry.set(region, bestC);
   }
 
+  // The SAME row subset aggregate() counted (non-excluded beverages, all stock
+  // states). handoffCount must run over this set, not `rows`, or the predicate would
+  // count Accessories/Events/Cigars that the map never counted.
+  const bevRows = rows.filter((r) => r && typeof r.sku === 'string' && r.sku
+    && !new Set(EXCLUDE_GROUPS).has(r.category_group || 'Unknown'));
+
   let rolledUp = 0;
+  let suppressedDegenerate = 0;
+  let missingParent = 0;
   const regions = [];
-  for (const [name, agg] of byRegion) {
-    const key = name.toLowerCase();
-    const coord = coords.region.get(key) ?? CENTROIDS[key];
+  for (const n of nodes.values()) {
+    // (3) DEGENERATE PIN SUPPRESSION. A node whose name equals its country can never
+    // produce a working link: normalizeShopParams() strips region==country, so the
+    // hand-off collapses to country-only and the pin's total would describe a
+    // different grid than the one the user lands on. Measured: France/France (62),
+    // Italy/Italy (36), USA/USA (20) all returned grid=0 against their own totals.
+    if (n.country && normGeo(n.name) === normGeo(n.country)) { suppressedDegenerate += 1; continue; }
+    // Same class of defect: a node with NO country. Its hand-off omits country=, so
+    // the query matches that region name in EVERY country. Measured: a stray
+    // country-less 'Lombardy' row (own=1) produced a pin claiming total=48 by
+    // sweeping up Italy's real Lombardy rows, which belong to the Italy/Lombardy pin.
+    if (!n.country) { suppressedDegenerate += 1; continue; }
+
+    const key = n.name.toLowerCase();
+    // Prefer the node's own taxonomy coords (this is what unlocks Napa/Barolo/
+    // Colchagua); fall back to the region index, then the hand-authored centroids.
+    const coord = (typeof n.latitude === 'number' && typeof n.longitude === 'number')
+      ? { lat: n.latitude, lng: n.longitude }
+      : (coords.region.get(key) ?? CENTROIDS[key]);
     if (!coord) { rolledUp += 1; continue; }
-    const country = dominantCountry.get(name) ?? '';
-    // Use the COUNTRY-SCOPED bucket (not the region-name-wide `agg`) so total
-    // counts only this country's rows — matching the {country,region} /shop grid.
-    const scoped = byRegionCountry.get(country + RC_SEP + name) ?? agg;
+
+    // A subregion pin with no parentName would emit `?subregion=` with NO `?region=`,
+    // which normalizeShopParams DROPS — widening the query to the whole country.
+    // Measured before this guard: Islay (59 rows) reported total=612, i.e. every
+    // Scottish beverage; Beaujolais (52) reported 2,700 — all of France. These arise
+    // from the self-parent guard in aggregate() (a row carrying the SAME value in
+    // region and subregion gets rooted). Pin them at REGION level instead: the value
+    // does sit in the region column for these rows, so `?region=<name>` is both
+    // well-formed and accurate. Downgrading beats emitting a country-wide lie.
+    const level = (n.level === 'subregion' && !n.parentName) ? 'region' : n.level;
+    if (n.level === 'subregion' && !n.parentName) missingParent += 1;
+
+    // (2) `total` IS THE HAND-OFF COUNT, computed with the same predicate shopHref's
+    // URL will run. NOT ownTotal and NOT inclusiveTotal — both provably diverge (see
+    // handoffCount's docstring). ownTotal/inclusiveTotal are still emitted: the
+    // drawer uses them and the subtree test asserts on them.
+    // ACCENT RECONCILIATION. The pin name comes from the TAXONOMY, but the /shop
+    // filter compares against the raw COLUMN with a plain lowercase match (no NFKD
+    // strip). Where the two spellings differ only by diacritics the link finds
+    // nothing: taxonomy 'Curicó Valley' vs column 'Curico Valley' (39 rows -> 0),
+    // likewise 'Limarí Valley'. The resolver matches these because normGeoName
+    // strips accents for LOOKUP — that tolerance must not leak into the hand-off.
+    // Emit the spelling the column actually holds so the URL resolves.
+    const emitName = columnSpelling(bevRows, level, n.country, n.name) ?? n.name;
+    const geo = level === 'subregion'
+      ? { region: n.parentName, subregion: emitName }
+      : { region: emitName, subregion: '' };
+    const total = handoffCount(bevRows, { country: n.country, ...geo });
+
     regions.push({
-      name, slug: slugify(name), country,
+      name: emitName, slug: n.slug ?? slugify(n.name), country: n.country,
       lat: coord.lat, lng: coord.lng,
-      total: scoped.total, countsByGroup: scoped.countsByGroup,
-      priceRange: scoped.priceRange, peeks: scoped.peeks,
+      total,
+      ownTotal: n.ownTotal, inclusiveTotal: n.inclusiveTotal,
+      pinLevel: level, parentName: level === 'subregion' ? n.parentName : '',
+      countsByGroup: n.countsByGroup,
+      priceRange: n.priceRange, peeks: n.peeks,
     });
   }
   const curated = curate(regions);
@@ -559,7 +787,50 @@ function main() {
   fs.mkdirSync(dir, { recursive: true });
   const file = path.join(dir, 'explore-map-data.json');
   fs.writeFileSync(file, JSON.stringify(out), 'utf8');
-  console.log(`gen-explore-map-data: ${regions.length} regions (${curated.length} curated), ${countries.length} countries, ${rolledUp} regions rolled up to country (no coord) -> ${file}`);
+  const byLevelCount = regions.reduce((m, r) => { m[r.pinLevel] = (m[r.pinLevel] ?? 0) + 1; return m; }, {});
+  console.log(`gen-explore-map-data: ${regions.length} pins (${byLevelCount.region ?? 0} region, ${byLevelCount.subregion ?? 0} subregion, ${byLevelCount.country ?? 0} country; ${curated.length} curated), ${countries.length} countries, ${rolledUp} nodes rolled up (no coord), ${suppressedDegenerate} degenerate name==country pins suppressed -> ${file}`);
+
+  // Rule 2 — a non-success state on many rows must be EXPLAINED, not left in a log.
+  if (missingParent) {
+    console.warn(`\ngen-explore-map-data: WARNING — ${missingParent} subregion pin(s) have NO parentName. ` +
+      `Their /shop hand-off emits subregion= with no region=, which normalizeShopParams DROPS, ` +
+      `silently widening the query to country-only.`);
+  }
+
+  // (4) DATA-QUALITY SIGNAL: pins whose own row count differs from the count their
+  // /shop link returns. These are genuine data-TAGGING defects, not code bugs, and
+  // `total` is correct either way (it IS the grid count). Two known shapes:
+  //   - a row tagged region='Napa Valley' with a BLANK subregion (Napa 300 own/299 grid)
+  //   - rows filed under the wrong parent (Chablis: 8 rows sit at region='Beaujolais')
+  // Region pins legitimately exceed ownTotal via /shop's ancestor+descendant match,
+  // so only report where the hand-off UNDER-counts the node's own rows — that is the
+  // direction that means rows are unreachable from their own pin.
+  const tagging = regions
+    .filter((r) => r.total < r.ownTotal)
+    .sort((a, b) => (b.ownTotal - b.total) - (a.ownTotal - a.total));
+  if (tagging.length) {
+    const shown = tagging.slice(0, 20);
+    console.log(`\ngen-explore-map-data: ${tagging.length} pin(s) where the /shop hand-off returns FEWER rows than the pin's own row count ` +
+      `(ownTotal != total => mis-tagged region/subregion columns). Top ${shown.length}:`);
+    for (const r of shown) {
+      console.log(`  ${String(r.ownTotal - r.total).padStart(4)} unreachable  ${r.country}/${r.name} [${r.pinLevel}] own=${r.ownTotal} total=${r.total} parent=${r.parentName || '-'}`);
+    }
+    if (tagging.length > shown.length) console.log(`  ... and ${tagging.length - shown.length} more`);
+  }
+
+  // Rule 2 — taxonomy GAP report. NOTE: `unresolved` counts geography VALUES that
+  // have no taxonomy entry, independent of whether the ROW resolved (a row with an
+  // unknown subregion still resolves via its region field and is never dropped).
+  // It is a TAXONOMY-GAP report, NOT a lost-row count. Every row is still counted
+  // somewhere — these entries just pin at a coarser level than they could.
+  const gaps = [...unresolved.entries()].sort((a, b) => b[1] - a[1]);
+  if (gaps.length) {
+    const shown = gaps.slice(0, 40);
+    console.log(`\ngen-explore-map-data: ${gaps.length} unresolved geo values covering ` +
+      `${gaps.reduce((n, g) => n + g[1], 0)} rows (rolled up to parent). Top ${shown.length}:`);
+    for (const [name, n] of shown) console.log(`  ${String(n).padStart(5)}  ${name}`);
+    if (gaps.length > shown.length) console.log(`  ... and ${gaps.length - shown.length} more`);
+  }
 }
 
 // Run main() only when invoked directly (not when imported by vitest).
