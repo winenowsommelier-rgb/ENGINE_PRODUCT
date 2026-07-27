@@ -122,7 +122,9 @@ COLLECTIONS = [
         "group": "Whisky",
         "sort_order": 33,
         "description": "Bourbon and rye from the United States.",
-        "filter": {"class": "Whisky", "country": "United States"},
+        # country string in the catalog is "USA" (exact-match by the shop engine),
+        # NOT "United States" — verified via the real applyShopQuery resolver.
+        "filter": {"class": "Whisky", "country": "USA"},
     },
     # --- Sake & Asian ---
     {

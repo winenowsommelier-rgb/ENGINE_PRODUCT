@@ -1,18 +1,10 @@
 [
   {
-    "slug": "barolo-barbaresco",
-    "name": "Barolo & Barbaresco",
-    "description": "Nebbiolo-driven reds from Piedmont, Italy.",
-    "filter": {
-      "country": "Italy",
-      "region": "Piedmont",
-      "class": "Red Wine"
-    }
-  },
-  {
     "slug": "bordeaux-reds",
     "name": "Bordeaux Reds",
     "description": "Structured red blends from Bordeaux, France.",
+    "group": "Wine",
+    "sortOrder": 10,
     "filter": {
       "country": "France",
       "region": "Bordeaux",
@@ -20,18 +12,35 @@
     }
   },
   {
-    "slug": "champagne",
-    "name": "Champagne",
-    "description": "Sparkling wines from the Champagne region of France.",
+    "slug": "barolo-barbaresco",
+    "name": "Barolo & Barbaresco",
+    "description": "Nebbiolo-driven reds from Piedmont, Italy.",
+    "group": "Wine",
+    "sortOrder": 11,
     "filter": {
-      "country": "France",
-      "region": "Champagne"
+      "country": "Italy",
+      "region": "Piedmont",
+      "class": "Red Wine"
+    }
+  },
+  {
+    "slug": "tuscan-reds",
+    "name": "Tuscan Reds",
+    "description": "Sangiovese-led reds from Tuscany, Italy.",
+    "group": "Wine",
+    "sortOrder": 12,
+    "filter": {
+      "country": "Italy",
+      "region": "Tuscany",
+      "class": "Red Wine"
     }
   },
   {
     "slug": "full-bodied-reds",
     "name": "Full-Bodied Reds",
     "description": "Bold, full-bodied red wines.",
+    "group": "Wine",
+    "sortOrder": 13,
     "filter": {
       "class": "Red Wine",
       "body": "Full"
@@ -41,19 +50,146 @@
     "slug": "high-acid-whites",
     "name": "High-Acid White Wines",
     "description": "Crisp, high-acidity white wines.",
+    "group": "Wine",
+    "sortOrder": 14,
     "filter": {
       "class": "White Wine",
       "acidity": "High"
     }
   },
   {
-    "slug": "tuscan-reds",
-    "name": "Tuscan Reds",
-    "description": "Sangiovese-led reds from Tuscany, Italy.",
+    "slug": "champagne",
+    "name": "Champagne",
+    "description": "Sparkling wines from the Champagne region of France.",
+    "group": "Wine",
+    "sortOrder": 15,
     "filter": {
-      "country": "Italy",
-      "region": "Tuscany",
-      "class": "Red Wine"
+      "country": "France",
+      "region": "Champagne"
+    }
+  },
+  {
+    "slug": "rose-wine",
+    "name": "Rosé Wine",
+    "description": "Dry and fruit-forward rosé from around the world.",
+    "group": "Wine",
+    "sortOrder": 20,
+    "filter": {
+      "class": "Rosé Wine"
+    }
+  },
+  {
+    "slug": "sparkling-champagne",
+    "name": "Sparkling & Champagne",
+    "description": "Champagne, prosecco, cava and sparkling wines.",
+    "group": "Wine",
+    "sortOrder": 21,
+    "filter": {
+      "class": "Sparkling & Champagne"
+    }
+  },
+  {
+    "slug": "islay-single-malts",
+    "name": "Islay Single Malts",
+    "description": "Peaty, maritime single malts from Islay, Scotland.",
+    "group": "Whisky",
+    "sortOrder": 30,
+    "filter": {
+      "class": "Whisky",
+      "region": "Islay"
+    }
+  },
+  {
+    "slug": "japanese-whisky",
+    "name": "Japanese Whisky",
+    "description": "Refined single malts and blends from Japan.",
+    "group": "Whisky",
+    "sortOrder": 31,
+    "filter": {
+      "class": "Whisky",
+      "country": "Japan"
+    }
+  },
+  {
+    "slug": "speyside-whisky",
+    "name": "Speyside Whisky",
+    "description": "Elegant, fruit-driven malts from Speyside, Scotland.",
+    "group": "Whisky",
+    "sortOrder": 32,
+    "filter": {
+      "class": "Whisky",
+      "region": "Speyside"
+    }
+  },
+  {
+    "slug": "american-whiskey",
+    "name": "American Whiskey",
+    "description": "Bourbon and rye from the United States.",
+    "group": "Whisky",
+    "sortOrder": 33,
+    "filter": {
+      "class": "Whisky",
+      "country": "USA"
+    }
+  },
+  {
+    "slug": "sake-shochu",
+    "name": "Sake & Shochu",
+    "description": "Premium Japanese sake and shochu.",
+    "group": "Sake & Asian",
+    "sortOrder": 40,
+    "filter": {
+      "class": "Sake / Shochu"
+    }
+  },
+  {
+    "slug": "umeshu",
+    "name": "Umeshu",
+    "description": "Japanese plum liqueurs, sweet and aromatic.",
+    "group": "Sake & Asian",
+    "sortOrder": 41,
+    "filter": {
+      "class": "Umeshu"
+    }
+  },
+  {
+    "slug": "craft-gin",
+    "name": "Craft Gin",
+    "description": "Botanical-led gins from craft distillers.",
+    "group": "Spirits",
+    "sortOrder": 50,
+    "filter": {
+      "class": "Gin"
+    }
+  },
+  {
+    "slug": "aged-rum",
+    "name": "Aged Rum",
+    "description": "Sipping and mixing rums from across the tropics.",
+    "group": "Spirits",
+    "sortOrder": 51,
+    "filter": {
+      "class": "Rum"
+    }
+  },
+  {
+    "slug": "tequila",
+    "name": "Tequila",
+    "description": "Blanco, reposado and añejo agave spirits.",
+    "group": "Spirits",
+    "sortOrder": 52,
+    "filter": {
+      "class": "Tequila"
+    }
+  },
+  {
+    "slug": "cognac-brandy",
+    "name": "Cognac & Brandy",
+    "description": "Grape brandies for after dinner.",
+    "group": "Spirits",
+    "sortOrder": 53,
+    "filter": {
+      "class": "Brandy"
     }
   }
 ]
