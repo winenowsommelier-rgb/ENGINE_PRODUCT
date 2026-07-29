@@ -145,7 +145,13 @@ describe('normalizeShopParams — geography hierarchy cleanup', () => {
     });
   });
 
-  it('canonicalizes region aliases and clears stale subregion', () => {
+  it('PRESERVES a sub-AVA region + its subregion (no hierarchy collapse)', () => {
+    // REGRESSION GUARD (2026-07-27): this test previously asserted
+    //   {region:'Napa Valley', subregion:'Oakville'} -> {region:'California'}
+    // i.e. it locked in the hierarchy collapse that made the explore map show
+    // every USA wine as "California", discarding Oakville outright. The collapse
+    // was removed in spec 2026-07-27-geography-resolution-design.md; both levels
+    // must now survive normalization.
     expect(normalizeShopParams({
       bev: '1',
       country: 'USA',
@@ -154,8 +160,14 @@ describe('normalizeShopParams — geography hierarchy cleanup', () => {
     })).toEqual({
       bev: '1',
       country: 'USA',
-      region: 'California',
+      region: 'Napa Valley',
+      subregion: 'Oakville',
     });
+  });
+
+  it('still normalizes SPELLING aliases (Scotland Highlands -> Highland)', () => {
+    expect(normalizeShopParams({ bev: '1', country: 'Scotland', region: 'Highlands' }))
+      .toEqual({ bev: '1', country: 'Scotland', region: 'Highland' });
   });
 
   it('drops subregion when no region is active', () => {
@@ -468,5 +480,26 @@ describe('bev=1 opt-in filter (beverages only)', () => {
   });
   it('without bev, accessories still match (no behavior change)', () => {
     expect(matchesFilters(fridge, { region: 'Champagne' })).toBe(true);
+  });
+});
+
+describe('appellation filter', () => {
+  const P = (over: Partial<PublicProduct>) => ({
+    sku: 'X', name: 'n', country: 'Italy', region: 'Piedmont', ...over,
+  }) as PublicProduct;
+
+  it('filters on appellation (exact, case-insensitive)', () => {
+    const rows = [P({ sku: 'A', appellation: 'Barolo' }), P({ sku: 'B', appellation: 'Chianti' })];
+    expect(applyShopQuery(rows, { appellation: 'barolo' }).total).toBe(1);
+  });
+
+  it('a row with no appellation is excluded when the filter is set', () => {
+    const rows = [P({ sku: 'A', appellation: 'Barolo' }), P({ sku: 'B' })];
+    expect(applyShopQuery(rows, { appellation: 'Barolo' }).total).toBe(1);
+  });
+
+  it('no appellation param returns everything', () => {
+    const rows = [P({ sku: 'A', appellation: 'Barolo' }), P({ sku: 'B' })];
+    expect(applyShopQuery(rows, {}).total).toBe(2);
   });
 });

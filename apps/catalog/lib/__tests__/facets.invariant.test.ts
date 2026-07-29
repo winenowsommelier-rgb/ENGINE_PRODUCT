@@ -1,12 +1,12 @@
 import { getAllProducts } from '../catalog-data';
 import { applyShopQuery, matchesFilters } from '../shop-query';
 import { regionsFor, accessorySubCategoriesFor } from '../facets';
-import { canonicalRegionForCountry } from '../geo-aliases';
+import { regionMatchesFilter } from '../geo-aliases';
 
 describe('facet count consistent with grid total (context-aware invariant)', () => {
   const all = getAllProducts();
 
-  it('every region facet under group=Wine: count subset of grid, and grid >= count', () => {
+  it('every region facet under group=Wine: chip count === grid total (exact)', () => {
     // Input set for regionsFor = everything active EXCEPT region/subregion → here just group=Wine.
     const wine = all.filter((p) => matchesFilters(p, { group: 'Wine' }));
     const regions = regionsFor('', wine);
@@ -16,11 +16,17 @@ describe('facet count consistent with grid total (context-aware invariant)', () 
     for (const { value, count } of regions.slice(0, 5)) {
       const params = { group: 'Wine', region: value };
       const grid = applyShopQuery(all, params);
-      // region is now EXACT (matches the chip): facet count == grid total exactly.
-      // Regression guard against the substring count-mismatch bug.
+      // Facet and grid resolve a region by ONE rule — regionMatchesFilter, i.e. the
+      // canonical value OR any ancestor of it. The chip count must equal the grid
+      // total exactly. Regression guard against the substring count-mismatch bug
+      // this test was originally written for.
       expect(grid.total).toBe(count);
-      const facetCounted = wine.filter((p) => canonicalRegionForCountry(p.country, p.region) === value);
-      expect(facetCounted.length).toBe(count); // facet count is exact-value tally
+      // Regression guard: this previously tallied by exact canonical value, which
+      // contradicted the assertion above once ancestor matching landed — one `count`
+      // cannot be both 604 (grid) and 603 (exact tally). Tally the same way the grid
+      // matches. Spec: 2026-07-27-geography-resolution-design.md.
+      const facetCounted = wine.filter((p) => regionMatchesFilter(p.country, p.region, value));
+      expect(facetCounted.length).toBe(count);
       for (const p of facetCounted) {
         expect(matchesFilters(p, params)).toBe(true); // ...and all pass the grid
       }

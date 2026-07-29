@@ -4,7 +4,7 @@
  *
  * Two strands, in order:
  *   category:  group › class
- *   geography: country › region › subregion
+ *   geography: country › region › subregion › appellation
  *
  * Each crumb is a link that jumps BACK to that level: it keeps everything up to
  * and including the crumb (and the OTHER strand untouched), and drops the deeper
@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils';
 // clearDescendants(). Do not redefine the strand topology here.
 
 const CATEGORY_STRAND: DrillStrand[] = ['group', 'class'];
-const GEO_STRAND: DrillStrand[] = ['country', 'region', 'subregion'];
+const GEO_STRAND: DrillStrand[] = ['country', 'region', 'subregion', 'appellation'];
 const ALL_DRILL_KEYS: DrillStrand[] = [...CATEGORY_STRAND, ...GEO_STRAND];
 
 const crumbClass =

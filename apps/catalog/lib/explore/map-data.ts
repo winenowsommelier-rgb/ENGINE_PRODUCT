@@ -47,15 +47,28 @@ export function lensCount(region: MapRegion, lens: LensKey): number {
  * exactly. We deliberately DO NOT pass inStock=1: the map counts in-stock AND
  * out-of-stock beverages, so the grid must show both too (count == grid). Users
  * see the full catalogue for a region; out-of-stock items render greyed in /shop.
+ *
+ * The GEO part of the hand-off is shaped by the pin's LEVEL, because /shop's
+ * matchesFilters ANDs region/subregion/appellation independently against the row's
+ * own columns — a name alone is not enough. A subregion pin must therefore emit its
+ * PARENT region as well as itself (Napa Valley lives at region='California',
+ * subregion='Napa Valley'; emitting region='Napa Valley' matched ~1 row against an
+ * ownTotal of ~300). An appellation pin emits appellation only — appellation is
+ * already unique enough, and its parent region/subregion naming is inconsistent.
+ * A pin with no pinLevel is treated as a region, so the current data file (all
+ * region pins, no pinLevel field) keeps working unchanged.
  */
 export function shopHref(region: MapRegion, lens: LensKey): string {
   const group = lensPrimaryGroup(lens);
-  const qs = buildQuery({}, {
-    bev: '1',
-    country: region.country,
-    region: region.name,
-    group: group ?? null,
-  });
+  const level = region.pinLevel ?? 'region';
+  const geo: Record<string, string | null> =
+    level === 'region'
+      ? { region: region.name, subregion: null, appellation: null }
+      : level === 'subregion'
+        ? { region: region.parentName ?? null, subregion: region.name, appellation: null }
+        : { region: null, subregion: null, appellation: region.name };
+
+  const qs = buildQuery({}, { bev: '1', country: region.country, ...geo, group: group ?? null });
   return qs ? `/shop?${qs}` : '/shop';
 }
 

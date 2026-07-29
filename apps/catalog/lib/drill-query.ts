@@ -1,7 +1,7 @@
 /**
  * Drill-down strand helpers. The two strands and their descendant chains:
  *   category: group → class
- *   geography: country → region → subregion
+ *   geography: country → region → subregion → appellation
  *
  * When a user changes a parent level, the deeper levels become invalid and MUST
  * be cleared (design §3). buildQuery() does NOT do this — it's a generic patch
@@ -10,7 +10,7 @@
  * Pure. No Next/React.
  */
 
-export type DrillStrand = 'group' | 'class' | 'country' | 'region' | 'subregion';
+export type DrillStrand = 'group' | 'class' | 'country' | 'region' | 'subregion' | 'appellation';
 
 /**
  * The descendant params cleared/dropped below each drill strand. Single source of
@@ -19,9 +19,10 @@ export type DrillStrand = 'group' | 'class' | 'country' | 'region' | 'subregion'
 export const DRILL_DESCENDANTS: Record<DrillStrand, DrillStrand[]> = {
   group: ['class'],
   class: [],
-  country: ['region', 'subregion'],
-  region: ['subregion'],
-  subregion: [],
+  country: ['region', 'subregion', 'appellation'],
+  region: ['subregion', 'appellation'],
+  subregion: ['appellation'],
+  appellation: [],
 };
 
 /**

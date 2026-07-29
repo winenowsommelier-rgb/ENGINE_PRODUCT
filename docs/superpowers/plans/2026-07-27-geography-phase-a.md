@@ -246,12 +246,27 @@ keeps working; regionMatchesFilter gains ancestor matching."
 
 ---
 
-### Task 2: Rewrite the anti-test that locks in the collapse
+### Task 2: Rewrite the anti-tests that lock in the collapse
 
-`shop-query.test.ts:148-159` asserts `{region:'Napa Valley', subregion:'Oakville'}` normalizes to `{region:'California'}` — dropping Oakville entirely. That test encodes the bug. Rule 5: rewrite it.
+**SCOPE CORRECTION (found during Task 1 execution).** This plan originally named ONE
+anti-test. There are **three** tests encoding the pre-split behaviour:
+
+1. `shop-query.test.ts:148-159` — "canonicalizes region aliases and clears stale
+   subregion": asserts `{region:'Napa Valley', subregion:'Oakville'}` → `{region:'California'}`,
+   dropping Oakville entirely.
+2. `facets.test.ts:71-78` — "regionsFor canonicalizes known region aliases": asserts
+   `regionsFor('USA', …)` returns `California`, not `Napa Valley`.
+3. `facets.invariant.test.ts:22-23` — **already fixed during Task 1**, because it was not
+   an anti-test but a live contradiction: lines 21 and 23 demanded 604 and 603 from the
+   same variable once ancestor matching existed. See the Task 1 commits.
+
+**Also note:** `facets.test.ts:76-78` asserts Scotland `Highlands → Highland` but sits
+AFTER the failing USA assertion inside the same `it` block, so it never executes. Split
+that `it` in two so the Scotland path is actually exercised.
 
 **Files:**
 - Modify: `apps/catalog/lib/__tests__/shop-query.test.ts:148-159`
+- Modify: `apps/catalog/lib/__tests__/facets.test.ts:71-78` (split the `it`)
 
 - [ ] **Step 1: Run the suite to see the expected failure**
 
@@ -1399,3 +1414,31 @@ Two things the implementer must know:
 - No non-places pinned
 - Browser journeys verified at 375px and desktop
 - `products.db` and `live_products_export.json` untouched
+
+---
+
+## Execution log — corrections found while running the plan
+
+**Task 1 commit message overclaims.** `cf7b979` says the split "stops the map flattening
+every USA sub-AVA into California." It does not — not yet. `gen-explore-map-data.mjs:21`
+still holds the OLD merged alias table including `napa valley -> California`, and the
+generated `explore-map-data.json` still has **no Napa Valley pin** (94 regions, Napa
+absent). The `.mjs` side is replaced by Tasks 3-5 and the map is only actually fixed at
+Task 8. Task 1 changes the TS/shop side only. Do not read that commit message as evidence
+the map works.
+
+**A .mjs/TS parity gap exists between Task 1 and Task 4.** During that window the two
+alias tables genuinely disagree — TS has the split, `.mjs` has the merged original. This
+is expected and temporary, but nothing asserts it, so a reviewer looking at Task 1 alone
+will reasonably call it a divergence. Task 4's parity test closes it.
+
+**Deferred design question — the `own` gate in `regionsFor`** (`facets.ts`). An ancestor
+only receives a rolled-up count if it already has products of its OWN. So a parent region
+with zero direct products gets no chip, while `?region=<parent>` still returns its
+children's rows.
+
+Latent today (California has 605 direct rows). It becomes live in Phase B3, which
+normalizes region values and can move rows off a parent onto its children — exactly the
+Chile `Central Valley` shape. **Decide before B3:** either drop the `own` gate and let a
+pure-container region show a chip, or keep it and accept that such a region is
+reachable by URL but not by chip. Not a Phase A blocker.

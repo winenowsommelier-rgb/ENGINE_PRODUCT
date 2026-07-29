@@ -648,3 +648,188 @@ decision 2026-07-27: rename the visible label to **"Designation"** so UI and cod
 Three lines. **Not** the Magento `classification` column (different field, 74 scripts,
 Rule 12 says stop using it rather than rename it). Update CLAUDE.md Rule 12 and the
 memory note in the same commit or the guidance goes stale.
+
+---
+
+## 10. CORRECTION (2026-07-27) — measurements were taken against a STALE taxonomy
+
+Task 3's implementer reported a discrepancy that turned out to invalidate several
+figures in this document. Root cause identified and confirmed.
+
+**What happened.** All §1-§9 measurements were taken in the `feat/image-item-url-refresh`
+checkout, whose `data/taxonomy/explore-taxonomy.json` has **300 regions**, a `Napa` region,
+and `Napa Valley.parentSlug = 'napa'`. That file is **stale**. Commit `be36591`
+*"fix(taxonomy): collapse fake 'Napa' region into California; repair 6 failing tests (#92)"*
+landed on `main` and corrected it. The version on `main` — which this worktree uses — has
+**125 regions**, no `Napa` region, and `Napa Valley.parentSlug = 'california'`.
+
+Someone had already fixed the exact defect §9.5 independently rediscovered.
+
+**Corrected figures (measured on `main`'s taxonomy, 11,934 products):**
+
+| Figure | Stale claim (§2) | Actual on `main` |
+|---|---|---|
+| taxonomy regions | 300 | **125** |
+| subregion rows resolvable | 60.5% | **82.9%** (5,395 / 6,511) |
+| unresolved subregion rows | 2,558 | **1,116** |
+| `Napa Valley.parentSlug` | `napa` | `california` |
+| a `Napa` region exists | yes | **no** |
+
+pinLevel breakdown of the 5,395 resolved: region 2,604 · subregion 2,149 · appellation 642.
+
+The five motivating places all resolve correctly: Sonoma County → **region** (71 rows),
+Napa Valley → **subregion** (299), Barolo → **appellation** (99), Colchagua Valley →
+**region** (140), Barossa Valley → **region** (125).
+
+**What still holds.** The design is unaffected — every architectural decision survives:
+
+- The `regions`-fallback for a value in the `subregion` field is still load-bearing
+  (Sonoma County / Colchagua / Barossa are still region-classified).
+- Parent-from-the-row is still correct. The justification is the **0/81 appellation
+  `parentSlug` gap** plus cross-level name collisions — NOT the Napa example, which is
+  no longer valid on `main`.
+- §9.5's core finding stands: the product rows are right and the taxonomy was wrong.
+  `be36591` already fixed one instance of it.
+
+**What this changes for the remaining work.** The §9.6 taxonomy expansion (S2) is
+**smaller than scoped** — 1,116 unresolved rows, not 2,578. Re-measure per country before
+authoring entries. The 24-entry auto-reclassify list in §9.5 must also be re-derived
+against `main`'s taxonomy; some entries may already be fixed by `be36591`.
+
+**Process lesson.** Analysis was run in a different checkout from the one the work
+executes in. Measure in the worktree, or confirm the analysed file matches what the
+branch actually contains.
+
+---
+
+## 11. Task 5 findings — a real double-count, and corrected expectations
+
+### 11.1 The `region == subregion` self-parent double-count (FIXED)
+
+Real-data verification during Task 5 caught a bug **no unit test with clean fixtures
+would find**. When a row carries the same value in both `region` and `subregion`
+(e.g. `region='Beaujolais', subregion='Beaujolais'`), the resolver pins at subregion
+level and takes `parentName` from the row's region field — so the node became **its own
+parent**. The subtree fold then added the node into itself, silently turning 52 into 104.
+
+No crash. No dangling key. Just a wrong number — precisely the failure mode §9 warned
+this task was most exposed to.
+
+**Scope is wider than the one case found:** **165 rows** have `region == subregion` —
+Speyside 55, Islay 31, Cognac 27, Beaujolais 14, Campbeltown 5, Ribera del Duero 5,
+Schiedam 4, Yamazaki 4, and others. Every one would have double-counted.
+
+Fixed at insert time (`gen-explore-map-data.mjs:180`) plus a belt-and-braces check in the
+fold (`:228`). Verified: 0 cycles of any length, 0 dangling parents, 0 subtree mismatches.
+
+**Note this is the same 165 rows §9.3 listed as merely "redundant".** They are not
+cosmetic — they cause a counting bug. D2 (clear `subregion` where it equals `region`)
+is therefore more valuable than the audit implied.
+
+### 11.2 Corrected expectations — the plan's estimates were wrong, the code is right
+
+Two figures in the Task 5 brief did not match reality. Both were investigated rather than
+assumed, and the implementation is correct in both cases:
+
+**California `ownTotal` = 191, not ~134.** It is 134 blank-subregion rows **plus 57 rows
+whose subregion has no taxonomy entry** (Carneros 15, Alameda County 8, Livermore Valley 6,
+SF Bay Area 5, Adelaida District 5, …), which correctly fall back to California rather
+than being dropped. 134 + 57 = 191.
+
+**California `inclusiveTotal` = 534, not ~605.** Sonoma County (71), Paso Robles (8) and
+Lodi (7) pin at **region** level, so they are *siblings* of California, not children —
+the deliberate behaviour §A2's regions-fallback exists to produce. 534 + 71 + 8 + 7 = 620,
+which reconciles with the 619 `region='California'` rows plus one cross-region Napa row.
+
+**Implication for §A3's invariant table:** a region-level pin's `/shop` hand-off must be
+checked against the total that its query actually reproduces. Because region-classified
+values in the subregion field become siblings rather than children, `inclusiveTotal` for a
+parent region does NOT equal the `?region=<parent>` grid. Task 8 must verify this
+empirically per level rather than assuming the §A3 table.
+
+### 11.3 `unresolved` semantics
+
+The counter records **geography values with no taxonomy entry**, independent of whether
+the row itself resolved (a row can fall back to its region and still contribute its
+unknown subregion to the gap report). It is a **taxonomy-gap report, never a lost-row
+count**. A consumer reading it as "rows that failed" would be wrong.
+
+870 distinct values. Top entries include country/city names sitting in the region field —
+Scotland 67, London 49, England 43, Tequila 43 — which are data-quality defects (§9.3),
+not missing taxonomy entries.
+
+### 11.4 Row accounting
+
+Σ `ownTotal` = 10,776 against 10,778 eligible rows. The delta is exactly **2 rows that
+have no country, region OR subregion** — nowhere to pin them. No row lost, none
+double-counted.
+
+---
+
+## 12. DESIGN CORRECTION (Task 8) — appellation pinning deferred; `total` redefined
+
+Task 8's empirical measurement disproved a core premise of §4. Recorded here because the
+spec asserted it repeatedly and would otherwise mislead the next reader.
+
+### 12.1 The error — pinning on one column, querying another
+
+§A2/§A3a specified that a row whose `subregion` value names an appellation should pin at
+**appellation level**, handing off to `/shop` as `?appellation=<name>`.
+
+**That cannot work.** The resolver pins based on the row's `region`/`subregion` value, but
+the hand-off queries the `appellation` COLUMN — which is populated on only
+**956 of 11,934 rows (8%)**. The two sets barely intersect:
+
+| Value | rows via `subregion` | rows via `appellation` |
+|---|---|---|
+| Brunello di Montalcino | 61 | **0** |
+| Amarone della Valpolicella | 61 | **0** |
+| Châteauneuf-du-Pape | 62 | **0** |
+| Barolo | 99 | 75 |
+
+All 24 appellation-level pins failed the invariant; most would have shipped **links to
+empty grids**. §A3a's claim that adding the `appellation` filter clause "unblocks
+4-level pinning" was wrong — the filter works fine, but nothing populates the column it
+reads.
+
+**Resolution: Phase A ships THREE levels** (country → region → subregion). Values that
+match only an appellation entry fall through to the region fallback or roll up. The
+`PinLevel` type keeps its `'appellation'` member and the `shop-query.ts` appellation
+filter stays — both are correct and independently useful; there is simply no pin feeding
+the filter until the column is populated (a Phase B concern).
+
+### 12.2 `total` redefined — computed from the hand-off, not derived from the tree
+
+§A3's table said a region pin compares against `inclusiveTotal`. **Also wrong**, for a
+second independent reason: `regionMatchesFilter` deliberately widens `?region=X` to
+include descendants via the ancestor table, while region-classified values sitting in the
+`subregion` column resolve as region-level *siblings* rather than children.
+
+Measured for California: `ownTotal`=191, `inclusiveTotal`=534, **grid=620**. No field of
+the tree equals the grid, and 88 of 379 region pins matched neither total.
+
+**New definition: `total` is the count the pin's own `/shop` hand-off returns.** The
+generator computes it by evaluating the same predicate `shopHref` produces. This makes the
+strict invariant true *by construction* at every level, and `total` becomes what the user
+actually sees when they click through.
+
+`ownTotal` and `inclusiveTotal` remain emitted — they are meaningful for the drawer and
+for the subtree-consistency test — but they are no longer what the invariant compares.
+
+### 12.3 Two further defects surfaced
+
+**Degenerate pins.** Nodes where `name == country` (`France/France`, `Italy/Italy`,
+`USA/USA`) can never produce a working link — `normalizeShopParams` strips those params.
+Suppressed at generation.
+
+**`ownTotal != total` is a data-quality signal.** Napa (own 300 / grid 299 — one row has
+`region='Napa Valley'` with a blank subregion) and Chablis (own 80 / grid 72 — 8 rows sit
+under `region='Beaujolais'`) are genuine row-tagging defects. Now surfaced as a build-time
+warning next to the gap report (Rule 2) rather than silently absorbed.
+
+### 12.4 Process note
+
+This error survived three adversarial spec reviews and five implementation tasks. It was
+caught only when an implementer ran the real predicate against the real export instead of
+reasoning about the schema. **Measuring the actual join is not the same as reading the
+column names** — a filter existing does not mean the column feeding it is populated.
