@@ -1,0 +1,5 @@
+[
+  {"sku":"WR0001","name":"Test Rouge","b2b_price":450,"country":"France","region":"Bordeaux","is_in_stock":"1","score_summary":"93 pts","score_max":100,"popularity_score":0.85,"image_url":null},
+  {"sku":"WW0001","name":"Test Blanc","b2b_price":380,"country":"France","region":"Burgundy","is_in_stock":"1","score_summary":null,"score_max":null,"popularity_score":0.5,"image_url":null},
+  {"sku":"SP0001","name":"Test Whisky","b2b_price":1200,"country":"Scotland","region":"Speyside","is_in_stock":"1","score_summary":"90 pts","score_max":100,"popularity_score":0.3,"image_url":null}
+]
