@@ -50,11 +50,15 @@ function resolveExportPath() {
   return found;
 }
 
-async function loadRecommender() {
-  const outfile = path.join(catalogRoot, '.next', 'gen-recs-cache-bundle.mjs');
+/**
+ * Bundle a lib/*.ts entry point through esbuild and import it, so the TS source
+ * stays the single source of truth rather than being re-implemented in JS here.
+ */
+async function loadLib(entry, bundleName) {
+  const outfile = path.join(catalogRoot, '.next', bundleName);
   fs.mkdirSync(path.dirname(outfile), { recursive: true });
   await esbuild.build({
-    entryPoints: [path.join(catalogRoot, 'lib', 'recommender.ts')],
+    entryPoints: [path.join(catalogRoot, 'lib', entry)],
     bundle: true,
     platform: 'node',
     format: 'esm',
@@ -66,14 +70,52 @@ async function loadRecommender() {
   return mod;
 }
 
+const loadRecommender = () => loadLib('recommender.ts', 'gen-recs-cache-bundle.mjs');
+const loadRecommendedRank = () => loadLib('recommended-rank.ts', 'gen-recs-rank-bundle.mjs');
+
 async function main() {
   const file = resolveExportPath();
   const raw = JSON.parse(fs.readFileSync(file, 'utf8'));
   const rows = Array.isArray(raw) ? raw : (raw?.products ?? []);
+  // `popularity_tier` is NOT a field of the raw export — it is DERIVED at load
+  // time in lib/catalog-data.ts from the client-forbidden `popularity_score`
+  // (p75 cutoff over the scored population). This script bypasses that loader,
+  // so we must reproduce the derivation here or the recommender's popularity
+  // signal (+1 when BOTH sides are tier 2) can never fire in the cache that
+  // actually ships — it was silently dead in production until 2026-07-27.
+  //
+  // We reuse the SAME exported helpers the loader uses rather than
+  // re-implementing the cutoff, so the tier boundary cannot drift between the
+  // request path and the precomputed cache.
+  //
+  // NOTE the privacy contract: only the coarse 0/1/2 bucket is attached. The
+  // raw popularity_score is never written into recs-cache.json (the cache only
+  // stores {sku, band} pairs anyway), matching the allowlist chokepoint in
+  // toPublicProduct().
+  const { popularityCutoffP75, popularityTier } = await loadRecommendedRank();
+  const cutoff = popularityCutoffP75(rows);
+
   const all = rows.map((r) => ({
     ...r,
     is_in_stock: r.is_in_stock === '1' || r.is_in_stock === 1,
+    popularity_tier: popularityTier(r.popularity_score, cutoff),
   }));
+
+  // Rule 2: make the derivation observable rather than silent. A tier2 count of
+  // 0 means the signal is dead again (e.g. popularity_score stopped syncing)
+  // and should be investigated, not ignored.
+  const tier2 = all.filter((r) => r.popularity_tier === 2).length;
+  const tier1 = all.filter((r) => r.popularity_tier === 1).length;
+  console.log(
+    `gen-recs-cache: popularity tiers derived (p75 cutoff ${cutoff}) — ` +
+      `tier2=${tier2} tier1=${tier1} tier0=${all.length - tier2 - tier1}`,
+  );
+  if (tier2 === 0) {
+    console.warn(
+      'gen-recs-cache: WARNING no tier-2 products — the popularity signal will ' +
+        'never fire. Check that popularity_score is present in the export.',
+    );
+  }
 
   const { precomputeRecommendations } = await loadRecommender();
 

@@ -178,12 +178,68 @@ export function priceBand(
   return null;
 }
 
-function varietiesMatch(a: string | undefined | null, b: string | undefined | null): boolean {
-  if (!a || !b) return false;
-  const al = a.toLowerCase(), bl = b.toLowerCase();
-  if (al === bl) return true;
-  const ci = _varietyCluster.get(al);
-  return ci !== undefined && ci === _varietyCluster.get(bl);
+/**
+ * Split a `variety` value into normalised grape tokens.
+ *
+ * `variety` is NOT free text — it is a mixed-domain enum (grape names for wine,
+ * but also 'Single Malt', 'Junmai Ginjo', 'Cane/Molasses', 'Blended' for other
+ * categories). ~33% of in-stock wine carries a comma-joined BLEND, e.g.
+ * 'Cabernet Sauvignon, Merlot' or 'Chardonnay, Pinot Noir, Pinot Meunier'.
+ *
+ * Each token is mapped through the alias clusters so 'Shiraz' and 'Syrah'
+ * collapse to the same identity BEFORE comparison — previously the cluster
+ * lookup ran on the whole string, so it could never fire on a blend at all.
+ *
+ * Note the '/' separator is deliberate but narrow: it splits 'Grenache/Syrah'
+ * while values like 'Cane/Molasses' simply become two tokens that only ever
+ * match another identical 'Cane/Molasses', so behaviour there is unchanged.
+ */
+function varietyTokens(v: string | undefined | null): Set<string> {
+  if (!v) return new Set();
+  const out = new Set<string>();
+  for (const raw of v.split(/[,/]|\band\b/)) {
+    const t = raw.trim().toLowerCase();
+    if (!t) continue;
+    const ci = _varietyCluster.get(t);
+    // Collapse aliases to a stable cluster id; otherwise keep the literal token.
+    out.add(ci !== undefined ? `#${ci}` : t);
+  }
+  return out;
+}
+
+/**
+ * Variety similarity points.
+ *
+ * REGRESSION HISTORY: this used to be a boolean whole-string comparison, so
+ * 'Cabernet Sauvignon, Merlot' scored ZERO against 'Merlot, Cabernet Sauvignon'
+ * — the same wine, different word order — and no blend could ever reach the
+ * VARIETY_ALIASES clusters. Blends are ~33% of in-stock wine, so the +2 variety
+ * signal was silently unavailable to a third of the catalogue.
+ *
+ * Scoring is GRADED rather than all-or-nothing, because partial overlap is
+ * common enough to distort an additive scorer if paid at full rate: measured on
+ * the live catalogue, same-region pairs are 18.8% identical but a further 20.7%
+ * PARTIALLY overlap. Paying those +2 would roughly double how often the signal
+ * fires and let "shares one of four grapes" outrank a true varietal match.
+ *
+ *   +2  identical grape set (incl. blends listed in a different order)
+ *   +1  partial overlap (at least one shared grape, but not the same set)
+ *    0  no shared grape
+ */
+function varietyPoints(a: string | undefined | null, b: string | undefined | null): number {
+  if (!a || !b) return 0;
+  // Fast path: byte-identical values (the overwhelmingly common case) skip
+  // tokenisation entirely, keeping the precompute hot loop cheap.
+  if (a === b) return 2;
+
+  const at = varietyTokens(a);
+  const bt = varietyTokens(b);
+  if (at.size === 0 || bt.size === 0) return 0;
+
+  let shared = 0;
+  for (const t of at) if (bt.has(t)) shared++;
+  if (shared === 0) return 0;
+  return shared === at.size && shared === bt.size ? 2 : 1;
 }
 
 /**
@@ -250,7 +306,8 @@ export function scoreCandidateDetailed(
     add('region', regionWeight);
   }
   if (product.subregion && candidate.subregion && product.subregion === candidate.subregion) add('subregion', 2);
-  if (varietiesMatch(product.variety, candidate.variety)) add('variety', 2);
+  const varietyPts = varietyPoints(product.variety, candidate.variety);
+  if (varietyPts > 0) add('variety', varietyPts);
   if (product.country && candidate.country && product.country === candidate.country) add('country', 1);
 
   const a = productFoods ?? foodSet(product.food_matching);
