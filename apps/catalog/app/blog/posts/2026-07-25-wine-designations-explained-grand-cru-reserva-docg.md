@@ -3,6 +3,7 @@ TITLE: Wine Designations Explained: What Grand Cru, Reserva, DOCG Actually Mean 
 SLUG: wine-designations-explained-grand-cru-reserva-docg
 DATE: 2026-06-19
 TAGS: guide,designations,france,italy,spain,wine-education
+PRODUCTS: WWW5292GC,WRW6320FC,WRW2020AC,WRW6205GF
 COVER-IMAGE: https://images.pexels.com/photos/17862836/pexels-photo-17862836.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Riccardo Zerbinati via Pexels
 COVER-CREDIT-URL: https://www.pexels.com/photo/opus-wine-winery-17862836/

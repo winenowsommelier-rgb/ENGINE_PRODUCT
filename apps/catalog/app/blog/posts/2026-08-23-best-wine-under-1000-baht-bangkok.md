@@ -100,8 +100,6 @@ The reliable house red. Soft peppery spice, plum fruit, gentle tannins —
 exactly what the category promises, delivered without pretension. Works warm
 or slightly chilled, which matters in Bangkok.
 
-฿395
-
 <!-- product: WRW1039AD -->
 
 Wolf Blass Eaglehawk Chardonnay
@@ -111,8 +109,6 @@ Unoaked, clean, and genuinely food-friendly. No butter, no vanilla — just
 fresh stone fruit and citrus. The correct answer when someone asks for "a
 white that goes with everything" and means it.
 
-฿395
-
 <!-- product: WWW4855AD -->
 
 Concha Y Toro Frontera Cabernet Sauvignon
@@ -121,8 +117,6 @@ Chile  ·  Central Valley
 Chile's most reliable entry-level red. Blackcurrant, a touch of cedar,
 dry finish. At ฿399 it is genuinely hard to beat. The Frontera is the
 category benchmark because Concha Y Toro actually cares about this price tier.
-
-฿399
 
 <!-- product: WRW0288AD -->
 
@@ -136,8 +130,6 @@ Dark fruit — blackberry, dark plum — with velvety tannins and a long finish.
 Argento is the crowd-pleaser for good reason: it's approachable without being
 simple, and genuinely improves over the course of a meal.
 
-฿595
-
 <!-- product: WRW0301AD -->
 
 Reserve St Martin Cabernet Sauvignon
@@ -148,8 +140,6 @@ producing serious wine for decades without the Bordeaux price tag.
 This Cabernet is structured, dry, and well-made — exactly the kind of
 European style that disappears too quickly on this shelf.
 
-฿659
-
 <!-- product: WRW5907FJ -->
 
 Concha Y Toro Casillero del Diablo Cabernet Sauvignon
@@ -158,8 +148,6 @@ Chile  ·  Maipo Valley
 Chile's benchmark under-฿700 red. Casillero is where the step up from Frontera
 becomes audible: more concentration, better structure, a longer finish. This is
 the bottle you open at dinner, not just with dinner.
-
-฿569
 
 <!-- product: WRW4742AD -->
 
@@ -174,8 +162,6 @@ precision to cut through fish sauce, handle chilli heat, and refresh the
 palate between bites of larb. Dr. Loosen's entry-level is a gateway drug
 to one of the world's great wine regions.
 
-฿765
-
 <!-- product: WWW5404AD -->
 
 Nik Weis Urban Riesling
@@ -186,8 +172,6 @@ from old vines on steep slate slopes. The Urban Riesling is the accessible
 expression of that: green apple, lime zest, white peach, and a finish that
 goes on longer than it has any right to at ฿800. One of the best
 white wines available in Bangkok under ฿1,000. Full stop.
-
-฿800
 
 <!-- product: WWW2006AB -->
 

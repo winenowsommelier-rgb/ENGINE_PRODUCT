@@ -107,7 +107,7 @@ Sake is one of the few drinks in the world that tastes good across a range from 
 
 ## Sake to Buy Now
 
-Every sake mentioned in this guide is available at LIQ9. Here is a dish-matched shortlist — one entry point and one step-up option for serious pairing.
+Every sake mentioned in this guide is available at WNLQ9. Here is a dish-matched shortlist — one entry point and one step-up option for serious pairing.
 
 Versatile Food Sakes
 
@@ -115,23 +115,11 @@ Hakutsuru Junmai Ginjo (300ml)
 
 Fragrant, balanced and food-friendly — the best all-rounder on the list. Pair with sashimi, tempura, or anything from a Thai izakaya menu.
 
-SKU: LSK0435FS
-
-฿300
-
-<!-- product: LSK0435FS -->
-
-— product widget: LSK0435FS —
-
 <!-- product: LSK0435FS -->
 
 Fukuju Junmai Ginjo (300ml)
 
 Fragrant and food-forward, from one of Kobe's most celebrated breweries. A more structured Ginjo for sashimi, oysters, and delicate seafood.
-
-SKU: LSK0017AR
-
-฿700
 
 <!-- product: LSK0017AR -->
 
@@ -141,10 +129,6 @@ Hakutsuru Sayuri Nigori Sake (300ml)
 
 Cloudy, lightly sweet, and creamy — the natural partner for green curry, coconut-based dishes, and spice that needs calming.
 
-SKU: LSK0436FS
-
-฿300
-
 <!-- product: LSK0436FS -->
 
 Dry Sakes for Sashimi & Oysters
@@ -152,10 +136,6 @@ Dry Sakes for Sashimi & Oysters
 Fukuju Junmai (300ml)
 
 Dry, clean, and structured — the go-to companion for raw fish, oysters, and anything that needs a sake with restraint and backbone.
-
-SKU: LSK0020AR
-
-฿700
 
 <!-- product: LSK0020AR -->
 
@@ -165,19 +145,11 @@ Tamanohikari Junmai Ginjo Shuraku (720ml)
 
 A serious pairing sake from Kyoto — refined, umami-rich, and versatile enough to carry a full omakase meal from start to finish.
 
-SKU: LSK0347AD
-
-฿489
-
 <!-- product: LSK0347AD -->
 
 Fukuju Awasaki Sparkling Sake (300ml)
 
 Light, celebratory, and brilliant with fried foods — tempura, karaage, or crispy spring rolls. Also makes a superb aperitif before a Thai feast.
-
-SKU: LSK0013AR
-
-฿700
 
 <!-- product: LSK0013AR -->
 

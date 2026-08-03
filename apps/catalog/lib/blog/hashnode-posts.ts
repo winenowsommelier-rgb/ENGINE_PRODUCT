@@ -10,6 +10,7 @@ export type BlogPost = {
   content: { html: string; markdown: string }
   coverImage: { url: string } | null
   tags: { name: string; slug: string }[]
+  products?: string[]
   publishedAt: string
   updatedAt: string
   seo: { title: string | null; description: string | null }

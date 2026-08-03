@@ -3,6 +3,7 @@ TITLE: What We're Drinking This Month — The WNLQ9 Cellar Edit (July 2026)
 SLUG: wnlq9-cellar-edit-july-2026
 DATE: 2026-06-25
 TAGS: collection,monthly,picks,curated,bangkok
+PRODUCTS: WWW5368BN,WRS0035AB,WWW5415FJ,WRW4225AJ
 COVER-IMAGE: https://images.pexels.com/photos/11851422/pexels-photo-11851422.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Xuân Thống Trần via Pexels
 COVER-CREDIT-URL: https://www.pexels.com/photo/wine-glasses-and-bottles-on-wooden-shelves-11851422/
