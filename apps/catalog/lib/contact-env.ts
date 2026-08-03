@@ -20,6 +20,7 @@ import type { ContactEnv } from '@/lib/contact';
 export function getContactEnv(): ContactEnv {
   return {
     line: process.env.LINE_OFFICIAL_URL ?? '',
+    waUrl: process.env.WHATSAPP_URL ?? '',
     wa: process.env.WHATSAPP_NUMBER ?? '',
     fb: process.env.FB_MESSENGER_PAGE ?? '',
   };

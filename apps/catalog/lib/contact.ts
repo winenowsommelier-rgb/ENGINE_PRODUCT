@@ -15,6 +15,8 @@
 export interface ContactEnv {
   /** Full LINE URL, e.g. https://line.me/R/ti/p/@wnlq9 (passthrough) */
   line: string;
+  /** Full wa.me URL, e.g. https://wa.me/message/XXXXXXXX (passthrough). Takes priority over `wa`. */
+  waUrl: string;
   /** WhatsApp number, digits only with country code, e.g. 66812345678 */
   wa: string;
   /** Facebook Messenger page handle, e.g. wnlq9 */
@@ -47,9 +49,13 @@ export function buildContactLinks(
   // LINE: already a full URL — passthrough, or '' if not configured.
   const line = env.line ? env.line : '';
 
-  // WhatsApp: https://wa.me/<number>?text=<encoded message>
+  // WhatsApp: a full wa.me URL (e.g. a wa.me/message/<id> short-link) takes
+  // priority and is used as-is — it can't be extended with a pre-filled
+  // message. Otherwise fall back to https://wa.me/<number>?text=<message>.
   let whatsapp = '';
-  if (env.wa) {
+  if (env.waUrl) {
+    whatsapp = env.waUrl;
+  } else if (env.wa) {
     // Em-dash (U+2014) between name and sku, as specified.
     const text = product
       ? `I'm interested in ${product.name} — ${product.sku}`

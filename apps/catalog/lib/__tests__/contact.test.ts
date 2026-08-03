@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { buildContactLinks } from '@/lib/contact';
 
-const env = { line: 'https://line.me/R/ti/p/@wnlq9', wa: '66812345678', fb: 'wnlq9' };
+const env = { line: 'https://line.me/R/ti/p/@wnlq9', waUrl: '', wa: '66812345678', fb: 'wnlq9' };
 
 describe('buildContactLinks', () => {
   it('per-product WhatsApp pre-fills name + sku', () => {
@@ -26,10 +26,17 @@ describe('buildContactLinks', () => {
     expect(decodeURIComponent(l.whatsapp)).not.toContain('interested in');
   });
   it('gracefully handles missing/empty handles (returns empty strings, no crash)', () => {
-    const l = buildContactLinks({ line: '', wa: '', fb: '' });
+    const l = buildContactLinks({ line: '', waUrl: '', wa: '', fb: '' });
     expect(l.line).toBe('');
     expect(l.whatsapp).toBe('');
     expect(l.facebook).toBe('');
+  });
+  it('WhatsApp URL passthrough takes priority over number, used as-is', () => {
+    const l = buildContactLinks({ ...env, waUrl: 'https://wa.me/message/I5USTWA6IKA6M1' }, {
+      name: 'Château Test',
+      sku: 'WRW2106AC',
+    });
+    expect(l.whatsapp).toBe('https://wa.me/message/I5USTWA6IKA6M1');
   });
   it('special characters in product name are URL-encoded', () => {
     const l = buildContactLinks(env, { name: 'A & B 100%', sku: 'S/1' });
