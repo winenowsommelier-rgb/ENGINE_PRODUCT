@@ -12,6 +12,15 @@ France and Italy chapters with designation ladders and style entities — see
 that structured data into a curriculum readers can move through, rather than
 a flat pile of blog posts.
 
+**Data dependency note (verified 2026-08-03):** `data/taxonomy.db` is
+gitignored local shared state, so region/subregion data for USA, Australia,
+Spain, Chile, Argentina, New Zealand, Germany, Portugal, and Austria is
+already present on disk today (all validated `taxonomy_contexts`) — it was
+produced by the `feat/wine-knowledge-rest-of-world` branch (PR #88), which is
+**not yet merged into `main`**. The real gate on those Stage 3 pieces is
+shipping/merging that PR, not "chapters not built." Do not re-run ingestion
+for those countries before checking PR #88's status.
+
 Scope for this design: wine only. Spirits/sake/beer are a planned later
 expansion using the same 4-stage format once the wine track is running.
 
@@ -66,8 +75,11 @@ that curation logic.
 3. Grape Personality Profiles — series-within-series, ~8-10 short posts
    covering the remaining major grapes in the 44-grape taxonomy beyond the
    Stage 1 five. *Mixed* → each links to that grape's SKUs.
-4. Food Pairing Is Logic, Not Rules — **flagship**. Draws on the
-   `pairing_rules` table in `taxonomy.db`. *Sells* → "shop this pairing."
+4. Food Pairing Is Logic, Not Rules — **flagship**. Intended to draw on the
+   `pairing_rules` table in `taxonomy.db`, but that table is currently
+   **empty (0 rows)** — verified 2026-08-03. This piece is blocked on
+   populating pairing rules first, or must be written from prose knowledge
+   with the structured tie-in added later. *Sells* → "shop this pairing."
 5. Why Two Bottles of the Same Grape Taste Nothing Alike — intro to
    terroir/region, bridges to Stage 3.
 6. "Already know your grapes? Start here" — orientation post; this is the
@@ -76,14 +88,19 @@ that curation logic.
 ### Stage 3 — Explorer (region/appellation literacy)
 
 1. Country & Region Personality Profiles — series using `taxonomy_entities`
-   region/subregion data. France and Italy chapters have full data today;
-   other regions are gated on the corresponding taxonomy chapters being
-   built (see project memory: USA/AU/CL/ES chapters not yet built).
+   region/subregion data. France and Italy chapters are merged and live on
+   `main` today. Data for USA, Australia, Spain, Chile, Argentina, New
+   Zealand, Germany, Portugal, and Austria already exists in
+   `data/taxonomy.db` (validated contexts, produced by unmerged PR #88) —
+   these pieces are gated on merging PR #88, not on new ingestion work.
 2. Appellation Systems Decoded (AOC, DOCG/DOC, DO) — **flagship**, high
    search intent. *Sells* → appellation-tagged collections.
 3. Vintage Variation: Does the Year Really Matter?
-4. Style Families Beyond the Grape — uses the `style` entity type
-   (e.g. Super Tuscan) already present in taxonomy.db.
+4. Style Families Beyond the Grape — uses the `style` entity type, which
+   currently has exactly **one row** (Super Tuscan, validated 2026-07-26).
+   That's a fine seed example for this single piece, but not enough
+   structured data to sustain a recurring pillar — treat as a one-off until
+   more style entities are ingested.
 
 ### Stage 4 — Connoisseur (expert layer)
 
@@ -101,14 +118,22 @@ that curation logic.
 
 - Each stage ends with a short checkpoint (quiz or self-assessment) so the
   path reads as a completable course rather than a tag cloud of posts.
-- Stage 3 content that depends on taxonomy chapters not yet built (most
-  non-France/Italy regions) should be sequenced last within its stage, or
-  explicitly flagged as blocked, rather than silently skipped.
+  Checkpoint content is not designed yet — each should be a 5-8 question
+  self-assessment recapping that stage's pieces (e.g. Stage 1 checkpoint:
+  "can you read a label and name your first 5 grapes?"). Designing the
+  actual checkpoint questions is follow-up work, not covered by this spec.
+- Content pieces that depend on unmerged/unshipped work (Stage 2's food
+  pairing piece on empty `pairing_rules`; Stage 3's non-France/Italy region
+  profiles on unmerged PR #88) should be sequenced last within their stage
+  or explicitly flagged as blocked in the publishing calendar, rather than
+  silently skipped.
 
 ## Explicitly out of scope for this design
 
 - Publishing channel/distribution mechanics (blog pipeline vs. social vs.
   email) — deferred; this design covers curriculum content only.
 - Spirits/sake/beer tracks — later expansion, same 4-stage format.
-- New taxonomy data ingestion (e.g. USA/AU/CL/ES chapters) — a
-  prerequisite for some Stage 3 pieces, not part of this content design.
+- Merging PR #88 (rest-of-world taxonomy chapters) and populating
+  `pairing_rules` — both are prerequisites for specific pieces above, but
+  are engineering/data-ops work tracked separately from this content design.
+- Designing the actual checkpoint quiz questions for each stage.
