@@ -481,7 +481,7 @@ export default function Page({ params }: { params: { sku: string } }) {
           <section className="flex flex-col gap-3 border-t border-border pt-6">
             <h2 className="text-base font-semibold text-foreground">Interested? Talk to us</h2>
             <p className="text-sm text-muted-foreground">
-              Message us to check availability or place an order.
+              Message us to check item availability and information.
             </p>
             <ContactButtons links={links} variant="inline" productSku={product.sku} productName={product.name} />
           </section>

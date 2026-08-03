@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { CATEGORY_GROUPS } from '@/lib/category-groups';
+import { getContactEnv } from '@/lib/contact-env';
+import { buildContactLinks } from '@/lib/contact';
 
 /**
  * Global site footer — Maison minimal style.
@@ -9,8 +11,9 @@ import { CATEGORY_GROUPS } from '@/lib/category-groups';
  *   /shop?group=<Group>. Sourced from CATEGORY_GROUPS so it stays in sync with
  *   the catalog's grouping logic (single source of truth).
  * - Info column: About / Contact.
- * - Contact channels (LINE / Facebook / WhatsApp) are placeholders pointing to
- *   '#' with aria-labels; they become real deep-links in Task 9.
+ * - Contact channels (LINE / WhatsApp) are real deep-links (lib/contact.ts).
+ *   Facebook is intentionally hidden for now; any channel with no handle
+ *   configured omits gracefully.
  *
  * Server component — no interactivity. Links are >=44px tall tap targets.
  */
@@ -23,14 +26,13 @@ const INFO_LINKS = [
   { href: 'https://b2b.wnlq9.shop', label: 'WNLQ9 B2B', external: true },
 ] as const;
 
-// Placeholder contact channels — real deep-links land in Task 9.
-const CONTACT_CHANNELS = [
-  { label: 'LINE', aria: 'Contact us on LINE' },
-  { label: 'Facebook', aria: 'Contact us on Facebook' },
-  { label: 'WhatsApp', aria: 'Contact us on WhatsApp' },
-] as const;
-
 export function Footer() {
+  const links = buildContactLinks(getContactEnv());
+  const CONTACT_CHANNELS = [
+    { label: 'LINE', aria: 'Contact us on LINE', href: links.line },
+    { label: 'WhatsApp', aria: 'Contact us on WhatsApp', href: links.whatsapp },
+  ].filter((c) => c.href !== '');
+
   return (
     <footer className="mt-24 border-t border-border bg-background">
       <div className="container py-12">
@@ -97,13 +99,15 @@ export function Footer() {
           <ul className="flex flex-wrap items-center gap-6">
             {CONTACT_CHANNELS.map((channel) => (
               <li key={channel.label}>
-                <Link
-                  href="#"
+                <a
+                  href={channel.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={channel.aria}
                   className="flex min-h-11 items-center text-base text-muted-foreground transition-colors hover:text-primary"
                 >
                   {channel.label}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
