@@ -98,6 +98,9 @@ function readPostFile(filename: string): BlogPost | null {
     content: { html, markdown },
     coverImage: data['COVER-IMAGE'] ? { url: data['COVER-IMAGE'] as string } : null,
     tags: tagsFromString(data.TAGS as string | undefined),
+    products: data.PRODUCTS
+      ? data.PRODUCTS.split(',').map((s) => s.trim()).filter(Boolean)
+      : undefined,
     publishedAt,
     updatedAt: publishedAt,
     seo: {

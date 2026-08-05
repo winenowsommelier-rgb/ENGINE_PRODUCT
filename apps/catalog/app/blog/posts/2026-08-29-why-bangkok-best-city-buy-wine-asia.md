@@ -3,6 +3,7 @@ TITLE: Why Bangkok Is One of Asia's Best Cities to Buy Wine Right Now
 SLUG: why-bangkok-best-city-buy-wine-asia
 DATE: 2026-07-10
 TAGS: deep-dive,bangkok,wine-scene,asia
+PRODUCTS: WRW4225AJ,WWW5368BN,LSK0348AD,LWH0001AA
 COVER-IMAGE: https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Dmitry Zvolskiy via Pexels
 COVER-CREDIT-URL: https://www.pexels.com/photo/3171837/

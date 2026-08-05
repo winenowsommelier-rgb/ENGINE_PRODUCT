@@ -3,6 +3,7 @@ TITLE: Best Whisky Pairings for Japanese Food in Bangkok
 SLUG: best-whisky-pairings-japanese-food-bangkok
 DATE: 2026-07-06
 TAGS: pairing,whisky,japanese-food,sushi,bangkok
+PRODUCTS: LWH0251AA,LWH0173AA,LWH0369BU,LWH0001AA
 COVER-IMAGE: https://images.pexels.com/photos/372959/pexels-photo-372959.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Pixabay via Pexels
 COVER-CREDIT-URL: https://www.pexels.com/photo/three-assorted-liquor-bottles-on-table-372959/

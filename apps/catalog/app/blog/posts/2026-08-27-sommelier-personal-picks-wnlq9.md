@@ -3,6 +3,7 @@ TITLE: The WNLQ9 Sommelier's Personal Picks: 10 Bottles We'd Buy Right Now
 SLUG: sommelier-personal-picks-wnlq9
 DATE: 2026-07-09
 TAGS: collection,picks,curated,sommelier
+PRODUCTS: WWW5368BN,WRW2019AC,WRW2046AC,WSP2617EG
 COVER-IMAGE: https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Dmitry Zvolskiy via Pexels
 COVER-CREDIT-URL: https://www.pexels.com/photo/3171837/

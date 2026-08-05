@@ -3,6 +3,7 @@ TITLE: New Arrivals: What Just Landed at WNLQ9 — August 2026
 SLUG: new-wine-arrivals-august-2026
 DATE: 2026-07-06
 TAGS: news,arrivals,collection,new
+PRODUCTS: WRW1064AA,WRW1065AA,WRW1034HI,WRW0591FJ
 COVER-IMAGE: https://live.staticflickr.com/8200/8229814589_040bfb7969_b.jpg
 COVER-CREDIT: Didriks via Flickr (CC BY)
 COVER-CREDIT-URL: https://www.flickr.com/photos/49889671@N03/8229814589
@@ -18,15 +19,11 @@ August is when we go hunting for bottles that genuinely excite us — and this m
 
 ## Frescobaldi Castelgiocondo Brunello di Montalcino DOCG
 
-฿3,205
-
 There are names in Italian wine that carry centuries of weight, and Castelgiocondo is one of them. Frescobaldi's historic estate in Montalcino has been farming Sangiovese Grosso — the grape the world knows as Brunello — for generations, and the 2019 vintage is arriving here at a particularly remarkable moment. It was a warm, generous year across Montalcino: wines with uncommon depth and approachability for their age, yet every structural element you expect from this DOCG is fully present — the mineral lift, the firm but fine tannins, the long crimson-cherry finish. If you've been waiting for a definitive Brunello at a fair price, the wait is over.
 
 <!-- product: WRW1065AA -->
 
 ## Frescobaldi Nipozzano Mormoreto Toscana IGT
-
-฿4,505
 
 While Castelgiocondo anchors Frescobaldi in the Brunello tradition, Nipozzano is where the family gets experimental — in the best possible sense. Mormoreto is their flagship Super Tuscan, grown at 900 metres above sea level where the altitude translates directly into tightness, freshness, and remarkable longevity. Cabernet Sauvignon-dominant with Merlot rounding out the mid-palate, the result sits squarely between Bordeaux discipline and Tuscan soul: dark fruit, graphite, cedar, a structure that demands cellaring but rewards patience with a decade of layered development. We're genuinely excited to have this in the shop for the first time.
 
@@ -34,23 +31,17 @@ While Castelgiocondo anchors Frescobaldi in the Brunello tradition, Nipozzano is
 
 ## Arnaldo Caprai 25 Anni Sagrantino di Montefalco
 
-฿3,899
-
 Italy's most underrated red grape — and we say that with full conviction. Sagrantino di Montefalco produces wines with more tannin than Barolo, more structure than Amarone, and a character entirely its own: wild blackberry, dried fig, leather, and a mineral grip that can feel austere in youth but becomes profoundly rewarding with time. The 25 Anni is Arnaldo Caprai's benchmark bottling — 100% Sagrantino, 30 months in French and Slavonian oak, made to age for 20 years or more. At this sale price it is arguably the best-value serious Italian red we've brought in all year. Don't sit on this one.
 
 <!-- product: WRW0591FJ -->
 
 ## Little Yering Pinot Noir
 
-฿849
-
 Not every new arrival needs to be a statement bottle, and Little Yering proves it. This is the approachable sibling label from Yering Station — one of Victoria's most celebrated estates, sitting in the Yarra Valley where cool maritime air drifts in from Port Phillip Bay and gives Australian Pinot an elegance it rarely achieves elsewhere. Bright red cherry, silky tannins, a gentle forest-floor complexity — all the Yarra personality at a price point that makes it genuinely weeknight-friendly. At ฿849 it's one of the clearest overachievers on our shelves right now.
 
 <!-- product: WRW0591FJ -->
 
 ## Gérard Bertrand 6ème Sens Rouge
-
-฿800
 
 Gérard Bertrand is one of the names most responsible for putting Languedoc wine on the international map — and 6ème Sens (Sixth Sense) is his argument that biodynamic farming and value don't have to be mutually exclusive. The blend shifts slightly with each vintage to reflect what the Mediterranean south gave that year, always biodynamic, always built on sun-drenched, herb-scented terroir. Red fruit, garrigue, a warmth that is distinctly southern French without being heavy: this is confident, expressive wine at a price that makes it dangerous to stock just one bottle. We'll let you be the judge.
 

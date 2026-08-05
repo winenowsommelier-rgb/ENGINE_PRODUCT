@@ -3,6 +3,7 @@ TITLE: Natural vs. Organic Wine: What's the Difference, and What to Buy in Bangk
 SLUG: natural-wine-bangkok
 DATE: 2026-07-17
 TAGS: guide,natural-wine,organic-wine,bangkok
+PRODUCTS: WRW7691AU,WRW6045AH,WRW1476AD,WSP2612AB
 COVER-IMAGE: https://images.pexels.com/photos/9566125/pexels-photo-9566125.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
 COVER-CREDIT: Francesco Ungaro via Pexels
 COVER-CREDIT-URL: https://www.pexels.com/photo/aerial-view-of-a-vineyard-9566125/

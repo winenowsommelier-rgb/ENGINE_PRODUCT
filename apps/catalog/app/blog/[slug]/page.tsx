@@ -139,7 +139,7 @@ export default async function BlogPostPage({
           </Link>
         </div>
 
-        <RelatedProducts tags={post.tags} allProducts={allProducts} />
+        <RelatedProducts tags={post.tags} allProducts={allProducts} products={post.products} />
         <RecommendedPosts currentSlug={post.slug} currentTags={post.tags} allPosts={allPosts} />
       </div>
       <JsonLd data={buildArticleSchema(post, url)} />
