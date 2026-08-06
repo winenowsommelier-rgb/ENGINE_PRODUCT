@@ -13,6 +13,8 @@ Forget the formal restaurant setting and the intimidating wine list. A home wine
 
 ## Why a Home Tasting Beats Every Other Dinner Party
 
+![A host presenting a bottle of red wine to guests](https://images.pexels.com/photos/374877/pexels-photo-374877.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+
 There is a particular magic that happens when you put six glasses in front of people and say, "tell me what you notice." Suddenly, the conversation stops being about work or the weather and becomes genuinely curious. People lean in. They argue. They discover that the wine they assumed they hated is actually their favourite of the evening.
 
 A home wine tasting in Bangkok gives you control over every variable: the temperature of the room, the order of the pours, the food, the pacing. You can pause on a bottle for twenty minutes and really dig into it, or move briskly through a flight. There are no distractions, no background noise, and no sommelier hovering. It is yours.
@@ -52,6 +54,8 @@ This one is for the more wine-obsessed crowd. Buy three or four vintages of the 
 ---
 
 ## How to Structure the Tasting
+
+![Glasses of red wine on a candlelit table](https://images.pexels.com/photos/10442670/pexels-photo-10442670.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
 Order matters more than most people realise. Taste wines in the wrong sequence and a big red will permanently overshadow the delicate white you open right after it. Follow this order and your palate stays clear from start to finish.
 

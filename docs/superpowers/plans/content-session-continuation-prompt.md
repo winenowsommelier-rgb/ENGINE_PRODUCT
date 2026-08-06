@@ -100,7 +100,42 @@ the original `content-50-topic-plan.md` are done, plus 10 Tier-A posts from
 
 ---
 
-## SESSION STATE — as of 2026-07-18 (second session, evening)
+## SESSION STATE — as of 2026-08-06 (third session)
+
+**63 posts, all committed, both gates fully green across the whole archive.**
+This session (2026-08-06):
+
+- Discovered commit `c4ec983` ("compress publish calendar so all 60 posts are
+  live now"): `isPublished()` keys off frontmatter `DATE`, NOT the filename
+  date. The drip was deliberately abandoned — every post is live at next
+  rebuild. **Convention for new posts: filename continues the +2-day sequence
+  (cosmetic ordering), frontmatter `DATE` = actual writing day.**
+- Wrote 3 posts: `2026-09-16-single-malt-vs-blended-scotch` (#56),
+  `2026-09-18-best-bordeaux-under-5000-bangkok` (#38),
+  `2026-09-20-how-to-buy-fine-wine-bangkok` (#43). Next filename slot:
+  **2026-09-22**.
+- **Full keyword-map re-sync done** (the one-time audit from Known Issue #3):
+  18 shipped-but-unlisted posts added to Published; already-written planned
+  rows (#35/36/37/50/51/63) and skipped #53 removed from Planned. The
+  "Tier-A exhausted" claim from last session applied only to topics #58–70;
+  the older planned rows still held real unwritten topics.
+- Archive fixes: cab-vs-merlot restructured to standard embed-before-prose
+  format (kills the stacked-prose audit false-positive; Viu Manent/Concha
+  SKUs + prices corrected); section images added to the 4 posts that had
+  none (rum, host-tasting, languedoc, veneto).
+
+**Remaining unwritten topics in the Planned table:** #39 fine bordeaux
+under 15k, #40 champagne under 1500 (depth risk — verify first), #41
+Penfolds Grange (check stock — flagship 2013 was 0-stock), #44 premier cru
+explained, #45–48 Thai dish pairings, #57 single malt under 2000, #62
+prosecco under 1000, #64 shiraz (overlap risk with australian-wine post),
+#65 hot season / #66 Songkran (HOLD — off-season), #67/68 gifts under
+1000/3000, #69 how to order wine (overlap risk with restaurant wine list).
+Also due: **August Cellar Edit** (recurring mode; last one July 2026).
+
+---
+
+## PREVIOUS SESSION STATE — 2026-07-18 (second session, evening)
 
 **All prior pending work is COMMITTED.** The first 2026-07-18 batch (5 posts,
 2026-08-31 → 2026-09-08) went in as commit `829d45c`. The three final Tier-A

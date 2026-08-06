@@ -13,6 +13,8 @@ France's largest wine region stretches across the entire Mediterranean south —
 
 ## The Landscape: Mediterranean Sun and Ancient Vines
 
+![Vineyards along the Mediterranean coast of southern France](https://images.pexels.com/photos/13181222/pexels-photo-13181222.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+
 Languedoc-Roussillon sweeps from the Rhône Delta in the east to the Spanish border in the west, a crescent of garrigue scrubland, limestone hills, and coastal plains baked by almost relentless Mediterranean sunshine. The Romans planted vines here. So did the Greeks before them. The region's vine age — many plots over 80 years old, some pushing a century — is one of its most underappreciated assets.
 
 Old vines produce less fruit, but that fruit is concentrated. The roots push deep through clay and limestone into the cool subsoil, giving the wines a mineral tension that pure sunshine alone cannot produce. What you get in the glass is the rare combination of Mediterranean warmth and genuine depth: wines that are ripe and generous but not flat, with structure that lets them age surprisingly well.
@@ -82,6 +84,8 @@ For buyers exploring the region for the first time, Bertrand's wines serve as an
 ---
 
 ## Bottles to Start With
+
+![A French village overlooking green vineyards](https://images.pexels.com/photos/34779799/pexels-photo-34779799.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
 These six wines are our starting point for anyone building a Languedoc cellar in Bangkok. They cover the full range: a structured Cabernet-Syrah blend, a bright international Cab, a Pinot Noir for the Burgundy-curious, a Chardonnay that overdelivers for its price, a serious rosé, and a biodynamic Syrah on sale right now. All are available at WNLQ9.
 
