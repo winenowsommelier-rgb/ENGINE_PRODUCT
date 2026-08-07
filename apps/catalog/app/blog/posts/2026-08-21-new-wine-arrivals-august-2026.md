@@ -39,7 +39,7 @@ Italy's most underrated red grape — and we say that with full conviction. Sagr
 
 Not every new arrival needs to be a statement bottle, and Little Yering proves it. This is the approachable sibling label from Yering Station — one of Victoria's most celebrated estates, sitting in the Yarra Valley where cool maritime air drifts in from Port Phillip Bay and gives Australian Pinot an elegance it rarely achieves elsewhere. Bright red cherry, silky tannins, a gentle forest-floor complexity — all the Yarra personality at a price point that makes it genuinely weeknight-friendly. At ฿849 it's one of the clearest overachievers on our shelves right now.
 
-<!-- product: WRW0591FJ -->
+<!-- product: WRW1151AB -->
 
 ## Gérard Bertrand 6ème Sens Rouge
 
