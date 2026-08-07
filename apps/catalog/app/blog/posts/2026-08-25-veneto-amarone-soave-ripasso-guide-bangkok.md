@@ -14,6 +14,8 @@ Every wine conversation in Bangkok eventually turns to Tuscany — Chianti, Brun
 
 ## Verona's Wine Triangle: Three DOCs That Matter
 
+![Gondolas on a canal in Venice, capital of the Veneto](https://images.pexels.com/photos/29487687/pexels-photo-29487687.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+
 Veneto stretches across northeastern Italy from the Dolomites to the Adriatic coast. But the wines that define the region are made in a relatively small triangle of hills west and east of Verona — the city of Romeo and Juliet, and also, quietly, the city of some of Italy's greatest wine.
 
 Three DOC appellations sit at the heart of this triangle, and understanding how they relate to each other unlocks the entire Veneto story:
@@ -86,6 +88,8 @@ Recommended: Ripasso — Entry to Mid-Range
 Corvina grapes drying on bamboo racks in a *fruttaio* (drying loft) — the appassimento process that transforms Valpolicella into Amarone. Up to 30% of the grape's weight is lost to evaporation before fermentation begins.
 
 ## Amarone: Italy's Most Dramatic Wine
+
+![A bottle of red wine with cheese and grapes on a rustic table](https://images.pexels.com/photos/8472744/pexels-photo-8472744.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
 No Italian wine is made with more deliberate effort than Amarone della Valpolicella. It begins with the same Corvina, Rondinella, and Molinara grapes as an ordinary Valpolicella — but what happens next belongs to a different world entirely.
 

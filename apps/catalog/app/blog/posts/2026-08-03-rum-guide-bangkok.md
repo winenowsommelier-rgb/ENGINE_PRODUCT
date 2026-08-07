@@ -17,6 +17,8 @@ This is a guide for the Bangkok drinker who is curious but not sure where to sta
 
 ## Four Styles, One Spirit
 
+![A glass of dark rum on a bar table](https://images.pexels.com/photos/6341420/pexels-photo-6341420.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+
 ### White & Silver Rum
 
 White rums are typically unaged or briefly aged, then filtered to strip colour. What you keep is the base spirit — molasses-forward, slightly sweet, clean. The category spans everything from industrial mixer-grade bottles to genuinely expressive distillates that hold up beautifully in a Daiquiri. Havana Club 3 Year is the benchmark most bartenders reach for: light, slightly floral, with just enough backbone to announce itself in a cocktail without fighting everything else in the glass.
@@ -68,6 +70,8 @@ The Martinique benchmark. AOC-certified, pot-still character — herbaceous, fun
 ---
 
 ## Rum in Bangkok: Why the Climate Changes Everything
+
+![A sugarcane field under a tropical sky](https://images.pexels.com/photos/11466855/pexels-photo-11466855.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
 
 Bangkok is not a contemplative whisky-by-the-fireplace city. It is hot, loud, and social, and the drinks that work best here are the ones that play with that energy rather than against it. Rum has a structural advantage: its natural sweetness and tropical character already align with the climate in a way that a heavily peated Scotch, for example, does not. A cold Daiquiri hits differently at 3pm on Thonglor than it does in Edinburgh in January.
 

@@ -32,17 +32,17 @@ What it tastes like: **blackcurrant (cassis), dark cherry, cedar, tobacco, and g
 
 Cabernet Sauvignon is the dominant grape in Left Bank Bordeaux (Médoc, Pauillac, Margaux) and forms the backbone of the world's most collectible red wines.
 
-**Wolf Blass Eaglehawk Cabernet Sauvignon** (฿395) is the entry-level introduction: reliable, straightforward, delivering the blackcurrant and soft tannin profile that makes the variety accessible at a budget price.
-
 <!-- product: WRW1040AD -->
 
-**Viu Manent Reserva Cabernet Sauvignon** (฿700) from Chile's Colchagua Valley steps up significantly — the cooler vineyard altitude gives more freshness and definition, with dark berry fruit and a clean, structured finish. This is where the variety starts to show its full character.
+**Wolf Blass Eaglehawk Cabernet Sauvignon** (฿395) is the entry-level introduction: reliable, straightforward, delivering the blackcurrant and soft tannin profile that makes the variety accessible at a budget price.
 
 <!-- product: WRW3306DD -->
 
-**Mouton Cadet Bordeaux Rouge** (฿825) is a Cabernet-dominant Left Bank Bordeaux blend. At this price you're getting the Rothschild name, the Bordeaux AOC appellation, and a wine built in the classic style: firm, food-friendly, understated.
+**Viu Manent Estate Collection Reserva Cabernet Sauvignon** (฿595) from Chile's Colchagua Valley steps up significantly — the cooler vineyard altitude gives more freshness and definition, with dark berry fruit and a clean, structured finish. This is where the variety starts to show its full character.
 
 <!-- product: WRW0255AA -->
+
+**Mouton Cadet Bordeaux Rouge** (฿805) is a Cabernet-dominant Left Bank Bordeaux blend. At this price you're getting the Rothschild name, the Bordeaux AOC appellation, and a wine built in the classic style: firm, food-friendly, understated.
 
 ## Merlot — Softness and Approachability
 
@@ -53,17 +53,17 @@ Merlot has a **thinner skin** than Cabernet Sauvignon. Thinner skin means less t
 
 What it tastes like: **plum, red cherry, chocolate, and dried herbs** — rounder and fleshier than Cabernet, with a velvety texture and less of that firm tannic structure. It's the variety most often described as "easy drinking" — not because it lacks complexity, but because its tannins don't demand food or age to resolve.
 
-**Wolf Blass Eaglehawk Merlot** (฿395): Side by side with the Eaglehawk Cabernet at the same price point, you'll taste the difference immediately. The Merlot is softer, the fruit is redder and more rounded, and the finish is shorter and gentler. An honest comparison at zero cost.
-
 <!-- product: WRW3367AD -->
 
-**Concha y Toro Reservado Merlot** (฿449) from Chile is a step up in definition without a significant jump in price. Chile's Central Valley is well-suited to Merlot — warm days build fruit ripeness, cool nights retain the acidity that keeps the wine fresh.
+**Wolf Blass Eaglehawk Merlot** (฿395): Side by side with the Eaglehawk Cabernet at the same price point, you'll taste the difference immediately. The Merlot is softer, the fruit is redder and more rounded, and the finish is shorter and gentler. An honest comparison at zero cost.
 
 <!-- product: WRW5761AD -->
 
-**Dourthe Grands Terroirs Saint-Émilion** (฿799) is the Merlot benchmark at this price tier. Saint-Émilion is the heart of Bordeaux's Right Bank — the region where Merlot dominates rather than Cabernet. This wine delivers what the variety does at its best: ripe plum, silky texture, and a warmth that makes it immediately pleasant to drink.
+**Concha y Toro Reservado Merlot** (฿449) from Chile is a step up in definition without a significant jump in price. Chile's Central Valley is well-suited to Merlot — warm days build fruit ripeness, cool nights retain the acidity that keeps the wine fresh.
 
 <!-- product: WRW1985AH -->
+
+**Dourthe Grands Terroirs Saint-Émilion** (฿799) is the Merlot benchmark at this price tier. Saint-Émilion is the heart of Bordeaux's Right Bank — the region where Merlot dominates rather than Cabernet. This wine delivers what the variety does at its best: ripe plum, silky texture, and a warmth that makes it immediately pleasant to drink.
 
 ## Side-by-Side Comparison
 
@@ -101,7 +101,7 @@ Here's the thing most people don't realise: in Bordeaux — where both grapes or
 
 **Drinking tonight, no food planned**: Merlot. The softness and immediate approachability make it more pleasurable without the structure that Cabernet provides (and that you need food to appreciate).
 
-**Grilled meat dinner**: Either — but Cabernet handles bold flavours and charred edges better. Viu Manent Reserva at ฿700 is the right choice.
+**Grilled meat dinner**: Either — but Cabernet handles bold flavours and charred edges better. Viu Manent Estate Collection Reserva at ฿595 is the right choice.
 
 **Bringing as a gift**: Mouton Cadet Bordeaux at ฿825 — recognisable label, Cab-dominant, appropriate for almost any occasion.
 

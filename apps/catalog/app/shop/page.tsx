@@ -17,6 +17,8 @@ import { getContactEnv } from '@/lib/contact-env';
 import { applyShopQuery, normalizeShopParams, type ShopParams } from '@/lib/shop-query';
 import { shopFacets, topGrapes, topFlavors } from '@/lib/shop-facets';
 import { DrillBreadcrumb } from '@/components/DrillBreadcrumb';
+import { RegionDescriptionCard } from '@/components/shop/RegionDescriptionCard';
+import { findRegionDescription } from '@/lib/explore/region-lookup.server';
 import { buildQuery } from '@/lib/build-query';
 import { cn } from '@/lib/utils';
 import { ViewItemListTracker } from '@/components/ViewItemListTracker';
@@ -209,6 +211,17 @@ export default function ShopPage({
 
           <div className="flex min-w-0 flex-col gap-5 sm:gap-6">
             <DrillBreadcrumb params={currentParams} pathname="/shop" />
+
+            {/* Sommelier region/subregion copy — same taxonomy-backed source as the
+                explore-map drawer. Renders only once a region/subregion is drilled
+                into AND authored copy exists for it; omitted otherwise (no placeholder). */}
+            {(() => {
+              const regionEntry = findRegionDescription({
+                region: currentParams.region,
+                subregion: currentParams.subregion,
+              });
+              return regionEntry ? <RegionDescriptionCard entry={regionEntry} /> : null;
+            })()}
 
             {/* Quiet fallback into the finder quiz for browsers facing too much choice. */}
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-lg border border-border bg-secondary/40 px-4 py-3">
