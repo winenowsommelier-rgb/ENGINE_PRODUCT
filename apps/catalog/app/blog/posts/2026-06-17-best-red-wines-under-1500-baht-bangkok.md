@@ -95,7 +95,7 @@ Push past ฿900 and you're buying wine with provenance — named appellations, 
 
 ### What is the best affordable red wine under ฿1,500 in Bangkok?
 
-For straight value, Famille Perrin La Vieille Ferme Rouge (฿800) is hard to beat — it comes from the same family as Château Beaucastel and consistently overdelivers. For something more structured, the Viu Manent Reserva Cabernet from Chile's Colchagua Valley (฿700) is the pick.
+For straight value, [Famille Perrin La Vieille Ferme Rouge](/product/WRW4771AB) (฿800) is hard to beat — it comes from the same family as Château Beaucastel and consistently overdelivers. For something more structured, the Viu Manent Reserva Cabernet from Chile's Colchagua Valley (฿700) is the pick.
 
 ### Is Bordeaux or Burgundy better value under ฿1,500?
 
@@ -103,7 +103,7 @@ At this price, Bordeaux. True Burgundy (Pinot Noir from Côte d'Or) rarely appea
 
 ### What red wine goes with Thai food?
 
-Light-bodied reds with low tannin work best — high-tannin wines clash with spice. Speri Valpolicella (฿819) is a good match for milder Thai dishes. For spicy curries, skip red entirely and go off-dry white or rosé. See our [Thai food wine pairing guide](/blog/what-wine-goes-with-thai-food-the-bangkok-guide) for the full breakdown.
+Light-bodied reds with low tannin work best — high-tannin wines clash with spice. [Speri Valpolicella](/product/WRW3412AD) (฿819) is a good match for milder Thai dishes. For spicy curries, skip red entirely and go off-dry white or rosé. See our [Thai food wine pairing guide](/blog/what-wine-goes-with-thai-food-the-bangkok-guide) for the full breakdown.
 
 ### What food should I pair with Chilean red wine?
 
