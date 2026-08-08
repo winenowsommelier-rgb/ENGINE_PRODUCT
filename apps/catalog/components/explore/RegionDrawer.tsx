@@ -5,6 +5,7 @@ import { StorefrontImage } from '@/components/StorefrontImage';
 import type { LensKey, MapRegion } from '@/lib/explore/types';
 import { lensCount, shopHref } from '@/lib/explore/map-data';
 import { KnowledgeSection } from '@/components/explore/KnowledgeSection';
+import { splitSentences } from '@/lib/explore/split-sentences';
 
 function priceLabel(min: number | null, max: number | null): string {
   if (min === null || max === null) return '';
@@ -72,7 +73,11 @@ export function RegionDrawer({ region, lens, onClose }: {
         {/* Body — scrolls inside the sheet/panel; the map stays put behind it. */}
         <div className="flex flex-1 flex-col gap-5 overflow-y-auto p-5">
           {region.description && (
-            <p className="text-sm leading-relaxed text-foreground sm:text-base">{region.description}</p>
+            <div className="text-sm leading-snug text-foreground sm:text-base">
+              {splitSentences(region.description).map((sentence, i) => (
+                <p key={i}>{sentence}</p>
+              ))}
+            </div>
           )}
 
           {region.knowledge && <KnowledgeSection knowledge={region.knowledge} />}
