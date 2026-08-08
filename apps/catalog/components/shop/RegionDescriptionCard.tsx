@@ -1,11 +1,11 @@
 'use client';
 import { useId, useState } from 'react';
 import { KnowledgeSection } from '@/components/explore/KnowledgeSection';
+import { splitSentences } from '@/lib/explore/split-sentences';
 import type { RegionDescriptionEntry } from '@/lib/explore/region-lookup.server';
 
-// Long enough to show real substance (a couple of sentences) while keeping the
-// collapsed card from pushing products below the fold on mobile.
-const COLLAPSED_CHAR_LIMIT = 280;
+// Sentences shown before the Read more toggle kicks in.
+const COLLAPSED_SENTENCE_COUNT = 3;
 
 /**
  * Sommelier-authored region/subregion copy on the shop page, shown once a
@@ -13,14 +13,18 @@ const COLLAPSED_CHAR_LIMIT = 280;
  * taxonomy-backed copy as the explore-map drawer (see region-lookup.server.ts)
  * — no price/bottle-count line here since "Showing X of N" already covers it.
  *
- * Full descriptions can run 1,000+ characters, so long copy is clamped with a
- * Read more/less toggle rather than always rendered in full (which would push
- * the product grid below the fold).
+ * Rendered one sentence per line (tight stacking, no paragraph gaps) rather
+ * than as a single dense block. Full descriptions can run 1,000+ characters,
+ * so long copy is clamped to the first few sentences with a Read more/less
+ * toggle rather than always rendered in full (which would push the product
+ * grid below the fold).
  */
 export function RegionDescriptionCard({ entry }: { entry: RegionDescriptionEntry }) {
   const [expanded, setExpanded] = useState(false);
   const panelId = useId();
-  const isLong = entry.description.length > COLLAPSED_CHAR_LIMIT;
+  const sentences = splitSentences(entry.description);
+  const isLong = sentences.length > COLLAPSED_SENTENCE_COUNT;
+  const visibleSentences = isLong && !expanded ? sentences.slice(0, COLLAPSED_SENTENCE_COUNT) : sentences;
 
   return (
     <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5">
@@ -32,15 +36,11 @@ export function RegionDescriptionCard({ entry }: { entry: RegionDescriptionEntry
       </div>
 
       <div>
-        <p
-          id={panelId}
-          className={[
-            'text-sm leading-relaxed text-foreground sm:text-base',
-            isLong && !expanded ? 'line-clamp-4 sm:line-clamp-3' : '',
-          ].join(' ')}
-        >
-          {entry.description}
-        </p>
+        <div id={panelId} className="text-sm leading-snug text-foreground sm:text-base">
+          {visibleSentences.map((sentence, i) => (
+            <p key={i}>{sentence}</p>
+          ))}
+        </div>
         {isLong && (
           <button
             type="button"
