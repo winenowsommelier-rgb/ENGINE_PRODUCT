@@ -73,7 +73,7 @@ export function RegionDrawer({ region, lens, onClose }: {
         {/* Body — scrolls inside the sheet/panel; the map stays put behind it. */}
         <div className="flex flex-1 flex-col gap-5 overflow-y-auto p-5">
           {region.description && (
-            <div className="text-sm leading-snug text-foreground sm:text-base">
+            <div className="flex flex-col gap-1.5 text-sm leading-relaxed text-foreground sm:text-base">
               {splitSentences(region.description).map((sentence, i) => (
                 <p key={i}>{sentence}</p>
               ))}

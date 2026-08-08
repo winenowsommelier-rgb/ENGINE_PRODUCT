@@ -13,8 +13,9 @@ const COLLAPSED_SENTENCE_COUNT = 3;
  * taxonomy-backed copy as the explore-map drawer (see region-lookup.server.ts)
  * — no price/bottle-count line here since "Showing X of N" already covers it.
  *
- * Rendered one sentence per line (tight stacking, no paragraph gaps) rather
- * than as a single dense block. Full descriptions can run 1,000+ characters,
+ * Rendered one sentence per line, each with a small gap (not a full
+ * paragraph gap) rather than as a single dense block. Full descriptions can
+ * run 1,000+ characters,
  * so long copy is clamped to the first few sentences with a Read more/less
  * toggle rather than always rendered in full (which would push the product
  * grid below the fold).
@@ -36,7 +37,7 @@ export function RegionDescriptionCard({ entry }: { entry: RegionDescriptionEntry
       </div>
 
       <div>
-        <div id={panelId} className="text-sm leading-snug text-foreground sm:text-base">
+        <div id={panelId} className="flex flex-col gap-1.5 text-sm leading-relaxed text-foreground sm:text-base">
           {visibleSentences.map((sentence, i) => (
             <p key={i}>{sentence}</p>
           ))}
