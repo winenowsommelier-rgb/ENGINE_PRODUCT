@@ -31,14 +31,19 @@ PR #104), designations have zero authored copy today.
   Gran Reserva 65, Extra Brut 42, Vintage 44, Classico 39, Crianza 32,
   XO 34, Superiore 17, DOP/IGP 62, Cru Classé 16, VSOP 15, **VS 0**.
 - **The region-panel tier-linking work is already complete** — checked
-  against the real production source (`data/taxonomy_descriptions_export.json`,
-  67 regions, 25 with a `knowledge.tiers` array). Only **11 distinct tier
-  strings** exist across all regions (not the large variety speculated in
-  the brief): `Bordeaux 1855 First Growth`, `Burgundy Grand Cru`,
+  against both the raw authored source (`data/taxonomy_descriptions_export.json`,
+  67 regions, 25 with a `knowledge.tiers` array) and the actual build
+  artifact the UI reads at runtime (`apps/catalog/data/explore-map-data.json`,
+  via `loadExploreMapData()` in `apps/catalog/lib/explore/map-data.server.ts`
+  — 184 regions after subregion expansion, 23 with tiers). Both agree on
+  the same **11 distinct tier strings** (not the large variety speculated
+  in the brief): `Bordeaux 1855 First Growth`, `Burgundy Grand Cru`,
   `Burgundy Premier Cru`, `Burgundy Village`, `Burgundy Regional`,
   `Champagne Grand Cru`, `Italy DOCG`, `Spain DOCa`, `Spain DO`,
-  `Chile DO`, `American Viticultural Area`. Five of these already map
-  correctly via PR #106's `TIER_TO_DESIGNATION`. The other six
+  `Chile DO`, `American Viticultural Area`. Six of these already map
+  correctly via PR #106's `TIER_TO_DESIGNATION` (Bordeaux 1855 First
+  Growth, Burgundy Grand Cru, Burgundy Premier Cru, Champagne Grand Cru,
+  Italy DOCG, Spain DOCa). The other five
   (AVA/DO/Village/Regional) are **not** designation tokens in
   `designation.ts` at all — they're appellation-system labels, a different
   concept — so they correctly render as plain text today. **No linking
@@ -51,9 +56,18 @@ PR #104), designations have zero authored copy today.
   Rule 12) — never reuse it here.
 - `RegionDescriptionCard` (`apps/catalog/components/shop/RegionDescriptionCard.tsx`)
   and its data source `findRegionDescription()`
-  (`apps/catalog/lib/explore/region-lookup.server.ts`, reading
-  `data/taxonomy_descriptions_export.json`) are the pattern to mirror.
-  That card does **not** currently render a citation footer even though
+  (`apps/catalog/lib/explore/region-lookup.server.ts`) are the pattern to
+  mirror. That lookup reads the build artifact
+  `apps/catalog/data/explore-map-data.json` via `loadExploreMapData()`
+  (`apps/catalog/lib/explore/map-data.server.ts`), which itself is
+  generated from `data/taxonomy_descriptions_export.json` by
+  `scripts/gen-explore-map-data.mjs` — region copy is NOT read directly
+  from the raw export at runtime. The new designation copy is simpler and
+  does not need this two-stage build step (see Data section below): it
+  reads `data/designation_descriptions.json` directly, since there's no
+  existing generator pipeline for it to slot into and adding one would be
+  unwarranted scope for 22 static entries.
+  `RegionDescriptionCard` does **not** currently render a citation footer even though
   the underlying data has a `citation` field — a pre-existing gap, not
   fixed by this plan (out of scope; noted so it isn't mistaken for new
   behavior).
@@ -138,6 +152,14 @@ Returns `null` when: no `designation` param, no copy entry exists for
 that label, or `productCount <= 0`. The non-empty check is enforced in
 code, not left to the caller to remember.
 
+Loading `designation_descriptions.json` itself follows
+`map-data.server.ts`'s convention: read once, cache for the process
+lifetime, **throw loudly** if the file is missing (`"designation_descriptions.json
+not found"`) rather than silently returning `null` for every lookup — a
+missing file must fail the build the same way a missing
+`explore-map-data.json` does today, not be indistinguishable from a
+genuine 0-count case.
+
 ### UI: `apps/catalog/components/shop/DesignationDescriptionCard.tsx`
 
 Structural copy of `RegionDescriptionCard`: same card chrome, same
@@ -175,6 +197,9 @@ the count check has one source of truth, not a second query.
 - Unit test: `findDesignationDescription()` returns `null` when
   `productCount` is 0, even if a copy entry exists (covers the `VS` case
   directly, not just by inference).
+- Unit test: a missing `designation_descriptions.json` throws at load
+  time rather than resolving every lookup to `null` — the 0-count case
+  and a broken build must not look the same.
 - Render test: `DesignationDescriptionCard` renders sentence-per-line, no
   citation footer, matches `RegionDescriptionCard`'s test shape.
 - **Content spot-check (new gate, manual)**: before merge, pick 3 random
