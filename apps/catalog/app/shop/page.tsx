@@ -19,6 +19,8 @@ import { shopFacets, topGrapes, topFlavors } from '@/lib/shop-facets';
 import { DrillBreadcrumb } from '@/components/DrillBreadcrumb';
 import { RegionDescriptionCard } from '@/components/shop/RegionDescriptionCard';
 import { findRegionDescription } from '@/lib/explore/region-lookup.server';
+import { DesignationDescriptionCard } from '@/components/shop/DesignationDescriptionCard';
+import { findDesignationDescription } from '@/lib/explore/designation-lookup.server';
 import { buildQuery } from '@/lib/build-query';
 import { cn } from '@/lib/utils';
 import { ViewItemListTracker } from '@/components/ViewItemListTracker';
@@ -221,6 +223,20 @@ export default function ShopPage({
                 subregion: currentParams.subregion,
               });
               return regionEntry ? <RegionDescriptionCard entry={regionEntry} /> : null;
+            })()}
+
+            {/* Designation/classification copy — shown only once a shopper filters by
+                ?designation=X AND that designation currently has live product results
+                (facets.designations already excludes 0-count values and is computed
+                with every OTHER active filter applied, so it reflects the count this
+                exact card's link would resolve to). */}
+            {(() => {
+              const count = facets.designations.find((d) => d.value === currentParams.designation)?.count ?? 0;
+              const designationEntry = findDesignationDescription({
+                designation: currentParams.designation,
+                productCount: count,
+              });
+              return designationEntry ? <DesignationDescriptionCard entry={designationEntry} /> : null;
             })()}
 
             {/* Quiet fallback into the finder quiz for browsers facing too much choice. */}
