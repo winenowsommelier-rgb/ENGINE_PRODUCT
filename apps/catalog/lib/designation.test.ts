@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { designationForProduct, DESIGNATIONS } from './designation';
 
@@ -57,5 +59,16 @@ describe('designationForProduct', () => {
     expect(designationForProduct(p('El Coto Rioja Crianza'))).toBe('Crianza');
     expect(designationForProduct(p('Carpineto Chianti Classico'))).toBe('Classico');
     expect(designationForProduct(p('Roccolo Grassi Valpolicella Superiore'))).toBe('Superiore');
+  });
+});
+
+describe('designation description data completeness', () => {
+  it('every DESIGNATIONS label has a matching entry in designation_descriptions.json', () => {
+    const dataPath = path.join(process.cwd(), '..', '..', 'data', 'designation_descriptions.json');
+    const raw = fs.readFileSync(dataPath, 'utf8');
+    const data = JSON.parse(raw) as Record<string, unknown>;
+    for (const label of DESIGNATIONS) {
+      expect(data).toHaveProperty(label);
+    }
   });
 });
