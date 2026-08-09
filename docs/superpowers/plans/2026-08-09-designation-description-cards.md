@@ -241,7 +241,7 @@ export function loadDesignationDescriptions(): Record<string, DesignationDescrip
 }
 ```
 
-Note: check the two candidate path segments against how `map-data.server.ts` actually resolves `apps/catalog/data/explore-map-data.json` from `apps/catalog` — that file only tries `path.join(process.cwd(), 'apps', 'catalog', 'data', ...)` and `path.join(process.cwd(), 'data', ...)`, i.e. `cwd` is assumed to be the repo root. Match that convention exactly (repo root as `cwd`, `data/designation_descriptions.json` — no `apps/catalog/data/` copy needed since this file lives at repo-root `data/`, not `apps/catalog/data/`). Simplify the candidates list to just `path.join(process.cwd(), 'data', 'designation_descriptions.json')` plus the env override, matching the simpler of the two patterns already in the codebase.
+Note: the two-candidate list above (`data/...` and `../../data/...`, both relative to `process.cwd()`) is the correct, established pattern for a repo-root data file read from `apps/catalog` code — it matches how `catalog-data.ts`, `collections.ts`, `co-purchase.ts`, and `sku-taxonomy.ts` already resolve repo-root `data/` files, since `process.cwd()` is `apps/catalog` both under `npx vitest run` (from that directory) and under the Next dev/build process, and `apps/catalog/data/designation_descriptions.json` does not exist — only repo-root `data/designation_descriptions.json` does. Keep both candidates as written in Step 1; do not drop the `../../` one.
 
 - [ ] **Step 2: Commit**
 
