@@ -1,6 +1,32 @@
 'use client';
 import { useId, useState } from 'react';
+import Link from 'next/link';
 import type { MapRegion } from '@/lib/explore/types';
+
+/**
+ * A tier label (e.g. "Italy DOCG", "Burgundy Grand Cru") is curated taxonomy
+ * copy — it does NOT literally match how products are tagged. Only these
+ * EXPLICIT, verified tier -> real designation-token mappings are made
+ * clickable (checked against lib/designation.ts's DESIGNATIONS + confirmed
+ * non-empty against live_products_export.json). Anything not listed here
+ * renders as plain text rather than risk a link to a 0-result page —
+ * substring-matching was tried and rejected because it false-matched
+ * "Spain DOCa" (a distinct, higher tier) onto the "DOC" token.
+ */
+const TIER_TO_DESIGNATION: Record<string, string> = {
+  'Bordeaux 1855 First Growth': 'Cru Classé',
+  'Burgundy Grand Cru': 'Grand Cru',
+  'Burgundy Premier Cru': 'Premier Cru',
+  'Champagne Grand Cru': 'Grand Cru',
+  'Italy DOCG': 'DOCG',
+  'Spain DOCa': 'DOC',
+};
+
+function designationHref(regionName: string, tier: string): string | null {
+  const designation = TIER_TO_DESIGNATION[tier];
+  if (!designation) return null;
+  return `/shop?region=${encodeURIComponent(regionName)}&designation=${encodeURIComponent(designation)}`;
+}
 
 /**
  * KnowledgeSection — progressive-disclosure "knowledge" block for a region:
@@ -11,7 +37,13 @@ import type { MapRegion } from '@/lib/explore/types';
  *
  * Shared by RegionDrawer (explore-map) and RegionDescriptionCard (shop).
  */
-export function KnowledgeSection({ knowledge }: { knowledge: NonNullable<MapRegion['knowledge']> }) {
+export function KnowledgeSection({
+  knowledge,
+  regionName,
+}: {
+  knowledge: NonNullable<MapRegion['knowledge']>;
+  regionName: string;
+}) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
 
@@ -43,7 +75,22 @@ export function KnowledgeSection({ knowledge }: { knowledge: NonNullable<MapRegi
       {tiers.length > 0 && (
         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm">
           <span className="text-muted-foreground">Classification</span>
-          <span className="text-foreground">{tiers.join(' ')}</span>
+          {tiers.map((tier) => {
+            const href = designationHref(regionName, tier);
+            return href ? (
+              <Link
+                key={tier}
+                href={href}
+                className="text-primary underline-offset-2 hover:underline"
+              >
+                {tier}
+              </Link>
+            ) : (
+              <span key={tier} className="text-foreground">
+                {tier}
+              </span>
+            );
+          })}
         </div>
       )}
 

@@ -80,7 +80,7 @@ export function RegionDrawer({ region, lens, onClose }: {
             </div>
           )}
 
-          {region.knowledge && <KnowledgeSection knowledge={region.knowledge} />}
+          {region.knowledge && <KnowledgeSection knowledge={region.knowledge} regionName={region.name} />}
 
           {region.peeks.length > 0 && (
             <div>

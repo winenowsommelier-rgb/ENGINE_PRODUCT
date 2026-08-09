@@ -63,4 +63,20 @@ describe('RegionDrawer', () => {
     expect(screen.getByText('Bordeaux')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /learn more/i })).toBeNull();
   });
+
+  it('links a known classification tier to its real designation filter', () => {
+    render(<RegionDrawer region={knowledgeRegion} lens="wine" onClose={() => {}} />);
+    const tierLink = screen.getByRole('link', { name: /1855 First Growth/i });
+    expect(tierLink).toHaveAttribute('href', '/shop?region=Bordeaux&designation=Cru%20Class%C3%A9');
+  });
+
+  it('renders an unmapped classification tier as plain text, not a dead link', () => {
+    const unmappedRegion: MapRegion = {
+      ...region,
+      knowledge: { tiers: ['American Viticultural Area'] },
+    };
+    render(<RegionDrawer region={unmappedRegion} lens="wine" onClose={() => {}} />);
+    expect(screen.getByText('American Viticultural Area')).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /American Viticultural Area/i })).toBeNull();
+  });
 });
