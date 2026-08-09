@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { DesignationDescriptionCard } from '@/components/shop/DesignationDescriptionCard';
 import type { DesignationDescriptionEntry } from '@/lib/explore/designation-lookup.server';
 
@@ -35,6 +35,15 @@ describe('DesignationDescriptionCard', () => {
     expect(screen.queryByText('Five.')).not.toBeInTheDocument();
     const toggle = screen.getByRole('button', { name: /read more/i });
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('expands to show all sentences and flips aria-expanded when the toggle is clicked', () => {
+    render(<DesignationDescriptionCard entry={longEntry} />);
+    const toggle = screen.getByRole('button', { name: /read more/i });
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByText('Five.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /read less/i })).toBeInTheDocument();
   });
 
   it('does not render a citation footer (matches RegionDescriptionCard)', () => {
