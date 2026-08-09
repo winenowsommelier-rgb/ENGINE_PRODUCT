@@ -55,7 +55,7 @@ export function RegionDescriptionCard({ entry }: { entry: RegionDescriptionEntry
         )}
       </div>
 
-      {entry.knowledge && <KnowledgeSection knowledge={entry.knowledge} />}
+      {entry.knowledge && <KnowledgeSection knowledge={entry.knowledge} regionName={entry.name} />}
     </div>
   );
 }
