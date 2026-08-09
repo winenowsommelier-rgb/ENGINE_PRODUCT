@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { designationForProduct, DESIGNATIONS } from './designation';
+import { loadDesignationDescriptions } from './explore/designation-descriptions.server';
 
 const p = (name: string, extra: Record<string, unknown> = {}) =>
   ({ sku: 'X', name, ...extra }) as any;
@@ -57,5 +58,13 @@ describe('designationForProduct', () => {
     expect(designationForProduct(p('El Coto Rioja Crianza'))).toBe('Crianza');
     expect(designationForProduct(p('Carpineto Chianti Classico'))).toBe('Classico');
     expect(designationForProduct(p('Roccolo Grassi Valpolicella Superiore'))).toBe('Superiore');
+  });
+});
+
+describe('designation description data completeness', () => {
+  it('every DESIGNATIONS label has a matching entry in designation_descriptions.json', () => {
+    const data = loadDesignationDescriptions();
+    const missing = DESIGNATIONS.filter((label) => !(label in data));
+    expect(missing).toEqual([]);
   });
 });
