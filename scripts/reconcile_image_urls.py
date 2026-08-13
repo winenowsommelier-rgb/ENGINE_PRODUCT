@@ -9,7 +9,7 @@ Many distinct products had image_url pointing at ANOTHER SKU's bottle image
 reconciled the export + seed json + masterfile, but products.db got reverted/
 re-seeded from a stale source afterward, resurrecting the wrong bottles.
 
-SOURCE OF TRUTH: data/data mastefile WNLQ9/winenow-base-images-20260724.csv
+SOURCE OF TRUTH: data/data mastefile WNLQ9/winenow-base-images-20260810.csv
 (sku, item_name, websites, base_image_url, item_url). As of 2026-07-24 this
 CSV has 0 blank base_image_url values, unlike the older masterfile image CSV
 it replaces (which used blank='' to mean "intentionally no image"). The
@@ -25,10 +25,11 @@ image_url's leave-alone-if-blank convention.
 
 For ALL THREE fields: a SKU present in products.db but ABSENT from the CSV
 entirely is left untouched (no_master rule) — this CSV does not cover every
-existing SKU (141 known gaps as of 2026-07-24, 48 of which currently have a
-populated image_url). Separately, a SKU whose CSV row is ragged/misaligned
-(see load_master()'s ragged-row detection) is also left untouched — 14 such
-SKUs as of 2026-07-24 — reported as its own count, distinct from no_master.
+existing SKU (gap count varies per run — see dry-run output for the current
+figure). Separately, a SKU whose CSV row is ragged/misaligned (see
+load_master()'s ragged-row detection) is also left untouched (14 such SKUs
+as of the 2026-08-10 refresh) — reported as its own count, distinct from
+no_master.
 
 This script is idempotent. Run with --apply to write; default is dry-run.
 After --apply you MUST run scripts/refresh_live_export.py (Rule 9).
@@ -42,7 +43,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / "data" / "db" / "products.db"
-IMGCSV = ROOT / "data" / "data mastefile WNLQ9" / "winenow-base-images-20260724.csv"
+IMGCSV = ROOT / "data" / "data mastefile WNLQ9" / "winenow-base-images-20260810.csv"
 
 SKU_RE = re.compile(r"/([a-z0-9_]+)\.jpg", re.I)
 
@@ -78,8 +79,8 @@ def load_master() -> tuple[dict, list]:
             if not sku:
                 continue
             # Ragged-row guard (symmetric — catches both directions of a
-            # shifted row): as of 2026-07-24, 14 rows have an unquoted
-            # comma inside item_name (e.g. "Monemvasia, Laloudi"), which
+            # shifted row): as of the 2026-08-10 refresh, 14 rows have an
+            # unquoted comma inside item_name (e.g. "Monemvasia, Laloudi"), which
             # shifts websites/base_image_url/item_url one column to the
             # right for those rows. DictReader surfaces EXTRA fields
             # (more raw columns than headers) as an unmapped list under

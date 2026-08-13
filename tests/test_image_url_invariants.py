@@ -5,7 +5,7 @@ rendering wrw6567gx.jpg = Riporta Nero D'Avola). Fixed repeatedly (commits
 0f4b327, edcf1fd, e9e11c9, cfeb215) but resurrected each time because a re-seed
 or DB revert reintroduced the borrowed URLs and NOTHING failed when it did.
 
-data/data mastefile WNLQ9/winenow-base-images-20260724.csv is the curated
+data/data mastefile WNLQ9/winenow-base-images-20260810.csv is the curated
 source of truth (see scripts/reconcile_image_urls.py). These tests assert
 downstream sources agree with it, so a regression breaks the build (Rule 6)
 instead of silently shipping the wrong bottle or a stale/missing item_url.
@@ -22,7 +22,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / "data" / "db" / "products.db"
 EXPORT = ROOT / "data" / "live_products_export.json"
-IMGCSV = ROOT / "data" / "data mastefile WNLQ9" / "winenow-base-images-20260724.csv"
+IMGCSV = ROOT / "data" / "data mastefile WNLQ9" / "winenow-base-images-20260810.csv"
 
 FIELDS = ("image_url", "magento_item_url", "websites")
 CSV_COL_FOR_FIELD = {
@@ -184,11 +184,11 @@ def test_sku_absent_from_csv_left_untouched():
     missing = [s for s in all_skus if (s or "").strip().upper() not in master]
     assert missing, (
         "expected some products.db SKUs to be absent from _master() — either "
-        "genuinely absent from the CSV (141 known as of 2026-07-24) or "
-        "excluded as a ragged/misaligned row (14 known as of 2026-07-24, "
-        "155 combined) — if this is now 0, the CSV coverage gap disclosed "
-        "in the design spec has closed; update this test's expectations "
-        "accordingly rather than deleting it"
+        "genuinely absent from the CSV (146 known as of the 2026-08-10 refresh) "
+        "or excluded as a ragged/misaligned row (14 known as of the 2026-08-10 "
+        "refresh, 160 combined) — if this is now 0, the CSV coverage gap "
+        "disclosed in the design spec has closed; update this test's "
+        "expectations accordingly rather than deleting it"
     )
 
 
