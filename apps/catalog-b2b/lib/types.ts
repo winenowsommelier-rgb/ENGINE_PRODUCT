@@ -1,13 +1,13 @@
 /**
- * B2BProduct — the ONLY product shape allowed to reach a B2B client's browser.
- * Has b2b_price instead of price; no sale/discount fields.
+ * B2BProduct — the ONLY product shape allowed to reach a B2B/WNLQ9 Trade
+ * client's browser. This is a private trade account, so — unlike the public
+ * storefront — the retail `price` (shown as RRP) and `b2b_discount_pct` (the
+ * % off RRP) ARE included, so trade buyers can see their discount.
  * Leak-prevention chokepoint: toPublicProductB2B() in catalog-data.ts.
  *
  * DELIBERATELY ABSENT (do NOT add):
- *  - price               (retail price — forbidden in B2B context)
- *  - special_price       (retail sale price — forbidden)
- *  - sp_discount_pct     (retail discount % — forbidden)
- *  - b2b_discount_pct    (wholesale discount signal — forbidden; internal only)
+ *  - special_price       (retail sale price mechanics — not relevant to trade)
+ *  - sp_discount_pct     (retail discount % — not relevant to trade)
  *  - margin_pct          (internal pricing)
  *  - b2b_margin_pct      (internal pricing)
  *  - b2b_margin_thb      (internal pricing)
@@ -19,6 +19,10 @@ export interface B2BProduct {
   sku: string;
   name: string;
   b2b_price: number;
+  /** Retail RRP — the reference price trade buyers see their discount against. */
+  price?: number;
+  /** Wholesale discount vs RRP, e.g. 11.4 = 11.4% off. Computed server-side from (price, b2b_price); not present for every SKU. */
+  b2b_discount_pct?: number;
 
   // Optional descriptive / classification fields.
   brand?: string;

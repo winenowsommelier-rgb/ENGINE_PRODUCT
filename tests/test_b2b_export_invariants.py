@@ -13,7 +13,7 @@ SCRIPT = REPO / "scripts" / "refresh_b2b_export.py"
 
 FORBIDDEN = {
     "cost", "margin_pct", "b2b_margin_pct", "b2b_margin_thb",
-    "price", "special_price", "sp_discount_pct", "b2b_discount_pct",
+    "special_price", "sp_discount_pct",
 }
 
 
@@ -69,6 +69,15 @@ def test_has_score_summary_column(b2b_export):
     """Critic pill requires score_summary; verify at least one row carries it."""
     has_score = [r for r in b2b_export if r.get("score_summary")]
     assert has_score, "No rows have score_summary — critic pill will be empty"
+
+
+def test_every_row_has_rrp_and_discount_pct(b2b_export):
+    """Trade accounts see RRP + discount % alongside b2b_price (private catalog)."""
+    for r in b2b_export:
+        assert isinstance(r.get("price"), (int, float)), f"missing RRP: {r.get('sku')}"
+        assert r.get("price", 0) >= r.get("b2b_price", 0), (
+            f"RRP below wholesale price for {r.get('sku')}"
+        )
 
 
 def test_public_export_has_no_b2b_price():

@@ -1,10 +1,6 @@
 import Link from 'next/link';
 import type { B2BProduct } from '@/lib/types';
-
-function formatPrice(price: number, currency?: string): string {
-  const sym = currency === 'THB' || !currency ? '฿' : currency + ' ';
-  return sym + price.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-}
+import { formatPrice, wholesaleDiscountPct } from '@/lib/price';
 
 function parseCriticScore(summary?: string): string | null {
   if (!summary) return null;
@@ -28,6 +24,7 @@ export function ProductCardB2B({ product }: Props) {
   const criticScore = parseCriticScore(product.score_summary);
   const isArchive = product.custom_stock_status === 'CATALOG';
   const isExpress = !isArchive && (product.wn_stock ?? 0) > 0;
+  const discountPct = wholesaleDiscountPct(product.price, product.b2b_price);
 
   return (
     <Link href={`/product/${product.sku}`} className="group block">
@@ -65,9 +62,25 @@ export function ProductCardB2B({ product }: Props) {
       <div className="mt-2 space-y-0.5 px-0.5 pb-1">
         <p className="text-[11px] text-neutral-400 truncate">{product.brand ?? product.country ?? ''}</p>
         <p className="text-sm font-medium text-neutral-900 leading-snug line-clamp-2">{product.name}</p>
-        <p className="text-sm font-bold text-neutral-900 mt-1 tabular-nums">
-          {formatPrice(product.b2b_price, product.currency)}
-        </p>
+        {discountPct !== null ? (
+          <div className="mt-1 flex flex-wrap items-baseline gap-x-1.5">
+            <span className="text-sm font-bold text-neutral-900 tabular-nums">
+              {formatPrice(product.b2b_price, product.currency)}
+            </span>
+            {product.price !== undefined && (
+              <span className="text-xs text-neutral-400 line-through tabular-nums">
+                {formatPrice(product.price, product.currency)}
+              </span>
+            )}
+            <span className="inline-flex items-center rounded-full bg-emerald-600 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">
+              −{discountPct}%
+            </span>
+          </div>
+        ) : (
+          <p className="text-sm font-bold text-neutral-900 mt-1 tabular-nums">
+            {formatPrice(product.b2b_price, product.currency)}
+          </p>
+        )}
       </div>
     </Link>
   );

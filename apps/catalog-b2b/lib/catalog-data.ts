@@ -6,7 +6,10 @@ import type { B2BProduct } from './types';
  * B2B_PUBLIC_FIELDS — the allowlist. ONLY these keys are ever copied onto a
  * client-bound B2B product. This is the single margin-leak chokepoint.
  *
- * NEVER add: price, special_price, sp_discount_pct, b2b_discount_pct,
+ * price + b2b_discount_pct are intentionally included (private trade account —
+ * buyers see their wholesale discount against RRP).
+ *
+ * NEVER add: special_price, sp_discount_pct,
  *            margin_pct, b2b_margin_pct, b2b_margin_thb, cost, popularity_score.
  */
 export const B2B_PUBLIC_FIELDS = [
@@ -19,7 +22,7 @@ export const B2B_PUBLIC_FIELDS = [
   'is_in_stock', 'custom_stock_status', 'wn_stock', 'quantity_in_stock',
   'category_group', 'category_type',
   'popularity_tier',
-  'b2b_price',
+  'b2b_price', 'price', 'b2b_discount_pct',
 ] as const;
 
 // Drift guard: every B2B_PUBLIC_FIELDS key must be a known B2BProduct key.

@@ -1,7 +1,10 @@
 """Regenerate data/b2b_products_export.json from data/db/products.db.
 
-B2B wholesale catalog — wholesale price ONLY. Never exports retail price,
-discount %, cost, or any margin field. Filtered to products with b2b_price.
+B2B/WNLQ9 Trade wholesale catalog. Private trade account, so — unlike the
+public storefront — retail `price` (shown as RRP) and `b2b_discount_pct`
+(the % off RRP the wholesale price represents) ARE exported, so trade buyers
+can see their discount. Cost and margin fields are still never exported.
+Filtered to products with b2b_price.
 
 Worktree note: products.db is a 0-byte placeholder in git. The script
 auto-detects this and falls back to the main checkout's DB (resolved via
@@ -31,7 +34,9 @@ DEFAULT_OUT = REPO_ROOT / "data" / "b2b_products_export.json"
 # Minimal explicit allowlist — NOT a copy of EXPORT_COLS (which carries margin/cost).
 # Uses score_summary/score_max (NOT critic_score — that column does not exist).
 # Includes popularity_score for popularity_tier derivation in the app layer.
-# Wholesale price only: no retail price / special_price / discount / margin / cost.
+# Wholesale price + retail RRP + the wholesale discount %, so trade buyers can
+# see what they save. special_price/sp_discount_pct (retail sale mechanics)
+# and every cost/margin field stay forbidden below.
 B2B_EXPORT_COLS = [
     "sku", "name", "brand", "variety", "vintage",
     "country", "region", "subregion", "appellation",
@@ -42,13 +47,13 @@ B2B_EXPORT_COLS = [
     "is_in_stock", "wn_stock", "custom_stock_status", "quantity_in_stock",
     "score_summary", "score_max",
     "popularity_score",
-    "b2b_price",
+    "b2b_price", "price", "b2b_discount_pct",
 ]
 
 # Security: these fields MUST NOT appear in the B2B export under any circumstances.
 _FORBIDDEN = frozenset([
     "cost", "margin_pct", "b2b_margin_pct", "b2b_margin_thb",
-    "price", "special_price", "sp_discount_pct", "b2b_discount_pct",
+    "special_price", "sp_discount_pct",
 ])
 
 

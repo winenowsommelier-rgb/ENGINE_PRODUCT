@@ -5,11 +5,11 @@ const RAW_B2B = {
   sku: 'WR001',
   name: 'Test Rouge',
   b2b_price: 450,
-  price: 599,               // RETAIL — must be stripped
+  price: 599,               // RETAIL RRP — kept (private trade account shows discount)
   margin_pct: 0.25,         // MARGIN — must be stripped
   b2b_margin_pct: 0.18,     // MARGIN — must be stripped
   cost: 360,                // COST — must be stripped
-  b2b_discount_pct: 0.12,   // DISCOUNT — must be stripped
+  b2b_discount_pct: 24.9,   // DISCOUNT — kept (private trade account shows discount)
   popularity_score: 0.9,    // RAW SCORE — must be stripped (only tier ships)
   score_summary: '93 pts',
   score_max: 100,
@@ -21,7 +21,7 @@ const RAW_B2B = {
 };
 
 const FORBIDDEN = [
-  'price', 'special_price', 'sp_discount_pct', 'b2b_discount_pct',
+  'special_price', 'sp_discount_pct',
   'margin_pct', 'b2b_margin_pct', 'b2b_margin_thb', 'cost', 'popularity_score',
 ];
 
@@ -31,6 +31,10 @@ describe('B2B_PUBLIC_FIELDS', () => {
   });
   it('includes score_summary', () => {
     expect(B2B_PUBLIC_FIELDS).toContain('score_summary');
+  });
+  it('includes price (RRP) and b2b_discount_pct', () => {
+    expect(B2B_PUBLIC_FIELDS).toContain('price');
+    expect(B2B_PUBLIC_FIELDS).toContain('b2b_discount_pct');
   });
   it('does not include any forbidden field', () => {
     for (const f of FORBIDDEN) {
@@ -64,8 +68,9 @@ describe('toPublicProductB2B', () => {
     const p = toPublicProductB2B(RAW_B2B);
     expect(p.score_summary).toBe('93 pts');
   });
-  it('does NOT set a price field (no retail price)', () => {
+  it('keeps price (RRP) and b2b_discount_pct — private trade account shows the discount', () => {
     const p = toPublicProductB2B(RAW_B2B) as unknown as Record<string, unknown>;
-    expect(p['price']).toBeUndefined();
+    expect(p['price']).toBe(599);
+    expect(p['b2b_discount_pct']).toBe(24.9);
   });
 });

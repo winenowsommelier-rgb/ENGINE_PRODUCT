@@ -41,6 +41,18 @@ describe('ProductCardB2B', () => {
     expect(container.querySelector('s, del, [class*="line-through"]')).toBeNull();
   });
 
+  it('shows RRP struck through + b2b_price + discount % when price > b2b_price', () => {
+    render(<ProductCardB2B product={{ ...BASE, price: 700, b2b_price: 620 }} />);
+    expect(screen.getByText('฿620')).toBeTruthy();
+    expect(screen.getByText('฿700')).toBeTruthy();
+    expect(screen.getByText('−11.4%')).toBeTruthy();
+  });
+
+  it('does not render a discount badge when price equals or is below b2b_price', () => {
+    const { container } = render(<ProductCardB2B product={{ ...BASE, price: 400, b2b_price: 450 }} />);
+    expect(container.querySelector('[class*="line-through"]')).toBeNull();
+  });
+
   it('shows EXPRESS badge when wn_stock > 0', () => {
     render(<ProductCardB2B product={{ ...BASE, wn_stock: 5 }} />);
     expect(screen.getByText('EXPRESS')).toBeTruthy();

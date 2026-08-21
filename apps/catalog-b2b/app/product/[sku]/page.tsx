@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getAllProducts, getProductBySku } from '@/lib/catalog-data';
+import { formatPrice, wholesaleDiscountPct } from '@/lib/price';
 import type { B2BProduct } from '@/lib/types';
 
 export const dynamicParams = true;
@@ -19,11 +20,6 @@ function parseCriticScore(summary?: string): { score: string; reviewer?: string 
   if (!summary) return null;
   try { const p = JSON.parse(summary); if (p?.score) return { score: String(p.score), reviewer: p.reviewer }; } catch {}
   const m = summary.match(/^(\d+)/); return m ? { score: m[1] } : null;
-}
-
-function formatPrice(price: number, currency?: string): string {
-  const sym = currency === 'THB' || !currency ? '฿' : currency + ' ';
-  return sym + price.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
 /** One attribute row; renders nothing when value is empty. */
@@ -248,7 +244,25 @@ export default async function ProductDetailPage({ params }: Props) {
             {/* Wholesale price — the hero commercial fact */}
             <div className="rounded-xl bg-neutral-900 px-5 py-4">
               <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-1">Wholesale Price</p>
-              <p className="text-3xl font-bold text-white tabular-nums">{formatPrice(product.b2b_price, product.currency)}</p>
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <p className="text-3xl font-bold text-white tabular-nums">{formatPrice(product.b2b_price, product.currency)}</p>
+                {(() => {
+                  const discountPct = wholesaleDiscountPct(product.price, product.b2b_price);
+                  if (discountPct === null) return null;
+                  return (
+                    <>
+                      {product.price !== undefined && (
+                        <p className="text-base text-neutral-500 line-through tabular-nums">
+                          {formatPrice(product.price, product.currency)}
+                        </p>
+                      )}
+                      <span className="inline-flex items-center rounded-full bg-emerald-600 px-2.5 py-0.5 text-xs font-semibold text-white">
+                        −{discountPct}% off RRP
+                      </span>
+                    </>
+                  );
+                })()}
+              </div>
             </div>
 
             {/* Product details */}
@@ -299,7 +313,26 @@ export default async function ProductDetailPage({ params }: Props) {
                     <div className="mt-2 px-0.5 pb-1">
                       <p className="text-[11px] text-neutral-400 truncate">{p.brand ?? p.country ?? ''}</p>
                       <p className="text-sm font-medium text-neutral-900 leading-snug line-clamp-2">{p.name}</p>
-                      <p className="text-sm font-bold text-neutral-900 mt-1 tabular-nums">{formatPrice(p.b2b_price, p.currency)}</p>
+                      {(() => {
+                        const discountPct = wholesaleDiscountPct(p.price, p.b2b_price);
+                        if (discountPct === null) {
+                          return (
+                            <p className="text-sm font-bold text-neutral-900 mt-1 tabular-nums">
+                              {formatPrice(p.b2b_price, p.currency)}
+                            </p>
+                          );
+                        }
+                        return (
+                          <div className="mt-1 flex flex-wrap items-baseline gap-x-1.5">
+                            <span className="text-sm font-bold text-neutral-900 tabular-nums">
+                              {formatPrice(p.b2b_price, p.currency)}
+                            </span>
+                            <span className="inline-flex items-center rounded-full bg-emerald-600 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">
+                              −{discountPct}%
+                            </span>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </Link>
                 );
