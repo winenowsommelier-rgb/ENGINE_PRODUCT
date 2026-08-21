@@ -37,7 +37,7 @@ export default function ContactPage() {
       </h1>
 
       <p className="mt-8 text-lg leading-relaxed text-muted-foreground">
-        Reach us on LINE, WhatsApp, or Facebook — we&apos;ll help you order,
+        Reach us on LINE or Facebook — we&apos;ll help you order,
         check availability, or point you toward the right bottle.
       </p>
 

@@ -1,5 +1,9 @@
+'use client';
+
 import type { CatalogGroup, CatalogRow } from '@/lib/catalog-print';
 import { Wordmark } from '@/components/Wordmark';
+import { priceTierIcon } from '@/lib/price-tiers';
+import { usePriceUnlock } from '@/components/PriceUnlockProvider';
 import styles from './catalog-print.module.css';
 
 export type CatalogEdition = 'b2c' | 'b2b';
@@ -12,9 +16,13 @@ interface CatalogDocumentProps {
   totalCount: number;
 }
 
-function money(v: number | undefined) {
+// Unlocked: real THB amount. Locked: coarse ฿-tier icon (never the real
+// number) — this is the b2c retail price list, gated the same way as the
+// storefront (see PriceUnlockProvider). b2b edition is a separate, already
+// access-controlled surface (B2B_CATALOG_ACCESS_KEY) and is untouched here.
+function money(v: number | undefined, unlocked: boolean) {
   if (v === undefined || v === null) return null;
-  return v.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  return unlocked ? v.toLocaleString('en-US', { maximumFractionDigits: 0 }) : priceTierIcon(v);
 }
 
 interface CriticEntry {
@@ -68,7 +76,7 @@ function displayName(name: string) {
     .trim();
 }
 
-function ProductRow({ row, edition }: { row: CatalogRow; edition: CatalogEdition }) {
+function ProductRow({ row, edition, unlocked }: { row: CatalogRow; edition: CatalogEdition; unlocked: boolean }) {
   const sub = subline(row);
   return (
     <tr>
@@ -102,16 +110,16 @@ function ProductRow({ row, edition }: { row: CatalogRow; edition: CatalogEdition
       </td>
       {edition === 'b2c' ? (
         <>
-          <td className={`${styles.num} ${row.specialPrice ? styles.strike : ''}`}>{money(row.price)}</td>
+          <td className={`${styles.num} ${row.specialPrice ? styles.strike : ''}`}>{money(row.price, unlocked)}</td>
           <td className={`${styles.num} ${row.specialPrice ? styles.promo : styles.none}`}>
-            {money(row.specialPrice) ?? '—'}
+            {money(row.specialPrice, unlocked) ?? '—'}
           </td>
         </>
       ) : (
         <>
-          <td className={`${styles.num} ${styles.retail}`}>{money(row.price)}</td>
+          <td className={`${styles.num} ${styles.retail}`}>{money(row.price, unlocked)}</td>
           <td className={`${styles.num} ${row.b2bPrice ? styles.trade : styles.none}`}>
-            {money(row.b2bPrice) ?? '—'}
+            {money(row.b2bPrice, unlocked) ?? '—'}
           </td>
           <td className={`${styles.num} ${styles.disc}`}>
             {row.b2bDiscountPct
@@ -159,6 +167,7 @@ function TableHead({ edition }: { edition: CatalogEdition }) {
 }
 
 export function CatalogDocument({ edition, editionLabel, dateLabel, groups, totalCount }: CatalogDocumentProps) {
+  const { unlocked } = usePriceUnlock();
   return (
     <div className={styles.root} data-edition={edition}>
       <div className={styles.paper}>
@@ -224,7 +233,7 @@ export function CatalogDocument({ edition, editionLabel, dateLabel, groups, tota
                           <TableHead edition={edition} />
                           <tbody>
                             {s.rows.map((row) => (
-                              <ProductRow row={row} edition={edition} key={row.sku} />
+                              <ProductRow row={row} edition={edition} unlocked={unlocked} key={row.sku} />
                             ))}
                           </tbody>
                         </table>

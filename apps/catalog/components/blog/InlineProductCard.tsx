@@ -1,10 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { PriceDisplay } from '@/components/PriceDisplay';
 import type { PublicProduct } from '@/lib/types';
 
 export function InlineProductCard({ product }: { product: PublicProduct }) {
-  const price = product.price ? `฿${product.price.toLocaleString()}` : null;
-
   return (
     <aside className="my-6 flex items-center gap-5 rounded-2xl border border-stone-100 bg-stone-50/60 p-4 not-prose">
       {product.image_url ? (
@@ -27,7 +26,11 @@ export function InlineProductCard({ product }: { product: PublicProduct }) {
         >
           {product.name}
         </Link>
-        {price && <span className="text-sm font-medium text-stone-500">{price}</span>}
+        {product.price != null && (
+          <span className="text-sm font-medium text-stone-500">
+            <PriceDisplay price={product.price} />
+          </span>
+        )}
       </div>
       <Link
         href={`/product/${product.sku}`}

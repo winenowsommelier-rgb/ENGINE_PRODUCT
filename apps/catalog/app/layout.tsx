@@ -7,6 +7,8 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildWebSiteOrganization } from '@/lib/seo/jsonld';
+import { PriceUnlockProvider } from '@/components/PriceUnlockProvider';
+import { PriceUnlockModal } from '@/components/PriceUnlockModal';
 
 const BASE = 'https://wnlq9.shop';
 
@@ -43,9 +45,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex min-h-screen flex-col overflow-x-hidden">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <PriceUnlockProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <PriceUnlockModal />
+        </PriceUnlockProvider>
         <Analytics />
         <SpeedInsights />
         <GoogleAnalytics />
