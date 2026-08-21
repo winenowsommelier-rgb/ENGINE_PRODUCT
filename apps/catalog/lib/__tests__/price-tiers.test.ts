@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatPrice, resolveSale, tierForPrice, tierById, PRICE_TIERS } from '@/lib/price-tiers';
+import { formatPrice, resolveSale, tierForPrice, tierById, PRICE_TIERS, priceTierIcon } from '@/lib/price-tiers';
 
 describe('formatPrice', () => {
   it('formats THB with ฿ and thousands separators', () => expect(formatPrice(1600)).toBe('฿1,600'));
@@ -67,5 +67,32 @@ describe('resolveSale', () => {
     expect(resolveSale(null, 648)).toBeNull();
     expect(resolveSale(undefined, 648)).toBeNull();
     expect(resolveSale(NaN, 648)).toBeNull();
+  });
+});
+
+// priceTierIcon is the DISPLAY GATE for locked-out visitors (PriceUnlockProvider):
+// it must never leak the real price, only a coarse ฿-count bracket.
+describe('priceTierIcon', () => {
+  it('฿ for under 1,000', () => {
+    expect(priceTierIcon(0)).toBe('฿');
+    expect(priceTierIcon(999)).toBe('฿');
+  });
+  it('฿฿ for 1,000–3,000', () => {
+    expect(priceTierIcon(1000)).toBe('฿฿');
+    expect(priceTierIcon(2999)).toBe('฿฿');
+  });
+  it('฿฿฿ for 3,000–10,000', () => {
+    expect(priceTierIcon(3000)).toBe('฿฿฿');
+    expect(priceTierIcon(9999)).toBe('฿฿฿');
+  });
+  it('฿฿฿฿ for 10,000 and up (open-ended)', () => {
+    expect(priceTierIcon(10000)).toBe('฿฿฿฿');
+    expect(priceTierIcon(2460999)).toBe('฿฿฿฿');
+  });
+  it('returns — for missing/invalid prices, never a bracket', () => {
+    expect(priceTierIcon(null)).toBe('—');
+    expect(priceTierIcon(undefined)).toBe('—');
+    expect(priceTierIcon(NaN)).toBe('—');
+    expect(priceTierIcon(-5)).toBe('—');
   });
 });

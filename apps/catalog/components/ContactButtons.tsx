@@ -1,6 +1,6 @@
 'use client';
 
-import { MessageCircle, Phone, Send } from 'lucide-react';
+import { MessageCircle, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ContactLinks } from '@/lib/contact';
 import { trackGenerateLead } from '@/lib/analytics';
@@ -51,10 +51,12 @@ export function ContactButtons({
   productName,
 }: ContactButtonsProps) {
   // Build the ordered channel list, dropping any with an empty link string.
+  // WhatsApp is temporarily disabled site-wide (may return later) — omitted
+  // here rather than deleted from ContactLinks/lib/contact.ts, so re-enabling
+  // is a one-line add back.
   const channels: Channel[] = (
     [
       { key: 'line', label: 'LINE', href: links.line, Icon: MessageCircle },
-      { key: 'whatsapp', label: 'WhatsApp', href: links.whatsapp, Icon: Phone },
       { key: 'facebook', label: 'Messenger', href: links.facebook, Icon: Send },
     ] as Channel[]
   ).filter((c) => c.href !== '');

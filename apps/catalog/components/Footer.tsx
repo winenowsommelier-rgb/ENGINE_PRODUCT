@@ -11,9 +11,10 @@ import { buildContactLinks } from '@/lib/contact';
  *   /shop?group=<Group>. Sourced from CATEGORY_GROUPS so it stays in sync with
  *   the catalog's grouping logic (single source of truth).
  * - Info column: About / Contact.
- * - Contact channels (LINE / WhatsApp) are real deep-links (lib/contact.ts).
- *   Facebook is intentionally hidden for now; any channel with no handle
- *   configured omits gracefully.
+ * - Contact channels: LINE is a real deep-link (lib/contact.ts). WhatsApp is
+ *   temporarily disabled site-wide (may return later). Facebook is
+ *   intentionally hidden for now; any channel with no handle configured
+ *   omits gracefully.
  *
  * Server component — no interactivity. Links are >=44px tall tap targets.
  */
@@ -28,9 +29,10 @@ const INFO_LINKS = [
 
 export function Footer() {
   const links = buildContactLinks(getContactEnv());
+  // WhatsApp is temporarily disabled site-wide — omitted here rather than
+  // deleted from ContactLinks/lib/contact.ts, so re-enabling is a one-line add back.
   const CONTACT_CHANNELS = [
     { label: 'LINE', aria: 'Contact us on LINE', href: links.line },
-    { label: 'WhatsApp', aria: 'Contact us on WhatsApp', href: links.whatsapp },
   ].filter((c) => c.href !== '');
 
   return (

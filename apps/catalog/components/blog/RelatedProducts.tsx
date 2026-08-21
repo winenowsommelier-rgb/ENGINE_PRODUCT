@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { StorefrontImage } from '@/components/StorefrontImage';
 import { ReputationBadge } from '@/components/product/ReputationBadge';
-import { formatPrice, resolveSale } from '@/lib/price-tiers';
+import { resolveSale } from '@/lib/price-tiers';
+import { PriceDisplay } from '@/components/PriceDisplay';
 import type { PublicProduct } from '@/lib/types';
 
 // Tags too generic to signal a product match on their own (post format/topic
@@ -202,15 +203,15 @@ export function RelatedProducts({ tags, allProducts, products }: RelatedProducts
                 {sale ? (
                   <div className="mt-auto flex flex-wrap items-baseline gap-x-1.5">
                     <span className="text-sm font-semibold text-primary tabular-nums">
-                      {formatPrice(sale.special)}
+                      <PriceDisplay price={sale.special} />
                     </span>
-                    <span className="text-xs text-stone-400 line-through tabular-nums">
-                      {formatPrice(product.price)}
+                    <span className="inline-flex items-center rounded-full bg-destructive px-1.5 py-0.5 text-[10px] font-semibold text-destructive-foreground">
+                      Sale
                     </span>
                   </div>
                 ) : (
                   <p className="mt-auto text-sm font-medium text-stone-500 tabular-nums">
-                    {formatPrice(product.price)}
+                    <PriceDisplay price={product.price} />
                   </p>
                 )}
               </div>

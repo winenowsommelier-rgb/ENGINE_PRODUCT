@@ -94,3 +94,25 @@ export function tierForPrice(price: number): PriceTier {
 export function tierById(id: string): PriceTier | undefined {
   return PRICE_TIERS.find((t) => t.id === id);
 }
+
+/**
+ * Coarse ฿-icon brackets shown to visitors who haven't unlocked real prices
+ * (see PriceUnlockProvider). Deliberately separate from PRICE_TIERS (the shop
+ * filter's 5 brackets) — this is a display-only signal, not a filter.
+ */
+export const PRICE_ICON_TIERS: PriceTier[] = [
+  { id: 'icon-1', label: '฿', min: 0, max: 1000 },
+  { id: 'icon-2', label: '฿฿', min: 1000, max: 3000 },
+  { id: 'icon-3', label: '฿฿฿', min: 3000, max: 10000 },
+  { id: 'icon-4', label: '฿฿฿฿', min: 10000, max: Infinity },
+];
+
+/**
+ * Returns the ฿-icon string (e.g. '฿฿฿') for a price, or '—' when the price
+ * is missing/invalid — mirrors formatPrice's placeholder convention.
+ */
+export function priceTierIcon(price: number | null | undefined): string {
+  if (price === null || price === undefined || Number.isNaN(price) || price < 0) return '—';
+  const match = PRICE_ICON_TIERS.find((t) => price >= t.min && price < t.max);
+  return (match ?? PRICE_ICON_TIERS[PRICE_ICON_TIERS.length - 1]).label;
+}

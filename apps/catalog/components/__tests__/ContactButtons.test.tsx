@@ -9,23 +9,25 @@ const allLinks = {
 };
 
 describe('ContactButtons', () => {
-  it('renders all three contact links when all are present', () => {
-    render(<ContactButtons links={allLinks} />);
-    const links = screen.getAllByRole('link');
-    expect(links).toHaveLength(3);
-    const hrefs = links.map((a) => a.getAttribute('href'));
-    expect(hrefs).toContain(allLinks.line);
-    expect(hrefs).toContain(allLinks.whatsapp);
-    expect(hrefs).toContain(allLinks.facebook);
-  });
+  // WhatsApp is temporarily disabled site-wide (may return later) — even when
+  // links.whatsapp is populated, ContactButtons must never render it.
 
-  it('omits a button when its link string is empty', () => {
-    render(<ContactButtons links={{ ...allLinks, whatsapp: '' }} />);
+  it('renders LINE and Messenger, but never WhatsApp, when all links are present', () => {
+    render(<ContactButtons links={allLinks} />);
     const links = screen.getAllByRole('link');
     expect(links).toHaveLength(2);
     const hrefs = links.map((a) => a.getAttribute('href'));
-    expect(hrefs).not.toContain('');
     expect(hrefs).toContain(allLinks.line);
+    expect(hrefs).toContain(allLinks.facebook);
+    expect(hrefs).not.toContain(allLinks.whatsapp);
+  });
+
+  it('omits a button when its link string is empty', () => {
+    render(<ContactButtons links={{ ...allLinks, line: '' }} />);
+    const links = screen.getAllByRole('link');
+    expect(links).toHaveLength(1);
+    const hrefs = links.map((a) => a.getAttribute('href'));
+    expect(hrefs).not.toContain('');
     expect(hrefs).toContain(allLinks.facebook);
   });
 
@@ -45,8 +47,8 @@ describe('ContactButtons', () => {
     }
   });
 
-  it('stacked variant still renders one link per present channel', () => {
+  it('stacked variant still renders one link per present non-WhatsApp channel', () => {
     render(<ContactButtons links={allLinks} variant="stacked" />);
-    expect(screen.getAllByRole('link')).toHaveLength(3);
+    expect(screen.getAllByRole('link')).toHaveLength(2);
   });
 });
