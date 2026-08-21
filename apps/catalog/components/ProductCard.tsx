@@ -8,8 +8,9 @@ import { CriticScoreStrip } from '@/components/CriticScoreStrip';
 import { ReputationBadge } from '@/components/product/ReputationBadge';
 import { QuickView } from '@/components/QuickView';
 import { CompactGauges } from '@/components/product/CompactGauges';
-import { formatPrice, resolveSale } from '@/lib/price-tiers';
+import { resolveSale } from '@/lib/price-tiers';
 import { formatVintage, cn, isInStock } from '@/lib/utils';
+import { PriceDisplay } from '@/components/PriceDisplay';
 import type { PublicProduct } from '@/lib/types';
 import type { ContactLinks } from '@/lib/contact';
 
@@ -207,21 +208,15 @@ export function ProductCard({
             {sale ? (
               <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                 <span className="text-lg font-semibold text-primary tabular-nums">
-                  {formatPrice(sale.special)}
-                </span>
-                <span
-                  className="text-sm text-muted-foreground line-through tabular-nums"
-                  aria-label={`Regular price ${formatPrice(product.price)}`}
-                >
-                  {formatPrice(product.price)}
+                  <PriceDisplay price={sale.special} />
                 </span>
                 <span className="inline-flex items-center rounded-full bg-destructive px-2 py-0.5 text-xs font-semibold text-destructive-foreground">
-                  −{sale.percentOff}%
+                  Sale
                 </span>
               </div>
             ) : (
               <p className="mt-2 text-lg font-semibold text-primary tabular-nums">
-                {formatPrice(product.price)}
+                <PriceDisplay price={product.price} />
               </p>
             )}
 

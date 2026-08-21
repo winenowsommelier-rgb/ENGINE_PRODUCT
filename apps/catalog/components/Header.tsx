@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, Menu, X } from 'lucide-react';
+import { Search, Menu, X, Lock, LockOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SearchOverlay } from '@/components/SearchOverlay';
 import { Wordmark } from '@/components/Wordmark';
+import { usePriceUnlock } from '@/components/PriceUnlockProvider';
 
 /**
  * Global site header — Maison minimal style.
@@ -37,6 +38,7 @@ const NAV_LINKS = [
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const { unlocked, openModal } = usePriceUnlock();
 
   return (
     <header className="sticky top-0 z-50 w-full overflow-x-hidden border-b border-border bg-background">
@@ -66,8 +68,37 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Right cluster: search + mobile toggle */}
+        {/* Right cluster: unlock prices + search + mobile toggle */}
         <div className="flex shrink-0 items-center gap-1">
+          {!unlocked && (
+            <button
+              type="button"
+              onClick={openModal}
+              className="hidden h-11 items-center gap-1.5 rounded-md border border-border px-3 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary sm:flex"
+            >
+              <Lock className="h-4 w-4" aria-hidden="true" />
+              Unlock prices
+            </button>
+          )}
+          {!unlocked && (
+            <button
+              type="button"
+              onClick={openModal}
+              aria-label="Unlock prices"
+              className="flex h-11 w-11 items-center justify-center rounded-md text-foreground transition-colors hover:text-primary sm:hidden"
+            >
+              <Lock className="h-5 w-5" aria-hidden="true" />
+            </button>
+          )}
+          {unlocked && (
+            <span
+              className="hidden h-11 items-center gap-1.5 px-1 text-sm font-medium text-muted-foreground sm:flex"
+              aria-label="Prices unlocked"
+            >
+              <LockOpen className="h-4 w-4" aria-hidden="true" />
+              Prices unlocked
+            </span>
+          )}
           <button
             type="button"
             onClick={() => setSearchOpen(true)}

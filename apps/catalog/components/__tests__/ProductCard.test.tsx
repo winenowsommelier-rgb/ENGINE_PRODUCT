@@ -1,7 +1,18 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ProductCard } from '@/components/ProductCard';
+import { PriceUnlockProvider } from '@/components/PriceUnlockProvider';
 import type { PublicProduct } from '@/lib/types';
+
+// ProductCard renders prices through PriceDisplay, which requires a
+// PriceUnlockProvider ancestor. Most assertions here care about card
+// content/structure, not the price gate itself, so tests render "unlocked"
+// (real ฿ price visible) by default via sessionStorage — see the price-gate
+// specific assertions in PriceDisplay.test.tsx for the locked-state behavior.
+function renderUnlocked(ui: React.ReactElement) {
+  sessionStorage.setItem('wnlq9_price_unlocked', '1');
+  return render(<PriceUnlockProvider>{ui}</PriceUnlockProvider>);
+}
 
 vi.mock('next/image', () => ({
   __esModule: true,
@@ -32,18 +43,22 @@ const baseProduct: PublicProduct = {
 };
 
 describe('ProductCard', () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+  });
+
   it('renders the product name', () => {
-    render(<ProductCard product={baseProduct} />);
+    renderUnlocked(<ProductCard product={baseProduct} />);
     expect(screen.getByText('Château Test Grand Cru 2018')).toBeInTheDocument();
   });
 
   it('renders the formatted ฿ price', () => {
-    render(<ProductCard product={baseProduct} />);
+    renderUnlocked(<ProductCard product={baseProduct} />);
     expect(screen.getByText('฿1,600')).toBeInTheDocument();
   });
 
   it('links to /product/[sku]', () => {
-    render(<ProductCard product={baseProduct} />);
+    renderUnlocked(<ProductCard product={baseProduct} />);
     const link = screen
       .getAllByRole('link')
       .find((a) => a.getAttribute('href') === '/product/WN-1234');
@@ -55,13 +70,13 @@ describe('ProductCard', () => {
   // CURRENT label — do not revert them to /out of stock/, that text no longer
   // renders. See ProductCard.tsx (the `!inStock` overlay).
   it('shows the out-of-stock indicator when is_in_stock is false (boolean)', () => {
-    render(<ProductCard product={{ ...baseProduct, is_in_stock: false }} />);
+    renderUnlocked(<ProductCard product={{ ...baseProduct, is_in_stock: false }} />);
     expect(screen.getByText(/check availability/i)).toBeInTheDocument();
   });
 
   it('shows the out-of-stock indicator for the real export shape (string "0")', () => {
     // The live export stores is_in_stock as the STRING "0"/"1", not a boolean.
-    render(
+    renderUnlocked(
       <ProductCard
         product={{ ...baseProduct, is_in_stock: '0' as unknown as boolean }}
       />,
@@ -70,7 +85,7 @@ describe('ProductCard', () => {
   });
 
   it('does NOT show the out-of-stock indicator when in stock (string "1")', () => {
-    render(
+    renderUnlocked(
       <ProductCard
         product={{ ...baseProduct, is_in_stock: '1' as unknown as boolean }}
       />,
@@ -79,7 +94,7 @@ describe('ProductCard', () => {
   });
 
   it('exposes a Quick look button', () => {
-    render(<ProductCard product={baseProduct} />);
+    renderUnlocked(<ProductCard product={baseProduct} />);
     expect(
       screen.getByRole('button', { name: /quick look/i }),
     ).toBeInTheDocument();
