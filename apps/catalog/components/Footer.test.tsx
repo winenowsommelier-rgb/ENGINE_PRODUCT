@@ -27,10 +27,10 @@ describe('Footer', () => {
     expect(link.getAttribute('href')).toBe('/contact');
   });
 
-  it('renders B2B link pointing to b2b.wnlq9.shop', () => {
+  it('renders TRADE link pointing to b2b.wnlq9.shop/login', () => {
     render(<Footer />);
-    const link = screen.getByRole('link', { name: 'WNLQ9 B2B' });
+    const link = screen.getByRole('link', { name: 'WNLQ9 TRADE' });
     expect(link).toBeTruthy();
-    expect(link.getAttribute('href')).toBe('https://b2b.wnlq9.shop');
+    expect(link.getAttribute('href')).toBe('https://b2b.wnlq9.shop/login');
   });
 });
