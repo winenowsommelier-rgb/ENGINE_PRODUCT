@@ -24,7 +24,7 @@ const INFO_LINKS = [
   { href: '/contact', label: 'Contact' },
   { href: '/blog', label: 'Journal' },
   { href: '/catalogs', label: 'Catalogs' },
-  { href: 'https://b2b.wnlq9.shop', label: 'WNLQ9 B2B', external: true },
+  { href: 'https://b2b.wnlq9.shop/login', label: 'WNLQ9 TRADE', external: true },
 ] as const;
 
 export function Footer() {

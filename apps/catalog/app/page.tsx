@@ -51,15 +51,15 @@ export default function Home() {
           WNLQ9
         </h1>
         <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
-          A considered selection, chosen with care. Browse the collection at
-          your own pace — when something speaks to you, reach out and we&apos;ll
-          help you order.
+          Thailand&apos;s largest wine and spirits catalog, backed by a full-service
+          team and smart recommendations that guide you to the right bottle —
+          reach out and we&apos;ll help you order.
         </p>
         <Link
           href="/shop"
           className="inline-flex min-h-12 items-center justify-center rounded-md bg-primary px-8 text-base font-medium text-primary-foreground transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          Shop the collection
+          Explore the collection
         </Link>
       </section>
 
