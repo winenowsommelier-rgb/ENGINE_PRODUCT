@@ -85,14 +85,14 @@ create table list_items (
 create index on list_items (list_id);
 ```
 
-- `public_id` generation: short uppercase code, unambiguous alphabet (excludes `0/O/1/I`), format `WNL-XXXXX`, generated app-side or via Postgres function, checked for uniqueness against the `public_id` unique constraint (retry on collision).
-- `sku` is a soft reference to `PublicProduct.sku` (`apps/catalog/lib/types.ts`) — the live JSON export, not a DB table, is authoritative for product existence/price. No DB-level FK is possible across that boundary.
+- `public_id` generation: short uppercase code, unambiguous alphabet (excludes `0/O/1/I`), format `WNL-XXXXX`. Generated **DB-side** by a Postgres function that loops generate → `insert` → catch `unique_violation` → retry (bounded, e.g. 10 attempts) — not an app-side check-then-insert, which would be a TOCTOU race between two concurrent list creations.
+- `sku` is a soft reference to `PublicProduct.sku` (`apps/catalog/lib/types.ts`) — the live JSON export, not a DB table, is authoritative for product existence/price. No DB-level FK is possible across that boundary. **Known accepted gap:** if a SKU is ever renamed or reused for a different product (not currently known to happen, but not documented as impossible either — see prior masterfile intake history), a `list_items` row would silently point at the wrong product rather than showing as "unavailable." Revisit if SKU lifecycle guarantees change; out of scope to solve here.
 
 ### Row-Level Security
 
 - `lists`: `select` allowed if `is_public = true` OR `owner_id = auth.uid()`. `insert`/`update`/`delete` allowed only if `owner_id = auth.uid()`.
 - `list_items`: readable/writable only through the parent list's visibility/ownership (policy joins to `lists`).
-- `profiles`: `select` allowed to everyone (usernames/avatars are public by nature of the profile page); `update` restricted to `id = auth.uid()`.
+- `profiles`: **only `id`, `username`, `avatar_url` are public-readable**, exposed via a `public_profiles` view (or an RLS policy scoped to those columns only, not the base table) — never grant blanket `select` on the `profiles` table itself. This matters because `profiles` is the natural place future work adds sensitive columns (email, notification prefs); a blanket table-level `select` policy would silently make any such addition world-readable. **Rule: any new column added to `profiles` requires an explicit RLS review before merge** — the public view's column list does not grow automatically. `update` restricted to `id = auth.uid()`.
 - Enforcement lives in Postgres RLS, not just app-layer checks — this is a high-risk zone per CLAUDE.md ("Authentication" is explicitly called out), and RLS is the correct layer for it.
 
 ## Flows
@@ -100,7 +100,7 @@ create index on list_items (list_id);
 ### Signup / verification / login
 
 1. `/register`: email + password → `supabase.auth.signUp()` → verification email sent.
-2. On `auth.users` insert, a Postgres trigger creates the matching `profiles` row: `username` = email local-part, lowercased, non-alphanumeric characters stripped, collision-suffixed (`-2`, `-3`, ...) if taken; `avatar_url = null`. Doing this via trigger (not app code) means it can't be skipped by a code path that forgets to call it.
+2. On `auth.users` insert, a Postgres trigger creates the matching `profiles` row: `username` = email local-part, lowercased, non-alphanumeric characters stripped, collision-suffixed (`-2`, `-3`, ...) if taken; `avatar_url = null`. The trigger runs in the same transaction as the `auth.users` insert: **if profile creation fails (e.g. collision-suffix loop exhausts its bound), the exception propagates and the whole signup rolls back** — no orphaned `auth.users` row with a missing profile. The collision loop itself uses a bounded retry (e.g. suffix `-2` through `-50`, then fall back to a short random suffix) rather than an unbounded loop, so two concurrent signups with the same email local-part can't race indefinitely; Postgres's own row-level locking on the unique index serializes the conflicting inserts. Signup failure surfaces to the user as a normal registration error, not a silent partial account.
 3. User clicks the verification link → account becomes usable → `/login` → `supabase.auth.signInWithPassword()`.
 4. `/account/settings`: edit username (uniqueness re-checked on save) and upload/replace avatar. First login after verification may redirect here once as a nudge, but does not hard-block browsing elsewhere.
 
@@ -139,6 +139,7 @@ create index on list_items (list_id);
 
 - Supabase project creation, migration application, and schema verification (`list_tables`/`execute_sql` via MCP) happen at implementation time, with explicit check before any app code lands, not during this design phase.
 - No paid per-row API loop is introduced by this feature, so CLAUDE.md Rules 1/4/10 (paid-run verification) don't apply here — the applicable high-risk-zone rule is authentication (Rule 3 of the Code Review & Generation Standards section), which is why RLS is specified explicitly above rather than left as an app-layer assumption.
+- Abuse controls for this first public write path (signup, list creation): Supabase's default auth rate limits are accepted as sufficient for v1. No additional list-creation throttling is added now; revisit if list-spam is observed post-launch.
 
 ## Open items carried to later specs
 
