@@ -42,6 +42,10 @@ PRODUCT_SYNC_COLUMNS = [
     "score_max", "score_summary",
     # Image
     "image_url", "image_alt_text",
+    # Curation dossier (Phase 0 plumbing; not yet wired to the public export —
+    # see scripts/refresh_products_dossier.py header. Synced to Supabase now
+    # so the mirror stays current once Phase 1 content generation starts.)
+    "curation_dossier",
     # Enrichment metadata
     "enrichment_confidence", "enrichment_source", "enrichment_note",
     "enriched_at", "enriched_by", "updated_at",
@@ -65,6 +69,7 @@ _SUPABASE_SCHEMA_EXCLUDES = {
 
 _JSON_COLUMNS = {
     "production_style", "taste_profile", "taste_profile_override",
+    "curation_dossier",
     # These are stored as JSON-encoded arrays in SQLite but Supabase expects
     # parsed arrays (PostgreSQL array columns).
     "flavor_tags", "food_matching",
