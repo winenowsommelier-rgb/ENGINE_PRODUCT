@@ -15,6 +15,7 @@ describe.skipIf(!TEST_EMAIL)('list RLS invariants', () => {
   let anonClient: ReturnType<typeof createClient>;
   let privateListId: string;
   let publicListId: string;
+  let privateListItemId: string;
 
   beforeAll(async () => {
     ownerClient = createClient(url, anonKey);
@@ -35,9 +36,21 @@ describe.skipIf(!TEST_EMAIL)('list RLS invariants', () => {
       .select()
       .single();
     privateListId = priv!.id;
+
+    // Seed a list_items row on the private list so we can independently
+    // verify list_items_select_via_parent_list (a join-based EXISTS check
+    // against the parent list's is_public/owner_id, not automatic
+    // inheritance from the `lists` policy) actually denies anon reads too.
+    const { data: item } = await ownerClient
+      .from('list_items')
+      .insert({ list_id: privateListId, sku: 'RLS-TEST-SKU', quantity: 1 })
+      .select()
+      .single();
+    privateListItemId = item!.id;
   });
 
   afterAll(async () => {
+    await ownerClient.from('list_items').delete().eq('id', privateListItemId);
     await ownerClient.from('lists').delete().eq('id', publicListId);
     await ownerClient.from('lists').delete().eq('id', privateListId);
   });
@@ -60,5 +73,18 @@ describe.skipIf(!TEST_EMAIL)('list RLS invariants', () => {
     // happened rather than asserting on `error` alone.
     const { data: check } = await ownerClient.from('lists').select('name').eq('id', publicListId).single();
     expect(check?.name).not.toBe('hacked');
+  });
+
+  it('anonymous read of a list_item belonging to a private list returns nothing', async () => {
+    // list_items_select_via_parent_list is a separate, independent policy
+    // (a join-based EXISTS check against the parent list's
+    // is_public/owner_id) -- it does not automatically inherit from the
+    // `lists` select policy tested above, so it needs its own coverage.
+    const { data } = await anonClient
+      .from('list_items')
+      .select()
+      .eq('id', privateListItemId)
+      .maybeSingle();
+    expect(data).toBeNull();
   });
 });

@@ -19,9 +19,13 @@ export default async function PublicProfilePage({
 
   if (!profile) notFound();
 
-  // is_public filter happens via RLS automatically (anon/other-user select
-  // policy on `lists` only returns is_public=true rows for a non-owner) --
-  // no need to filter client-side.
+  // RLS on `lists` filters correctly for anonymous/other-user viewers (the
+  // select policy only returns is_public=true rows to a non-owner). But if
+  // the PROFILE OWNER is logged in and viewing their own /u/[username] page,
+  // their session makes RLS return ALL their lists (owner_id = auth.uid()
+  // matches). The filter below is the only thing preventing a private list
+  // from leaking onto the owner's own public profile page in that case --
+  // do not remove it as "redundant," it is load-bearing for that scenario.
   const lists = await getUserLists(supabase, profile.id);
   const publicLists = lists.filter((l) => l.is_public);
 
