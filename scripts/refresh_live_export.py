@@ -52,6 +52,14 @@ EXPORT_COLS = [
     "id", "sku", "name", "brand", "classification", "wine_classification", "designation",
     "variety", "vintage", "alcohol",
     "country", "region", "subregion", "appellation",
+    # Parsed vintage: `vintage` is free text ("2015 [**VINTAGE MAY CHANGE]"), so
+    # vintage_year is the machine-usable year and vintage_is_provisional preserves
+    # the supplier "may change" caveat. See scripts/migrate_add_vintage_year.py.
+    "vintage_year", "vintage_is_provisional",
+    # Attribute provenance: lets the UI distinguish a producer-sourced attribute
+    # from an AI-generated one. 6,681 rows are 'unverified'; upgrading requires a
+    # real per-item source. See scripts/migrate_add_attribute_provenance.py.
+    "attr_sources", "attr_evidence_tier", "attr_verified_at",
     "body", "acidity", "tannin",
     "blend_type", "production_style",
     "sweetness", "intensity", "smokiness", "bitterness", "finish",

@@ -1,0 +1,1046 @@
+{
+  "_comment": "Curated producer/house prestige overrides for the reputation pipeline's producer axis (scripts/compute_reputation.py). Replaces the circular brand-self-average for the brands listed here, where a single-SKU brand's 'producer' signal would otherwise just echo its own acclaim/prestige score back (zero independent information). Keys MUST match products.brand exactly (case-sensitive, as stored in the DB) — every key here is machine-verified against a live DISTINCT brand string; do not add an entry without checking it matches. tier -> score bands (base, before per-SKU confidence blending): reference=97, first_growth=95, grande_marque=92, benchmark=88, notable=78. Seeded 2026-07-10 with 98 globally-recognized houses (first growths, grandes marques Champagne, canonical single malt/cognac/sake houses, iconic New World cult wines); extended same-day to 271 with the next tier of recognizable, trade-verifiable producers (Bordeaux classed growths, grower Champagne, respected Burgundy domaines, major spirits houses, well-regarded New World names). Still deliberately NOT exhaustive — most of the catalog's ~1,686 beverage brands are mid-market labels this list has no trade basis to rank; extend with real trade/sommelier knowledge rather than guessing.",
+  "_tiers": {
+    "reference": 97,
+    "first_growth": 95,
+    "grande_marque": 92,
+    "benchmark": 88,
+    "notable": 78
+  },
+  "Chateau Petrus": {
+    "tier": "reference",
+    "note": "Pomerol — universally recognized as one of the world's most prestigious wines"
+  },
+  "Chateau Lafite-Rothschild": {
+    "tier": "first_growth",
+    "note": "Bordeaux 1855 First Growth"
+  },
+  "Chateau Latour": {
+    "tier": "first_growth",
+    "note": "Bordeaux 1855 First Growth"
+  },
+  "Chateau Margaux": {
+    "tier": "first_growth",
+    "note": "Bordeaux 1855 First Growth"
+  },
+  "Chateau Haut Brion": {
+    "tier": "first_growth",
+    "note": "Bordeaux 1855 First Growth"
+  },
+  "Chateau Mouton Rothschild": {
+    "tier": "first_growth",
+    "note": "Bordeaux 1855 First Growth (elevated 1973)"
+  },
+  "Chateau d'Yquem": {
+    "tier": "reference",
+    "note": "Sauternes — Premier Cru Supérieur, unique classification"
+  },
+  "Chateau Cheval Blanc": {
+    "tier": "reference",
+    "note": "Saint-Émilion Premier Grand Cru Classé A"
+  },
+  "Vega Sicilia": {
+    "tier": "reference",
+    "note": "Ribera del Duero — Spain's most prestigious estate"
+  },
+  "Chateau La Mission Haut-Brion": {
+    "tier": "benchmark"
+  },
+  "Chateau Leoville Las Cases": {
+    "tier": "benchmark"
+  },
+  "Chateau Ducru Beaucaillou": {
+    "tier": "benchmark"
+  },
+  "Chateau Pichon Baron": {
+    "tier": "benchmark"
+  },
+  "Chateau Pichon Longueville Comtesse de Lalande": {
+    "tier": "benchmark"
+  },
+  "Château Palmer": {
+    "tier": "benchmark"
+  },
+  "Chateau Cos D'Estournel": {
+    "tier": "benchmark"
+  },
+  "Chateau Lynch Bages": {
+    "tier": "benchmark"
+  },
+  "Chateau Montrose": {
+    "tier": "benchmark"
+  },
+  "Chateau Gruaud Larose": {
+    "tier": "notable"
+  },
+  "Chateau Talbot": {
+    "tier": "notable"
+  },
+  "Chateau Pontet Canet": {
+    "tier": "benchmark"
+  },
+  "Chateau Angelus": {
+    "tier": "benchmark"
+  },
+  "Chateau Pavie": {
+    "tier": "benchmark"
+  },
+  "Chateau Figeac": {
+    "tier": "benchmark"
+  },
+  "Chateau Canon": {
+    "tier": "notable"
+  },
+  "Chateau Lafleur": {
+    "tier": "benchmark"
+  },
+  "Chateau L'Evangile": {
+    "tier": "notable"
+  },
+  "Chateau La Conseillante": {
+    "tier": "notable"
+  },
+  "Chateau Trotanoy": {
+    "tier": "notable"
+  },
+  "Chateau Smith Haut Lafitte": {
+    "tier": "notable"
+  },
+  "Domaine Leflaive": {
+    "tier": "reference",
+    "note": "Puligny-Montrachet — benchmark white Burgundy producer"
+  },
+  "Domaine Bonneau du Martray": {
+    "tier": "benchmark",
+    "note": "Corton-Charlemagne"
+  },
+  "Domaine Georges Noellat": {
+    "tier": "benchmark",
+    "note": "Vosne-Romanée"
+  },
+  "Domaine Jacques Prieur": {
+    "tier": "benchmark"
+  },
+  "Maison Leroy": {
+    "tier": "reference",
+    "note": "Burgundy — among the most sought-after and expensive domaines in the world"
+  },
+  "Domaine Huet": {
+    "tier": "benchmark",
+    "note": "Vouvray — reference Loire Chenin Blanc producer"
+  },
+  "Domaine Du Vieux Telegraphe": {
+    "tier": "benchmark",
+    "note": "Chateauneuf-du-Pape"
+  },
+  "Louis Jadot": {
+    "tier": "benchmark",
+    "note": "Burgundy négociant — globally recognized house"
+  },
+  "Louis Latour": {
+    "tier": "benchmark",
+    "note": "Burgundy négociant — globally recognized house"
+  },
+  "Joseph Drouhin": {
+    "tier": "benchmark",
+    "note": "Burgundy négociant — globally recognized house"
+  },
+  "Antinori": {
+    "tier": "reference",
+    "note": "Marchesi Antinori — Super Tuscan pioneer, Tignanello/Solaia"
+  },
+  "Tenuta San Guido": {
+    "tier": "reference",
+    "note": "Sassicaia — the original Super Tuscan"
+  },
+  "Tenuta dell'Ornellaia": {
+    "tier": "reference",
+    "note": "Masseto/Ornellaia estate"
+  },
+  "Bruno Giacosa": {
+    "tier": "benchmark",
+    "note": "Barolo/Barbaresco"
+  },
+  "Castello Banfi": {
+    "tier": "notable"
+  },
+  "Opus One": {
+    "tier": "reference",
+    "note": "Napa Valley — Mondavi/Rothschild joint venture, globally recognized"
+  },
+  "Robert Mondavi": {
+    "tier": "benchmark",
+    "note": "Napa Valley pioneer"
+  },
+  "Chateau Montelena": {
+    "tier": "benchmark",
+    "note": "Judgment of Paris 1976"
+  },
+  "Peter Michael": {
+    "tier": "notable"
+  },
+  "Almaviva": {
+    "tier": "benchmark",
+    "note": "Chile — Concha y Toro/Mouton Rothschild joint venture"
+  },
+  "Catena Zapata": {
+    "tier": "benchmark",
+    "note": "Argentina's most internationally recognized producer"
+  },
+  "Vik": {
+    "tier": "notable"
+  },
+  "Dom Perignon": {
+    "tier": "reference",
+    "note": "Prestige cuvée benchmark"
+  },
+  "Krug": {
+    "tier": "reference",
+    "note": "Grande Marque, house style benchmark"
+  },
+  "Louis Roederer": {
+    "tier": "grande_marque",
+    "note": "Cristal"
+  },
+  "Bollinger": {
+    "tier": "grande_marque"
+  },
+  "Taittinger": {
+    "tier": "grande_marque"
+  },
+  "Veuve Clicquot": {
+    "tier": "grande_marque"
+  },
+  "Moet & Chandon": {
+    "tier": "grande_marque"
+  },
+  "Ruinart": {
+    "tier": "grande_marque",
+    "note": "Oldest Champagne house"
+  },
+  "Perrier-Jouet": {
+    "tier": "grande_marque"
+  },
+  "Laurent Perrier": {
+    "tier": "grande_marque"
+  },
+  "Pol Roger": {
+    "tier": "grande_marque"
+  },
+  "Piper-Heidsieck": {
+    "tier": "grande_marque"
+  },
+  "Billecart-Salmon": {
+    "tier": "grande_marque"
+  },
+  "Mumm": {
+    "tier": "grande_marque"
+  },
+  "Deutz": {
+    "tier": "notable"
+  },
+  "The Macallan": {
+    "tier": "reference",
+    "note": "Benchmark luxury single malt"
+  },
+  "Suntory": {
+    "tier": "reference",
+    "note": "Yamazaki/Hakushu/Hibiki — Japan's founding whisky house"
+  },
+  "Hibiki Collection": {
+    "tier": "reference",
+    "note": "Suntory's flagship blend line"
+  },
+  "Nikka": {
+    "tier": "benchmark",
+    "note": "Japan's second founding whisky house"
+  },
+  "Lagavulin": {
+    "tier": "benchmark",
+    "note": "Islay classic"
+  },
+  "Laphroaig": {
+    "tier": "benchmark",
+    "note": "Islay classic"
+  },
+  "Ardbeg": {
+    "tier": "benchmark",
+    "note": "Islay classic, cult following"
+  },
+  "Bowmore": {
+    "tier": "notable"
+  },
+  "Bruichladdich": {
+    "tier": "notable"
+  },
+  "Talisker": {
+    "tier": "benchmark"
+  },
+  "Highland Park": {
+    "tier": "benchmark"
+  },
+  "Glenfiddich": {
+    "tier": "benchmark",
+    "note": "Best-selling single malt globally"
+  },
+  "Glenmorangie": {
+    "tier": "benchmark"
+  },
+  "The Dalmore": {
+    "tier": "notable"
+  },
+  "The Balvenie": {
+    "tier": "notable"
+  },
+  "Johnnie Walker": {
+    "tier": "grande_marque",
+    "note": "World's best-selling Scotch whisky"
+  },
+  "Chivas Regal": {
+    "tier": "notable"
+  },
+  "Royal Salute": {
+    "tier": "benchmark",
+    "note": "Chivas Brothers' luxury blend line"
+  },
+  "Kavalan": {
+    "tier": "benchmark",
+    "note": "Taiwan — multiple World Whiskies Awards wins"
+  },
+  "Jameson": {
+    "tier": "notable",
+    "note": "World's best-selling Irish whiskey"
+  },
+  "Remy Martin": {
+    "tier": "grande_marque",
+    "note": "Cognac, Louis XIII"
+  },
+  "Hennessy": {
+    "tier": "grande_marque",
+    "note": "World's best-selling cognac house"
+  },
+  "Martell": {
+    "tier": "grande_marque",
+    "note": "Oldest of the major cognac houses"
+  },
+  "Courvoisier": {
+    "tier": "notable"
+  },
+  "Camus": {
+    "tier": "notable"
+  },
+  "Dassai": {
+    "tier": "reference",
+    "note": "Junmai Daiginjo specialist, globally recognized premium sake"
+  },
+  "Penfolds": {
+    "tier": "reference",
+    "note": "Grange — Australia's most internationally recognized wine"
+  },
+  "Torres": {
+    "tier": "notable",
+    "note": "Spain's most internationally recognized wine family"
+  },
+  "Concha Y Toro": {
+    "tier": "notable",
+    "note": "Chile's largest and most internationally distributed producer"
+  },
+  "Montes": {
+    "tier": "notable"
+  },
+  "Craggy Range": {
+    "tier": "notable"
+  },
+  "Baron Philippe de Rothschild": {
+    "tier": "grande_marque",
+    "note": "Bordeaux négociant/producer house (Mouton Cadet), globally distributed"
+  },
+  "Domaines Barons de Rothschild": {
+    "tier": "grande_marque",
+    "note": "DBR Lafite négociant arm, globally recognized Bordeaux house"
+  },
+  "Barons de Rothschild Champagne": {
+    "tier": "notable",
+    "note": "Champagne label from the DBR Lafite family group"
+  },
+  "Yalumba": {
+    "tier": "benchmark",
+    "note": "Australia's oldest family-owned winery, Barossa"
+  },
+  "Wolf Blass": {
+    "tier": "benchmark",
+    "note": "Major Australian producer, multiple Jimmy Watson Trophy wins"
+  },
+  "Duckhorn": {
+    "tier": "benchmark",
+    "note": "Napa Valley Merlot pioneer, well-regarded"
+  },
+  "Allegrini": {
+    "tier": "benchmark",
+    "note": "Leading Valpolicella/Amarone producer"
+  },
+  "Gérard Bertrand": {
+    "tier": "benchmark",
+    "note": "Leading Languedoc producer and négociant"
+  },
+  "Plantation": {
+    "tier": "benchmark",
+    "note": "Well-regarded rum bottler/blender, wide critical acclaim"
+  },
+  "E. Guigal": {
+    "tier": "reference",
+    "note": "Reference Rhône négociant, La La La single-vineyard wines are cult classics"
+  },
+  "Two Hands": {
+    "tier": "benchmark",
+    "note": "Acclaimed modern Barossa Shiraz producer"
+  },
+  "Jack Daniel's": {
+    "tier": "grande_marque",
+    "note": "World's best-selling American whiskey"
+  },
+  "Donnafugata": {
+    "tier": "benchmark",
+    "note": "Leading Sicilian producer"
+  },
+  "Hardys": {
+    "tier": "benchmark",
+    "note": "Major historic Australian wine house"
+  },
+  "Georges Duboeuf": {
+    "tier": "benchmark",
+    "note": "Dominant Beaujolais négociant, 'King of Beaujolais'"
+  },
+  "Freixenet": {
+    "tier": "grande_marque",
+    "note": "World's largest Cava producer"
+  },
+  "Fontanafredda": {
+    "tier": "benchmark",
+    "note": "Historic Barolo estate"
+  },
+  "Pio Cesare": {
+    "tier": "benchmark",
+    "note": "Historic Barolo/Barbaresco producer"
+  },
+  "Francis Coppola": {
+    "tier": "benchmark",
+    "note": "Well-known Sonoma/Napa producer"
+  },
+  "Kaiken": {
+    "tier": "notable",
+    "note": "Montes' Argentine label, well-regarded"
+  },
+  "Prunotto": {
+    "tier": "benchmark",
+    "note": "Historic Barolo producer, Antinori-owned"
+  },
+  "Stolichnaya": {
+    "tier": "grande_marque",
+    "note": "Globally recognized major vodka house"
+  },
+  "Yellow Tail": {
+    "tier": "notable",
+    "note": "Best-selling Australian export brand globally"
+  },
+  "Tomintoul": {
+    "tier": "notable",
+    "note": "Speyside single malt distillery"
+  },
+  "Famille Perrin": {
+    "tier": "benchmark",
+    "note": "Leading Châteauneuf-du-Pape/Rhône family (Château de Beaucastel)"
+  },
+  "Massolino": {
+    "tier": "benchmark",
+    "note": "Historic Barolo (Serralunga) producer"
+  },
+  "Tasca d'Almerita": {
+    "tier": "benchmark",
+    "note": "Leading Sicilian noble estate"
+  },
+  "Zonin": {
+    "tier": "notable",
+    "note": "Large historic Italian family wine group"
+  },
+  "Marchesi Di Barolo": {
+    "tier": "benchmark",
+    "note": "Historic Barolo estate"
+  },
+  "Delas": {
+    "tier": "benchmark",
+    "note": "Well-regarded Rhône négociant house"
+  },
+  "Flor de Caña Rum": {
+    "tier": "benchmark",
+    "note": "Nicaragua's leading premium rum house"
+  },
+  "Cakebread": {
+    "tier": "benchmark",
+    "note": "Respected Napa Valley Chardonnay/Cabernet producer"
+  },
+  "Klein Constantia": {
+    "tier": "benchmark",
+    "note": "Historic South African estate, Vin de Constance"
+  },
+  "Strega": {
+    "tier": "notable",
+    "note": "Iconic Italian herbal liqueur brand since 1860"
+  },
+  "Lindeman's": {
+    "tier": "notable",
+    "note": "Historic large-scale Australian wine brand"
+  },
+  "19 Crimes": {
+    "tier": "notable",
+    "note": "Major Australian export brand"
+  },
+  "Absolut": {
+    "tier": "grande_marque",
+    "note": "World-leading premium vodka brand"
+  },
+  "Wild Turkey": {
+    "tier": "benchmark",
+    "note": "Well-regarded major Kentucky bourbon house"
+  },
+  "Arran": {
+    "tier": "benchmark",
+    "note": "Acclaimed Island single malt distillery"
+  },
+  "Frescobaldi": {
+    "tier": "grande_marque",
+    "note": "Historic major Tuscan wine dynasty"
+  },
+  "The Glenlivet": {
+    "tier": "grande_marque",
+    "note": "Best-selling Speyside single malt globally"
+  },
+  "Compass Box": {
+    "tier": "benchmark",
+    "note": "Acclaimed independent Scotch blending house"
+  },
+  "Kilchoman": {
+    "tier": "benchmark",
+    "note": "Acclaimed modern Islay farm distillery"
+  },
+  "Loch Lomond": {
+    "tier": "notable",
+    "note": "Scottish single malt distillery"
+  },
+  "Rockford": {
+    "tier": "benchmark",
+    "note": "Cult Barossa Valley Shiraz producer"
+  },
+  "Jermann": {
+    "tier": "benchmark",
+    "note": "Leading Friuli white wine producer"
+  },
+  "Tyrrell's": {
+    "tier": "benchmark",
+    "note": "Historic Hunter Valley Semillon specialist"
+  },
+  "Dourthe": {
+    "tier": "notable",
+    "note": "Well-regarded Bordeaux négociant"
+  },
+  "Zenato": {
+    "tier": "benchmark",
+    "note": "Leading Valpolicella/Lugana producer"
+  },
+  "La Spinetta": {
+    "tier": "benchmark",
+    "note": "Acclaimed modern Piedmont producer"
+  },
+  "Champagne Duval Leroy": {
+    "tier": "notable",
+    "note": "Large independent Champagne house"
+  },
+  "Angostura": {
+    "tier": "grande_marque",
+    "note": "World-famous bitters and rum house from Trinidad"
+  },
+  "Torbreck": {
+    "tier": "benchmark",
+    "note": "Acclaimed cult Barossa Shiraz producer"
+  },
+  "Grey Goose": {
+    "tier": "grande_marque",
+    "note": "World-leading premium vodka brand"
+  },
+  "1800 Tequila": {
+    "tier": "notable",
+    "note": "Major established tequila house"
+  },
+  "Chateau d'Esclans": {
+    "tier": "benchmark",
+    "note": "Whispering Angel producer, defined the premium Provence rosé category"
+  },
+  "Errazuriz": {
+    "tier": "benchmark",
+    "note": "Leading Chilean producer, Seña joint venture with Mondavi"
+  },
+  "Caymus": {
+    "tier": "benchmark",
+    "note": "Cult Napa Valley Cabernet, Wine Spectator acclaim"
+  },
+  "Henschke": {
+    "tier": "reference",
+    "note": "Hill of Grace — one of Australia's most iconic and expensive wines"
+  },
+  "Vasse Felix": {
+    "tier": "benchmark",
+    "note": "Margaret River founding estate"
+  },
+  "Patron": {
+    "tier": "grande_marque",
+    "note": "World-leading premium tequila brand"
+  },
+  "Bertani": {
+    "tier": "benchmark",
+    "note": "Historic Amarone producer"
+  },
+  "J. Lohr": {
+    "tier": "notable",
+    "note": "Well-regarded large California producer"
+  },
+  "Domaine Mongeard-Mugneret": {
+    "tier": "benchmark",
+    "note": "Respected Vosne-Romanée grower"
+  },
+  "Domaine Hubert Lignier": {
+    "tier": "benchmark",
+    "note": "Respected Morey-Saint-Denis grower"
+  },
+  "Domaine Vincent Dancer": {
+    "tier": "benchmark",
+    "note": "Acclaimed Chassagne-Montrachet grower"
+  },
+  "Don Julio": {
+    "tier": "grande_marque",
+    "note": "Leading premium tequila house"
+  },
+  "Casanova di Neri": {
+    "tier": "benchmark",
+    "note": "Top-tier Brunello di Montalcino producer"
+  },
+  "Graham's": {
+    "tier": "grande_marque",
+    "note": "Major Port house, Symington family"
+  },
+  "Planeta": {
+    "tier": "benchmark",
+    "note": "Leading modern Sicilian estate"
+  },
+  "Old Pulteney": {
+    "tier": "benchmark",
+    "note": "Acclaimed Highland coastal single malt"
+  },
+  "Balblair": {
+    "tier": "benchmark",
+    "note": "Acclaimed Highland single malt distillery"
+  },
+  "Dow's": {
+    "tier": "grande_marque",
+    "note": "Major Port house, Symington family"
+  },
+  "Clase Azul": {
+    "tier": "reference",
+    "note": "Ultra-premium luxury tequila, iconic hand-painted decanters"
+  },
+  "Marques De Riscal": {
+    "tier": "benchmark",
+    "note": "Historic Rioja founding estate"
+  },
+  "Shafer": {
+    "tier": "benchmark",
+    "note": "Cult Napa Valley producer, Hillside Select"
+  },
+  "Glenfarclas": {
+    "tier": "benchmark",
+    "note": "Family-owned Speyside single malt, respected for age statements"
+  },
+  "Domaine Bruno Clair": {
+    "tier": "benchmark",
+    "note": "Respected Marsannay/Gevrey-Chambertin grower"
+  },
+  "Champagne Agrapart": {
+    "tier": "benchmark",
+    "note": "Grower Champagne, blanc de blancs specialist, cult following"
+  },
+  "Domaine Vincent Pinard": {
+    "tier": "benchmark",
+    "note": "Leading Sancerre producer"
+  },
+  "Kanonkop": {
+    "tier": "benchmark",
+    "note": "South Africa's leading Pinotage producer"
+  },
+  "Castello di Fonterutoli": {
+    "tier": "benchmark",
+    "note": "Historic Chianti Classico Mazzei family estate"
+  },
+  "Domaine Du Pegau": {
+    "tier": "benchmark",
+    "note": "Traditionalist top-tier Châteauneuf-du-Pape producer"
+  },
+  "Hendrick's": {
+    "tier": "grande_marque",
+    "note": "Globally recognized premium gin brand"
+  },
+  "Ceretto": {
+    "tier": "benchmark",
+    "note": "Leading modern Barolo/Barbaresco house"
+  },
+  "Cloudy Bay": {
+    "tier": "grande_marque",
+    "note": "Defined New Zealand Sauvignon Blanc internationally, LVMH-owned"
+  },
+  "Bodegas Muga": {
+    "tier": "benchmark",
+    "note": "Top-tier traditional Rioja estate"
+  },
+  "G.D. Vajra": {
+    "tier": "benchmark",
+    "note": "Acclaimed Barolo producer"
+  },
+  "Ballantine's": {
+    "tier": "grande_marque",
+    "note": "World's best-selling Scotch behind Johnnie Walker"
+  },
+  "Havana Club": {
+    "tier": "grande_marque",
+    "note": "Leading Cuban rum house"
+  },
+  "Chateau Musar": {
+    "tier": "reference",
+    "note": "Lebanon's most internationally acclaimed and iconic estate"
+  },
+  "Auchentoshan": {
+    "tier": "benchmark",
+    "note": "Distinctive triple-distilled Lowland single malt"
+  },
+  "Jim Beam": {
+    "tier": "grande_marque",
+    "note": "World's best-selling bourbon"
+  },
+  "Michter's": {
+    "tier": "benchmark",
+    "note": "Acclaimed premium American whiskey house"
+  },
+  "Bushmills": {
+    "tier": "grande_marque",
+    "note": "Oldest licensed whiskey distillery in the world"
+  },
+  "Tommasi": {
+    "tier": "benchmark",
+    "note": "Leading Amarone/Valpolicella family producer"
+  },
+  "Far Niente": {
+    "tier": "benchmark",
+    "note": "Prestigious Napa Valley estate"
+  },
+  "Belle Glos": {
+    "tier": "benchmark",
+    "note": "Acclaimed California Pinot Noir specialist (Caymus family)"
+  },
+  "Grgich Hills": {
+    "tier": "benchmark",
+    "note": "Napa Valley, Judgment of Paris 1976 winner"
+  },
+  "Glen Scotia": {
+    "tier": "notable",
+    "note": "Campbeltown single malt distillery"
+  },
+  "The GlenAllachie": {
+    "tier": "benchmark",
+    "note": "Acclaimed independent Speyside distillery under Billy Walker"
+  },
+  "Robert Foley": {
+    "tier": "notable",
+    "note": "Boutique Napa Valley cult producer"
+  },
+  "Domaine Denis Mortet": {
+    "tier": "reference",
+    "note": "Cult Gevrey-Chambertin grower, among Burgundy's most sought-after"
+  },
+  "Bodegas Codorniu Raventos": {
+    "tier": "notable",
+    "note": "Historic Cava house, Codorníu"
+  },
+  "Trimbach": {
+    "tier": "benchmark",
+    "note": "Reference Alsace Riesling producer"
+  },
+  "Domaine Laroche": {
+    "tier": "benchmark",
+    "note": "Leading Chablis producer"
+  },
+  "Champagne Drappier": {
+    "tier": "benchmark",
+    "note": "Respected independent grower-house Champagne"
+  },
+  "Dr Loosen": {
+    "tier": "benchmark",
+    "note": "Reference Mosel Riesling estate"
+  },
+  "Weingut Robert Weil": {
+    "tier": "benchmark",
+    "note": "Top-tier Rheingau Riesling estate"
+  },
+  "Felton Road": {
+    "tier": "reference",
+    "note": "New Zealand's most internationally acclaimed Pinot Noir producer"
+  },
+  "Domaines Ott": {
+    "tier": "benchmark",
+    "note": "Prestige Provence rosé pioneer estate"
+  },
+  "Dal Forno Romano": {
+    "tier": "reference",
+    "note": "Cult, top-rated Amarone producer, among the most expensive"
+  },
+  "Argiano": {
+    "tier": "benchmark",
+    "note": "Top-tier Brunello di Montalcino estate"
+  },
+  "Dominus Estate": {
+    "tier": "reference",
+    "note": "Christian Moueix (Petrus) Napa Valley estate, cult status"
+  },
+  "Grosset": {
+    "tier": "benchmark",
+    "note": "Reference Clare Valley Riesling producer"
+  },
+  "Woodford Reserve": {
+    "tier": "benchmark",
+    "note": "Well-regarded premium bourbon house"
+  },
+  "Davidoff": {
+    "tier": "grande_marque",
+    "note": "Globally recognized luxury spirits/cigar brand"
+  },
+  "Campari": {
+    "tier": "grande_marque",
+    "note": "Iconic globally recognized Italian aperitif brand"
+  },
+  "Martini": {
+    "tier": "grande_marque",
+    "note": "World-leading vermouth house"
+  },
+  "Bacardi": {
+    "tier": "grande_marque",
+    "note": "World's best-selling rum brand"
+  },
+  "Diplomatico": {
+    "tier": "benchmark",
+    "note": "Acclaimed premium Venezuelan rum house"
+  },
+  "Charles heidsieck": {
+    "tier": "grande_marque",
+    "note": "Prestigious Champagne house"
+  },
+  "The Botanist": {
+    "tier": "benchmark",
+    "note": "Acclaimed Islay dry gin from Bruichladdich"
+  },
+  "Tanqueray": {
+    "tier": "grande_marque",
+    "note": "World-leading premium gin brand"
+  },
+  "Smirnoff": {
+    "tier": "grande_marque",
+    "note": "World's best-selling vodka brand"
+  },
+  "Captain Morgan": {
+    "tier": "grande_marque",
+    "note": "World's best-selling spiced rum brand"
+  },
+  "Kendall Jackson": {
+    "tier": "notable",
+    "note": "Best-selling Chardonnay brand in the US"
+  },
+  "Villa maria": {
+    "tier": "benchmark",
+    "note": "Leading New Zealand family wine producer"
+  },
+  "Chandon": {
+    "tier": "notable",
+    "note": "Moët Hennessy's New World sparkling label"
+  },
+  "Evan Williams": {
+    "tier": "notable",
+    "note": "Major established Kentucky bourbon brand"
+  },
+  "Beluga": {
+    "tier": "benchmark",
+    "note": "Acclaimed premium Russian vodka house"
+  },
+  "Cinzano": {
+    "tier": "notable",
+    "note": "Historic Italian vermouth/sparkling brand"
+  },
+  "Finlandia": {
+    "tier": "notable",
+    "note": "Globally recognized premium Finnish vodka brand"
+  },
+  "Luxardo": {
+    "tier": "grande_marque",
+    "note": "Reference maraschino liqueur house since 1821"
+  },
+  "Nonino": {
+    "tier": "benchmark",
+    "note": "Leading premium grappa house"
+  },
+  "Galliano": {
+    "tier": "notable",
+    "note": "Iconic Italian herbal liqueur brand"
+  },
+  "Chateau Rauzan-Gassies": {
+    "tier": "notable",
+    "note": "Bordeaux 1855 Margaux 2nd Growth"
+  },
+  "Château Clerc Milon": {
+    "tier": "notable",
+    "note": "Bordeaux 1855 Pauillac 5th Growth, Rothschild-owned"
+  },
+  "Chateau D'Armailhac": {
+    "tier": "notable",
+    "note": "Bordeaux 1855 Pauillac 5th Growth, Rothschild-owned"
+  },
+  "Chateau Lagrezette": {
+    "tier": "notable",
+    "note": "Leading Cahors estate"
+  },
+  "Chateau Gloria": {
+    "tier": "notable",
+    "note": "Well-regarded Saint-Julien estate"
+  },
+  "Beringer": {
+    "tier": "benchmark",
+    "note": "Historic Napa Valley founding winery"
+  },
+  "Marques de Caceres": {
+    "tier": "benchmark",
+    "note": "Major modern Rioja producer"
+  },
+  "Wynns": {
+    "tier": "benchmark",
+    "note": "Historic Coonawarra founding estate"
+  },
+  "Bodegas Salentein": {
+    "tier": "notable",
+    "note": "Well-regarded Argentine high-altitude estate"
+  },
+  "Bodegas Garzon": {
+    "tier": "notable",
+    "note": "Leading modern Uruguayan estate"
+  },
+  "Wither Hills": {
+    "tier": "notable",
+    "note": "Established Marlborough Sauvignon Blanc producer"
+  },
+  "Matua": {
+    "tier": "notable",
+    "note": "Well-known Marlborough Sauvignon Blanc brand"
+  },
+  "Gallo Family Vineyards": {
+    "tier": "notable",
+    "note": "World's largest family-owned winery"
+  },
+  "Chateau Le Puy": {
+    "tier": "benchmark",
+    "note": "Cult biodynamic Bordeaux estate"
+  },
+  "Torrebruna": {
+    "tier": "notable",
+    "note": "Italian regional producer"
+  },
+  "Wente Vineyards": {
+    "tier": "notable",
+    "note": "Oldest continuously family-operated winery in the US"
+  },
+  "Chateau Maris": {
+    "tier": "notable",
+    "note": "Leading biodynamic Languedoc estate"
+  },
+  "Domaine Champalou": {
+    "tier": "notable",
+    "note": "Respected Vouvray producer"
+  },
+  "Karthäuserhof": {
+    "tier": "benchmark",
+    "note": "Historic top-tier Mosel Riesling estate"
+  },
+  "Pieropan": {
+    "tier": "benchmark",
+    "note": "Reference Soave producer"
+  },
+  "Arnaldo Caprai": {
+    "tier": "benchmark",
+    "note": "Leading Sagrantino di Montefalco producer"
+  },
+  "Avignonesi": {
+    "tier": "benchmark",
+    "note": "Leading Vino Nobile di Montepulciano estate"
+  },
+  "Coppo": {
+    "tier": "benchmark",
+    "note": "Well-regarded Piedmont (Barbera/Asti) producer"
+  },
+  "Bosquet Des Papes": {
+    "tier": "notable",
+    "note": "Respected traditional Châteauneuf-du-Pape estate"
+  },
+  "Speri": {
+    "tier": "notable",
+    "note": "Established Valpolicella/Amarone family producer"
+  },
+  "Chateau Poupille": {
+    "tier": "notable",
+    "note": "Boutique Côtes de Castillon estate"
+  },
+  "Ricasoli": {
+    "tier": "benchmark",
+    "note": "Oldest wine estate in Italy, Chianti Classico founding family"
+  },
+  "Castello Di Ama": {
+    "tier": "benchmark",
+    "note": "Top-tier Chianti Classico estate"
+  },
+  "Nederburg": {
+    "tier": "notable",
+    "note": "Historic major South African wine estate"
+  },
+  "Voyager Estate": {
+    "tier": "notable",
+    "note": "Established Margaret River producer"
+  },
+  "Bogle": {
+    "tier": "notable",
+    "note": "Well-known value-driven California family winery"
+  },
+  "Merryvale": {
+    "tier": "notable",
+    "note": "Established Napa Valley producer"
+  },
+  "Poliziano": {
+    "tier": "benchmark",
+    "note": "Leading Vino Nobile di Montepulciano estate"
+  },
+  "Vigneti Del Salento": {
+    "tier": "notable",
+    "note": "Established Puglia regional producer"
+  },
+  "Le Clos Du Serres": {
+    "tier": "notable",
+    "note": "Boutique Provence estate"
+  },
+  "Bodegas Protos": {
+    "tier": "notable",
+    "note": "Historic Ribera del Duero founding cooperative estate"
+  },
+  "St. Hugo": {
+    "tier": "notable",
+    "note": "Premium Coonawarra label (Jacob's Creek family)"
+  }
+}

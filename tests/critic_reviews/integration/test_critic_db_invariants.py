@@ -42,8 +42,23 @@ DEFAULT_DB = next((p for p in _CANDIDATES if _is_real_db(p)), _CANDIDATES[0])
 
 # Expected steady-state, asserted by the §19 pre-flight. If the catalog grows
 # and the loader re-runs, update these together with a documented reason.
-EXPECTED_ROWS = 3144
-EXPECTED_BADGE_SKUS = 1550
+#
+# 2026-07-27 — 3144 -> 3126 and 1550 -> 1557, both investigated and legitimate:
+#   * The 18 removed rows were ORPHANS: 9 SKUs (WSP9030BN, WRW4912AA-6,
+#     WRW5288AA-6, WRW5098FO, WRW4693DW, WWW2412DK, WSP1100AD, WSP1206AD,
+#     WWW2321ED) that are absent from `products`, verified absent even in the
+#     2026-07-17 backup. Orphaned magento_csv rows went 39 -> 9. No badge was
+#     lost: a critic row for a delisted SKU can never render. This was cleanup
+#     between 2026-07-17 and 2026-07-21, not migration loss.
+#   * Badged SKUs GREW 1550 -> 1557 via later enrichment.
+# A bare equality on a number that legitimately moves is a Rule-5 anti-test: it
+# fails on healthy change and trains people to bump the constant without looking.
+# The invariant that actually matters is directional — curated rows and badges
+# must never SILENTLY SHRINK, and no curated row may point at a missing SKU.
+MIN_CURATED_ROWS = 3126
+MIN_BADGE_SKUS = 1557
+# Orphans still awaiting cleanup; must never grow. See test_no_new_orphans.
+KNOWN_ORPHAN_ROWS = 9
 
 
 @pytest.fixture(scope="module")
@@ -62,24 +77,49 @@ def _has_columns(conn) -> bool:
 
 
 def test_curated_rows_preserved(conn):
-    """INVARIANT: the 3,144 magento_csv rows are all still present after migration."""
+    """INVARIANT: curated magento_csv rows never silently shrink.
+
+    Directional, not an equality: legitimate orphan cleanup and re-loads move
+    this number, but a migration or bad DELETE must never reduce it.
+    """
     n = conn.execute(
         "SELECT count(*) FROM critic_scores WHERE added_by LIKE 'magento_csv%'"
     ).fetchone()[0]
-    assert n == EXPECTED_ROWS, (
-        f"expected {EXPECTED_ROWS} curated rows, found {n} — migration lost or "
-        f"duplicated rows"
+    assert n >= MIN_CURATED_ROWS, (
+        f"curated rows dropped to {n}, below the {MIN_CURATED_ROWS} floor — a "
+        f"migration or DELETE lost rows. Investigate before raising the floor; "
+        f"if the drop is verified orphan cleanup, document it like the "
+        f"2026-07-27 entry above."
     )
 
 
 def test_badge_set_unchanged(conn):
-    """INVARIANT: exactly the same SKUs carry a product badge after migration."""
+    """INVARIANT: the set of SKUs showing a critic badge never silently shrinks."""
     n = conn.execute(
         "SELECT count(*) FROM products WHERE score_summary IS NOT NULL"
     ).fetchone()[0]
-    assert n == EXPECTED_BADGE_SKUS, (
-        f"expected {EXPECTED_BADGE_SKUS} badged SKUs, found {n} — migration "
-        f"changed which products show critic scores"
+    assert n >= MIN_BADGE_SKUS, (
+        f"badged SKUs dropped to {n}, below the {MIN_BADGE_SKUS} floor — a "
+        f"migration removed critic badges from products that had them."
+    )
+
+
+def test_no_new_orphans(conn):
+    """INVARIANT: no curated critic row points at a SKU missing from products.
+
+    An orphan row is invisible (nothing renders a score for a delisted SKU) and
+    silently inflates every curated-row count. 9 known orphans remain; the count
+    must never grow, because growth means the loader is writing rows against SKUs
+    the catalog does not have.
+    """
+    n = conn.execute("""
+        SELECT count(*) FROM critic_scores cs
+        WHERE cs.added_by LIKE 'magento_csv%'
+          AND NOT EXISTS (SELECT 1 FROM products p WHERE p.sku = cs.sku)
+    """).fetchone()[0]
+    assert n <= KNOWN_ORPHAN_ROWS, (
+        f"{n} orphaned curated critic rows, above the known {KNOWN_ORPHAN_ROWS} — "
+        f"the loader is writing scores for SKUs that are not in the catalog."
     )
 
 
