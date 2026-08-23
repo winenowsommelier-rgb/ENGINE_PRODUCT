@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import Link from 'next/link';
-import { Search, Menu, X, Lock, LockOpen } from 'lucide-react';
+import { Search, Menu, X, Lock, LockOpen, User as UserIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SearchOverlay } from '@/components/SearchOverlay';
 import { Wordmark } from '@/components/Wordmark';
 import { usePriceUnlock } from '@/components/PriceUnlockProvider';
+import { logoutAction } from '@/actions/auth';
 
 /**
  * Global site header — Maison minimal style.
@@ -35,9 +36,19 @@ const NAV_LINKS = [
   { href: '/contact', label: 'Contact' },
 ] as const;
 
-export function Header() {
+type HeaderUser = { id: string; email: string | null };
+type HeaderProfile = { username: string; avatar_url: string | null };
+
+export function Header({
+  user = null,
+  profile = null,
+}: {
+  user?: HeaderUser | null;
+  profile?: HeaderProfile | null;
+}) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const { unlocked, openModal } = usePriceUnlock();
 
   return (
@@ -108,6 +119,21 @@ export function Header() {
             <Search className="h-5 w-5" aria-hidden="true" />
           </button>
 
+          {user ? (
+            <AccountMenu
+              profile={profile}
+              open={accountOpen}
+              onOpenChange={setAccountOpen}
+            />
+          ) : (
+            <Link
+              href="/login"
+              className="flex h-11 items-center gap-1.5 rounded-md px-3 text-sm font-medium text-foreground transition-colors hover:text-primary"
+            >
+              Log in
+            </Link>
+          )}
+
           <button
             type="button"
             onClick={() => setMobileOpen((open) => !open)}
@@ -146,10 +172,157 @@ export function Header() {
               </Link>
             </li>
           ))}
+          <li className="border-t border-border mt-1 pt-1">
+            {user ? (
+              <>
+                <Link
+                  href="/account/lists"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex min-h-11 items-center py-3 text-lg font-medium text-foreground transition-colors hover:text-primary"
+                >
+                  My lists
+                </Link>
+                <Link
+                  href="/account/settings"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex min-h-11 items-center py-3 text-lg font-medium text-foreground transition-colors hover:text-primary"
+                >
+                  Account settings
+                </Link>
+                <LogoutButton
+                  className="flex min-h-11 w-full items-center py-3 text-left text-lg font-medium text-foreground transition-colors hover:text-primary"
+                  onBeforeNavigate={() => setMobileOpen(false)}
+                />
+              </>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileOpen(false)}
+                className="flex min-h-11 items-center py-3 text-lg font-medium text-foreground transition-colors hover:text-primary"
+              >
+                Log in
+              </Link>
+            )}
+          </li>
         </ul>
       </nav>
 
       <SearchOverlay open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
+  );
+}
+
+/**
+ * Logout trigger. `logoutAction` is a redirect-based server action (calls
+ * next/navigation `redirect('/')` after signOut()) -- same pattern as
+ * DeleteListButton.tsx (Task 7): invoke it inside useTransition and let the
+ * server-side redirect drive navigation, rather than wrapping it in a
+ * <form action={...}> (which would also work, but the transition pattern
+ * matches the rest of this codebase and lets us disable the button while
+ * pending).
+ */
+function LogoutButton({
+  className,
+  onBeforeNavigate,
+}: {
+  className?: string;
+  onBeforeNavigate?: () => void;
+}) {
+  const [pending, startTransition] = useTransition();
+
+  return (
+    <button
+      type="button"
+      disabled={pending}
+      onClick={() => {
+        onBeforeNavigate?.();
+        startTransition(async () => {
+          await logoutAction();
+        });
+      }}
+      className={className}
+    >
+      Log out
+    </button>
+  );
+}
+
+/** Avatar + username trigger that opens a dropdown to account links + logout. */
+function AccountMenu({
+  profile,
+  open,
+  onOpenChange,
+}: {
+  profile: { username: string; avatar_url: string | null } | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const initial = profile?.username ? profile.username.charAt(0).toUpperCase() : null;
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => onOpenChange(!open)}
+        aria-label="Account menu"
+        aria-expanded={open}
+        aria-haspopup="true"
+        className="flex h-11 items-center gap-2 rounded-md px-2 text-foreground transition-colors hover:text-primary"
+      >
+        {profile?.avatar_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={profile.avatar_url}
+            alt=""
+            className="h-8 w-8 rounded-full object-cover"
+          />
+        ) : (
+          <span
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-medium"
+            aria-hidden="true"
+          >
+            {initial ?? <UserIcon className="h-4 w-4" />}
+          </span>
+        )}
+        <span className="hidden text-sm font-medium sm:inline">
+          {profile?.username ?? 'Account'}
+        </span>
+      </button>
+
+      {open ? (
+        <>
+          {/* Click-outside overlay -- simple, matches the rest of this
+              file's no-external-dependency style (SearchOverlay is a
+              hand-rolled overlay too, no headless-ui/radix in this repo). */}
+          <button
+            type="button"
+            aria-label="Close account menu"
+            tabIndex={-1}
+            onClick={() => onOpenChange(false)}
+            className="fixed inset-0 z-40 cursor-default"
+          />
+          <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-md border border-border bg-background py-1 shadow-lg">
+            <Link
+              href="/account/lists"
+              onClick={() => onOpenChange(false)}
+              className="block px-4 py-2.5 text-sm text-foreground transition-colors hover:text-primary"
+            >
+              My lists
+            </Link>
+            <Link
+              href="/account/settings"
+              onClick={() => onOpenChange(false)}
+              className="block px-4 py-2.5 text-sm text-foreground transition-colors hover:text-primary"
+            >
+              Account settings
+            </Link>
+            <LogoutButton
+              className="block w-full px-4 py-2.5 text-left text-sm text-foreground transition-colors hover:text-primary"
+              onBeforeNavigate={() => onOpenChange(false)}
+            />
+          </div>
+        </>
+      ) : null}
+    </div>
   );
 }
