@@ -4,11 +4,21 @@ import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { loginAction } from '@/actions/auth';
 
+const VERIFICATION_FAILED_MESSAGE =
+  'That verification link is invalid or expired. Please try registering again or contact support.';
+
 export function LoginForm() {
   const searchParams = useSearchParams();
   const next = searchParams.get('next') ?? '/';
+  // Surfaces app/auth/callback/route.ts's `?error=verification_failed`
+  // redirect -- without this the user lands on a plain login page with no
+  // explanation for why their verification link didn't work.
+  const callbackError = searchParams.get('error') === 'verification_failed'
+    ? VERIFICATION_FAILED_MESSAGE
+    : undefined;
   const [error, setError] = useState<string | undefined>();
   const [pending, setPending] = useState(false);
+  const displayError = error ?? callbackError;
 
   async function handleSubmit(formData: FormData) {
     setPending(true);
@@ -37,7 +47,7 @@ export function LoginForm() {
         required
         className="rounded-md border border-border px-3 py-2"
       />
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {displayError ? <p className="text-sm text-destructive">{displayError}</p> : null}
       <button
         type="submit"
         disabled={pending}

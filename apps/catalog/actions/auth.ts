@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { safeNextPath } from '@/lib/safe-next-path';
 
 export async function registerAction(formData: FormData) {
   const email = String(formData.get('email') ?? '');
@@ -31,11 +32,9 @@ export async function loginAction(formData: FormData) {
   const email = String(formData.get('email') ?? '');
   const password = String(formData.get('password') ?? '');
   const rawNext = String(formData.get('next') ?? '/');
-  // Guard against open redirect: `next` comes from a user-controlled query
-  // param (?next=...) and is passed straight to next/navigation's redirect(),
-  // which will happily redirect to an absolute external URL. Only allow a
-  // same-origin, non-protocol-relative path.
-  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/';
+  // See lib/safe-next-path.ts for why this guard exists (CWE-601 open
+  // redirect via the user-controlled ?next= param).
+  const next = safeNextPath(rawNext);
 
   if (!email || !password) {
     return { error: 'Email and password are required.' };
