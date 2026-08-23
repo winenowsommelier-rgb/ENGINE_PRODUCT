@@ -8,6 +8,14 @@ import { SearchOverlay } from '@/components/SearchOverlay';
 import { Wordmark } from '@/components/Wordmark';
 import { usePriceUnlock } from '@/components/PriceUnlockProvider';
 import { logoutAction } from '@/actions/auth';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
 
 /**
  * Global site header — Maison minimal style.
@@ -48,7 +56,6 @@ export function Header({
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [accountOpen, setAccountOpen] = useState(false);
   const { unlocked, openModal } = usePriceUnlock();
 
   return (
@@ -120,11 +127,7 @@ export function Header({
           </button>
 
           {user ? (
-            <AccountMenu
-              profile={profile}
-              open={accountOpen}
-              onOpenChange={setAccountOpen}
-            />
+            <AccountMenu profile={profile} />
           ) : (
             <Link
               href="/login"
@@ -213,13 +216,99 @@ export function Header({
 }
 
 /**
- * Logout trigger. `logoutAction` is a redirect-based server action (calls
- * next/navigation `redirect('/')` after signOut()) -- same pattern as
- * DeleteListButton.tsx (Task 7): invoke it inside useTransition and let the
- * server-side redirect drive navigation, rather than wrapping it in a
- * <form action={...}> (which would also work, but the transition pattern
- * matches the rest of this codebase and lets us disable the button while
- * pending).
+ * Avatar + username trigger that opens a dropdown to account links + logout.
+ *
+ * Built on the repo's existing `components/ui/dropdown-menu.tsx` (Radix
+ * `DropdownMenu` wrapper, same primitive `Filters.tsx`'s sort/country
+ * dropdowns use) rather than a hand-rolled `<div>` + click-outside overlay --
+ * Radix gives arrow-key navigation, auto-focus into the menu, and ESC-to-
+ * close for free, which a hand-rolled version would have to reimplement.
+ * Same reasoning `SearchOverlay.tsx` documents for using Radix `Dialog`.
+ */
+function AccountMenu({
+  profile,
+}: {
+  profile: { username: string; avatar_url: string | null } | null;
+}) {
+  const initial = profile?.username ? profile.username.charAt(0).toUpperCase() : null;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        aria-label="Account menu"
+        className="flex h-11 items-center gap-2 rounded-md px-2 text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+      >
+        {profile?.avatar_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={profile.avatar_url}
+            alt=""
+            className="h-8 w-8 rounded-full object-cover"
+          />
+        ) : (
+          <span
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-medium"
+            aria-hidden="true"
+          >
+            {initial ?? <UserIcon className="h-4 w-4" />}
+          </span>
+        )}
+        <span className="hidden text-sm font-medium sm:inline">
+          {profile?.username ?? 'Account'}
+        </span>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuLabel>{profile?.username ?? 'Account'}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/account/lists">My lists</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/account/settings">Account settings</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <LogoutMenuItem />
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+/**
+ * Logout menu item. Radix closes the dropdown automatically on select
+ * (default behavior), so unlike the old hand-rolled version this doesn't
+ * need an `onBeforeNavigate` close callback -- `onSelect` just fires the
+ * transition. `logoutAction` is a redirect-based server action (calls
+ * next/navigation `redirect('/')` after signOut()); this matches
+ * DeleteListButton.tsx's (Task 7) pattern for invoking a redirect-based
+ * server action from a client component: run it inside `useTransition` and
+ * let the server-side redirect drive navigation, rather than a
+ * `<form action={...}>`.
+ */
+function LogoutMenuItem() {
+  const [pending, startTransition] = useTransition();
+
+  return (
+    <DropdownMenuItem
+      disabled={pending}
+      onSelect={(event) => {
+        // DropdownMenuItem's onSelect fires on both click and Enter/Space --
+        // preventDefault keeps Radix from trying to return focus to a
+        // trigger that's about to navigate away.
+        event.preventDefault();
+        startTransition(async () => {
+          await logoutAction();
+        });
+      }}
+    >
+      Log out
+    </DropdownMenuItem>
+  );
+}
+
+/**
+ * Logout trigger for the mobile disclosure panel, which isn't a dropdown
+ * (it's already an always-visible-when-open inline list), so it stays a
+ * plain button rather than a DropdownMenuItem.
  */
 function LogoutButton({
   className,
@@ -244,85 +333,5 @@ function LogoutButton({
     >
       Log out
     </button>
-  );
-}
-
-/** Avatar + username trigger that opens a dropdown to account links + logout. */
-function AccountMenu({
-  profile,
-  open,
-  onOpenChange,
-}: {
-  profile: { username: string; avatar_url: string | null } | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
-  const initial = profile?.username ? profile.username.charAt(0).toUpperCase() : null;
-
-  return (
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() => onOpenChange(!open)}
-        aria-label="Account menu"
-        aria-expanded={open}
-        aria-haspopup="true"
-        className="flex h-11 items-center gap-2 rounded-md px-2 text-foreground transition-colors hover:text-primary"
-      >
-        {profile?.avatar_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={profile.avatar_url}
-            alt=""
-            className="h-8 w-8 rounded-full object-cover"
-          />
-        ) : (
-          <span
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-medium"
-            aria-hidden="true"
-          >
-            {initial ?? <UserIcon className="h-4 w-4" />}
-          </span>
-        )}
-        <span className="hidden text-sm font-medium sm:inline">
-          {profile?.username ?? 'Account'}
-        </span>
-      </button>
-
-      {open ? (
-        <>
-          {/* Click-outside overlay -- simple, matches the rest of this
-              file's no-external-dependency style (SearchOverlay is a
-              hand-rolled overlay too, no headless-ui/radix in this repo). */}
-          <button
-            type="button"
-            aria-label="Close account menu"
-            tabIndex={-1}
-            onClick={() => onOpenChange(false)}
-            className="fixed inset-0 z-40 cursor-default"
-          />
-          <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-md border border-border bg-background py-1 shadow-lg">
-            <Link
-              href="/account/lists"
-              onClick={() => onOpenChange(false)}
-              className="block px-4 py-2.5 text-sm text-foreground transition-colors hover:text-primary"
-            >
-              My lists
-            </Link>
-            <Link
-              href="/account/settings"
-              onClick={() => onOpenChange(false)}
-              className="block px-4 py-2.5 text-sm text-foreground transition-colors hover:text-primary"
-            >
-              Account settings
-            </Link>
-            <LogoutButton
-              className="block w-full px-4 py-2.5 text-left text-sm text-foreground transition-colors hover:text-primary"
-              onBeforeNavigate={() => onOpenChange(false)}
-            />
-          </div>
-        </>
-      ) : null}
-    </div>
   );
 }

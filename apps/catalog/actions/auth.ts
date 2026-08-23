@@ -53,5 +53,10 @@ export async function loginAction(formData: FormData) {
 export async function logoutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
+  // No revalidatePath('/') here: the header/homepage already resolve auth
+  // state fresh per-request (no ISR/force-static in this app today), so the
+  // signed-out state renders correctly on the next request without it. If
+  // any route later opts into static/ISR caching, add revalidatePath('/')
+  // here or this redirect can land on a stale cached logged-in page.
   redirect('/');
 }
