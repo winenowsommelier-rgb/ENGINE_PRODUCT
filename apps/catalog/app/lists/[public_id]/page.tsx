@@ -4,6 +4,7 @@ import { getListByPublicId, getListItems } from '@/lib/lists';
 import { getProductBySku } from '@/lib/catalog-data';
 import { ListItemRow } from '@/components/lists/ListItemRow';
 import { DeleteListButton } from '@/components/lists/DeleteListButton';
+import { ToggleVisibilityButton } from '@/components/lists/ToggleVisibilityButton';
 import { ListTotal } from '@/components/lists/ListTotal';
 import { resolveSale } from '@/lib/price-tiers';
 
@@ -52,7 +53,12 @@ export default async function ListDetailPage({
           <h1 className="text-2xl font-semibold">{list.name}</h1>
           <p className="mt-1 text-xs text-muted-foreground">{list.public_id}</p>
         </div>
-        {isOwner ? <DeleteListButton listId={list.id} /> : null}
+        {isOwner ? (
+          <div className="flex items-center gap-3">
+            <ToggleVisibilityButton listId={list.id} isPublic={list.is_public} />
+            <DeleteListButton listId={list.id} />
+          </div>
+        ) : null}
       </div>
 
       <div className="flex flex-col">

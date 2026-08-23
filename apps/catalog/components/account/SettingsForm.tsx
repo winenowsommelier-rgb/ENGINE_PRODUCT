@@ -29,7 +29,15 @@ export function SettingsForm({ currentUsername }: { currentUsername: string }) {
         // it unchanged. isUsernameSubmissionValid enforces the 30-char cap
         // server-side for any NEW/changed value; the browser-side
         // `pattern` below still catches disallowed characters early.
-        pattern="[a-z0-9-]+"
+        // Hyphen is explicitly escaped (\-) rather than left bare -- an
+        // unescaped hyphen (leading, trailing, or otherwise) is ambiguous
+        // under the `v` (Unicode Sets) flag some browsers use to compile the
+        // HTML `pattern` attribute, throwing "Invalid regular expression ...
+        // Invalid character class" and silently disabling validation
+        // entirely (an invalid pattern fails open, not visibly -- verified
+        // both unescaped forms throw under `v` while this one does not).
+        // Caught live during the Task 10 Rule 7 browser walkthrough.
+        pattern="[a-z0-9\-]+"
         className="rounded-md border border-border px-3 py-2"
       />
       {state.error ? <p className="text-sm text-destructive">{state.error}</p> : null}
