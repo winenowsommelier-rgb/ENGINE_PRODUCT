@@ -22,6 +22,8 @@ import {
   collectionToShopParams,
   type CollectionDef,
 } from '@/lib/collections';
+import { createClient } from '@/lib/supabase/server';
+import { getUserLists } from '@/lib/lists';
 
 /**
  * Collection listing — a curated, FIXED-filter view over the catalog.
@@ -127,7 +129,7 @@ function pageWindow(current: number, total: number): Array<number | 'gap'> {
   return out;
 }
 
-export default function CollectionPage({
+export default async function CollectionPage({
   params,
   searchParams,
 }: {
@@ -136,6 +138,14 @@ export default function CollectionPage({
 }) {
   const def = getCollectionBySlug(params.slug);
   if (!def) notFound();
+
+  // Resolved once per page load, threaded down into every ProductCard below
+  // so the save-to-list pin knows whether to optimistically add or redirect
+  // to /login, and whether to show the list-picker chevron.
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const isLoggedIn = Boolean(user);
+  const userLists = user ? await getUserLists(supabase, user.id) : [];
 
   const activeSort = firstStr(searchParams?.sort) ?? 'recommended';
   const result = applyShopQuery(getAllProducts(), mergedParams(def, searchParams));
@@ -214,6 +224,8 @@ export default function CollectionPage({
                 key={product.sku}
                 product={product}
                 contactLinks={links}
+                isLoggedIn={isLoggedIn}
+                userLists={userLists}
               />
             ))}
           </div>

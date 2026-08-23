@@ -11,8 +11,10 @@ import { CompactGauges } from '@/components/product/CompactGauges';
 import { resolveSale } from '@/lib/price-tiers';
 import { formatVintage, cn, isInStock } from '@/lib/utils';
 import { PriceDisplay } from '@/components/PriceDisplay';
+import { SaveToListButton } from '@/components/lists/SaveToListButton';
 import type { PublicProduct } from '@/lib/types';
 import type { ContactLinks } from '@/lib/contact';
+import type { ListRow } from '@/lib/supabase/types';
 
 /**
  * ProductCard — the Maison grid tile.
@@ -65,6 +67,19 @@ interface ProductCardProps {
    * recommendation-reason/stock-status stack. Finder result grid only.
    */
   matchBand?: string;
+  /**
+   * Whether the current visitor is signed in. Drives SaveToListButton's
+   * click behavior (optimistic add vs. redirect to /login). Defaults to
+   * false (safe: shows a plain pin that redirects to login) so call sites
+   * that haven't been updated yet still render correctly.
+   */
+  isLoggedIn?: boolean;
+  /**
+   * The signed-in caller's own lists, needed only so SaveToListButton can
+   * decide whether to show its list-picker chevron (2+ lists). Empty/omitted
+   * is safe -- the button just shows as a plain pin with no picker.
+   */
+  userLists?: ListRow[];
 }
 
 /** Key attributes for the compact card details block, in display order. */
@@ -87,6 +102,8 @@ export function ProductCard({
   structural: structuralProp,
   bandLabel,
   matchBand,
+  isLoggedIn = false,
+  userLists = [],
 }: ProductCardProps) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const subtitle = product.brand || product.region;
@@ -175,6 +192,16 @@ export function ProductCard({
                 scoreSummary={product.score_summary}
               />
             </div>
+
+            {/* Save-to-list pin — top-right, below the critic score pill
+                (top-2, ~24px tall) with a clear gap, so the two never
+                collide even when both render. */}
+            <SaveToListButton
+              sku={product.sku}
+              isLoggedIn={isLoggedIn}
+              userLists={userLists}
+              className="absolute right-2 top-12"
+            />
 
             {/* Quick look — visible on mobile, fades in on desktop hover. */}
             <button

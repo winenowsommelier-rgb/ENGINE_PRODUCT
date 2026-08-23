@@ -32,6 +32,17 @@ vi.mock('next/link', () => ({
   ),
 }));
 
+// ProductCard now always renders SaveToListButton (Task 7), which calls
+// useRouter() and imports the 'use server' actions module -- neither works
+// unmocked under vitest/jsdom (no app router context, no server runtime).
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
+vi.mock('@/actions/lists', () => ({
+  pinToDefaultListAction: vi.fn(),
+  addItemToListAction: vi.fn(),
+}));
+
 const baseProduct: PublicProduct = {
   sku: 'WN-1234',
   name: 'Château Test Grand Cru 2018',
