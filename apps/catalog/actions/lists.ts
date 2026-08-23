@@ -87,7 +87,14 @@ export async function setItemQuantityAction(listId: string, sku: string, quantit
   }
   // Bump parent list's updated_at -- see upsertListItem's comment; this
   // write path bypasses upsertListItem so it must do the same touch itself.
-  await supabase.from('lists').update({ updated_at: new Date().toISOString() }).eq('id', listId);
+  // Error is checked and thrown, not swallowed -- same class of bug fixed in
+  // upsertListItem (commit 8ec6381f): a silently-failed touch here would let
+  // getMostRecentList's ordering go stale exactly like the original bug did.
+  const { error: touchError } = await supabase
+    .from('lists')
+    .update({ updated_at: new Date().toISOString() })
+    .eq('id', listId);
+  if (touchError) throw new Error(touchError.message);
   revalidatePath('/account/lists');
 }
 
@@ -99,7 +106,11 @@ export async function removeItemAction(listId: string, sku: string) {
   // removing a row via this button and removing it by stepping quantity to
   // 0 are the same underlying mutation from the user's point of view, and
   // must agree on whether it counts as "using" the list.
-  await supabase.from('lists').update({ updated_at: new Date().toISOString() }).eq('id', listId);
+  const { error: touchError } = await supabase
+    .from('lists')
+    .update({ updated_at: new Date().toISOString() })
+    .eq('id', listId);
+  if (touchError) throw new Error(touchError.message);
   revalidatePath('/account/lists');
 }
 
