@@ -94,6 +94,36 @@ describe('upsertListItem', () => {
     expect(state['list-1']['SKU-A']).toBe(1);
     expect(state['list-2']['SKU-A']).toBe(1);
   });
+
+  /**
+   * Regression guard: upsertListItem used to await the insert/update calls
+   * without checking their `error`, so a failed write (RLS denial, a
+   * unique_violation from the TOCTOU race between the read and the insert,
+   * or any transient DB error) was silently swallowed -- the caller saw a
+   * resolved promise and treated the item as saved even though nothing
+   * landed. This proves a failing insert now throws instead of resolving.
+   */
+  it('throws when the insert fails instead of silently succeeding', async () => {
+    const mockClient = {
+      from: (table: string) => {
+        if (table === 'list_items') {
+          return {
+            select: () => ({
+              eq: () => ({
+                eq: () => ({ maybeSingle: async () => ({ data: null, error: null }) }),
+              }),
+            }),
+            insert: async () => ({ data: null, error: { message: 'unique_violation' } }),
+          };
+        }
+        return { update: () => ({ eq: async () => ({ data: [{}], error: null }) }) };
+      },
+    };
+
+    await expect(upsertListItem(mockClient as any, 'list-1', 'SKU-A')).rejects.toThrow(
+      'unique_violation',
+    );
+  });
 });
 
 describe('getMostRecentList', () => {

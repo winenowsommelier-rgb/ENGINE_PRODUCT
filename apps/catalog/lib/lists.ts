@@ -104,6 +104,18 @@ export async function getUserLists(
  * moment a user pins into an existing (not just-renamed) list. Any future
  * list_items write path (bulk import, admin tooling, etc.) must do the same
  * touch or "most recently used" resolution breaks again.
+ *
+ * Every write below checks `error` and throws rather than swallowing it.
+ * This isn't just style: the read-then-write here is two round trips, not
+ * atomic, so two near-simultaneous calls for the same (list_id, sku) can
+ * both read "no existing row" and both attempt an insert -- the
+ * `unique(list_id, sku)` constraint is the intended backstop that makes the
+ * race loser's insert fail rather than double-insert. Before this fix that
+ * failure was silently discarded, so the loser's caller (and any caller hit
+ * by an RLS denial or transient DB error) would proceed as if the item had
+ * been saved when it hadn't -- exactly the "optimistic UI says saved, DB
+ * write actually failed" gap CLAUDE.md Rule 2 warns about. Throwing here
+ * makes that failure visible to the caller instead.
  */
 export async function upsertListItem(
   client: SupabaseClient,
@@ -118,14 +130,20 @@ export async function upsertListItem(
     .maybeSingle();
 
   if (existing) {
-    await client
+    const { error } = await client
       .from('list_items')
       .update({ quantity: existing.quantity + 1 })
       .eq('list_id', listId)
       .eq('sku', sku);
+    if (error) throw new Error(error.message);
   } else {
-    await client.from('list_items').insert({ list_id: listId, sku, quantity: 1 });
+    const { error } = await client.from('list_items').insert({ list_id: listId, sku, quantity: 1 });
+    if (error) throw new Error(error.message);
   }
 
-  await client.from('lists').update({ updated_at: new Date().toISOString() }).eq('id', listId);
+  const { error: touchError } = await client
+    .from('lists')
+    .update({ updated_at: new Date().toISOString() })
+    .eq('id', listId);
+  if (touchError) throw new Error(touchError.message);
 }
