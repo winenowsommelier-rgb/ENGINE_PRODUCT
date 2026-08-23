@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { stripSensitiveFieldsMany } from '@/lib/products/sensitive-fields';
 
 export const runtime = 'nodejs';
 
@@ -298,7 +299,7 @@ export async function GET(req: NextRequest) {
       });
 
       return NextResponse.json({
-        items,
+        items: stripSensitiveFieldsMany(items),
         total: sbResult.total,
         page,
         pageSize: limit,
@@ -318,7 +319,7 @@ export async function GET(req: NextRequest) {
     }));
 
     return NextResponse.json({
-      items,
+      items: stripSensitiveFieldsMany(items),
       total,
       page,
       pageSize: limit,
