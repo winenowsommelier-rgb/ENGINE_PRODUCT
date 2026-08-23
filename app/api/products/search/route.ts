@@ -7,6 +7,7 @@
  * Designed for team members and AI agents to find products by any criteria.
  */
 import { NextRequest, NextResponse } from 'next/server';
+import { stripSensitiveFieldsMany } from '@/lib/products/sensitive-fields';
 
 export const runtime = 'nodejs';
 
@@ -25,7 +26,7 @@ const SELECT_FIELDS = [
   'country', 'region', 'subregion', 'appellation',
   'wine_body', 'wine_acidity', 'wine_tannin',
   'food_matching', 'flavor_tags',
-  'bottle_size', 'price', 'cost_price', 'currency',
+  'bottle_size', 'price', 'currency',
   'validation_status', 'overall_confidence',
   'image_url',
   // Taste taxonomy v2 (2026-05-24): structured taste profile + food pairing rationale
@@ -134,7 +135,7 @@ export async function GET(req: NextRequest) {
     const products = await res.json();
 
     return NextResponse.json({
-      products,
+      products: stripSensitiveFieldsMany(products),
       total,
       limit,
       offset,
