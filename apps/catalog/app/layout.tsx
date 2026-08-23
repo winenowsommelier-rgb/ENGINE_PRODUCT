@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Header } from '@/components/Header';
+import { HeaderAuthWrapper } from '@/components/HeaderAuthWrapper';
 import { Footer } from '@/components/Footer';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -46,7 +46,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="flex min-h-screen flex-col overflow-x-hidden">
         <PriceUnlockProvider>
-          <Header />
+          <HeaderAuthWrapper />
           <main className="flex-1">{children}</main>
           <Footer />
           <PriceUnlockModal />

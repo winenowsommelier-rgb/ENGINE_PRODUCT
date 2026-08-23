@@ -9,6 +9,7 @@ import { ProductCard } from '@/components/ProductCard';
 import type { PublicProduct } from '@/lib/types';
 import type { Band } from '@/lib/types';
 import type { ContactLinks } from '@/lib/contact';
+import type { ListRow } from '@/lib/supabase/types';
 import { resolveSale } from '@/lib/price-tiers';
 
 interface RecItem {
@@ -21,6 +22,14 @@ interface RecItem {
 
 interface RecsCarouselProps {
   items: RecItem[];
+  /**
+   * Page-level auth state, resolved once server-side by the caller and
+   * threaded down to every ProductCard in the rail -- ListRow is a plain
+   * data type (not a function), so it's safe to pass across the RSC
+   * boundary. Defaults keep this component safe if a caller omits them.
+   */
+  isLoggedIn?: boolean;
+  userLists?: ListRow[];
 }
 
 const BAND_LABEL: Record<Band, string | null> = {
@@ -60,7 +69,7 @@ function byPriceAscending(items: RecItem[]): RecItem[] {
   });
 }
 
-export function RecsCarousel({ items }: RecsCarouselProps) {
+export function RecsCarousel({ items, isLoggedIn = false, userLists = [] }: RecsCarouselProps) {
   if (items.length === 0) return null;
   const ordered = byPriceAscending(items);
   return (
@@ -81,6 +90,8 @@ export function RecsCarousel({ items }: RecsCarouselProps) {
               showDetails
               structural={structural}
               bandLabel={label ?? undefined}
+              isLoggedIn={isLoggedIn}
+              userLists={userLists}
             />
           </div>
         );

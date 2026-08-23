@@ -1,12 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import Link from 'next/link';
-import { Search, Menu, X, Lock, LockOpen } from 'lucide-react';
+import { Search, Menu, X, Lock, LockOpen, User as UserIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SearchOverlay } from '@/components/SearchOverlay';
 import { Wordmark } from '@/components/Wordmark';
 import { usePriceUnlock } from '@/components/PriceUnlockProvider';
+import { logoutAction } from '@/actions/auth';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
 
 /**
  * Global site header — Maison minimal style.
@@ -35,7 +44,16 @@ const NAV_LINKS = [
   { href: '/contact', label: 'Contact' },
 ] as const;
 
-export function Header() {
+type HeaderUser = { id: string; email: string | null };
+type HeaderProfile = { username: string; avatar_url: string | null };
+
+export function Header({
+  user = null,
+  profile = null,
+}: {
+  user?: HeaderUser | null;
+  profile?: HeaderProfile | null;
+}) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const { unlocked, openModal } = usePriceUnlock();
@@ -108,6 +126,17 @@ export function Header() {
             <Search className="h-5 w-5" aria-hidden="true" />
           </button>
 
+          {user ? (
+            <AccountMenu profile={profile} />
+          ) : (
+            <Link
+              href="/login"
+              className="flex h-11 items-center gap-1.5 rounded-md px-3 text-sm font-medium text-foreground transition-colors hover:text-primary"
+            >
+              Log in
+            </Link>
+          )}
+
           <button
             type="button"
             onClick={() => setMobileOpen((open) => !open)}
@@ -146,10 +175,163 @@ export function Header() {
               </Link>
             </li>
           ))}
+          <li className="border-t border-border mt-1 pt-1">
+            {user ? (
+              <>
+                <Link
+                  href="/account/lists"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex min-h-11 items-center py-3 text-lg font-medium text-foreground transition-colors hover:text-primary"
+                >
+                  My lists
+                </Link>
+                <Link
+                  href="/account/settings"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex min-h-11 items-center py-3 text-lg font-medium text-foreground transition-colors hover:text-primary"
+                >
+                  Account settings
+                </Link>
+                <LogoutButton
+                  className="flex min-h-11 w-full items-center py-3 text-left text-lg font-medium text-foreground transition-colors hover:text-primary"
+                  onBeforeNavigate={() => setMobileOpen(false)}
+                />
+              </>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileOpen(false)}
+                className="flex min-h-11 items-center py-3 text-lg font-medium text-foreground transition-colors hover:text-primary"
+              >
+                Log in
+              </Link>
+            )}
+          </li>
         </ul>
       </nav>
 
       <SearchOverlay open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
+  );
+}
+
+/**
+ * Avatar + username trigger that opens a dropdown to account links + logout.
+ *
+ * Built on the repo's existing `components/ui/dropdown-menu.tsx` (Radix
+ * `DropdownMenu` wrapper, same primitive `Filters.tsx`'s sort/country
+ * dropdowns use) rather than a hand-rolled `<div>` + click-outside overlay --
+ * Radix gives arrow-key navigation, auto-focus into the menu, and ESC-to-
+ * close for free, which a hand-rolled version would have to reimplement.
+ * Same reasoning `SearchOverlay.tsx` documents for using Radix `Dialog`.
+ */
+function AccountMenu({
+  profile,
+}: {
+  profile: { username: string; avatar_url: string | null } | null;
+}) {
+  const initial = profile?.username ? profile.username.charAt(0).toUpperCase() : null;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        aria-label="Account menu"
+        className="flex h-11 items-center gap-2 rounded-md px-2 text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+      >
+        {profile?.avatar_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={profile.avatar_url}
+            alt=""
+            className="h-8 w-8 rounded-full object-cover"
+          />
+        ) : (
+          <span
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-medium"
+            aria-hidden="true"
+          >
+            {initial ?? <UserIcon className="h-4 w-4" />}
+          </span>
+        )}
+        <span className="hidden text-sm font-medium sm:inline">
+          {profile?.username ?? 'Account'}
+        </span>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuLabel>{profile?.username ?? 'Account'}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/account/lists">My lists</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/account/settings">Account settings</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <LogoutMenuItem />
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+/**
+ * Logout menu item. Radix closes the dropdown automatically on select
+ * (default behavior), so unlike the old hand-rolled version this doesn't
+ * need an `onBeforeNavigate` close callback -- `onSelect` just fires the
+ * transition. `logoutAction` is a redirect-based server action (calls
+ * next/navigation `redirect('/')` after signOut()); this matches
+ * DeleteListButton.tsx's (Task 7) pattern for invoking a redirect-based
+ * server action from a client component: run it inside `useTransition` and
+ * let the server-side redirect drive navigation, rather than a
+ * `<form action={...}>`.
+ */
+function LogoutMenuItem() {
+  const [pending, startTransition] = useTransition();
+
+  return (
+    <DropdownMenuItem
+      disabled={pending}
+      onSelect={(event) => {
+        // DropdownMenuItem's onSelect fires on both click and Enter/Space --
+        // preventDefault keeps Radix from trying to return focus to a
+        // trigger that's about to navigate away.
+        event.preventDefault();
+        startTransition(async () => {
+          await logoutAction();
+        });
+      }}
+    >
+      Log out
+    </DropdownMenuItem>
+  );
+}
+
+/**
+ * Logout trigger for the mobile disclosure panel, which isn't a dropdown
+ * (it's already an always-visible-when-open inline list), so it stays a
+ * plain button rather than a DropdownMenuItem.
+ */
+function LogoutButton({
+  className,
+  onBeforeNavigate,
+}: {
+  className?: string;
+  onBeforeNavigate?: () => void;
+}) {
+  const [pending, startTransition] = useTransition();
+
+  return (
+    <button
+      type="button"
+      disabled={pending}
+      onClick={() => {
+        onBeforeNavigate?.();
+        startTransition(async () => {
+          await logoutAction();
+        });
+      }}
+      className={className}
+    >
+      Log out
+    </button>
   );
 }

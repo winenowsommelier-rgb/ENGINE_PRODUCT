@@ -1,6 +1,7 @@
 // apps/catalog/middleware.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { updateSession } from '@/lib/supabase/middleware';
 
 // GROUP_SLUG values — kept inline to avoid importing from lib/ in edge runtime
 const GROUP_SLUGS: Record<string, string> = {
@@ -16,7 +17,11 @@ const GROUP_SLUGS: Record<string, string> = {
   'accessories': 'Accessories',
 };
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  // Session refresh must run first and unconditionally -- every response
+  // path below needs the (possibly refreshed) cookies attached.
+  const { response } = await updateSession(request);
+
   const { pathname } = request.nextUrl;
   // /shop/[group] → /shop?group=X for browser users
   // Bots see the static page with JSON-LD; browsers get the interactive shop.
@@ -35,9 +40,13 @@ export function middleware(request: NextRequest) {
       }
     }
   }
-  return NextResponse.next();
+
+  return response;
 }
 
 export const config = {
-  matcher: ['/shop/:group*'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/shop/:group*',
+  ],
 };
