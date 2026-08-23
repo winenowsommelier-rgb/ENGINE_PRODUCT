@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { filterByOwnership, parseSource, type Source } from '@/lib/products/ownership';
 import { validateProductFields } from '@/lib/products/field-validation';
+import { stripSensitiveFields } from '@/lib/products/sensitive-fields';
 import { addChangelogEntries, type ProductChangelog } from '@/lib/db/client';
 import { getSupabaseServerConfig } from '@/lib/supabase/server';
 
@@ -219,7 +220,14 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     const related = await relatedProducts(product);
     const affinities = await productAffinities(product);
 
-    return NextResponse.json({ product, characterDimensions, taxonomyContexts, relatedProducts: related, productAffinities: affinities, changelog: [] });
+    return NextResponse.json({
+      product: stripSensitiveFields(product),
+      characterDimensions,
+      taxonomyContexts,
+      relatedProducts: related,
+      productAffinities: affinities,
+      changelog: [],
+    });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Request failed' }, { status: 500 });
   }

@@ -54,13 +54,15 @@ export async function GET(request: Request) {
     const data = JSON.parse(raw) as { data?: Record<string, unknown>[] };
     const allRows = (data?.data ?? []).map(mapRow);
     const page = allRows.slice(offset, offset + limit);
+    // No CDN caching: this response carries cost/costPrice, gated by
+    // middleware.ts's token check. An edge-cached response could be served
+    // without re-running that check on a later request within the cache
+    // window, so this route must not be publicly cacheable (2026-08-22).
     return NextResponse.json({
       rows: page,
       total: allRows.length,
       offset,
       limit,
-    }, {
-      headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' },
     });
   } catch {
     return NextResponse.json({ rows: [], total: 0, offset: 0, limit }, { status: 200 });

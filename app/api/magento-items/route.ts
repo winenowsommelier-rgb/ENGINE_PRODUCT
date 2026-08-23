@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { stripSensitiveFields } from '@/lib/products/sensitive-fields';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -44,7 +45,10 @@ export async function GET(req: NextRequest) {
     const total = allRows.length;
     const rows = allRows.slice(offset, offset + limit);
 
-    // Transform rows to importable format
+    // Transform rows to importable format. `cost`/`raw` (the unfiltered source
+    // row) are dropped before the response — see lib/products/sensitive-fields.ts
+    // (2026-08-22 incident: this route leaked cost via both the named field and
+    // the raw passthrough).
     const transformedRows = rows.map((row: any, idx: number) => ({
       id: `magento-${offset + idx}`,
       sku: row.sku || row.SKU || `product-${offset + idx}`,
@@ -56,12 +60,11 @@ export async function GET(req: NextRequest) {
       grape_variety: row.grape || row.Grape || row.grape_variety || '',
       vintage: row.vintage || row.Vintage || '',
       price: parseFloat(row.price || row.Price || '0'),
-      cost: parseFloat(row.cost || row.Cost || '0'),
       currency: row.currency || 'USD',
       quantity_in_stock: parseInt(row.quantity_in_stock || row.qty || '0', 10),
       brand: row.brand || row.Brand || '',
       description: row.description || row.Description || '',
-      raw: row,
+      raw: stripSensitiveFields(row),
     }));
 
     return NextResponse.json({

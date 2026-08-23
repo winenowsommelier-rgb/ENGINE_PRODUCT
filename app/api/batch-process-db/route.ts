@@ -11,6 +11,7 @@ import {
   addToScrapingQueue,
 } from '@/lib/db/client';
 import { processBatch } from '@/lib/batch-processor';
+import { stripSensitiveFieldsMany } from '@/lib/products/sensitive-fields';
 
 export const runtime = 'nodejs';
 
@@ -202,7 +203,7 @@ export async function GET(req: NextRequest) {
       const products = await getCleanedProducts(filters);
       return NextResponse.json({
         count: products.length,
-        products: products.slice(0, 100), // Paginate
+        products: stripSensitiveFieldsMany(products.slice(0, 100)), // Paginate
       });
     }
 

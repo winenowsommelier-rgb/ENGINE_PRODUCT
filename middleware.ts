@@ -22,13 +22,21 @@ export function middleware(request: NextRequest) {
 
     // Same-origin browser requests (from the local dashboard UI) are always allowed —
     // they have no way to include a server-side token. Only gate external API consumers.
+    //
+    // SECURITY: do NOT treat "no Origin and no Referer" as same-origin. A bare
+    // curl/server-to-server request also sends neither header, so that used to
+    // let any unauthenticated caller bypass the PIM_API_TOKEN check entirely —
+    // confirmed exploitable against /api/products and 9 other routes that leak
+    // cost/margin/wholesale fields (2026-08-22 incident). The genuine internal
+    // caller is the dashboard UI's browser-side fetch('/api/...'), which the
+    // browser always stamps with Origin/Referer for a same-origin request, so
+    // it's still covered by the two checks below without this fallback.
     const origin = request.headers.get('origin') ?? '';
     const referer = request.headers.get('referer') ?? '';
     const host = request.headers.get('host') ?? '';
     const isSameOrigin =
       origin.includes(host) ||
-      referer.includes(host) ||
-      (!origin && !referer); // server-side Next.js fetch (RSC / API → API)
+      referer.includes(host);
 
     // Enforce token check only for cross-origin requests (external API consumers),
     // or in production when there is no same-origin signal.
