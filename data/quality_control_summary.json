@@ -8,10 +8,10 @@
     "completed_rows": 119
   },
   "country_taxonomy": {
-    "expert_reviewed_countries": 51
+    "expert_reviewed_countries": 69
   },
   "live_upload": {
-    "weak_publish_rationale": 12,
-    "live_upload_rows": 48
+    "live_upload_rows": 68,
+    "weak_publish_rationale": 0
   }
 }
