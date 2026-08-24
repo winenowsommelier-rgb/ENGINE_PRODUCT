@@ -13,13 +13,12 @@ export async function registerAction(formData: FormData) {
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wnlq9.shop'}/auth/callback`,
-    },
-  });
+  // No emailRedirectTo here: the Confirm-signup email template is set to
+  // link directly to /auth/confirm?token_hash=...&type=email (built from
+  // Supabase's own configured Site URL + {{ .TokenHash }}), not the
+  // PKCE-oriented {{ .ConfirmationURL }} that this option would otherwise
+  // control. See app/auth/confirm/route.ts for why.
+  const { error } = await supabase.auth.signUp({ email, password });
 
   if (error) {
     return { error: error.message };
