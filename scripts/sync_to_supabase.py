@@ -42,29 +42,52 @@ PRODUCT_SYNC_COLUMNS = [
     "score_max", "score_summary",
     # Image
     "image_url", "image_alt_text",
+    # Storefront placement (reconciled by scripts/reconcile_image_urls.py
+    # alongside image_url since 2026-08-11; added here 2026-08-23 after
+    # confirming they'd never been wired into the sync push).
+    "magento_item_url", "websites",
+    # Curation dossier (Phase 0 plumbing; not yet wired to the public export —
+    # see scripts/refresh_products_dossier.py header. Synced to Supabase now
+    # so the mirror stays current once Phase 1 content generation starts.)
+    "curation_dossier",
     # Enrichment metadata
     "enrichment_confidence", "enrichment_source", "enrichment_note",
     "enriched_at", "enriched_by", "updated_at",
     "overall_confidence", "validation_status",
     "taste_profile", "taste_profile_override",
-    # Popularity / BI
-    "popularity_score", "popularity_orders_90d", "popularity_revenue_90d",
-    "popularity_qty_90d",
+    # Popularity / BI — local SQLite renamed these *_90d -> *_window at some
+    # point (see refresh_live_export.py's popularity comment); Supabase's
+    # columns are still named *_90d. Read the local name, write the Supabase
+    # name — see _SOURCE_TO_SUPABASE_RENAMES below. Listing the LOCAL name
+    # here so the PRAGMA table_info existing-columns guard (see
+    # plan_product_deltas) actually finds it; without this, these three
+    # were silently dropped from every sync since the rename.
+    "popularity_score", "popularity_orders_window", "popularity_revenue_window",
+    "popularity_qty_window",
     # Stock/active flags (synced from BI via scripts/sync_stock_from_bi.py).
     # Requires Supabase columns is_active INT, has_recent_sales INT, bi_synced_at TEXT
     # (added in migration add_is_active_to_products).
     "is_active", "has_recent_sales", "bi_synced_at",
+    # Export column parity (supabase/migrations/004_export_column_parity.sql,
+    # 2026-08-23) — brings the CI-generated export
+    # (refresh_live_export_supabase.py) to parity with the local one.
+    "attr_sources", "attr_evidence_tier", "attr_verified_at",
+    "bitterness", "gin_style", "agave_aging", "rum_style", "peat_level",
+    "production_method", "food_matching_detail", "enrichment_quality_grade",
+    "origin_system", "accessory_type",
+    "reputation_tier", "reputation_composite", "reputation_confidence",
+    "reputation_summary", "pairing_rationale",
+    "vintage_year", "vintage_is_provisional",
 ]
 
 # Columns that may exist in local SQLite but are NOT yet in the Supabase schema.
 # Adding a column here prevents 400 errors when pushing to Supabase.
 # Remove the column from this list once the Supabase migration has been applied.
-_SUPABASE_SCHEMA_EXCLUDES = {
-    "enrichment_quality_grade",
-}
+_SUPABASE_SCHEMA_EXCLUDES: set[str] = set()
 
 _JSON_COLUMNS = {
     "production_style", "taste_profile", "taste_profile_override",
+    "curation_dossier",
     # These are stored as JSON-encoded arrays in SQLite but Supabase expects
     # parsed arrays (PostgreSQL array columns).
     "flavor_tags", "food_matching",
@@ -78,8 +101,25 @@ _NUMERIC_COLUMNS = {
     "margin_thb", "margin_pct", "sp_discount_pct",
     "alcohol", "bottle_size", "score_max",
     "enrichment_confidence", "overall_confidence",
-    "popularity_score", "popularity_orders_90d", "popularity_revenue_90d",
-    "popularity_qty_90d", "quantity_in_stock", "wn_stock",
+    "popularity_score", "popularity_orders_window", "popularity_revenue_window",
+    "popularity_qty_window", "quantity_in_stock", "wn_stock",
+    "reputation_composite", "reputation_confidence", "vintage_year",
+}
+
+# Local SQLite column name -> Supabase column name, for columns that were
+# renamed on one side but not the other. Applied in _patch_product just
+# before sending, after all other row processing (numeric/boolean coercion
+# keys off the LOCAL name above).
+_SOURCE_TO_SUPABASE_RENAMES = {
+    "popularity_qty_window": "popularity_qty_90d",
+    "popularity_orders_window": "popularity_orders_90d",
+    "popularity_revenue_window": "popularity_revenue_90d",
+}
+
+# Columns that are boolean in Supabase but stored as SQLite 0/1 integers.
+# PostgREST expects a real JSON boolean, not an integer, over REST PATCH.
+_BOOLEAN_COLUMNS = {
+    "vintage_is_provisional",
 }
 
 
@@ -160,6 +200,16 @@ def _patch_product(supabase_url: str, api_key: str, row: dict) -> None:
     for col in _NUMERIC_COLUMNS:
         if col in row and row[col] == "":
             row[col] = None
+    # Coerce SQLite 0/1 integers to real JSON booleans; PostgREST rejects an
+    # integer for a boolean column over REST PATCH.
+    for col in _BOOLEAN_COLUMNS:
+        if col in row and row[col] is not None:
+            row[col] = bool(row[col])
+    # Rename local-only column names to their Supabase equivalents last, so
+    # the coercion steps above (keyed on the local name) still match.
+    for local_name, supabase_name in _SOURCE_TO_SUPABASE_RENAMES.items():
+        if local_name in row:
+            row[supabase_name] = row.pop(local_name)
     url = f"{supabase_url.rstrip('/')}/rest/v1/products?id=eq.{urllib.parse.quote(pid)}"
     body = json.dumps(row).encode("utf-8")
     req = urllib.request.Request(url, data=body, method="PATCH", headers={
