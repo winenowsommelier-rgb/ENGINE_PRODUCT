@@ -488,7 +488,21 @@ export default function Page({ params }: { params: { sku: string } }) {
         </div>
       </div>
 
-      {/* Recommendations rail. */}
+      {/* Recommendations rail.
+          NOTE: intentionally NOT threading isLoggedIn/userLists here. This
+          page is prerendered with ISR (dynamicParams=true, revalidate=3600,
+          see the top-of-file comment on the multi-worker build-timeout
+          incident that pattern exists to avoid). Calling
+          supabase.auth.getUser() reads cookies() and would force this route
+          to fully dynamic rendering, defeating that ISR investment across
+          the entire product catalog for a save-to-list affordance. Task 7's
+          own plan text calls a missed call site "non-fatal" precisely for
+          this kind of case -- SaveToListButton falls back to its default
+          (isLoggedIn=false), so it still renders correctly and still works
+          (click → redirect to /login?next=...), just without the
+          list-picker chevron shortcut. Revisit only alongside a real fix for
+          personalization-on-a-cached-page (e.g. client-side session check),
+          not as part of this task. */}
       {recs.length > 0 ? (
         <section className="flex flex-col gap-6 border-t border-border pt-10">
           <h2 className="text-2xl font-semibold tracking-tight text-foreground">

@@ -12,6 +12,7 @@ import {
 import { matchesFilters } from '@/lib/shop-query';
 import type { ContactLinks } from '@/lib/contact';
 import type { MatchBandLabel } from '@/lib/finder/match-band';
+import type { ListRow } from '@/lib/supabase/types';
 
 /**
  * StyleResult — the finder pay-off, "style-profile first".
@@ -46,6 +47,9 @@ interface StyleResultProps {
    * ("Great / Strong / Good match") shown on each card — never a fabricated %.
    */
   bandBySku?: Record<string, MatchBandLabel>;
+  /** Page-level auth state, resolved once server-side by the caller. */
+  isLoggedIn?: boolean;
+  userLists?: ListRow[];
 }
 
 /** A labelled attribute row, only rendered when the value is present. */
@@ -69,6 +73,8 @@ export function StyleResult({
   allProducts,
   contactLinksBySku,
   bandBySku,
+  isLoggedIn = false,
+  userLists = [],
 }: StyleResultProps) {
   const attrs = profile?.definingAttributes;
   const grapes = attrs?.typicalGrapes?.join(', ');
@@ -239,6 +245,8 @@ export function StyleResult({
                   product={product}
                   contactLinks={contactLinksBySku?.[product.sku]}
                   matchBand={band}
+                  isLoggedIn={isLoggedIn}
+                  userLists={userLists}
                 />
               </div>
             );

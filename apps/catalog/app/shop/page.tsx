@@ -24,6 +24,8 @@ import { findDesignationDescription } from '@/lib/explore/designation-lookup.ser
 import { buildQuery } from '@/lib/build-query';
 import { cn } from '@/lib/utils';
 import { ViewItemListTracker } from '@/components/ViewItemListTracker';
+import { createClient } from '@/lib/supabase/server';
+import { getUserLists } from '@/lib/lists';
 
 export function generateMetadata({
   searchParams,
@@ -135,11 +137,19 @@ function pageWindow(current: number, total: number): Array<number | 'gap'> {
   return out;
 }
 
-export default function ShopPage({
+export default async function ShopPage({
   searchParams,
 }: {
   searchParams: ShopParams;
 }) {
+  // Resolved once per page load, threaded down into every ProductCard below
+  // so the save-to-list pin knows whether to optimistically add or redirect
+  // to /login, and whether to show the list-picker chevron.
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const isLoggedIn = Boolean(user);
+  const userLists = user ? await getUserLists(supabase, user.id) : [];
+
   const normalizedParams = normalizeShopParams(searchParams);
   const rawParams = toStringRecord(searchParams);
   if (JSON.stringify(normalizedParams) !== JSON.stringify(rawParams)) {
@@ -289,6 +299,8 @@ export default function ShopPage({
                       key={product.sku}
                       product={product}
                       contactLinks={links}
+                      isLoggedIn={isLoggedIn}
+                      userLists={userLists}
                     />
                   ))}
                 </div>

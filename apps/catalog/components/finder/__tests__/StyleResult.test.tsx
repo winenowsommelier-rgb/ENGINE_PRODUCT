@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 
 import { StyleResult } from '@/components/finder/StyleResult';
@@ -7,6 +7,18 @@ import type { PublicProduct } from '@/lib/types';
 import type { StyleProfile } from '@/lib/finder/style-profiles';
 import type { Answers } from '@/lib/finder/answers';
 import type { ContactLinks } from '@/lib/contact';
+
+// StyleResult's cards render ProductCard, which now always renders
+// SaveToListButton (Task 7) -- that calls useRouter() and imports the
+// 'use server' actions module, neither of which works unmocked under
+// vitest/jsdom.
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
+vi.mock('@/actions/lists', () => ({
+  pinToDefaultListAction: vi.fn(),
+  addItemToListAction: vi.fn(),
+}));
 
 // StyleResult's cards render prices through PriceDisplay, which requires a
 // PriceUnlockProvider ancestor.

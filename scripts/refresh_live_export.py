@@ -88,11 +88,19 @@ EXPORT_COLS = [
     "popularity_qty_window", "popularity_window_days", "popularity_synced_at",
     "created_at", "updated_at",
     "pairing_rationale",
-    # Stock and margin — required by curation hard_filter and scoring engine
-    # custom_stock_status='CATALOG' = archived/discontinued (front-end shows 'Archive');
-    # excluded from all finder/recommender results. consign is internal-only, NOT exported.
+    # Stock — custom_stock_status='CATALOG' = archived/discontinued (front-end
+    # shows 'Archive'); excluded from all finder/recommender results.
+    # consign is internal-only, NOT exported.
     "is_in_stock", "wn_stock", "quantity_in_stock", "custom_stock_status",
-    "margin_pct", "b2b_margin_pct",
+    # margin_pct/b2b_margin_pct/cost deliberately EXCLUDED — this file is
+    # committed directly to the (public) repo by nightly-price-sync.yml and
+    # by manual local runs. The PUBLIC_FIELDS allowlist in
+    # apps/catalog/lib/catalog-data.ts would have filtered these before they
+    # reached the browser, but the raw committed JSON itself must never carry
+    # margin/cost data. See bug_intelligence_system_cost_margin_leak memory
+    # (2026-08-24) — same class of exposure as the auth-bypass leak fixed in
+    # PR #112. scripts/audit_data_validity.py's drift check previously read
+    # margin_pct from this file; it should read products.db directly instead.
     # Critic scores — required by score_threshold filter in curation
     "score_max", "score_summary",
     # Refiner attributes — added 2026-06-27
@@ -190,7 +198,6 @@ def main(argv: list[str] | None = None) -> int:
     has_flavors = sum(1 for r in records if r.get("flavor_tags"))
     has_canon = sum(1 for r in records if r.get("flavor_tags_canonical"))
     has_stock = sum(1 for r in records if str(r.get("is_in_stock", "")) == "1")
-    has_margin = sum(1 for r in records if r.get("b2b_margin_pct") or r.get("margin_pct"))
     print(f"  desc_en_short:    {has_desc}")
     print(f"  full_description: {has_full}")
     print(f"  flavor_tags:      {has_flavors}")
@@ -199,7 +206,6 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  category_group set: {has_category}  ← taxonomy (re-derived each refresh)")
     print(f"  taste_profile:    {has_taste}")
     print(f"  is_in_stock=1:    {has_stock}  ← curation hard_filter uses this")
-    print(f"  margin populated: {has_margin}  ← curation scoring uses this")
     return 0
 
 

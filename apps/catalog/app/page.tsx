@@ -5,6 +5,8 @@ import { resolveFeatured, resolveIcons } from '@/lib/featured';
 import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
 import { CATEGORY_GROUPS } from '@/lib/category-groups';
+import { createClient } from '@/lib/supabase/server';
+import { getUserLists } from '@/lib/lists';
 
 /**
  * Home — the real WNLQ9 storefront landing page (SSG server component).
@@ -32,11 +34,19 @@ const CATEGORY_BLURB: Record<string, string> = {
   Accessories: 'Glassware, cigars & gifting',
 };
 
-export default function Home() {
+export default async function Home() {
   const featured = resolveFeatured();
   const icons = resolveIcons();
   // Global contact links (no product) for QuickView inside cards.
   const contactLinks = buildContactLinks(getContactEnv());
+
+  // Resolved once per page load, threaded down into every ProductCard below
+  // so the save-to-list pin knows whether to optimistically add or redirect
+  // to /login, and whether to show the list-picker chevron.
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const isLoggedIn = Boolean(user);
+  const userLists = user ? await getUserLists(supabase, user.id) : [];
 
   return (
     <>
@@ -103,6 +113,8 @@ export default function Home() {
                 key={product.sku}
                 product={product}
                 contactLinks={contactLinks}
+                isLoggedIn={isLoggedIn}
+                userLists={userLists}
               />
             ))}
           </div>
@@ -138,6 +150,8 @@ export default function Home() {
                   key={product.sku}
                   product={product}
                   contactLinks={contactLinks}
+                  isLoggedIn={isLoggedIn}
+                  userLists={userLists}
                 />
               ))}
             </div>

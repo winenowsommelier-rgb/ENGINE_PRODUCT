@@ -13,6 +13,8 @@ import { scoreProducts } from '@/lib/finder/scoring';
 import { resolveHeroProfile } from '@/lib/finder/style-profiles';
 import { cn } from '@/lib/utils';
 import { FinderResultTracker } from '@/components/finder/FinderResultTracker';
+import { createClient } from '@/lib/supabase/server';
+import { getUserLists } from '@/lib/lists';
 
 /**
  * Finder result — the pay-off page.
@@ -40,7 +42,7 @@ function toSearchParams(sp: SearchParams): URLSearchParams {
 const linkBtn =
   'inline-flex min-h-[44px] items-center rounded-md border border-border bg-background px-6 text-base font-medium text-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 
-export default function FinderResultPage({
+export default async function FinderResultPage({
   searchParams,
 }: {
   searchParams: SearchParams;
@@ -50,6 +52,16 @@ export default function FinderResultPage({
 
   // Guard: no valid category → start over.
   if (!answers.category) redirect('/finder');
+
+  // Resolved once per page load, threaded down into every ProductCard below
+  // so the save-to-list pin knows whether to optimistically add or redirect
+  // to /login, and whether to show the list-picker chevron. This page already
+  // reads searchParams (per-request by definition in the App Router), so it
+  // was never a static-generation candidate -- no ISR/SSG tradeoff here.
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const isLoggedIn = Boolean(user);
+  const userLists = user ? await getUserLists(supabase, user.id) : [];
 
   const allProducts = getAllProducts();
   const { products, degraded, bandBySku } = scoreProducts(answers, allProducts);
@@ -104,6 +116,8 @@ export default function FinderResultPage({
               allProducts={allProducts}
               contactLinksBySku={contactLinksBySku}
               bandBySku={bandBySku}
+              isLoggedIn={isLoggedIn}
+              userLists={userLists}
             />
 
             <div className="flex flex-wrap gap-3 border-t border-border pt-6">
