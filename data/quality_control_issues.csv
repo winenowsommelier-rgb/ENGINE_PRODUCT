@@ -160,15 +160,3 @@ product,WSP1298EG,medium,length_violation_full,Full description is 618 character
 product,WSP5780AD,medium,length_violation_full,Full description is 604 characters.,Trim repetition and keep the product narrative within the target band.
 product,WWW4847AF,medium,length_violation_full,Full description is 688 characters.,Trim repetition and keep the product narrative within the target band.
 product,WWW5438FC,medium,length_violation_full,Full description is 520 characters.,Trim repetition and keep the product narrative within the target band.
-live_upload,WRW1110AA,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
-live_upload,WRW1323AF,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
-live_upload,WRW1767AE,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
-live_upload,WRW1833AE,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
-live_upload,WRW1855AE,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
-live_upload,WRW2459FS,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
-live_upload,WRW3063BN,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
-live_upload,WRW3606AD,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
-live_upload,WRW4298BU,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
-live_upload,WRW4691AD,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
-live_upload,WRW4744AD,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.
-live_upload,WRW6294GT,medium,weak_publish_rationale,Live upload row is missing clear publish rationale.,Carry validation notes or source-backed upload notes into the publish flow.

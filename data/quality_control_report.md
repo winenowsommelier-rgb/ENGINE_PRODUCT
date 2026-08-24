@@ -5,8 +5,8 @@ QC is now a required workflow gate before publish-ready batches are treated as f
 ## Summary
 
 - `product_master`: `{'short_length': 77, 'full_length': 63, 'template_language': 3, 'missing_sources': 4, 'verified_without_note': 14, 'completed_rows': 119}`
-- `country_taxonomy`: `{'expert_reviewed_countries': 51}`
-- `live_upload`: `{'weak_publish_rationale': 12, 'live_upload_rows': 48}`
+- `country_taxonomy`: `{'expert_reviewed_countries': 69}`
+- `live_upload`: `{'live_upload_rows': 68}`
 
 ## Issue Counts By Type
 
@@ -15,7 +15,6 @@ QC is now a required workflow gate before publish-ready batches are treated as f
 - `missing_sources`: 4
 - `missing_validation_rationale`: 14
 - `template_language_leak`: 3
-- `weak_publish_rationale`: 12
 
 ## Next Actions
 

@@ -12,7 +12,9 @@ def _make_dbs(tmp_path):
     dossier_db = tmp_path / "dossier.db"
 
     pconn = sqlite3.connect(products_db)
-    pconn.execute("CREATE TABLE products (sku TEXT PRIMARY KEY, curation_dossier TEXT)")
+    pconn.execute(
+        "CREATE TABLE products (sku TEXT PRIMARY KEY, curation_dossier TEXT, updated_at TEXT)"
+    )
     pconn.execute("INSERT INTO products (sku) VALUES ('WRW0001')")
     pconn.execute("INSERT INTO products (sku) VALUES ('WRW0002')")
     pconn.commit()
@@ -78,6 +80,22 @@ def test_refresh_all_writes_products_curation_dossier_column(tmp_path):
     assert row[0] is not None
     row2 = conn.execute("SELECT curation_dossier FROM products WHERE sku='WRW0002'").fetchone()
     assert row2[0] is None  # no overlay row -> stays NULL, not fabricated
+
+
+def test_refresh_all_bumps_updated_at(tmp_path):
+    """Regression guard: found 2026-08-22 that refresh_all wrote
+    curation_dossier without touching updated_at, so scripts/sync_to_supabase.py's
+    delta query (which keys off updated_at) never saw these rows -- curation
+    content silently never reached Supabase since dossier.db split off products.db
+    on 2026-07-16. Every row refresh_all touches must bump updated_at."""
+    products_db, dossier_db = _make_dbs(tmp_path)
+    conn = sqlite3.connect(products_db)
+    conn.execute(f"ATTACH DATABASE '{dossier_db}' AS dossier")
+    refresh_all(conn)
+    row = conn.execute(
+        "SELECT updated_at FROM products WHERE sku='WRW0001'"
+    ).fetchone()
+    assert row[0] is not None
 
 
 def test_producer_history_sourced_passes_through(tmp_path):

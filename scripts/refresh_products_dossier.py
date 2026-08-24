@@ -112,7 +112,7 @@ def refresh_all(conn: sqlite3.Connection) -> int:
     ).fetchall()
 
     conn.execute("""
-        UPDATE products SET curation_dossier = NULL
+        UPDATE products SET curation_dossier = NULL, updated_at = CURRENT_TIMESTAMP
         WHERE curation_dossier IS NOT NULL
           AND sku NOT IN (SELECT sku FROM dossier.sku_dossier_overlay)
     """)
@@ -125,8 +125,14 @@ def refresh_all(conn: sqlite3.Connection) -> int:
             print(f"WARNING: skipping curation_dossier for sku={sku} "
                   f"wine_key={wine_key}: {exc}", file=sys.stderr)
             continue
+        # updated_at must be bumped here -- scripts/sync_to_supabase.py's delta
+        # query keys off this column, and it does NOT know about dossier.db.
+        # Without this, curation_dossier writes are permanently invisible to
+        # the Supabase sync (found 2026-08-22: dossier writes since 07-16 had
+        # never reached Supabase because this UPDATE never touched updated_at).
         cur = conn.execute(
-            "UPDATE products SET curation_dossier = ? WHERE sku = ?",
+            "UPDATE products SET curation_dossier = ?, updated_at = CURRENT_TIMESTAMP "
+            "WHERE sku = ?",
             (dossier_json, sku),
         )
         if dossier_json is not None and cur.rowcount > 0:

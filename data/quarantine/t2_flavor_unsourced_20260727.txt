@@ -1,0 +1,85 @@
+# QUARANTINED — UNSOURCED INFERRED FLAVOR TAGS — DO NOT PUBLISH
+#
+# Written 2026-07-27. These 70 tag sets were derived from grape + region +
+# appellation knowledge, NOT from a per-bottle source (no producer tasting note,
+# no critic note, no verified reference).
+#
+# The catalog standard is item-level validated real data. These do not meet it.
+# They are kept ONLY as a research starting point: each row must be replaced by
+# tags read from a real source, with that source URL recorded, before any publish.
+#
+# Compare the accepted standard in product_engine_upload_from_t2_research.csv:
+#   upload_notes: "Official producer tasting notes used. | Sources: https://..."
+#
+# Format: SKU|inferred_tags (UNVERIFIED)
+
+WRW3351FT|blackcurrant, cedar, graphite, plum, tobacco leaf, gravel minerality, fine tannin, long savoury finish
+WRW4814DD|blackcurrant, black cherry, plum, vanilla, mocha, sweet spice, ripe rounded tannin, smooth finish
+WRW4938AA|black cherry, blackcurrant, dried plum, Mediterranean herb, black pepper, dark chocolate, warm spice, firm tannin
+WRW5025AD|blackberry, dark plum, blueberry, black pepper, licorice, mocha, toasty oak, dense ripe tannin, long finish
+WRW5050AJ|sour cherry, rose petal, tar, dried herb, licorice, truffle, firm grippy tannin, long savoury finish
+WRW5107AA|blackcurrant, black cherry, plum, cedar, dark chocolate, Mediterranean herb, firm polished tannin, long finish
+WRW5127AA|red cherry, rose, violet, tar, sweet tobacco, dried herb, fine firm tannin, long elegant finish
+WRW5331AA|red cherry, plum, blackberry, dried herb, sweet spice, light oak, fresh acidity, medium firm tannin
+WRW5453AC|black cherry, plum, blackberry, vanilla, coconut oak, sweet spice, soft tannin, smooth rounded finish
+WRW5535BN|sour cherry, dried plum, leather, tobacco, balsamic herb, sweet oak, firm structured tannin, very long finish
+WRW5548FT|cassis, violet, cedar, black cherry, pencil shaving, sweet spice, silky tannin, elegant long finish
+WRW5568FP|dried cherry, raisin, plum, sweet spice, cocoa, balsamic note, soft velvety tannin, rich smooth finish
+WRW5695FR|ripe blackberry, red plum, jammy fruit, sweet spice, vanilla, soft tannin, gentle sweet finish
+WRW5719BN|blackcurrant, black cherry, plum, cocoa, sweet oak, cedar, Tuscan herb, dense velvety tannin, long finish
+WRW5844AB|red cherry, blackberry, garrigue herb, black pepper, licorice, warm spice, soft tannin, smooth finish
+WRW5882DD|blackcurrant, red plum, black cherry, light vanilla, soft herb, gentle tannin, juicy easy finish
+WRW5885DD|red plum, blackcurrant, leafy herb, soft earth, mild oak, gentle tannin, easy medium finish
+WRW5895AB|blackberry, black cherry, garrigue herb, black pepper, licorice, dark chocolate, rounded tannin, warm long finish
+WRW5921AB|blackcurrant, dark berry, plum, vanilla, light oak spice, soft tannin, smooth rounded finish
+WRW5981AB|fresh red cherry, raspberry, strawberry, wild herb, light earth, juicy acidity, low soft tannin, clean unoaked finish
+WRW5984AB|black cherry, plum, blackberry, cocoa, vanilla, sweet tobacco, plush tannin, velvety finish
+WRW6232BN|cassis, violet, rose petal, graphite, dark cherry, cedar, truffle, exceptionally fine tannin, very long finish
+WRW6240FJ|black cherry, plum, blackberry, black pepper, dried herb, light earth, smooth tannin, fresh savoury finish
+WRW6280AJ|black cherry, plum, blackcurrant, mild cedar, soft earth, rounded tannin, approachable finish
+WRW6335BS|red cherry, plum, wild berry, dried herb, light oak, fresh acidity, medium tannin, savoury finish
+WRW6376AE|red cherry, sour plum, violet, dried herb, light earth, bright acidity, medium tannin, clean savoury finish
+WRW6438GS|red cherry, plum, dried cranberry, sweet spice, dried herb, light earth, soft tannin, fresh savoury finish
+WRW6504AD|black cherry, ripe plum, blackberry, dried herb, soft spice, light earth, smooth tannin, juicy finish
+WRW6550FS|blackcurrant, dark plum, cedar, graphite, toasted oak, tobacco, firm polished tannin, long finish
+WRW6599GX|cassis, dark plum, mulberry, cedar, dark chocolate, mint lift, firm ripe tannin, long finish
+WRW6774GW|red berry, plum, blackcurrant, light oak, soft herb, smooth tannin, easy fruity finish
+WRW6926GW|ripe blackberry, black cherry jam, dried fig, sweet spice, cocoa, vanilla, soft plush tannin, warm sweet finish
+WRW6936AB|dried black cherry, raisin, plum jam, cocoa, sweet spice, vanilla, soft round tannin, rich smooth finish
+WRW7003GX|cassis, black cherry, violet, cedar, pencil lead, sweet spice, supple tannin, long refined finish
+WRW7054AD|ripe blackcurrant, jammy black cherry, plum, vanilla, mocha, sweet oak, soft low tannin, smooth sweet finish
+WRW7084AB|blackcurrant cordial, red berry, plum, light grape sweetness, soft herb, gentle acidity, light body, clean short finish
+WRW7202AB|red berry, blackcurrant juice, plum, grape sweetness, mild herb, soft acidity, very light body, clean finish
+WRW7525AP|black cherry, plum, blackberry, black pepper, dried herb, mild oak, smooth tannin, warm savoury finish
+WSP1056AC|green apple, pear, white peach, acacia blossom, citrus, light sweetness, soft mousse, fresh clean finish
+WSP1190CI|muscat grape, orange blossom, white peach, honey, ripe pear, sweet citrus, gentle fizz, sweet clean finish
+WSP1216AC|muscat grape, elderflower, peach, honey, sweet citrus, floral aroma, light sweetness, fresh sweet finish
+WSP1231AD|green apple, pear, citrus, white flower, light almond, fresh acidity, crisp clean finish
+WSP1241FC|green apple, white peach, citrus zest, brioche, toasted almond, fine mousse, crisp acidity, clean dry finish
+WSP1587CH|ripe apple, pear, citrus, tropical fruit hint, light floral note, soft mousse, gentle sweetness, easy fresh finish
+WSP2622CN|wild strawberry, raspberry, red cherry, rose petal, citrus lift, light sweetness, soft mousse, fresh clean finish
+WSP5665AA|wild strawberry, raspberry, red cherry, citrus peel, brioche, fine creamy mousse, bright acidity, elegant dry finish
+WSP5667AA|green apple, white pear, acacia flower, citrus zest, light almond, fine persistent mousse, crisp dry finish
+WSP5745AA|green apple, lemon citrus, white peach, brioche, fresh almond, fine mousse, crisp acidity, dry clean finish
+WSP5800DJ|green apple, lemon zest, white flower, chalk minerality, fresh brioche, taut acidity, bone-dry finish, saline lift
+WSP8889FS|red apple, ripe pear, citrus, brioche, toasted hazelnut, red berry hint, creamy mousse, long dry finish
+WSP8890FS|baked apple, ripe pear, candied citrus, brioche, toasted nut, honey, dried fruit, rich creamy mousse, very long finish
+WSP8923AB|pink muscat grape, strawberry, peach, rose petal, sweet citrus, light fizz, overt sweetness, clean short finish
+WSP9000BU|green apple, lemon citrus, pear, light bread note, almond, fine mousse, brisk acidity, dry clean finish
+WWW1810AE|green apple, white peach, citrus, almond blossom, wet stone minerality, crisp acidity, clean dry finish
+WWW1858DH|quince, honey, baked apple, beeswax, chamomile, candied citrus, luscious sweetness, vibrant acidity, very long finish
+WWW2396AA|yellow apple, white peach, citrus peel, hazelnut, volcanic minerality, saline note, firm acidity, long dry finish
+WWW2401AD|yellow peach, nectarine, melon, citrus, vanilla, toasted oak, creamy texture, balanced fresh finish
+WWW4795AA|white peach, ripe pear, citrus, acacia blossom, light vanilla, toasted almond, rounded body, long finish
+WWW4858AD|white peach, grapefruit, citrus zest, nectarine, light toasted oak, cashew, fine acidity, long mineral finish
+WWW5122AA|muscat grape, orange blossom, white peach, sage, honey, ripe pear, delicate fizz, sweet aromatic finish
+WWW5302AB|dried apricot, orange peel, honey, chamomile, ginger spice, nutty note, gentle grip, textured dry finish
+WWW5412FJ|white peach, apricot, honeysuckle, citrus blossom, ripe pear, soft spice, rounded body, aromatic finish
+WWW5474AB|green apple, lemon zest, white flower, volcanic ash minerality, saline note, dried herb, taut acidity, long dry finish
+WWW5952GW|grapefruit, lemon, green apple, fresh cut grass, white flower, light citrus zest, crisp acidity, clean dry finish
+WWW6005GW|ripe apple, yellow peach, melon, citrus, light vanilla, soft creamy texture, gentle acidity, smooth finish
+WWW6042AD|grapefruit, lemon zest, green apple, white flower, sea-salt minerality, fresh herb, crisp acidity, clean dry finish
+WWW6062AB|green apple, pear, peach, light citrus, grape sweetness, soft floral note, light body, clean short finish
+WWW6063AB|gooseberry, passionfruit, lime, fresh cut grass, green apple, bright acidity, very light body, clean crisp finish
+WWW6126AB|yellow apple, pear, peach, light citrus, grape sweetness, soft texture, light body, clean gentle finish
+WWW6221AP|green apple, pear, lemon citrus, white flower, light almond, fresh acidity, light body, clean crisp finish
