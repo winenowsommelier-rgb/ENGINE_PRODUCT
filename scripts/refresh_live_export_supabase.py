@@ -65,40 +65,81 @@ EXPORT_COLS = [
     # Taxonomy
     "classification", "wine_classification", "designation", "variety", "blend_type",
     "production_style", "country", "region", "subregion", "appellation",
+    # Parsed vintage: `vintage` is free text ("2015 [**VINTAGE MAY CHANGE]"), so
+    # vintage_year is the machine-usable year and vintage_is_provisional preserves
+    # the supplier "may change" caveat.
+    "vintage_year", "vintage_is_provisional",
     # Taste
     "body", "acidity", "tannin", "sweetness", "intensity", "smokiness", "finish",
-    "food_matching", "flavor_tags", "taste_profile",
-    # Pricing
-    "price", "cost", "currency", "special_price", "sp_discount_pct",
-    "margin_pct", "b2b_margin_pct",
+    "bitterness",
+    "food_matching", "food_matching_detail", "flavor_tags", "taste_profile",
+    # Phase 2 — spirits classification fields.
+    "gin_style", "agave_aging", "rum_style", "peat_level", "production_method",
+    # Pricing — cost/margin_pct/b2b_margin_pct deliberately EXCLUDED. This
+    # file is committed directly to the (public) repo by nightly-price-sync.yml
+    # and read by apps/catalog's PUBLIC_FIELDS allowlist — the allowlist would
+    # have filtered these before they reached the browser, but the raw
+    # committed JSON itself must never carry margin/cost data. See
+    # bug_intelligence_system_cost_margin_leak memory (2026-08-24) — same
+    # class of exposure as the auth-bypass leak fixed in PR #112.
+    "price", "currency", "special_price", "sp_discount_pct",
     # Stock
     "is_in_stock", "wn_stock", "quantity_in_stock", "custom_stock_status",
     # Content
     "desc_en_short", "full_description", "image_url",
+    # Attribute provenance: lets the UI distinguish a producer-sourced attribute
+    # from an AI-generated one.
+    "attr_sources", "attr_evidence_tier", "attr_verified_at",
     # Enrichment metadata
-    "validation_status", "enrichment_confidence", "enrichment_source",
-    "enrichment_note", "enriched_at", "enriched_by",
-    # Popularity
+    "validation_status", "enrichment_confidence", "enrichment_quality_grade",
+    "enrichment_source", "enrichment_note", "enriched_at", "enriched_by",
+    # Popularity — Supabase's real column names are the *_90d ones (see
+    # supabase/migrations/003_product_popularity.sql); aliased to *_window on
+    # output below to match refresh_live_export.py's (SQLite) key names, which
+    # is what tests/test_popularity_export_invariant.py and the DB itself use
+    # (the popularity window is configurable, not fixed at 90 days).
     "popularity_score", "popularity_qty_90d", "popularity_orders_90d",
     "popularity_revenue_90d", "popularity_window_days", "popularity_synced_at",
     # Critic scores
     "score_max", "score_summary",
     # Timestamps
     "created_at", "updated_at",
+    "pairing_rationale",
+    # Refiner attributes — certification body, accessory sub-type.
+    "origin_system", "accessory_type",
+    # Reputation signals — tier, composite score, confidence, and template copy.
+    "reputation_tier", "reputation_composite", "reputation_confidence",
+    "reputation_summary",
+    # Curation dossier — expert-reference content.
+    "curation_dossier",
     # Live storefront product-page URL and per-SKU site placement — sourced
     # from data/data mastefile WNLQ9/winenow-base-images-20260724.csv via
     # scripts/reconcile_image_urls.py. websites is a raw string, not parsed.
     "magento_item_url", "websites",
 ]
 
+# Supabase source column name -> output JSON key, for names that differ
+# between the two (see the popularity comment above).
+_COLUMN_ALIASES = {
+    "popularity_qty_90d": "popularity_qty_window",
+    "popularity_orders_90d": "popularity_orders_window",
+    "popularity_revenue_90d": "popularity_revenue_window",
+}
+
 # JSON-encoded text columns — decode so the export contains real objects.
-JSON_COLS = {"flavor_tags", "taste_profile", "production_style"}
+JSON_COLS = {"flavor_tags", "taste_profile", "production_style", "curation_dossier"}
 
 PAGE_SIZE = 1000
 
 
 def fetch_all_products() -> list[dict]:
-    select = ",".join(EXPORT_COLS)
+    # PostgREST supports `alias:column` in `select=` — rename the *_90d source
+    # columns to their *_window output keys directly in the query, so the rest
+    # of the pipeline never has to know the two names differ.
+    select = ",".join(
+        f"{_COLUMN_ALIASES[c]}:{c}" if c in _COLUMN_ALIASES else c
+        for c in EXPORT_COLS
+    )
     rows: list[dict] = []
     offset = 0
 
