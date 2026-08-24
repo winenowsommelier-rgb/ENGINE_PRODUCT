@@ -181,10 +181,13 @@ actually populate.
    - These three counts must be reported to the user alongside the
      dry-run diff counts — the two should be consistent (e.g. populated
      count ≈ CSV rows matched minus blanks minus left-untouched).
-5. Run `scripts/refresh_live_export.py` AND
-   `scripts/refresh_live_export_supabase.py` (both consume EXPORT_COLS,
-   both must be updated). For each, run a **count query against the
-   output**, not a spot-check of one sample SKU:
+5. Run `scripts/refresh_live_export.py` (SQLite → local export) AND
+   `scripts/sync_to_supabase.py --products-only` (products.db → Supabase —
+   NOT `refresh_live_export_supabase.py`, which pulls FROM Supabase into
+   the local export and runs in the opposite direction). Both
+   `EXPORT_COLS`/`PRODUCT_SYNC_COLUMNS` allowlists must include the new
+   fields. For each, run a **count query against the output**, not a
+   spot-check of one sample SKU:
    - `jq '[.[] | select(.magento_item_url != null and .magento_item_url
      != "")] | length' data/live_products_export.json`
    - Same for `websites`.
