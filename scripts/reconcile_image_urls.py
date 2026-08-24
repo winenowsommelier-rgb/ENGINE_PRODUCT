@@ -38,6 +38,7 @@ import csv
 import re
 import sqlite3
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -180,10 +181,20 @@ def main() -> int:
               f"({'dormant, as expected' if blanked == 0 else 'ACTIVE — review before applying'})")
 
     if not args.apply:
-        print("\nDRY RUN — re-run with --apply to write, then refresh_live_export.py "
-              "and refresh_live_export_supabase.py")
+        print("\nDRY RUN — re-run with --apply to write, then run "
+              "refresh_live_export.py and sync_to_supabase.py --products-only "
+              "(--full-sync only needed if updated_at wasn't bumped by this run)")
         con.close()
         return 0
+
+    # Bump updated_at for every row this run touches (any field), so
+    # scripts/sync_to_supabase.py's incremental (non --full-sync) delta
+    # query picks these rows up on the next normal run instead of silently
+    # requiring --full-sync forever. Without this, reconcile writes to
+    # products.db but the Supabase push never sees them via the normal
+    # path (same failure shape as bug_dossier_sync_never_bumped_updated_at).
+    touched_skus = sorted({sku for field in FIELDS for sku, _old, _new in fixes[field]})
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     for field in FIELDS:
         if not fixes[field]:
@@ -191,6 +202,11 @@ def main() -> int:
         cur.executemany(
             f"UPDATE products SET {field} = ? WHERE sku = ?",
             [(new, sku) for sku, _old, new in fixes[field]],
+        )
+    if touched_skus:
+        cur.executemany(
+            "UPDATE products SET updated_at = ? WHERE sku = ?",
+            [(now, sku) for sku in touched_skus],
         )
     con.commit()
 
@@ -213,7 +229,7 @@ def main() -> int:
     total = sum(len(fixes[f]) for f in FIELDS)
     print(f"\nApplied {total} corrections across {len(FIELDS)} fields. "
           f"Now run: .venv/bin/python scripts/refresh_live_export.py "
-          f"&& .venv/bin/python scripts/refresh_live_export_supabase.py")
+          f"&& .venv/bin/python scripts/sync_to_supabase.py --products-only")
     return 0
 
 
