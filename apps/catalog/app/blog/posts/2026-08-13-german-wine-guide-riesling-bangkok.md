@@ -68,7 +68,7 @@ A south-facing stretch of the Rhine between Wiesbaden and Rüdesheim. Deeper soi
 Germany's warmest wine region, sheltered by the Haardt mountains. Riper, more tropical fruit (mango, pineapple), rounder acidity, and higher alcohol. Pfalz Riesling is the most approachable in style — less austere than Mosel, more generous than Rheingau. The region also excels with Gewürztraminer and Grauburgunder (Pinot Gris).
 
 ![Riesling mid-pour — pale gold, translucent, precise](https://live.staticflickr.com/3782/14298450945_50563de364_b.jpg)
-*Photo: jenny downing via Flickr (CC BY)*
+*Pale gold and precise — the color tells you the acid is still sharp*
 
 The hallmark of great Riesling: a pale gold colour, a translucent brilliance, and a nose that leads with fruit and follows with minerals.
 
