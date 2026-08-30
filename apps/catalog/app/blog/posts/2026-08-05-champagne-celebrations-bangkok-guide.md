@@ -66,7 +66,7 @@ The sweet spot. Grower Champagnes and established NV cuvées with real complexit
 Name-brand houses (Veuve, Moët, Bollinger) and Prestige Cuvées. Buy these when the name on the label is part of the gift.
 
 ![Champagne being poured into a line of flutes](https://live.staticflickr.com/6212/6378253977_b17acae4c4_b.jpg)
-*Photo: Didriks via Flickr (CC BY)*
+*Bubbles rise fastest in the first pour — the ritual worth getting right*
 
 The pour matters as much as the label — fill flutes two-thirds for ideal bubble retention and temperature control.
 

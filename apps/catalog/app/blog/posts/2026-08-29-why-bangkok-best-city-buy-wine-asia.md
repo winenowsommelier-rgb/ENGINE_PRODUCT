@@ -67,8 +67,6 @@ Granmonte in the Asoke Valley, Khao Yai province, is the more interesting story.
 The New Latitude Wines movement — producers working in tropical and subtropical climates that conventional wisdom dismissed — has created a framework for understanding what these wines are trying to do. Bangkok wine buyers have the rare privilege of drinking these wines where they're made, in the culture that produced them, alongside the food they were designed for. That is an experience Singapore and Hong Kong simply cannot replicate.
 
 ![Wine racks stacked deep — the depth of selection in Bangkok retail](https://live.staticflickr.com/8200/8229814589_040bfb7969_b.jpg)
-*Photo: Didriks via Flickr (CC BY)*
-
 *Selection depth is Bangkok's strongest card — a range that spans old-world classics, emerging Thai wines, and Japanese spirits unavailable elsewhere in the region.*
 
 ## Bangkok's Restaurant Wine Programs Have Arrived

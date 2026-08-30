@@ -97,7 +97,7 @@ Thai dishes built on fruit — green mango, tamarind, pomelo — carry a sweet-s
 Fruity Ginjo / Daiginjo
 
 ![Sake bottles on display in a Japanese izakaya](https://live.staticflickr.com/8587/16189584845_2502b828dd_b.jpg)
-*Photo: avrene via Flickr (CC BY)*
+*Every bottle on the shelf carries its own temperature rule — read the label before the glass*
 
 Sake's low tannin and amino acid profile make it uniquely suited to the nuanced flavours of Japanese omakase and Thai set menus alike.
 

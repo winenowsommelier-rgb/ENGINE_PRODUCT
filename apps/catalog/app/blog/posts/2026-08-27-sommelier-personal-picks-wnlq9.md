@@ -70,7 +70,6 @@ For every time someone has said to us, "I don't really drink rum" — this is ou
 ---
 
 ![A glass of red wine poured for evaluation](https://live.staticflickr.com/1238/1403787329_39c4a6df14_b.jpg)
-*Photo: willia4 via Flickr (CC BY-SA)*
 *The best bottle is the one you've tasted, questioned, and decided you'd genuinely buy again.*
 
 ---
