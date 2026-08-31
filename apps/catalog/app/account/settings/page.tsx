@@ -15,11 +15,20 @@ export default async function SettingsPage() {
     .single();
 
   return (
-    <div className="mx-auto max-w-md px-4 py-16">
-      <h1 className="mb-6 text-2xl font-semibold">Account settings</h1>
-      <div className="flex flex-col gap-8">
-        <AvatarUpload currentAvatarUrl={profile?.avatar_url ?? null} />
-        <SettingsForm currentUsername={profile?.username ?? ''} />
+    <div className="mx-auto max-w-lg px-4 py-12 sm:py-16">
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-[1.75rem]">Account settings</h1>
+        <p className="mt-1.5 text-[0.95rem] text-muted-foreground">
+          Manage your profile photo and username.
+        </p>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card px-6 py-8 shadow-sm sm:px-8">
+        <div className="flex flex-col gap-8">
+          <AvatarUpload currentAvatarUrl={profile?.avatar_url ?? null} />
+          <div className="h-px bg-border" />
+          <SettingsForm currentUsername={profile?.username ?? ''} />
+        </div>
       </div>
     </div>
   );
