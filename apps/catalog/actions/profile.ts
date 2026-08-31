@@ -45,6 +45,7 @@ export async function updateUsernameAction(formData: FormData) {
     if (error.code === '23505') {
       return { error: 'That username is already taken.' };
     }
+    console.error('[updateUsernameAction] profile update failed', error);
     return { error: 'Something went wrong saving your username. Please try again.' };
   }
 
@@ -87,7 +88,10 @@ export async function updateAvatarAction(formData: FormData) {
     .from('avatars')
     .upload(path, file, { upsert: true, contentType: file.type });
 
-  if (uploadError) return { error: "We couldn't upload that photo. Please try again." };
+  if (uploadError) {
+    console.error('[updateAvatarAction] storage upload failed', uploadError);
+    return { error: "We couldn't upload that photo. Please try again." };
+  }
 
   const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(path);
 
@@ -96,7 +100,10 @@ export async function updateAvatarAction(formData: FormData) {
     .update({ avatar_url: urlData.publicUrl })
     .eq('id', user.id);
 
-  if (updateError) return { error: "We couldn't save your photo. Please try again." };
+  if (updateError) {
+    console.error('[updateAvatarAction] profile update failed', updateError);
+    return { error: "We couldn't save your photo. Please try again." };
+  }
 
   revalidatePath('/account/settings');
   return { success: true, avatarUrl: urlData.publicUrl };
