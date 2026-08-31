@@ -46,7 +46,7 @@ export function SettingsForm({ currentUsername }: { currentUsername: string }) {
           // Caught live during the Task 10 Rule 7 browser walkthrough.
           pattern="[a-z0-9\-]+"
           autoComplete="username"
-          aria-describedby={state.error ? errorId : `${inputId}-hint`}
+          aria-describedby={state.error ? `${errorId} ${inputId}-hint` : `${inputId}-hint`}
           aria-invalid={state.error ? true : undefined}
           className="h-11 rounded-md border border-input bg-background px-3.5 text-[0.95rem] outline-none transition-colors focus-visible:border-ring disabled:cursor-not-allowed disabled:opacity-60"
         />
