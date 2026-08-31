@@ -9,7 +9,7 @@ export async function updateUsernameAction(formData: FormData) {
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: 'Not logged in.' };
+  if (!user) return { error: 'Your session has expired. Please sign in again.' };
 
   // Fetch the current stored username so an unchanged resubmission can be
   // exempted from isValidUsername's 30-char cap -- see lib/profiles.ts's
@@ -37,7 +37,16 @@ export async function updateUsernameAction(formData: FormData) {
     .update({ username })
     .eq('id', user.id);
 
-  if (error) return { error: error.message };
+  // Race-condition backstop: isUsernameAvailable already checked, but a
+  // concurrent request can still slip in between the check and this write.
+  // Postgres code 23505 = unique_violation; never surface the raw
+  // constraint-name error text to the client.
+  if (error) {
+    if (error.code === '23505') {
+      return { error: 'That username is already taken.' };
+    }
+    return { error: 'Something went wrong saving your username. Please try again.' };
+  }
 
   revalidatePath('/account/settings');
   return { success: true };
@@ -70,7 +79,7 @@ export async function updateAvatarAction(formData: FormData) {
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: 'Not logged in.' };
+  if (!user) return { error: 'Your session has expired. Please sign in again.' };
 
   const path = `${user.id}/avatar.${ext}`;
 
@@ -78,7 +87,7 @@ export async function updateAvatarAction(formData: FormData) {
     .from('avatars')
     .upload(path, file, { upsert: true, contentType: file.type });
 
-  if (uploadError) return { error: uploadError.message };
+  if (uploadError) return { error: "We couldn't upload that photo. Please try again." };
 
   const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(path);
 
@@ -87,7 +96,7 @@ export async function updateAvatarAction(formData: FormData) {
     .update({ avatar_url: urlData.publicUrl })
     .eq('id', user.id);
 
-  if (updateError) return { error: updateError.message };
+  if (updateError) return { error: "We couldn't save your photo. Please try again." };
 
   revalidatePath('/account/settings');
   return { success: true, avatarUrl: urlData.publicUrl };
