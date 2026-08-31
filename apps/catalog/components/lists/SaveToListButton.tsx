@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Bookmark, BookmarkCheck, ChevronDown } from 'lucide-react';
 import { pinToDefaultListAction, addItemToListAction } from '@/actions/lists';
@@ -40,7 +40,20 @@ export function SaveToListButton({
   const [saved, setSaved] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pending, startTransition] = useTransition();
+  // Drives a one-shot pop animation + "Saved" confirmation pill on a
+  // successful pin -- previously the button just silently swapped icons,
+  // giving the user no feedback that the click actually did anything.
+  const [justSaved, setJustSaved] = useState(false);
+  const celebrateTimeout = useRef<number | undefined>(undefined);
   const router = useRouter();
+
+  useEffect(() => () => window.clearTimeout(celebrateTimeout.current), []);
+
+  function celebrateSave() {
+    window.clearTimeout(celebrateTimeout.current); // a rapid repeat click restarts the timer instead of racing it
+    setJustSaved(true);
+    celebrateTimeout.current = window.setTimeout(() => setJustSaved(false), 1400);
+  }
 
   function goToLoginIfLoggedOut(e: React.MouseEvent): boolean {
     if (!isLoggedIn) {
@@ -58,11 +71,13 @@ export function SaveToListButton({
     if (goToLoginIfLoggedOut(e)) return;
 
     setSaved(true); // optimistic
+    celebrateSave();
     startTransition(async () => {
       try {
         await pinToDefaultListAction(sku);
       } catch {
         setSaved(false); // revert on failure
+        setJustSaved(false);
       }
     });
   }
@@ -70,11 +85,13 @@ export function SaveToListButton({
   function handlePickList(listId: string) {
     setPickerOpen(false);
     setSaved(true); // optimistic
+    celebrateSave();
     startTransition(async () => {
       try {
         await addItemToListAction(listId, sku);
       } catch {
         setSaved(false);
+        setJustSaved(false);
       }
     });
   }
@@ -92,11 +109,23 @@ export function SaveToListButton({
         )}
       >
         {saved ? (
-          <BookmarkCheck className="h-4 w-4 text-primary" aria-hidden="true" />
+          <BookmarkCheck
+            className={cn('h-4 w-4 text-primary', justSaved && 'animate-in zoom-in-50 duration-300')}
+            aria-hidden="true"
+          />
         ) : (
           <Bookmark className="h-4 w-4 text-foreground" aria-hidden="true" />
         )}
       </button>
+
+      {justSaved ? (
+        <span
+          role="status"
+          className="animate-in fade-in slide-in-from-bottom-1 absolute -top-8 right-0 whitespace-nowrap rounded-full bg-foreground px-2.5 py-1 text-xs font-medium text-background shadow-sm duration-200"
+        >
+          Saved to list
+        </span>
+      ) : null}
 
       {isLoggedIn && userLists.length > 1 ? (
         <button

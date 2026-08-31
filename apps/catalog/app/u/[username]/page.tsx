@@ -1,7 +1,12 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getUserLists, getListItems } from '@/lib/lists';
-import { ListCard } from '@/components/lists/ListCard';
+import { getProductBySku } from '@/lib/catalog-data';
+import { ListCard, MAX_PREVIEW_THUMBNAILS } from '@/components/lists/ListCard';
+
+// See app/account/lists/page.tsx's identical constant for why this looks up
+// more than it displays.
+const PREVIEW_LOOKUP_SLICE = MAX_PREVIEW_THUMBNAILS * 3;
 
 export default async function PublicProfilePage({
   params,
@@ -30,10 +35,16 @@ export default async function PublicProfilePage({
   const publicLists = lists.filter((l) => l.is_public);
 
   const listsWithCounts = await Promise.all(
-    publicLists.map(async (list) => ({
-      list,
-      itemCount: (await getListItems(supabase, list.id)).length,
-    })),
+    publicLists.map(async (list) => {
+      const items = await getListItems(supabase, list.id);
+      return {
+        list,
+        itemCount: items.length,
+        previewImages: items
+          .slice(0, PREVIEW_LOOKUP_SLICE)
+          .map((item) => getProductBySku(item.sku)?.image_url),
+      };
+    }),
   );
 
   return (
@@ -50,8 +61,8 @@ export default async function PublicProfilePage({
         <h1 className="text-2xl font-semibold">{profile.username}</h1>
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {listsWithCounts.map(({ list, itemCount }) => (
-          <ListCard key={list.id} list={list} itemCount={itemCount} />
+        {listsWithCounts.map(({ list, itemCount, previewImages }) => (
+          <ListCard key={list.id} list={list} itemCount={itemCount} previewImages={previewImages} />
         ))}
       </div>
       {listsWithCounts.length === 0 ? (

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { X } from 'lucide-react';
 import { setItemQuantityAction, removeItemAction } from '@/actions/lists';
 import { PriceDisplay } from '@/components/PriceDisplay';
+import { StorefrontImage } from '@/components/StorefrontImage';
 import { resolveSale } from '@/lib/price-tiers';
 import type { PublicProduct } from '@/lib/types';
 
@@ -38,8 +39,14 @@ export function ListItemRow({
 
   return (
     <div className="flex items-center justify-between gap-4 border-b border-border py-3">
-      <Link href={`/product/${product.sku}`} className="flex-1 text-sm font-medium hover:underline">
-        {product.name}
+      <Link href={`/product/${product.sku}`} className="flex min-w-0 flex-1 items-center gap-3">
+        <StorefrontImage
+          src={product.image_url}
+          alt={product.name}
+          className="aspect-square w-12 shrink-0 rounded-md"
+          sizes="48px"
+        />
+        <span className="truncate text-sm font-medium hover:underline">{product.name}</span>
       </Link>
       {isOwner ? (
         <input

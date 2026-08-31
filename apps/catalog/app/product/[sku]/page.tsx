@@ -24,6 +24,7 @@ import type { Band, PublicProduct } from '@/lib/types';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildProductSchema, buildBreadcrumbList, GROUP_SLUG } from '@/lib/seo/jsonld';
 import { ViewItemTracker } from '@/components/product/ViewItemTracker';
+import { ProductPinButton } from '@/components/lists/ProductPinButton';
 
 /**
  * Product detail — SERVER component, statically generated for every SKU.
@@ -383,13 +384,21 @@ export default function Page({ params }: { params: { sku: string } }) {
 
         {/* Right column: identity, commercials, attributes, taste, contact. */}
         <div className="flex flex-col gap-8">
-          <header className="flex flex-col gap-3">
+          <header className="relative flex flex-col gap-3">
+            {/* Save-to-list pin — top-right of the item-number/name card.
+                Isolated in its own request-dynamic subtree (see
+                ProductPinButton) so this ISR page doesn't have to read
+                cookies() itself. pr-20 below reserves space for its widest
+                state: the 36px bookmark button + 4px gap + 24px list-picker
+                chevron (shown when the signed-in user has 2+ lists). */}
+            <ProductPinButton sku={product.sku} className="absolute right-0 top-0" />
+
             {product.brand ? (
-              <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              <p className="pr-20 text-sm font-medium uppercase tracking-wide text-muted-foreground">
                 {product.brand}
               </p>
             ) : null}
-            <h1 className="text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl">
+            <h1 className="pr-20 text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl">
               {product.name}
             </h1>
             {/* Price on its own row — the primary commercial fact, given room. */}
