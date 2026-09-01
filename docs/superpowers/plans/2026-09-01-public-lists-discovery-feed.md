@@ -361,6 +361,11 @@ const baseProduct: PublicProduct = {
   sku: 'ABC123',
   name: 'Chateau Test 2020',
   price: 1500,
+  // Set so the "product exists" test actually exercises StorefrontImage's
+  // real-image branch (via the next/image mock above), not just its
+  // no-src placeholder branch -- a product fixture with no image_url would
+  // leave the mock unexercised in this file.
+  image_url: 'https://example.com/wine.jpg',
 };
 
 describe('PinCard', () => {
