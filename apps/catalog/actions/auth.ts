@@ -21,7 +21,19 @@ export async function registerAction(formData: FormData) {
   const { error } = await supabase.auth.signUp({ email, password });
 
   if (error) {
-    return { error: error.message };
+    // Same email-enumeration reasoning as requestPasswordResetAction below:
+    // Supabase's signUp error for an existing email is the literal string
+    // "User already registered" (see GoTrueClient's own doc comment), which
+    // would let an attacker distinguish taken vs. available emails one
+    // guess at a time. A password-strength/rate-limit error is a real,
+    // actionable problem the user needs to see, so only THAT class is
+    // surfaced; anything ambiguous (including "already registered") falls
+    // back to the same success copy as a genuine new signup.
+    if (error.code === 'weak_password' || error.code === 'over_email_send_rate_limit') {
+      return { error: error.message };
+    }
+    console.error('[registerAction] signUp failed', error);
+    return { success: true };
   }
 
   return { success: true };
@@ -43,7 +55,16 @@ export async function loginAction(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    return { error: error.message };
+    // invalid_credentials is Supabase's own generic message for both
+    // wrong-password and no-such-account (it does not distinguish), so
+    // it's already enumeration-safe and fine to pass through. Anything else
+    // (rate limit, provider/network error) is logged server-side and
+    // replaced with a generic message instead of surfacing internals.
+    if (error.code === 'invalid_credentials' || error.code === 'over_request_rate_limit') {
+      return { error: error.message };
+    }
+    console.error('[loginAction] signIn failed', error);
+    return { error: 'Something went wrong signing you in. Please try again.' };
   }
 
   redirect(next);
@@ -90,7 +111,11 @@ export async function updatePasswordAction(formData: FormData) {
   const supabase = await createClient();
   const { error } = await supabase.auth.updateUser({ password });
   if (error) {
-    return { error: error.message };
+    if (error.code === 'weak_password' || error.code === 'same_password') {
+      return { error: error.message };
+    }
+    console.error('[updatePasswordAction] updateUser failed', error);
+    return { error: 'Something went wrong updating your password. Please try again.' };
   }
 
   redirect('/account/settings?password_updated=1');
