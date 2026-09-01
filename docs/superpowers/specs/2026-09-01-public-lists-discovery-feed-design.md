@@ -56,22 +56,64 @@ grant on the base table. Public reads go through the public_profiles VIEW
 to expose only those three columns, matching the 2026-08-22 spec's intent.
 ```
 
-This confirms `list_items` has no RLS grant of its own beyond visibility through its parent `lists` row, so a straight join reproduces the correct anonymous-safe filtering:
+This confirms `list_items` has no RLS grant of its own beyond visibility through its parent `lists` row. The conceptual join this needs is:
 
 ```sql
 select li.id, li.sku, li.quantity, li.added_at,
        l.id as list_id, l.public_id, l.name as list_name,
-       p.id as owner_id, p.username, p.avatar_url
+       l.owner_id
 from list_items li
 join lists l on l.id = li.list_id and l.is_public = true
-join public_profiles p on p.id = l.owner_id
 order by li.added_at desc, li.id desc
 limit :limit
 -- keyset continuation:
 -- where (li.added_at, li.id) < (:cursor_added_at, :cursor_id)
 ```
 
-New helper in `lib/lists.ts`:
+**Revision note (2026-09-01, second review pass):** an earlier draft of this section proposed a single Supabase-js query embedding `lists!inner(..., public_profiles!inner(...))` three levels deep. That doesn't work: PostgREST embedding requires a real foreign-key relationship, and while `list_items → lists` is one (this part is fine), `lists → public_profiles` is not — `public_profiles` is a view over `profiles`/`get_public_profiles()`, not an FK target of `lists.owner_id`. There is also no precedent anywhere in this codebase (`lib/lists.ts`, `actions/lists.ts`) for embedded/nested `select()` queries — every existing query is a flat single-table `select('*')` or `select('column')`, and this spec should not be the first to depart from that without a proven reason. The design below reverts to that same flat-query idiom: one query for the join that *is* a real FK relationship (`list_items → lists`), then a second flat query to batch-fetch owner profiles — matching how `actions/lists.ts` already fetches `profiles` separately (`getUsername`-style flat select) rather than embedding.
+
+**Step 1 — page of pins, joined only through the real FK (`list_items → lists`):**
+
+```ts
+let query = client
+  .from('list_items')
+  .select('id, sku, quantity, added_at, lists!inner(id, public_id, name, owner_id, is_public)')
+  .eq('lists.is_public', true)
+  .order('added_at', { ascending: false })
+  .order('id', { ascending: false })
+  .limit(limit);
+
+if (cursor) {
+  // Keyset tuple comparison has no direct tuple-lt in supabase-js; expressed
+  // as the equivalent OR of "strictly older" / "same instant, smaller id" —
+  // this is the standard (added_at, id) < (cursor) expansion, not a shortcut.
+  query = query.or(
+    `added_at.lt.${cursor.addedAt},and(added_at.eq.${cursor.addedAt},id.lt.${cursor.id})`,
+  );
+}
+
+const { data, error } = await query;
+if (error) throw new Error(error.message);
+```
+
+`!inner` on `lists` is load-bearing here — without it, a `list_items` row whose parent list is private would return with `lists: null` rather than being excluded, since `.eq('lists.is_public', true)` alone only filters which embedded row is attached, not whether the parent `list_items` row is returned at all. `!inner` converts the embed into an inner join, so a non-matching (private) parent excludes the row entirely — this must be verified against a real private-list fixture in the unit test (see Testing), not assumed from the client library's documentation alone, since this codebase has no prior usage of `!inner` to check the assumption against.
+
+**Step 2 — batch-fetch owner profiles for the page's distinct `owner_id`s:**
+
+```ts
+const ownerIds = [...new Set(data.map((row) => row.lists.owner_id))];
+const { data: profiles, error: profileError } = await client
+  .from('public_profiles')
+  .select('id, username, avatar_url')
+  .in('id', ownerIds);
+if (profileError) throw new Error(profileError.message);
+
+const profileById = new Map(profiles.map((p) => [p.id, p]));
+```
+
+This is one extra round trip per page (not per row — bounded by the page's distinct owner count, at most `limit`), assembled in application code rather than the database, matching the flat-query-then-join-in-JS pattern already used for cross-cutting reads elsewhere in this feature (e.g. `ListDetailPage` resolving each item's product via `getProductBySku` after the DB read, not inside the query).
+
+New helper in `lib/lists.ts`, combining both steps:
 
 ```ts
 export async function getPublicPinsFeed(
@@ -83,9 +125,11 @@ export async function getPublicPinsFeed(
 
 `limit = 24` chosen as a 3-wide-grid-friendly multiple (matches the `sm:grid-cols-2`/`lg:grid-cols-3` step below with clean row counts at each breakpoint), not a load-bearing threshold — free to tune at implementation time, unlike the confidence/retry constants CLAUDE.md Rule 3 is concerned with.
 
-`PublicPinRow` is a new type in `lib/supabase/types.ts` matching the query shape above. Supabase's query builder expresses the join as `list_items.select('*, lists!inner(id, public_id, name, is_public, public_profiles!inner(id, username, avatar_url))').eq('lists.is_public', true)`, ordered and keyset-filtered as above.
+`PublicPinRow` is a new type in `lib/supabase/types.ts`, assembled from the two steps above (`list_items` fields + `lists.public_id`/`name` + the matched `profileById` entry).
 
-`nextCursor` is `null` when the page returned fewer than `limit` rows (end of feed).
+`nextCursor` is `null` when the page returned fewer than `limit` rows (end of feed); otherwise it's the `(added_at, id)` of the last row in `data`.
+
+`list_items.id`/`added_at` column types were confirmed against `information_schema.columns` on the live project (not inherited from the 2026-08-22 spec's prose): `id uuid default gen_random_uuid()`, `added_at timestamptz default now()`. `id` is therefore a random v4 UUID, not sortable by insertion order. As a tie-breaker this is still correct (it makes the ordering stable and gap-free, which is all keyset pagination strictly requires), but two pins added in the same instant will tie-break in random UUID order, not true insertion order. The feed is therefore stable and duplicate/gap-free across pages, but not perfectly chronological down to sub-timestamp granularity — an acceptable, worth-stating tradeoff, not a bug.
 
 ### Rule 6 invariant
 
@@ -129,7 +173,7 @@ A link to `/discover` is added to the main site header nav (placement/label — 
 
 ## Testing
 
-- `getPublicPinsFeed` unit test: private-list pins never appear; keyset cursor produces no duplicates/gaps across two sequential page fetches when new pins are inserted between them (the property offset pagination would get wrong).
+- `getPublicPinsFeed` unit test: seed one public and one private list, each with a distinct known `list_items.id`; assert the private list's item id is absent from the returned `pins` (not merely that `pins.length` matches an expected count, which would pass even under an RLS-bypass regression using a service-role client). Also: the `!inner` join on `lists` must be exercised against this fixture to confirm a private-parent row is excluded entirely, not returned with a null `lists` field. Keyset cursor produces no duplicates/gaps across two sequential page fetches when new pins are inserted between them (the property offset pagination would get wrong).
 - Rule 6 invariant test (same pattern as list detail page): a `list_items` row whose `sku` isn't in the live export renders as "no longer available" in the feed rather than being dropped or crashing.
 - `SaveToListButton` on a feed card: logged-out click redirects to `/login?next=/discover`; logged-in click optimistically saves, matching its existing behavior — no new test needed for the button itself, only that `PinCard` wires its props correctly.
 - Rule 7 (browser verification): visit `/discover` logged out (see pins, click through to a list and a profile, click a pin's save icon → redirected to login); log in and repeat (save a pin from the feed to a list, confirm it shows up on `/account/lists`); scroll to trigger a second page load and confirm no duplicate/missing pins across the boundary.
