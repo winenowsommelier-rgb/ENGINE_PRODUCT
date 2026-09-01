@@ -84,6 +84,19 @@ let query = client
   .limit(limit);
 
 if (cursor) {
+  // cursor is client-supplied (round-tripped through a public, unauthenticated
+  // /discover page and loadMorePinsAction) and gets string-interpolated into a
+  // PostgREST `or=` filter, whose grammar uses comma/paren/period as syntax.
+  // An unvalidated cursor is a filter-injection vector -- e.g. a crafted
+  // addedAt containing a comma could inject extra OR-branches and widen the
+  // query beyond the intended keyset window. RLS still bounds the final
+  // result to public lists regardless, but this must still be rejected
+  // before it reaches the filter string, not relied on RLS as the only
+  // backstop. Validate BOTH fields before building the filter:
+  const isValidTimestamp = !Number.isNaN(Date.parse(cursor.addedAt));
+  const isValidUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cursor.id);
+  if (!isValidTimestamp || !isValidUuid) throw new Error('Invalid pagination cursor');
+
   // Keyset tuple comparison has no direct tuple-lt in supabase-js; expressed
   // as the equivalent OR of "strictly older" / "same instant, smaller id" —
   // this is the standard (added_at, id) < (cursor) expansion, not a shortcut.
@@ -102,6 +115,8 @@ if (error) throw new Error(error.message);
 
 ```ts
 const ownerIds = [...new Set(data.map((row) => row.lists.owner_id))];
+if (ownerIds.length === 0) return { pins: [], nextCursor: null }; // page 1 empty feed, or a page whose lists were all deleted between steps
+
 const { data: profiles, error: profileError } = await client
   .from('public_profiles')
   .select('id, username, avatar_url')
@@ -112,6 +127,8 @@ const profileById = new Map(profiles.map((p) => [p.id, p]));
 ```
 
 This is one extra round trip per page (not per row — bounded by the page's distinct owner count, at most `limit`), assembled in application code rather than the database, matching the flat-query-then-join-in-JS pattern already used for cross-cutting reads elsewhere in this feature (e.g. `ListDetailPage` resolving each item's product via `getProductBySku` after the DB read, not inside the query).
+
+A `list_items`/`lists` row whose `owner_id` has no matching entry in `public_profiles` (e.g. a profile deleted in the narrow window between Step 1 and Step 2, or any other orphaned-owner edge case) resolves to `profileById.get(...)` returning `undefined`. `PinCard` (see Page structure below) must guard this the same way it guards a missing product — render an "unavailable" state for the attribution rather than crashing on a null username.
 
 New helper in `lib/lists.ts`, combining both steps:
 
@@ -163,7 +180,7 @@ actions/lists.ts               — add loadMorePinsAction(cursor) server action
 
 **`PinCard`** (server-renderable, no client state of its own beyond what `SaveToListButton` needs):
 - Thumbnail + product name + price (mirrors `ListItemRow`'s resolve-sale display), or "No longer available" state per the Rule 6 guard above.
-- "Pinned by {username}" with avatar, linking to `/u/[username]`. `avatar_url` is nullable — falls back to the same initial-letter avatar treatment already used on `/u/[username]/page.tsx`, not a new empty state. This matters more here than on the profile page: a dense scrolling feed with dozens of cards makes a missing-fallback broken-image state far more visible than a single profile header.
+- "Pinned by {username}" with avatar, linking to `/u/[username]`. `avatar_url` is nullable — falls back to the same initial-letter avatar treatment already used on `/u/[username]/page.tsx`, not a new empty state. This matters more here than on the profile page: a dense scrolling feed with dozens of cards makes a missing-fallback broken-image state far more visible than a single profile header. If the pin's profile lookup came back `undefined` (see Step 2's orphaned-owner edge case above), the attribution line renders as unavailable rather than crashing on a missing username — same defensive posture as the Rule 6 product guard, applied to the owner side of the row instead of the product side.
 - List name, linking to `/lists/[public_id]`.
 - `SaveToListButton` in the corner, passed `sku`, `isLoggedIn`, `userLists` — identical props contract to its existing PDP/ProductCard usage, no changes to that component required.
 
@@ -175,6 +192,7 @@ A link to `/discover` is added to the main site header nav (placement/label — 
 
 - `getPublicPinsFeed` unit test: seed one public and one private list, each with a distinct known `list_items.id`; assert the private list's item id is absent from the returned `pins` (not merely that `pins.length` matches an expected count, which would pass even under an RLS-bypass regression using a service-role client). Also: the `!inner` join on `lists` must be exercised against this fixture to confirm a private-parent row is excluded entirely, not returned with a null `lists` field. Keyset cursor produces no duplicates/gaps across two sequential page fetches when new pins are inserted between them (the property offset pagination would get wrong).
 - Rule 6 invariant test (same pattern as list detail page): a `list_items` row whose `sku` isn't in the live export renders as "no longer available" in the feed rather than being dropped or crashing.
+- Cursor validation test: `getPublicPinsFeed` rejects a malformed cursor (non-ISO `addedAt`, non-UUID `id`, or a value crafted with filter-syntax characters like a stray comma/paren) before it reaches the `.or()` filter string, rather than passing it through — this is the fix for the filter-injection risk identified in the second review pass, and needs its own test to stay fixed.
 - `SaveToListButton` on a feed card: logged-out click redirects to `/login?next=/discover`; logged-in click optimistically saves, matching its existing behavior — no new test needed for the button itself, only that `PinCard` wires its props correctly.
 - Rule 7 (browser verification): visit `/discover` logged out (see pins, click through to a list and a profile, click a pin's save icon → redirected to login); log in and repeat (save a pin from the feed to a list, confirm it shows up on `/account/lists`); scroll to trigger a second page load and confirm no duplicate/missing pins across the boundary.
 
