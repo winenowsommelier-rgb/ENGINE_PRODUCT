@@ -30,7 +30,7 @@ Existing pieces this design reuses without modification:
 
 ## Non-goals (deferred)
 
-- Deduplicating multiple pins of the same product into one "saved by N people" card. V1 is a stream of pins, not products — a product pinned by 3 users appears as 3 separate cards.
+- Deduplicating multiple pins of the same product into one "saved by N people" card. V1 is a stream of pins, not products — a product pinned by 3 users appears as 3 separate cards. This applies even when the same SKU is pinned both publicly (by one user) and privately (by another) — the private pin never appears (filtered by the `lists.is_public` join condition) and the public one renders normally; no `DISTINCT ON (sku)` or similar collapsing should be added, as that would silently violate this non-goal.
 - Randomized/shuffled ordering. V1 is strictly `added_at desc`.
 - Any moderation or admin visibility into this feed (that's item 5, the separate admin panel, not designed here).
 - True masonry (variable-height, packed) layout — v1 uses a responsive grid consistent with the existing `ListCard`/profile-page grid.
@@ -40,7 +40,23 @@ Existing pieces this design reuses without modification:
 
 ### Data access
 
-No schema change, no new RLS policy. `list_items` already has no RLS grant of its own beyond visibility through its parent `lists` row, so a straight join reproduces the correct anonymous-safe filtering:
+No schema change, no new RLS policy. Verified directly against the live `WNLQ9 PI DB` Supabase project (`dsyplzckfezcxiuikkfm`) via `pg_policies` on 2026-09-01 — the actual deployed policies, not inherited from the 2026-08-22 spec's prose:
+
+```
+list_items_select_via_parent_list (SELECT):
+  EXISTS (SELECT 1 FROM lists l WHERE l.id = list_items.list_id
+          AND (l.is_public = true OR l.owner_id = auth.uid()))
+
+lists_select_public_or_own (SELECT):
+  is_public = true OR owner_id = auth.uid()
+
+profiles: only "profiles_select_own" (id = auth.uid()) exists — no public
+grant on the base table. Public reads go through the public_profiles VIEW
+(SELECT id, username, avatar_url FROM get_public_profiles(...)), confirmed
+to expose only those three columns, matching the 2026-08-22 spec's intent.
+```
+
+This confirms `list_items` has no RLS grant of its own beyond visibility through its parent `lists` row, so a straight join reproduces the correct anonymous-safe filtering:
 
 ```sql
 select li.id, li.sku, li.quantity, li.added_at,
@@ -65,6 +81,8 @@ export async function getPublicPinsFeed(
 ): Promise<{ pins: PublicPinRow[]; nextCursor: { addedAt: string; id: string } | null }>
 ```
 
+`limit = 24` chosen as a 3-wide-grid-friendly multiple (matches the `sm:grid-cols-2`/`lg:grid-cols-3` step below with clean row counts at each breakpoint), not a load-bearing threshold — free to tune at implementation time, unlike the confidence/retry constants CLAUDE.md Rule 3 is concerned with.
+
 `PublicPinRow` is a new type in `lib/supabase/types.ts` matching the query shape above. Supabase's query builder expresses the join as `list_items.select('*, lists!inner(id, public_id, name, is_public, public_profiles!inner(id, username, avatar_url))').eq('lists.is_public', true)`, ordered and keyset-filtered as above.
 
 `nextCursor` is `null` when the page returned fewer than `limit` rows (end of feed).
@@ -72,6 +90,12 @@ export async function getPublicPinsFeed(
 ### Rule 6 invariant
 
 Same guard as the list detail page: a pin whose `sku` no longer resolves via `getProductBySku` (discontinued product) renders as "no longer available" and is excluded from being actionable (no `SaveToListButton`, since there's nothing to save), but is not dropped from the feed silently — it still occupies its chronological slot so the invariant ("every list_items row either renders or is explicitly marked unavailable") holds here exactly as it does on `/lists/[public_id]`.
+
+`getProductBySku` (`lib/catalog-data.ts`) is a synchronous in-memory `Map.get()` against the already-loaded JSON export, not a network/DB round trip — calling it once per card in a render loop (as `ListDetailPage` already does) is O(1) per call, not an N+1 query. Noted explicitly so a future reader doesn't "fix" this into an unnecessary async batch-fetch.
+
+### Visibility and deletion races during pagination
+
+Each page of the feed is a fresh, independently-RLS-filtered query. If a list is toggled private, or deleted, between the viewer loading page 1 and requesting page 2, that list's pins simply stop appearing in the later page — `list_items` cascades on `lists` delete (per the 2026-08-22 schema), so there's no dangling reference, and RLS re-evaluates visibility on every query rather than trusting client-held state. Neither case is a bug or needs special handling; it's the same property that makes the keyset cursor safe against *insertion* races, applied to removal/visibility-change instead. No stale card the viewer already has on screen is retroactively hidden (v1 does not poll already-rendered cards for revocation) — the same "already visible, not further verified" tradeoff every other page in this feature accepts.
 
 ### Page structure
 
@@ -95,7 +119,7 @@ actions/lists.ts               — add loadMorePinsAction(cursor) server action
 
 **`PinCard`** (server-renderable, no client state of its own beyond what `SaveToListButton` needs):
 - Thumbnail + product name + price (mirrors `ListItemRow`'s resolve-sale display), or "No longer available" state per the Rule 6 guard above.
-- "Pinned by {username}" with avatar, linking to `/u/[username]`.
+- "Pinned by {username}" with avatar, linking to `/u/[username]`. `avatar_url` is nullable — falls back to the same initial-letter avatar treatment already used on `/u/[username]/page.tsx`, not a new empty state. This matters more here than on the profile page: a dense scrolling feed with dozens of cards makes a missing-fallback broken-image state far more visible than a single profile header.
 - List name, linking to `/lists/[public_id]`.
 - `SaveToListButton` in the corner, passed `sku`, `isLoggedIn`, `userLists` — identical props contract to its existing PDP/ProductCard usage, no changes to that component required.
 
@@ -113,4 +137,5 @@ A link to `/discover` is added to the main site header nav (placement/label — 
 ## Rollout
 
 - No paid API spend, no schema migration — CLAUDE.md Rules 1/4/10 don't apply.
-- No new RLS policy is introduced (the query relies entirely on existing `lists`/`list_items`/`public_profiles` policies), so this stays out of the auth hyper-scrutiny zone in the sense of *new* surface area — but the join must be verified at implementation time to confirm a private list's items are actually excluded end-to-end (automated test above), since this is the first place `list_items` is queried across owners rather than within one list's or one user's scope.
+- No new RLS policy is introduced. The exact deployed policy text was pulled from `pg_policies` against the live `WNLQ9 PI DB` project on 2026-09-01 (see Data access above) rather than trusted from the 2026-08-22 spec's prose — this is the first place `list_items` is queried across owners rather than within one list's or one user's scope, so CLAUDE.md's auth hyper-scrutiny zone applies to the *verification*, even though no new policy is written. The automated test in Testing above (private-list pins never appear) still guards against future policy drift, since a verified-correct policy today doesn't guarantee it stays that way.
+- These policies exist only as applied state on the live Supabase project — no `.sql` migration file for `lists`/`list_items`/`profiles`/`public_profiles` is currently tracked in `supabase/migrations/`. Not a blocker for this spec (the live policies are the source of truth checked above), but a pre-existing gap worth closing separately: capture the current schema+RLS as a baseline migration so future changes are diffable instead of only verifiable by live query.
