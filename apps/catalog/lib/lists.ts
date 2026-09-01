@@ -1,5 +1,20 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { ListRow, ListItemRow } from '@/lib/supabase/types';
+import type { ListRow, ListItemRow, PublicPinRow } from '@/lib/supabase/types';
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Cursor for getPublicPinsFeed's keyset pagination is client-supplied
+ * (round-tripped through the public, unauthenticated /discover page and
+ * loadMorePinsAction) and gets string-interpolated into a PostgREST `or=`
+ * filter, whose grammar uses comma/paren/period as syntax. An unvalidated
+ * cursor is a filter-injection vector -- see the design spec's "Data access"
+ * section for the full reasoning. Reject anything that isn't a genuine
+ * ISO timestamp + UUID pair before it ever reaches the filter string.
+ */
+export function isValidPinsCursor(cursor: { addedAt: string; id: string }): boolean {
+  return !Number.isNaN(Date.parse(cursor.addedAt)) && UUID_RE.test(cursor.id);
+}
 
 export function defaultListName(username: string): string {
   return `${username}'s list`;
