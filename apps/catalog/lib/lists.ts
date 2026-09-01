@@ -162,3 +162,104 @@ export async function upsertListItem(
     .eq('id', listId);
   if (touchError) throw new Error(touchError.message);
 }
+
+/**
+ * A page of public pins across ALL users' public lists, newest first.
+ *
+ * Deliberately NOT a single nested/embedded query (list_items -> lists ->
+ * public_profiles). PostgREST embedding requires a real FK relationship;
+ * list_items -> lists is one, but lists -> public_profiles is not (it's a
+ * view, not an FK target of lists.owner_id). This codebase also has zero
+ * precedent anywhere for embedded/nested select() queries -- every existing
+ * query in this file is flat. So this does the join PostgREST *can* do
+ * (list_items -> lists via !inner) in one query, then batches a second flat
+ * query for owner profiles by distinct owner_id -- same shape as
+ * ListDetailPage resolving each item's product via getProductBySku after
+ * the DB read, not inside the query. See the design spec's "Data access"
+ * section for the full history of why this isn't the nested-embed version.
+ */
+export async function getPublicPinsFeed(
+  client: SupabaseClient,
+  cursor?: { addedAt: string; id: string },
+  limit = 24,
+): Promise<{ pins: PublicPinRow[]; nextCursor: { addedAt: string; id: string } | null }> {
+  if (cursor && !isValidPinsCursor(cursor)) {
+    throw new Error('Invalid pagination cursor');
+  }
+
+  let query = client
+    .from('list_items')
+    .select('id, sku, quantity, added_at, lists!inner(public_id, name, owner_id, is_public)')
+    .eq('lists.is_public', true)
+    .order('added_at', { ascending: false })
+    .order('id', { ascending: false })
+    .limit(limit);
+
+  if (cursor) {
+    // Keyset tuple comparison (added_at, id) < (cursor.addedAt, cursor.id)
+    // has no direct tuple-lt in supabase-js; expressed as the equivalent
+    // OR of "strictly older" / "same instant, smaller id".
+    query = query.or(
+      `added_at.lt.${cursor.addedAt},and(added_at.eq.${cursor.addedAt},id.lt.${cursor.id})`,
+    );
+  }
+
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+
+  type RawRow = {
+    id: string;
+    sku: string;
+    quantity: number;
+    added_at: string;
+    lists: { public_id: string; name: string; owner_id: string; is_public: boolean };
+  };
+
+  // list_items -> lists is many-to-one (a list_items row has exactly one
+  // parent list via list_id), so PostgREST embeds it as a singular object,
+  // not an array -- but this codebase has no generated Supabase types and
+  // no prior usage of !inner anywhere to confirm that against, so the cast
+  // below is paired with a runtime shape check rather than trusted blindly.
+  // A wrong assumption here would otherwise silently null every pin's owner
+  // (row.lists.owner_id reading as undefined off an array) with no type
+  // error to catch it -- exactly the kind of silent-failure risk this
+  // feature's spec review process was built to catch. Fail loudly instead.
+  const rawRows = (data ?? []) as unknown[];
+  const rows: RawRow[] = rawRows.map((r) => {
+    const row = r as { id: string; sku: string; quantity: number; added_at: string; lists: unknown };
+    if (Array.isArray(row.lists)) {
+      throw new Error(
+        'getPublicPinsFeed: expected lists!inner embed as a singular object, got an array -- ' +
+          'PostgREST embed shape assumption was wrong, fix the RawRow type and mapping below',
+      );
+    }
+    return row as RawRow;
+  });
+
+  if (rows.length === 0) return { pins: [], nextCursor: null };
+
+  const ownerIds = [...new Set(rows.map((row) => row.lists.owner_id))];
+  const profileById = new Map<string, { id: string; username: string; avatar_url: string | null }>();
+  if (ownerIds.length > 0) {
+    const { data: profiles, error: profileError } = await client
+      .from('public_profiles')
+      .select('id, username, avatar_url')
+      .in('id', ownerIds);
+    if (profileError) throw new Error(profileError.message);
+    for (const p of profiles ?? []) profileById.set(p.id, p);
+  }
+
+  const pins: PublicPinRow[] = rows.map((row) => ({
+    id: row.id,
+    sku: row.sku,
+    quantity: row.quantity,
+    added_at: row.added_at,
+    list: { public_id: row.lists.public_id, name: row.lists.name },
+    owner: profileById.get(row.lists.owner_id) ?? null,
+  }));
+
+  const last = rows[rows.length - 1];
+  const nextCursor = rows.length < limit ? null : { addedAt: last.added_at, id: last.id };
+
+  return { pins, nextCursor };
+}
