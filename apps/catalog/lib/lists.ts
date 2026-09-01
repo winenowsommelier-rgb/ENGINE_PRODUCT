@@ -3,6 +3,16 @@ import type { ListRow, ListItemRow, PublicPinRow } from '@/lib/supabase/types';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// Strictly anchored ISO-8601 timestamp (e.g. 2026-09-01T12:00:00.000Z).
+// Deliberately NOT `Date.parse`: Date.parse is far more permissive than ISO
+// and accepts loosely-structured date strings that can themselves carry
+// comma/paren filter syntax (e.g. 'Wed,or(x.eq.1) 01 Sep 2026' parses to a
+// valid timestamp under Date.parse), which would defeat the exact
+// filter-injection protection this function exists to provide. This regex
+// cannot itself contain the characters PostgREST's `or=` grammar treats as
+// syntax, so nothing that matches it can carry an injected filter.
+const ISO_TIMESTAMP_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/;
+
 /**
  * Cursor for getPublicPinsFeed's keyset pagination is client-supplied
  * (round-tripped through the public, unauthenticated /discover page and
@@ -13,7 +23,7 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
  * ISO timestamp + UUID pair before it ever reaches the filter string.
  */
 export function isValidPinsCursor(cursor: { addedAt: string; id: string }): boolean {
-  return !Number.isNaN(Date.parse(cursor.addedAt)) && UUID_RE.test(cursor.id);
+  return ISO_TIMESTAMP_RE.test(cursor.addedAt) && UUID_RE.test(cursor.id);
 }
 
 export function defaultListName(username: string): string {
