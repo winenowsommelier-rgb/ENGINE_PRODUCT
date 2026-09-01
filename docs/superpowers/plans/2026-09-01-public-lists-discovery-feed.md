@@ -193,13 +193,35 @@ export async function getPublicPinsFeed(
 
   const { data, error } = await query;
   if (error) throw new Error(error.message);
-  const rows = (data ?? []) as unknown as Array<{
+
+  type RawRow = {
     id: string;
     sku: string;
     quantity: number;
     added_at: string;
     lists: { public_id: string; name: string; owner_id: string; is_public: boolean };
-  }>;
+  };
+
+  // list_items -> lists is many-to-one (a list_items row has exactly one
+  // parent list via list_id), so PostgREST embeds it as a singular object,
+  // not an array -- but this codebase has no generated Supabase types and
+  // no prior usage of !inner anywhere to confirm that against, so the cast
+  // below is paired with a runtime shape check rather than trusted blindly.
+  // A wrong assumption here would otherwise silently null every pin's owner
+  // (row.lists.owner_id reading as undefined off an array) with no type
+  // error to catch it -- exactly the kind of silent-failure risk this
+  // feature's spec review process was built to catch. Fail loudly instead.
+  const rawRows = (data ?? []) as unknown[];
+  const rows: RawRow[] = rawRows.map((r) => {
+    const row = r as { id: string; sku: string; quantity: number; added_at: string; lists: unknown };
+    if (Array.isArray(row.lists)) {
+      throw new Error(
+        'getPublicPinsFeed: expected lists!inner embed as a singular object, got an array -- ' +
+          'PostgREST embed shape assumption was wrong, fix the RawRow type and mapping below',
+      );
+    }
+    return row as RawRow;
+  });
 
   if (rows.length === 0) return { pins: [], nextCursor: null };
 
@@ -233,7 +255,7 @@ export async function getPublicPinsFeed(
 - [ ] **Step 7: Typecheck**
 
 Run: `cd apps/catalog && npm run typecheck`
-Expected: no new errors. If the Supabase-js generated types complain about `lists!inner(...)`'s shape, cast at the query boundary as shown (`as unknown as Array<...>`) rather than widening the function's public return type — the cast is scoped to the raw-row shape, not `PublicPinRow`.
+Expected: no new errors. The `RawRow`/`Array.isArray` guard above is deliberately narrow — it's scoped to the raw-row shape, not `PublicPinRow` — so it shouldn't force any wider type change elsewhere.
 
 - [ ] **Step 8: Commit**
 
@@ -297,15 +319,34 @@ Create `apps/catalog/components/lists/__tests__/PinCard.test.tsx`:
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { PinCard } from '../PinCard';
+import { PriceUnlockProvider } from '@/components/PriceUnlockProvider';
 import type { PublicPinRow } from '@/lib/supabase/types';
 import type { PublicProduct } from '@/lib/types';
 
 vi.mock('@/lib/catalog-data', () => ({
   getProductBySku: vi.fn(),
 }));
-vi.mock('@/components/PriceUnlockProvider', () => ({
-  usePriceUnlock: () => ({ unlocked: true, openModal: vi.fn() }),
+
+// Matches the existing mock idiom in components/__tests__/ProductCard.test.tsx
+// -- stub next/image (which errors outside a real Next.js runtime), but let
+// StorefrontImage's own placeholder/error logic run for real rather than
+// mocking StorefrontImage itself.
+vi.mock('next/image', () => ({
+  __esModule: true,
+  default: (props: Record<string, unknown>) => {
+    const { src, alt } = props as { src: string; alt: string };
+    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+    return <img src={src} alt={alt} />;
+  },
 }));
+
+// PinCard renders prices through PriceDisplay, which requires a
+// PriceUnlockProvider ancestor -- same real-provider-with-sessionStorage
+// pattern ProductCard.test.tsx uses, not a mocked usePriceUnlock.
+function renderUnlocked(ui: React.ReactElement) {
+  sessionStorage.setItem('wnlq9_price_unlocked', '1');
+  return render(<PriceUnlockProvider>{ui}</PriceUnlockProvider>);
+}
 
 const basePin: PublicPinRow = {
   id: 'pin-1',
@@ -327,7 +368,7 @@ describe('PinCard', () => {
     const { getProductBySku } = await import('@/lib/catalog-data');
     vi.mocked(getProductBySku).mockReturnValue(baseProduct);
 
-    render(<PinCard pin={basePin} isLoggedIn={false} userLists={[]} />);
+    renderUnlocked(<PinCard pin={basePin} isLoggedIn={false} userLists={[]} />);
 
     expect(screen.getByText('Chateau Test 2020')).toBeInTheDocument();
     expect(screen.getByText(/alice/i)).toBeInTheDocument();
@@ -338,7 +379,7 @@ describe('PinCard', () => {
     const { getProductBySku } = await import('@/lib/catalog-data');
     vi.mocked(getProductBySku).mockReturnValue(undefined);
 
-    render(<PinCard pin={basePin} isLoggedIn={false} userLists={[]} />);
+    renderUnlocked(<PinCard pin={basePin} isLoggedIn={false} userLists={[]} />);
 
     expect(screen.getByText(/no longer available/i)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /save to list/i })).not.toBeInTheDocument();
@@ -348,7 +389,7 @@ describe('PinCard', () => {
     const { getProductBySku } = await import('@/lib/catalog-data');
     vi.mocked(getProductBySku).mockReturnValue(baseProduct);
 
-    render(<PinCard pin={{ ...basePin, owner: null }} isLoggedIn={false} userLists={[]} />);
+    renderUnlocked(<PinCard pin={{ ...basePin, owner: null }} isLoggedIn={false} userLists={[]} />);
 
     expect(screen.getByText(/unavailable/i)).toBeInTheDocument();
   });
@@ -369,6 +410,7 @@ import Link from 'next/link';
 import { getProductBySku } from '@/lib/catalog-data';
 import { resolveSale } from '@/lib/price-tiers';
 import { PriceDisplay } from '@/components/PriceDisplay';
+import { StorefrontImage } from '@/components/StorefrontImage';
 import { SaveToListButton } from '@/components/lists/SaveToListButton';
 import type { PublicPinRow } from '@/lib/supabase/types';
 import type { ListRow } from '@/lib/supabase/types';
@@ -389,10 +431,7 @@ export function PinCard({
       {product ? (
         <>
           <Link href={`/product/${product.sku}`} className="relative block">
-            {product.image_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={product.image_url} alt={product.name} className="aspect-square w-full rounded-lg object-cover" />
-            ) : null}
+            <StorefrontImage src={product.image_url} alt={product.name} />
             <SaveToListButton
               sku={pin.sku}
               isLoggedIn={isLoggedIn}
@@ -470,6 +509,7 @@ Create `apps/catalog/components/lists/__tests__/PinGrid.test.tsx`:
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { PinGrid } from '../PinGrid';
+import { PriceUnlockProvider } from '@/components/PriceUnlockProvider';
 import type { PublicPinRow } from '@/lib/supabase/types';
 
 vi.mock('@/actions/lists', () => ({
@@ -478,9 +518,23 @@ vi.mock('@/actions/lists', () => ({
 vi.mock('@/lib/catalog-data', () => ({
   getProductBySku: vi.fn(() => ({ sku: 'X', name: 'X', price: 100 })),
 }));
-vi.mock('@/components/PriceUnlockProvider', () => ({
-  usePriceUnlock: () => ({ unlocked: true, openModal: vi.fn() }),
+// Same next/image stub as PinCard.test.tsx / ProductCard.test.tsx -- PinGrid
+// renders real PinCards, which render real StorefrontImages.
+vi.mock('next/image', () => ({
+  __esModule: true,
+  default: (props: Record<string, unknown>) => {
+    const { src, alt } = props as { src: string; alt: string };
+    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+    return <img src={src} alt={alt} />;
+  },
 }));
+
+// PinGrid renders real PinCards, which render prices through PriceDisplay --
+// needs a real PriceUnlockProvider ancestor, same pattern as PinCard.test.tsx.
+function renderUnlocked(ui: React.ReactElement) {
+  sessionStorage.setItem('wnlq9_price_unlocked', '1');
+  return render(<PriceUnlockProvider>{ui}</PriceUnlockProvider>);
+}
 
 function pin(id: string): PublicPinRow {
   return {
@@ -495,7 +549,7 @@ function pin(id: string): PublicPinRow {
 
 describe('PinGrid', () => {
   it('renders the initial pins', () => {
-    render(
+    renderUnlocked(
       <PinGrid
         initialPins={[pin('1'), pin('2')]}
         initialCursor={{ addedAt: '2026-09-01T00:00:00.000Z', id: '2' }}
@@ -513,7 +567,7 @@ describe('PinGrid', () => {
       nextCursor: null,
     });
 
-    render(
+    renderUnlocked(
       <PinGrid
         initialPins={[pin('1')]}
         initialCursor={{ addedAt: '2026-09-01T00:00:00.000Z', id: '1' }}
@@ -531,7 +585,7 @@ describe('PinGrid', () => {
   });
 
   it('does not render "Load more" when initialCursor is already null (feed exhausted)', () => {
-    render(<PinGrid initialPins={[pin('1')]} initialCursor={null} isLoggedIn={false} userLists={[]} />);
+    renderUnlocked(<PinGrid initialPins={[pin('1')]} initialCursor={null} isLoggedIn={false} userLists={[]} />);
     expect(screen.queryByRole('button', { name: /load more/i })).not.toBeInTheDocument();
   });
 });
@@ -720,6 +774,8 @@ where l.is_public = false
 limit 5;
 ```
 Then confirm that same `id` does NOT appear in `/discover`'s rendered output or in a manual call to `getPublicPinsFeed` against an anon-scoped client. If any private-list item is visible, STOP — this is the exact RLS/join failure mode the spec's three review rounds were trying to prevent; do not proceed to sign-off.
+
+Also confirm the `!inner` embed shape assumption in Task 2's code: load `/discover` with real seeded pins and check that owner attribution (username/avatar) actually renders correctly for every pin, not just "unavailable". If the `Array.isArray(row.lists)` runtime guard in `getPublicPinsFeed` throws during this walkthrough, that means the embed shape assumption (singular object, not array) was wrong — fix the `RawRow` type and mapping in Task 2 before proceeding, do not silence the guard.
 
 - [ ] **Step 3: Browser walkthrough — logged out**
 
