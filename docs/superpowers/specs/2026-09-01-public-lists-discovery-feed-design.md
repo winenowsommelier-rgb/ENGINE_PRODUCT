@@ -1,7 +1,7 @@
 # Public Lists Discovery Feed — Design Spec
 
 Date: 2026-09-01
-Status: Draft, pending spec review
+Status: Reviewed and revised across three rounds (RLS verification, query-mechanics fix, cursor-injection fix), price display decision resolved. Ready for user sign-off.
 Scope: Item 4 of the lists-v2 follow-on requests (see `project_lists_feature_v2_requests` memory). Builds on the accounts/lists sub-project (`2026-08-22-user-accounts-and-lists-design.md`, shipped, PR #111/#113/#114) and PR #119 (thumbnails, save-to-list animation, PDP pin icon — merged 2026-08-31).
 
 ## Context
@@ -18,8 +18,17 @@ Existing pieces this design reuses without modification:
 - `lib/lists.ts` — `getListItems`, `getListByPublicId`, `getUserLists`, all built on Postgres RLS that gates `list_items` reads through the parent `lists.is_public`/`owner_id` policy (no separate RLS grant on `list_items` itself).
 - `lib/catalog-data.ts` — `getProductBySku`, resolving a `sku` against the live JSON export (`data/live_products_export.json`, per CLAUDE.md Rule 9).
 - `lib/price-tiers.ts` — `resolveSale`, used identically to `ListItemRow`'s per-row price display.
+- `components/PriceDisplay.tsx` — the site-wide ฿-tier price-unlock gate (see Price display decision below).
 - `components/lists/SaveToListButton.tsx` — the pin/save action, already handling logged-out redirect, optimistic add, and multi-list picker. Used as-is on this page.
 - `components/lists/ListItemRow.tsx` / `ListCard.tsx` — sibling patterns this design's new `PinCard` follows structurally (not literally reused, since the data shape differs — see below).
+
+### Price display decision
+
+An earlier review pass asked whether `/discover`, as a new anonymous-first surface, needs to hide real prices from visitors who haven't unlocked pricing — flagged given this project's history with margin/price-leak incidents. Resolved: **no special-case needed, because the gate is already global, not page-scoped.**
+
+`PriceDisplay` (`components/PriceDisplay.tsx`) is documented as "the single chokepoint for rendering a price anywhere in the storefront" — it shows the real price when `usePriceUnlock().unlocked` is true, else the coarse `priceTierIcon` behind a click-to-unlock button. `PriceUnlockProvider` mounts once in `app/layout.tsx` (root layout, every route), with unlock state in `sessionStorage` — it is not conditional on being logged in, owning a list, or which page is being viewed. Confirmed `ListItemRow` (the list-detail page's per-row price) already renders through `PriceDisplay`, not a raw `formatPrice` call — so there is no existing "unlocked-by-default" list-scoped exception for `PinCard` to accidentally inherit.
+
+This is explicitly a **display gate, not a security boundary** (per `PriceUnlockProvider`'s own doc comment: the real price is already present in the page's data/HTML regardless of unlock state — a determined visitor can already find it in devtools on any page today). So `/discover` showing coarse ฿-icons to a not-yet-unlocked anonymous visitor, same as every other public product surface, is the correct and sufficient behavior — not a new leak, and not a new gate to build. **`PinCard`'s price line must render through `PriceDisplay` (matching `ListItemRow`'s existing call: `<PriceDisplay price={resolveSale(product.price, product.special_price)?.special ?? product.price} />`), not a raw `formatPrice`/inline price string** — this is the one concrete implementation requirement from this decision, called out explicitly so it isn't dropped as an unstated assumption.
 
 ## Goals
 
@@ -179,7 +188,7 @@ actions/lists.ts               — add loadMorePinsAction(cursor) server action
 - Responsive grid: same Tailwind grid classes as the `/u/[username]` page's `grid grid-cols-1 gap-4 sm:grid-cols-2`, extended with a `lg:grid-cols-3` or `4` step for a wider feed page (not a single fixed max-width column like the profile page, since this page is meant to browse, not just list one user's handful of lists).
 
 **`PinCard`** (server-renderable, no client state of its own beyond what `SaveToListButton` needs):
-- Thumbnail + product name + price (mirrors `ListItemRow`'s resolve-sale display), or "No longer available" state per the Rule 6 guard above.
+- Thumbnail + product name + price, rendered through `PriceDisplay` exactly as `ListItemRow` does (see Price display decision above — not a raw `formatPrice` call), or "No longer available" state per the Rule 6 guard above.
 - "Pinned by {username}" with avatar, linking to `/u/[username]`. `avatar_url` is nullable — falls back to the same initial-letter avatar treatment already used on `/u/[username]/page.tsx`, not a new empty state. This matters more here than on the profile page: a dense scrolling feed with dozens of cards makes a missing-fallback broken-image state far more visible than a single profile header. If the pin's profile lookup came back `undefined` (see Step 2's orphaned-owner edge case above), the attribution line renders as unavailable rather than crashing on a missing username — same defensive posture as the Rule 6 product guard, applied to the owner side of the row instead of the product side.
 - List name, linking to `/lists/[public_id]`.
 - `SaveToListButton` in the corner, passed `sku`, `isLoggedIn`, `userLists` — identical props contract to its existing PDP/ProductCard usage, no changes to that component required.
@@ -194,7 +203,7 @@ A link to `/discover` is added to the main site header nav (placement/label — 
 - Rule 6 invariant test (same pattern as list detail page): a `list_items` row whose `sku` isn't in the live export renders as "no longer available" in the feed rather than being dropped or crashing.
 - Cursor validation test: `getPublicPinsFeed` rejects a malformed cursor (non-ISO `addedAt`, non-UUID `id`, or a value crafted with filter-syntax characters like a stray comma/paren) before it reaches the `.or()` filter string, rather than passing it through — this is the fix for the filter-injection risk identified in the second review pass, and needs its own test to stay fixed.
 - `SaveToListButton` on a feed card: logged-out click redirects to `/login?next=/discover`; logged-in click optimistically saves, matching its existing behavior — no new test needed for the button itself, only that `PinCard` wires its props correctly.
-- Rule 7 (browser verification): visit `/discover` logged out (see pins, click through to a list and a profile, click a pin's save icon → redirected to login); log in and repeat (save a pin from the feed to a list, confirm it shows up on `/account/lists`); scroll to trigger a second page load and confirm no duplicate/missing pins across the boundary.
+- Rule 7 (browser verification): visit `/discover` logged out (see pins, click through to a list and a profile, click a pin's save icon → redirected to login); confirm prices render as ฿-tier icons, not real numbers, until the unlock passcode is entered — same as any other public product surface; log in and repeat (save a pin from the feed to a list, confirm it shows up on `/account/lists`); scroll to trigger a second page load and confirm no duplicate/missing pins across the boundary.
 
 ## Rollout
 
