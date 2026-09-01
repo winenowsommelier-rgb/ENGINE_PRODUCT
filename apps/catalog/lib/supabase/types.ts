@@ -28,3 +28,15 @@ export interface ListItemRow {
   quantity: number;
   added_at: string;
 }
+
+export interface PublicPinRow {
+  id: string;
+  sku: string;
+  quantity: number;
+  added_at: string;
+  list: {
+    public_id: string;
+    name: string;
+  };
+  owner: PublicProfile | null; // null when Step 2's profile lookup finds no match (orphaned owner_id) — see lib/lists.ts
+}
