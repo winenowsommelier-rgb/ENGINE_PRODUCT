@@ -5,7 +5,7 @@ rendering wrw6567gx.jpg = Riporta Nero D'Avola). Fixed repeatedly (commits
 0f4b327, edcf1fd, e9e11c9, cfeb215) but resurrected each time because a re-seed
 or DB revert reintroduced the borrowed URLs and NOTHING failed when it did.
 
-data/data mastefile WNLQ9/winenow-base-images-20260724.csv is the curated
+data/data mastefile WNLQ9/winenow-base-images-20260831.csv is the curated
 source of truth (see scripts/reconcile_image_urls.py). These tests assert
 downstream sources agree with it, so a regression breaks the build (Rule 6)
 instead of silently shipping the wrong bottle or a stale/missing item_url.
@@ -22,7 +22,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / "data" / "db" / "products.db"
 EXPORT = ROOT / "data" / "live_products_export.json"
-IMGCSV = ROOT / "data" / "data mastefile WNLQ9" / "winenow-base-images-20260724.csv"
+IMGCSV = ROOT / "data" / "data mastefile WNLQ9" / "winenow-base-images-20260831.csv"
 
 FIELDS = ("image_url", "magento_item_url", "websites")
 CSV_COL_FOR_FIELD = {

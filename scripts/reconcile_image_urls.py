@@ -43,7 +43,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / "data" / "db" / "products.db"
-IMGCSV = ROOT / "data" / "data mastefile WNLQ9" / "winenow-base-images-20260724.csv"
+IMGCSV = ROOT / "data" / "data mastefile WNLQ9" / "winenow-base-images-20260831.csv"
 
 SKU_RE = re.compile(r"/([a-z0-9_]+)\.jpg", re.I)
 
