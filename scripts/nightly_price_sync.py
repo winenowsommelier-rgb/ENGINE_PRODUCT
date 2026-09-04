@@ -28,7 +28,15 @@ SHEET_ID = "1m6JReDEdhTEk_VUno6tOU-DDlYhPxmL1RoU48VBljlU"
 SHEET_TAB = "MReport Masterfile"
 SUPABASE_URL = os.environ["SUPABASE_URL"]          # https://xxx.supabase.co
 SUPABASE_KEY = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
-GOOGLE_SA_JSON = os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"]  # full JSON string
+
+# Preferred source: a "Publish to web" CSV URL of the Masterfile
+# (…/spreadsheets/d/e/<id>/pub?...&output=csv). Needs NO Google auth, so it is
+# robust to service-account expiry and works from any machine/CI. Set
+# MASTERFILE_CSV_URL to enable; otherwise we fall back to the private-sheet
+# gspread path (which needs GOOGLE_SERVICE_ACCOUNT_JSON).
+MASTERFILE_CSV_URL = os.environ.get("MASTERFILE_CSV_URL", "").strip()
+# Lazy: only required by the gspread fallback, not the CSV path.
+GOOGLE_SA_JSON = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
 
 # Supabase batch size for upserts
 BATCH_SIZE = 500
@@ -116,10 +124,36 @@ class SyncResult:
 # ---------------------------------------------------------------------------
 # Sheet fetcher
 # ---------------------------------------------------------------------------
+def fetch_published_csv_rows(url: str) -> list[dict]:
+    """Fetch Masterfile rows from a published-to-web CSV URL (no auth).
+
+    Values are kept as strings (row_to_payload does its own numeric parsing),
+    matching the gspread path's numericise_ignore=["all"] behaviour.
+    """
+    import csv
+    import io
+    import urllib.request
+
+    with urllib.request.urlopen(url, timeout=60) as resp:
+        text = resp.read().decode("utf-8", "replace")
+    rows = list(csv.DictReader(io.StringIO(text)))
+    print(f"  Published CSV: {len(rows)} rows fetched", flush=True)
+    return rows
+
+
 def fetch_sheet_rows() -> list[dict]:
+    # Prefer the no-auth published CSV when configured.
+    if MASTERFILE_CSV_URL:
+        return fetch_published_csv_rows(MASTERFILE_CSV_URL)
+
     import gspread
     from google.oauth2.service_account import Credentials
 
+    if not GOOGLE_SA_JSON:
+        raise RuntimeError(
+            "Neither MASTERFILE_CSV_URL nor GOOGLE_SERVICE_ACCOUNT_JSON is set — "
+            "cannot fetch the Masterfile. Set MASTERFILE_CSV_URL to a published-CSV URL."
+        )
     sa_info = json.loads(GOOGLE_SA_JSON)
     scopes = [
         "https://spreadsheets.google.com/feeds",
@@ -229,6 +263,91 @@ def bulk_update(payloads: list[dict]) -> tuple[int, list[str]]:
 
 
 # ---------------------------------------------------------------------------
+# Incremental: keep only rows whose price/detail actually changed vs Supabase.
+# ---------------------------------------------------------------------------
+# Fields we compare to decide "did this row change". Enriched fields are NOT
+# here — this sync only ever touches price/cost/stock, never enrichment.
+_COMPARE_FIELDS = [
+    "price", "cost", "special_price", "sp_discount_pct",
+    "b2b_price", "b2b_margin_thb", "b2b_margin_pct", "b2b_discount_pct",
+    "margin_thb", "margin_pct",
+    "is_in_stock", "custom_stock_status", "wn_stock", "consign",
+]
+
+
+def _fetch_current(skus: list[str]) -> dict[str, dict]:
+    """Fetch current _COMPARE_FIELDS for the given SKUs from Supabase, keyed by sku."""
+    import urllib.request
+    base = f"{SUPABASE_URL}/rest/v1/products?select=sku,{','.join(_COMPARE_FIELDS)}"
+    out: dict[str, dict] = {}
+    offset, page = 0, 1000
+    while True:
+        req = urllib.request.Request(base, headers={
+            "apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Range-Unit": "items", "Range": f"{offset}-{offset + page - 1}",
+        })
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            rows = json.loads(resp.read().decode("utf-8"))
+        for r in rows:
+            out[str(r.get("sku"))] = r
+        if len(rows) < page:
+            break
+        offset += page
+    return out
+
+
+def _norm(v) -> str:
+    """Normalise a value for change comparison.
+
+    Numerics compare at 1-decimal precision so historical rounding differences
+    (e.g. a stored '4.0' vs a freshly computed '3.97' discount %) do NOT count
+    as a change — otherwise those rows would re-sync forever and defeat the
+    "only what changed" goal. A real price move of >=0.1 in any field still
+    trips the comparison. Non-numerics compare as trimmed strings.
+    """
+    if v is None or v == "":
+        return ""
+    try:
+        return f"{float(v):.1f}"
+    except (TypeError, ValueError):
+        return str(v).strip()
+
+
+def filter_changed(payloads: list[dict]) -> list[dict]:
+    """Return only payloads whose tracked fields differ from Supabase now.
+
+    Stamps updated_at on the changed rows so downstream incremental consumers
+    (and audit) see the real change time. Unchanged rows are dropped entirely —
+    this is the "only sync what actually changed" behaviour.
+    """
+    current = _fetch_current([p["sku"] for p in payloads])
+    changed: list[dict] = []
+    absent = 0
+    now_iso = datetime_now_iso()
+    for p in payloads:
+        cur = current.get(p["sku"])
+        if cur is None:
+            # SKU not in Supabase yet — a NEW product. This price-sync uses PATCH
+            # (update-only) and cannot create rows; new products must be onboarded
+            # by the ENGINE_PRODUCT product-import pipeline first. Skip + count so
+            # the gap is visible, don't error.
+            absent += 1
+            continue
+        if any(_norm(p.get(f)) != _norm(cur.get(f)) for f in _COMPARE_FIELDS):
+            p["updated_at"] = now_iso
+            changed.append(p)
+    if absent:
+        print(f"  NOTE: {absent} SKUs are in the Masterfile but not yet in Supabase "
+              f"(new products) — skipped; onboard them via ENGINE_PRODUCT first.", flush=True)
+    return changed
+
+
+def datetime_now_iso() -> str:
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).isoformat()
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 def run(dry_run: bool = False) -> SyncResult:
@@ -249,18 +368,29 @@ def run(dry_run: bool = False) -> SyncResult:
             continue
         payloads.append(p)
 
-    print(f"  Prepared {len(payloads)} rows to update", flush=True)
+    print(f"  Prepared {len(payloads)} rows from source", flush=True)
+
+    # Incremental: keep only rows whose price/detail actually changed vs Supabase.
+    print("  Diffing against current Supabase values...", flush=True)
+    changed = filter_changed(payloads)
+    print(f"  {len(changed)} rows changed (of {len(payloads)}) — syncing only those", flush=True)
 
     if dry_run:
         print("\n[DRY RUN] No writes performed.")
-        print(f"  Sample payload: {json.dumps(payloads[0], indent=2)}" if payloads else "  No payloads")
-        result.upserted = len(payloads)
+        print(f"  Sample changed payload: {json.dumps(changed[0], indent=2)}" if changed
+              else "  No changed rows — Supabase already matches the source.")
+        result.upserted = len(changed)
         result.duration_s = time.time() - t0
         return result
 
-    # Bulk update via direct Postgres — one round-trip for all rows
-    print("  Writing to Supabase via Postgres...", flush=True)
-    updated, errs = bulk_update(payloads)
+    if not changed:
+        print("  Nothing to write — Supabase already up to date.", flush=True)
+        result.duration_s = time.time() - t0
+        return result
+
+    # PATCH only the changed rows.
+    print(f"  Writing {len(changed)} changed rows to Supabase...", flush=True)
+    updated, errs = bulk_update(changed)
     result.upserted = updated
     result.errors.extend(errs)
     print(f"  ✓ {updated} rows updated", flush=True)
