@@ -1,0 +1,180 @@
+band~b1~1~LGN0077DR~Bombay Sapphire Gin~1249~1199~~England
+band~b1~2~LVK0181AE~Russian Standard Platinum Vodka~899~~~Russia
+band~b1~3~WSP1233AD~Wolf Blass Eaglehawk Cuvee Brut~395~~~Australia
+band~b1~4~WRW3122CH~Mcguigan Black Label Red~499~~~Australia
+band~b1~5~WRW0255AA~Baron Philippe de Rothschild Mouton Cadet Bordeaux Rouge~825~805~~France
+band~b1~6~WRW0203AH~Hardys Varietal Range Cabernet Sauvignon~399~~~Australia
+band~b1~7~WRW2369AD~Torbreck Shiraz Woodcutter's~1059~~~Australia
+band~b1~8~WSP1140AE~Follador Prosecco Farder Treviso Extra Dry Gold DOC~940~~91 JS~Italy
+band~b1~9~WRW1040AD~Wolf Blass Eaglehawk Cabernet Sauvignon~395~~~Australia
+band~b1~10~WWW0092AH~Hardys Varietal Range Chardonnay~399~~~Australia
+band~b2~1~WSP1096AD~Veuve Clicquot Brut Yellow Label~2339~~92 JS~France
+band~b2~2~WRW0211AH~Robert Mondavi Napa Valley Cabernet Sauvignon~2099~~92 JS~USA
+band~b2~3~WRW4683AD~Penfolds Bin 389 Cabernet Sauvignon/Shiraz~2999~~94 WE~Australia
+band~b2~4~WWW1197AD~Cloudy Bay Sauvignon Blanc~1699~~93 WS~New Zealand
+band~b2~5~WSP1104BU~Moet & Chandon Brut Imperial~2229~~~France
+band~b2~6~WRW6217FS~Pastourelle De Clerc Milon~2600~2405~91 JS~France
+band~b2~7~WRW5858FX~Granmonte The Orient Syrah~2599~~~Thailand
+band~b2~8~WRW2359BN~Glaetzer Amon-Ra~2100~~97 WA~Australia
+band~b2~9~WRW6957FJ~Georges Duboeuf Beaujolais Villages Nouveau~1589~~~France
+band~b2~10~WRW0066AC~Duckhorn Decoy Merlot~1700~1599~~USA
+band~b3~1~WRW5859FX~Granmonte Asoke Cabernet Sauvignon Syrah~3499~~~Thailand
+band~b3~2~WSP1167AD~Champagne Ruinart Blanc de Blancs~3615~~93 WS~France
+band~b3~3~WRW2348BN~Silver Oak Cabernet Sauvignon Alexander Valley~4500~4115~94 JS~USA
+band~b3~4~WSP5786BN~Louis Roederer Collection 245~3800~~94 WE~France
+band~b3~5~LWH0318CN~The Macallan 12 Year Old Double Cask~4999~~~Scotland
+band~b3~6~WRW4681AD~Penfolds Bin 407~3895~~93 WS~Australia
+band~b3~7~WRW2146AC~Caymus Napa Valley Cabernet Sauvignon~4400~3995~92 WS~USA
+band~b3~8~WRW3893AH~Robert Mondavi The Estate Oakville Cabernet Sauvignon~3649~~93 WA~USA
+band~b3~9~LWH0305BU~Jack Daniel's Old No.7 (3 L)~4649~~~USA
+band~b3~10~WSP1275BN~Taittinger Prestige Rose~3400~~91 WS~France
+band~b4~1~WRW6381FS~Chateau Clerc Milon 2020~6500~5475~97 JS~France
+band~b4~2~WRW1570BN~Chateau Latour a Pomerol 2018~5900~5669~95 JS~France
+band~b4~3~WRW0415HI~Antinori Tignanello IGT~7100~~~Italy
+band~b4~4~LWH0145BU~Johnnie Walker Gold Label XR 21~5799~~~Scotland
+band~b4~5~WRW2385AD~Torbreck Run Rig~8349~7159~97 WA~Australia
+band~b4~6~WRW5351BN~Silver Oak Cabernet Sauvignon Napa Valley 2018~6900~6035~97 JS~USA
+band~b4~7~WWW1433BN~Peter Michael Chardonnay Belle Cote~6300~~~USA
+band~b4~8~WSP1187FC~Laurent Perrier Cuvee Rose~5500~~~France
+band~b4~9~WRW6318FC~Louis Latour Chambolle-Musigny~5500~~92 JS~France
+band~b4~10~WRW6614GX~VIK Millahue~5999~~100 JS~Chile
+band~b5~1~LWH0364CN~The Macallan 18 Years Old Sherry Oak Cask~23899~23018~~Scotland
+band~b5~2~WSP5782BN~Louis Roederer Cristal Brut 2016~14800~~98 WE~France
+band~b5~3~WSP5780AD~Dom Perignon 2015~10415~~97 JS~France
+band~b5~4~WRW6222FS~Chateau Pichon Longueville Baron 2019~11500~9749~100 WE~France
+band~b5~5~WRW6219FS~Opus One Vintage 2012~24000~20115~97 JS~USA
+band~b5~6~WRW2301BN~Dominus Estate 2016~21400~18845~100 WA~USA
+band~b5~7~WWW6007AA~Chateau d'Yquem "Y" Bordeaux Blanc 2017~21550~~98 JS~France
+band~b5~8~LTQ0209GH~818 Tequila Eight Reserve~13818~~~Mexico
+band~b5~9~WRW2974BN~Dal Forno Romano Amarone della Valpolicella 2017~14800~13099~100 JS~Italy
+band~b5~10~WWW5091BN~Domaine Leflaive Bienvenues Batard Montrachet Grand Cru~51400~~95 WA~France
+type~red~1~WRW3122CH~Mcguigan Black Label Red~499~~~Australia
+type~red~2~WRW0255AA~Baron Philippe de Rothschild Mouton Cadet Bordeaux Rouge~825~805~~France
+type~red~3~WRW0203AH~Hardys Varietal Range Cabernet Sauvignon~399~~~Australia
+type~red~4~WRW2369AD~Torbreck Shiraz Woodcutter's~1059~~~Australia
+type~red~5~WRW1040AD~Wolf Blass Eaglehawk Cabernet Sauvignon~395~~~Australia
+type~red~6~WRW3305DD~Viu Manent Estate Collection Reserva Merlot~700~595~~Chile
+type~red~7~WRW2358BN~Glaetzer Bishop~1300~~93 JS~Australia
+type~red~8~WRW4679AD~Penfolds Bin 2~995~~~Australia
+type~red~9~WRW5859FX~Granmonte Asoke Cabernet Sauvignon Syrah~3499~~~Thailand
+type~red~10~WRW0282AD~Concha y Toro Reservado Cabernet Sauvignon~449~~~Chile
+type~white~1~WWW0092AH~Hardys Varietal Range Chardonnay~399~~~Australia
+type~white~2~WWW5371AB~Nollen Erben Mosel Riesling Spatlese~600~559~~Germany
+type~white~3~WWW0100AH~Robert Mondavi Private Selection Chardonnay~989~~~USA
+type~white~4~WWW2246BN~Greywacke Sauvignon Blanc~1000~~91 WE~New Zealand
+type~white~5~WWW2216BU~Brancott Estate Sauvignon Blanc~599~~~New Zealand
+type~white~6~WWW4855AD~Wolf Blass Eaglehawk Chardonnay~395~~~Australia
+type~white~7~WWW1197AD~Cloudy Bay Sauvignon Blanc~1699~~93 WS~New Zealand
+type~white~8~WWW1106AD~Matua Sauvignon Blanc~695~~~New Zealand
+type~white~9~WWW0153AD~Concha y Toro Reservado Chardonnay~449~~~Chile
+type~white~10~WWW0159AD~Concha y Toro Frontera Chardonnay~399~~~Chile
+type~sparkling~1~WSP1233AD~Wolf Blass Eaglehawk Cuvee Brut~395~~~Australia
+type~sparkling~2~WSP1140AE~Follador Prosecco Farder Treviso Extra Dry Gold DOC~940~~91 JS~Italy
+type~sparkling~3~WSP1131AA~Nua Vino Spumante Brut~515~~~Italy
+type~sparkling~4~WSP1096AD~Veuve Clicquot Brut Yellow Label~2339~~92 JS~France
+type~sparkling~5~WSP5677DD~Charles Du Lac Mousseux Brut~400~~~France
+type~sparkling~6~WSP1167AD~Champagne Ruinart Blanc de Blancs~3615~~93 WS~France
+type~sparkling~7~WSP5728FR~Champagne Alain Navarre Cuvee Tradition Brut~1299~~~France
+type~sparkling~8~WSP1104BU~Moet & Chandon Brut Imperial~2229~~~France
+type~sparkling~9~WSP5786BN~Louis Roederer Collection 245~3800~~94 WE~France
+type~sparkling~10~WSP0009AA~7 Cascine Prosecco Extra Dry Spumante~840~749~~Italy
+type~rose~1~WRS0035AB~Chateau d'Esclans Whispering Angel Rose~1100~1049~92 JS~France
+type~rose~2~WRS0237AH~Banrock Station Pink Moscato~349~~~Australia
+type~rose~3~WRS0047AB~Chamdeville Pinot Noir Rose~600~535~~France
+type~rose~4~WRS0217FX~Granmonte Sakuna Rose~1099~~~Thailand
+type~rose~5~WRS0079AC~Zeni Bardolino Chiaretto Classico DOC~899~~~Italy
+type~rose~6~WRS0109BN~Domaines Ott By Ott Rose~1100~~~France
+type~rose~7~WRS0104DD~Viu Manent Reserva Rose Malbec~700~595~~Chile
+type~rose~8~WRS0225AB~Donnafugata Rosa Dolce & Gabbana~2000~~91 JS~Italy
+type~rose~9~WRS0284AC~Sunnycliff Rose~469~~~Australia
+type~rose~10~WRS0246AD~Fantini Calalenta Merlot Rosato~849~~~Italy
+type~dessert~1~WDW0056BS~Bottega Moscato Vino dell'Amore Spumante~1000~~~Italy
+type~dessert~2~WDW0001AA~Batasiolo Moscato Spumante Dolce~755~725~~Italy
+type~dessert~3~WDW0032AB~Donnafugata Ben Rye Passito Di Pantelleria (375 ml)~2200~~95 WE~Italy
+type~dessert~4~WDW0059FX~Granmonte Bussaba Natural Sweet Wine (375 ml)~1099~~~Thailand
+type~dessert~5~WDW0073AE~Massolino Moscato D'Asti DOCG~1120~~~Italy
+type~dessert~6~WDW0148DR~Taylor's Fine Tawny Port~1599~~~Portugal
+type~dessert~7~WDW0105AA~Cantine Pellegrino Marsala Superiore Oro (500 ml)~800~~~Italy
+type~dessert~8~WDW0521AA~Fontanafredda Moscato D'Asti Le Fronde DOCG~870~~~Italy
+type~dessert~9~WDW0149DR~Taylor's Special Ruby Port~1599~~~Portugal
+type~dessert~10~WDW0043AF~Dow's Fine Ruby Port~1600~~~Portugal
+type~whisky~1~LWH0318CN~The Macallan 12 Year Old Double Cask~4999~~~Scotland
+type~whisky~2~LWH0220BU~Jack Daniel's Honey~1249~~~USA
+type~whisky~3~LWH0079BU~Johnnie Walker Gold Label Reserve~2199~~~Scotland
+type~whisky~4~LWH0329AA~Jim Beam White Label Straight Bourbon Whiskey~749~~~USA
+type~whisky~5~LWH0364CN~The Macallan 18 Years Old Sherry Oak Cask~23899~23018~~Scotland
+type~whisky~6~LWH0325AA~Suntory Whisky Kakubin~899~~~Japan
+type~whisky~7~LWH0076AA~Canadian Club~1199~~~Canada
+type~whisky~8~LWH0251AA~Suntory Whisky Chita~1799~~~Japan
+type~whisky~9~LWH0001AA~Glenfiddich 12 Years Old (With Box)~2399~~~Scotland
+type~whisky~10~LWH0205AD~Evan Williams Bourbon Black~999~~~USA
+type~gin~1~LGN0077DR~Bombay Sapphire Gin~1249~1199~~England
+type~gin~2~LGN0015BU~Gordon's Dry Gin~869~~~England
+type~gin~3~LGN0081BU~Beefeater London Dry Gin~939~~~England
+type~gin~4~LGN0348GR~Inchon Esprit Des Champs Tranquilles Gin~949~~~Thailand
+type~gin~5~LGN0063CN~Bulldog London Dry Gin~769~~~England
+type~gin~6~LGN0016BU~Tanqueray Gin~1189~~~England
+type~gin~7~LGN0061CM~Iron Balls Gin~1800~~~Thailand
+type~gin~8~LGN0214AA~Suntory Sui Japanese Craft Gin~835~~~Japan
+type~gin~9~LGN0017BU~Gilbey's Gin~399~~~England
+type~gin~10~LGN0194BU~Tanqueray Flor de Sevilla~1299~~~England
+type~rum~1~LRM0116DR~Bacardi Carta Blanca (White Rum)~809~~~Cuba
+type~rum~2~LRM0111BU~Malibu Original Coconut Rum~915~~~USA
+type~rum~3~LRM0035BU~Captain Morgan Jamaica Rum~799~~~Jamaica
+type~rum~4~LRM0266AB~The Pirates Silver Rum~700~~~Spain
+type~rum~5~LRM0143CP~Dead Man's Finger Spiced Rum~749~~~England
+type~rum~6~LRM0186BU~Havana Club 3 Years Rum~825~~~Cuba
+type~rum~7~LRM0053BU~Diplomatico Reserva Exclusiva~1999~~~Venezuela
+type~rum~8~LRM0161ES~Phraya Elements Rum~985~~~Thailand
+type~rum~9~LRM0190ER~The Colonist Black Spiced Rum~1050~~~Belgium
+type~rum~10~LRM0037DG~Chalong Bay Rum~819~~~Thailand
+type~agave~1~LTQ0034CN~Jose Cuervo Especial Silver~879~~~Mexico
+type~agave~2~LTQ0033CN~Jose Cuervo Especial Reposado~939~~~Mexico
+type~agave~3~LTQ0062BU~Sierra Blanco~969~~~Mexico
+type~agave~4~LTQ0202AD~Pancho Villa Silver Tequila~729~~~Mexico
+type~agave~5~LTQ0241ER~Dos Companeros Silver Tequila~1200~~~Mexico
+type~agave~6~LTQ0171CN~Creyente Mezcal Joven~2159~~~Mexico
+type~agave~7~LTQ0066CN~1800 Tequila Blanco~2299~~~Mexico
+type~agave~8~LTQ0172CN~400 Conejos Mezcal Joven~2059~~~Mexico
+type~agave~9~LTQ0001AD~Tequila Rose Strawberry Cream~1059~~~USA
+type~agave~10~LTQ0068CN~1800 Tequila Coconut~2269~~~Mexico
+type~liqueur~1~LLQ0014CN~Aperol~989~~~Italy
+type~liqueur~2~LLQ0062CN~Campari Liqueur~1359~~~Italy
+type~liqueur~3~LLQ0058CN~Cointreau Orange Liqueur~1459~~~France
+type~liqueur~4~LLQ0304BU~Hiram Walker Triple Sec~659~~~USA
+type~liqueur~5~LLQ0298BU~Kahlua Original~1229~~~USA
+type~liqueur~6~LLQ0085BU~Baileys Original~1199~~~Ireland
+type~liqueur~7~LLQ0158CN~Fernet Branca~1329~~~Italy
+type~liqueur~8~LLQ0334AD~Angostura Aromatic Bitters (200 ml)~1229~~~Trinidad & Tobago
+type~liqueur~9~LLQ0098AD~De Kuyper Dry Orange~695~~~Netherlands
+type~liqueur~10~LLQ0108AD~De Kuyper Kwai Feh Lychee~965~~~Netherlands
+type~brandy~1~LBD0113BU~Hennessy V.S (With Box)~1919~~~France
+type~brandy~2~LBD0007CN~St-Remy V.S.O.P~949~~~France
+type~brandy~3~LBD0050BU~Hennessy V.S.O.P (With Box)~3209~~~France
+type~brandy~4~LBD0006CN~St-Remy X.O~1239~~~France
+type~brandy~5~LBD0005AA~Vecchia Romagna Etichetta Nera Brandy~1289~~~Italy
+type~brandy~6~LBD0136AA~Courvoisier VSOP Cognac~3299~~~France
+type~brandy~7~LBD0063AE~Massenez Poire Prisonniere~2589~~~France
+type~brandy~8~LBD0011CN~Remy Martin V.S.O.P~2849~~~France
+type~brandy~9~LBD0200EQ~Camus Cognac VSOP Intensity~3199~~~France
+type~brandy~10~LBD0107EQ~Camus Cognac VSOP Borderies~3600~~~France
+type~vodka~1~LVK0181AE~Russian Standard Platinum Vodka~899~~~Russia
+type~vodka~2~LVK0071BU~Ketel One Vodka~999~~~Netherlands
+type~vodka~3~LVK0172CN~Tito's Handmade Vodka~859~~~USA
+type~vodka~4~LVK0003AD~McCormick Vodka~459~~~USA
+type~vodka~5~LVK0661GK~Asura JawSamut Coconut Flower Sugar Spirit~2399~~~Thailand
+type~vodka~6~LVK0185DG~Lanna Thai Spirits Vodka~909~~~Thailand
+type~vodka~7~LVK0194AA~Suntory Haku Vodka~1419~~~Japan
+type~vodka~8~LVK0048BU~Smirnoff Vodka~699~~~Russia
+type~vodka~9~LVK0206AH~Svedka Clementine Vodka~755~~~Sweden
+type~vodka~10~LVK0649GK~Asura Golden Giant Thai White Spirits~2399~~~Thailand
+type~sake~1~LSK0222DB~BORN Gold Junmai-Daiginjo~1500~~~Japan
+type~sake~2~LSK0519AB~Kinmon Akita Akitafuji Nigori Sake~400~~~Japan
+type~sake~3~LSK0127AB~Bijofu Tokubetsu Honjozo~1000~~~Japan
+type~sake~4~LSK0268DB~BORN Junsui Pure Junmai-Daiginjo (300 ml)~500~~~Japan
+type~sake~5~LSK0449AB~Dassai Junmai Daiginjo 45~1700~~~Japan
+type~sake~6~LSK0439FS~Hakutsuru Maru (2 L)~600~~~Japan
+type~sake~7~LSK0166AB~Tedorigawa Yamahai Jikomi Junmaishu~1600~~~Japan
+type~sake~8~LSK0086AR~Asamai Junmai Daiginjo 45~1300~~~Japan
+type~sake~9~LSK0432FS~Hakutsuru Sho Une~1500~~~Japan
+type~sake~10~LSK0119AB~Dassai Junmai Daiginjo Migaki Niwari Sanbu 23~4500~~~Japan

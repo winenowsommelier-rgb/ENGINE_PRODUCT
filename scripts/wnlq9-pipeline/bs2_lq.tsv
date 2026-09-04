@@ -1,0 +1,230 @@
+band~b1~1~LGN0077DR~Bombay Sapphire Gin~1249~1199~~England
+band~b1~2~LVK0181AE~Russian Standard Platinum Vodka~899~~~Russia
+band~b1~3~LTQ0034CN~Jose Cuervo Especial Silver~879~~~Mexico
+band~b1~4~LRM0116DR~Bacardi Carta Blanca (White Rum)~809~~~Cuba
+band~b1~5~LTQ0033CN~Jose Cuervo Especial Reposado~939~~~Mexico
+band~b1~6~LLQ0014CN~Aperol~989~~~Italy
+band~b1~7~LOT0174GR~Inchon Plum Umeshu~349~~~Thailand
+band~b1~8~LLQ0062CN~Campari Liqueur~1359~~~Italy
+band~b1~9~LGP0078BS~Bottega Limoncino~1000~~~Italy
+band~b1~10~LRM0111BU~Malibu Original Coconut Rum~915~~~USA
+band~b2~1~LWH0079BU~Johnnie Walker Gold Label Reserve~2199~~~Scotland
+band~b2~2~LLQ0427CN~Campari Liqueur (1 L)~1719~~~Italy
+band~b2~3~LBD0113BU~Hennessy V.S (With Box)~1919~~~France
+band~b2~4~LWH0251AA~Suntory Whisky Chita~1799~~~Japan
+band~b2~5~LWH0001AA~Glenfiddich 12 Years Old (With Box)~2399~~~Scotland
+band~b2~6~LGN0061CM~Iron Balls Gin~1800~~~Thailand
+band~b2~7~LWH0164BU~Glenmorangie The Lasanta 12 Years~2869~~~Scotland
+band~b2~8~LWH0025AA~Maker's Mark Bourbon Whisky~1599~~~USA
+band~b2~9~LRM0053BU~Diplomatico Reserva Exclusiva~1999~~~Venezuela
+band~b2~10~LWH0216BU~Jack Daniel's Gentleman Jack~1559~~~USA
+band~b3~1~LWH0318CN~The Macallan 12 Year Old Double Cask~4999~~~Scotland
+band~b3~2~LWH0305BU~Jack Daniel's Old No.7 (3 L)~4649~~~USA
+band~b3~3~LWH0024AA~Laphroaig 10 Years~4199~~~Scotland
+band~b3~4~LWH1079CN~The Glenturret 10 Years Peat Smoked Single Malt~3349~~~Scotland
+band~b3~5~LBD0050BU~Hennessy V.S.O.P (With Box)~3209~~~France
+band~b3~6~LWH0544AD~The Dalmore 12 Years Old~3589~~~Scotland
+band~b3~7~LWH0137AE~Glenfarclas Single Highland Malt 12 Years~3489~~~Scotland
+band~b3~8~LWH0343AA~Suntory Hibiki Japanese Harmony~4599~~~Japan
+band~b3~9~LWH0138AE~Glenfarclas Single Highland Malt 15 Years~4689~~~Scotland
+band~b3~10~LWH0162BU~Ardbeg 10 Years~3059~~~Scotland
+band~b4~1~LWH0145BU~Johnnie Walker Gold Label XR 21~5799~~~Scotland
+band~b4~2~LSK0120AB~Dassai Junmai Daiginjo Migaki Niwari Sanbu 23 (1.8 L)~8600~~~Japan
+band~b4~3~LWH0366AA~Suntory Yamazaki 12 Years Old Whisky~9289~8808~~Japan
+band~b4~4~LWH0161BU~Lagavulin 16 Years~5769~~~Scotland
+band~b4~5~LWH0332BU~Royal Salute 21 years (Blue Wade Decanter)~8895~~~Scotland
+band~b4~6~LWH0214AA~The Balvenie Caribbean Cask 14 Years Old~5299~~~Scotland
+band~b4~7~LWH1252CN~The Macallan A Night on Earth The First Light~7789~~~Scotland
+band~b4~8~LWH0336BU~Jack Daniel's Old No.7 (3 L) with Candle~6899~~~USA
+band~b4~9~LWH1188AB~Glen Scotia Festival Scotch Whisky~5200~~~Scotland
+band~b4~10~LWH0980DG~Nikka Taketsuru Pure Malt Whisky~5059~~~Japan
+band~b5~1~LWH0364CN~The Macallan 18 Years Old Sherry Oak Cask~23899~23018~~Scotland
+band~b5~2~LTQ0209GH~818 Tequila Eight Reserve~13818~~~Mexico
+band~b5~3~LTQ0176CN~Clase Azul Tequila Reposado~13199~~~Mexico
+band~b5~4~LWH1170CN~The Macallan The Harmony Collection Vibrant Oak~10499~~~Scotland
+band~b5~5~LTQ0203BU~Don Julio 1942~10999~~~Mexico
+band~b5~6~LTQ0250CN~1800 Milenio Tequila~11299~~~Mexico
+band~b5~7~LWH0668CN~The Macallan 18 Year Old Double Cask~21499~~~Scotland
+band~b5~8~LWH0040BU~Ballantine's 30 Years~19445~~~Scotland
+band~b5~9~LWH0011AA~The Balvenie Portwood 21 Years Old~20399~~~Scotland
+band~b5~10~LWH1179DG~Nikka Miyagikyo Discovery - Peated~12589~~~Japan
+country~England~1~LGN0077DR~Bombay Sapphire Gin~1249~1199~~England
+country~England~2~LGN0015BU~Gordon's Dry Gin~869~~~England
+country~England~3~LGN0081BU~Beefeater London Dry Gin~939~~~England
+country~England~4~LGN0063CN~Bulldog London Dry Gin~769~~~England
+country~England~5~LGN0016BU~Tanqueray Gin~1189~~~England
+country~England~6~LGN0017BU~Gilbey's Gin~399~~~England
+country~England~7~LGN0194BU~Tanqueray Flor de Sevilla~1299~~~England
+country~England~8~LRM0143CP~Dead Man's Finger Spiced Rum~749~~~England
+country~England~9~LGN0176BU~Tanqueray No. TEN Distilled Gin~2099~~~England
+country~England~10~LRM0207CP~Dead Man's Finger Raspberry Rum~749~~~England
+country~France~1~LLQ0058CN~Cointreau Orange Liqueur~1459~~~France
+country~France~2~LBD0113BU~Hennessy V.S (With Box)~1919~~~France
+country~France~3~LBD0007CN~St-Remy V.S.O.P~949~~~France
+country~France~4~LLQ0255CN~Grand Marnier Cordon Rouge~1989~~~France
+country~France~5~LLQ0410BU~Lillet Blanc~999~~~France
+country~France~6~LBD0050BU~Hennessy V.S.O.P (With Box)~3209~~~France
+country~France~7~LLQ0488CN~Passoa Passion Fruit Liqueur~959~~~France
+country~France~8~LGN0069DG~Citadelle Original Gin~2049~~~France
+country~France~9~LBD0006CN~St-Remy X.O~1239~~~France
+country~France~10~LRM0126DG~Plantation O.F.T.D Overproof Dark Rum~2149~~~France
+country~Ireland~1~LLQ0085BU~Baileys Original~1199~~~Ireland
+country~Ireland~2~LWH0456CN~Bushmills Black Bush (Sherry Cask)~1299~~~Ireland
+country~Ireland~3~LWH1069AD~The Irishman The Harvest Irish Whiskey~1799~~~Ireland
+country~Ireland~4~LWH0319BU~Jameson Irish Whiskey~1049~~~Ireland
+country~Ireland~5~LWH0418CP~The Pogues Irish Whiskey~1049~~~Ireland
+country~Ireland~6~LWH1034DG~Glendalough Grand Cru Burgundy Cask Finish Single Malt~2279~~~Ireland
+country~Ireland~7~LGN0199CN~Drumshanbo Gunpowder Irish Gin~2189~~~Ireland
+country~Ireland~8~LWH0552CN~Sexton Single Irish Malt Whiskey~1899~~~Ireland
+country~Ireland~9~LWH1102BU~Jameson Cold Brew Whiskey & Coffee~1049~~~Ireland
+country~Ireland~10~LWH0551CN~Bushmills Single Malt aged 12 years~2999~~~Ireland
+country~Italy~1~LLQ0014CN~Aperol~989~~~Italy
+country~Italy~2~LLQ0062CN~Campari Liqueur~1359~~~Italy
+country~Italy~3~LGP0078BS~Bottega Limoncino~1000~~~Italy
+country~Italy~4~LLQ0158CN~Fernet Branca~1329~~~Italy
+country~Italy~5~LLQ0319DR~Martini Rosso Vermouth (1 L)~1109~~~Italy
+country~Italy~6~LLQ0461AD~Disaronno Originale Amaretto~1125~~~Italy
+country~Italy~7~LGN0147BU~Malfy Gin Rosa~1599~~~Italy
+country~Italy~8~LLQ0003AA~Cristiani Sambuca~699~~~Italy
+country~Italy~9~LLQ0431CN~Cinzano Vermouth Bianco~819~~~Italy
+country~Italy~10~LLQ0320DR~Martini Bianco Vermouth (1 L)~1109~~~Italy
+country~Japan~1~LWH0325AA~Suntory Whisky Kakubin~899~~~Japan
+country~Japan~2~LWH0251AA~Suntory Whisky Chita~1799~~~Japan
+country~Japan~3~LGN0214AA~Suntory Sui Japanese Craft Gin~835~~~Japan
+country~Japan~4~LGN0106AA~Suntory Roku Japanese Craft Gin~1419~~~Japan
+country~Japan~5~LWH0563AD~Tenjaku Whisky~795~~~Japan
+country~Japan~6~LGN0360BU~Suntory Roku Sakura Bloom Japanese Craft Gin~1419~~~Japan
+country~Japan~7~LWH0539AA~Suntory Toki Whisky~1359~~~Japan
+country~Japan~8~LWH0343AA~Suntory Hibiki Japanese Harmony~4599~~~Japan
+country~Japan~9~LSK0222DB~BORN Gold Junmai-Daiginjo~1500~~~Japan
+country~Japan~10~LWH0246DB~Togouchi Whisky~1500~~~Japan
+country~Mexico~1~LTQ0034CN~Jose Cuervo Especial Silver~879~~~Mexico
+country~Mexico~2~LTQ0033CN~Jose Cuervo Especial Reposado~939~~~Mexico
+country~Mexico~3~LTQ0062BU~Sierra Blanco~969~~~Mexico
+country~Mexico~4~LTQ0202AD~Pancho Villa Silver Tequila~729~~~Mexico
+country~Mexico~5~LTQ0241ER~Dos Companeros Silver Tequila~1200~~~Mexico
+country~Mexico~6~LTQ0171CN~Creyente Mezcal Joven~2159~~~Mexico
+country~Mexico~7~LTQ0066CN~1800 Tequila Blanco~2299~~~Mexico
+country~Mexico~8~LTQ0172CN~400 Conejos Mezcal Joven~2059~~~Mexico
+country~Mexico~9~LTQ0068CN~1800 Tequila Coconut~2269~~~Mexico
+country~Mexico~10~LTQ0067CN~1800 Tequila Reposado~2299~~~Mexico
+country~Netherlands~1~LLQ0098AD~De Kuyper Dry Orange~695~~~Netherlands
+country~Netherlands~2~LLQ0108AD~De Kuyper Kwai Feh Lychee~965~~~Netherlands
+country~Netherlands~3~LLQ0104AD~De Kuyper Sour Apple Pucker~695~~~Netherlands
+country~Netherlands~4~LLQ0099AD~De Kuyper Triple Sec~695~~~Netherlands
+country~Netherlands~5~LLQ0088CN~Bols Triple Sec~799~~~Netherlands
+country~Netherlands~6~LVK0071BU~Ketel One Vodka~999~~~Netherlands
+country~Netherlands~7~LLQ0107AD~De Kuyper Raspberry Pucker~695~~~Netherlands
+country~Netherlands~8~LLQ0105AD~De Kuyper Peachtree~695~~~Netherlands
+country~Netherlands~9~LLQ0065AD~De Kuyper Amaretto~695~~~Netherlands
+country~Netherlands~10~LLQ0066AD~De Kuyper Blue Curacao~695~~~Netherlands
+country~Scotland~1~LWH0318CN~The Macallan 12 Year Old Double Cask~4999~~~Scotland
+country~Scotland~2~LWH0079BU~Johnnie Walker Gold Label Reserve~2199~~~Scotland
+country~Scotland~3~LWH0364CN~The Macallan 18 Years Old Sherry Oak Cask~23899~23018~~Scotland
+country~Scotland~4~LWH0001AA~Glenfiddich 12 Years Old (With Box)~2399~~~Scotland
+country~Scotland~5~LWH0164BU~Glenmorangie The Lasanta 12 Years~2869~~~Scotland
+country~Scotland~6~LGN0006AA~Hendrick's Gin~2099~~~Scotland
+country~Scotland~7~LWH0024AA~Laphroaig 10 Years~4199~~~Scotland
+country~Scotland~8~LWH0173AA~Monkey Shoulder Blended Malt Scotch Whisky~1569~~~Scotland
+country~Scotland~9~LWH1079CN~The Glenturret 10 Years Peat Smoked Single Malt~3349~~~Scotland
+country~Scotland~10~LWH0078BU~Johnnie Walker Double Black (1 L)~1999~~~Scotland
+country~Thailand~1~LOT0174GR~Inchon Plum Umeshu~349~~~Thailand
+country~Thailand~2~LGN0348GR~Inchon Esprit Des Champs Tranquilles Gin~949~~~Thailand
+country~Thailand~3~LGN0061CM~Iron Balls Gin~1800~~~Thailand
+country~Thailand~4~LRM0161ES~Phraya Elements Rum~985~~~Thailand
+country~Thailand~5~LGN0313GC~Siam Lanna Gin~1700~~~Thailand
+country~Thailand~6~LWS0001HE~Kao Hom Chaiyaphum~590~~~Thailand
+country~Thailand~7~LVK0661GK~Asura JawSamut Coconut Flower Sugar Spirit~2399~~~Thailand
+country~Thailand~8~LRM0037DG~Chalong Bay Rum~819~~~Thailand
+country~Thailand~9~LRM0204AV~Sod Chaeng Coconut Rum~749~~~Thailand
+country~Thailand~10~LVK0185DG~Lanna Thai Spirits Vodka~909~~~Thailand
+country~USA~1~LRM0111BU~Malibu Original Coconut Rum~915~~~USA
+country~USA~2~LWH0220BU~Jack Daniel's Honey~1249~~~USA
+country~USA~3~LWH0329AA~Jim Beam White Label Straight Bourbon Whiskey~749~~~USA
+country~USA~4~LLQ0304BU~Hiram Walker Triple Sec~659~~~USA
+country~USA~5~LLQ0298BU~Kahlua Original~1229~~~USA
+country~USA~6~LWH0205AD~Evan Williams Bourbon Black~999~~~USA
+country~USA~7~LWH0025AA~Maker's Mark Bourbon Whisky~1599~~~USA
+country~USA~8~LWH0216BU~Jack Daniel's Gentleman Jack~1559~~~USA
+country~USA~9~LWH0665BU~Jack Daniel's Apple~1249~~~USA
+country~USA~10~LGN0003AD~McCormick Gin Extra Dry~459~~~USA
+type~whisky~1~LWH0318CN~The Macallan 12 Year Old Double Cask~4999~~~Scotland
+type~whisky~2~LWH0220BU~Jack Daniel's Honey~1249~~~USA
+type~whisky~3~LWH0079BU~Johnnie Walker Gold Label Reserve~2199~~~Scotland
+type~whisky~4~LWH0329AA~Jim Beam White Label Straight Bourbon Whiskey~749~~~USA
+type~whisky~5~LWH0364CN~The Macallan 18 Years Old Sherry Oak Cask~23899~23018~~Scotland
+type~whisky~6~LWH0325AA~Suntory Whisky Kakubin~899~~~Japan
+type~whisky~7~LWH0076AA~Canadian Club~1199~~~Canada
+type~whisky~8~LWH0251AA~Suntory Whisky Chita~1799~~~Japan
+type~whisky~9~LWH0001AA~Glenfiddich 12 Years Old (With Box)~2399~~~Scotland
+type~whisky~10~LWH0205AD~Evan Williams Bourbon Black~999~~~USA
+type~gin~1~LGN0077DR~Bombay Sapphire Gin~1249~1199~~England
+type~gin~2~LGN0015BU~Gordon's Dry Gin~869~~~England
+type~gin~3~LGN0081BU~Beefeater London Dry Gin~939~~~England
+type~gin~4~LGN0348GR~Inchon Esprit Des Champs Tranquilles Gin~949~~~Thailand
+type~gin~5~LGN0063CN~Bulldog London Dry Gin~769~~~England
+type~gin~6~LGN0016BU~Tanqueray Gin~1189~~~England
+type~gin~7~LGN0061CM~Iron Balls Gin~1800~~~Thailand
+type~gin~8~LGN0214AA~Suntory Sui Japanese Craft Gin~835~~~Japan
+type~gin~9~LGN0017BU~Gilbey's Gin~399~~~England
+type~gin~10~LGN0194BU~Tanqueray Flor de Sevilla~1299~~~England
+type~rum~1~LRM0116DR~Bacardi Carta Blanca (White Rum)~809~~~Cuba
+type~rum~2~LRM0111BU~Malibu Original Coconut Rum~915~~~USA
+type~rum~3~LRM0035BU~Captain Morgan Jamaica Rum~799~~~Jamaica
+type~rum~4~LRM0266AB~The Pirates Silver Rum~700~~~Spain
+type~rum~5~LRM0143CP~Dead Man's Finger Spiced Rum~749~~~England
+type~rum~6~LRM0186BU~Havana Club 3 Years Rum~825~~~Cuba
+type~rum~7~LRM0053BU~Diplomatico Reserva Exclusiva~1999~~~Venezuela
+type~rum~8~LRM0161ES~Phraya Elements Rum~985~~~Thailand
+type~rum~9~LRM0190ER~The Colonist Black Spiced Rum~1050~~~Belgium
+type~rum~10~LRM0037DG~Chalong Bay Rum~819~~~Thailand
+type~agave~1~LTQ0034CN~Jose Cuervo Especial Silver~879~~~Mexico
+type~agave~2~LTQ0033CN~Jose Cuervo Especial Reposado~939~~~Mexico
+type~agave~3~LTQ0062BU~Sierra Blanco~969~~~Mexico
+type~agave~4~LTQ0202AD~Pancho Villa Silver Tequila~729~~~Mexico
+type~agave~5~LTQ0241ER~Dos Companeros Silver Tequila~1200~~~Mexico
+type~agave~6~LTQ0171CN~Creyente Mezcal Joven~2159~~~Mexico
+type~agave~7~LTQ0066CN~1800 Tequila Blanco~2299~~~Mexico
+type~agave~8~LTQ0172CN~400 Conejos Mezcal Joven~2059~~~Mexico
+type~agave~9~LTQ0001AD~Tequila Rose Strawberry Cream~1059~~~USA
+type~agave~10~LTQ0068CN~1800 Tequila Coconut~2269~~~Mexico
+type~liqueur~1~LLQ0014CN~Aperol~989~~~Italy
+type~liqueur~2~LLQ0062CN~Campari Liqueur~1359~~~Italy
+type~liqueur~3~LLQ0058CN~Cointreau Orange Liqueur~1459~~~France
+type~liqueur~4~LLQ0304BU~Hiram Walker Triple Sec~659~~~USA
+type~liqueur~5~LLQ0298BU~Kahlua Original~1229~~~USA
+type~liqueur~6~LLQ0085BU~Baileys Original~1199~~~Ireland
+type~liqueur~7~LLQ0158CN~Fernet Branca~1329~~~Italy
+type~liqueur~8~LLQ0334AD~Angostura Aromatic Bitters (200 ml)~1229~~~Trinidad & Tobago
+type~liqueur~9~LLQ0098AD~De Kuyper Dry Orange~695~~~Netherlands
+type~liqueur~10~LLQ0108AD~De Kuyper Kwai Feh Lychee~965~~~Netherlands
+type~brandy~1~LBD0113BU~Hennessy V.S (With Box)~1919~~~France
+type~brandy~2~LBD0007CN~St-Remy V.S.O.P~949~~~France
+type~brandy~3~LBD0050BU~Hennessy V.S.O.P (With Box)~3209~~~France
+type~brandy~4~LBD0006CN~St-Remy X.O~1239~~~France
+type~brandy~5~LBD0005AA~Vecchia Romagna Etichetta Nera Brandy~1289~~~Italy
+type~brandy~6~LBD0136AA~Courvoisier VSOP Cognac~3299~~~France
+type~brandy~7~LBD0063AE~Massenez Poire Prisonniere~2589~~~France
+type~brandy~8~LBD0011CN~Remy Martin V.S.O.P~2849~~~France
+type~brandy~9~LBD0200EQ~Camus Cognac VSOP Intensity~3199~~~France
+type~brandy~10~LBD0107EQ~Camus Cognac VSOP Borderies~3600~~~France
+type~vodka~1~LVK0181AE~Russian Standard Platinum Vodka~899~~~Russia
+type~vodka~2~LVK0071BU~Ketel One Vodka~999~~~Netherlands
+type~vodka~3~LVK0172CN~Tito's Handmade Vodka~859~~~USA
+type~vodka~4~LVK0003AD~McCormick Vodka~459~~~USA
+type~vodka~5~LVK0661GK~Asura JawSamut Coconut Flower Sugar Spirit~2399~~~Thailand
+type~vodka~6~LVK0185DG~Lanna Thai Spirits Vodka~909~~~Thailand
+type~vodka~7~LVK0194AA~Suntory Haku Vodka~1419~~~Japan
+type~vodka~8~LVK0048BU~Smirnoff Vodka~699~~~Russia
+type~vodka~9~LVK0206AH~Svedka Clementine Vodka~755~~~Sweden
+type~vodka~10~LVK0649GK~Asura Golden Giant Thai White Spirits~2399~~~Thailand
+type~sake~1~LSK0222DB~BORN Gold Junmai-Daiginjo~1500~~~Japan
+type~sake~2~LSK0519AB~Kinmon Akita Akitafuji Nigori Sake~400~~~Japan
+type~sake~3~LSK0127AB~Bijofu Tokubetsu Honjozo~1000~~~Japan
+type~sake~4~LSK0268DB~BORN Junsui Pure Junmai-Daiginjo (300 ml)~500~~~Japan
+type~sake~5~LSK0449AB~Dassai Junmai Daiginjo 45~1700~~~Japan
+type~sake~6~LSK0439FS~Hakutsuru Maru (2 L)~600~~~Japan
+type~sake~7~LSK0166AB~Tedorigawa Yamahai Jikomi Junmaishu~1600~~~Japan
+type~sake~8~LSK0086AR~Asamai Junmai Daiginjo 45~1300~~~Japan
+type~sake~9~LSK0432FS~Hakutsuru Sho Une~1500~~~Japan
+type~sake~10~LSK0119AB~Dassai Junmai Daiginjo Migaki Niwari Sanbu 23~4500~~~Japan

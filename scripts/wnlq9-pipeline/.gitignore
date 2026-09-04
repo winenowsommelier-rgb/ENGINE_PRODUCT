@@ -1,0 +1,6 @@
+stock_checks.csv
+out/
+*.bak
+build_receipt.json
+__pycache__/
+*.pyc

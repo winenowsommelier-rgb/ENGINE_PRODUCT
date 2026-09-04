@@ -1,0 +1,45 @@
+{
+ "feeds": {
+  "stock_checks": {
+   "as_of": "2026-08-28",
+   "max_age_days": 10,
+   "severity": "blocking",
+   "sections": [
+    "trending",
+    "unmet"
+   ],
+   "source": "Stock_Checks sheet, read through the Drive connector (line-item tab; ticket lines are only filled in once the product team closes a ticket)"
+  },
+  "popularity": {
+   "as_of": "2026-07-21",
+   "max_age_days": 14,
+   "severity": "blocking",
+   "sections": [
+    "bestsellers"
+   ],
+   "source": "Supabase products.popularity_qty_90d / _orders_90d (max popularity_synced_at; set on 122 of 6,388 rows — no scheduled job exists)"
+  },
+  "catalog": {
+   "as_of": "2026-08-22",
+   "max_age_days": 60,
+   "severity": "warn",
+   "sections": [
+    "trending",
+    "bestsellers",
+    "unmet"
+   ],
+   "source": "Supabase products (max updated_at; products.synced_at is 2026-03-24 and stamped on 2,830 of 6,388 rows)"
+  },
+  "links": {
+   "as_of": "2026-08-28",
+   "max_age_days": 30,
+   "severity": "warn",
+   "sections": [
+    "trending",
+    "bestsellers",
+    "unmet"
+   ],
+   "source": "links_cache.tsv, pulled from Supabase products.magento_item_url / image_url"
+  }
+ }
+}

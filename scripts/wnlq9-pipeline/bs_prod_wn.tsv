@@ -1,0 +1,332 @@
+# sku~name~price~special~country~style~reputation~vintage~score~critic
+WDW0001AA~Batasiolo Moscato Spumante Dolce~755~725~Italy~Moscato~established~~~
+WDW0019AA~Cantine Pellegrino Zebo Moscato IGT~815~~Italy~Moscato~unrated~~~
+WDW0026AA~Cantine pellegrino Marsala Fine I.P. Semisecco DOC (750 ml)~940~~Italy~Grillo~~~~
+WDW0032AB~Donnafugata Ben Rye' Passito Di Pantelleria (375 ml)~2200~~Italy~Zibibbo~premium~2022~95~Wine Enthusiast
+WDW0043AF~Dow's Fine Ruby Port~1600~~Portugal~Touriga Nacional~premium~~~
+WDW0044AF~Dow's Fine Tawny Port~1600~~Portugal~Touriga Nacional~unrated~~~
+WDW0048AF~Blandy's Rainwater "3 Years Old"~1580~~Portugal~Touriga Nacional~unrated~~~
+WDW0056BS~Bottega Moscato Vino dell'Amore Spumante~1000~~Italy~Moscato~established~~~
+WDW0059FX~Granmonte Bussaba Natural Sweet Wine 375 ml~1099~~Thailand~Chenin Blanc~unrated~~~
+WDW0060AD~Graham's 10 Year Tawny Port~3499~~Portugal~Tinta Roriz~established~~93~James Suckling
+WDW0073AE~Massolino Moscato D'Asti DOCG~1120~955~Italy~Moscato~unrated~~~
+WDW0102CH~Monsoon Valley Chenin Blanc late Harvest (375 ml)~699~~Thailand~Chenin Blanc~~~~
+WDW0105AA~Cantine Pellegrino Marsala Superiore Oro (500 ml)~800~~Italy~Grillo~~~~
+WDW0109AD~De Bortoli Noble One Botrytis (375 ml)~1169~~Australia~Semillon~unrated~~~
+WDW0141AA~La Spinetta Bricco Quaglia Moscato D'Asti~1220~~Italy~Moscato Bianco~~~~
+WDW0146BS~Marchesi Di Barolo Moscato d'Asti DOCG Zagara~1200~~Italy~Moscato~premium~~~
+WDW0148DR~Taylor's Fine Tawny Port~1599~~Portugal~Touriga Nacional~unrated~~~
+WDW0149DR~Taylor's Special Ruby Port~1599~~Portugal~Touriga Nacional~unrated~~~
+WDW0516AB~Maison Castel Medium Sweet Muscat Pays d'Oc~700~~France~Muscat~unrated~~~
+WDW0518AA~Baron Philippe de Rothschild Baronne Paulinne AOC Sauternes~2545~~France~Sauvignon Blanc~unrated~~~
+WDW0520AA~Fontanafredda Moscato D'Asti Briccotondo DOCG~725~~Italy~Moscato~~~~
+WDW0521AA~Fontanafredda Moscato D'Asti Le Fronde DOCG~870~~Italy~Moscato~established~~~
+WRS0035AB~Chateau d'Esclans Whispering Angel Rose~1100~1049~France~Grenache~everyday~~92~James Suckling
+WRS0039AD~Pascal Jolivet Attitude Rose~1059~~France~Pinot Noir~unrated~~~
+WRS0047AB~Chamdeville Pinot Noir Rose~600~535~France~Pinot Noir~unrated~~~
+WRS0055AD~Fantini Gran Cuvee Rose~899~~Italy~Aglianico del Vulture~unrated~~~
+WRS0056AC~Don Luciano pink moscato~559~~Spain~Moscato~unrated~~~
+WRS0057AD~Domaine L'Ostal Cazes Rose~679~~France~Syrah~established~~~
+WRS0072AA~Batasiolo Moscato Rose~900~~Italy~Moscato bianco~unrated~~~
+WRS0079AC~Zeni Bardolino Chiaretto Classico DOC~899~~Italy~Corvina~established~~~
+WRS0100CH~Monsoon Valley White Shiraz (Shiraz Rose)~749~~Thailand~Shiraz~~~92~James Suckling
+WRS0104DD~Viu Manent Reserva Rose Malbec~700~595~Chile~Malbec~premium~~~
+WRS0109BN~Domaines Ott By Ott Rose~1100~~France~Grenache~premium~~~
+WRS0165AD~De Bortoli DB Family Selection Rose~599~~Australia~Shiraz~unrated~~~
+WRS0186AD~Matua Rose~745~~New Zealand~Pinot Noir~unrated~~~
+WRS0199FJ~Georges Duboeuf Syrah Rose (VDF D'OC)~699~~France~Shiraz~premium~~~
+WRS0211AB~Gerard Bertrand Cote des Roses Rose~1000~~France~Grenache~unrated~~~
+WRS0217FX~Granmonte Sakuna Rose~1099~~Thailand~Syrah~established~~~
+WRS0220CH~Yellow Tail Pink Moscato~599~~Australia~Muscat Blanc~unrated~~~
+WRS0225AB~Donnafugata Rosa Dolce & Gabbana~2000~~Italy~Nerello Mascalese~established~2023~91~James Suckling
+WRS0227AB~Chateau d'Esclans The Pale Rose By Sacha Lichine~900~~France~Grenache~established~~98~James Suckling
+WRS0237AH~Banrock Station Pink Moscato~349~325~Australia~Muscat~unrated~~~
+WRS0246AD~Fantini Calalenta Merlot Rosato~849~~Italy~Merlot~unrated~~~
+WRS0284AC~Sunnycliff Rose~469~~Australia~Syrah~unrated~~~
+WRW0002AD~Vigneti del Salento I Muri` Negroamaro~645~~Italy~Negroamaro~unrated~~~
+WRW0035AD~Rawson's Retreat Cabernet Sauvignon~495~~Australia~Cabernet Sauvignon~established~~~
+WRW0066AC~Duckhorn Decoy Merlot~1700~1599~USA~Merlot~unrated~2023~~
+WRW0067AC~Duckhorn Decoy Cabernet Sauvignon~1700~1599~USA~Cabernet Sauvignon~unrated~2022~~
+WRW0114AD~Michel Lynch Bordeaux Rouge~699~~France~Merlot~established~~~
+WRW0202AH~Hardys Varietal Range Merlot~399~~Australia~Merlot~unrated~~~
+WRW0203AH~Hardys Varietal Range Cabernet Sauvignon~399~~Australia~Cabernet Sauvignon~unrated~~~
+WRW0211AH~Robert Mondavi Napa Valley Cabernet Sauvignon~2099~1915~USA~Cabernet Sauvignon~established~2021~92~James Suckling
+WRW0213AH~Robert Mondavi Private Selection Vint Cabernet Sauvignon~989~845~USA~Cabernet Sauvignon~unrated~~~
+WRW0214AH~Robert Mondavi Private Selection Vint Merlot~989~~USA~Merlot~unrated~~~
+WRW0215AH~Robert Mondavi Private Selection Vint Pinot Noir~989~~USA~Pinot Noir~unrated~~~
+WRW0216AH~Robert Mondavi Woodbridge Cabernet Sauvignon~679~~USA~Cabernet Sauvignon~unrated~~~
+WRW0240AA~Baron Philippe de Rothschild Escudo Rojo Gran Reserva - Blend~1085~995~Chile~Cabernet Sauvignon~premium~~93~James Suckling
+WRW0242AA~Baron Philippe de Rothschild Mapu Reserva Cabernet Sauvignon~705~649~Chile~Cabernet Sauvignon~premium~~~
+WRW0255AA~Baron Philippe de Rothschild Mouton Cadet Bordeaux Rouge~825~805~France~Merlot~premium~~~
+WRW0282AD~Concha Y Toro Reservado Cabernet Sauvignon~449~405~Chile~Cabernet Sauvignon~premium~~~
+WRW0288AD~Concha Y Toro Frontera Cabernet Sauvignon~399~~Chile~Cabernet Sauvignon~premium~~~
+WRW0300AD~Argento Estate Bottle Cabernet Sauvignon~599~549~Argentina~Cabernet Sauvignon~unrated~~~
+WRW0301AD~Argento Malbec~595~~Argentina~Malbec~established~~~
+WRW0312AD~Catena Zapata Alamos Malbec~719~~Argentina~Malbec~unrated~~~
+WRW0338AD~Catena Zapata Catena Cabernet Sauvignon~1179~~Argentina~Cabernet Sauvignon~unrated~~~
+WRW0415HI~Antinori Tignanello IGT~7100~~Italy~Bordeaux Blend~premium~~~
+WRW0423HI~Antinori Pinot Nero della Sala IGT Umbria~3000~2699~Italy~Pinot Noir~unrated~~~
+WRW0462AD~Vigneti del Salento `I Muri` Primitivo Puglia~645~~Italy~Primitivo~premium~~~
+WRW0574AA~Velenosi Montepulciano D' Abruzzo The Year of the Rabbit~685~~Italy~Montepulciano~established~~~
+WRW0686AB~Bodegas Salentein Portillo Malbec~800~665~Argentina~Malbec~everyday~~86~Wine Advocate
+WRW0715AB~Marques De Riscal Reserva, DOC Rioja~1400~1349~Spain~Tempranillo~established~~93~James Suckling
+WRW1039AD~Wolf Blass Eaglehawk Shiraz~395~~Australia~Shiraz~premium~~~
+WRW1040AD~Wolf Blass Eaglehawk Cabernet Sauvignon~395~~Australia~Cabernet Sauvignon~premium~~~
+WRW1049AD~Two Oceans Shiraz~489~~South Africa~Shiraz~established~~~
+WRW1050AD~Two Oceans Cabernet Sauvignon/Merlot~489~~South Africa~Cabernet Sauvignon~unrated~~~
+WRW1054AD~Continuum 2019~15409~~USA~Cabernet Sauvignon~premium~~99~James Suckling
+WRW1063AB~Fairview Pinotage~1300~~South Africa~Pinotage~unrated~~~
+WRW1198AF~Mascota Vineyards La Mascota Malbec~1000~~Argentina~Malbec~unrated~~~
+WRW1199AF~Mascota Vineyards La Mascota Cabernet Sauvignon~1000~875~Argentina~Cabernet Sauvignon~unrated~~~
+WRW1248AD~Catena Zapata Catena Malbec~1179~~Argentina~Malbec~unrated~~~
+WRW1249AD~Catena Zapata Nicasia Malbec~4099~3199~Argentina~Malbec~premium~~95~James Suckling
+WRW1413AF~Joseph Drouhin Corton Grand Cru~12300~~France~Pinot Noir~premium~~~
+WRW1430AD~Nederburg Duet Shiraz Pinotage~599~~South Africa~Shiraz~unrated~~~
+WRW1454AB~Marques De Riscal Reserva Rioja DOC (375 ml)~900~~Spain~Tempranillo~unrated~~~
+WRW1455AD~Matua Pinot Noir~745~~New Zealand~Pinot Noir~premium~~~
+WRW1476AD~Michel Lynch Nature Merlot Bordeaux "Organic" AOC~849~699~France~Merlot~unrated~~~
+WRW1562AD~Marques de Caceres Crianza~849~~Spain~Tempranillo~unrated~~~
+WRW1570BN~Chateau Latour A Pomerol 2018~5900~5669~France~Merlot~~~95~James Suckling
+WRW1621BS~Bottega Amarone della Valpolicella DOC~2600~~Italy~Corvina~established~~~
+WRW1624AD~Terrazas Reserva Malbec~975~~Argentina~Malbec~established~~92~James Suckling
+WRW1642BN~Echeverria Reserva Cabernet Sauvignon~700~~Chile~Cabernet Sauvignon~premium~~~
+WRW1644BN~Echeverria Gran Reserva Cabernet Sauvignon~900~~Chile~Cabernet Sauvignon~premium~~~
+WRW1647BN~Echeverria Founder's Selection~1700~~Chile~Cabernet Sauvignon~unrated~~~
+WRW1845AE~Zenato Amarone Riserva Sergio DOCG~6400~~Italy~Corvina~established~~95~James Suckling
+WRW1855AE~Fontodi Flaccianello della Pieve~6960~~Italy~Sangiovese~premium~~98~Wine Advocate
+WRW2146AC~Caymus Napa Valley Cabernet Sauvignon~4400~3995~USA~Cabernet Sauvignon~established~2022~92~Wine Spectator
+WRW2153AC~Duckhorn Napa Valley Merlot~3200~2965~USA~Merlot~established~2022~91~Wine Enthusiast
+WRW2301BN~Dominus Estate 2016~21400~18845~USA~Cabernet Sauvignon~premium~~100~Wine Advocate
+WRW2348BN~Silver Oak Cabernet Sauvignon Alexander Valley~4500~4115~USA~Cabernet Sauvignon~premium~~94~James Suckling
+WRW2358BN~Glaetzer Bishop~1300~1165~Australia~Shiraz~established~~93~James Suckling
+WRW2359BN~Glaetzer Amon-Ra~2100~1935~Australia~Shiraz~established~~97~Wine Advocate
+WRW2369AD~Torbreck Shiraz Woodcutter's~1059~~Australia~Shiraz~premium~~~
+WRW2385AD~Torbreck Run Rig~8349~7159~Australia~Shiraz~premium~~97~Wine Advocate
+WRW2421BN~Montgras Cabernet Sauvignon~700~~Chile~Cabernet Sauvignon~established~~~
+WRW2455FS~Chateau Smith Haut Lafitte Pessac-Leognan~6700~6095~France~Cabernet Sauvignon~premium~~97~Wine Advocate
+WRW2459FS~Chateau Lynch Bages AOC Pauillac 2018~9100~7555~France~Cabernet Sauvignon~premium~~97~Wine Spectator
+WRW2642BN~Chateau De Pez Saint-Estephe 2021~2000~~France~Cabernet Sauvignon~established~~92~James Suckling
+WRW2973BN~Dal Forno Romano Valpolicella Superiore DOC~5100~~Italy~Corvina~premium~~95~James Suckling
+WRW2974BN~Dal Forno Romano Amarone della Valpolicella 2017~14800~13099~Italy~Corvina~premium~~100~James Suckling
+WRW3023BN~Martinborough Vineyard Pinot Noir Te Tera~1100~1025~New Zealand~Pinot Noir~unrated~~~
+WRW3029BN~Kanonkop Kadette~1000~~South Africa~Pinotage~unrated~~~
+WRW3030BN~Kanonkop Paul Sauer~3900~3605~South Africa~Cabernet Sauvignon~unrated~~~
+WRW3031BN~Kanonkop Pinotage~2400~2195~South Africa~Pinotage~unrated~~~
+WRW3032BN~Kanonkop Cabernet Sauvignon~2600~~South Africa~Cabernet Sauvignon~established~~90~Wine Advocate
+WRW3118CH~Lion's Cape Coastal Red Cabernet Sauvignon (Fruit wine blend)~399~~South Africa~Cabernet Sauvignon~unrated~~~
+WRW3122CH~Mcguigan Black Label Red~499~~Australia~Blend~established~~~
+WRW3123CH~Mcguigan Black Label Merlot~499~465~Australia~Merlot~established~~~
+WRW3178CH~Monsoon Valley Shiraz~749~615~Thailand~Shiraz~established~~~
+WRW3179CH~Monsoon Valley Cuvee de Siam Rouge~1799~~Thailand~Shiraz~everyday~~90~James Suckling
+WRW3191AD~Vigneti del Salento "ZOLLA" Primitivo Di Manduria DOC~925~~Italy~Primitivo~premium~~~
+WRW3218AC~Signus Fruit Red Blend (Merlot) (Fruit wine blend)~399~~Chile~Merlot~established~~~
+WRW3294AE~Casanova di Neri Brunello di Montalcino Tenuta Nuova DOCG 2017~7670~6525~Italy~Sangiovese~premium~~98~Wine Advocate
+WRW3305DD~Viu Manent Estate Collection Reserva Merlot~700~595~Chile~Merlot~premium~~~
+WRW3413BS~Masseria Li Veli Orion Primitivo IGT~1100~~Italy~Primitivo~unrated~~~
+WRW3425BN~Wairau River Pinot Noir~900~~New Zealand~Pinot Noir~unrated~~~
+WRW3471AH~Montes Winemaker's Choice Cabernet Sauvignon~699~~Chile~Cabernet Sauvignon~unrated~~~
+WRW3893AH~Robert Mondavi The Estate Oakville Cabernet Sauvignon~3649~~USA~Cabernet Sauvignon~established~2021~93~Wine Advocate
+WRW4225AJ~Bodegas Muga Reserva Rioja DOC~1900~~Spain~Tempranillo~established~~93~James Suckling
+WRW4287CH~Monsoon Valley Signature Red~999~815~Thailand~Dornfelder~everyday~~92~James Suckling
+WRW4289BU~Jacob's Creek Classic Shiraz Cabernet (750 ml)~499~~Australia~Shiraz~unrated~~~
+WRW4303BU~Campo Viejo Tempranillo (750 ml)~699~~Spain~Tempranillo~unrated~~~
+WRW4304BU~Campo Viejo Reserva (750 ml)~979~~Spain~Tempranillo~premium~~~
+WRW4305BU~Brancott Estate Pinot Noir (750 ml)~769~~New Zealand~Pinot Noir~unrated~~~
+WRW4313AC~G7 Gran Reserva Carmenere~799~~Chile~Carmenere~premium~~~
+WRW4353CB~La Linda Malbec~900~635~Argentina~Malbec~unrated~~~
+WRW4354CB~Luigi Bosca Malbec~1300~999~Argentina~Malbec~unrated~~~
+WRW4521AD~Bodegas Protos Roble Ribera del Duero D.O.~899~~Spain~Tempranillo~established~~~
+WRW4559CB~Bread & Butter Pinot Noir~1400~1099~USA~Pinot Noir~unrated~~~
+WRW4577DD~Angove Long Row Cabernet Sauvignon (187 ml)~200~155~Australia~Cabernet Sauvignon~established~~~
+WRW4679AD~Penfolds Bin 2~995~~Australia~Shiraz~premium~~~
+WRW4680AD~Penfolds Bin 28 Shiraz~1685~~Australia~Shiraz~established~~92~Wine Advocate
+WRW4681AD~Penfolds Bin 407~3895~~Australia~Cabernet Sauvignon~established~~93~Wine Spectator
+WRW4683AD~Penfolds Bin 389 Cabernet Sauvignon/Shiraz~2999~~Australia~Cabernet Sauvignon~premium~~94~Wine Enthusiast
+WRW4688AD~Penfolds Koonunga Hill Shiraz~695~~Australia~Shiraz~premium~~~
+WRW4693AD~Penfolds Max's Cabernet Sauvignon~885~~Australia~Cabernet Sauvignon~premium~~~
+WRW4696AD~Beringer Main & Vine Cabernet Sauvignon~649~~USA~Cabernet Sauvignon~unrated~~~
+WRW4700DD~The Old Town South African Dry Red (Fruit wine blend)~300~~South Africa~Blended~established~~~
+WRW4728DD~Hopes End Red Blend~600~535~Australia~Shiraz~established~~~
+WRW4742AD~Concha Y Toro Casillero Del Diablo Reserva Cabernet Sauvignon~569~519~Chile~Cabernet Sauvignon~premium~~~
+WRW4774AB~Famille Perrin Chateauneuf du Pape - Les Sinards~2700~~France~Grenache~established~2022~94~Wine Spectator
+WRW4874FS~Chateau Clerc Milon 2015~7200~5965~France~Cabernet Sauvignon~established~~95~Wine Enthusiast
+WRW4979FS~Chateau Le Marquis De Calon Segur "Le 2nd Vin De Chateau Calon Segur" 2018~2400~~France~Cabernet Sauvignon~established~2018~94~Wine Advocate
+WRW5019AD~Argento Reserva Malbec~799~649~Argentina~Malbec~established~~85~Wine Enthusiast
+WRW5020AD~Catena Zapata Malbec Argentino~3699~~Argentina~Malbec~~~98~James Suckling
+WRW5046AB~Bodegas Salentein Portillo Malbec Organic~800~695~Argentina~Malbec~unrated~~~
+WRW5100AH~Robert Mondavi Private Selection Vint Bourbon Barrel-Aged Cabernet Sauvignon~1199~~USA~Cabernet Sauvignon~unrated~~~
+WRW5102AC~Shafer Hillside Select Cabernet Sauvignon 2018~18100~15895~USA~Cabernet Sauvignon~premium~2018~99~James Suckling
+WRW5350DD~Botter Primitivo Puglia (Organic Wine)~600~555~Italy~Primitivo~established~~~
+WRW5351BN~Silver Oak Cabernet Sauvignon Napa Valley 2018~6900~6035~USA~Cabernet Sauvignon~established~~97~James Suckling
+WRW5406BN~Castello di Fonterutoli Badiola~900~~Italy~Sangiovese~established~~92~James Suckling
+WRW5440GC~Rochester Shiraz~740~~South Africa~Shiraz~unrated~~~
+WRW5442DW~Rhanleigh Pinotage~800~~South Africa~Pinotage~unrated~~~
+WRW5470FJ~Pinical Estate Cabernet Merlot~649~~Australia~Cabernet Sauvignon~established~~~
+WRW5520EG~Chateau Grand-Puy-Lacoste 2016~5500~5179~France~Cabernet Sauvignon~established~~97~James Suckling
+WRW5530FJ~Georges Duboeuf Pinot Noir (VDF D'OC)~699~~France~Pinot Noir~premium~~~
+WRW5598AA~Baron Philippe de Rothschild Mouton Cadet Heritage Bordeaux Rouge~985~~France~Merlot~premium~~~
+WRW5665DJ~Domaine Jean Fery & Fils Pernand-Vergelesses 1er Cru "les Vergelesses"~3800~~France~Pinot Noir~~~~
+WRW5689FR~Torrebruna Sangiovese Di Toscana IGP~699~~Italy~Sangiovese~unrated~~~
+WRW5761AD~Concha Y Toro Reservado Merlot~449~~Chile~Merlot~established~~~
+WRW5773DD~Pure Bred Old Vine Zinfandel~900~~USA~Zinfandel~established~~~
+WRW5774DD~Noble Hill Estate Reserve~1300~~South Africa~Cabernet Sauvignon~unrated~~~
+WRW5801AH~Babich Family Reserve Pinot Noir~729~~New Zealand~Pinot Noir~unrated~~~
+WRW5807FU~Bertani Amarone della Valpolicella Classico~7100~~Italy~Corvina~premium~2015~100~James Suckling
+WRW5836AA~Velenosi Ninfa Marche Rosso IGT~1040~~Italy~Cabernet Sauvignon~~~~
+WRW5853CB~Bread & Butter Cabernet Sauvignon~1400~1025~USA~Cabernet Sauvignon~unrated~~~
+WRW5854FX~Granmonte Spring Syrah Cabernet~1099~~Thailand~Syrah~unrated~~~
+WRW5855FX~Granmonte Heritage Syrah~1449~~Thailand~Syrah~established~~~
+WRW5856FX~Granmonte Heritage Syrah Viognier~979~~Thailand~Syrah~~~~
+WRW5857FX~Granmonte Durif~1449~~Thailand~Durif~unrated~~~
+WRW5858FX~Granmonte The Orient Syrah~2599~~Thailand~Syrah~unrated~~~
+WRW5859FX~Granmonte Asoke Cabernet Sauvignon Syrah~3499~~Thailand~Cabernet Sauvignon~unrated~2023~~
+WRW5860FJ~Colina Cabernet Sauvignon~489~~Chile~Cabernet Sauvignon~unrated~~~
+WRW5869AD~Bodegas Protos 27 Ribera del Duero~1549~~Spain~Tinta del Pais~~~~
+WRW5882DD~Aromo Reservado Cabernet Sauvignon~500~455~Chile~Cabernet Sauvignon~~~~
+WRW5891AH~Robert Mondavi Woodbridge Merlot~679~~USA~Merlot~unrated~~~
+WRW5907FJ~Reserve St Martin Cabernet Sauvignon~659~~France~Cabernet Sauvignon~unrated~~~
+WRW5908FJ~Reserve St Martin Pinot Noir~659~~France~Pinot Noir~unrated~~~
+WRW5962FS~Santa Helena Gran Vino (Red Blend)~500~395~Chile~Red Blend~unrated~~~
+WRW6007FJ~Escorihuela Gascon Gran Reserva Malbec~1199~1079~Argentina~Malbec~premium~~91~James Suckling
+WRW6044AH~Tarapaca Gran Reserva Carmenere~749~~Chile~Carmenere~premium~~~
+WRW6060BN~Chateau La Fleur-Petrus Pomerol~13400~~France~Merlot~premium~~96~James Suckling
+WRW6072BN~Chateau Pavie Macquin Saint-Emilion~5500~~France~Merlot~premium~~97~James Suckling
+WRW6081BN~Chateau La Dame de Montrose Saint-Estephe~3200~~France~Merlot~established~~94~Wine Enthusiast
+WRW6104AH~Robert Mondavi Napa Valley Red Blend~2099~~USA~Cabernet Sauvignon~established~2019~92~Wine Spectator
+WRW6137AC~Joseph Phelps "Freestone Vineyard" Pinot Noir~3500~~USA~Pinot Noir~established~2019~96~Wine Advocate
+WRW6184WN~Chateau Pericou AOP Bordeaux Rouge~869~850~France~Merlot~established~~~
+WRW6186WN~Chateau de la Vieille Tour Bordeaux Superieur AOP~1199~925~France~Merlot~established~~91~James Suckling
+WRW6188WN~Reserve Tradition du Chateau de la Vieille Tour Bordeaux Superieur AOP~1199~~France~Merlot~established~~91~James Suckling
+WRW6206GF~Pingorote Tempranillo Reserva~849~725~Spain~Tempranillo~premium~~~
+WRW6217FS~Pastourelle De Clerc Milon "Le 2nd Vin De Chateau Clerc Milon" 2016~2600~2405~France~Cabernet Sauvignon~established~~91~James Suckling
+WRW6219FS~Opus One Vintage 2012~24000~20115~USA~Cabernet Sauvignon~~~97~James Suckling
+WRW6222FS~Chateau Pichon Longueville Baron 2019~11500~9749~France~Cabernet Sauvignon~~~100~Wine Enthusiast
+WRW6318FC~Louis Latour Chambolle-Musigny~5500~~France~Pinot Noir~established~~92~James Suckling
+WRW6345FC~Bodega Aleanna El Enemigo Cabernet Franc~1900~~Argentina~Cabernet Franc~everyday~~92~Wine Advocate
+WRW6346FC~Bodega Aleanna El Enemigo Malbec~1900~~Argentina~Malbec~everyday~~92~Wine Advocate
+WRW6347FC~Bodega Aleanna Gran Enemigo Gualtallary~6300~~Argentina~Cabernet Franc~premium~~100~Wine Advocate
+WRW6363FC~Two Hands Gnarly Dudes Shiraz Barossa~1800~~Australia~Shiraz~established~~92~Wine Spectator
+WRW6543FS~Chateau Haut-Brion 1er Grand Cru Classe 2019~34500~30299~France~Merlot~iconic~~100~James Suckling
+WRW6545FS~Chateau Haut-Brion Le Clarence de Haut-Brion 2015~10500~8825~France~Merlot~established~~94~Wine Spectator
+WRW6554WN~Chateau La Gasquerie AOP Bordeaux Rouge~869~850~France~Merlot~established~~~
+WRW6561HI~Antinori Solaia IGT 2021~21100~~Italy~Bordeaux Blend~premium~~~
+WRW6573GX~Cueva del Viento Misma Luna~1359~~Spain~Garnacha Tintorera~unrated~~~
+WRW6601AF~Tenuta San Guido Sassicaia 2021~16000~~Italy~Cabernet Sauvignon~premium~~100~Wine Advocate
+WRW6610GW~Masseria La Volpe Uno 1 Riserva Primitivo Di Manduria DOC~1020~965~Italy~Primitivo~~~~
+WRW6614GX~VIK Millahue~5999~~Chile~Cabernet Franc~premium~2021~100~James Suckling
+WRW6625AF~Tenuta dell'Ornellaia Ornellaia Bolgheri DOC "La Generosita" (Artist Label) 2021~12800~~Italy~Cabernet Sauvignon~premium~2021~99~James Suckling
+WRW6644DJ~Maxime Cheurlin Noellat Chambolle-Musigny 1er Cru Les Noirots~14800~~France~Pinot Noir~premium~2022~~
+WRW6690GE~2:am Shiraz McLaren Vale~3200~3095~Australia~Syrah~established~2019~~
+WRW6795GW~Roodeberg Black~750~~South Africa~Cabernet Sauvignon~unrated~~~
+WRW6847GW~Reguta Altropasso Tre Venezie I.G.P.~780~~Italy~Cabernet Sauvignon~unrated~~~
+WRW7037AD~Otronia 45 Rugientes Pinot Noir Patagonia~1290~999~Argentina~Pinot Noir~unrated~~~
+WRW7054AD~Barefoot Cabernet Sauvignon~499~459~USA~Cabernet Sauvignon~unrated~~~
+WRW7529GX~Finca Fella El Maso Garnacha Tintorera~1359~~Spain~Grenache~~~~
+WRW7624BN~Chateau Lascombes 2021~5500~~France~Cabernet Sauvignon~established~2021~94~James Suckling
+WRW7754AD~Catena Zapata Birth of Cabernet~3699~~Argentina~Cabernet Sauvignon~unrated~~~
+WSP0005FO~Billecart Salmon Le Rose~4500~4075~France~Chardonnay~unrated~~~
+WSP0009AA~7 Cascine Prosecco Extra Dry Spumante~840~635~Italy~Prosecco~established~~~
+WSP0026AA~Freixenet Cordon Negro Brut~800~605~Spain~Macabeo~established~~~
+WSP0027AC~Freixenet Vintage Reserva Brut~849~~Spain~Macabeo~established~~~
+WSP0037AC~Opera Prima Pink Moscato~559~~Spain~Muscat~unrated~~~
+WSP0042AD~Zonin Prosecco Brut~595~~Italy~Prosecco~established~~~
+WSP0062EG~Bollinger Special Cuvee~4200~3695~France~Pinot Noir~established~~93~James Suckling
+WSP0122AB~Villa Sandi Prosecco Spumante "Il Fresco"~900~765~Italy~Glera~everyday~~~
+WSP1085BS~Bottega Prosecco DOC Brut~1000~885~Italy~Glera~established~~~
+WSP1089BS~Bottega Prosecco Gold Brut~1700~~Italy~Glera~established~~~
+WSP1096AD~Veuve Clicquot Brut Yellow Label (750 ml)~2339~~France~Pinot Noir~established~~92~James Suckling
+WSP1104BU~Moet & Chandon Brut Imperial (750 ml)~2229~~France~Pinot Noir~premium~~~
+WSP1115AD~Dom Perignon Rose Vintage with Gift Box~18379~~France~Chardonnay~iconic~~97~James Suckling
+WSP1117AD~Chandon Brut~915~~Australia~Chardonnay~established~~90~Wine Enthusiast
+WSP1131AA~Nua Vino Spumante Brut~515~~Italy~Local Piedmont grapes~established~~~
+WSP1132AA~Nua Prosecco Vino Spumante Extra Dry~655~~Italy~Glera~established~~~
+WSP1138AE~Follador Torri di Credazzo Cru Valdobbiadene Prosecco Superiore DOCG Extra Brut~1170~~Italy~Glera~established~~92~James Suckling
+WSP1140AE~Follador Prosecco Farder treviso Extra Dry Gold DOC~940~~Italy~Glera~established~~91~James Suckling
+WSP1167AD~Champagne Ruinart Blanc de Blancs~3615~~France~Chardonnay~established~~93~Wine Spectator
+WSP1187FC~Laurent Perrier Cuvee Rose~5500~~France~Pinot Noir~unrated~~~
+WSP1229BS~Bottega Moscato Manzoni Rose~1700~~Italy~Moscato~unrated~~~
+WSP1233AD~Wolf Blass Eaglehawk Cuvee Brut~395~~Australia~Chardonnay~established~~~
+WSP1273AC~Freixenet Cordon Rosado Brut (200 ml)~249~~Spain~Trepat~~~~
+WSP1275BN~Taittinger Prestige Rose~3400~~France~Pinot Noir~established~~91~Wine Spectator
+WSP1485EG~Perrier-Jouet Grand Brut Champagne (750 ml)~4000~~France~Pinot Noir~established~~~
+WSP1490BU~Jacob's Creek Sparkling Chardonnay Pinot Noir (750 ml)~645~~Australia~Chardonnay~established~~~
+WSP1541CH~Monsoon Valley Brut Prestige Sparkling Wine~749~615~Thailand~Colombard~everyday~~~
+WSP2439BN~Zardetto Private Cuvee Brut~700~585~Italy~Glera~everyday~~~
+WSP2444BN~Louis Roederer Cristal Rose 2013~18800~~France~Pinot Noir~~~99~Wine Advocate
+WSP2581FL~Aviva Red Rose~1090~~Spain~Glera~unrated~~~
+WSP2584FL~Aviva Pink Gold~1090~~Spain~Glera~unrated~~~
+WSP2619AD~Dom Perignon Rose (Luminated Label)~20279~~France~Chardonnay~~~97~James Suckling
+WSP2624FR~Domaine Cold River Cuvee Tradition Brut (Black Label)~449~~Australia~Chardonnay~everyday~~~
+WSP2646FT~Champagne Ruinart Brut~4200~3999~France~Pinot Noir~established~~~
+WSP5657FX~Granmonte Sparkling Rose Methode Traditionnelle Brut~1449~~Thailand~Syrah~everyday~~~
+WSP5658FX~Granmonte Cremant Methode Traditionnelle Extra Brut~2799~2515~Thailand~Chenin Blanc~everyday~~~
+WSP5677DD~Charles Du Lac Mousseux Brut~400~~France~Chardonnay~established~~~
+WSP5679DD~Expresion Premium Sparkling Pink Rose~400~~Spain~Unknown~~~~
+WSP5681DD~Expresion Premium Sparkling Mojito~400~~Spain~Unknown~~~~
+WSP5682DD~Expresion Premium Sparkling Mimosa~400~~Spain~Unknown~~~~
+WSP5686AD~Pares Balta Cava Brut Organic~899~~Spain~Parellada~~~~
+WSP5728FR~Champagne Alain Navarre Cuvee Tradition Brut~1299~~France~Chardonnay~everyday~~~
+WSP5780AD~Dom Perignon 2015~10415~~France~Pinot Noir~iconic~~97~James Suckling
+WSP5782BN~Louis Roederer Cristal Brut 2016~14800~~France~Pinot Noir~premium~~98~Wine Enthusiast
+WSP5786BN~Louis Roederer Collection 245~3800~~France~Chardonnay~~~94~Wine Enthusiast
+WWW0012AD~Craggy Range Te Muna Sauvignon Blanc Martinborough~1079~~New Zealand~Sauvignon Blanc~premium~~~
+WWW0080AH~Banrock Station Moscato~349~325~Australia~Muscat~unrated~~~
+WWW0092AH~Hardys Varietal Range Chardonnay~399~~Australia~Chardonnay~unrated~~~
+WWW0100AH~Robert Mondavi Private Selection Vint Chardonnay~989~845~USA~Chardonnay~unrated~~~
+WWW0120AA~Baron Philippe de Rothschild Mouton Cadet Bordeaux Blanc~855~805~France~Sauvignon Blanc~premium~~~
+WWW0153AD~Concha Y Toro Reservado Chardonnay~449~~Chile~Chardonnay~established~~~
+WWW0159AD~Concha Y Toro Frontera Chardonnay~399~~Chile~Chardonnay~premium~~~
+WWW0180AD~Catena Zapata Alamos Chardonnay~719~619~Argentina~Chardonnay~premium~~~
+WWW0350AB~Sileni Estates Cellar Selection Sauvignon Blanc Marlborough~900~~New Zealand~Sauvignon Blanc~unrated~~~
+WWW0379AD~Two Oceans Sauvignon Blanc~489~~South Africa~Sauvignon Blanc~established~~~
+WWW0388AB~Fairview Darling Chenin Blanc~1090~~South Africa~Chenin Blanc~unrated~~~
+WWW0409FC~Louis Latour Corton-Charlemagne Grand Cru~11900~11038~France~Chardonnay~premium~~97~James Suckling
+WWW0504AF~Robertson Winery Sauvignon Blanc~980~~South Africa~Sauvignon Blanc~unrated~~~
+WWW1095AD~Nederburg Lyric Sauvignon blanc Chenin Blanc Chardonnay~599~~South Africa~Sauvignon Blanc~unrated~~~
+WWW1096AD~Nederburg Winemaster's Reserve Chardonnay~879~~South Africa~Chardonnay~unrated~~~
+WWW1106AD~Matua Sauvignon Blanc~695~~New Zealand~Sauvignon Blanc~premium~~~
+WWW1197AD~Cloudy Bay Sauvignon Blanc~1699~~New Zealand~Sauvignon Blanc~established~~93~Wine Spectator
+WWW1341AC~Delheim Chenin Blanc~799~~South Africa~Chenin Blanc~unrated~~~
+WWW1345AC~Salisbury 1848 Pinot Grigio~449~~Australia~Pinot Grigio~unrated~~~
+WWW1374AC~Far Niente Chardonnay~4200~3865~USA~Chardonnay~established~2022~94~Wine Enthusiast
+WWW1433BN~Peter Michael Chardonnay Belle Cote~6300~~USA~Chardonnay~unrated~~~
+WWW1438BN~Peter Michael Chardonnay Ma Belle Fille~7000~~USA~Chardonnay~premium~~98~Wine Advocate
+WWW1666CH~Lion's Cape Coastal White Chardonnay (Fruit wine blend)~399~~South Africa~Chardonnay~unrated~~~
+WWW1696AD~Mud House Sauvignon Blanc~899~~New Zealand~Sauvignon Blanc~established~~~
+WWW1701CH~Monsoon Valley Colombard~749~615~Thailand~Colombard~established~~90~James Suckling
+WWW1724AC~Signus Crisp White (Sauvignon Blanc) (Fruit wine blend)~399~~Chile~Sauvignon Blanc~unrated~~~
+WWW1799BN~Wairau River Sauvignon Blanc~900~785~New Zealand~Sauvignon Blanc~established~~~
+WWW1896AD~Beringer Main & Vine Chardonnay~649~~USA~Chardonnay~unrated~~~
+WWW2032AD~Villa Maria Private Bin Sauvignon Blanc~749~~New Zealand~Sauvignon Blanc~unrated~~~
+WWW2046AB~Nautilus Estate Sauvignon Blanc~1200~~New Zealand~Sauvignon Blanc~everyday~~93~James Suckling
+WWW2202AD~De Bortoli Sacred Hill Chardonnay~489~~Australia~Chardonnay~established~~~
+WWW2206CH~Monsoon Valley Signature White~999~~Thailand~Chenin Blanc~everyday~~90~James Suckling
+WWW2216BU~Brancott Estate Sauvignon Blanc (750 ml)~599~~New Zealand~Sauvignon Blanc~established~~~
+WWW2239CB~La Linda Torrontes~900~635~Argentina~Torrontes~unrated~~~
+WWW2244BN~Greywacke Pinot Gris~1200~1035~New Zealand~Pinot Gris~established~~88~Wine Enthusiast
+WWW2246BN~Greywacke Sauvignon Blanc~1000~~New Zealand~Sauvignon Blanc~~~91~Wine Enthusiast
+WWW2248BN~Greywacke Wild Sauvignon~1300~~New Zealand~Sauvignon Blanc~~~94~James Suckling
+WWW2250BN~Russian Jack Sauvignon Blanc~800~~New Zealand~Sauvignon Blanc~established~~~
+WWW2270HI~Elena Walch Pinot Grigio Alto Adige D.O.C.~1300~1099~Italy~Pinot Grigio~everyday~~~
+WWW2335AD~Bodegas Protos Verdejo Rueda D.O.~769~~Spain~Verdejo~unrated~~~
+WWW2349CB~Bread & Butter Chardonnay~1400~1099~USA~Chardonnay~unrated~~~
+WWW2352DD~Angove Long Row Chardonnay (187 ml)~200~155~Australia~Chardonnay~unrated~~~
+WWW2406DD~The Old Town South African Dry White (Fruit wine blend)~300~~South Africa~Blended~unrated~~~
+WWW2412DD~Mount Riley Sauvignon Blanc~800~665~New Zealand~Sauvignon Blanc~~~~
+WWW2417DD~Mount Riley Gewurztraminer~900~775~New Zealand~Gewurztraminer~established~~~
+WWW4734AB~Famille Perrin La Vieille Ferme Blanc~800~~France~Grenache Blanc~unrated~~~
+WWW4855AD~Wolf Blass Eaglehawk Chardonnay~395~~Australia~Chardonnay~premium~~~
+WWW5091BN~Domaine Leflaive Bienvenues Batard Montrachet Grand Cru~51400~~France~Chardonnay~iconic~~95~Wine Advocate
+WWW5202AD~Concha Y Toro Reservado Sauvignon Blanc Pedro Jimenez~449~~Chile~Sauvignon Blanc~unrated~~~
+WWW5217AH~Annalina Marlborough Sauvignon Blanc~649~~New Zealand~Sauvignon Blanc~unrated~~~
+WWW5231FX~Granmonte Spring Chenin Blanc~1099~~Thailand~Chenin Blanc~established~~~
+WWW5232FX~Granmonte Verdelho~1449~~Thailand~Verdelho~unrated~~~
+WWW5233FX~Granmonte Viognier~1449~~Thailand~Viognier~unrated~~~
+WWW5235FX~Granmonte The Orient Viognier~2599~~Thailand~Viognier~unrated~~~
+WWW5236FJ~Colina Chardonnay~489~~Chile~Chardonnay~established~~~
+WWW5266BN~William Fevre Chablis Premier Cru~3100~~France~Chardonnay~~~~
+WWW5332FJ~Spy Valley Sauvignon Blanc~909~~New Zealand~Sauvignon Blanc~established~~90~James Suckling
+WWW5371AB~Nollen Erben Mosel Riesling Spatlese~600~559~Germany~Riesling~unrated~~~
+WWW6007AA~Chateau d'Yquem "Y" Bordeaux Blanc 2017~21550~~France~Semillon~premium~2017~98~James Suckling
+WWW6233FJ~Albert Bichot Chablis~1659~1579~France~Chardonnay~everyday~2023~90~Wine Enthusiast
+WWW6235FJ~Albert Bichot Domaine Long-Depaquit Chablis Grand Cru Bougros~5189~4929~France~Chardonnay~premium~2022~~

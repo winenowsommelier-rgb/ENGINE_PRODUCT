@@ -1,0 +1,578 @@
+# sku~region~designation~top_sales_pct~top_critic_pct   (percentiles from products.reputation_summary)
+LBD0005AA~Emilia-Romagna~~~
+LBD0006CN~Cognac~~~
+LBD0007CN~Cognac~~~
+LBD0011CN~Cognac~~~
+LBD0043AF~Calvados~~~
+LBD0050BU~Cognac~~~
+LBD0063AE~Alsace~~~
+LBD0107EQ~Cognac~VSOP~~
+LBD0110AE~Ica~~~
+LBD0113BU~Cognac~~1~
+LBD0136AA~Cognac~VSOP~~
+LBD0166AA~Emilia-Romagna~Reserva~~
+LBD0184DD~South Australia~~~
+LBD0188DD~South Australia~~~
+LBD0198GB~Cognac~~~
+LBD0199AD~Armagnac~XO~~
+LBD0200EQ~Cognac~VSOP~~
+LBD0221BU~Cognac~~~
+LBD0224BU~Cognac~Limited~~
+LBD0227DG~New Jersey~~~
+LBD0233AB~Cognac~~~
+LBD0235AA~Atacama~~~
+LGN0006AA~Ayrshire~~~
+LGN0015BU~London~~1~
+LGN0016BU~London~~~
+LGN0017BU~London~~2~
+LGN0026BU~Black Forest~~2~
+LGN0029CN~London~~~
+LGN0063CN~London~~~
+LGN0069DG~Cognac~~~
+LGN0077DR~London~~~
+LGN0078CN~Amsterdam~~~
+LGN0081BU~London~~1~
+LGN0083BU~Catalonia~~~
+LGN0106AA~Osaka~~~
+LGN0107AD~London~~~
+LGN0147BU~Friuli-Venezia Giulia~~~
+LGN0158BU~London~~~
+LGN0176BU~London~~~
+LGN0194BU~London~~1~
+LGN0199CN~Leitrim~~~
+LGN0214AA~Tokyo~~~
+LGN0313GC~Chiang Mai~~4~
+LGN0348GR~Chiang Mai~~~
+LGN0360BU~Tokyo~~~
+LGN0363GR~Chiang Rai~~~
+LGN0380AE~Leitrim~~~
+LGP0078BS~Veneto~~~
+LLQ0003AA~Lazio~~~
+LLQ0010AA~Bologna~~1~
+LLQ0014CN~Veneto~~~
+LLQ0058CN~Angers~~~
+LLQ0059AD~Wolfenbuttel~~1~
+LLQ0065AD~Schiedam~~~
+LLQ0066AD~Schiedam~~3~
+LLQ0069AT~Veneto~~~
+LLQ0072AT~Veneto~~~
+LLQ0073AT~Veneto~~~
+LLQ0079DR~Copenhagen~~~
+LLQ0085BU~Dublin~~~
+LLQ0088CN~Amsterdam~~~
+LLQ0089CN~Amsterdam~~~
+LLQ0092CN~Amsterdam~~~
+LLQ0093CN~Amsterdam~~~
+LLQ0098AD~Schiedam~~2~
+LLQ0099AD~Schiedam~~~
+LLQ0102AD~Schiedam~~~
+LLQ0103AD~Schiedam~~~
+LLQ0104AD~Schiedam~~~
+LLQ0105AD~Schiedam~~~
+LLQ0106AD~Schiedam~~~
+LLQ0107AD~Schiedam~~~
+LLQ0108AD~Schiedam~~1~
+LLQ0158CN~Lombardy~~~
+LLQ0229CN~North Holland~~~
+LLQ0232CN~Piedmont~~~
+LLQ0255CN~Cognac~~~
+LLQ0269AE~Loire Valley~~~
+LLQ0278AE~Angers~~~
+LLQ0281AE~Languedoc-Roussillon~~~
+LLQ0298BU~Mexico~~2~
+LLQ0303BU~Illinois~~~
+LLQ0304BU~Illinois~~~
+LLQ0319DR~Turin~~~
+LLQ0320DR~Piedmont~~~
+LLQ0321DR~Cognac~~~
+LLQ0328DR~Normandy~~~
+LLQ0329BU~Marseille~~~
+LLQ0334AD~~~1~
+LLQ0399BU~Amsterdam~~~
+LLQ0410BU~Bordeaux~~2~
+LLQ0411BU~Bordeaux~~~
+LLQ0424CN~Amsterdam~~~
+LLQ0431CN~Piedmont~~~
+LLQ0461AD~Lombardy~~~
+LLQ0466BU~Veneto~~3~
+LLQ0494GW~Campania~~~
+LOT0154FS~Wakayama~~~
+LOT0174GR~~~1~
+LRM0035BU~Caribbean~~1~
+LRM0037DG~Phuket~~2~
+LRM0053BU~Lara~Reserva~~
+LRM0093AD~Issan~~~
+LRM0111BU~Caribbean~~1~
+LRM0116DR~Caribbean~~~
+LRM0143CP~Cornwall~~~
+LRM0144CP~London~~~
+LRM0186BU~Caribbean~~~
+LRM0206CP~Cornwall~~~
+LRM0207CP~Cornwall~~~
+LRM0209CP~Cornwall~~~
+LRM0210CP~Cornwall~~~
+LRM0211CP~Cornwall~~~
+LRM0212CP~Cornwall~~~
+LSK0008AR~Hiroshima~~~
+LSK0015AR~Hyogo~~~
+LSK0086AR~Nagano~~~
+LSK0120AB~Yamaguchi~~~
+LSK0127AB~Kochi~~~
+LSK0166AB~Ishikawa~~~
+LSK0222DB~Fukui~~~
+LSK0268DB~Fukui~~~
+LSK0348AD~Kyoto~~~
+LSK0432FS~Hyogo~~~
+LSK0439FS~Hyogo~~~
+LSK0449AB~Yamaguchi~~~
+LSK0480AB~Tottori~~~
+LSK0504AB~Kyoto~~~
+LSK0507AB~Shizuoka~~~
+LSK0509AB~Niigata~~~
+LSK0519AB~Akita~~~
+LSK0561AB~Nagano~~~
+LSK0577AB~Nagano~~~
+LSK0588AB~Niigata~~~
+LTQ0006BU~Jalisco~~~
+LTQ0015BU~Jalisco~~~
+LTQ0033CN~Jalisco~~~
+LTQ0034CN~Jalisco~~~
+LTQ0035BU~Jalisco~~~
+LTQ0062BU~Jalisco~~~
+LTQ0066CN~Jalisco~~~
+LTQ0067CN~Jalisco~~~
+LTQ0068CN~Jalisco~~~
+LTQ0078BU~Jalisco~~~
+LTQ0128CN~Jalisco~~~
+LTQ0133AD~Jalisco~~~
+LTQ0135AA~Oaxaca~~~
+LTQ0137AA~Oaxaca~~~
+LTQ0171CN~Oaxaca~~~
+LTQ0172CN~Oaxaca~~~
+LTQ0176CN~Jalisco~~~
+LTQ0202AD~Tequila~~1~
+LTQ0203BU~Jalisco~~~
+LTQ0205CN~Jalisco~~~
+LTQ0209GH~Jalisco~Reserve~~
+LTQ0241ER~Tequila~~~
+LTQ0249CN~Jalisco~~~
+LTQ0250CN~Jalisco~~~
+LVK0060BU~Zyrardow~~~
+LVK0071BU~Schiedam~~~
+LVK0124DR~Cognac~~~
+LVK0172CN~Texas~~~
+LVK0183CN~Amsterdam~~~
+LVK0185DG~Chiang Mai~~~
+LVK0194AA~Osaka~~~
+LWH0001AA~Speyside~~~
+LWH0005AA~Speyside~~~
+LWH0011AA~Speyside~~~
+LWH0024AA~Islay~~~
+LWH0025AA~Kentucky~~~
+LWH0034BU~Tennessee~~~
+LWH0040BU~Scotland~~~
+LWH0076AA~Ontario~~~
+LWH0078BU~~~1~
+LWH0079BU~~Reserve~~
+LWH0137AE~Speyside~~~
+LWH0138AE~Speyside~~~
+LWH0139AE~Speyside~~~
+LWH0140AE~Speyside~~~
+LWH0155BU~Isle of Skye~~3~
+LWH0156BU~Isle of Skye~~~
+LWH0161BU~Islay~~~
+LWH0162BU~Islay~~4~
+LWH0172AD~Kentucky~~1~
+LWH0173AA~Speyside~~1~
+LWH0177AA~Midlands~~~
+LWH0179BU~Kentucky~~~
+LWH0182AE~Islands~Single Malt~~
+LWH0195CN~Speyside~~~
+LWH0205AD~Kentucky~~1~
+LWH0214AA~Speyside~~~
+LWH0216BU~Tennessee~~~
+LWH0220BU~Tennessee~~~
+LWH0235BU~Scotland~~1~
+LWH0246DB~Hiroshima~~~
+LWH0251AA~Chita~~~
+LWH0312AD~Dublin~~~
+LWH0314AD~Dublin~Single Malt~~
+LWH0318CN~Speyside~~~
+LWH0319BU~Cork~~~
+LWH0320CN~~Single Malt~~
+LWH0325AA~Osaka~~~
+LWH0329AA~Kentucky~~~
+LWH0332BU~Scotland~~1~
+LWH0336BU~Tennessee~~~
+LWH0343AA~Osaka~~~
+LWH0349AA~Yamanashi Prefecture~~~
+LWH0350DG~Hokkaido~~3~
+LWH0364CN~Speyside~~~
+LWH0366AA~Yamazaki~~~
+LWH0371BU~Speyside~~~
+LWH0401BU~Midleton~~~
+LWH0418CP~Midleton~~~
+LWH0455CN~County Antrim~~~
+LWH0539AA~Osaka~~~
+LWH0544AD~Highlands~~~
+LWH0551CN~County Antrim~Single Malt~~
+LWH0552CN~Dingle Peninsula~~~
+LWH0563AD~Nagano~~5~
+LWH0597AH~Speyside~Single Malt~~
+LWH0598AH~Speyside~Single Malt~~
+LWH0639BU~Kentucky~Reserve~~
+LWH0665BU~Tennessee~~~
+LWH0668CN~Speyside~~~
+LWH0713AB~San'in~~~
+LWH0722CP~North Wales~Single Malt~~
+LWH0980DG~Hokkaido~~~
+LWH0984CN~Kyoto~~~
+LWH1032DG~Wicklow~~~
+LWH1033DG~Wicklow~~~
+LWH1034DG~Wicklow~Grand Cru~5~
+LWH1035DG~Wicklow~~5~
+LWH1036DG~Wicklow~XO~~
+LWH1064AA~Islay~Single Malt~~
+LWH1069AD~Cork~~1~
+LWH1079CN~Highland~Single Malt~~
+LWH1108AB~Leitrim~~~
+LWH1170CN~Speyside~~~
+LWH1179DG~Miyagikyo~~~
+LWH1188AB~Campbeltown~~~
+LWH1210DG~Islands~~~
+LWH1227AA~Kentucky~~~
+LWH1248BU~Scotland~~~
+LWH1252CN~Speyside~~~
+LWH1253CN~Speyside~~~
+LWH1265HM~Speyside~~~
+LWH1273HM~Highland~Single Malt~~
+LWH1279HM~Shizuoka~~~
+LWS0001HE~Chaiyaphum~~~
+WDW0001AA~Piedmont~~6~
+WDW0019AA~Sicily~IGT~~
+WDW0026AA~Sicily~DOC~~
+WDW0032AB~Sicily~~~21
+WDW0043AF~Douro~~10~
+WDW0044AF~Douro~~~
+WDW0048AF~Douro~~~
+WDW0056BS~Veneto~~1~
+WDW0059FX~Khao Yai~~~
+WDW0060AD~Douro~~~
+WDW0073AE~Piedmont~DOCG~~
+WDW0102CH~Hua Hin~~~
+WDW0105AA~Sicily~Superiore~~
+WDW0109AD~South Eastern Australia~~~
+WDW0141AA~Piedmont~~~
+WDW0146BS~Piedmont~DOCG~3~
+WDW0148DR~Douro~~~
+WDW0149DR~Douro~~~
+WDW0516AB~Languedoc-Roussillon~~~
+WDW0518AA~Bordeaux~AOC~~
+WDW0520AA~Piedmont~DOCG~~
+WDW0521AA~Piedmont~DOCG~19~
+WRS0035AB~Provence~~~
+WRS0039AD~Loire Valley~~~
+WRS0055AD~Abruzzo~~~
+WRS0056AC~La Mancha~~~
+WRS0057AD~Languedoc-Roussillon~~5~
+WRS0072AA~Piedmont~~~
+WRS0079AC~Veneto~DOC~1~
+WRS0100CH~Hua Hin~~~
+WRS0104DD~Central Valley~Reserva~~
+WRS0109BN~Provence~~2~
+WRS0165AD~South Eastern Australia~~~
+WRS0186AD~Marlborough~~~
+WRS0199FJ~Languedoc-Roussillon~~4~
+WRS0211AB~Languedoc-Roussillon~~~
+WRS0217FX~Khao Yai~~3~
+WRS0220CH~South Eastern Australia~~~
+WRS0225AB~Sicily~~~
+WRS0227AB~Provence~~~
+WRS0237AH~South Australia~~~
+WRS0246AD~Abruzzo~~~
+WRS0284AC~Victoria~~~
+WRW0002AD~Puglia~~~
+WRW0035AD~South Australia~~4~
+WRW0066AC~California~~~
+WRW0067AC~California~~~
+WRW0114AD~Bordeaux~~4~
+WRW0202AH~South Eastern Australia~~~
+WRW0203AH~South Eastern Australia~~~
+WRW0211AH~California~~~
+WRW0213AH~California~~~
+WRW0214AH~California~~~
+WRW0215AH~California~~~
+WRW0216AH~California~~~
+WRW0240AA~Central Valley~Gran Reserva~~
+WRW0242AA~Central Valley~Reserva~~
+WRW0255AA~Bordeaux~~1~
+WRW0282AD~Central Valley~~1~
+WRW0288AD~Central Valley~~1~
+WRW0300AD~Mendoza~~~
+WRW0301AD~Mendoza~~1~
+WRW0312AD~Mendoza~~~
+WRW0338AD~Mendoza~~~
+WRW0415HI~Tuscany~IGT~~8
+WRW0423HI~Umbria~IGT~~
+WRW0462AD~Puglia~~2~
+WRW0574AA~Abruzzo~~1~
+WRW0686AB~Mendoza~~~
+WRW0715AB~Rioja~DOC~~
+WRW1039AD~South Australia~~1~
+WRW1040AD~South Australia~~1~
+WRW1049AD~Western Cape~~5~
+WRW1050AD~Western Cape~~~
+WRW1054AD~California~~~3
+WRW1063AB~Western Cape~~~
+WRW1198AF~Mendoza~~~
+WRW1199AF~Mendoza~~~
+WRW1248AD~Mendoza~~~
+WRW1249AD~Mendoza~~3~
+WRW1413AF~Burgundy~Grand Cru~~
+WRW1430AD~Western Cape~~~
+WRW1454AB~Rioja~DOC~~
+WRW1455AD~Marlborough~~1~
+WRW1476AD~Bordeaux~AOC~~
+WRW1562AD~Rioja~Crianza~~
+WRW1570BN~Bordeaux~~~
+WRW1621BS~Veneto~DOC~1~
+WRW1624AD~Mendoza~Reserva~~
+WRW1642BN~Central Valley~Reserva~~
+WRW1644BN~Central Valley~Gran Reserva~~
+WRW1647BN~Central Valley~~~
+WRW1845AE~Veneto~DOCG~~
+WRW1855AE~Tuscany~~~4
+WRW2146AC~California~~~
+WRW2153AC~California~~~
+WRW2301BN~California~~~1
+WRW2348BN~California~~1~
+WRW2358BN~South Australia~~1~
+WRW2359BN~South Australia~~~
+WRW2369AD~South Australia~~1~
+WRW2385AD~South Australia~~8
+WRW2421BN~Central Valley~~1~
+WRW2455FS~Bordeaux~~~8
+WRW2459FS~Bordeaux~AOC~~4
+WRW2642BN~Bordeaux~~1~
+WRW2973BN~Veneto~DOC~5~
+WRW2974BN~Veneto~~~1
+WRW3023BN~Martinborough~~~
+WRW3029BN~Stellenbosch~~~
+WRW3030BN~Stellenbosch~~~
+WRW3031BN~Stellenbosch~~~
+WRW3032BN~Stellenbosch~~~
+WRW3118CH~Western Cape~~~
+WRW3122CH~South Eastern Australia~~1~
+WRW3123CH~South Eastern Australia~~1~
+WRW3178CH~Hua Hin~~3~
+WRW3179CH~Hua Hin~~~
+WRW3191AD~Puglia~DOC~3~
+WRW3218AC~Central Valley~~2~
+WRW3294AE~Tuscany~DOCG~~4
+WRW3305DD~Central Valley~Reserva~~
+WRW3413BS~Puglia~IGT~~
+WRW3425BN~Marlborough~~~
+WRW3471AH~Aconcagua~~~
+WRW3893AH~California~~~
+WRW4225AJ~Rioja~DOC~3~
+WRW4287CH~Hua Hin~~~
+WRW4289BU~South Eastern Australia~~~
+WRW4303BU~Rioja~~~
+WRW4304BU~Rioja~Reserva~~
+WRW4305BU~Marlborough~~~
+WRW4313AC~Central Valley~Gran Reserva~~
+WRW4353CB~Mendoza~~~
+WRW4354CB~Mendoza~~~
+WRW4521AD~Ribera del Duero~~~
+WRW4559CB~California~~~
+WRW4577DD~South Australia~~1~
+WRW4679AD~South Australia~~1~
+WRW4680AD~South Australia~~~
+WRW4681AD~South Australia~~2~
+WRW4683AD~South Australia~~2~
+WRW4688AD~South Australia~~1~
+WRW4693AD~South Australia~~1~
+WRW4696AD~California~~~
+WRW4700DD~Western Cape~~1~
+WRW4728DD~South Australia~~1~
+WRW4742AD~Central Valley~Reserva~~
+WRW4774AB~Rhone Valley~~~
+WRW4874FS~Bordeaux~~~
+WRW4979FS~Bordeaux~~~
+WRW5019AD~Mendoza~Reserva~~
+WRW5020AD~Mendoza~~~
+WRW5046AB~Mendoza~~~
+WRW5100AH~California~~~
+WRW5102AC~California~~~3
+WRW5350DD~Puglia~~1~
+WRW5351BN~California~~~
+WRW5406BN~Tuscany~~2~
+WRW5440GC~Western Cape~~~
+WRW5442DW~Western Cape~~~
+WRW5470FJ~South Eastern Australia~~1~
+WRW5520EG~Bordeaux~~~
+WRW5530FJ~Languedoc-Roussillon~~2~
+WRW5598AA~Bordeaux~~3~
+WRW5665DJ~Burgundy~Premier Cru~~
+WRW5689FR~Tuscany~DOP/IGP~~
+WRW5761AD~Central Valley~~4~
+WRW5773DD~California~~5~
+WRW5774DD~Stellenbosch~Reserve~~
+WRW5801AH~Marlborough~Reserve~~
+WRW5807FU~Veneto~Classico~~
+WRW5836AA~Marche~IGT~~
+WRW5853CB~California~~~
+WRW5854FX~Khao Yai~~~
+WRW5855FX~Khao Yai~~3~
+WRW5856FX~Khao Yai~~~
+WRW5857FX~Khao Yai~~~
+WRW5858FX~Khao Yai~~~
+WRW5859FX~Khao Yai~~~
+WRW5860FJ~Central Valley~~~
+WRW5869AD~Ribera del Duero~~~
+WRW5882DD~Central Valley~~~
+WRW5891AH~California~~~
+WRW5907FJ~Languedoc-Roussillon~Reserve~~
+WRW5908FJ~Languedoc-Roussillon~Reserve~~
+WRW5962FS~Central Valley~~~
+WRW6007FJ~Mendoza~Gran Reserva~~
+WRW6044AH~Central Valley~Gran Reserva~~
+WRW6060BN~Bordeaux~~~20
+WRW6072BN~Bordeaux~~~13
+WRW6081BN~Bordeaux~~~
+WRW6104AH~California~~~
+WRW6137AC~California~~~
+WRW6184WN~Bordeaux~AOC~2~
+WRW6186WN~Bordeaux~AOC~1~
+WRW6188WN~Bordeaux~AOC~1~
+WRW6206GF~La Mancha~Reserva~~
+WRW6217FS~Bordeaux~~~
+WRW6219FS~California~Vintage~~
+WRW6222FS~Bordeaux~~~
+WRW6318FC~Burgundy~~~
+WRW6345FC~Mendoza~~~
+WRW6346FC~Mendoza~~~
+WRW6347FC~Mendoza~~~1
+WRW6363FC~South Australia~~~
+WRW6543FS~Bordeaux~Grand Cru~~1
+WRW6545FS~Bordeaux~~~
+WRW6554WN~Bordeaux~AOC~1~
+WRW6561HI~Tuscany~IGT~~1
+WRW6573GX~Canary Islands~~~
+WRW6601AF~Tuscany~~~1
+WRW6610GW~Puglia~DOC~~
+WRW6614GX~Central Valley~~~
+WRW6625AF~Tuscany~DOC~~1
+WRW6644DJ~Burgundy~Premier Cru~~
+WRW6690GE~South Australia~~~
+WRW6795GW~Western Cape~~~
+WRW6847GW~Friuli-Venezia Giulia~~~
+WRW7054AD~California~~~
+WRW7529GX~Almansa~~~
+WRW7624BN~Bordeaux~~~
+WRW7754AD~Mendoza~~~
+WSP0005FO~Champagne~~~
+WSP0009AA~Veneto~~~
+WSP0026AA~Catalunya~Brut~~
+WSP0027AC~Catalunya~Brut~~
+WSP0037AC~La Mancha~~~
+WSP0042AD~Veneto~Brut~~
+WSP0062EG~Champagne~~~
+WSP0122AB~Veneto~~~
+WSP1085BS~Veneto~DOC~~
+WSP1089BS~Veneto~Brut~~
+WSP1096AD~Champagne~Brut~~
+WSP1104BU~Champagne~Brut~~
+WSP1115AD~Champagne~Vintage~~8
+WSP1117AD~Victoria~Brut~~
+WSP1131AA~Piedmont~Brut~~
+WSP1132AA~Veneto~~~
+WSP1138AE~Veneto~DOCG~~
+WSP1140AE~Veneto~DOC~~
+WSP1167AD~Champagne~~2~
+WSP1187FC~Champagne~~~
+WSP1229BS~Veneto~~~
+WSP1233AD~South Australia~Brut~~
+WSP1273AC~Catalunya~Brut~~
+WSP1275BN~Champagne~~~
+WSP1485EG~Champagne~Brut~~
+WSP1490BU~South Eastern Australia~~4~
+WSP1541CH~Hua Hin~Brut~~
+WSP2439BN~Veneto~Brut~~
+WSP2444BN~Champagne~~~
+WSP2581FL~Valencia~~~
+WSP2584FL~Valencia~~~
+WSP2619AD~Champagne~~~
+WSP2624FR~South Eastern Australia~Brut~~
+WSP2646FT~Champagne~Brut~~
+WSP5657FX~Khao Yai~Brut~~
+WSP5658FX~Khao Yai~Extra Brut~~
+WSP5679DD~La Mancha~~~
+WSP5681DD~La Mancha~~~
+WSP5682DD~La Mancha~~~
+WSP5686AD~Catalunya~Brut~~
+WSP5728FR~Champagne~Brut~~
+WSP5780AD~Champagne~~~13
+WSP5782BN~Champagne~Brut~~3
+WSP5786BN~Champagne~~~
+WWW0012AD~Martinborough~~5~
+WWW0080AH~South Australia~~~
+WWW0092AH~South Eastern Australia~~~
+WWW0100AH~California~~~
+WWW0120AA~Bordeaux~~3~
+WWW0153AD~Central Valley~~4~
+WWW0159AD~Central Valley~~1~
+WWW0180AD~Mendoza~~1~
+WWW0350AB~Marlborough~~~
+WWW0379AD~Western Cape~~4~
+WWW0388AB~Western Cape~~~
+WWW0409FC~Burgundy~Grand Cru~~
+WWW0504AF~Western Cape~~~
+WWW1095AD~Western Cape~~~
+WWW1096AD~Western Cape~Reserve~~
+WWW1106AD~Marlborough~~1~
+WWW1197AD~Marlborough~~1~
+WWW1341AC~Stellenbosch~~~
+WWW1345AC~South Eastern Australia~~~
+WWW1374AC~California~~~
+WWW1433BN~California~~~
+WWW1438BN~California~~~4
+WWW1666CH~Western Cape~~~
+WWW1696AD~Marlborough~~2~
+WWW1701CH~Hua Hin~~1~
+WWW1724AC~Central Valley~~~
+WWW1799BN~Marlborough~~2~
+WWW1896AD~California~~~
+WWW2032AD~Marlborough~~~
+WWW2046AB~Marlborough~~~
+WWW2202AD~South Eastern Australia~~3~
+WWW2206CH~Hua Hin~~~
+WWW2216BU~Marlborough~~1~
+WWW2239CB~Mendoza~~~
+WWW2244BN~Marlborough~~2~
+WWW2246BN~Marlborough~~~
+WWW2248BN~Marlborough~~~
+WWW2250BN~Marlborough~~2~
+WWW2270HI~Trentino-Alto Adige~~~
+WWW2335AD~Rueda~~~
+WWW2349CB~California~~~
+WWW2352DD~South Australia~~~
+WWW2406DD~Western Cape~~~
+WWW2412DD~Marlborough~~~
+WWW2417DD~Marlborough~~4~
+WWW4734AB~Rhone Valley~~~
+WWW4855AD~South Australia~~1~
+WWW5091BN~Burgundy~Grand Cru~~
+WWW5202AD~Central Valley~~~
+WWW5217AH~Marlborough~~~
+WWW5231FX~Khao Yai~~1~
+WWW5232FX~Khao Yai~~~
+WWW5233FX~Khao Yai~~~
+WWW5235FX~Khao Yai~~~
+WWW5236FJ~Central Valley~~1~
+WWW5266BN~Burgundy~Premier Cru~~
+WWW5332FJ~Marlborough~~1~
+WWW5371AB~Mosel~~~
+WWW6007AA~Bordeaux~~~6
+WWW6233FJ~Burgundy~~~
+WWW6235FJ~Burgundy~Grand Cru~~
