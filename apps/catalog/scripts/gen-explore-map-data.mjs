@@ -194,11 +194,15 @@ export function aggregate(rows, { excludeGroups = EXCLUDE_GROUPS, resolver = nul
   const bump = (map, key, r, group) => {
     let agg = map.get(key);
     if (!agg) {
-      agg = { total: 0, countsByGroup: {}, priceRange: { min: null, max: null }, peeks: [] };
+      agg = { total: 0, countsByGroup: {}, countsByGroupType: {}, priceRange: { min: null, max: null }, peeks: [] };
       map.set(key, agg);
     }
     agg.total += 1;
     agg.countsByGroup[group] = (agg.countsByGroup[group] ?? 0) + 1;
+    if (r.category_type) {
+      const gtKey = group + GROUP_TYPE_SEP + r.category_type;
+      agg.countsByGroupType[gtKey] = (agg.countsByGroupType[gtKey] ?? 0) + 1;
+    }
     if (typeof r.price === 'number') {
       if (agg.priceRange.min === null || r.price < agg.priceRange.min) agg.priceRange.min = r.price;
       if (agg.priceRange.max === null || r.price > agg.priceRange.max) agg.priceRange.max = r.price;
@@ -237,12 +241,16 @@ export function aggregate(rows, { excludeGroups = EXCLUDE_GROUPS, resolver = nul
         latitude: meta.latitude ?? null, longitude: meta.longitude ?? null,
         slug: meta.slug ?? slugify(meta.name),
         ownTotal: 0, inclusiveTotal: 0,
-        countsByGroup: {}, priceRange: { min: null, max: null }, peeks: [],
+        countsByGroup: {}, countsByGroupType: {}, priceRange: { min: null, max: null }, peeks: [],
       };
       nodes.set(key, n);
     }
     n.ownTotal += 1;
     n.countsByGroup[group] = (n.countsByGroup[group] ?? 0) + 1;
+    if (r.category_type) {
+      const gtKey = group + GROUP_TYPE_SEP + r.category_type;
+      n.countsByGroupType[gtKey] = (n.countsByGroupType[gtKey] ?? 0) + 1;
+    }
     if (typeof r.price === 'number') {
       if (n.priceRange.min === null || r.price < n.priceRange.min) n.priceRange.min = r.price;
       if (n.priceRange.max === null || r.price > n.priceRange.max) n.priceRange.max = r.price;
@@ -312,7 +320,7 @@ export function aggregate(rows, { excludeGroups = EXCLUDE_GROUPS, resolver = nul
           level: 'region', parentKey: null, parentName: '',
           latitude: null, longitude: null, slug: slugify(parentName),
           ownTotal: 0, inclusiveTotal: 0,
-          countsByGroup: {}, priceRange: { min: null, max: null }, peeks: [],
+          countsByGroup: {}, countsByGroupType: {}, priceRange: { min: null, max: null }, peeks: [],
         });
       }
     } else {
@@ -359,6 +367,13 @@ export function mergeKnowledge(region, knowledge) {
 // byte cannot appear in a country or region name, so split/rejoin is exact even
 // when names contain spaces (e.g. "South Africa", "Napa Valley").
 const RC_SEP = String.fromCharCode(0);
+
+// Same NUL-byte convention for "group<SEP>category_type" composite keys in
+// countsByGroupType — lets a lens (e.g. sake) count/filter a SPECIFIC
+// category_type within a group instead of the whole group. Added for the
+// LSJ0024DG/Chum Churum bug report: "Sake & Asian" bundles real Sake
+// (category_type "Sake / Shochu") with Shochu/Soju/Umeshu/Makgeolli.
+const GROUP_TYPE_SEP = RC_SEP;
 
 /** Node key = country + NUL + pin name. NUL cannot appear in a real name. */
 function nodeKey(country, name) { return `${country ?? ''}${RC_SEP}${name}`; }
@@ -742,7 +757,7 @@ function main() {
       total,
       ownTotal: n.ownTotal, inclusiveTotal: n.inclusiveTotal,
       pinLevel: level, parentName: level === 'subregion' ? n.parentName : '',
-      countsByGroup: n.countsByGroup,
+      countsByGroup: n.countsByGroup, countsByGroupType: n.countsByGroupType,
       priceRange: n.priceRange, peeks: n.peeks,
     });
   }
@@ -813,7 +828,10 @@ function main() {
   for (const [name, agg] of byCountry) {
     const coord = coords.country.get(name.toLowerCase());
     if (!coord) continue;
-    countries.push({ name, slug: slugify(name), lat: coord.lat, lng: coord.lng, total: agg.total, countsByGroup: agg.countsByGroup });
+    countries.push({
+      name, slug: slugify(name), lat: coord.lat, lng: coord.lng, total: agg.total,
+      countsByGroup: agg.countsByGroup, countsByGroupType: agg.countsByGroupType,
+    });
   }
 
   const out = {

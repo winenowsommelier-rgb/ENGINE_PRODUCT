@@ -66,7 +66,7 @@ const SMOKINESS_EXTREME_NONE_OR_LIGHT = new Set(['none', 'light']);
 // red<->white wine leak WINE_COLOR_TYPES fixes. Lowercased, matching this
 // file's typeForProduct(...).trim().toLowerCase() convention.
 const SAKE_ASIAN_TYPES = new Set([
-  'sake / shochu', 'umeshu', 'shochu', 'makgeolli',
+  'sake / shochu', 'umeshu', 'shochu', 'makgeolli', 'soju',
 ]);
 
 // The 2 real category_type values within Beer & RTD (mirrors SAKE_ASIAN_TYPES —

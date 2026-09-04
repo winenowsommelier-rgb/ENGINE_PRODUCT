@@ -7,7 +7,7 @@ import { CategoryLens } from '@/components/explore/CategoryLens';
 import { CountryChips } from '@/components/explore/CountryChips';
 import { RegionDrawer } from '@/components/explore/RegionDrawer';
 import type { ExploreMapData, LensKey, MapRegion } from '@/lib/explore/types';
-import { LENS_GROUPS, lensCount, countryShopHref } from '@/lib/explore/map-data';
+import { LENS_GROUPS, lensCount, lensHasStock, countryShopHref } from '@/lib/explore/map-data';
 import { buildCountryPins, countryLensCount, type CountryPin } from '@/lib/explore/country-pins';
 
 // MapLibre is WebGL + window-bound — client-only by nature. The dynamic import
@@ -40,14 +40,16 @@ export function ExploreRegionClient({ data, initialRegionSlug }: {
   );
   const [selected, setSelected] = useState<MapRegion | null>(initialRegion);
 
-  // A lens is offered if ANY region OR ANY country roll-up has stock in its groups.
+  // A lens is offered if ANY region OR ANY country roll-up has stock reachable at
+  // that lens (type-aware for sake — see lensHasStock — so a country with only
+  // Shochu/Soju/Umeshu/Makgeolli, no real sake, does not offer the "Sake" button).
   const available = new Set<LensKey>();
-  const addLensesFor = (countsByGroup: Record<string, number>) => {
-    for (const [lk, groups] of Object.entries(LENS_GROUPS))
-      if (groups.some((g) => (countsByGroup[g] ?? 0) > 0)) available.add(lk as LensKey);
+  const addLensesFor = (countsByGroup: Record<string, number>, countsByGroupType?: Record<string, number>) => {
+    for (const lk of Object.keys(LENS_GROUPS) as (keyof typeof LENS_GROUPS)[])
+      if (lensHasStock(countsByGroup, countsByGroupType, lk)) available.add(lk as LensKey);
   };
-  for (const r of data.regions) addLensesFor(r.countsByGroup);
-  for (const c of data.countries) addLensesFor(c.countsByGroup);
+  for (const r of data.regions) addLensesFor(r.countsByGroup, r.countsByGroupType);
+  for (const c of data.countries) addLensesFor(c.countsByGroup, c.countsByGroupType);
 
   /**
    * Shallow URL sync (Next 14 native history support): selecting/deselecting a
