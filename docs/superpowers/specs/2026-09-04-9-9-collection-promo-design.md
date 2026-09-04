@@ -64,9 +64,10 @@ Fields:
   into this file — always read live from `getProductBySku(sku)` at render
   time, so the promo page reflects current stock/name/image without needing
   regeneration if the canonical catalog changes.
-- Items render in the combined grid in the order they appear in this file's
-  `items` array (Bartender Pick rows first, then Sommelier Pick rows, each in
-  original CSV order). No re-sorting by discount, popularity, or brand.
+- Items render in a single mixed grid (Bartender Pick and Sommelier Pick rows
+  interleaved, no source-based grouping). Default/"Recommended" order is the
+  order items appear in this file's `items` array; the user can re-sort via
+  the same sort control used on other collection pages (see Sorting below).
 
 ## Generation Script
 
@@ -200,6 +201,22 @@ Dedicated listing page, modeled on the existing `[slug]/page.tsx` pattern:
   props it uses for `special_price`/`price` (so `resolveSale()`-driven
   strikethrough/badge rendering "just works") rather than duplicating that
   display logic in a second component.
+- **Sorting**: reuse the existing `SortControl` / `sortHref` / `applyShopQuery`
+  mechanism from `[slug]/page.tsx` verbatim, with the same 4 options
+  (Recommended / Name A–Z / Price low→high / Price high→low) — no new sort
+  key, no discount/%-off sort. `applyShopQuery` and its supporting UI have no
+  hard dependency on the `[slug]` dynamic route param (confirmed against the
+  actual code); they take the collection's product list and a plain string
+  slug (here, the literal `'9-9-collection'`) as inputs. The one real
+  adaptation needed: `[slug]/page.tsx` builds its fixed product list via
+  `getCollectionBySlug(params.slug)` → `collectionToShopParams(def)`, which
+  doesn't apply here (this isn't a `CollectionDef`-filtered set, it's an
+  explicit list of SKUs from the promo JSON). Instead, build the base product
+  list directly: resolve every `Promo99Item.sku` via `getProductBySku`,
+  apply the out-of-stock filter above, then pass that array into
+  `applyShopQuery` in place of the `CollectionDef`-derived list, so sorting/
+  pagination behave identically to every other collection page. "Recommended"
+  order is the promo JSON's `items` array order (post out-of-stock filtering).
 
 ## Error Handling / Edge Cases
 
@@ -238,6 +255,7 @@ Dedicated listing page, modeled on the existing `[slug]/page.tsx` pattern:
 - Browser walkthrough (Rule 7): view `/collections` and confirm the hero
   renders above "Icons & Classifications"; click through to
   `/collections/9-9-collection` and confirm the grid renders with correct
-  promo/regular prices; manually verify the ended-state by temporarily
-  pointing `now` past the cutoff (or via a test-only override) rather than
-  waiting for Sep 9 in production.
+  promo/regular prices; exercise each of the 4 sort options and confirm the
+  grid re-orders correctly and pagination still works; manually verify the
+  ended-state by temporarily pointing `now` past the cutoff (or via a
+  test-only override) rather than waiting for Sep 9 in production.
