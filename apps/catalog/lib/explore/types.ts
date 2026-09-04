@@ -31,6 +31,10 @@ export interface MapRegion {
   y?: number;
   total: number;         // in-stock beverage count (fresh, from live export)
   countsByGroup: Record<string, number>; // catalog category_group -> count
+  /** "group\0category_type" -> count. Lets a lens (e.g. sake) isolate a SPECIFIC
+   *  type within a group that bundles several (Sake & Asian: Sake/Shochu/Soju/
+   *  Umeshu/Makgeolli). Optional: absent on older/hand-built fixtures. */
+  countsByGroupType?: Record<string, number>;
   priceRange: PriceRange;
   peeks: MapPeek[];      // up to ~6 in-stock thumbnails
   // Sommelier description (from data/taxonomy.db, backfilled by Sonnet). Optional:
@@ -58,6 +62,7 @@ export interface MapCountry {
   lng: number;
   total: number;
   countsByGroup: Record<string, number>;
+  countsByGroupType?: Record<string, number>;
 }
 
 export interface ExploreMapData {

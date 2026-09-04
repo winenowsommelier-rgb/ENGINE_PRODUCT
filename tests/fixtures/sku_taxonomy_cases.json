@@ -383,6 +383,14 @@
     "group": "Sake & Asian",
     "type": "Shochu"
    }
+  },
+  {
+   "sku": "LSJ0087GM",
+   "name": "Chum Churum Soju Original (360 ml) (Pack 20 Bottles)",
+   "expected": {
+    "group": "Sake & Asian",
+    "type": "Soju"
+   }
   }
  ]
 }

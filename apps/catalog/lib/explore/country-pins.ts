@@ -1,5 +1,10 @@
 import type { ExploreMapData, LensKey, MapRegion } from './types';
-import { LENS_GROUPS } from './map-data';
+import { LENS_GROUPS, lensType } from './map-data';
+
+/** Composite-key delimiter for countsByGroupType — MUST match GROUP_TYPE_SEP in
+ *  scripts/gen-explore-map-data.mjs and map-data.ts (a NUL byte can't appear in
+ *  a real name). */
+const GROUP_TYPE_SEP = String.fromCharCode(0);
 
 /**
  * CountryPin — one world-view map entry per country with stock. Curated countries
@@ -18,19 +23,36 @@ export interface CountryPin {
   /** Country roll-up totals — used for region-less countries. */
   total?: number;
   countsByGroup?: Record<string, number>;
+  countsByGroupType?: Record<string, number>;
 }
 
-/** Bottle count for a country under the active lens. */
+/**
+ * Bottle count for a country under the active lens. Type-aware for lenses with a
+ * type restriction (e.g. sake — see LENS_TYPES in map-data.ts): a region-less
+ * country with Sake & Asian stock but no real sake (Vietnam: Kai, category_type
+ * Shochu) must count 0 under the sake lens, not its whole-group total. Falls back
+ * to the group-level count when countsByGroupType is absent (fail open — older
+ * data keeps working instead of silently hiding a lens with real stock).
+ */
 export function countryLensCount(c: CountryPin, lens: LensKey): number {
   if (c.regions.length > 0) return c.regions.reduce((s, r) => s + lensCountOf(r, lens), 0);
   if (lens === 'all') return c.total ?? 0;
   const groups = LENS_GROUPS[lens] ?? [];
+  const type = lensType(lens);
+  if (type && c.countsByGroupType) {
+    return groups.reduce((n, g) => n + (c.countsByGroupType?.[`${g}${GROUP_TYPE_SEP}${type}`] ?? 0), 0);
+  }
   return groups.reduce((n, g) => n + (c.countsByGroup?.[g] ?? 0), 0);
 }
 
 function lensCountOf(r: MapRegion, lens: LensKey): number {
   if (lens === 'all') return r.total;
-  return (LENS_GROUPS[lens] ?? []).reduce((n, g) => n + (r.countsByGroup[g] ?? 0), 0);
+  const groups = LENS_GROUPS[lens] ?? [];
+  const type = lensType(lens);
+  if (type && r.countsByGroupType) {
+    return groups.reduce((n, g) => n + (r.countsByGroupType?.[`${g}${GROUP_TYPE_SEP}${type}`] ?? 0), 0);
+  }
+  return groups.reduce((n, g) => n + (r.countsByGroup[g] ?? 0), 0);
 }
 
 /**
@@ -53,7 +75,10 @@ export function buildCountryPins(data: ExploreMapData): CountryPin[] {
     const lat = cc?.lat ?? regions.reduce((s, r) => s + r.lat, 0) / regions.length;
     const lng = cc?.lng ?? regions.reduce((s, r) => s + r.lng, 0) / regions.length;
     const slug = cc?.slug ?? name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    pins.push({ name, slug, lat, lng, regions, total: cc?.total, countsByGroup: cc?.countsByGroup });
+    pins.push({
+      name, slug, lat, lng, regions,
+      total: cc?.total, countsByGroup: cc?.countsByGroup, countsByGroupType: cc?.countsByGroupType,
+    });
   }
   // 2) Region-less countries — every roll-up country we didn't already add.
   for (const c of data.countries) {
@@ -67,6 +92,7 @@ export function buildCountryPins(data: ExploreMapData): CountryPin[] {
       regions: [],
       total: c.total,
       countsByGroup: c.countsByGroup,
+      countsByGroupType: c.countsByGroupType,
     });
   }
   return pins.sort((a, b) => a.name.localeCompare(b.name));

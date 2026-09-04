@@ -26,11 +26,13 @@ describe('sku-taxonomy', () => {
     expect(groupFor('')).toBe('Unknown');
   });
 
-  // PARITY: every shared fixture case must match exactly (guards TS/Python drift)
-  it('matches the shared Python fixture for all 48 cases', () => {
+  // PARITY: every shared fixture case must match exactly (guards TS/Python drift).
+  // Floor, not exact count — cases can be added freely, never silently deleted
+  // (mirrors tests/test_sku_taxonomy.py::test_parity_fixture_matches_resolve).
+  it('matches the shared Python fixture for every case', () => {
     const fx = JSON.parse(readFileSync(
       join(__dirname, '../../../../tests/fixtures/sku_taxonomy_cases.json'), 'utf8'));
-    expect(fx.cases.length).toBe(48);
+    expect(fx.cases.length).toBeGreaterThanOrEqual(48);
     for (const c of fx.cases) {
       expect(resolve({ sku: c.sku, name: c.name })).toEqual(c.expected);
     }

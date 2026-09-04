@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { getAllProducts } from '@/lib/catalog-data';
 import { applyShopQuery, normalizeShopParams } from '@/lib/shop-query';
-import { lensPrimaryGroup } from '@/lib/explore/map-data';
+import { lensPrimaryGroup, lensType, lensCount } from '@/lib/explore/map-data';
 import { loadExploreMapData } from '@/lib/explore/map-data.server';
 
 const PEEK_KEYS = new Set(['sku', 'name', 'price', 'image_url']);
@@ -130,6 +130,43 @@ describe('explore-map invariant: panel count == /shop grid total', () => {
       { ...handoffParams(r), group: lensPrimaryGroup('wine')! } as never,
     );
     expect(grid.total).toBeGreaterThan(0);
+  });
+
+  /**
+   * REGRESSION GUARD for the LSJ0024DG/Chum Churum bug report (2026-09-01): the
+   * "Sake" lens must isolate real sake (category_type "Sake / Shochu") from
+   * Shochu/Soju/Umeshu/Makgeolli, which all share the "Sake & Asian" group. This
+   * runs the REAL generated data through the REAL /shop query engine — the same
+   * count == grid invariant as the strict test above, but for a typed (class=)
+   * lens hand-off instead of a group-only one.
+   */
+  it('sake lens: drawer count == /shop grid total AND excludes non-sake types (STRICT, real data)', () => {
+    const sakeRegions = data.regions.filter((r) => lensCount(r, 'sake') > 0);
+    expect(sakeRegions.length, 'no region has real-sake stock — fixture/data problem').toBeGreaterThan(0);
+    for (const r of sakeRegions) {
+      const grid = applyShopQuery(
+        all,
+        { ...handoffParams(r), group: lensPrimaryGroup('sake')!, class: lensType('sake')! } as never,
+      );
+      expect(grid.total, `sake count mismatch for ${r.country}/${r.name}`).toBe(lensCount(r, 'sake'));
+      for (const p of grid.items) {
+        expect(p.category_type, `non-sake product leaked into sake grid: ${p.sku} (${p.category_type})`).toBe('Sake / Shochu');
+      }
+    }
+  });
+
+  it('a country with Sake & Asian stock but NO real sake does not offer the sake lens (Vietnam/Thailand)', () => {
+    // LSJ0024DG "Kai Lemongrass Ginger" (Vietnam, category_type Shochu) is the bug
+    // report this fix addresses: browsing Sake & Asian + Vietnam surfaced it under
+    // the "Sake" button. It stays reachable via the group-level "Sake & Asian"
+    // lens/grid — only the TYPED sake button must exclude it.
+    for (const c of data.countries) {
+      if (c.name !== 'Vietnam' && c.name !== 'Thailand') continue;
+      expect(
+        (c.countsByGroupType?.[`Sake & Asian\u0000Sake / Shochu`] ?? 0),
+        `${c.name} unexpectedly has real sake stock`,
+      ).toBe(0);
+    }
   });
 
   it('NO peek carries a non-allowlisted (margin) field', () => {

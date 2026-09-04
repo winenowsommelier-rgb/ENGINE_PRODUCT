@@ -18,10 +18,22 @@ _FORTIFIED = re.compile(r"\b(port|marsala|madeira|sherry|oloroso|amontillado|fin
 # Per-SKU taxonomy overrides for individual SKUs the prefix map gets wrong.
 # Keep this TINY and exception-only; the prefix map is the rule. MUST stay in
 # lock-step with SKU_OVERRIDES in apps/catalog/lib/sku-taxonomy.ts (parity test).
-# (Currently empty. NOTE: LSJ0024DG "Kai Lemongrass Ginger" was briefly
-#  overridden to Spirits/Vodka in error — the bottle reads "SHOCHU/SOJU, RICE
-#  ALCOHOL", so the natural LSJ → Sake & Asian/Shochu mapping is CORRECT. 2026-06-24)
-SKU_OVERRIDES: dict[str, dict] = {}
+# NOTE: LSJ0024DG "Kai Lemongrass Ginger" is NOT overridden — the bottle reads
+# "SHOCHU/SOJU, RICE ALCOHOL", so the natural LSJ → Sake & Asian/Shochu mapping
+# is CORRECT for that SKU (verified 2026-06-24; a prior Vodka override was reverted).
+# The 8 SKUs below are Korean "Chum Churum ... Soju" products — a genuinely
+# different spirit from Japanese shochu — mistakenly caught by the same LSJ
+# prefix. Reported by user 2026-09-01.
+SKU_OVERRIDES: dict[str, dict] = {
+    "LSJ0087GM": {"group": "Sake & Asian", "type": "Soju"},
+    "LSJ0088GM": {"group": "Sake & Asian", "type": "Soju"},
+    "LSJ0089GM": {"group": "Sake & Asian", "type": "Soju"},
+    "LSJ0090GM": {"group": "Sake & Asian", "type": "Soju"},
+    "LSJ0091GM": {"group": "Sake & Asian", "type": "Soju"},
+    "LSJ0092GM": {"group": "Sake & Asian", "type": "Soju"},
+    "LSJ0094GM": {"group": "Sake & Asian", "type": "Soju"},
+    "LSJ0095GM": {"group": "Sake & Asian", "type": "Soju"},
+}
 
 
 @lru_cache(maxsize=1)

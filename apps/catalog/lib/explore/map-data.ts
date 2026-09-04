@@ -28,15 +28,68 @@ export const LENS_GROUPS: Record<Exclude<LensKey, 'all'>, string[]> = {
   sake: ['Sake & Asian'],
 };
 
+/**
+ * Optional TYPE restriction within a lens's group, keyed to `category_type` (the
+ * SAME value /shop's `class=` param filters on — see matchesFilters in
+ * shop-query.ts). Only the "sake" lens has one today: "Sake & Asian" bundles real
+ * Sake (category_type "Sake / Shochu") together with Shochu, Soju, Umeshu, and
+ * Makgeolli, so clicking "Sake" on the explore map otherwise surfaces those too.
+ * Absent = no restriction, whole group counts (unchanged behavior for every other
+ * lens). Reported by user 2026-09-01 (LSJ0024DG / Chum Churum Soju bug report).
+ */
+export const LENS_TYPES: Partial<Record<Exclude<LensKey, 'all'>, string>> = {
+  sake: 'Sake / Shochu',
+};
+
+/** Composite-key delimiter for countsByGroupType — MUST match GROUP_TYPE_SEP in
+ *  scripts/gen-explore-map-data.mjs (a NUL byte can't appear in a real name). */
+const GROUP_TYPE_SEP = String.fromCharCode(0);
+
 /** The single catalog group a lens hands off to /shop as ?group= (first of its set). */
 export function lensPrimaryGroup(lens: LensKey): string | null {
   if (lens === 'all') return null;
   return LENS_GROUPS[lens][0];
 }
 
+/** The optional category_type a lens hands off to /shop as ?class=. */
+export function lensType(lens: LensKey): string | null {
+  if (lens === 'all') return null;
+  return LENS_TYPES[lens] ?? null;
+}
+
 export function lensCount(region: MapRegion, lens: LensKey): number {
   if (lens === 'all') return region.total;
+  const type = lensType(lens);
+  if (type) {
+    return LENS_GROUPS[lens].reduce(
+      (n, g) => n + (region.countsByGroupType?.[`${g}${GROUP_TYPE_SEP}${type}`] ?? 0), 0);
+  }
   return LENS_GROUPS[lens].reduce((n, g) => n + (region.countsByGroup[g] ?? 0), 0);
+}
+
+/**
+ * Whether a lens button should be OFFERED for a region/country roll-up — i.e.
+ * whether there is actually stock reachable at that lens's shopHref/countryShopHref.
+ * A group-only check is wrong for a typed lens (sake): South Korea/Vietnam/Thailand
+ * all carry "Sake & Asian" stock (Soju/Makgeolli/Shochu/Umeshu) with ZERO real sake,
+ * so the group has counts but the sake button would land on an empty grid.
+ *
+ * Fails OPEN (falls back to the group-level check) when countsByGroupType is
+ * absent, so older/regenerated-later map data doesn't silently lose the sake
+ * button — it just reverts to the pre-fix (group-level) behavior until the data
+ * file is rebuilt, never a false negative that hides a lens with real stock.
+ */
+export function lensHasStock(
+  countsByGroup: Record<string, number>,
+  countsByGroupType: Record<string, number> | undefined,
+  lens: Exclude<LensKey, 'all'>,
+): boolean {
+  const type = lensType(lens);
+  if (type && countsByGroupType) {
+    return LENS_GROUPS[lens].some(
+      (g) => (countsByGroupType[`${g}${GROUP_TYPE_SEP}${type}`] ?? 0) > 0);
+  }
+  return LENS_GROUPS[lens].some((g) => (countsByGroup[g] ?? 0) > 0);
 }
 
 /**
@@ -68,7 +121,9 @@ export function shopHref(region: MapRegion, lens: LensKey): string {
         ? { region: region.parentName ?? null, subregion: region.name, appellation: null }
         : { region: null, subregion: null, appellation: region.name };
 
-  const qs = buildQuery({}, { bev: '1', country: region.country, ...geo, group: group ?? null });
+  const qs = buildQuery({}, {
+    bev: '1', country: region.country, ...geo, group: group ?? null, class: lensType(lens),
+  });
   return qs ? `/shop?${qs}` : '/shop';
 }
 
@@ -84,6 +139,7 @@ export function countryShopHref(country: string, lens: LensKey): string {
     bev: '1',
     country,
     group: group ?? null,
+    class: lensType(lens),
   });
   return qs ? `/shop?${qs}` : '/shop';
 }
