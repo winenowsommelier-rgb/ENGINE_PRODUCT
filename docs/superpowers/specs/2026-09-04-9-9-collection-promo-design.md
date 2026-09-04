@@ -195,12 +195,18 @@ Dedicated listing page, modeled on the existing `[slug]/page.tsx` pattern:
   rendered count can be lower than both the JSON's static count and the
   hero's displayed count; that's expected drift, not a bug.
 - **Component reuse**: build the grid on the existing `ProductCard` component
-  (already used by `[slug]/page.tsx`), not a new bespoke card. Map each
-  resolved `PublicProduct` + its `Promo99Item` into the shape `ProductCard`
-  already understands — pass `promoPrice`/`regularPrice` through the same
-  props it uses for `special_price`/`price` (so `resolveSale()`-driven
-  strikethrough/badge rendering "just works") rather than duplicating that
-  display logic in a second component.
+  (already used by `[slug]/page.tsx`), not a new bespoke card. `ProductCard`
+  takes a single `product: PublicProduct` prop and derives its sale display
+  internally via `resolveSale(product.price, product.special_price)` — it has
+  no separate price-override props. So for each `Promo99Item`, after
+  resolving the live `PublicProduct` via `getProductBySku`, build a shallow
+  clone with `price` set to `regularPrice` and `special_price` set to
+  `promoPrice` (`{ ...liveProduct, price: item.regularPrice, special_price:
+  item.promoPrice }`) and pass *that* clone into `ProductCard`. This makes
+  `resolveSale()` compute the promo discount exactly as it would for a normal
+  `special_price`, with zero changes to `ProductCard` or `resolveSale()`
+  itself — the override happens entirely at the data-assembly step in the new
+  page, not inside shared components.
 - **Sorting**: reuse the existing `SortControl` / `sortHref` / `applyShopQuery`
   mechanism from `[slug]/page.tsx` verbatim, with the same 4 options
   (Recommended / Name A–Z / Price low→high / Price high→low) — no new sort
