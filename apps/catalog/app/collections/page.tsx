@@ -5,6 +5,8 @@ import { applyShopQuery } from '@/lib/shop-query';
 import { collectionToShopParams, getGroupsWithCollections } from '@/lib/collections';
 import { groupToSlug } from '@/lib/collection-groups';
 import { CollectionCard } from '@/components/CollectionCard';
+import { getPromo99, isPromo99Active } from '@/lib/promo-9-9';
+import { Promo99HeroCard } from '@/components/Promo99HeroCard';
 
 /**
  * Collections index — a CATEGORY-SPLIT editorial landing over the curated,
@@ -36,6 +38,8 @@ export const metadata: Metadata = {
 export default function CollectionsIndexPage() {
   const products = getAllProducts();
   const groups = getGroupsWithCollections();
+  const promo99 = getPromo99();
+  const promo99Active = promo99 !== null && isPromo99Active();
 
   // Precompute each collection's live count once (products loaded once above).
   const sections = groups.map(({ group, collections }) => ({
@@ -57,6 +61,8 @@ export default function CollectionsIndexPage() {
           occasion.
         </p>
       </header>
+
+      {promo99Active ? <Promo99HeroCard promo={promo99!} /> : null}
 
       {sections.length === 0 ? (
         <p className="text-base text-muted-foreground">
