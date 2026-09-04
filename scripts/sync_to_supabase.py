@@ -122,6 +122,14 @@ _BOOLEAN_COLUMNS = {
     "vintage_is_provisional",
 }
 
+# Columns that are NOT NULL WITH A DEFAULT in Supabase. If the local value is
+# NULL we must OMIT the key (not send null) so Postgres applies its default —
+# otherwise the upsert fails with 23502 (not-null violation). Verified against
+# the live products table 2026-09-04.
+_NOT_NULL_DEFAULTED_COLUMNS = {
+    "vintage_is_provisional",
+}
+
 
 def _get_sync_state(conn: sqlite3.Connection, table: str) -> str | None:
     row = conn.execute(
@@ -192,7 +200,12 @@ def plan_cache_deltas(db_path: Path, since: str | None) -> list[dict]:
 
 
 def _patch_product(supabase_url: str, api_key: str, row: dict) -> None:
-    pid = row.pop("id")
+    # UPSERT (not PATCH): POST with resolution=merge-duplicates so a row that
+    # doesn't exist in Supabase yet gets CREATED, and an existing one gets
+    # updated — keyed on the primary key `id`. A plain PATCH silently no-ops on
+    # a missing id, which left newly-onboarded products (the masterfile onboards)
+    # absent from Supabase forever. `id` stays in the body as the conflict key,
+    # unlike the old PATCH which popped it into the URL.
     # Strip columns not yet in the Supabase schema to avoid 400 errors.
     for col in _SUPABASE_SCHEMA_EXCLUDES:
         row.pop(col, None)
@@ -201,7 +214,7 @@ def _patch_product(supabase_url: str, api_key: str, row: dict) -> None:
         if col in row and row[col] == "":
             row[col] = None
     # Coerce SQLite 0/1 integers to real JSON booleans; PostgREST rejects an
-    # integer for a boolean column over REST PATCH.
+    # integer for a boolean column over REST.
     for col in _BOOLEAN_COLUMNS:
         if col in row and row[col] is not None:
             row[col] = bool(row[col])
@@ -210,11 +223,21 @@ def _patch_product(supabase_url: str, api_key: str, row: dict) -> None:
     for local_name, supabase_name in _SOURCE_TO_SUPABASE_RENAMES.items():
         if local_name in row:
             row[supabase_name] = row.pop(local_name)
-    url = f"{supabase_url.rstrip('/')}/rest/v1/products?id=eq.{urllib.parse.quote(pid)}"
+    # Drop NULL values for columns that are NOT NULL with a DB default in
+    # Supabase — sending an explicit null overrides the default and trips a
+    # 23502 not-null violation (onboarded rows have vintage_is_provisional=NULL
+    # in SQLite). Removing the key lets Postgres apply the default (false).
+    for col in _NOT_NULL_DEFAULTED_COLUMNS:
+        if col in row and row[col] is None:
+            row.pop(col)
+    # POST to the collection (no ?id= filter) — id travels in the body as the
+    # merge-duplicates conflict target, so this inserts-or-updates.
+    url = f"{supabase_url.rstrip('/')}/rest/v1/products"
     body = json.dumps(row).encode("utf-8")
-    req = urllib.request.Request(url, data=body, method="PATCH", headers={
+    req = urllib.request.Request(url, data=body, method="POST", headers={
         "apikey": api_key, "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json", "Prefer": "return=minimal",
+        "Content-Type": "application/json",
+        "Prefer": "resolution=merge-duplicates,return=minimal",
     })
     with urllib.request.urlopen(req, timeout=30):
         pass

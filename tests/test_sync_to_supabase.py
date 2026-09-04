@@ -155,48 +155,55 @@ def _make_ctx_mgr():
 
 
 def test_product_taste_notes_synced_after_products(db_with_taste):
-    """PATCH products → DELETE notes → POST notes → POST similar_dirty, in order."""
+    """UPSERT products → DELETE notes → POST notes → POST similar_dirty, in order.
+
+    The product write is a POST /rest/v1/products upsert (resolution=merge-
+    duplicates) so new products get created, not a PATCH that no-ops on missing
+    ids.
+    """
     calls = []
 
     def fake_urlopen(req, timeout=30):
-        calls.append((req.method, req.full_url))
+        calls.append((req.method, req.full_url, req.headers.get("Prefer", "")))
         return _make_ctx_mgr()
 
     with patch("urllib.request.urlopen", side_effect=fake_urlopen):
         n = sync_products(db_with_taste, supabase_url="https://sb", api_key="k", dry_run=False)
 
     assert n == 1
-    methods_urls = [(m, u) for m, u in calls]
-    # 1st call: PATCH products
-    assert methods_urls[0][0] == "PATCH"
-    assert "/rest/v1/products" in methods_urls[0][1]
+    # 1st call: UPSERT products (POST + merge-duplicates, collection URL, no ?id=)
+    assert calls[0][0] == "POST"
+    assert calls[0][1].endswith("/rest/v1/products")
+    assert "resolution=merge-duplicates" in calls[0][2]
     # 2nd call: DELETE product_taste_notes
-    assert methods_urls[1][0] == "DELETE"
-    assert "/rest/v1/product_taste_notes" in methods_urls[1][1]
+    assert calls[1][0] == "DELETE"
+    assert "/rest/v1/product_taste_notes" in calls[1][1]
     # 3rd call: POST (bulk insert) product_taste_notes
-    assert methods_urls[2][0] == "POST"
-    assert "/rest/v1/product_taste_notes" in methods_urls[2][1]
+    assert calls[2][0] == "POST"
+    assert "/rest/v1/product_taste_notes" in calls[2][1]
     # 4th call: POST product_similar_dirty
-    assert methods_urls[3][0] == "POST"
-    assert "/rest/v1/product_similar_dirty" in methods_urls[3][1]
+    assert calls[3][0] == "POST"
+    assert "/rest/v1/product_similar_dirty" in calls[3][1]
 
 
-def test_taste_profile_decoded_from_json_string_before_patch(db_with_taste):
-    """taste_profile stored as a JSON string in SQLite must arrive as a dict in the PATCH body."""
+def test_taste_profile_decoded_from_json_string_before_upsert(db_with_taste):
+    """taste_profile stored as a JSON string in SQLite must arrive as a dict in the upsert body."""
     received_body = {}
 
     def fake_urlopen(req, timeout=30):
-        if req.method == "PATCH" and "/rest/v1/products" in req.full_url:
+        if req.method == "POST" and req.full_url.endswith("/rest/v1/products"):
             received_body.update(json.loads(req.data.decode("utf-8")))
         return _make_ctx_mgr()
 
     with patch("urllib.request.urlopen", side_effect=fake_urlopen):
         sync_products(db_with_taste, supabase_url="https://sb", api_key="k", dry_run=False)
 
-    assert "taste_profile" in received_body, "taste_profile must be in PATCH body"
+    assert "taste_profile" in received_body, "taste_profile must be in the upsert body"
     assert isinstance(received_body["taste_profile"], dict), (
         f"Expected dict, got {type(received_body['taste_profile'])}"
     )
+    # id must remain in the body — it is the merge-duplicates conflict key.
+    assert "id" in received_body, "id must stay in the body for upsert conflict resolution"
     assert received_body["taste_profile"]["schema_version"] == "2.0"
 
 
