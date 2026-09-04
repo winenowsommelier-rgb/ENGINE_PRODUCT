@@ -1,7 +1,7 @@
 {
  "feeds": {
   "stock_checks": {
-   "as_of": "2026-08-28",
+   "as_of": "2026-09-04",
    "max_age_days": 10,
    "severity": "blocking",
    "sections": [
@@ -11,13 +11,13 @@
    "source": "Stock_Checks sheet, read through the Drive connector (line-item tab; ticket lines are only filled in once the product team closes a ticket)"
   },
   "popularity": {
-   "as_of": "2026-07-21",
+   "as_of": "2026-09-04",
    "max_age_days": 14,
    "severity": "blocking",
    "sections": [
     "bestsellers"
    ],
-   "source": "Supabase products.popularity_qty_90d / _orders_90d (max popularity_synced_at; set on 122 of 6,388 rows — no scheduled job exists)"
+   "source": "MReport Item Performance (2026-06..2026-08, 1716 SKUs) — real orders, not products.popularity_qty_90d"
   },
   "catalog": {
    "as_of": "2026-08-22",

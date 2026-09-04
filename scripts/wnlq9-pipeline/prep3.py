@@ -34,7 +34,15 @@ WINDOW    = 30          # days
 RECENT    = 7           # days weighted x2
 MIN_CLIENTS = 2         # a SKU needs this many distinct clients to qualify
 PREMIUM_FLOOR = 5000    # THB — a "cellar icon" for the benchmark band
-TODAY     = datetime(2026, 8, 26)
+# The window anchor. This was hardcoded to datetime(2026, 8, 26) — the date of
+# the last hand-made export — which silently dropped every ticket newer than
+# that as "outside_window". With the feed pulled live that was 412 of 833 rows:
+# the freshest half of the demand signal, discarded, while the run still
+# reported success. A rolling window has to roll.
+# WNLQ9_TODAY (YYYY-MM-DD) pins it for reproducible builds and tests.
+TODAY     = (datetime.strptime(os.environ['WNLQ9_TODAY'], '%Y-%m-%d')
+             if os.environ.get('WNLQ9_TODAY') else
+             datetime.now().replace(hour=0, minute=0, second=0, microsecond=0))
 
 # ---------------------------------------------------------------- parsing
 

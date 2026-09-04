@@ -1,4 +1,16 @@
+# Client PII — 169 named trade accounts. This repository is public.
 stock_checks.csv
+.drive_stock_checks.csv
+
+# Sales volume per SKU (orders, quantities). Pawin's rule is that sales
+# quantities never reach a rendered page or a payload; a public repo is a
+# wider exposure than either. Regenerate with refresh.py --sheets-only.
+mreport.tsv
+
+# Catalog attributes including margin_thb per SKU. Same rule, same reason.
+attrs_cache.tsv
+
+# Build products and scratch
 out/
 *.bak
 build_receipt.json

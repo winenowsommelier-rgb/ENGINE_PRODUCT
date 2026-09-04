@@ -84,6 +84,25 @@ if MREPORT:
 SITES = (('WN', 'W%', 'wn'), ('LQ', 'L%', 'lq'))
 
 
+def fetch_text(src, timeout=45):
+    """Read a feed from a URL or a local file, so both routes share one parser.
+
+    The unattended cron run reads a published-CSV link. An assistant session has
+    no such link but does have the Drive connector, which can export the sheet
+    to a file — and Drive's CSV export is a real export, so its quoting is
+    correct where a hand-saved copy's is not. Same normalisation, same column
+    validation, same feeds.json stamp, either way. Without this the two routes
+    would drift, and the file-based one is the only one that works today.
+    """
+    if re.match(r'^https?://', src or ''):
+        with urllib.request.urlopen(src, timeout=timeout) as r:
+            return r.read().decode('utf-8-sig')
+    path = src[7:] if src.startswith('file://') else src
+    if not os.path.exists(path):
+        sys.exit(f'Feed source is neither a URL nor an existing file: {src!r}')
+    return io.open(path, encoding='utf-8-sig').read()
+
+
 def log(msg):
     print(f'  {msg}', flush=True)
 
@@ -184,6 +203,8 @@ def pull(dry=False):
         changed['rank'] = write(os.path.join(HERE, 'bs_rank.tsv'),
                                 ['# site|lens|segment|sku,sku,...  (rank order, 20 deep)']
                                 + rank_lines, dry)
+        if orders:
+            stamp_ranking(dry)
 
         skus = sorted(skus)
         for site, prefix, tag in SITES:
@@ -227,8 +248,7 @@ def pull_mreport(dry):
         log('mreport                 MREPORT_CSV not set — best sellers still rank on '
             'the frozen Supabase popularity columns. This is the one that matters.')
         return False
-    with urllib.request.urlopen(MREPORT, timeout=90) as r:
-        text = r.read().decode('utf-8-sig')
+    text = fetch_text(MREPORT, timeout=90)
     rows, bad = mreport.parse(text)
     if not rows:
         head = text.split('\n', 1)[0][:200]
@@ -248,7 +268,30 @@ def pull_mreport(dry):
     n, label = mreport.write_cache(agg, label)
     log(f'mreport.tsv             {n} SKUs over {label}'
         + (f'  ({bad} unparseable rows skipped)' if bad else ''))
-    # the ranking is now as fresh as this sheet, so say so
+    # Deliberately NOT stamping feeds.json here. Writing mreport.tsv only means
+    # the order data arrived; the pages still render whatever bs_rank.tsv says.
+    # Stamping the ranking fresh at this point would open the freshness gate
+    # while best sellers were still the old list — a green light on stale
+    # content, which is the failure this gate exists to catch. The stamp lives
+    # in stamp_ranking(), called only once bs_rank.tsv has actually been
+    # rewritten from these orders.
+    global _MR_INFO
+    _MR_INFO = (label, n)
+    return True
+
+
+_MR_INFO = None
+
+
+def stamp_ranking(dry=False):
+    """Mark the best-seller feed fresh. Call ONLY after bs_rank.tsv has been
+    rewritten from MReport orders — never merely because mreport.tsv exists."""
+    if not _MR_INFO:
+        return
+    label, n = _MR_INFO
+    if dry:
+        log(f'feeds.json              would restamp popularity -> MReport {label}')
+        return
     path = os.path.join(HERE, 'feeds.json')
     doc = json.load(open(path, encoding='utf-8'))
     doc['feeds']['popularity']['as_of'] = datetime.date.today().isoformat()
@@ -256,7 +299,7 @@ def pull_mreport(dry):
         f'MReport Item Performance ({label}, {n} SKUs) — real orders, not '
         f'products.popularity_qty_90d')
     json.dump(doc, open(path, 'w', encoding='utf-8'), indent=1, ensure_ascii=False)
-    return True
+    log(f'feeds.json              popularity -> MReport {label} ({n} SKUs)')
 
 
 def combined_rows(site_lines):
@@ -293,8 +336,7 @@ def pull_stock_checks(dry):
         log('stock_checks.csv        STOCK_CHECKS_CSV not set — using the file on disk. '
             'This is the one feed still refreshed by hand.')
         return False
-    with urllib.request.urlopen(SHEET, timeout=45) as r:
-        body = r.read().decode('utf-8-sig')
+    body = fetch_text(SHEET, timeout=45)
     got = list(csv.DictReader(io.StringIO(body)))
     if not got:
         sys.exit('Stock_Checks export came back empty. Not overwriting the file on disk.')
@@ -337,6 +379,101 @@ def pull_stock_checks(dry):
                  out.getvalue().rstrip('\n').split('\n'), dry)
 
 
+def _stock_as_of(doc):
+    """stock_checks.as_of comes from the newest ticket line actually on disk,
+    never from the clock — a feed is only as fresh as its newest row."""
+    sc = os.path.join(HERE, 'stock_checks.csv')
+    if not os.path.exists(sc):
+        return None
+    dates = []
+    for r in csv.DictReader(open(sc, encoding='utf-8')):
+        try:
+            m, dd, y = r['date'].strip().split('/')
+            dates.append(datetime.date(int(y), int(m), int(dd)))
+        except Exception:
+            pass
+    if not dates:
+        return None
+    doc['feeds']['stock_checks']['as_of'] = max(dates).isoformat()
+    return max(dates)
+
+
+ATTRS_CACHE = os.path.join(HERE, 'attrs_cache.tsv')
+
+
+def load_attrs_cache():
+    """sql/07_attrs.sql, cached to a file.
+
+    The ranking needs catalog attributes, which live in Postgres. A cron host
+    has DATABASE_URL and reads them directly. An assistant session does not,
+    but can run the same query through the Supabase connector and drop the rows
+    here — so the SAME mreport.rank() produces the SAME bs_rank.tsv either way.
+    Without this the sheet feeds could be refreshed but the ranking could not be
+    rebuilt, which is the one combination that must never stamp itself fresh.
+    """
+    if not os.path.exists(ATTRS_CACHE):
+        return {}
+    attrs = {}
+    for line in io.open(ATTRS_CACHE, encoding='utf-8'):
+        if line.startswith('#') or not line.strip():
+            continue
+        f = line.rstrip('\n').split('\t')
+        if len(f) != 7:
+            continue
+        attrs[f[0]] = {'name': f[1], 'price': int(f[2] or 0), 'country': f[3],
+                       'margin': int(f[4] or 0), 'score': int(f[5] or 0),
+                       'catalog_only': f[6] == '1'}
+    return attrs
+
+
+def rank_from_cache(dry):
+    """Rebuild bs_rank.tsv from MReport orders + the cached catalog attributes.
+
+    Returns True only if the ranking was actually rewritten. The caller must not
+    stamp the best-seller feed fresh on anything less than that.
+    """
+    import mreport
+    orders, wlabel = mreport.load_cache()
+    if not orders:
+        log('ranking                 no mreport.tsv — best sellers unchanged, '
+            'popularity NOT restamped')
+        return False
+    attrs = load_attrs_cache()
+    if not attrs:
+        log('ranking                 attrs_cache.tsv missing — cannot rebuild the '
+            'ranking without catalog attributes.')
+        log('                        mreport.tsv is fresh but bs_rank.tsv is NOT. '
+            'popularity deliberately left stale so the gate still blocks.')
+        return False
+    rank_lines = mreport.rank(orders, attrs)
+    if not rank_lines:
+        log('ranking                 ranked to zero rows — not overwriting bs_rank.tsv')
+        return False
+    write(os.path.join(HERE, 'bs_rank.tsv'),
+          ['# site|lens|segment|sku,sku,...  (rank order, 20 deep)'] + rank_lines, dry)
+    log(f'bs_rank.tsv             {len(rank_lines)} segments from real orders, '
+        f'window {wlabel}, {len(orders)} SKUs sold')
+    return True
+
+
+def stamp_sheets_only(dry):
+    """Restamp just the sheet-backed feeds. The Supabase-backed stamps need a
+    database row and are left exactly as they were, so a sheets-only run can
+    never make the catalog or popularity look fresher than it is."""
+    path = os.path.join(HERE, 'feeds.json')
+    doc = json.load(open(path, encoding='utf-8'))
+    newest = _stock_as_of(doc)
+    if newest is None:
+        log('feeds.json              no dated ticket lines — stock_checks.as_of left alone')
+        return
+    if dry:
+        log(f'feeds.json              would restamp stock_checks.as_of -> {newest}')
+        return
+    json.dump(doc, open(path, 'w', encoding='utf-8'), indent=1, ensure_ascii=False)
+    log(f'feeds.json              stock_checks.as_of -> {newest}  '
+        f'(catalog/popularity untouched — they need a DB pull)')
+
+
 def stamp_feeds(f, dry):
     """Rewrite feeds.json from what the database actually reports.
 
@@ -361,17 +498,7 @@ def stamp_feeds(f, dry):
         f'on {prod_stamped} of {active} rows)')
     doc['feeds']['links']['as_of'] = datetime.date.today().isoformat()
 
-    sc = os.path.join(HERE, 'stock_checks.csv')
-    if os.path.exists(sc):
-        dates = []
-        for r in csv.DictReader(open(sc, encoding='utf-8')):
-            try:
-                m, dd, y = r['date'].strip().split('/')
-                dates.append(datetime.date(int(y), int(m), int(dd)))
-            except Exception:
-                pass
-        if dates:
-            doc['feeds']['stock_checks']['as_of'] = max(dates).isoformat()
+    _stock_as_of(doc)
 
     if dry:
         log('feeds.json              would be restamped')
@@ -427,12 +554,23 @@ def verify():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--offline', action='store_true', help='skip the pull')
+    ap.add_argument('--sheets-only', action='store_true',
+                    help='pull only the Google Sheet feeds (stock checks, MReport) '
+                         'and rebuild. Needs no DATABASE_URL, so it runs in an '
+                         'assistant session where the sheet is exported to a file.')
     ap.add_argument('--pull-only', action='store_true')
     ap.add_argument('--dry-run', action='store_true')
     a = ap.parse_args()
 
     print(f'WNLQ9 refresh — {datetime.datetime.now():%Y-%m-%d %H:%M}')
-    if not a.offline:
+    if a.sheets_only:
+        print('\n== pull (sheets only — no database)')
+        pull_stock_checks(a.dry_run)
+        pull_mreport(a.dry_run)
+        if rank_from_cache(a.dry_run):
+            stamp_ranking(a.dry_run)
+        stamp_sheets_only(a.dry_run)
+    elif not a.offline:
         print('\n== pull')
         pull(dry=a.dry_run)
     if a.pull_only or a.dry_run:
