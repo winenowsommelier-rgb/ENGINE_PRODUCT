@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseMoney, parsePercent, computeDiscountPct } from '../gen-9-9-collection.mjs';
+import { parseMoney, parsePercent, computeDiscountPct, mapRow } from '../gen-9-9-collection.mjs';
 
 describe('parseMoney', () => {
   it('strips commas and quotes, returns a number', () => {
@@ -37,5 +37,29 @@ describe('computeDiscountPct', () => {
     expect(computeDiscountPct(1000, 1000)).toBe(0);
     expect(computeDiscountPct(1000, 1200)).toBe(0);
     expect(computeDiscountPct(null, 1000)).toBe(0);
+  });
+});
+
+describe('mapRow', () => {
+  it('maps a normal row using the 9.9 price and price columns', () => {
+    const row = { sku: 'LWH0474ES', '9.9 price': '"2,349"', price: '"2,585"' };
+    expect(mapRow(row)).toEqual({
+      sku: 'LWH0474ES', promoPrice: 2349, regularPrice: 2585, discountPct: 9,
+    });
+  });
+
+  it('falls back to regular price with 0 discount on #REF! rows', () => {
+    const row = { sku: 'LWH0233AA', '9.9 price': '#REF!', price: '"3,719"' };
+    expect(mapRow(row)).toEqual({
+      sku: 'LWH0233AA', promoPrice: 3719, regularPrice: 3719, discountPct: 0,
+    });
+  });
+
+  it('returns null when sku is missing', () => {
+    expect(mapRow({ sku: '', '9.9 price': '100', price: '200' })).toBeNull();
+  });
+
+  it('returns null when regular price cannot be parsed (no usable price at all)', () => {
+    expect(mapRow({ sku: 'X', '9.9 price': '#REF!', price: '#REF!' })).toBeNull();
   });
 });

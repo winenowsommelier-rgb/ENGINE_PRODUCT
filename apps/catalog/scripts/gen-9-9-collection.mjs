@@ -37,3 +37,24 @@ export function computeDiscountPct(regularPrice, promoPrice) {
   if (regularPrice <= 0 || promoPrice >= regularPrice) return 0;
   return Math.round(((regularPrice - promoPrice) / regularPrice) * 100);
 }
+
+/**
+ * Map one raw CSV row (field names as they appear in the header) to a promo
+ * item, or null if the row is unusable. On a #REF! 9.9 price (broken source
+ * formula), falls back to the regular price for BOTH promoPrice and
+ * regularPrice with discountPct 0 — included at regular price, no discount
+ * badge, per user decision (spec: 2026-09-04-9-9-collection-promo-design.md).
+ */
+export function mapRow(row) {
+  const sku = String(row.sku ?? '').trim();
+  if (!sku) return null;
+
+  const regularPrice = parseMoney(row.price);
+  if (regularPrice === null) return null; // no usable price at all — skip the row
+
+  const rawPromo = parseMoney(row['9.9 price']);
+  const promoPrice = rawPromo === null ? regularPrice : rawPromo;
+  const discountPct = computeDiscountPct(regularPrice, promoPrice);
+
+  return { sku, promoPrice, regularPrice, discountPct };
+}
