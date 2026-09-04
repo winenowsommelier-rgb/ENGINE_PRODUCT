@@ -122,6 +122,14 @@ _BOOLEAN_COLUMNS = {
     "vintage_is_provisional",
 }
 
+# Columns that are NOT NULL WITH A DEFAULT in Supabase. If the local value is
+# NULL we must OMIT the key (not send null) so Postgres applies its default —
+# otherwise the upsert fails with 23502 (not-null violation). Verified against
+# the live products table 2026-09-04.
+_NOT_NULL_DEFAULTED_COLUMNS = {
+    "vintage_is_provisional",
+}
+
 
 def _get_sync_state(conn: sqlite3.Connection, table: str) -> str | None:
     row = conn.execute(
@@ -215,6 +223,13 @@ def _patch_product(supabase_url: str, api_key: str, row: dict) -> None:
     for local_name, supabase_name in _SOURCE_TO_SUPABASE_RENAMES.items():
         if local_name in row:
             row[supabase_name] = row.pop(local_name)
+    # Drop NULL values for columns that are NOT NULL with a DB default in
+    # Supabase — sending an explicit null overrides the default and trips a
+    # 23502 not-null violation (onboarded rows have vintage_is_provisional=NULL
+    # in SQLite). Removing the key lets Postgres apply the default (false).
+    for col in _NOT_NULL_DEFAULTED_COLUMNS:
+        if col in row and row[col] is None:
+            row.pop(col)
     # POST to the collection (no ?id= filter) — id travels in the body as the
     # merge-duplicates conflict target, so this inserts-or-updates.
     url = f"{supabase_url.rstrip('/')}/rest/v1/products"
