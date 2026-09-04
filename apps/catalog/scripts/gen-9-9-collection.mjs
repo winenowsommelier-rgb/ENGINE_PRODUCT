@@ -9,7 +9,7 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -106,11 +106,11 @@ const PROMO_END_DATE = '2026-09-09T23:59:59+07:00';
 
 /**
  * Minimal mirror of lib/catalog-data.ts's exportPath()/getProductBySku() —
- * existence-check only, no field projection. This script is a plain .mjs
- * run via `node scripts/gen-9-9-collection.mjs` (see package.json's
- * `prebuild`), and this repo's established convention (gen-explore-map-data.mjs)
- * is that such scripts cannot import the TS lib modules, so this mirrors
- * just the lookup it needs. Keep in sync with catalog-data.ts's SKU field.
+ * existence-check only, no field projection. This is a one-off script (run
+ * manually, not wired into package.json's `prebuild`), but still a plain
+ * .mjs that cannot import TS lib modules — same established convention as
+ * gen-explore-map-data.mjs, which mirrors logic it needs for the same
+ * reason. Keep in sync with catalog-data.ts's SKU field.
  */
 function loadKnownSkus() {
   const candidates = [
@@ -170,6 +170,13 @@ function main() {
 // Only run when executed directly (not when imported by tests) — the pure
 // helpers above (parseMoney/parsePercent/computeDiscountPct/mapRow) stay
 // importable by vitest without triggering file I/O.
-if (import.meta.url === `file://${process.argv[1]}`) {
+//
+// A plain string comparison against process.argv[1] does NOT work here:
+// process.argv[1] is not resolved to an absolute path, and even when it is,
+// pathToFileURL is required to percent-encode characters like the literal
+// space in this repo's directory name ("WNLQ9 PIE") the same way
+// import.meta.url already does — a raw `file://${...}` template string
+// leaves those unencoded, so the two would never match.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main();
 }
