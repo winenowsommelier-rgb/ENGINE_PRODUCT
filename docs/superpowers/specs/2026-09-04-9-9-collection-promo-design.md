@@ -28,7 +28,9 @@ Source data: two CSVs supplied by the user —
 
 - Writing `special_price`/`sp_discount_pct` into the canonical product data.
 - A cron job / scheduled task to "archive" the page — a live date check on
-  every request is sufficient and simpler.
+  every request is sufficient and simpler. (This replaces the need to
+  automate *retirement* of the promo; it does not replace the one-time
+  manual *generation* step described below, which a human still runs once.)
 - Splitting the grid into Sommelier vs Bartender sub-sections (explicitly
   declined — one combined grid).
 
@@ -62,14 +64,26 @@ Fields:
   into this file — always read live from `getProductBySku(sku)` at render
   time, so the promo page reflects current stock/name/image without needing
   regeneration if the canonical catalog changes.
+- Items render in the combined grid in the order they appear in this file's
+  `items` array (Bartender Pick rows first, then Sommelier Pick rows, each in
+  original CSV order). No re-sorting by discount, popularity, or brand.
 
 ## Generation Script
 
 `apps/catalog/scripts/gen-9-9-collection.mjs` (one-off, run manually, not a
 build-time step):
 
-1. Parse both source CSVs (saved to `data/` alongside the other CSV inputs
-   this repo already tracks, e.g. sibling to `data/live_products_export.json`).
+1. Parse both source CSVs, saved at:
+   - `data/promo_9_9_bartender_pick.csv`
+   - `data/promo_9_9_sommelier_pick.csv`
+
+   Confirm these filenames don't match an existing `.gitignore` pattern
+   before committing them (this repo carves out exceptions for some one-off
+   CSV inputs already — verify rather than assume). The exact source cutoff
+   date (`promoEndDate`, "9 Sep 2026 23:59:59 ICT") must also be
+   double-checked against the actual promo terms once before generating —
+   it's a literal in the output JSON, not derived from anything, so a wrong
+   value here is a silent error the code can't catch.
 2. Strip comma thousands-separators and quotes from price fields, parse to
    numbers.
 3. Handle `#REF!` rows (~14 in the Bartender Pick file, e.g. Auchentoshan,
@@ -110,9 +124,19 @@ export interface Promo99Collection {
   items: Promo99Item[];
 }
 
-export function getPromo99(): Promo99Collection // singleton-cached read of the JSON
-export function isPromo99Active(now: Date = new Date()): boolean // now < promoEndDate
+export function getPromo99(): Promo99Collection | null // singleton-cached read of the JSON
+export function isPromo99Active(now: Date = new Date()): boolean // false if file missing/malformed, else now < promoEndDate
 ```
+
+Mirrors the defensive pattern already used by `apps/catalog/lib/collections.ts`
+(`getCollections()` returns `[]` rather than throwing when
+`collections_export.json` is absent, "so the build must not break before the
+file is generated"). Concretely: `getPromo99()` returns `null` and
+`isPromo99Active()` returns `false` if `promo_9_9_collection.json` doesn't
+exist or fails to parse — never throws. `page.tsx` must only call
+`getPromo99()` after `isPromo99Active()` has already confirmed the file
+loaded, so a deploy that predates the generator running (or a post-promo
+world where the file is deleted) never breaks `/collections`.
 
 ### `apps/catalog/app/collections/page.tsx` (modified)
 
@@ -120,7 +144,9 @@ Before the existing `sections.map(...)` group-rendering loop, conditionally
 render:
 
 ```tsx
-{isPromo99Active() && <Promo99HeroCard promo={getPromo99()} />}
+const promo99 = getPromo99();
+// ...
+{promo99 && isPromo99Active() && <Promo99HeroCard promo={promo99} />}
 ```
 
 This guarantees the hero sits above every group, including "Icons &
@@ -134,6 +160,15 @@ Content: "9.9 COLLECTION" title, tagline from the JSON, item count (e.g. "230
 bottles"), single CTA linking to `/collections/9-9-collection`. Visually
 distinct from the plain-text `CollectionCard` grid items — full-width, larger,
 top of page.
+
+The item count is `promo.items.length` — a static count from the JSON, not a
+live re-resolution of every SKU via `getProductBySku`. This is a deliberate
+tradeoff: re-checking all ~240 SKUs on every `/collections` page load just to
+keep a cosmetic count accurate would be wasteful, and the dedicated listing
+page (which does resolve live and can skip a handful of SKUs) is the source
+of truth for what's actually purchasable. The hero count may drift slightly
+(e.g. say "230 bottles" when 225 currently resolve) — acceptable for a
+marketing count, not acceptable for the grid itself.
 
 ### `apps/catalog/app/collections/9-9-collection/page.tsx` (new)
 
@@ -149,6 +184,22 @@ Dedicated listing page, modeled on the existing `[slug]/page.tsx` pattern:
   (no Sommelier/Bartender sub-split) showing product image/name (from the
   live product) with `promoPrice` and a strikethrough `regularPrice` +
   `discountPct` badge.
+- **Out-of-stock handling**: filter out any resolved product where
+  `custom_stock_status === 'CATALOG'` (archived) or `!is_in_stock`, the same
+  way archived products are already excluded from the recommender/finder
+  (`catalog-data.ts`). A promo page pairs urgency messaging ("special price,
+  ends soon") with each item, so showing an out-of-stock bottle here is a
+  worse UX bug than on an ordinary browse page — it gets filtered out
+  entirely rather than shown with a badge. This also means the grid's
+  rendered count can be lower than both the JSON's static count and the
+  hero's displayed count; that's expected drift, not a bug.
+- **Component reuse**: build the grid on the existing `ProductCard` component
+  (already used by `[slug]/page.tsx`), not a new bespoke card. Map each
+  resolved `PublicProduct` + its `Promo99Item` into the shape `ProductCard`
+  already understands — pass `promoPrice`/`regularPrice` through the same
+  props it uses for `special_price`/`price` (so `resolveSale()`-driven
+  strikethrough/badge rendering "just works") rather than duplicating that
+  display logic in a second component.
 
 ## Error Handling / Edge Cases
 
@@ -157,9 +208,21 @@ Dedicated listing page, modeled on the existing `[slug]/page.tsx` pattern:
   above) in case the live export changes after generation.
 - **`#REF!` source rows**: included at regular price, no discount (per user
   decision), never silently dropped.
-- **Past the cutoff**: both the hero card (via `isPromo99Active()` on
-  `/collections`) and the dedicated page degrade automatically — no manual
-  archive step, no stale discounted prices ever served past the deadline.
+- **Past the cutoff**: the hero card (via `isPromo99Active()` on
+  `/collections`) and the dedicated page each independently enforce the
+  cutoff at their own request time — no manual archive step needed on either
+  page. This is a per-request guarantee, not a cross-request one: because
+  each page checks `isPromo99Active()` separately (potentially on different
+  server instances with sub-second clock differences), there's a narrow
+  window right at the boundary where a user could see the hero, then land on
+  an already-ended dedicated page a moment later, or vice versa. Acceptable
+  for a marketing promo; not a correctness issue for pricing since neither
+  page can independently serve a stale price past its own check.
+- **Missing/malformed promo file**: `isPromo99Active()` returns `false`
+  (never throws) if `promo_9_9_collection.json` doesn't exist or fails to
+  parse — see `getPromo99()`/`isPromo99Active()` above. This covers both "the
+  generator hasn't been run yet" and "the file was deleted after the promo
+  ended."
 - **Timezone**: `promoEndDate` is stored with an explicit `+07:00` offset
   (Thailand time) so the cutoff is unambiguous regardless of server TZ.
 
