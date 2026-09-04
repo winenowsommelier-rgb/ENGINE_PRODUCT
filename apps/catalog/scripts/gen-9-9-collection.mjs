@@ -97,6 +97,37 @@ function readCsvRows(filePath) {
     .map((r) => Object.fromEntries(header.map((h, i) => [h, r[i] ?? ''])));
 }
 
+/**
+ * Interleave two lists proportionally, preserving each list's internal
+ * order, so the merged sequence never runs long stretches of one source
+ * before the other. Used so "Recommended" (the default sort, which is just
+ * items[] order — see lib/shop-query.ts's recommended branch) mixes
+ * spirits and wine from page 1 onward instead of showing all of one
+ * category before any of the other (spirits: ~85 items, wine: ~148 —
+ * a straight concat put every spirit ahead of every wine).
+ */
+export function interleaveProportionally(listA, listB) {
+  const out = [];
+  let ai = 0;
+  let bi = 0;
+  const total = listA.length + listB.length;
+  for (let i = 0; i < total; i++) {
+    // Pick whichever list is more "behind" its proportional share so far,
+    // so both lists drain at roughly the same rate regardless of their
+    // relative sizes.
+    const aShare = listA.length === 0 ? Infinity : ai / listA.length;
+    const bShare = listB.length === 0 ? Infinity : bi / listB.length;
+    if (aShare <= bShare && ai < listA.length) {
+      out.push(listA[ai++]);
+    } else if (bi < listB.length) {
+      out.push(listB[bi++]);
+    } else {
+      out.push(listA[ai++]);
+    }
+  }
+  return out;
+}
+
 const REPO_ROOT = path.join(__dirname, '..', '..', '..');
 const BARTENDER_CSV = path.join(REPO_ROOT, 'data', 'promo_9_9_bartender_pick.csv');
 const SOMMELIER_CSV = path.join(REPO_ROOT, 'data', 'promo_9_9_sommelier_pick.csv');
@@ -131,7 +162,7 @@ function main() {
   const bartenderRows = readCsvRows(BARTENDER_CSV);
   const sommelierRows = readCsvRows(SOMMELIER_CSV);
 
-  const allRows = [...bartenderRows, ...sommelierRows];
+  const allRows = interleaveProportionally(bartenderRows, sommelierRows);
   const items = [];
   const skippedNoMatch = [];
   const skippedUnusable = [];

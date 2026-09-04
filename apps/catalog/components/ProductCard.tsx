@@ -80,6 +80,14 @@ interface ProductCardProps {
    * is safe -- the button just shows as a plain pin with no picker.
    */
   userLists?: ListRow[];
+  /**
+   * Opt-in: show the actual "-N%" discount instead of the generic "Sale"
+   * badge. OFF by default -- ProductCard's badge is shared everywhere a sale
+   * price appears (shop, homepage, finder, PDP rails), and this stays scoped
+   * to campaigns that specifically want the percentage called out (e.g. the
+   * 9.9 Collection promo page) rather than changing that badge site-wide.
+   */
+  showDiscountPct?: boolean;
 }
 
 /** Key attributes for the compact card details block, in display order. */
@@ -104,6 +112,7 @@ export function ProductCard({
   matchBand,
   isLoggedIn = false,
   userLists = [],
+  showDiscountPct = false,
 }: ProductCardProps) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const subtitle = product.brand || product.region;
@@ -238,7 +247,7 @@ export function ProductCard({
                   <PriceDisplay price={sale.special} />
                 </span>
                 <span className="inline-flex items-center rounded-full bg-destructive px-2 py-0.5 text-xs font-semibold text-destructive-foreground">
-                  Sale
+                  {showDiscountPct ? `-${sale.percentOff}%` : 'Sale'}
                 </span>
               </div>
             ) : (

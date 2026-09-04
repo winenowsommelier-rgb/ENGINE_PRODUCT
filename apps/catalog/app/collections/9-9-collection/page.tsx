@@ -217,6 +217,7 @@ export default async function Promo99Page({
                 contactLinks={links}
                 isLoggedIn={isLoggedIn}
                 userLists={userLists}
+                showDiscountPct
               />
             ))}
           </div>
