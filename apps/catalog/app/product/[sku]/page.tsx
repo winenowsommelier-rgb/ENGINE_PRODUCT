@@ -397,7 +397,7 @@ export default function Page({ params }: { params: { sku: string } }) {
             {product.brand ? (
               <Link
                 href={`/shop?brand=${encodeURIComponent(product.brand)}`}
-                className="pr-20 text-sm font-medium uppercase tracking-wide text-muted-foreground hover:text-foreground hover:underline"
+                className="pr-20 text-sm font-medium uppercase tracking-wide text-muted-foreground hover:text-foreground hover:underline focus-visible:underline"
               >
                 {product.brand}
               </Link>
