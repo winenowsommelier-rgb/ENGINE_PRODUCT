@@ -22,6 +22,10 @@
  *               (typeForProduct → category_type, e.g. "Red Wine", "Whisky")
  *   price     → PriceTier id; keep products with price in [min, max)
  *   country   → exact (case-insensitive) match on country
+ *   brand     → exact (case-insensitive) match on brand. Reachable today only
+ *               by clicking a brand name on a card/PDP (?brand=...); there is
+ *               no facet checkbox for it in Filters.tsx (out of scope, see
+ *               docs/superpowers/specs/2026-09-05-catalog-brand-name-dedup-design.md).
  *   inStock=1 → keep only in-stock products (normalized boolean via isInStock)
  *   region    → exact (case-insensitive) match on region. EXACT (not substring)
  *               because the drill-down chips are the only writer of region/subregion
@@ -189,6 +193,9 @@ export function matchesFilters(p: PublicProduct, params: ShopParams): boolean {
 
   const country = norm(firstParam(params.country));
   if (country && norm(p.country) !== country) return false;
+
+  const brand = norm(firstParam(params.brand));
+  if (brand && norm(p.brand) !== brand) return false;
 
   const region = norm(firstParam(params.region));
   if (region && !regionMatchesFilter(p.country, p.region, region)) return false;

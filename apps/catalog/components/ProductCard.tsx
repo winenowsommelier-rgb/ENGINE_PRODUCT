@@ -239,9 +239,19 @@ export function ProductCard({
               {displayName}
             </h3>
             {subtitle ? (
-              <p className="mt-1 truncate text-sm text-muted-foreground">
-                {subtitle}
-              </p>
+              product.brand ? (
+                <Link
+                  href={`/shop?brand=${encodeURIComponent(product.brand)}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="mt-1 truncate text-sm text-muted-foreground hover:text-foreground hover:underline"
+                >
+                  {subtitle}
+                </Link>
+              ) : (
+                <p className="mt-1 truncate text-sm text-muted-foreground">
+                  {subtitle}
+                </p>
+              )
             ) : null}
             {sale ? (
               <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">

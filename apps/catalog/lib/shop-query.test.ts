@@ -31,3 +31,33 @@ describe('matchesFilters class= isolates real sake within Sake & Asian', () => {
     expect(matchesFilters(sakeAsianProd('LSJ0087GM', 'Chum Churum Soju Original'), { group: 'Sake & Asian' })).toBe(true);
   });
 });
+
+describe('matchesFilters brand', () => {
+  it('brand param filters by exact (case-insensitive) brand match', () => {
+    const prodWithBrand = (name: string, brand: string) =>
+      ({ sku: 'X', name, brand, country: 'France' }) as any;
+    expect(
+      matchesFilters(prodWithBrand('Talenti Brunello', 'Talenti'), {
+        brand: 'Talenti',
+      }),
+    ).toBe(true);
+    expect(
+      matchesFilters(prodWithBrand('Talenti Brunello', 'Talenti'), {
+        brand: 'talenti',
+      }),
+    ).toBe(true);
+    expect(
+      matchesFilters(prodWithBrand('Talenti Brunello', 'Talenti'), {
+        brand: 'Ardbeg',
+      }),
+    ).toBe(false);
+    expect(matchesFilters(prodWithBrand('Talenti Brunello', 'Talenti'), {})).toBe(
+      true,
+    );
+  });
+
+  it('brand param excludes products with no brand at all', () => {
+    const prodNoBrand = { sku: 'X', name: 'Mystery Bottle', country: 'France' } as any;
+    expect(matchesFilters(prodNoBrand, { brand: 'Talenti' })).toBe(false);
+  });
+});
