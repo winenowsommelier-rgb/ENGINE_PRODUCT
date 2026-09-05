@@ -73,4 +73,12 @@ describe('stripBrandPrefix', () => {
   it('returns the name unchanged when brand is an empty/whitespace-only string', () => {
     expect(stripBrandPrefix('Some Wine Name', '   ')).toBe('Some Wine Name');
   });
+
+  it('strips a leading comma-separator after the brand prefix', () => {
+    expect(stripBrandPrefix('Talenti, Reserve', 'Talenti')).toBe('Reserve');
+  });
+
+  it('strips a leading dash-separator after the brand prefix', () => {
+    expect(stripBrandPrefix('Talenti - Reserve', 'Talenti')).toBe('Reserve');
+  });
 });

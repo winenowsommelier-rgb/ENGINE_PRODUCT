@@ -24,6 +24,6 @@ export function stripBrandPrefix(name: string, brand: string | undefined): strin
     boundaryChar === undefined || /[^\p{L}\p{N}]/u.test(boundaryChar);
   if (!isWordBoundary) return name;
 
-  const remainder = name.slice(brand.length).replace(/^\s+/, '');
+  const remainder = name.slice(brand.length).replace(/^[\s,;:\-–—]+/, '');
   return remainder === '' ? name : remainder;
 }
