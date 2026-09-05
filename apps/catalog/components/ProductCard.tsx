@@ -9,6 +9,7 @@ import { ReputationBadge } from '@/components/product/ReputationBadge';
 import { QuickView } from '@/components/QuickView';
 import { CompactGauges } from '@/components/product/CompactGauges';
 import { resolveSale } from '@/lib/price-tiers';
+import { stripBrandPrefix } from '@/lib/product-display';
 import { formatVintage, cn, isInStock } from '@/lib/utils';
 import { PriceDisplay } from '@/components/PriceDisplay';
 import { SaveToListButton } from '@/components/lists/SaveToListButton';
@@ -116,6 +117,7 @@ export function ProductCard({
 }: ProductCardProps) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const subtitle = product.brand || product.region;
+  const displayName = stripBrandPrefix(product.name, product.brand);
   const inStock = isInStock(product.is_in_stock);
   const isArchived = product.custom_stock_status === 'CATALOG';
   const hasExpressDelivery = (product.wn_stock ?? 0) > 0;
@@ -234,7 +236,7 @@ export function ProductCard({
               (parent .group is h-full, Link is flex flex-col h-full). */}
           <div className="flex flex-1 flex-col px-3 pb-3 pt-3">
             <h3 className="line-clamp-2 text-lg font-medium leading-snug text-foreground">
-              {product.name}
+              {displayName}
             </h3>
             {subtitle ? (
               <p className="mt-1 truncate text-sm text-muted-foreground">
