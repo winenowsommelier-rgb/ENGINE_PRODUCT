@@ -51,6 +51,32 @@ def test_plan_product_deltas_finds_new_enriched_rows(db_with_updates):
     assert deltas[0]["sku"] == "WRW1"
 
 
+def test_plan_product_deltas_includes_unenriched_catalog_updates(tmp_path):
+    """Regression guard for the 2026-09-02 incident: plan_product_deltas used
+    to require enrichment_confidence IS NOT NULL even in incremental mode, so
+    a catalog-only update (image_url/price/stock) on a never-enriched product
+    (common for accessories/spirits with no taste profile) silently never
+    synced. 659/674 image-URL updates were dropped this way in one run.
+    PRODUCT_SYNC_COLUMNS includes plain catalog fields unconditionally, so
+    the enrichment gate was never a real invariant of what this script syncs.
+    """
+    db = tmp_path / "unenriched.db"
+    conn = sqlite3.connect(db)
+    conn.executescript(SCHEMA_SQL.read_text())
+    conn.executescript(TASTE_SCHEMA_SQL.read_text())
+    conn.execute(
+        "INSERT INTO products (id, sku, classification, image_url, enrichment_confidence, updated_at) "
+        "VALUES ('row-2','WAC1','Accessories','https://example.com/new.jpg',NULL,'2026-09-02T10:00:00Z')"
+    )
+    conn.commit()
+    conn.close()
+
+    deltas = plan_product_deltas(db, since=None)
+    assert len(deltas) == 1
+    assert deltas[0]["sku"] == "WAC1"
+    assert deltas[0]["image_url"] == "https://example.com/new.jpg"
+
+
 def test_plan_cache_deltas_finds_new_rows(db_with_updates):
     deltas = plan_cache_deltas(db_with_updates, since=None)
     assert len(deltas) == 1
