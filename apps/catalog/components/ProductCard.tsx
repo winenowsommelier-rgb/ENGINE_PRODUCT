@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Eye } from 'lucide-react';
 import { StorefrontImage } from '@/components/StorefrontImage';
 import { CriticScoreStrip } from '@/components/CriticScoreStrip';
@@ -115,6 +116,7 @@ export function ProductCard({
   userLists = [],
   showDiscountPct = false,
 }: ProductCardProps) {
+  const router = useRouter();
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const subtitle = product.brand || product.region;
   const displayName = stripBrandPrefix(product.name, product.brand);
@@ -240,13 +242,29 @@ export function ProductCard({
             </h3>
             {subtitle ? (
               product.brand ? (
-                <Link
-                  href={`/shop?brand=${encodeURIComponent(product.brand)}`}
-                  onClick={(e) => e.stopPropagation()}
-                  className="mt-1 truncate text-sm text-muted-foreground hover:text-foreground hover:underline"
+                // Not a nested <Link>/<a> — this sits inside the card's own
+                // outer <Link> (line ~140), and an <a> cannot contain another
+                // <a> (invalid HTML; browsers reparent/split the anchor
+                // unpredictably). A span with role="link" + keyboard support
+                // gets the same click-to-filter behavior without that.
+                <span
+                  role="link"
+                  tabIndex={0}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    router.push(`/shop?brand=${encodeURIComponent(product.brand!)}`);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key !== 'Enter' && e.key !== ' ') return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    router.push(`/shop?brand=${encodeURIComponent(product.brand!)}`);
+                  }}
+                  className="mt-1 w-fit truncate text-sm text-muted-foreground hover:text-foreground hover:underline"
                 >
                   {subtitle}
-                </Link>
+                </span>
               ) : (
                 <p className="mt-1 truncate text-sm text-muted-foreground">
                   {subtitle}
