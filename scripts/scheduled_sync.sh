@@ -66,6 +66,19 @@ else
   log "ERROR: Drive bundle sync failed"
 fi
 
+# Step 4: Recompute reputation tiers (sold_qty/acclaim drift). Was a manual/
+# onboarding-only trigger until 2026-09-05 — see memory
+# project_reputation_v1_expert_review finding #5 ("no refresh mechanism").
+# Backs up products.db itself (phase0_backup_and_ddl), so no extra --no-backup
+# flag here; writes the live export itself too, so this must run AFTER step 2
+# refreshes it from the pre-recompute DB state, not before.
+log "Step 4: Recomputing reputation tiers"
+if "$PYTHON" scripts/compute_reputation.py >> "$LOG" 2>&1; then
+  log "Reputation recompute OK"
+else
+  log "ERROR: Reputation recompute failed"
+fi
+
 log "=== Scheduled sync complete ==="
 
 # Keep log under 5000 lines
