@@ -114,8 +114,21 @@ vintage detail) further down/right than necessary.
    - This is an exact, case-sensitive prefix check (`String.startsWith`,
      not a normalized/case-insensitive comparison) — matches the "exact
      match only" decision below for the 3.2% fuzzy-case group.
-   - Otherwise (`name` does not start with `brand`), return `name`
-     unchanged.
+   - **Word-boundary guard, required:** a raw `startsWith` match is not
+     sufficient on its own — it would also match mid-word, e.g. brand
+     `"Ace"` against a hypothetical name `"Acevedo Winery Malbec"` would
+     strip to `"vedo Winery Malbec"`, which is wrong. After confirming
+     `name.startsWith(brand)`, also require that the character
+     immediately following the matched prefix (`name[brand.length]`) is
+     either whitespace, a punctuation character, or the string has ended
+     (i.e. `brand` is the entire `name`) — never a letter or digit. If
+     that check fails, treat it as a non-match and fall through to the
+     "otherwise" branch below (return `name` unchanged). With 2,976
+     distinct brands in `brand_lookup.json`, a short brand name that is a
+     true substring-prefix of some unrelated product's first word is a
+     realistic case, not just a hypothetical.
+   - Otherwise (`name` does not start with `brand`, or fails the
+     word-boundary guard above), return `name` unchanged.
    - If stripping would leave an empty string after trimming (defensive:
      `name === brand` exactly, or `name` is `brand` plus only trailing
      whitespace), return the original `name` instead of a blank title.
@@ -175,7 +188,16 @@ vintage detail) further down/right than necessary.
   — returned unchanged), brand === name exactly (returns original, not
   empty), no brand or blank/whitespace-only brand (returns name
   unchanged), brand not a prefix due to case only (VIK/Vik — returned
-  unchanged per exact-match decision).
+  unchanged per exact-match decision), **word-boundary false-positive
+  guard** (a brand that is a true string-prefix of the name's first word
+  but not a whole-word prefix, e.g. brand `"Ace"` + name
+  `"Acevedo Winery Malbec"` → must return the name unchanged, not
+  `"vedo Winery Malbec"`).
+- Verify the `ProductCard.tsx:109` subtitle fallback
+  (`product.brand || product.region`) is unaffected by this change: a
+  product with no `brand` at all still shows `region` as the subtitle and
+  the full, unshortened `name` as the title (since `stripBrandPrefix`
+  returns `name` unchanged when `brand` is falsy).
 - Manual browser verification (per project Rule 7): load `/shop`, confirm
   card titles no longer repeat the brand for common cases (Talenti,
   Ardbeg, AnCnoc from the current catalog view) and still show both for a
