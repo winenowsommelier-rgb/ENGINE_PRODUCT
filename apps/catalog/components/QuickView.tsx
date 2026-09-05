@@ -13,6 +13,7 @@ import { ContactButtons } from '@/components/ContactButtons';
 import { PriceBlock } from '@/components/product/PriceBlock';
 import { ReputationBadge } from '@/components/product/ReputationBadge';
 import { stripToText } from '@/lib/sanitize-html';
+import { stripBrandPrefix } from '@/lib/product-display';
 import { formatVintage, isInStock } from '@/lib/utils';
 import type { PublicProduct } from '@/lib/types';
 import type { ContactLinks } from '@/lib/contact';
@@ -70,6 +71,7 @@ export function QuickView({
   contactLinks,
 }: QuickViewProps) {
   const subtitle = product.brand || product.region;
+  const displayName = stripBrandPrefix(product.name, product.brand);
   const attributes = attributeRows(product);
   const vintageMayChange = formatVintage(product.vintage).mayChange;
   const inStock = isInStock(product.is_in_stock);
@@ -100,7 +102,7 @@ export function QuickView({
 
             <div className="flex flex-wrap items-center gap-2">
               <DialogTitle className="text-2xl font-semibold leading-snug text-foreground">
-                {product.name}
+                {displayName}
               </DialogTitle>
               <ReputationBadge tier={product.reputation_tier} />
             </div>
