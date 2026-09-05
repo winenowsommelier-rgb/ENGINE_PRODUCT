@@ -256,7 +256,10 @@ export function ProductCard({
                     router.push(`/shop?brand=${encodeURIComponent(product.brand!)}`);
                   }}
                   onKeyDown={(e) => {
-                    if (e.key !== 'Enter' && e.key !== ' ') return;
+                    // role="link" activates on Enter only, per the WAI-ARIA
+                    // link pattern — Space is button/checkbox semantics, not
+                    // link semantics.
+                    if (e.key !== 'Enter') return;
                     e.preventDefault();
                     e.stopPropagation();
                     router.push(`/shop?brand=${encodeURIComponent(product.brand!)}`);
