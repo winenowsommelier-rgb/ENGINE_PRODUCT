@@ -1,4 +1,5 @@
 import json
+import sqlite3
 import subprocess
 import sys
 from pathlib import Path
@@ -6,8 +7,6 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parents[1]
-_CANDIDATE_DB = REPO / "data" / "db" / "products.db"
-
 SCRIPT = REPO / "scripts" / "refresh_products_json.py"
 
 # data/db/products.json is git-tracked in a PUBLIC repo (unlike products.db,
@@ -17,30 +16,39 @@ SCRIPT = REPO / "scripts" / "refresh_products_json.py"
 FORBIDDEN = {"cost", "margin_pct", "margin_thb", "b2b_margin_pct", "b2b_margin_thb"}
 
 
-def _resolve_db(path: Path) -> Path:
-    """Resolve the real DB path — handles 0-byte git-worktree placeholders."""
-    if path.exists() and path.stat().st_size > 0:
-        return path
-    result = subprocess.run(
-        ["git", "rev-parse", "--git-common-dir"],
-        capture_output=True, text=True, cwd=path.parent,
+def _make_db(path: Path) -> None:
+    """Minimal synthetic products.db -- does NOT depend on the real,
+    gitignored data/db/products.db, which is absent in a clean checkout/CI
+    runner (found via automated review on this PR: the old git-worktree
+    fallback only worked because this session happened to have a sibling
+    main checkout with the real DB present). Includes all 5 FORBIDDEN
+    columns WITH values so this test proves they're excluded from output
+    despite being present in the source, not merely absent from the schema.
+    """
+    conn = sqlite3.connect(path)
+    conn.execute(
+        "CREATE TABLE products (id TEXT, sku TEXT, name TEXT, price REAL, "
+        "cost REAL, margin_pct REAL, margin_thb REAL, "
+        "b2b_margin_pct REAL, b2b_margin_thb REAL, b2b_price REAL)"
     )
-    if result.returncode == 0:
-        main_db = Path(result.stdout.strip()).parent / "data" / "db" / "products.db"
-        if main_db.exists() and main_db.stat().st_size > 0:
-            return main_db
-    return path  # let sqlite3 raise a useful error
-
-
-DB = _resolve_db(_CANDIDATE_DB)
+    conn.execute(
+        "INSERT INTO products (id, sku, name, price, cost, margin_pct, "
+        "margin_thb, b2b_margin_pct, b2b_margin_thb, b2b_price) "
+        "VALUES ('row-1','WRW0001','Test Wine',500.0,300.0,40.0,200.0,35.0,175.0,450.0)"
+    )
+    conn.commit()
+    conn.close()
 
 
 @pytest.fixture(scope="session")
 def products_json_export(tmp_path_factory):
     """Generate products.json once per session into a temp file (hermetic)."""
-    out = tmp_path_factory.mktemp("export") / "products.json"
+    tmp = tmp_path_factory.mktemp("export")
+    db = tmp / "products.db"
+    out = tmp / "products.json"
+    _make_db(db)
     subprocess.run(
-        [sys.executable, str(SCRIPT), "--db", str(DB), "--out", str(out)],
+        [sys.executable, str(SCRIPT), "--db", str(db), "--out", str(out)],
         check=True,
     )
     return json.loads(out.read_text())
