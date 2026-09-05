@@ -45,12 +45,16 @@ RENAME = {
 }
 
 # DB columns to include (existing products.json key name, after RENAME).
+# cost/margin_thb/margin_pct/b2b_margin_thb/b2b_margin_pct are deliberately
+# EXCLUDED: this file is git-tracked in a public repo, and none of its
+# consumers (enrich_wines.py, build_explore_taxonomy.py,
+# reconcile_seed_image_urls.py) read those fields -- mirrors the EXPORT_COLS
+# allowlist fix from PR #115 for the storefront export.
 DB_COLS = [
     "id", "sku", "name", "brand", "vintage", "bottle_size", "alcohol",
     "country", "region", "subregion", "origin", "origin_source", "manufacturer",
     "classification", "classification_source", "variety",
-    "price", "cost", "currency", "b2b_price", "b2b_margin_thb", "b2b_margin_pct",
-    "b2b_discount_pct", "margin_thb", "margin_pct",
+    "price", "currency", "b2b_price", "b2b_discount_pct",
     "promotion_price", "promotion_tier_price", "price_group",
     "is_in_stock", "quantity_in_stock",
     "desc_en_short", "full_description", "flavor_tags",
