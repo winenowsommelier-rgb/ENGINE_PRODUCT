@@ -361,15 +361,25 @@ export function scoreCandidateDetailed(
   // sits below every attribute signal (region +3 down to sweetness +0.5).
   // Only tier 2 counts (not >=1) to avoid rewarding the median product.
   //
-  // DELIBERATELY NOT using reputation_tier here: a 2026-07-09 3-lens review
-  // (see memory project_reputation_v1_expert_review) found the 'iconic' tier
-  // materially miscalibrated — 181/199 iconic products have no real acclaim
-  // signal backing them, driven by a percentile tie-breaking bug affecting
-  // the 91% of SKUs with zero/near-zero demand. Scoring on reputation_tier
-  // would let the recommender confidently amplify a known-wrong "iconic"
-  // label. Revisit once that data fix lands (tracked, not yet shipped).
   if (product.popularity_tier === 2 && candidate.popularity_tier === 2) {
     add('popularity', 1);
+  }
+
+  // Reputation tiebreaker — same bounded-nudge pattern as popularity above.
+  // A 2026-07-09 3-lens review (see memory project_reputation_v1_expert_review)
+  // found 'iconic' materially miscalibrated (181/199 iconic products had no
+  // real acclaim signal) and this signal was deliberately excluded from
+  // scoring until fixed. Verified 2026-09-05: compute_reputation.py now
+  // requires acclaim corroboration for 'iconic' (DB-checked 41/41 in-stock
+  // iconic products have real acclaim) plus a demand floor fixing the tie
+  // bug — data is trustworthy again. Only iconic/premium count (not
+  // established/everyday/unrated), mirroring popularity_tier's "only the
+  // meaningfully-distinguished tier counts" approach.
+  if (
+    (product.reputation_tier === 'iconic' || product.reputation_tier === 'premium') &&
+    (candidate.reputation_tier === 'iconic' || candidate.reputation_tier === 'premium')
+  ) {
+    add('reputation', 1);
   }
 
   // Co-purchase (real BI "bought in the same order" data) — see
