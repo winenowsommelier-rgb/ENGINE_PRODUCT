@@ -32,7 +32,11 @@ vintage detail) further down/right than necessary.
   `producer` field exists. Both fields sourced from
   `data/live_products_export.json` via the `PUBLIC_FIELDS` allowlist.
 - **Overlap pattern**, checked across all 11,832 live records with both
-  fields populated:
+  fields populated (as of the `data/live_products_export.json` snapshot
+  read during brainstorming, 2026-09-05; this file is regenerated
+  regularly by unrelated pipeline work, so exact counts will drift —
+  the percentages below are illustrative of the shape, not a number to
+  re-verify against a later snapshot):
   - **90.5%** (10,707) — `name` starts with `brand` as an exact,
     byte-for-byte prefix (module whitespace), e.g. `"Talenti Brunello di
     Montalcino \"Piero\" DOCG"` / `"Talenti"`.
@@ -91,14 +95,30 @@ vintage detail) further down/right than necessary.
 1. **New pure helper, `stripBrandPrefix(name, brand)`.** Lives in
    `apps/catalog/lib/` (colocated with other small display-formatting
    helpers, not a new subsystem). Behavior:
-   - If `brand` is falsy, return `name` unchanged.
-   - If `name` (after collapsing repeated internal whitespace to single
-     spaces for comparison only) starts with `brand` as an **exact,
-     case-sensitive prefix**, return the remainder of `name` with any
-     leading whitespace/separator trimmed.
-   - Otherwise, return `name` unchanged.
-   - If stripping would leave an empty string (defensive: `name === brand`
-     exactly), return the original `name` instead of a blank title.
+   - If `brand` is falsy or blank (empty/whitespace-only after `trim()`),
+     return `name` unchanged.
+   - Match against the **original, uncollapsed** `name` — never collapse
+     whitespace and re-slice, since that would desync indices between the
+     collapsed string used for comparison and the original string being
+     sliced. Concretely: if `name.startsWith(brand)` is true, take
+     everything in `name` after `brand.length`, then strip any run of
+     leading whitespace from that remainder with `remainder.replace(/^\s+/, '')`.
+     This handles the common double-internal-space case correctly. Worked
+     example, for a clean-match case with two spaces after the brand — name
+     `"Talenti  Brunello di Montalcino \"Piero\" DOCG"` + brand `"Talenti"`:
+     `name.slice(7)` gives `"  Brunello di Montalcino \"Piero\" DOCG"`;
+     stripping the leading whitespace gives
+     `"Brunello di Montalcino \"Piero\" DOCG"`. No whitespace collapsing is
+     applied anywhere else in the string — only the leading run right after
+     the removed prefix is trimmed.
+   - This is an exact, case-sensitive prefix check (`String.startsWith`,
+     not a normalized/case-insensitive comparison) — matches the "exact
+     match only" decision below for the 3.2% fuzzy-case group.
+   - Otherwise (`name` does not start with `brand`), return `name`
+     unchanged.
+   - If stripping would leave an empty string after trimming (defensive:
+     `name === brand` exactly, or `name` is `brand` plus only trailing
+     whitespace), return the original `name` instead of a blank title.
    - This is a pure string function: no I/O, no async, trivially unit
      testable with the sample pairs captured above.
 
@@ -148,10 +168,14 @@ vintage detail) further down/right than necessary.
 
 - Unit tests for `stripBrandPrefix()` covering: clean prefix (Talenti
   case), multi-word brand (Coastal Ridge), brand with internal punctuation
-  (Max Ferd. Richter), no-match case (Tournon/M. Chapoutier — returned
-  unchanged), brand === name exactly (returns original, not empty), no
-  brand (returns name unchanged), brand not a prefix due to case only
-  (VIK/Vik — returned unchanged per exact-match decision).
+  (Max Ferd. Richter), double-internal-space after the brand (name
+  `"Coastal Ridge  Cabernet Sauvignon"`, brand `"Coastal Ridge"` → expect
+  `"Cabernet Sauvignon"` with the leading double-space collapsed away, per
+  the worked slicing example above), no-match case (Tournon/M. Chapoutier
+  — returned unchanged), brand === name exactly (returns original, not
+  empty), no brand or blank/whitespace-only brand (returns name
+  unchanged), brand not a prefix due to case only (VIK/Vik — returned
+  unchanged per exact-match decision).
 - Manual browser verification (per project Rule 7): load `/shop`, confirm
   card titles no longer repeat the brand for common cases (Talenti,
   Ardbeg, AnCnoc from the current catalog view) and still show both for a
