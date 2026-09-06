@@ -22,8 +22,10 @@ import type { ListRow } from '@/lib/supabase/types';
  * ProductCard — the Maison grid tile.
  *
  * Layout: large bottle image (aspect-[3/4], object-contain) on top; below it
- * the product name (18px, 2-line clamp), a muted brand/region subtitle, and a
- * prominent price. The WHOLE card links to /product/[sku].
+ * a muted brand/region subtitle, the product name (18px, 2-line clamp), and a
+ * prominent price — brand-first so the card reads the way a bottle label
+ * does (brand, then the specific wine/spirit), matching QuickView and the
+ * PDP. The WHOLE card links to /product/[sku].
  *
  * Two interactive details:
  *  - "Quick look" button opens the QuickView modal WITHOUT navigating. It lives
@@ -237,9 +239,6 @@ export function ProductCard({
               keeping every card in a row the same visual rhythm at equal height
               (parent .group is h-full, Link is flex flex-col h-full). */}
           <div className="flex flex-1 flex-col px-3 pb-3 pt-3">
-            <h3 className="line-clamp-2 text-lg font-medium leading-snug text-foreground">
-              {displayName}
-            </h3>
             {subtitle ? (
               product.brand ? (
                 // Not a nested <Link>/<a> — this sits inside the card's own
@@ -264,16 +263,19 @@ export function ProductCard({
                     e.stopPropagation();
                     router.push(`/shop?brand=${encodeURIComponent(product.brand!)}`);
                   }}
-                  className="mt-1 w-fit truncate text-sm text-muted-foreground hover:text-foreground hover:underline"
+                  className="w-fit truncate text-sm text-muted-foreground hover:text-foreground hover:underline"
                 >
                   {subtitle}
                 </span>
               ) : (
-                <p className="mt-1 truncate text-sm text-muted-foreground">
+                <p className="truncate text-sm text-muted-foreground">
                   {subtitle}
                 </p>
               )
             ) : null}
+            <h3 className="mt-1 line-clamp-2 text-lg font-medium leading-snug text-foreground">
+              {displayName}
+            </h3>
             {sale ? (
               <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                 <span className="text-lg font-semibold text-primary tabular-nums">
