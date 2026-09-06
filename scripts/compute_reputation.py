@@ -883,6 +883,20 @@ def phase2_rollup(conn: sqlite3.Connection) -> None:
         ).fetchall()
     }
 
+    # Compare against the row's CURRENT reputation_tier before overwriting it,
+    # so updated_at only bumps for SKUs whose tier actually changed this run
+    # -- phase2_rollup recomputes every SKU with a signal every run, so an
+    # unconditional bump would mark the entire catalog "changed" nightly,
+    # forcing scripts/sync_to_supabase.py's incremental path to push
+    # everything regardless of --full-sync. Same failure family as
+    # bug_dossier_sync_never_bumped_updated_at (never bumping) -- this is
+    # the opposite mistake (always bumping), equally wrong for the same
+    # incremental-sync mechanism.
+    current_tiers = {
+        r["sku"]: r["reputation_tier"]
+        for r in conn.execute("SELECT sku, reputation_tier FROM products").fetchall()
+    }
+
     now = datetime.now(timezone.utc).isoformat()
     updates = []
     for sku, axes in by_sku.items():
@@ -920,8 +934,22 @@ def phase2_rollup(conn: sqlite3.Connection) -> None:
           reputation_computed_at = :reputation_computed_at
         WHERE sku = :sku
     """, updates)
+
+    tier_changed = [
+        {"sku": u["sku"], "now": now}
+        for u in updates
+        if current_tiers.get(u["sku"]) != u["reputation_tier"]
+    ]
+    if tier_changed:
+        conn.executemany(
+            "UPDATE products SET updated_at = :now WHERE sku = :sku",
+            tier_changed,
+        )
     conn.commit()
-    log.info("Phase 2: updated %d SKUs", len(updates))
+    log.info(
+        "Phase 2: updated %d SKUs (%d tier changes bumped updated_at for Supabase sync)",
+        len(updates), len(tier_changed),
+    )
 
 
 # ---------------------------------------------------------------------------

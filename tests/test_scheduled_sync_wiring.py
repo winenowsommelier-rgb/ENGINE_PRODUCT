@@ -14,12 +14,26 @@ def test_scheduled_sync_calls_compute_reputation():
     assert "compute_reputation.py" in src
 
 
-def test_reputation_recompute_runs_after_live_export_refresh():
-    """Order matters: compute_reputation.py writes its own live export, so it
-    must run after refresh_live_export.py, not before (else its export gets
-    overwritten by a stale recompute)."""
+def test_reputation_recompute_runs_before_supabase_sync():
+    """Order matters, the OPPOSITE way from an earlier draft of this test:
+    compute_reputation.py must run BEFORE sync_to_supabase.py, not after.
+    Automated review on PR #134 caught that running it last meant a
+    same-night tier change never reached that night's Supabase push or
+    Drive bundle -- both had already run against the pre-recompute state.
+    compute_reputation.py also writes its own live_products_export.json
+    internally (phase3_verify_and_export), so it doesn't need
+    refresh_live_export.py to run first for its own correctness either."""
     src = SCRIPT.read_text()
-    export_pos = src.find("refresh_live_export.py")
+    sync_pos = src.find("sync_to_supabase.py")
     reputation_pos = src.find("compute_reputation.py")
-    assert export_pos != -1 and reputation_pos != -1
-    assert export_pos < reputation_pos
+    assert sync_pos != -1 and reputation_pos != -1
+    assert reputation_pos < sync_pos
+
+
+def test_reputation_recompute_runs_before_drive_bundle():
+    """Same reasoning as above, for the Drive export bundle consumer."""
+    src = SCRIPT.read_text()
+    drive_pos = src.find("export_drive_bundle.py")
+    reputation_pos = src.find("compute_reputation.py")
+    assert drive_pos != -1 and reputation_pos != -1
+    assert reputation_pos < drive_pos
