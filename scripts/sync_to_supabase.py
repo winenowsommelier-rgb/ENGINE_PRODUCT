@@ -152,13 +152,21 @@ def plan_product_deltas(
 ) -> list[dict]:
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
-    # full_sync: push every product regardless of enrichment status or timestamp.
-    # Default: only rows updated since last sync and with enrichment data.
+    # full_sync: push every product regardless of timestamp.
+    # Default: only rows updated since last sync. PRODUCT_SYNC_COLUMNS includes
+    # plain catalog fields (image_url, price, stock, magento_item_url, ...) as
+    # well as enrichment output, so gating on enrichment_confidence dropped
+    # catalog-only updates on never-enriched products (mostly accessories/
+    # spirits without a taste profile) from every incremental sync -- found
+    # 2026-09-02 when 659/674 image-URL updates silently failed to sync this
+    # way. See docs/superpowers -- the enrichment_confidence requirement was
+    # never a real invariant of what this script syncs, just an accidental
+    # narrowing of "products that changed."
     if full_sync:
         where = "WHERE 1=1"
         params: list = []
     else:
-        where = "WHERE enrichment_confidence IS NOT NULL"
+        where = "WHERE 1=1"
         params = []
         if since:
             where += " AND updated_at > ?"
