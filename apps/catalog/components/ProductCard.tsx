@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Eye } from 'lucide-react';
 import { StorefrontImage } from '@/components/StorefrontImage';
 import { CriticScoreStrip } from '@/components/CriticScoreStrip';
@@ -9,6 +10,7 @@ import { ReputationBadge } from '@/components/product/ReputationBadge';
 import { QuickView } from '@/components/QuickView';
 import { CompactGauges } from '@/components/product/CompactGauges';
 import { resolveSale } from '@/lib/price-tiers';
+import { stripBrandPrefix } from '@/lib/product-display';
 import { formatVintage, cn, isInStock } from '@/lib/utils';
 import { PriceDisplay } from '@/components/PriceDisplay';
 import { SaveToListButton } from '@/components/lists/SaveToListButton';
@@ -114,8 +116,10 @@ export function ProductCard({
   userLists = [],
   showDiscountPct = false,
 }: ProductCardProps) {
+  const router = useRouter();
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const subtitle = product.brand || product.region;
+  const displayName = stripBrandPrefix(product.name, product.brand);
   const inStock = isInStock(product.is_in_stock);
   const isArchived = product.custom_stock_status === 'CATALOG';
   const hasExpressDelivery = (product.wn_stock ?? 0) > 0;
@@ -234,12 +238,41 @@ export function ProductCard({
               (parent .group is h-full, Link is flex flex-col h-full). */}
           <div className="flex flex-1 flex-col px-3 pb-3 pt-3">
             <h3 className="line-clamp-2 text-lg font-medium leading-snug text-foreground">
-              {product.name}
+              {displayName}
             </h3>
             {subtitle ? (
-              <p className="mt-1 truncate text-sm text-muted-foreground">
-                {subtitle}
-              </p>
+              product.brand ? (
+                // Not a nested <Link>/<a> — this sits inside the card's own
+                // outer <Link> (line ~140), and an <a> cannot contain another
+                // <a> (invalid HTML; browsers reparent/split the anchor
+                // unpredictably). A span with role="link" + keyboard support
+                // gets the same click-to-filter behavior without that.
+                <span
+                  role="link"
+                  tabIndex={0}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    router.push(`/shop?brand=${encodeURIComponent(product.brand!)}`);
+                  }}
+                  onKeyDown={(e) => {
+                    // role="link" activates on Enter only, per the WAI-ARIA
+                    // link pattern — Space is button/checkbox semantics, not
+                    // link semantics.
+                    if (e.key !== 'Enter') return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    router.push(`/shop?brand=${encodeURIComponent(product.brand!)}`);
+                  }}
+                  className="mt-1 w-fit truncate text-sm text-muted-foreground hover:text-foreground hover:underline"
+                >
+                  {subtitle}
+                </span>
+              ) : (
+                <p className="mt-1 truncate text-sm text-muted-foreground">
+                  {subtitle}
+                </p>
+              )
             ) : null}
             {sale ? (
               <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">

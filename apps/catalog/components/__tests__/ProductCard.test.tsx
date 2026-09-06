@@ -58,9 +58,21 @@ describe('ProductCard', () => {
     sessionStorage.clear();
   });
 
-  it('renders the product name', () => {
+  it('renders the product name with the redundant brand prefix stripped, and the brand as a separate label', () => {
+    // baseProduct.name ("Château Test Grand Cru 2018") starts with
+    // baseProduct.brand ("Château Test"), so the title shows only the
+    // remainder while the brand still renders on its own, once, as a
+    // clickable subtitle (see the "brand subtitle" test below).
     renderUnlocked(<ProductCard product={baseProduct} />);
-    expect(screen.getByText('Château Test Grand Cru 2018')).toBeInTheDocument();
+    expect(screen.getByText('Grand Cru 2018')).toBeInTheDocument();
+    expect(screen.queryByText('Château Test Grand Cru 2018')).not.toBeInTheDocument();
+  });
+
+  it('renders the brand as a clickable subtitle that filters /shop by brand', () => {
+    renderUnlocked(<ProductCard product={baseProduct} />);
+    const brandLink = screen.getByText('Château Test');
+    expect(brandLink).toBeInTheDocument();
+    expect(brandLink.getAttribute('role')).toBe('link');
   });
 
   it('renders the formatted ฿ price', () => {

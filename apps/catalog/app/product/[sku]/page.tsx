@@ -17,6 +17,7 @@ import { precomputeRecommendations } from '@/lib/recommender';
 import { FEATURED_SKUS } from '@/lib/featured';
 import { buildContactLinks } from '@/lib/contact';
 import { getContactEnv } from '@/lib/contact-env';
+import { stripBrandPrefix } from '@/lib/product-display';
 import { toTiers, toStructural } from '@/lib/taste-adapter';
 import { formatVintage, isInStock, parseFoodMatching, signatureDishes } from '@/lib/utils';
 import { sanitizeDescription } from '@/lib/sanitize-html';
@@ -394,12 +395,15 @@ export default function Page({ params }: { params: { sku: string } }) {
             <ProductPinButton sku={product.sku} className="absolute right-0 top-0" />
 
             {product.brand ? (
-              <p className="pr-20 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              <Link
+                href={`/shop?brand=${encodeURIComponent(product.brand)}`}
+                className="pr-20 text-sm font-medium uppercase tracking-wide text-muted-foreground hover:text-foreground hover:underline focus-visible:underline"
+              >
                 {product.brand}
-              </p>
+              </Link>
             ) : null}
             <h1 className="pr-20 text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl">
-              {product.name}
+              {stripBrandPrefix(product.name, product.brand)}
             </h1>
             {/* Price on its own row — the primary commercial fact, given room. */}
             <PriceBlock price={product.price} specialPrice={product.special_price} />
