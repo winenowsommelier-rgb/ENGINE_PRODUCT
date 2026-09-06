@@ -361,15 +361,40 @@ export function scoreCandidateDetailed(
   // sits below every attribute signal (region +3 down to sweetness +0.5).
   // Only tier 2 counts (not >=1) to avoid rewarding the median product.
   //
-  // DELIBERATELY NOT using reputation_tier here: a 2026-07-09 3-lens review
-  // (see memory project_reputation_v1_expert_review) found the 'iconic' tier
-  // materially miscalibrated — 181/199 iconic products have no real acclaim
-  // signal backing them, driven by a percentile tie-breaking bug affecting
-  // the 91% of SKUs with zero/near-zero demand. Scoring on reputation_tier
-  // would let the recommender confidently amplify a known-wrong "iconic"
-  // label. Revisit once that data fix lands (tracked, not yet shipped).
   if (product.popularity_tier === 2 && candidate.popularity_tier === 2) {
     add('popularity', 1);
+  }
+
+  // Reputation tiebreaker — same bounded-nudge INTENT as popularity above,
+  // but NOT the same weight. A 2026-07-09 3-lens review (see memory
+  // project_reputation_v1_expert_review) found 'iconic' materially
+  // miscalibrated (181/199 iconic products had no real acclaim signal) and
+  // this signal was deliberately excluded from scoring until fixed.
+  // Verified 2026-09-05: compute_reputation.py now requires acclaim
+  // corroboration for 'iconic' (DB-checked 41/41 in-stock iconic products
+  // have real acclaim) plus a demand floor fixing the tie bug — data is
+  // trustworthy again. Only iconic/premium count (not established/
+  // everyday/unrated), mirroring popularity_tier's "only the meaningfully-
+  // distinguished tier counts" approach.
+  //
+  // Weight is 0.25, NOT 1 like popularity above (automated review on PR
+  // #134 caught this): the weakest real attribute match in this scorer is
+  // sweetness/smokiness at +0.5, and a signal meant to be a tiebreaker
+  // below every attribute must score below the WEAKEST one, not merely
+  // below the strongest (region +3). At +1 (copying popularity's weight
+  // uncritically), two iconic/premium products sharing nothing else could
+  // outrank a candidate that actually matches on sweetness or smokiness —
+  // exactly backwards from "reputation is a tiebreaker, not a substitute
+  // for genuine similarity." NOTE: popularity_tier above has this same
+  // defect (+1, also above the +0.5 floor, despite its own comment
+  // claiming otherwise) — a pre-existing issue, not introduced by this
+  // signal, and left alone here as out of scope for a PR about reputation;
+  // worth its own follow-up.
+  if (
+    (product.reputation_tier === 'iconic' || product.reputation_tier === 'premium') &&
+    (candidate.reputation_tier === 'iconic' || candidate.reputation_tier === 'premium')
+  ) {
+    add('reputation', 0.25);
   }
 
   // Co-purchase (real BI "bought in the same order" data) — see

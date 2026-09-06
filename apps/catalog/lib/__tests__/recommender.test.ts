@@ -534,6 +534,75 @@ describe('scoreCandidateDetailed — popularity tiebreaker', () => {
   });
 });
 
+describe('scoreCandidateDetailed — reputation tiebreaker', () => {
+  // Re-enabled 2026-09-05 after the 2026-07-09 miscalibration (181/199 iconic
+  // had no real acclaim) was fixed and DB-verified — see memory
+  // project_reputation_v1_expert_review. Unlike popularity_tier, reputation_tier
+  // is already a raw export field (no derivation chokepoint to regress), so no
+  // "reaches the precompute pipeline" regression test is needed here.
+  //
+  // Weight is 0.25, not 1 (fixed after automated review on PR #134 caught
+  // the original +1 sitting ABOVE the weakest real attribute signal,
+  // sweetness/smokiness at +0.5 — see recommender.ts's comment at this
+  // signal for the full reasoning).
+  it('both iconic adds +0.25 under the reputation key', () => {
+    const subject = { ...wineBase, reputation_tier: 'iconic' } as any;
+    const candidate = { ...wineBase, sku: 'W2', reputation_tier: 'iconic' } as any;
+    expect(scoreCandidateDetailed(subject, candidate).breakdown.reputation).toBe(0.25);
+  });
+  it('iconic + premium adds +0.25 (either qualifying tier counts, need not match)', () => {
+    const subject = { ...wineBase, reputation_tier: 'iconic' } as any;
+    const candidate = { ...wineBase, sku: 'W2', reputation_tier: 'premium' } as any;
+    expect(scoreCandidateDetailed(subject, candidate).breakdown.reputation).toBe(0.25);
+  });
+  it('does NOT fire when only one side is iconic/premium', () => {
+    const subject = { ...wineBase, reputation_tier: 'iconic' } as any;
+    const candidate = { ...wineBase, sku: 'W2', reputation_tier: 'established' } as any;
+    expect(scoreCandidateDetailed(subject, candidate).breakdown.reputation ?? 0).toBe(0);
+  });
+  it('does NOT fire for two "established" products — only iconic/premium count', () => {
+    const subject = { ...wineBase, reputation_tier: 'established' } as any;
+    const candidate = { ...wineBase, sku: 'W2', reputation_tier: 'established' } as any;
+    expect(scoreCandidateDetailed(subject, candidate).breakdown.reputation ?? 0).toBe(0);
+  });
+  it('does NOT fire when reputation_tier is absent on either side', () => {
+    const subject = { ...wineBase, reputation_tier: undefined } as any;
+    const candidate = { ...wineBase, sku: 'W2', reputation_tier: 'iconic' } as any;
+    expect(scoreCandidateDetailed(subject, candidate).breakdown.reputation ?? 0).toBe(0);
+  });
+  it('reputation (+0.25) is smaller than every attribute signal, so it cannot override real dissimilarity', () => {
+    const subject = { ...wineBase, reputation_tier: 'iconic' } as any;
+    const iconicOnly = {
+      ...wineBase, sku: 'IO', region: 'Nowhere', country: 'Nowhere',
+      variety: 'none', food_matching: '', reputation_tier: 'iconic',
+    } as any;
+    const sameRegionOnly = { ...wineBase, sku: 'SR', variety: 'none', food_matching: '' } as any;
+    const repScore = scoreCandidateDetailed(subject, iconicOnly).score;
+    const regionScore = scoreCandidateDetailed(subject, sameRegionOnly).score;
+    expect(regionScore).toBeGreaterThan(repScore);
+  });
+  it('REGRESSION (PR #134 review finding): a genuine sweetness match outranks a reputation-only match', () => {
+    // The exact scenario the automated reviewer flagged: at the old +1
+    // weight, two iconic products sharing NOTHING else could outscore a
+    // candidate that actually matches on sweetness (+0.5) or smokiness.
+    // wineBase's group is Wine, so sweetness (not smokiness) is the axis
+    // that applies here.
+    const subject = { ...wineBase, reputation_tier: 'iconic', sweetness: 'dry' } as any;
+    const reputationOnly = {
+      ...wineBase, sku: 'RO', region: 'Nowhere', country: 'Nowhere',
+      variety: 'none', food_matching: '', sweetness: 'sweet',
+      reputation_tier: 'iconic',
+    } as any;
+    const sweetnessMatchOnly = {
+      ...wineBase, sku: 'SM', region: 'Nowhere', country: 'Nowhere',
+      variety: 'none', food_matching: '', sweetness: 'dry',
+    } as any;
+    const repScore = scoreCandidateDetailed(subject, reputationOnly).score;
+    const sweetnessScore = scoreCandidateDetailed(subject, sweetnessMatchOnly).score;
+    expect(sweetnessScore).toBeGreaterThan(repScore);
+  });
+});
+
 describe('cross-category suppression', () => {
   const wine = { ...base, sku: 'WINE', category_group: 'Wine', category_type: 'Red Wine', is_in_stock: true };
   const whisky = { ...base, sku: 'WHISK', category_group: 'Whisky', category_type: 'Whisky', is_in_stock: true };
